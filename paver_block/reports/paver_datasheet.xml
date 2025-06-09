@@ -1,0 +1,1998 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="lerm_paver_block_datasheet1">
+        <t t-call="web.html_container">
+            <t t-call="lerm_civil.mechanical_data_sheet_header">
+        
+                <div style="text-align:center;font-size:18px;font-weight: bold">
+                    Paver Block
+                </div>
+
+                <div class="container_eln" style="margin-top:5px">
+                    <table style="margin-top:20px">
+                        <tr cols="12">
+                            
+                            <td colspan="6">Job No :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.kes_no"></span>
+                            </td>
+                            <td colspan="6">Test Start Date: 
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.start_date"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            </td>
+                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                            </td>
+                        </tr>
+
+                          <tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.technician.name"/>
+								</td>
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+                    </table>
+                    <!-- Dimension  -->
+                    
+                    <div t-if="data.dimension_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','12457ssa-ccb9-41c2-9ae2-c8b4610622a1')]).parameter_name"/> -->
+                             Dimension
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12457ssa-ccb9-41c2-9ae2-c8b4610622a1')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                        <table>
+                            <tr cols="12">
+                                <td colspan="1" style="text-align: center;"><b>Sr No.</b></td>
+                                <td colspan="2" style="text-align: center;"><b>Length in mm</b></td>
+                                <td colspan="1" style="text-align: center;"><b>Width in mm</b></td>
+                                <td colspan="2" style="text-align: center;"><b>Thickness in mm</b></td>
+                            </tr>
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="data.child_lines" t-as="r">
+                                <td colspan="1" style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['length']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['width']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;">
+                                    <span t-esc="r['hight']"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Length in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_length" t-options='{"widget": "float", "precision": 1}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Width in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_width" t-options='{"widget": "float", "precision": 1}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Height in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_hight" t-options='{"widget": "float", "precision": 1}'/>
+                                </td>
+                            </tr>
+                             <tr cols="12">
+                                <td colspan="6"><b>Plan Area in mm² :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.plan_area" t-options='{"widget": "float", "precision": 1}'/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <!-- Compressive Strength -->
+                    
+                    <div t-if="data.commpressive_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px;font-weight: bold">
+                           <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_name"/> -->
+                            Compressive Strength
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span> 
+                        </div>
+                        <table style="margin-top:30px;">
+                            
+                            <thead>
+                                <tr>
+                                    
+                                    <th style="text-align: center;max-width:200px">
+                                        <span style="font-weight: bold;">
+                                            
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;max-width:100px">
+                                        <span style="font-weight: bold;">
+                                            Sample 1
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Sample 2
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Sample 3
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Sample 4
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Sample 5
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Sample 6
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Sample 7
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Sample 8
+                                        </span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;">
+                                            Area of csv Block, mm2
+                                        </span>    
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.areas1" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.areas2" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.areas3" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.areas4" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.areas5" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.areas6" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.areas7" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.areas8" />
+                                        </span>									
+                                    </td>
+                                    
+                                </tr>
+                                
+                                <tr>
+                                    
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;">
+                                            Crushing Load, KN
+                                        </span>    
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.crushing_load1" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.crushing_load2" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.crushing_load3" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.crushing_load4" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.crushing_load5" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.crushing_load6" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.crushing_load7" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.crushing_load8" />
+                                        </span>									
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;">
+                                            Compressive Strength, N/mm²
+                                        </span>    
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.compressive1" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.compressive2" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.compressive3" t-options='{"widget": "float", "precision": 2}' />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.compressive4" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.compressive5" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.compressive6" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.compressive7" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.compressive8" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;">
+                                            Correction Factor
+                                        </span>    
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correction_factor1" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correction_factor2" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correction_factor3" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correction_factor4" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correction_factor5" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correction_factor6" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correction_factor7" />
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correction_factor8" />
+                                        </span>									
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;">
+                                            Corrected Compressive Strength,  N/mm²
+                                        </span>    
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correct_compressive1" t-options='{"widget": "float", "precision": 2}' />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correct_compressive2" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correct_compressive3" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correct_compressive4" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correct_compressive5" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correct_compressive6" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correct_compressive7" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.correct_compressive8" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                </tr>
+                                <!-- <tr>
+                                     
+                                     <td style="text-align: center;max-width:200px">
+                                     <span style="text-align: center;">
+                                     Compressive strength,  MPa
+                                     </span>    
+                                     </td>
+                                     
+                                     <td style="text-align: center;">
+                                     <span style="text-align: center;" >
+                                     <span t-field="data.comp_strength_1" t-options='{"widget": "float", "precision": 2}'/>
+                                     </span>									
+                                     </td>
+                                     
+                                     <td style="text-align: center;">
+                                     <span style="text-align: center;" >
+                                     <span t-field="data.comp_strength_2" t-options='{"widget": "float", "precision": 2}'/>
+                                     </span>									
+                                     </td>
+                                     
+                                     <td style="text-align: center;">
+                                     <span style="text-align: center;" >
+                                     <span t-field="data.comp_strength_3" />
+                                     </span>									
+                                     </td>
+                                     <td style="text-align: center;">
+                                     <span style="text-align: center;" >
+                                     <span t-field="data.comp_strength_4" t-options='{"widget": "float", "precision": 2}'/>
+                                     </span>									
+                                     </td>
+                                     <td style="text-align: center;">
+                                     <span style="text-align: center;" >
+                                     <span t-field="data.comp_strength_5" t-options='{"widget": "float", "precision": 2}'/>
+                                     </span>									
+                                     </td>
+                                     
+                                     </tr> -->
+                             </tbody>
+                            
+                        </table>
+                        <table style="margin-top: 20px">
+                            <tr>
+                                <td style="font-weight: bold;">Average Compressive Strength</td>
+                                <td style="text-align: center;"><span t-field="data.average1" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                        </table>	
+                    </div>
+                    
+                    
+                    <div t-if="data.paver_visible" style="margin-top:30px;">
+                        
+                        <div style="text-align:center;font-size:18px;font-weight: bold">
+                           <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_name"/> -->
+                            Split tensile test
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span> 
+                        </div>
+                        <table style="margin-top:30px;">
+                            <t t-set="i" t-value="0"/>
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Sr No
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;max-width:200px">
+                                        <span style="font-weight: bold;">
+                                            Mean of failure Length in mm (l)
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;max-width:100px">
+                                        <span style="font-weight: bold;">
+                                            Mean of failure Thickness in mm (t)
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Area of Failure = l x t in mm2
+                                        </span>
+                                    </th>
+                                    
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Failure Load in N
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Correction Factor
+                                        </span>
+                                    </th>
+                                    
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Tensile Splitting Strength in N/mm2
+                                        </span>
+                                    </th>
+                                    
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-if="data.paver_visible">
+                                    <td style="text-align: center;padding:0px">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;" >
+                                            
+                                            <span t-esc="round(data.mean_of_lenght1,2)"/>
+                                        </span>	
+                                    </td>
+                                    
+                                    <td style="text-align: center;max-width:100px">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="round(data.mean_thickness1 , 2)"/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="data.area1" t-options='{"widget": "float", "precision": 1}' />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="round(data.failure_load1 , 2)"/>
+                                        </span>									
+                                    </td>
+                                     <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="data.st_correction_factor1"/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="round(data.split_tensile1,2)" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                </tr>
+                                <tr t-if="data.paver_visible">
+                                    <td style="text-align: center;padding:0px">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="round(data.mean_of_lenght2 , 2)"/>
+                                        </span>	
+                                    </td>
+                                    
+                                    <td style="text-align: center;max-width:100px">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="round(data.mean_thickness2 , 2)"/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.area2" t-options='{"widget": "float", "precision": 1}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.failure_load2"/>
+                                        </span>									
+                                    </td>
+                                     <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="data.st_correction_factor2"/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.split_tensile2" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                </tr>
+                                <tr t-if="data.paver_visible">
+                                    <td style="text-align: center;padding:0px">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_of_lenght3"/>
+                                        </span>	
+                                    </td>
+                                    
+                                    <td style="text-align: center;max-width:100px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_thickness3"/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.area3" t-options='{"widget": "float", "precision": 1}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.failure_load3"/>
+                                        </span>									
+                                    </td>
+                                     <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="data.st_correction_factor3"/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.split_tensile3" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                </tr>
+                                <tr t-if="data.paver_visible">
+                                    <td style="text-align: center;padding:0px">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_of_lenght4"/>
+                                        </span>	
+                                    </td>
+                                    
+                                    <td style="text-align: center;max-width:100px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_thickness4"/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.area4" t-options='{"widget": "float", "precision": 1}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.failure_load4"/>
+                                        </span>									
+                                    </td>
+                                     <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="data.st_correction_factor4"/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.split_tensile4" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                </tr>
+                                
+                                <tr t-if="data.paver_visible">
+                                    <td style="text-align: center;padding:0px">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_of_lenght5"/>
+                                        </span>	
+                                    </td>
+                                    
+                                    <td style="text-align: center;max-width:100px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_thickness5"/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.area5" t-options='{"widget": "float", "precision": 1}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.failure_load5"/>
+                                        </span>									
+                                    </td>
+                                     <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="data.st_correction_factor5"/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.split_tensile5" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                </tr>
+                                
+                                <tr t-if="data.paver_visible">
+                                    <td style="text-align: center;padding:0px">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_of_lenght6"/>
+                                        </span>	
+                                    </td>
+                                    
+                                    <td style="text-align: center;max-width:100px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_thickness6"/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.area6" t-options='{"widget": "float", "precision": 1}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.failure_load6"/>
+                                        </span>									
+                                    </td>
+                                     <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="data.st_correction_factor6"/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.split_tensile6" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                </tr>
+                                
+                                <tr t-if="data.paver_visible">
+                                    <td style="text-align: center;padding:0px">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_of_lenght7"/>
+                                        </span>	
+                                    </td>
+                                    
+                                    <td style="text-align: center;max-width:100px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_thickness7"/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.area7" t-options='{"widget": "float", "precision": 1}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.failure_load7"/>
+                                        </span>									
+                                    </td>
+                                     <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="data.st_correction_factor7"/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.split_tensile7" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                </tr>
+                                
+                                <tr t-if="data.paver_visible">
+                                    <td style="text-align: center;padding:0px">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_of_lenght8"/>
+                                        </span>	
+                                    </td>
+                                    
+                                    <td style="text-align: center;max-width:100px">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.mean_thickness8"/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.area8" t-options='{"widget": "float", "precision": 1}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.failure_load8"/>
+                                        </span>									
+                                    </td>
+                                     <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-esc="data.st_correction_factor8"/>
+                                        </span>									
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.split_tensile8" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                </tr>
+                                
+                                
+                                
+                            </tbody>
+                        </table>
+                        <table style="margin-top: 20px">
+                            <tr>
+                                <td style="font-weight: bold;">Average Tensile Splitting Strength in N/mm2</td>
+                                <td style="text-align: center;"><span t-field="data.average" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                        </table>	
+                    </div>
+                    
+                    <!-- Water Absorption 					 -->
+                    
+                    <div t-if="data.water_absorption_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px;font-weight: bold">
+                           <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_name"/> -->
+                           Water Absorption 
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span> 
+                        </div>
+                        <table style="margin-top:30px;">
+                            
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;max-width:200px">
+                                        <span style="font-weight: bold;">
+                                            
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;max-width:100px">
+                                        <span style="font-weight: bold;">
+                                            Sample 1
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Sample 2
+                                        </span>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <span style="font-weight: bold;">
+                                            Sample 3
+                                        </span>
+                                    </th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;">
+                                            Initial Weight (wt. after 24 hour emersion in water) (W1)
+                                        </span>    
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.initial_wt1" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.initial_wt2" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.initial_wt3" />
+                                        </span>									
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;">
+                                            Dry Weight (after 24 hour in oven) (W2)
+                                        </span>    
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.dry_wt1" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.dry_wt2" />
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.dry_wt3" />
+                                        </span>									
+                                    </td>
+                                    
+                                </tr>
+                                
+                                <tr>
+                                    
+                                    <td style="text-align: center;max-width:200px">
+                                        <span style="text-align: center;">
+                                            Water Absorption, %	= [(W1-W2)/W2 * 100]
+                                        </span>    
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.water_absorption1" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.water_absorption2" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;" >
+                                            <span t-field="data.water_absorption3" t-options='{"widget": "float", "precision": 2}'/>
+                                        </span>									
+                                    </td>
+                                    
+                                </tr>
+                            </tbody>
+                            
+                        </table>
+                        <table style="margin-top: 20px">
+                            <tr>
+                                <td style="font-weight: bold;">Average Water Absorption, %</td>
+                                <td style="text-align: center;"><span t-field="data.average_water" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                        </table>	
+                    </div>
+                    
+                    <!-- authorizeRowDataSheet -->
+                    
+                   <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height:40px">
+
+                            </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+						<div style="margin-left:500px">
+							
+							<div>
+								<b>
+									Approved By
+								</b>
+							</div>
+							<div style="height:40px">
+
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+                    
+                </div>
+
+            </t>
+        </t>
+    </template>
+
+     <template id="paver_block_report1">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+               
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+						<!-- <table>
+							<tr>
+								<td colspan="3">Report no :
+								</td>
+								<td colspan="3">
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="3">Report Date :
+								</td>
+								<td colspan="3">
+									<span t-field="o.srf_date"/>
+								</td>
+								<td colspan="3"  t-if="nabl">ULR NO :
+								</td>
+								<td colspan="3" t-if="nabl">
+									<span t-field="o.sample_id.ulr_no"/>
+								</td>
+							</tr>
+						</table> -->
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12">Customer Party Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<!-- <td colspan="12">Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+											,
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td> -->
+                                <td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Sample Description : <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						</table>
+						<table>
+							<tr>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Size :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Brand :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">Consultant Name :
+									<![CDATA[&nbsp;]]>
+                                    <span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Client Name :
+									<![CDATA[&nbsp;]]>
+                                    <span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">Client Reference :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material/Test Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+                    <div style="padding-top:5px">
+						<span t-esc="eln.material.test_parameter"/>
+					</div>
+                      <div t-if="data.dimension_visible" style="margin-top:10px;">
+					  <!-- Dimension -->
+                       <span t-field="env['lerm.parameter.master'].search([('internal_id','=','12457ssa-ccb9-41c2-9ae2-c8b4610622a1')]).parameter_name"/>
+                       
+					</div>
+                     <table t-if="data.dimension_visible"  >
+                       <t t-set="i" t-value="0"/>
+                        <thead>
+                            <tr>
+                                <th>Sr.No </th>
+                                <th>Length in Avg mm </th>
+                                <th>Width in Avg mm</th>
+                                <th>Thickness in Avg mm</th>
+                                
+
+
+                                
+                               <!-- <th  style="max-width: 250px;">
+                                <span>
+                                    <span t-esc="eln.material.specifications"/>
+                                </span>
+                                </th>
+                             -->
+                                <!-- <th  style="max-width: 200px;">
+                                <span>
+                                    <span t-esc="eln.material.method_reference"/>
+                                    
+                                </span>
+                                </th> -->
+                               
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <t t-foreach="docs" t-as="line"> -->
+                            <!-- added -->
+                            <t t-foreach="data.child_lines" t-as="line"> 
+                            <tr>
+                                <td style="text-align: center;">
+                                    <t t-esc="line.sr_no"/>
+                                </td>
+                                <td style="text-align: center;">
+                                    <t t-esc="line.length" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td style="text-align: center;">
+                                    <t t-esc="line.width" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td style="text-align: center;">
+                                    <t t-esc="line.hight" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                               
+                            </tr>
+                            </t>
+                                <tr t-if="data.dimension_visible">
+                                 
+                                    <td style="text-align: center;"><t t-esc="data.average_length" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align: center;"><t t-esc="data.average_hight" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align: center;"><t t-esc="data.average_width" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.plan_area" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    
+                                   
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12457ssa-ccb9-41c2-9ae2-c8b4610622a1')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td> -->
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12457ssa-ccb9-41c2-9ae2-c8b4610622a1')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                               
+                               
+                                                
+                               
+                            <!-- </t> -->
+                        </tbody>
+                    </table>
+
+
+
+
+
+
+                     <div t-if="data.commpressive_visible" style="margin-top:10px;">
+					
+                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_name"/>
+					</div>
+                     <table t-if="data.commpressive_visible" style="page-break-before: auto;" >
+                       <t t-set="i" t-value="0"/>
+                        <thead>
+                            <tr>
+                                <th>Sr. No.</th>
+                                <th>Area of Paver Block, mm2</th>
+                                <th>Crushing Load, KN</th>
+                                <th> Compressive Strength,  N/mm²</th>
+                                <th>Correction Factor</th>
+                                <th> Corrected Compressive Strength,  N/mm²</th>
+                                <th>Average Compressive Strength N/mm²</th>
+                                 <!-- <th  style="max-width: 250px;">
+                                <span>
+                                    <span t-esc="eln.material.specifications"/>
+                                </span>
+                                </th> -->
+                            
+                                <!-- <th  style="max-width: 200px;">
+                                <span>
+                                    <span t-esc="eln.material.method_reference"/>
+                                    
+                                </span>
+                                </th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <t t-foreach="docs" t-as="line"> -->
+                                <tr t-if="data.commpressive_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.areas1"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.crushing_load1"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.compressive1" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correction_factor1"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correct_compressive1" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                   
+                                     <td rowspan="9" style="text-align: center; vertical-align: middle;">
+                                        <t t-esc="data.average1" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td> -->
+                                    <!-- <td  rowspan="9" style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.commpressive_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.areas2"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.crushing_load2"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.compressive2" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correction_factor2"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correct_compressive2" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td> -->
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.commpressive_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.areas3"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.crushing_load3"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.compressive3" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correction_factor3"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correct_compressive3" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td> -->
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.commpressive_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.areas4"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.crushing_load4"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.compressive4" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correction_factor4"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correct_compressive4" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td> -->
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.commpressive_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.areas5"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.crushing_load5"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.compressive5" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correction_factor5"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correct_compressive5" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.commpressive_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.areas6"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.crushing_load6"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.compressive6" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correction_factor6"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correct_compressive6" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                     <!-- <td style="text-align: center; vertical-align: middle;">
+									  <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.commpressive_visible">
+                                   <td style="text-align: center;">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+								    </td>
+                                    <td style="text-align: center;"><t t-esc="data.areas7"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.crushing_load7"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.compressive7" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correction_factor7"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correct_compressive7" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+
+                                <tr t-if="data.commpressive_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.areas8"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.crushing_load8"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.compressive8" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correction_factor8"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.correct_compressive8" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                                
+                               
+                            <!-- </t> -->
+                        </tbody>
+                    </table>
+                    <div style="page-break-before: always;"></div>
+
+                     <div t-if="data.paver_visible" style="margin-top:10px;">
+					
+                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_name"/>
+					</div>
+                     <table t-if="data.paver_visible" style="page-break-before: auto;" >
+                       <t t-set="i" t-value="0"/>
+                        <thead>
+                            <tr>
+                                <th>Sr. No.</th>
+                                <th>Mean of failure Length in mm (l)</th>
+                                <th>Mean of failure Thickness in mm (t)</th>
+                                <th> Area of Failure = l x t in mm2</th>
+                                <th>Failure Load in N</th>
+                                 <th>Correction Factor</th>
+                                <th>Tensile Splitting Strength in N/mm2</th>
+                                <th>Average Tensile Splitting Strength in N/mm2</th>
+                                 <!-- <th  style="max-width: 250px;">
+                                <span>
+                                    <span t-esc="eln.material.specifications"/>
+                                </span>
+                                </th> -->
+                            
+                                <!-- <th  style="max-width: 200px;">
+                                <span>
+                                    <span t-esc="eln.material.method_reference"/>
+                                    
+                                </span>
+                                </th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <t t-foreach="docs" t-as="line"> -->
+                                <tr t-if="data.paver_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_of_lenght1"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_thickness1"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.area1" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.failure_load1"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.st_correction_factor1"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.split_tensile1" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                   
+                                     <td rowspan="9" style="text-align: center; vertical-align: middle;">
+                                        <t t-esc="data.average" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td> -->
+                                    <!-- <td rowspan="9" style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.paver_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_of_lenght2"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_thickness2"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.area2" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.failure_load2"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.st_correction_factor2"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.split_tensile2" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;"> -->
+									<!-- <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.paver_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                   <td style="text-align: center;"><t t-esc="data.mean_of_lenght3"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_thickness3"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.area3" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.failure_load3"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.st_correction_factor3"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.split_tensile3" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.paver_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_of_lenght4"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_thickness4"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.area4" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.failure_load4"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.st_correction_factor4"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.split_tensile4" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.paver_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_of_lenght5"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_thickness5"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.area5" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.failure_load5"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.st_correction_factor5"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.split_tensile5" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.paver_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                     <td style="text-align: center;"><t t-esc="data.mean_of_lenght6"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_thickness6"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.area6" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.failure_load6"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.st_correction_factor6"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.split_tensile6" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                     <!-- <td style="text-align: center; vertical-align: middle;">
+									  <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.paver_visible">
+                                   <td style="text-align: center;">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+								    </td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_of_lenght7"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_thickness7"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.area7" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.failure_load7"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.st_correction_factor7"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.split_tensile7" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+
+                                <tr t-if="data.paver_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                     <td style="text-align: center;"><t t-esc="data.mean_of_lenght8"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.mean_thickness8"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.area8" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.failure_load8"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.st_correction_factor8"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.split_tensile8" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                                
+                               
+                            <!-- </t> -->
+                        </tbody>
+                    </table>
+
+
+                     <div t-if="data.water_absorption_visible" style="margin-top:10px;">
+					
+                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_name"/>
+					</div>
+                     <table t-if="data.water_absorption_visible" style="page-break-before: auto;" >
+                       <t t-set="i" t-value="0"/>
+                        <thead>
+                            <tr>
+                                <th>Sr. No.</th>
+                                <th>Wet Mass of the Block (kg)</th>
+                                <th>Dry Mass of the Block (kg)</th>
+                                <th>Water Absorption, %</th>
+                                <th>Average Water Absorption	</th>
+                                 <!-- <th  style="max-width: 250px;">
+                                <span>
+                                    <span t-esc="eln.material.specifications"/>
+                                </span>
+                                </th> -->
+                            
+                                <!-- <th  style="max-width: 200px;">
+                                <span>
+                                    <span t-esc="eln.material.method_reference"/>
+                                    
+                                </span>
+                                </th> -->
+                               
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <t t-foreach="docs" t-as="line"> -->
+                                <tr t-if="data.water_absorption_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.initial_wt1"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.dry_wt1"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.water_absorption1" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    
+                                     <td rowspan="3" style="text-align: center; vertical-align: middle;">
+                                        <t t-esc="data.average_water" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td> -->
+                                    <!-- <td rowspan="3" style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.water_absorption_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                    <td style="text-align: center;"><t t-esc="data.initial_wt2"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.dry_wt2"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.water_absorption2" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td> -->
+                                </tr>
+                                <tr t-if="data.water_absorption_visible">
+                                   <td style="text-align: center;">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+                                   <td style="text-align: center;"><t t-esc="data.initial_wt3"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.dry_wt3"/></td>
+                                    <td style="text-align: center;"><t t-esc="data.water_absorption3" t-options="{'widget': 'float', 'precision': 2}"/></td>
+                                    
+                                    <!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+							    	</td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table" t-as="parameter">
+                                            <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                            </t>
+                                        </t>
+                                    </td>  -->
+                                </tr>
+                               
+                                                
+                               
+                            <!-- </t> -->
+                        </tbody>
+                    </table>
+
+
+				
+
+					<div style="page-break-inside: avoid;">
+						<div style="margin-top:20px" class="noteContainer">
+							<div>
+								<b>Note :-</b>
+							</div>
+							<div>
+								<ul>
+									<li>
+										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+									</li>
+									<li>
+										Sample(s) was/were not drawn by laboratory.
+									</li>
+									<li>
+										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+									</li>
+									<li t-if="eln.has_witness">
+										Test witnessed by : <span t-esc="eln.witness_name"/>
+										
+									</li>
+									<li t-if="eln.remarks">
+										<span t-esc="eln.remarks"/>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height: 40px;">
+                                    <t t-if="eln.sample_id.checkby_signature_required">
+                                        <div t-if="eln.sample_id.check_by.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                        
+                                    </t>
+                                </div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+							<div>
+								<div t-if="stamp and stamp == '4-in_report'">
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+						</div>
+						<div style="text-align:center;margin-top:25px">
+							......End of Report......
+						</div>
+					</div>
+
+				</div>
+             
+			</t>
+		</t>
+	</template>
+
+
+</odoo>

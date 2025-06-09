@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_wpt_form1" model="ir.ui.view">
+        <field name="name">mechanical.wpt1.form</field>
+        <field name="model">mechanical.wpt1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <h1>
+                        <field name="name" readonly="1" string="Water Permeability Test"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="grade"/>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id"  readonly="1"/>
+                        <field name="eln_ref"  readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters" style="width:70%">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                    <group>
+                        <group >
+                            <field name="temp_wpt" string="Temperature °C"/>
+                            <field name="humidity_percent_wpt" string="Humidity %"/>
+                        </group>
+                         <group>
+                            <field name="quantity"  exception="quantity" string="Quantity" identity="extra"/>
+                            <field name="size" exception="size" string="Specimen Size (mm)" identity="extra"/>
+                        </group>
+
+                        <!-- <group>
+                            <field name="start_date_wpt" string="Start Date"/>
+                            <field name="end_date_wpt" string="End Date"/>
+                        </group> -->
+                    </group>
+                  
+
+              
+                    <group >
+                        <group >
+                            <field name="date_of_casting"  string="Date of Casting" identity="extra"/>
+                        </group>
+                        <group >
+                            <field name="date_of_testing"  string="Date of Testing" identity="extra"/>
+                            
+                        </group>
+                        <group >
+                            <field name="age_of_days" identity="extra"/>
+                        </group>
+                        <group >
+                            <field name="age_of_test" identity="extra"/>
+                        </group>
+                        <group >
+                            <field name="difference" identity="extra"/>
+                        </group>
+                         <!-- <group>
+                         <field name='sample_condition'/>
+                        </group> -->
+                    </group>
+                   
+
+                       
+                   
+                    <group>
+                        <field name="child_lines">
+                        <tree editable="bottom">
+                            <field name="sample" string="Sample"/>
+                            <field name="depth1" string="1"/>
+                            <field name="depth2" string="2"/>
+                            <field name="depth3" string="3"/>
+                            <field name="average" string="Average"/>
+                        </tree>
+                        </field>
+                    </group>
+                    <group>
+                       <field name="average_of_wpt" identity="extra"/>
+                    </group>
+                    <group>
+                       <field name="wpt_conformity"
+                               decoration-success="wpt_conformity == 'pass'" 
+                               decoration-danger="wpt_conformity == 'fail'" 
+                               readonly="1"
+                               identity="extra"/>
+                    </group>
+                    <group>
+                       <field name="wpt_nabl"
+                               decoration-success="wpt_nabl == 'pass'" 
+                                decoration-danger="wpt_nabl == 'fail'" 
+                               readonly="1"
+                               identity="extra"/>
+                    </group>
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>

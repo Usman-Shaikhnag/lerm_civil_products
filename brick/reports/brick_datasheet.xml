@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="lerm_brick_datasheet1">
+    <t t-call="web.html_container">
+	<t t-call="lerm_civil.data_sheet_header_generaltemplate">
+		<div style="text-align:center;font-size:18px;font-weight: bold">
+			Brick Fly Ash
+		</div>
+		<div class="container_eln" style="margin-top:5px">
+            <table style="margin-top:20px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                    <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                    </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+                <!-- Compressive Strength -->
+
+            <div t-if="data.compressive_strength_visible" style="margin-top:20px">
+				<div style="text-align:center;font-size:18px;font-weight: bold">
+						Compressive Strength
+                        <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        
+				</div>
+                <table style="margin-top:30px;">
+                
+                    <thead>
+                        <tr>
+                            
+                            <th style="text-align: center;max-width:200px">
+                                <span style="font-weight: bold;">
+                                    
+                                </span>
+                            </th>
+                            <th style="text-align: center;max-width:100px">
+                                <span style="font-weight: bold;">
+                                    Sample 1
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                    Sample 2
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                    Sample 3
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                    Sample 4
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                    Sample 5
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            
+                            <td style="text-align: center;max-width:200px">
+                                <span style="text-align: center;">
+                                    Length, mm
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.length" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.length_2" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.length_3" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.length_4" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.length_5" />
+                                </span>									
+                            </td>
+                            
+                        </tr>
+
+                        <tr>
+                            
+                            <td style="text-align: center;max-width:200px">
+                                <span style="text-align: center;">
+                                    Width, mm
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.width" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.width_2" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.width_3" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.width_4" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.width_5" />
+                                </span>									
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            
+                            <td style="text-align: center;max-width:200px">
+                                <span style="text-align: center;">
+                                    Height, mm
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.height" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.height_2" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.height_3" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.height_4" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.height_5" />
+                                </span>									
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            
+                            <td style="text-align: center;max-width:200px">
+                                <span style="text-align: center;">
+                                    Area (mm²)
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.area" t-options='{"widget": "float", "precision": 2}' />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.area_2" t-options='{"widget": "float", "precision": 2}' />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.area_3" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.area_4" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.area_5" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            
+                            <td style="text-align: center;max-width:200px">
+                                <span style="text-align: center;">
+                                     Load in, KN
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.load" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.load_2" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.load_3" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.load_4" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.load_5" />
+                                </span>									
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            
+                            <td style="text-align: center;max-width:200px">
+                                <span style="text-align: center;">
+                                     Compressive strength,  MPa
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.comp_strength_1" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.comp_strength_2" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.comp_strength_3" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.comp_strength_4" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.comp_strength_5" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+                            
+                        </tr>
+                    </tbody>
+				
+				</table>
+                <table style="margin-top: 20px">
+					<tr>
+						<td style="font-weight: bold;">Average Compressive Strength.N/mm²</td>
+						<td style="text-align: center;"><span t-field="data.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+				</table>	
+			</div>
+
+                 <!-- Visual Observation -->
+
+            <div t-if="data.efflorescence_visible" style="margin-top:20px">
+				<div style="text-align:center;font-size:18px;font-weight: bold">
+						Efflorescence
+                         <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+				</div>
+                <table style="margin-top:30px;">
+                
+                    <thead>
+                        <tr>
+                            
+                            <th style="text-align: center;max-width:200px">
+                                <span style="font-weight: bold;">
+                                    Sr.No
+                                </span>
+                            </th>
+                            <th style="text-align: center;max-width:100px">
+                                <span style="font-weight: bold;">
+                                     1 Observation
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     2 Observation
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     3 Observation
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     4 Observation
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     5 Observation
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            
+                            <td style="text-align: center;max-width:200px">
+                                <span style="text-align: center;">
+                                    
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.visual_observation_1" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.visual_observation_2" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.visual_observation_3" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.visual_observation_4" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.visual_observation_5" />
+                                </span>									
+                            </td>
+                            
+                        </tr>
+                    </tbody>
+				
+				</table>	
+			</div>
+
+                <!-- Dimension -->
+
+            <div t-if="data.dimension_visible" style="margin-top:20px">
+				<div style="text-align:center;font-size:18px;font-weight: bold">
+						Dimension (mm) 
+                        <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','125478bvf3-8d5d-4f45-8afb-b911f9cafe41')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+
+				</div>
+                <div style="text-align:center;font-size:18px;font-weight: bold">
+                        20 Bricks 
+				</div>
+                <table style="margin-top:30px;">
+                
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;max-width:200px">
+                                <span style="font-weight: bold;">
+                                    Sr.No
+                                </span>
+                            </th>
+                            <th style="text-align: center;max-width:100px">
+                                <span style="font-weight: bold;">
+                                     Length in mm
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     Width in mm
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     Height in mm
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            
+                            <td style="text-align: center;max-width:200px">
+                                <span style="text-align: center;">
+                                    1
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.avrg_length" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.avrg_width" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.avrg_height" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+                        </tr>
+                    </tbody>
+				
+				</table>	
+			</div>
+
+                <!-- Water Absorption 					 -->
+
+            <div t-if="data.water_absorbtion_visible" style="margin-top:20px">
+				<div style="text-align:center;font-size:18px;font-weight: bold">
+						Water Absorption
+                        <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+				</div>
+                <table style="margin-top:30px;">
+                
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;max-width:200px">
+                                <span style="font-weight: bold;">
+                                    
+                                </span>
+                            </th>
+                            <th style="text-align: center;max-width:100px">
+                                <span style="font-weight: bold;">
+                                     Sample 1
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     Sample 2
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     Sample 3
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     Sample 4
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     Sample 5
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            
+                            <td style="text-align: center;max-width:200px">
+                                <span style="text-align: center;">
+                                    Initial wt ater 24 hr emersion water (W1)
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.initial_wt" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.initial_wt_2" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.initial_wt_3" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.initial_wt_4" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.initial_wt_5" />
+                                </span>									
+                            </td>
+                        </tr>
+                        <tr>
+                            
+                            <td style="text-align: center;max-width:200px">
+                                <span style="text-align: center;">
+                                    Final wt after 24 hr oven (W2)
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.final_wt" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.final_wt_2" />
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.final_wt_3" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.final_wt_4" />
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.final_wt_5" />
+                                </span>									
+                            </td>
+                        </tr>
+
+                        <tr>
+                            
+                            <td style="text-align: center;max-width:200px">
+                                <span style="text-align: center;">
+                                    Water Absorption, % = [(W1-W2)/W2 * 100]
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.water_absorption_2" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.water_absorption_3" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.water_absorption_4" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.water_absorption_5" t-options='{"widget": "float", "precision": 2}'/>
+                                </span>									
+                            </td>
+                        </tr>
+                    </tbody>
+				
+				</table>
+                <table style="margin-top: 20px">
+					<tr>
+						<td style="font-weight: bold;">Average Water Absorption, %</td>
+						<td style="text-align: center;"><span t-field="data.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+				</table>	
+			</div>
+                
+				<!-- authorizeRowDataSheet -->
+				
+			
+            <div class="authorizeRowDataSheet">
+                <div>
+                    <div>
+                        <b>
+                            Tested By 
+                        </b>
+                        
+                    </div>
+                    <div style="height:40px">
+
+                    </div>
+                    <div>
+                        <b>
+                        <span t-esc="eln.sample_id.filled_by.name"/>
+                        </b>
+                    </div>
+                    <div>
+                        <b>
+                            (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                        </b>
+                    </div>
+                </div>
+                <div style="margin-left:500px">
+                    
+                    <div>
+                        <b>
+                            Checked By
+                        </b>
+                    </div>
+                    <div style="height:40px">
+
+                    </div>
+                    <div>
+                        <b>
+                        <span t-esc="eln.sample_id.check_by.name"/>
+                        </b>
+                    </div>
+                    
+                    <div>
+                        <b>
+                            (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                        </b>
+                    </div>
+                </div>
+            </div>
+
+		</div>
+
+	</t>
+</t>
+</template>
+</odoo>

@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="particle_board_datasheet1">
+        <t t-call="web.html_container">
+            <t t-call="lerm_civil.mechanical_data_sheet_header">
+        
+                <div style="text-align:center;font-size:18px;font-weight: bold">
+                 Particle Board DataSheet
+                </div>
+
+                <div class="container_eln" style="margin-top:5px">
+                    <table style="margin-top:20px">
+                        <tr cols="12">
+                            
+                            <td colspan="6">Job No :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.kes_no"></span>
+                            </td>
+                            <td colspan="6">Test Start Date: 
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.start_date"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            </td>
+                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                            </td>
+                        </tr>
+
+                          <tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.technician.name"/>
+								</td>
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+                    </table>
+
+                       <!-- Dimension  -->
+                    
+                    <div t-if="data.dimensions_particle_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1254lku-47c9-4662-9298-3095ac900ffc')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1254lku-47c9-4662-9298-3095ac900ffc')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td >Sr no 
+							</td>
+
+							<td  style="text-align:center;">Length, mm
+							</td>
+
+                            <td  style="text-align:center;">Width, mm
+							</td>
+                          
+                            <td  style="text-align:center;">Thickness, mm
+							</td>
+
+                            <td  style="text-align:center;">Squareness, mm
+							</td>
+
+                            <td  style="text-align:center;">Edge Straightness, mm
+							</td>
+                            
+						
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_dimensions_particle" t-as="r">
+							<td >
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['lenght']" />
+							</td>
+                            <td >
+								<span t-esc="r['width']" />
+							</td>
+                            <td >
+								<span t-esc="r['thickness']" />
+							</td>
+                            <td >
+								<span t-esc="r['squareness']" />
+							</td>
+
+                            <td >
+								<span t-esc="r['edge_straightness']" />
+							</td>
+                          
+
+							
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Length in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_length" t-options='{"widget": "float", "precision": 1}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Width in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_width" t-options='{"widget": "float", "precision": 3}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Thickness in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_thickness" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+
+
+                              <tr cols="12">
+                                <td colspan="6"><b>Average Squareness in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_squareness" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Edge Straightness in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_edge_straightness" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+                            </tr>
+                           
+                        </table>
+
+                       
+                    </div>
+
+
+                    <!--density  -->
+                    
+                <div t-if="data.density_moisture_particale_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','12547lut-b637-4eb2-8d5e-7c0483f3938c')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12547lut-b637-4eb2-8d5e-7c0483f3938c')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                   
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+
+							<td colspan="1" style="text-align:center;">Length
+							</td>
+
+                            <td colspan="1" style="text-align:center;">Width
+							</td>
+                            <td colspan="1" style="text-align:center;">Thickness
+							</td>
+                            <td colspan="1" style="text-align:center;">Initial Weight
+							</td>
+                            <td colspan="1" style="text-align:center;">Oven Dry Weight
+							</td>
+                            <td colspan="1" style="text-align:center;">Density
+							</td>
+                            <td colspan="1" style="text-align:center;">Moisture Content
+							</td>
+                          
+
+                         
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_density_moisture_particale" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['lenght']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['width']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['thickness']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['initial_weight']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['oven_dry_weight']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['density_particle']"  t-options='{"widget": "float", "precision": 3}'/>
+							</td>
+
+                             <td colspan="1">
+								<span t-esc="r['moisture_particle']"  t-options='{"widget": "float", "precision": 3}'/>
+							</td>
+                          
+                       
+                       
+							
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Density, g/cm3 :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_density_particle" t-options='{"widget": "float", "precision": 3}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+
+                           <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Moisture Content, % :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_moisture_particle" t-options='{"widget": "float", "precision": 1}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+                </div>
+
+
+                     <!--Water Absorption  -->
+                    
+                <div t-if="data.water_absorption_particle_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','23587lit9-a5c2-49e0-bf58-40a077b6f408')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23587lit9-a5c2-49e0-bf58-40a077b6f408')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                   
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+
+						
+                            <td colspan="1" style="text-align:center;">Initial Weight
+							</td>
+                            <td colspan="1" style="text-align:center;">Oven Dry Weight
+							</td>
+                            <td colspan="1" style="text-align:center;">Water Absorption
+							</td>
+                          
+
+                         
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_water_absorption_particle" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							
+                            <td colspan="1">
+								<span t-esc="r['initial_weight']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['oven_dry_weight']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['water_absorption_particle']"  t-options='{"widget": "float", "precision": 3}'/>
+							</td>
+                          
+                       
+                       
+							
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Water Absorption, % :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_water_absorption_particle" t-options='{"widget": "float", "precision": 1}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+                </div>
+
+
+
+     
+               
+                    
+                    <!-- authorizeRowDataSheet -->
+                    
+                   <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height:40px">
+
+                            </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+						<div style="margin-left:500px">
+							
+							<div>
+								<b>
+									Approved By
+								</b>
+							</div>
+							<div style="height:40px">
+
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+                    
+                </div>
+
+            </t>
+        </t>
+    </template>
+    </odoo>

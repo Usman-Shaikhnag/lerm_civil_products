@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="shuttering_plywood_datasheet1">
+        <t t-call="web.html_container">
+            <t t-call="lerm_civil.mechanical_data_sheet_header">
+        
+                <div style="text-align:center;font-size:18px;font-weight: bold">
+                 Shuttering Plywood DataSheet
+                </div>
+
+                <div class="container_eln" style="margin-top:5px">
+                    <table style="margin-top:20px">
+                        <tr cols="12">
+                            
+                            <td colspan="6">Job No :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.kes_no"></span>
+                            </td>
+                            <td colspan="6">Test Start Date: 
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.start_date"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            </td>
+                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                            </td>
+                        </tr>
+
+                          <tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.technician.name"/>
+								</td>
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+                    </table>
+
+                       <!-- Dimension  -->
+                    
+                    <div t-if="data.dimensions_shuttering_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','12578trew3-7a9c-4616-bad5-88eb1b2607456')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12578trew3-7a9c-4616-bad5-88eb1b2607456')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td >Sr no 
+							</td>
+
+							<td  style="text-align:center;">Length, mm
+							</td>
+
+                            <td  style="text-align:center;">Width, mm
+							</td>
+                          
+                            <td  style="text-align:center;">Thickness, mm
+							</td>
+
+                            <td  style="text-align:center;">Squareness, mm
+							</td>
+
+                            <td  style="text-align:center;">Edge Straightness, mm
+							</td>
+                            
+						
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_dimensions_shuttering" t-as="r">
+							<td >
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['lenght']" />
+							</td>
+                            <td >
+								<span t-esc="r['width']" />
+							</td>
+                            <td >
+								<span t-esc="r['thickness']" />
+							</td>
+                            <td >
+								<span t-esc="r['squareness']" />
+							</td>
+
+                            <td >
+								<span t-esc="r['edge_straightness']" />
+							</td>
+                          
+
+							
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Length in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_length" t-options='{"widget": "float", "precision": 1}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Width in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_width" t-options='{"widget": "float", "precision": 3}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Thickness in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_thickness" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+
+
+                              <tr cols="12">
+                                <td colspan="6"><b>Average Squareness in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_squareness" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Edge Straightness in mm:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_edge_straightness" t-options='{"widget": "float", "precision": 4}'/>
+                                </td>
+                            </tr>
+                           
+                        </table>
+
+                       
+                    </div>
+
+
+
+                     <!-- adhesion_plies_visible -->
+                    <div t-if="data.adhesion_plies_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','35478tyus14-7a9b-4616-bad5-88eb1b26070834')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','35478tyus14-7a9b-4616-bad5-88eb1b26070834')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                  
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Observation :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.adhesion_plies" />
+                                </td>
+                            </tr>
+                
+
+
+                     
+                        </table>
+
+                       
+                    </div>
+
+
+
+                          <!-- resistance_heat_visible -->
+                    <div t-if="data.resistance_heat_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','57896543fght-7a9b-4616-bad5-88eb1b260hj653')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','57896543fght-7a9b-4616-bad5-88eb1b260hj653')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                  
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Observation :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.resistance_heat" />
+                                </td>
+                            </tr>
+                
+
+
+                     
+                        </table>
+
+                       
+                    </div>
+
+
+
+                           <!-- water_resistance_visiblee -->
+                    <div t-if="data.water_resistance_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','12547gtre2-7a7n-4616-bad5-88eb1b260tr878ng')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12547gtre2-7a7n-4616-bad5-88eb1b260tr878ng')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                  
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Observation :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.water_resistance" />
+                                </td>
+                            </tr>
+                
+
+
+                     
+                        </table>
+
+                       
+                    </div>
+
+
+
+
+
+                   
+
+
+                    <!--density  -->
+                    
+                <div t-if="data.density_shuttering_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','124578gte-7a9c-4616-bad5-88eb1b29087y')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','124578gte-7a9c-4616-bad5-88eb1b29087y')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                   
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+
+							<td colspan="1" style="text-align:center;">Length
+							</td>
+
+                            <td colspan="1" style="text-align:center;">Width
+							</td>
+                            <td colspan="1" style="text-align:center;">Thickness
+							</td>
+                            <td colspan="1" style="text-align:center;">Initial Weight
+							</td>
+                            <td colspan="1" style="text-align:center;">Oven Dry Weight
+							</td>
+                            <td colspan="1" style="text-align:center;">Density
+							</td>
+                          
+
+                         
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_density_shuttering" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['lenght']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['width']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['thickness']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['initial_weight']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['oven_dry_weight']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['density_shuttering']"  t-options='{"widget": "float", "precision": 3}'/>
+							</td>
+                          
+                       
+                       
+							
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Density, g/cm3 :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_density_shuttering" t-options='{"widget": "float", "precision": 3}'/>
+                                </td>
+                            </tr>
+                          
+                           
+                        </table>
+                </div>
+
+
+     
+               
+                    
+                    <!-- authorizeRowDataSheet -->
+                    
+                   <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height:40px">
+
+                            </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+						<div style="margin-left:500px">
+							
+							<div>
+								<b>
+									Approved By
+								</b>
+							</div>
+							<div style="height:40px">
+
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+                    
+                </div>
+
+            </t>
+        </t>
+    </template>
+    </odoo>

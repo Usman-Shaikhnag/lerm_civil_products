@@ -1,0 +1,807 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="wbm_mech_datasheet1">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.data_sheet_header_generaltemplate">
+                <div style="text-align:center;font-size:18px">
+                    WBM
+                </div>
+				
+                <div class="container_eln" style="margin-top:5px">
+				<!-- Dry Gradation  -->
+				<div t-if="data.dry_gradation_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+						Dry Gradation
+						<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','4525465214-3497-4b7f-819a-a26f25c9848')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+						</span>
+					</div>
+					
+
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="1">Sr no 
+							</td>
+							<td colspan="3">IS Sieve Size
+							</td>
+							<td colspan="2">Wt. Retained in gms
+							</td>
+							<td colspan="2">% Retained
+							</td>
+							<td colspan="2">Cum. Retained %
+							</td>
+							<td colspan="2">Passing %
+							</td>
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.dry_gradation_table" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="3">
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['wt_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+					</table>
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Total :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.total_sieve_analysis" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+						
+					</table>
+
+				</div>
+
+				<!-- Elongation and Flakiness Index  -->
+				<div t-if="data.elongation_visible | data.flakiness_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+						Elongation and Flakiness Index
+						<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2103654tr-8125-4f5f-aa7c-f82d1416d5eb')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+						</span>
+					</div>
+					
+
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="2">Sr no 
+							</td>
+							<td colspan="3">IS Sieve Size
+							</td>
+							<td colspan="3">Wt. Retained in gms
+							</td>
+							<td colspan="2">Elongated Retained in gms
+							</td>
+							<td colspan="2">Flakiness Passing in gms
+							</td>
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.elongation_table" t-as="r">
+							<td colspan="2">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="3">
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td colspan="3">
+								<span t-esc="r['wt_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['elongated_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['flakiness_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>	
+							
+						</tr>
+					</table>
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Total :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.total_wt_retained_fl_el" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+                        <tr cols="12">
+							<td colspan="6">Total Wt Retained in gms :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.total_elongated_retained" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+                        <tr cols="12">
+							<td colspan="6">Total  Wt Passing in gms :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.total_flakiness_retained" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+
+						<tr cols="12">
+							<td colspan="6">Aggregate Elongation in % :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.aggregate_elongation" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+                        <tr cols="12">
+							<td colspan="6">Aggregate Flakiness in %:
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.aggregate_flakiness" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+                        <tr cols="12">
+							<td colspan="6">Aggregate Combined in %:
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.aggregate_combine" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+						
+					</table>
+
+				</div>
+
+
+
+         
+				<!-- Impact Value  -->
+				<div t-if="data.impact_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+						Impact Value
+						<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','gh124113-e282-488c-9dbb-16e9f14b065b')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+						</span>
+					</div>
+					
+
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="1">Sr no 
+							</td>
+							<td colspan="1">Weight of cylindrical measure in gms W1
+							</td>
+							<td colspan="2">Total Wt. of Oven dried (4 hrs) aggregate sample + cylindrical measure in gms W2
+							</td>
+							<td colspan="2">Total Wt. of Oven dried (4 hrs) aggregate sample filling the cylindrical measure in gms W3 = W2 - W1
+							</td>
+                            <td colspan="2">Wt. of aggregate passing 2.36 mm sieve after the test in gms  W4 
+							</td>
+							<td colspan="2">Wt. of aggregate retained on 2.36 mm sieve after the test in gms  W5 = W3 - W4
+							</td>
+							<td colspan="2">Impact value   =  (W4 / W3) * 100 
+							</td>
+
+							
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.impact_value_child_lines" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_cylinder']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['total_wt_of_dried']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['total_wt_aggregate']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                            <td colspan="2">
+								<span t-esc="r['wt_of_aggregate_passing']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['wt_of_aggregate_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['impact_value']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+							
+						</tr>
+					</table>
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Average Impact Value in % :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.average_impact_value" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+						
+					</table>
+
+				</div>
+
+                <!-- Abrasion Value  -->
+
+                <div t-if="data.abrasion_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Abrasion Value
+							<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','14257scf-9ee6-4115-a8db-015d7cb6d5c7')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+						</span>
+						</div>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Total weight of Sample in gms W1 :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.total_weight_sample_abrasion" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Weight of Passing sample in 1.70 mm IS sieve in gms  W2 :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.weight_passing_sample_abrasion" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Weight of Retain sample in 1.70 mm IS sieve in gms  W3 = W1 - W2 :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.weight_retain_sample_abrasion" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Abrasion Value  (W2/W1)*100  (%) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.abrasion_value_percentage" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+                            
+						</table>
+					</div>
+
+
+                <!-- Water Absorbtion  -->
+
+                <div t-if="data.water_absorbtion_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Water Absorbtion
+							<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','42135869f-6974-4a89-9a32-2375ca190815')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+						</span>
+						</div>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Weight of saturated surface dry (SSD) sample in air in gms, A :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_ssd_sample" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Oven dried weight of sample in gms, B :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.oven_dried_wt" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Water absorption  ((A - B) / B) * 100  % :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.water_absorbtion" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+                            
+                            
+						</table>
+					</div>
+
+
+
+                <!-- Liquid Limit -->
+				<div t-if="data.liquid_limit_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+						Liquid Limit
+						<!-- added -->
+						<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','321045gtr-d02d-43fd-b4a7-dd5a6c6cd36e')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+						</span>
+					</div>
+					
+
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="1">Container No.
+							</td>
+							<td colspan="1">No of Blows
+							</td>
+							<td colspan="1">Mass of wet sample+container, (M1) in gms
+							</td>
+                            <td colspan="1">Mass of dry sample+container, (M2) in gms
+							</td>
+							<td colspan="2">Mass of container, (M3) in gms
+							</td>
+							<td colspan="2">Mass of Moisture, (M1-M2) in gms
+							</td>
+                            <td colspan="2">Mass of dry sample, (M2-M3) in gms
+							</td>
+                            <td colspan="2">% Moisture
+							</td>
+
+							
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.liquid_limit_table" t-as="r">
+							<td colspan="1">
+								<span t-esc="r['container_no']"/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['blows']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['mass_wet_sample_container']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['mass_dry_sample_container']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                            <td colspan="2">
+								<span t-esc="r['mass_container']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['mass_moisture']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['mass_dry_sample']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['moisture_percent']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+					</table>
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Liquid Limit % :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.liquid_limit" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+                        <tr cols="12">
+							<td colspan="6">Remarks :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.remarks_liquid_limit" />
+							</td>
+							
+						</tr>
+						
+					</table>
+
+				</div>
+
+                <!-- Plastic Limit  -->
+
+                <div t-if="data.plastic_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+						Plastic Limit
+						<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','124578fgh-d228-42f5-9927-69ca7dadbcee')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+						</span>
+					</div>
+					
+
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="1">Container No.
+							</td>
+							<td colspan="1">Mass of wet sample+container, (M1) in gms
+							</td>
+                            <td colspan="2">Mass of dry sample+container, (M2) in gms
+							</td>
+							<td colspan="2">Mass of container, (M3) in gms
+							</td>
+							<td colspan="2">Mass of Moisture, (M1-M2) in gms
+							</td>
+                            <td colspan="2">Mass of dry sample, (M2-M3) in gms
+							</td>
+                            <td colspan="2">% Moisture
+							</td>
+
+							
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.plastic_table" t-as="r">
+							<td colspan="1">
+								<span t-esc="r['container_no']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['mass_wet_sample_container']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['mass_dry_sample_container']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                            <td colspan="2">
+								<span t-esc="r['mass_container']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['mass_moisture']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['mass_dry_sample']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['moisture_percent']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+					</table>
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">	Plastic Limit % :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.average_plastic_moisture" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+                        <tr cols="12">
+							<td colspan="6">Remarks :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.remarks_plastic"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+
+				</div>
+
+                <!-- Plasticity Index  -->
+
+                <div t-if="data.plasticity_index_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+						Plasticity Index
+						<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2124578s-0d26-4a6c-8bff-0269dde01d2a')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+						</span>
+					</div>
+					
+
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Plasticity Index =  Liquid Limit - 	Plastic Limit  :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.plasticity_index" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+                        
+					</table>
+
+				</div>
+
+                <!-- Density Relation Using Heavy Compaction  -->
+
+                <div t-if="data.density_relation_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+						Density Relation Using Heavy Compaction
+						<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','214587-b50a-42ec-8489-75e615e51466')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+						</span>
+					</div>
+
+                    <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Weight of Mould in gm (A):
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.wt_of_modul" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+                        <tr cols="12">
+							<td colspan="6">Volume of Mould in cc (B):
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.vl_of_modul" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+						
+					</table>
+					
+
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="1">Determination No.
+							</td>
+							<td colspan="1">Weight of Mould + Compacted sample in gm (C)
+							</td>
+                            <td colspan="1">Weight of compacted sample in gm (D) C-A
+							</td>
+							<td colspan="1">Bulk Density of sample in gm/cc (E) D/B
+							</td>
+							<td colspan="1">Container No
+							</td>
+                            <td colspan="1">Weight of Container in gm (F)
+							</td>
+                            <td colspan="1">Weight of Container + wet sample in gm (G)
+							</td>
+                            <td colspan="1">Weight of Container + dry sample in gm (H)
+							</td>
+							<td colspan="1">Weight of dry sample in gm (I)
+							</td>
+							<td colspan="1">Weight of moisture in gm (J) G-H
+							</td>
+                            <td colspan="1">% Moisture (K) J/I*100
+							</td>
+                            <td colspan="1">Dry density in gm/cc (100*E)/(100+K)
+							</td>
+
+							
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.density_relation_table" t-as="r">
+							<td colspan="1">
+								<span t-esc="r['determination_no']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_modul_compact']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_compact']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['bulk_density']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['container_no']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_container']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_container_wet']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['wt_of_container_dry']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['wt_of_dry_sample']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_moisture']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['moisture']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['dry_density']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+						</tr>
+					</table>
+					<div t-if="data.chart_image_density" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.chart_image_density.decode('utf-8')" style="max-width: 100%;"/>
+                    </div>
+
+				</div>
+
+
+                <!-- CBR  -->
+                <div t-if="data.cbr_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+						CBR
+						<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','24576hh-6461-4137-ba6a-381d0229b973')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+						</span>
+					</div>
+					
+
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="2">Sr no 
+							</td>
+							<td colspan="4">Penetration in mm
+							</td>
+							<td colspan="3">Proving Ring Reading
+							</td>
+							<td colspan="3">Load in Kg
+							</td>
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.cbr_table" t-as="r">
+							<td colspan="2">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="4">
+								<span t-esc="r['penetration']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="3">
+								<span t-esc="r['proving_reading']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="3">
+								<span t-esc="r['load']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>	
+							
+						</tr>
+					</table>
+					<div t-if="data.chart_image_cbr" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.chart_image_cbr.decode('utf-8')" style="max-width: 100%;"/>
+                    </div>
+
+				</div>
+				</div>
+
+				    <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height:40px">
+
+                            </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+						<div style="margin-left:500px">
+							
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height:40px">
+
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+			</t>
+		</t>
+	</template>
+</odoo>

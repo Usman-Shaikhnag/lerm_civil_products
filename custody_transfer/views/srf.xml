@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="lerm_civil_srf_form_custody_inherited" model="ir.ui.view">
+        <field name="name">lerm.civil.srf.custody.form</field>
+        <field name="model">lerm.civil.srf</field>
+        <field name="inherit_id" ref="lerm_civil.lerm_civil_srf_form" />
+        <field name="arch" type="xml">
+
+                    <xpath expr="//field[@name='client_refrence']" position="after">
+                            <field name="document_origin" readonly="1" invisible="1"/>
+                            <field name="collection_order" attrs="{'invisible': [('document_origin', '!=', 'custody_transfer')]}" />
+                    </xpath>
+                   
+        </field>
+    </record>
+</odoo>

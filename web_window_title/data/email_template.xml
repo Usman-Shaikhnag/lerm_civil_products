@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="message_notification_email_inherit" inherit_id="mail.message_notification_email">
+
+            <xpath expr="//div/p" position="replace">
+
+                <p style="color: #555555; margin-top:32px;">
+    Sent
+                    <span t-if="company.name">
+    by
+                        <a style="text-decoration:none; color: #875A7B;" t-att-href="website_url" t-if="website_url">
+                            <span t-esc="company.name"/>
+                        </a>
+                        <span t-esc="company.name" t-if="not website_url"/>
+                    </span>
+    using
+                    <a href="https://www.esehat.org/lerm-laboratory-enterprise-resource-management" style="text-decoration:none; color: #875A7B;" target="_blank">LERM</a>.
+                </p>
+            </xpath>
+
+        </template>
+
+
+</data>
+</odoo>

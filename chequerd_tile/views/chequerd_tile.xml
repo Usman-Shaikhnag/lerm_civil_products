@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+
+         <!-- Action -->
+    <record id="action_chequerd_tile" model="ir.actions.act_window">
+        <field name="name">Chequered Tile</field>
+        <field name="res_model">mechanical.chequered.tiles</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new customer time entry.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_chequerd_tile_root" name="Chequerd Tile" sequence="10" />
+    <menuitem id="menu_chequerd_tile" name="Chequerd Tile Entry" parent="menu_chequerd_tile_root" action="action_chequerd_tile" sequence="10" />
+
+        <record id="mechanical_cheequered_tile_view" model="ir.ui.view">
+        <field name="name">mechanical.chequered.tiles.form</field>
+        <field name="model">mechanical.chequered.tiles</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                   <group >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                         <field name="grade" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                   
+       
+
+                    <group attrs="{'invisible': [('chequered_tiles_visible', '=', False)]}">
+                        <h1>
+                            <field name="chequered_tiles_name1" readonly="1" nolabel="1"/>
+                            <field name="chequered_tiles_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <group attrs="{'invisible': [('chequered_tiles_visible', '=', False)]}">
+                        <field name="chequered_tiles_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='flatness1'/>
+                                <field name='flatness2'/>
+                                <field name='flatness3'/>
+                                <field name='flatness4'/>
+
+                                <field name='perpendicularity1'/>
+                                <field name='perpendicularity2'/>
+                                <field name='perpendicularity3'/>
+                                <field name='perpendicularity4'/>
+
+                                <field name='straightness1'/>
+                                <field name='straightness2'/>
+                                <field name='straightness3'/>
+                                <field name='straightness4'/>
+                              
+                                
+                            </tree>
+                           
+                         </field> 
+                           
+                       
+                    </group>
+
+                    <group attrs="{'invisible': [('chequered_tiles_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='average_flatness' col="4"/>
+                        <field name='average_perpendicularity'  col="4"/> 
+                        <field name='average_straightness' col="4"/>
+                    </group>
+
+                     <group attrs="{'invisible': [('chequered_tiles_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='deviation_flatness' col="4"/>
+                        <field name='deviation_perpendicularity'  col="4"/> 
+                        <field name='deviation_length_straightness' col="4"/>
+                         
+                    </group>
+
+                      <group>
+                      <group style="width:25%" attrs="{'invisible': [('chequered_tiles_visible', '=', False)]}">
+                                <field name='average_flatness_conformity'
+                                       decoration-success="average_flatness_conformity == 'pass'" 
+                                       decoration-danger="average_flatness_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('chequered_tiles_visible', '=', False)]}">
+                                <field name="average_flatness_nabl"
+                                       decoration-success="average_flatness_nabl == 'pass'" 
+                                       decoration-danger="average_flatness_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+
+
+                             <group style="width:25%" attrs="{'invisible': [('chequered_tiles_visible', '=', False)]}">
+                                <field name='average_perpendicularity_conformity'
+                                       decoration-success="average_perpendicularity_conformity == 'pass'" 
+                                       decoration-danger="average_perpendicularity_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('chequered_tiles_visible', '=', False)]}">
+                                <field name="average_perpendicularity_nabl"
+                                       decoration-success="average_perpendicularity_nabl == 'pass'" 
+                                       decoration-danger="average_perpendicularity_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+                   <group>
+                        <group style="width:25%" attrs="{'invisible': [('chequered_tiles_visible', '=', False)]}">
+                                <field name='average_straightness_conformity'
+                                       decoration-success="average_straightness_conformity == 'pass'" 
+                                       decoration-danger="average_straightness_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('chequered_tiles_visible', '=', False)]}">
+                                <field name="average_straightness_nabl"
+                                       decoration-success="average_straightness_nabl == 'pass'" 
+                                       decoration-danger="average_straightness_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+                            
+
+
+
+
+                       <group attrs="{'invisible': [('chequered_water_absorption_visible', '=', False)]}">
+                        <h1>
+                            <field name="chequered_water_absorption_name1" readonly="1" nolabel="1"/>
+                            <field name="chequered_water_absorption_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <group attrs="{'invisible': [('chequered_water_absorption_visible', '=', False)]}">
+                        <field name="chequered_water_absorption_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='mass_of_saturated'/>
+                                <field name='mass_of_oven'/>
+                                <field name='water_absorption'/>
+
+                                
+                            </tree>
+                           
+                         </field> 
+                           
+                       
+                    </group>
+
+                    <group attrs="{'invisible': [('chequered_water_absorption_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='average_water_absorption' col="4"/>
+                       
+                    </group>
+                     <group>
+                       <group style="width:25%" attrs="{'invisible': [('chequered_water_absorption_visible', '=', False)]}">
+                                <field name='average_water_absorption_conformity'
+                                       decoration-success="average_water_absorption_conformity == 'pass'" 
+                                       decoration-danger="average_water_absorption_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('chequered_water_absorption_visible', '=', False)]}">
+                                <field name="average_water_absorption_nabl"
+                                       decoration-success="average_water_absorption_nabl == 'pass'" 
+                                       decoration-danger="average_water_absorption_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+
+                       <group attrs="{'invisible': [('chequeredwet_transver_visible', '=', False)]}">
+                        <h1>
+                            <field name="chequeredwet_transver_name1" readonly="1" nolabel="1"/>
+                            <field name="chequeredwet_transver_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <group attrs="{'invisible': [('chequeredwet_transver_visible', '=', False)]}">
+                        <field name="chequered_wet_transver_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='width_b'/>
+                                <field name='span_between'/>
+                                <field name='fracture_thicness'/>
+                                <field name='breaking_load'/>
+                                <field name='wet_transver'/>
+                              
+                                
+                            </tree>
+                           
+                         </field> 
+                           
+                       
+                    </group>
+
+                    <group attrs="{'invisible': [('chequeredwet_transver_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='average_wet_transver' col="4"/>
+                       
+                    </group>
+
+                    <group>
+                      <group style="width:25%" attrs="{'invisible': [('chequeredwet_transver_visible', '=', False)]}">
+                                <field name='average_wet_transver_conformity'
+                                       decoration-success="average_wet_transver_conformity == 'pass'" 
+                                       decoration-danger="average_wet_transver_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('chequeredwet_transver_visible', '=', False)]}">
+                                <field name="average_wet_transver_nabl"
+                                       decoration-success="average_wet_transver_nabl == 'pass'" 
+                                       decoration-danger="average_wet_transver_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                     </group>
+
+
+
+
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+                     
+
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

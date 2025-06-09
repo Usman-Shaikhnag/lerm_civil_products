@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_aac_block_form1" model="ir.ui.view">
+        <field name="name">mechanical.aac.block1.form</field>
+        <field name="model">mechanical.aac.block1</field>
+        <field name="arch" type="xml">
+            <form>
+
+                  
+                <sheet>
+
+                <group >
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade"/>
+
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                    
+                    <!-- Dimension -->
+
+                    <group attrs="{'invisible': [('dimension_visible', '=', False)]}">
+                        <h1>
+                            <field name="dimension_name" readonly="1" nolabel="1"/>
+                            <field name="dimension_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('dimension_visible', '=', False)]}">
+                        <field name="dimension_table" nolabel="1" style="width:70%">
+                        <tree editable="bottom">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="height"/>
+                        </tree>
+                        </field>
+                    </group>
+                    <group attrs="{'invisible': [('dimension_visible', '=', False)]}">
+                        <group style="width:33%">
+                            <field name="average_length"/>
+                        
+                            <field name="average_width"/>
+                        
+                            <field name="average_height"/>
+                        </group>
+                    </group>
+
+
+                    <group attrs="{'invisible': [('dimension_visible', '=', False)]}">
+                        <group style="white-space: nowrap; width:70%;">
+                            <field name="length_grade1"/>
+                             <field name="length_grade2"/>
+                    
+                        </group>
+
+                           <group  style="white-space: nowrap; width:70%;">
+                            <field name="width_grade1"/>
+                             <field name="width_grade2"/>
+                    
+                        </group>
+
+                         <group style="white-space: nowrap; width:70%;">
+                            <field name="height_grade1"/>
+                             <field name="height_grade2"/>
+                    
+                        </group>
+                    </group>
+                    
+                    
+
+                    <!-- Moisture Content  -->
+
+                    <group attrs="{'invisible': [('moisture_visible', '=', False)]}">
+                        <h1>
+                            <field name="moisture_name" readonly="1" nolabel="1"/>
+                            <field name="moisture_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('moisture_visible', '=', False)]}" style="width:75%">
+                        <field name="moisture_content_table" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="wt_sample"/>
+                          <field name="oven_wt"/>
+                          <field name="moisture_content"/>
+                        </tree>
+                        </field>
+                    </group>
+                    <group attrs="{'invisible': [('moisture_visible', '=', False)]}">
+                        <group style="width:33%">
+                            <field name="average_moisture_content"/>
+                        
+                            <field name="moisture_confirmity"/>
+                        
+                            <field name="moisture_nabl"/>
+                        </group>
+                    </group>
+
+                    <group attrs="{'invisible': [('moisture_visible', '=', False)]}">
+                        <group style="white-space: nowrap; width:70%;">
+                            <field name="moisture_grade1"/>
+                             <field name="moisture_grade2"/>
+                    
+                        </group>
+
+                          
+                    </group>
+
+                     
+
+                    <!-- Block Density  -->
+                    <group attrs="{'invisible': [('density_visible', '=', False)]}">
+                        <h1>
+                            <field name="density_name" readonly="1" nolabel="1"/>
+                            <field name="density_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('density_visible', '=', False)]}">
+                        <field name="density_unit"/>
+                    </group>
+                    
+                    <group attrs="{'invisible': [('density_visible', '=', False)]}">
+                        <field name="density_table" style="width:90%" nolabel="1">
+                        <tree>
+                          <field name="length" widget="textarea" options="{'style': 'height: 60px:'}"/>
+                          <field name="width" style="white-space:nowrap; width:50px"/>
+                          <field name="height"/>
+                          <field name="volume" />
+                          <field name="wt_sample" style="white-space:nowrap; width:50px"/>
+                          <field name="density"/>
+                        </tree>
+                        </field>
+                    </group>
+                    <group attrs="{'invisible': [('density_visible', '=', False)]}">
+                        <group style="width:33%">
+                            <field name="average_density"/>
+                       
+                            <field name="density_confirmity"/>
+                      
+                            <field name="density_nabl"/>
+                        </group>
+                    </group>
+                    <group attrs="{'invisible': [('moisture_visible', '=', False)]}">
+                        <group style="white-space: nowrap; width:70%;">
+                            <field name="density_grade1"/>
+                             <field name="density_grade2"/>
+                    
+                        </group>
+
+                          
+                    </group>
+
+                    <!-- Drying Shrinkage  -->
+                    <group attrs="{'invisible': [('drying_shrinkage_visible', '=', False)]}">
+                        <h1>
+                            <field name="drying_shrinkage_name" readonly="1" nolabel="1"/>
+                            <field name="drying_shrinkage_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('drying_shrinkage_visible', '=', False)]}">
+                        <field name="drying_shrinkage_table" nolabel="1">
+                        <tree editable="bottom">
+                          <field name="length"/>
+                          <field name="initial_length"/>
+                          <field name="final_length"/>
+                          <field name="change_length"/>
+                          <field name="drying_shrinkage"/>
+                        </tree>
+                        </field>
+                    </group>
+                    <group attrs="{'invisible': [('drying_shrinkage_visible', '=', False)]}">
+                        <group style="width:33%">
+                            <field name="average_drying_shrinkage"/>
+                        
+                            <field name="drying_shrinkage_confirmity"/>
+                       
+                            <field name="drying_shrinkage_aac_nabl"/>
+                        </group>
+
+                    </group>
+
+                     <group attrs="{'invisible': [('drying_shrinkage_visible', '=', False)]}">
+                        <group style="white-space: nowrap; width:70%;">
+                            <field name="drying_grade1"/>
+                             <field name="drying_grade2"/>
+                    
+                        </group>
+                    </group>
+                    
+
+                <!-- Compressive Strength -->
+
+                <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <h1>
+                            <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_strength_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <field name="compressive_strength_table" nolabel="1" style="width:70%">
+                        <tree editable="bottom">
+                          <field name="crosssectional_area"/>
+                          <field name="aac_load"/>
+                          <field name="compressive_strength"/>
+                        </tree>
+                        </field>
+                    </group>
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <group style="width:33%">
+                            <field name="average_compressive_strength"/>
+                        
+                            <field name="compressive_strength_confirmity"/>
+                       
+                            <field name="compressive_strength_nabl"/>
+                           
+                        </group>
+                 
+                    </group>
+                    <group attrs="{'invisible': [('drying_shrinkage_visible', '=', False)]}">
+                        <group style="white-space: nowrap; width:70%;">
+                            <field name="compressive_grade1"/>
+                             <field name="compressive_grade2"/>
+                    
+                        </group>
+                    </group>
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+
+       
+    </data>
+</odoo>

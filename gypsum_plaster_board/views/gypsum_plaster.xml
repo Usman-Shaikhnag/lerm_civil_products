@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_gupsum_plaster_board1" model="ir.ui.view">
+        <field name="name">mechanical.gypsum.plaster1.form</field>
+        <field name="model">mechanical.gypsum.plaster1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                   <group >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                         <field name="grade" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                   
+       
+
+
+
+                    <!--  density -->
+
+                       <group attrs="{'invisible': [('density_visible', '=', False)]}">
+                        <h1>
+                            <field name="density_name" readonly="1" nolabel="1"/>
+                            <field name="density_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+               
+
+
+                       <group attrs="{'invisible': [('density_visible', '=', False)]}">
+                        <field name="child_lines_density" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='lenght'/>
+                                <field name='width'/>
+                                <field name='thickness'/>
+                                <field name='initial_weight'/>
+                                   <field name='oven_dry_weight'/>
+                                <field name='density'/>
+                
+                            </tree>
+                           
+                         </field> 
+                           
+                       
+                    </group>
+
+                    <group attrs="{'invisible': [('density_visible', '=', False)]}"  style="white-space: nowrap; width:70%;">
+                        <field name='average_density' col="4"/>
+                       
+                    </group>
+
+                       <group attrs="{'invisible': [('density_visible', '=', False)]}"  style="white-space: nowrap; width:70%;">
+                        <field name='requirement_density' col="4"/>
+                       
+                    </group>
+
+                    <group attrs="{'invisible': [('density_visible', '=', False)]}">
+
+                     <group style="width:25%" attrs="{'invisible': [('density_visible', '=', False)]}">
+                                <field name='average_density_conformity'
+                                       decoration-success="average_density_conformity == 'pass'" 
+                                       decoration-danger="average_density_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('density_visible', '=', False)]}">
+                                <field name="average_density_nabl"
+                                       decoration-success="average_density_nabl == 'pass'" 
+                                       decoration-danger="average_density_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+
+                          <!-- water absorption-->
+
+                       <group attrs="{'invisible': [('water_absorption_visible', '=', False)]}">
+                        <h1>
+                            <field name="water_absorption_name" readonly="1" nolabel="1"/>
+                            <field name="water_absorption_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+               
+
+
+                       <group attrs="{'invisible': [('water_absorption_visible', '=', False)]}">
+                        <field name="child_lines_water_absorption" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='initial_weight'/>
+                                <field name='oven_dry_weight'/>
+                                <field name='water_absorption'/>
+                              
+                
+                            </tree>
+                           
+                         </field> 
+                           
+                       
+                    </group>
+
+                    <group attrs="{'invisible': [('water_absorption_visible', '=', False)]}"  style="white-space: nowrap; width:70%;">
+                        <field name='average_water_absorption' col="4"/>
+                       
+                    </group>
+
+                       <group attrs="{'invisible': [('water_absorption_visible', '=', False)]}"  style="white-space: nowrap; width:70%;">
+                        <field name='requirement_water_absorption' col="4"/>
+                       
+                    </group>
+
+                    <group attrs="{'invisible': [('water_absorption_visible', '=', False)]}">
+
+                     <group style="width:25%" attrs="{'invisible': [('water_absorption_visible', '=', False)]}">
+                                <field name='average_water_absorption_conformity'
+                                       decoration-success="average_water_absorption_conformity == 'pass'" 
+                                       decoration-danger="average_water_absorption_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('water_absorption_visible', '=', False)]}">
+                                <field name="average_water_absorption_nabl"
+                                       decoration-success="average_water_absorption_nabl == 'pass'" 
+                                       decoration-danger="average_water_absorption_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+
+                          <!-- Flexural Breaking Load in Tranverse Direction-->
+
+                       <group attrs="{'invisible': [('flexural_tranverse_visible', '=', False)]}">
+                        <h1>
+                            <field name="flexural_tranverse_name" readonly="1" nolabel="1"/>
+                            <field name="flexural_tranverse_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+               
+
+
+                       <group attrs="{'invisible': [('flexural_tranverse_visible', '=', False)]}">
+                        <field name="child_lines_flexural_tranverse" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='lenght'/>
+                                <field name='width'/>
+                                <field name='thickness'/>
+                                   <field name='flexural_tranverse'/>
+                              
+                
+                            </tree>
+                           
+                         </field> 
+                           
+                       
+                    </group>
+
+                    <group attrs="{'invisible': [('flexural_tranverse_visible', '=', False)]}"  style="white-space: nowrap; width:70%;">
+                        <field name='average_flexural_tranverse' col="4"/>
+                       
+                    </group>
+
+                       <group attrs="{'invisible': [('flexural_tranverse_visible', '=', False)]}"  style="white-space: nowrap; width:70%;">
+                        <field name='requirement_flexural_tranverse' col="4"/>
+                       
+                    </group>
+
+                    <group attrs="{'invisible': [('flexural_tranverse_visible', '=', False)]}">
+
+                     <group style="width:25%" attrs="{'invisible': [('flexural_tranverse_visible', '=', False)]}">
+                                <field name='average_flexural_tranverse_conformity'
+                                       decoration-success="average_flexural_tranverse_conformity == 'pass'" 
+                                       decoration-danger="average_flexural_tranverse_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('flexural_tranverse_visible', '=', False)]}">
+                                <field name="average_flexural_tranverse_nabl"
+                                       decoration-success="average_flexural_tranverse_nabl == 'pass'" 
+                                       decoration-danger="average_flexural_tranverse_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+
+
+                          <!-- Flexural Breaking Load in Longitudinal Direction-->
+
+                       <group attrs="{'invisible': [('flexural_longitudinal_visible', '=', False)]}">
+                        <h1>
+                            <field name="flexural_longitudinal_name" readonly="1" nolabel="1"/>
+                            <field name="flexural_longitudinal_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+               
+
+
+                       <group attrs="{'invisible': [('flexural_longitudinal_visible', '=', False)]}">
+                        <field name="child_lines_flexural_longitudinal" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='lenght'/>
+                                <field name='width'/>
+                                <field name='thickness'/>
+                                   <field name='flexural_longitudinal'/>
+                              
+                
+                            </tree>
+                           
+                         </field> 
+                           
+                       
+                    </group>
+
+                    <group attrs="{'invisible': [('flexural_longitudinal_visible', '=', False)]}"  style="white-space: nowrap; width:70%;">
+                        <field name='average_flexural_longitudinal' col="4"/>
+                       
+                    </group>
+
+                       <group attrs="{'invisible': [('flexural_longitudinal_visible', '=', False)]}"  style="white-space: nowrap; width:70%;">
+                        <field name='requirement_flexural_longitudinal' col="4"/>
+                       
+                    </group>
+
+                    <group attrs="{'invisible': [('flexural_longitudinal_visible', '=', False)]}">
+
+                     <group style="width:25%" attrs="{'invisible': [('flexural_longitudinal_visible', '=', False)]}">
+                                <field name='average_flexural_longitudinal_conformity'
+                                       decoration-success="average_flexural_longitudinal_conformity == 'pass'" 
+                                       decoration-danger="average_flexural_longitudinal_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('flexural_longitudinal_visible', '=', False)]}">
+                                <field name="average_flexural_longitudinal_nabl"
+                                       decoration-success="average_flexural_longitudinal_nabl == 'pass'" 
+                                       decoration-danger="average_flexural_longitudinal_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+
+
+
+   
+
+
+
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+                     
+
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

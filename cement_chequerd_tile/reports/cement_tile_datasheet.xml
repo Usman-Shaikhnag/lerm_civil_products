@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="cement_tile_chequred_datasheet1">
+        <t t-call="web.html_container">
+            <t t-call="lerm_civil.mechanical_data_sheet_header">
+        
+                <div style="text-align:center;font-size:18px;font-weight: bold">
+                     Cement Concrete flooring Tiles Datasheet
+                </div>
+
+                <div class="container_eln" style="margin-top:5px">
+                    <table style="margin-top:20px">
+                        <tr cols="12">
+                            
+                            <td colspan="6">Job No :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.kes_no"></span>
+                            </td>
+                            <td colspan="6">Test Start Date: 
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.start_date"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            </td>
+                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                            </td>
+                        </tr>
+
+                          <tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.technician.name"/>
+								</td>
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+                    </table>
+                    <!-- Dimension  -->
+                    
+                    <div t-if="data.chequered_tiles_cement_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','12578dfgr-a3df-4990-93d1-9904984644a3')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12578dfgr-a3df-4990-93d1-9904984644a3')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                    		<table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+
+							<td colspan="4" style="text-align:center;">Flatness (mm)
+							</td>
+
+                            <td colspan="4" style="text-align:center;">Perpendicularity (%)
+							</td>
+                          
+                            <td colspan="6" style="text-align:center;">Straightness (%)
+							</td>
+                            
+						
+						</tr>
+						<!-- <tr>
+
+							<td >
+							</td>
+							<td >
+							</td>
+                            <td >
+							</td>
+                            <td >
+							</td>
+							
+						</tr> -->
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.chequered_tiles_cement_lines" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['flatness1']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['flatness2']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['flatness3']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['flatness4']" />
+							</td>
+
+                            <td colspan="1">
+								<span t-esc="r['perpendicularity1']" />
+							</td>
+                             <td colspan="1">
+								<span t-esc="r['perpendicularity2']" />
+							</td>
+                             <td colspan="1">
+								<span t-esc="r['perpendicularity3']" />
+							</td>
+                             <td colspan="1">
+								<span t-esc="r['perpendicularity4']" />
+							</td>
+
+                              <td colspan="1">
+								<span t-esc="r['straightness1']" />
+							</td>
+                              <td colspan="1">
+								<span t-esc="r['straightness2']" />
+							</td>
+                              <td colspan="1">
+								<span t-esc="r['straightness3']" />
+							</td>
+                              <td colspan="1">
+								<span t-esc="r['straightness4']" />
+							</td>
+                             
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Flatness (mm) :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_cememt_flatness" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Perpendicularity (%) :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_cement_perpendicularity" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Straightness (%) :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_cement_straightness" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                           
+                        </table>
+
+                         <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Flatness,mm :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.deviation_cement_flatness" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Perpendicularity,% :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.deviation_cement_perpendicularity" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                            <tr cols="12">
+                                <td colspan="6"><b>Straightness,% :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.deviation_cement_straightness" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                           
+                        </table>
+
+                     
+                    </div>
+
+
+                     <!--water absorption   -->
+                    
+                <div t-if="data.chequered_cement_water_absorption_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                   
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+
+							<td colspan="1" style="text-align:center;">Mass of saturated Specimen in gm-M1
+							</td>
+
+                            <td colspan="1" style="text-align:center;">Mass of oven dried Specimen in gm-M2
+							</td>
+                            <td colspan="1" style="text-align:center;">Water Absorption (%)=(M1-M2)/M2
+							</td>
+                         
+
+                         
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.chequered_cement_water_absorption_lines" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['mass_of_saturated']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['mass_of_oven']" />
+							</td>
+                           
+                            <td colspan="1">
+								<span t-esc="r['water_absorption']"  t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                         
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Water Absorption %:</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_water_cement_absorption" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+
+                           
+                        </table>
+                </div>
+
+
+
+
+
+                 <!--WET TRANSVERSE STRENGTH TEST (IS 13801 ANNEX F)   -->
+                    
+                <div t-if="data.chequeredwet_cement_transver_visible" style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                   
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+
+							<td colspan="1" style="text-align:center;">Width -b in mm
+							</td>
+
+                            <td colspan="1" style="text-align:center;">Span Between support-l in mm
+							</td>
+                            <td colspan="1" style="text-align:center;">Fracture thickness -t  in mm
+							</td>
+
+                            	<td colspan="1" style="text-align:center;">Breaking Load-P in (N)
+							</td>
+
+                            <td colspan="1" style="text-align:center;">WET TRANSVERSE STRENGTH -f= 3PI/2bt² in N/mm2
+							</td>
+                            
+                         
+
+                         
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.chequeredwet_cement_transver_lines" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['width_b']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['span_between']" />
+							</td>
+
+                            	<td colspan="1">
+								<span t-esc="r['fracture_thicness']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['breaking_load']" />
+							</td>
+                           
+                            <td colspan="1">
+								<span t-esc="r['wet_transver']"  t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                         
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Wet Transveres % :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_cement_wet_transver" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+
+                           
+                        </table>
+                </div>
+
+
+                    <!-- authorizeRowDataSheet -->
+                    
+                   <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height:40px">
+
+                            </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+						<div style="margin-left:500px">
+							
+							<div>
+								<b>
+									Approved By
+								</b>
+							</div>
+							<div style="height:40px">
+
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+                    
+                </div>
+
+            </t>
+        </t>
+    </template>
+    </odoo>

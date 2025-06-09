@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_brick_test_view1" model="ir.ui.view">
+        <field name="name">mechanical.bricks1.form</field>
+        <field name="model">mechanical.bricks1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+
+                    <group >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id"  readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                    <!-- <group>
+                      <field name="test_start_date"/>
+                      <field name="test_end_date"/>
+                    </group> -->
+
+                        <!-- compressive Strength -->
+
+                      <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                          <h1>
+                              <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                              <field name="compressive_strength_visible" invisible='1'/>
+                          </h1>
+                      
+                    </group>
+                    
+                     <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <label for="length" string="Length mm" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="length" string="Sample 1" />
+                            <field  name="length"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="length_2" string="Sample 2" />
+                            <field  name="length_2"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="length_3" string="Sample 3" />
+                            <field  name="length_3"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="length_4" string="Sample 4" />
+                            <field  name="length_4"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="length_5" string="Sample 5" />
+                            <field  name="length_5"  colspan="12"  nolabel="1"/>
+                          </group>
+                          
+                           
+                        </div>
+                    </group>
+                     <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <label for="width" string="Width mm" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="width" string=""/>
+                            <field  name="width"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="width_2" string="" />
+                            <field  name="width_2"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="width_3" string="" />
+                            <field  name="width_3"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="width_4" string="" />
+                            <field  name="width_4"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="width_5" string="" />
+                            <field  name="width_5"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <label for="height" string="Height mm" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="height" string=""/>
+                            <field  name="height"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="height_2" string="" />
+                            <field  name="height_2"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="height_3" string="" />
+                            <field  name="height_3"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="height_4" string="" />
+                            <field  name="height_4"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="height_5" string="" />
+                            <field  name="height_5"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <label for="area" string="Area (mm²)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="area" string=""/>
+                            <field  name="area"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="area_2" string="" />
+                            <field  name="area_2"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="area_3" string="" />
+                            <field  name="area_3"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="area_4" string="" />
+                            <field  name="area_4"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="area_5" string="" />
+                            <field  name="area_5"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <label for="load" string="load (mm²)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="load" string=""/>
+                            <field  name="load"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="load_2" string="" />
+                            <field  name="load_2"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="load_3" string="" />
+                            <field  name="load_3"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="load_4" string="" />
+                            <field  name="load_4"  colspan="3"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="load_5" string="" />
+                            <field  name="load_5"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                     
+
+                     <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <label for="comp_strength_1" string="Compressive strength,  MPa" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="comp_strength_1" string="" />
+                            <field  name="comp_strength_1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="comp_strength_2" string="" />
+                            <field  name="comp_strength_2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="comp_strength_3" string="" />
+                            <field  name="comp_strength_3"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="comp_strength_4" string="" />
+                            <field  name="comp_strength_4"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="comp_strength_5" string="" />
+                            <field  name="comp_strength_5"  colspan="3"  nolabel="1"/>
+                          </group>
+                          
+                        </div>
+                    </group>
+
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                      <field name="avrg_compressive_strength"/>
+                      <field name="comp_strength_confirmity"
+                      decoration-success="comp_strength_confirmity == 'pass'" 
+                      decoration-danger="comp_strength_confirmity == 'fail'" 
+                      readonly="1"
+                      />
+                      <field name="comp_strength_nabl"/>
+                    </group>
+                    
+
+                          <!-- visual_observation -->
+
+                    <group attrs="{'invisible': [('efflorescence_visible', '=', False)]}">
+                        <h1>
+                            <field name="visual_observation_name_efflorescence" readonly="1" nolabel="1"/>
+                            <field name="efflorescence_visible" invisible='1'/>
+                        </h1>
+                    </group>
+
+                    <group attrs="{'invisible': [('efflorescence_visible', '=', False)]}">
+                        <label for="visual_observation_1" string="Sr No" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="visual_observation_1" string="1 Observation" />
+                            <field  name="visual_observation_1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="visual_observation_2" string="2 Observation" />
+                            <field  name="visual_observation_2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="visual_observation_3" string="3 Observation" />
+                            <field  name="visual_observation_3"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="visual_observation_4" string="4 Observation" />
+                            <field  name="visual_observation_4"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="visual_observation_5" string="5 Observation" />
+                            <field  name="visual_observation_5"  colspan="3"  nolabel="1"/>
+                          </group>
+                          
+                        </div>
+                    </group>
+
+                      <!--Dimension -->
+
+                    <group attrs="{'invisible': [('dimension_visible', '=', False)]}">
+                        <h1>
+                            <field name="dimension_name1" readonly="1" nolabel="1"/>
+                          <h1>
+                            20 Bricks
+                          </h1>
+                            <field name="dimension_visible" invisible='1'/>
+                        </h1>
+                    </group>
+
+                    <group attrs="{'invisible': [('dimension_visible', '=', False)]}">
+                        <label for="avrg_length" string="Sr No" />
+                        <div class="address_format " >
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="avrg_length" string="Length in mm" />
+                            <field  name="avrg_length"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="avrg_width" string="Width in mm" />
+                            <field  name="avrg_width"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="avrg_height" string="Height in mm" />
+                            <field  name="avrg_height"  colspan="3"  nolabel="1"/>
+                          </group>
+                          
+                          
+                        </div>
+                    
+                  </group>
+
+                      <!-- Water Absorbtion -->
+                      
+                    <group attrs="{'invisible': [('water_absorbtion_visible', '=', False)]}">
+                        <h1>
+                            <field name="wt_absorption_name" readonly="1" nolabel="1"/>
+                              <field name="water_absorbtion_visible" invisible='1'/>
+
+                        </h1>
+                    </group>
+                  
+                  
+                    <group attrs="{'invisible': [('water_absorbtion_visible', '=', False)]}">
+                        <label for="initial_wt" string="Initial wt after 24 hr emersion water" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="initial_wt" string="Sample 1" />
+                            <field  name="initial_wt"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="initial_wt_2" string="Sample 2" />
+                            <field  name="initial_wt_2"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="initial_wt_3" string="Sample 3" />
+                            <field  name="initial_wt_3"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="initial_wt_4" string="Sample 4" />
+                            <field  name="initial_wt_4"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="initial_wt_5" string="Sample 5" />
+                            <field  name="initial_wt_5"  colspan="12"  nolabel="1"/>
+                          </group>
+                           
+                        </div>
+                    </group>
+                    <group attrs="{'invisible': [('water_absorbtion_visible', '=', False)]}">
+                        <label for="final_wt" string="Final wt after 24 hr oven" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="final_wt" string="" />
+                            <field  name="final_wt"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="final_wt_2" string="" />
+                            <field  name="final_wt_2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="final_wt_3" string="" />
+                            <field  name="final_wt_3"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="final_wt_4" string="" />
+                            <field  name="final_wt_4"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="final_wt_5" string="" />
+                            <field  name="final_wt_5"  colspan="3"  nolabel="1"/>
+                          </group>
+                          
+                        </div>
+                    </group>
+                    <group attrs="{'invisible': [('water_absorbtion_visible', '=', False)]}">
+                        <label for="water_absorption" string="Water Absorption %" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="water_absorption" string="" />
+                            <field  name="water_absorption"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="water_absorption_2" string="" />
+                            <field  name="water_absorption_2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="water_absorption_3" string="" />
+                            <field  name="water_absorption_3"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="water_absorption_4" string="" />
+                            <field  name="water_absorption_4"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="water_absorption_5" string="" />
+                            <field  name="water_absorption_5"  colspan="3"  nolabel="1"/>
+                          </group>
+                          
+                        </div>
+                    </group>
+                    
+                    
+                    <group attrs="{'invisible': [('water_absorbtion_visible', '=', False)]}">
+                      <field name="avrg_water_absorption"/>
+                      <field name="water_absorption_confirmity"
+                      decoration-success="water_absorption_confirmity == 'pass'" 
+                      decoration-danger="water_absorption_confirmity == 'fail'" 
+                      readonly="1"
+                      />
+                      <field name="water_absorption_nabl"/>
+                    </group>
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

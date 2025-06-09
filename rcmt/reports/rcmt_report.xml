@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	
+	<template id="rcmt_mec_report1">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>TEST REPORT</b></p>
+				</div> -->
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12">Customer Party Name :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/>
+									<br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+							
+
+								<td colspan="12">Project / Site Address : 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Sample Description : 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						</table>
+						<table>
+							<tr>
+								<td colspan="6">Test Start Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Sample Id Mark: 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Size :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">Grade :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Brand :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">Consultant Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Client Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">Client Reference :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material/Test Name :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+							<tr>
+								<!-- <td colspan="6">Age in Days :
+									<![CDATA[&nbsp;]]>
+									<span t-field="rcmt.age_of_test"/>
+								</td> -->
+								<td colspan="12">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="rcmt.date_of_casting"/>
+								</td>
+							</tr>
+							
+						</table>
+					</div>
+					<!-- <div style="margin-top:20px;">
+						<p><strong>Results</strong>:<![CDATA[&nbsp;]]></p>
+					</div> -->
+
+						<!-- 1 Compressive strength  -->
+					
+				<div t-if="rcmt" style="margin-top:20px;">
+					 <div style="padding-top:5px">
+						<span t-esc="eln.material.test_parameter"/>
+					</div>
+
+					<table t-if="rcmt" style="margin-top:30px;">
+						<t t-set="i" t-value="0"/>
+							<thead>
+								<tr >
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Sr No
+										</span>
+									</th>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											 Thickness of specimen, mm (L)
+
+										</span>
+									</th>
+									
+									
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Diameter of specimen, mm
+										</span>
+									</th>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Applied Voltage V
+
+										</span>
+									</th>
+									<th style="text-align: center;">
+									<span style="font-weight: bold;">
+										Initial Current mA
+
+									</span>
+									</th>
+									<th style="text-align: center;">
+									<span style="font-weight: bold;">
+										Final Current mA
+
+									</span>
+							     	</th>
+									<th style="text-align: center;">
+									 <span style="font-weight: bold;">
+										Initial Temp °C
+
+									 </span>
+									 
+									</th>
+
+									<th style="text-align: center;">
+									 <span style="font-weight: bold;">
+										Final Temp °C
+
+
+									 </span>
+									 
+									</th>
+									<th style="text-align: center;">
+									 <span style="font-weight: bold;">
+										Depth of penetration mm
+
+
+									 </span>
+									 
+									</th>
+
+										<th style="text-align: center;">
+									 <span style="font-weight: bold;">
+										Non – Steady State Migration Coefficient m²/sec
+
+
+									 </span>
+									 
+									</th>
+									<th style="text-align: center;">
+									 <span style="font-weight: bold;">
+									Unit
+
+
+									 </span>
+									 
+									</th>
+									<th  style="max-width: 200px;">
+									<span style="font-weight: bold;">
+										<span t-esc="eln.material.specifications"/>
+										
+									</span>
+							    	</th>
+									
+								</tr>
+							</thead>
+						<tbody >
+
+								
+								
+							
+							<tr t-if=" (rcmt.rcmt_nabl == 'pass' and nabl or (rcmt.rcmt_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
+								<td style="text-align: center;padding:0px">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+								<td style="text-align: center;">
+                                <span style="text-align: center;" >
+										<span t-field="rcmt.thickness_specimen1" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+                                </td>
+                                <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.diameter_specimen1" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.specimen1_ov1" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.initial_current1" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.final_curent1" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.initial_temprrature1" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.final_tempreture1" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.specimen1_depth1" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.specimen1_ov_avg1" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								<td  rowspan="3" style="text-align: center; vertical-align: middle;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','36f86e6e-391c-4d7b-818d-28f7b75ea261')]).unit.name"/>
+									</span>
+								</td>
+								
+                               
+								
+								<td rowspan="3" style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','36f86e6e-391c-4d7b-818d-28f7b75ea261')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+								</td>
+								
+							</tr>
+
+
+							<tr t-if=" (rcmt.rcmt_nabl == 'pass' and nabl or (rcmt.rcmt_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
+								<td style="text-align: center;padding:0px">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+								<td style="text-align: center;">
+                                <span style="text-align: center;" >
+										<span t-field="rcmt.thickness_specimen2" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+                                </td>
+                                <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.diameter_specimen2" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.specimen2_ov1" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.initial_current2" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.final_curent2" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.initial_temprrature2" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.final_tempreture2" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.specimen2_depth2" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.specimen2_ov_avg2" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								
+                               
+<!-- 								
+								<td rowspan="3" style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','36f86e6e-391c-4d7b-818d-28f7b75ea261')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+								</td> -->
+								
+							</tr>
+
+
+							<tr t-if=" (rcmt.rcmt_nabl == 'pass' and nabl or (rcmt.rcmt_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
+								<td style="text-align: center;padding:0px">
+                                    <span t-esc="i + 1" />
+                                    <t t-set="i" t-value="i+1"/>
+								</td>
+								<td style="text-align: center;">
+                                <span style="text-align: center;" >
+										<span t-field="rcmt.thickness_specimen3" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+                                </td>
+                                <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.diameter_specimen3" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.specimen3_ov1" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.initial_current3" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.final_curent3" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.initial_temprrature3" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.final_tempreture3" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.specimen3_depth3" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								  <td style="text-align: center;">
+									<span style="text-align: center;" >
+										<span t-field="rcmt.specimen3_ov_avg3" t-options='{"widget": "float", "precision": 2}'/>
+									</span>	
+								</td>
+								
+                               
+<!-- 								
+								<td rowspan="3" style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','36f86e6e-391c-4d7b-818d-28f7b75ea261')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+								</td> -->
+								
+							</tr>
+                       
+
+							
+
+							
+
+                        </tbody>
+                    </table>
+					  <!-- <div style="margin-top:5px;margin-top:20px;page-break-before: always;"> -->
+                     <!-- </div> -->
+               
+				
+
+							
+
+				</div>
+
+					<table>
+					<tbody>
+					   
+						<tr  cols="6" t-if="(rcmt.rcmt_nabl == 'pass' and nabl or (rcmt.rcmt_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
+						<td style="font-weight: bold;">Average 10 <sup>-12</sup> m²/sec</td>
+						<td style="text-align: center;"><span t-field="rcmt.overall_average"  t-options='{"widget": "float", "precision": 2}'  /></td>
+						</tr>
+
+               
+					</tbody>
+					</table>
+				<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+					<div>
+						<b>Notes: -</b>
+					</div>
+					<div>
+						<ul>
+							<li>
+								The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+							</li>
+							<li>
+								Sample(s) was/were not drawn by laboratory.
+							</li>
+							<li>
+								This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+							</li>
+							<li t-if="eln.has_witness">
+								Test witnessed by : <span t-esc="eln.witness_name"/>
+										
+							</li>
+							<li t-if="eln.remarks">
+								<span t-esc="eln.remarks"/>
+							</li>
+							
+						</ul>
+					</div>
+				</div>
+
+						<!-- <div class="signatureContainer girdgird" style="page-break-inside: avoid;">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div>
+							</div>
+							<div>
+								<div t-if="stamp and stamp == '4-in_report'">
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div>
+							</div>
+						</div> -->
+				<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+					
+					<div>
+						<div>
+							<b>
+								Checked By
+							</b>
+						</div>
+						<div style="height: 40px;">
+							<t t-if="eln.sample_id.checkby_signature_required">
+								<div t-if="eln.sample_id.check_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+						<div>
+							<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+							</b>
+						</div>
+						<div>
+							<b>
+								(<span t-esc="eln.sample_id.check_by.job_title"/>)
+							</b>
+						</div>
+					</div>
+					<div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
+					<div>
+						<div>
+							<b>
+								Approved By 
+							</b>
+							
+						</div>
+						<div style="height: 40px;">
+							<t t-if="eln.sample_id.approveby_signature_required">
+								<div t-if="eln.sample_id.approved_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+						<div>
+							<b>
+							<span t-esc="eln.sample_id.approved_by.name"/>
+							</b>
+						</div>
+						<div>
+							<b>
+								(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+							</b>
+						</div>
+						
+					</div>
+				</div>
+				<!-- </div> -->
+
+				<div style="margin-top: 10px; text-align: center;">
+				
+						...... End Of Report......
+				
+				</div>
+											
+				</div>
+	
+			</t>
+		</t>
+		
+	</template>
+	
+</odoo>

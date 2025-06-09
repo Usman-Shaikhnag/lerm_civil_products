@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="wpt_datasheet1">
+		<t t-call="web.html_container">
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    Water Permeability Test
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+				     <table style="margin-top:20px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                 <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_name"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+					<div >
+
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Temperature °C :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_wpt"/>
+								</td>
+								<td colspan="6">Specimen Size (mm) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.size.size"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity % :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_wpt"/>
+								</td>
+									<td colspan="6">Quantity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.quantity"/>
+								</td>
+								
+							</tr>
+						</table>
+
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.date_of_casting"/>
+								</td>
+								
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.grade.grade"/>
+								</td>
+								
+								
+							</tr>
+						</table>
+						
+						
+					</div>
+						<div style="margin-top:20px;">
+                           <h6> <span t-field="env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_name"/></h6>
+						</div>
+
+
+						
+						<table style="margin-top:20px" >
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Sample 
+								</td>
+								<td colspan="1">Depth of Penetration 1
+								</td>
+								<td colspan="2">Depth of Penetration 2
+								</td>
+								<td colspan="2">Depth of Penetration 3
+								</td>
+								<td colspan="2">Average
+								</td>
+								
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.child_lines" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="1">
+									<span t-esc="r['sample']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['depth1']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['depth2']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['depth3']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['average']"/>
+								</td>
+								
+							</tr>
+						</table>
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Average Of WPT :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.average_of_wpt"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+						
+			<div class="authorizeRowDataSheet">
+
+                        <div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checkby_signature_required">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.check_by.name"/>
+                                </b>
+                            </div>
+                            
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+						
+					</div>
+
+
+					
+				</div>
+			</t>
+		</t>
+
+		
+	</template>
+</odoo>

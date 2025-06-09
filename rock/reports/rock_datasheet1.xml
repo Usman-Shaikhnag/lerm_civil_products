@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    
+
+    <template id="rock_datasheet1">
+        <t t-call="web.html_container">
+            <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px;font-weight: bold">
+                    Rock
+                </div>
+
+                <div class="container_eln" style="margin-top:5px">
+                    <table style="margin-top:20px">
+                        <tr cols="12">
+                            
+                            <td colspan="6">Job No :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.kes_no"></span>
+                            </td>
+                            <td colspan="6">Test Start Date: 
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.start_date"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            </td>
+                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td colspan="6">Age at Test: <span t-field="data.age_of_days"></span>
+                            </td>
+                            <td colspan="6">Sample Conditioning: <span t-field="data.sample_condition"></span>
+                            </td>
+                        </tr> -->
+                    </table>
+					
+					<table>
+						<tr style="height:50px" cols="12">
+                            <td colspan="4">Performed By :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.technician.name"/>
+                            </td>
+                            <td colspan="4">Witness Name :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.witness_name"/>
+                            </td>
+                            <td colspan="4">Witness Signature :
+                                <![CDATA[&nbsp;]]>
+                                <span style='padding:20px'></span>
+                            </td>
+                        </tr>
+					</table>
+                    <!-- Specific Gravity, Water Absorption, Porosity & Dry Density	-->
+
+                    <div style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                            Specific Gravity, Water Absorption, Porosity and Dry Density 
+							<!-- added -->
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2347lier-9d64-48cd-8277-ad734e0edd84')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+							</span>
+                        </div>
+                        <table>
+                            <tr cols="12">
+                                <td colspan="3" style="text-align: center;"><b>Sample No</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Depth in (mtr)</b></td>
+                                <td colspan="3" style="text-align: center;"><b>SSD weight of sample in kg, Msat</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Weight of sample in water in kg, Msub</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Oven dry weight of sample in kg, Ms</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Porosity = (Msat-Ms)/(Msat-Msub)*100 in %</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Water Absorption = (Msat-Ms)/Ms*100 in %</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Dry Density = Ms/(Msat-Msub) gm/cc</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Saturated Specific Gravity = Ms/(Msat-Msub)</b></td>
+                            </tr>
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="data.child_lines" t-as="r">
+                                <td colspan="3" style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['depth']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['ssd_weight']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['wt_sample_water']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['oven_dry_wt']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['porosity']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['dry_density']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['saturated_spc_gravity']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+								
+                                 
+                               
+                                
+                                
+                            </tr>
+                        </table>
+						
+
+                        
+                    </div>
+					<table style="margin-top: 20px">
+						<tr>
+							<td style="font-weight: bold;">Average porosity %</td>
+							<td style="text-align: center;"><span t-field="data.avg_porosity" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Average Water Absorption %</td>
+							<td style="text-align: center;"><span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Dry Density gm/cc</td>
+							<td style="text-align: center;"><span t-field="data.avg_dry_density" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Saturated Specific Gravity</td>
+							<td style="text-align: center;"><span t-field="data.avg_saturated_spc_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>
+
+						<!--Start UCS -->
+
+					<div style="margin-top:20px" t-if="data.usc_visible">
+                        <div style="text-align:center;font-size:18px">
+                            UCS 
+							<!-- added -->
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2547ljye-0bc7-41a6-a2bb-0fe9d898008d')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+							</span>
+                        </div>
+                        <table>
+                            <tr cols="12">
+                                <td colspan="3" style="text-align: center;"><b>Sr No</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Location</b></td>
+                                
+                                <td colspan="3" style="text-align: center;"><b>Depth in (mtr)</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Dia. in mm</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Length in mm</b></td>
+                                <td colspan="3" style="text-align: center;"><b>L/D ratio</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Area in mm2</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Load in KN</b></td>
+								<td colspan="3" style="text-align: center;"><b>UCS in N/mm2</b></td>
+                            </tr>
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="data.child_lines1" t-as="r">
+                                <td colspan="3" style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['location']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['depth']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['diameter']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['length']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['ld_ratio']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['area']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['load']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+								<td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['usc']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>     
+                                
+                            </tr>
+                        </table>
+
+                        
+                    </div>
+					<table style="margin-top: 20px" t-if="data.usc_visible">
+						<tr>
+							<td style="font-weight: bold;">UCS Average.N/mm²</td>
+							<td style="text-align: center;"><span t-field="data.avg_usc" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>
+                    
+
+                     
+                   	
+                   
+                    
+                    <!-- authorizeRowDataSheet -->
+                    
+                    <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height:40px">
+
+                            </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+						<div style="margin-left:500px">
+							
+							<div>
+								<b>
+									Approved By
+								</b>
+							</div>
+							<div style="height:40px">
+
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+                    </div>
+                    
+                </div>
+
+            </t>
+        </t>
+    </template>
+
+    
+</odoo>

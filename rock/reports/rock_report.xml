@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  
+  <template id="rock_report1">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+						<!-- <table>
+							<thead>
+								<tr>
+									<td colspan="3">Report no :
+									</td>
+									<td colspan="3">
+										<span t-field="o.eln_id"/>
+									</td>
+									<td colspan="3">Report Date :
+									</td>
+									<td colspan="3">
+										<span t-field="o.srf_date"/>
+									</td>
+									<td colspan="3"  t-if="nabl">ULR NO :
+									</td>
+									<td colspan="3" t-if="nabl">
+										<span t-field="o.sample_id.ulr_no"/>
+									</td>
+								</tr>
+							</thead>
+						</table> -->
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12">Customer Party Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<!-- <td colspan="12">Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+											,
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td> -->
+								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Sample Description : <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						</table>
+						<table>
+							<tr>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Size :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Brand :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">Consultant Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Client Name :
+									<![CDATA[&nbsp;]]>
+										<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">Client Reference :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material/Test Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+					 <div style="padding-top:5px">
+						<span t-esc="o.material.test_parameter "/> 
+
+					</div>
+				
+		
+				
+			<div t-if="data.usc_visible" style="margin-top:20px;">
+						<p><strong>Protocol</strong> : IS : 9143-1979<![CDATA[&nbsp;]]></p>
+					</div>
+
+				<table t-if="data.usc_visible" style="margin-top:30px;">
+							<thead>
+								<tr style="font-weight: bold;">
+									<th>Parameter</th>
+									
+									<t t-foreach="range(len(data.child_lines1))" t-as="i">
+										<th>Observation-<t t-esc="i + 1"/></th>
+									</t>
+								</tr>
+							</thead>
+							<tbody>
+							   		
+									<tr>
+									<td>Location</td>
+									<t t-foreach="data.child_lines1" t-as="r">
+									<td><span t-esc="r.location" /></td>
+									</t>
+								</tr>
+								<tr>
+									<td>Sample NO</td>
+									<t t-foreach="data.child_lines1" t-as="r">
+									<td><span t-esc="r.sr_no" /></td>
+								</t>
+								</tr>
+								<tr>
+									<td>Depth in (mtr)</td>
+									<t t-foreach="data.child_lines1" t-as="r">
+									<td><span t-esc="r.depth" /></td>
+								</t>
+								</tr>
+								<tr>
+									<td>Dia. in mm</td>
+									<t t-foreach="data.child_lines1" t-as="r">
+									<td><span t-esc="r.diameter" /></td>
+								</t>
+								</tr>
+								<tr>
+									<td>Length in mm</td>
+									<t t-foreach="data.child_lines1" t-as="r">
+									<td><span t-esc="r.length" /></td>
+								</t>
+								</tr>
+								<tr>
+									<td>L/D ratio</td>
+									<t t-foreach="data.child_lines1" t-as="r">
+									<td><span t-esc="r.ld_ratio" t-options='{"widget": "float", "precision": 2}'/></td>
+								</t>
+								</tr>
+								<tr>
+									<td>Area in mm2</td>
+									<t t-foreach="data.child_lines1" t-as="r">
+									<td><span t-esc="r.area" t-options='{"widget": "float", "precision": 2}'/></td>
+								</t>
+								</tr>
+								<tr>
+									<td>Load in KN</td>
+									<t t-foreach="data.child_lines1" t-as="r">
+									<td><span t-esc="r.load" t-options='{"widget": "float", "precision": 2}'/></td>
+								</t>
+								</tr>
+								<tr>
+									<td>UCS in N/mm2</td>
+									<t t-foreach="data.child_lines1" t-as="r">
+									<td><span t-esc="r.usc" t-options='{"widget": "float", "precision": 2}'/></td>
+								</t>
+								</tr>
+							
+							</tbody>
+							
+
+							</table>
+
+
+
+					<div  t-if="data.porosity_visible or data.specific_gravity_visible or data.dry_density_visible or data.water_absorption_visible" style="margin-top:20px;">
+						<p><strong>Protocol</strong> : IS : 13030-1991<![CDATA[&nbsp;]]></p>
+					</div>
+
+				<table  t-if="data.porosity_visible or data.specific_gravity_visible or data.dry_density_visible or data.water_absorption_visible" style="margin-top:30px;">
+							<thead>
+								<tr style="font-weight: bold;">
+									<th>Parameter</th>
+									
+									<t t-foreach="range(len(data.child_lines))" t-as="i">
+										<th>Observation-<t t-esc="i + 1"/></th>
+									</t>
+								</tr>
+							</thead>
+							<tbody>
+							   		
+									<tr>
+									<td>Location</td>
+									<t t-foreach="data.child_lines" t-as="r">
+									<td><span t-esc="r.location" /></td>
+									</t>
+								</tr>
+								<tr>
+									<td>Sample NO</td>
+									<t t-foreach="data.child_lines" t-as="r">
+									<td><span t-esc="r.sample_no" /></td>
+								</t>
+								</tr>
+								<tr>
+									<td>Depth in (mtr)</td>
+									<t t-foreach="data.child_lines" t-as="r">
+									<td><span t-esc="r.depth" /></td>
+								</t>
+								</tr>
+								<tr>
+									<td>SSD weight of sample in kg, Msat</td>
+									<t t-foreach="data.child_lines" t-as="r">
+									<td><span t-esc="r.ssd_weight" /></td>
+								</t>
+								</tr>
+								<tr>
+									<td>Weight of sample in water in kg, Msub</td>
+									<t t-foreach="data.child_lines" t-as="r">
+									<td><span t-esc="r.wt_sample_water" /></td>
+								</t>
+								</tr>
+								<tr>
+									<td>Oven dry weight of sample in kg, Ms</td>
+									<t t-foreach="data.child_lines" t-as="r">
+									<td><span t-esc="r.oven_dry_wt" t-options='{"widget": "float", "precision": 2}'/></td>
+								</t>
+								</tr>
+								<tr>
+									<td>Porosity = (Msat-Ms)/(Msat-Msub)*100 in %</td>
+									<t t-foreach="data.child_lines" t-as="r">
+									<td><span t-esc="r.porosity" t-options='{"widget": "float", "precision": 2}'/></td>
+								</t>
+								</tr>
+								<tr>
+									<td>Water Absorption = (Msat-Ms)/Ms*100 in %</td>
+									<t t-foreach="data.child_lines" t-as="r">
+									<td><span t-esc="r.water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
+								</t>
+								</tr>
+								<tr>
+									<td>Dry Density = Ms/(Msat-Msub) gm/cc</td>
+									<t t-foreach="data.child_lines" t-as="r">
+									<td><span t-esc="r.dry_density" t-options='{"widget": "float", "precision": 2}'/></td>
+								</t>
+								</tr>
+
+								<tr>
+									<td>Saturated Specific Gravity = Ms/(Msat-Msub)</td>
+									<t t-foreach="data.child_lines" t-as="r">
+									<td><span t-esc="r.saturated_spc_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
+								</t>
+								</tr>
+							
+							</tbody>
+							
+
+							</table>
+			
+
+					<div style="page-break-inside: avoid;">
+						<div style="margin-top:20px" class="noteContainer">
+							<div>
+								<b>Note :-</b>
+							</div>
+							<div>
+								<ul>
+									<li>
+										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+									</li>
+									<li>
+										Sample(s) was/were not drawn by laboratory.
+									</li>
+									<li>
+										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+									</li>
+									<!-- <li>
+										<p>Test witnessed by : <span t-esc="eln.witness_name"/></p>
+									</li> -->
+									<li t-if="eln.has_witness">
+										Test witnessed by : <span t-esc="eln.witness_name"/>
+										
+									</li>
+									<li t-if="eln.remarks">
+										<span t-esc="eln.remarks"/>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height:30px">
+
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+							<div>
+								<div t-if="stamp and stamp == '4-in_report'">
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height:30px">
+
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							</div>
+						</div>
+						<!-- <div style="text-align:center;margin-top:25px">
+							......End of Report......
+						</div> -->
+					</div>
+
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>

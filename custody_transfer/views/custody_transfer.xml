@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <record id="custody_transfer_form" model="ir.ui.view">
+            <field name="name">custody.transfer.form</field>
+            <field name="model">custody.transfer</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Confirm" type="object" name="generate_sequence_and_confirm" class="oe_highlight" attrs="{'invisible': [('state', '!=', '1-draft')]}"/>
+                        <button string="Picked Up" type="object" name="action_picked_up" class="oe_highlight" attrs="{'invisible': [('state', '!=', '2-confirmed')]}"/>
+                        <button string="Deliver" type="object" name="action_deliver" class="oe_highlight" attrs="{'invisible': [('state', '!=', '3-picked_up')]}"/>
+                        
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box" attrs="{'invisible':[('state','!=','4-delivered')]}" >
+                            <button name="open_srf" string="SRF"
+                                    type="object" class="oe_stat_button" icon="fa-align-justify">
+                            </button>
+                        </div>
+                        <group>
+                            <h1>
+                                <field name="collection_order_id" attrs="{'readonly': [('state', '!=', '1-draft')]}"/>
+                            </h1>
+                        </group>
+                        <group style="width:50%">
+                            <field name="customer"/>
+                            <field name="name_work"/>
+                            <field name="client" />
+                            <field name="client_refrence" />
+                        </group>
+                        <group style="width:50%">
+                            <field name="contact_site_ids" invisible="1"/>
+                            <field name="site_address" domain="[('id', 'in', contact_site_ids)]"/>
+                             <field name="client_sample_id" />
+                        </group>
+                        
+                        <group style="width:50%">
+                            <field name="discipline_id"/>
+                            <field name="material_id" context="{'lab_name':True}" domain="[('id', 'in', material_ids)]"/>
+                            <field name="material_ids" invisible='1'/>
+                            <field name="grade_ids" invisible='1'/>
+                            <field name="grade_id" domain="[('id', 'in', grade_ids)]"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name="group_id" domain="[('id', 'in', group_ids)]"/>
+                            <field name="group_ids" invisible='1'/>
+                            <field name="size_ids" invisible='1'/>
+                            <field name="size_id" domain="[('id', 'in', size_ids)]"/>
+                        </group>
+                        <group style="width:100%">
+                            <field name="sample_description"/>
+                        </group>
+                        <group style="width:100%">
+                            <field name="conformity_requested"/>
+                        </group>
+                        <group style="width:100%">
+                            <field name="casting"/>
+                            
+                            <field name="days_casting" attrs="{'invisible':[('casting','!=',True)]}"/>
+                            
+                            <field name="date_casting" attrs="{'invisible':[('casting','!=',True)]}"/>
+                        </group>
+
+                        <group style="width:50%">
+                            <field name="lattitude"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name="longitude"/>
+                        </group>
+
+                        <group style="width:50%">
+                            <field name="picked_by"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name="pickup_date"/>
+                        </group>
+                        <group style="width:100%">
+                            <field name="delivery_date"/>
+                        </group>
+                        
+                        
+                        <group style="width:50%">
+                            <field name="srf" readonly="1"/>
+                            <field name="pickup_location"  />
+                        </group>
+                        <group style="width:50%">
+                            <field name="drop_location" />
+                        </group>
+                        <field name="parameters" />
+                        
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name= "message_ids" widget="mail_thread"/>
+                        <field name= "activity_ids" widget="mail_activity"/>
+                    </div>
+                </form>                
+            </field>
+        </record>
+        
+        <record id="custody_transfer_action" model="ir.actions.act_window">
+            <field name="name">Custody Transfer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">custody.transfer</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">Custody Transfer</p>
+            </field>
+        </record>
+        
+        
+    </data>
+</odoo>

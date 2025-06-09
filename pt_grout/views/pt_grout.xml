@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_pt_grout1_form" model="ir.ui.view">
+        <field name="name">mechanical.pt.grout1.form</field>
+        <field name="model">mechanical.pt.grout1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                <group >
+                        <h1>
+                            <field name="name_fly" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                    <field name="grade"/>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                     <group >
+                        <!-- <field name="tests" widget="many2many_tags" options="{'no_create':True,'no_open': True}"/> -->
+                    </group>
+                    <group attrs="{'invisible': [('fludity_visible', '=', False)]}">
+                        <h1>
+                            <field name="fluidity_name" readonly="1" nolabel="1"/>
+                            <field name="fludity_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                     <group >
+                    <group>
+                      <field name="temp_percent_fluidity"/>
+                      <field name="humidity_percent_fludity"/>
+                    </group>
+                    <group>
+                      <field name="start_date_fludity"/>
+                      <field name="end_date_fludity"/>
+                    </group>
+                    </group>
+                    <group attrs="{'invisible': [('fludity_visible', '=', False)]}">
+                        <label for="water_cement_ratio" string="Water Cement Ratio (w/c)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="water_cement_ratio" string="Trial 1" />
+                            <field  name="water_cement_ratio"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group attrs="{'invisible': [('fludity_visible', '=', False)]}">
+                        <label for="wt_of_cement" string="Wt. of  Cement (g)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="wt_of_cement" string="" />
+                            <field  name="wt_of_cement"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group attrs="{'invisible': [('fludity_visible', '=', False)]}">
+                        <label for="wt_of_water" string="Wt.of water (g)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="wt_of_water" string="" />
+                            <field  name="wt_of_water"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group attrs="{'invisible': [('fludity_visible', '=', False)]}">
+                        <label for="cebex" string="CEBEX 100 (g)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="cebex" string="" />
+                            <field  name="cebex"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group attrs="{'invisible': [('fludity_visible', '=', False)]}">
+                        <label for="water_temperature" string="Water Temperature °c" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="water_temperature" string="" />
+                            <field  name="water_temperature"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group attrs="{'invisible': [('fludity_visible', '=', False)]}">
+                        <label for="grout_temperature" string="Grout Temperature °c" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="grout_temperature" string="" />
+                            <field  name="grout_temperature"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                     <group attrs="{'invisible': [('fludity_visible', '=', False)]}">
+                        <label for="flow_sec" string="Flow (Sec)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="flow_sec" string="" />
+                            <field  name="flow_sec"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                     <group attrs="{'invisible': [('fludity_visible', '=', False)]}">
+                        <!-- <field name="bleeding_confirmity"
+                               decoration-success="bleeding_confirmity == 'pass'" 
+                               decoration-danger="bleeding_confirmity == 'fail'" 
+                               readonly="1"/> -->
+                      <field name="fludity_nabl"/>
+                      
+                    </group>
+                       <!-- Setting Time Start -->
+                    <!-- <group>
+                        <field name="setting_time_visible" readonly="1" invisible="1" />
+                        <h1>
+                            <field name="setting_time_name" readonly="1" nolabel="1"   attrs="{'invisible': [('setting_time_visible', '=', False)]}"/>
+                        </h1>
+                    </group> -->
+                    <!-- <group  attrs="{'invisible': [('setting_time_visible', '=', False)]}">
+                    <group>
+                      <field name="temp_percent_setting"/>
+                      <field name="humidity_percent_setting"/>
+                    </group>
+                    <group>
+                      <field name="start_date_setting"/>
+                      <field name="end_date_setting"/>
+                    </group>
+                    </group> -->
+                     <!-- <group> -->
+                        
+                       
+                    <!-- </group> -->
+                    <!-- Initial Setting Time -->
+                     <group>
+                        <field name="initial_setting_time_visible" readonly="1" invisible="1" />
+                        <field name="final_setting_time_visible" readonly="1" invisible="1" />
+                        <h1>
+                            <field name="setting_time_name" readonly="1" nolabel="1"   attrs="{'invisible': ['|', ('initial_setting_time_visible', '=', False), ('final_setting_time_visible', '=', False)]}"/>
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('initial_setting_time_visible', '=', False)]}">
+                   
+                    </group>
+                   
+                    <group style="width:50%">
+                        <h3>
+                            <field name="initial_setting_time_name" readonly="1" nolabel="1"   attrs="{'invisible': [('initial_setting_time_visible', '=', False)]}"/>
+                        </h3>
+                   
+                        <field name="time_water_added" attrs="{'invisible': [('initial_setting_time_visible', '=', False)]}"/>
+                        <field name="time_needle_fails" attrs="{'invisible': [('initial_setting_time_visible', '=', False)]}"/>
+                        <field name="initial_setting_time_hours" attrs="{'invisible': [('initial_setting_time_visible', '=', False)]}"/>
+                        <!-- <field name="initial_setting_time_minutes_unrounded" attrs="{'invisible': [('initial_setting_time_visible', '=', False)]}"/>
+                        <field name="initial_setting_time_minutes" attrs="{'invisible': [('initial_setting_time_visible', '=', False)]}"/> -->
+                        <field name="initial_setting_conformity"
+                         decoration-success="initial_setting_conformity == 'pass'" 
+                               decoration-danger="initial_setting_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name="initial_setting_nabl"/>
+                    </group>
+                    
+
+                    <group style="width:50%">
+                        
+                        <field name="final_setting_time_visible" readonly="1" invisible="1" />
+                        <h1>
+                            <field name="final_setting_time_name" readonly="1" nolabel="1"   attrs="{'invisible': [('final_setting_time_visible', '=', False)]}"/>
+                        </h1>
+                   
+                        <field name="time_needle_make_impression" attrs="{'invisible': [('final_setting_time_visible', '=', False)]}"/>
+                        <field name="final_setting_time_hours" attrs="{'invisible': [('final_setting_time_visible', '=', False)]}"/>
+                        <!-- <field name="final_setting_time_minutes_unrounded" attrs="{'invisible': [('final_setting_time_visible', '=', False)]}"/>
+                        <field name="final_setting_time_minutes" attrs="{'invisible': [('final_setting_time_visible', '=', False)]}"/> -->
+                        <field name="final_setting_conformity"
+                         decoration-success="final_setting_conformity == 'pass'" 
+                               decoration-danger="final_setting_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name="final_setting_nabl"/>
+                    </group>
+
+
+                    <!-- Bleeding -->
+                     <group>
+                        <field name="bleeding_visible" readonly="1" invisible="1" />
+                        <h1>
+                            <field name="bleeding_name" readonly="1" nolabel="1"   attrs="{'invisible': [('bleeding_visible', '=', False)]}"/>
+                        </h1>
+                    </group>
+                    <!-- <group  attrs="{'invisible': [('bleeding_visible', '=', False)]}">
+                    <group>
+                      <field name="temp_percent_bleeding"/>
+                      <field name="humidity_percent_bleeding"/>
+                    </group>
+                    <group>
+                      <field name="start_date_bleeding"/>
+                      <field name="end_date_bleeding"/>
+                    </group>
+                    </group> -->
+                     <group> 
+                        
+                        <field name="vl_sample" attrs="{'invisible': [('bleeding_visible', '=', False)]}"/>
+                        <field name="vl_decanted" attrs="{'invisible': [('bleeding_visible', '=', False)]}"/>
+                    </group>
+                     <group attrs="{'invisible': [('bleeding_visible', '=', False)]}">
+                      <field name="bleeding_table">
+                        <tree editable="bottom">
+                          <field name="test"/>
+                          <field name="vl_of_sample"/>
+                          <field name="vl_of_grout"/>
+                          <field name="bleeding_precent"/>
+                        </tree>
+                      </field>
+                      <field name="final_bleeding"/>
+                      <field name="bleeding_confirmity"
+                               decoration-success="bleeding_confirmity == 'pass'" 
+                               decoration-danger="bleeding_confirmity == 'fail'" 
+                               readonly="1"/>
+                      <field name="bleeding_nabl"
+                              />
+                      
+                    </group>
+
+                    <!-- Volume Change -->
+
+                     <group>
+                        <field name="volume_change_visible" readonly="1" invisible="1" />
+                        <h1>
+                            <field name="volume_change_name" readonly="1" nolabel="1"   attrs="{'invisible': [('volume_change_visible', '=', False)]}"/>
+                        </h1>
+                    </group>
+                    <!-- <group  attrs="{'invisible': [('volume_change_visible', '=', False)]}">
+                    <group>
+                      <field name="temp_percent_volume_change"/>
+                      <field name="humidity_percent_volume_change"/>
+                    </group>
+                    <group>
+                      <field name="start_date_volume_change"/>
+                      <field name="end_date_volume_change"/>
+                    </group>
+                    </group> -->
+                    
+                     <group attrs="{'invisible': [('volume_change_visible', '=', False)]}">
+                      <field name="thickness_of_glass_plate"/>
+                      <field name="volume_change_table">
+                        <tree editable="bottom">
+                          <field name="initial_reading"/>
+                          <field name="days_3"/>
+                          <field name="days_14"/>
+                          <field name="days_28"/>
+                          <field name="height"/>
+                          <field name="height_change"/>
+                        </tree>
+                      </field>
+                      <field name="height_change_average"/>
+                      <field name="volume_change_confirmity"
+                               decoration-success="volume_change_confirmity == 'pass'" 
+                               decoration-danger="volume_change_confirmity == 'fail'" 
+                               readonly="1"/>
+                      <field name="volume_nabl_1"
+                             />
+                    </group>
+
+                     <!-- compressive strength -->
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <h1>
+                            <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_strength_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <!-- <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                    <group>
+                      <field name="temp_percent_compressive"/>
+                      <field name="humidity_percent_compressive"/>
+                    </group>
+                    <group>
+                      <field name="start_date_compressive_strength"/>
+                      <field name="end_date_compressive_strength"/>
+                    </group>
+                    </group> -->
+                     <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}" style="width:50%" class="center-group">
+                      <field  name="water_cement_ratio_1"  colspan="3" />
+                      <field  name="wt_of_cement_1"  colspan="3" />
+                      <field  name="wt_of_water_1"  colspan="3" />
+                      <field  name="cebex_1"  colspan="3" />
+                      <field  name="water_temperature_1"  colspan="3" />
+                      <field  name="grout_temperature_1"  colspan="3" />
+                    </group>
+                     <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                            <field name="status_7days"/>
+                      
+                    </group>
+                     <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                     
+
+                      <field name="casting_date_7days"/>
+                      <field name="testing_date_7days"/>
+
+                      <field name="casting_7_days_tables">
+                        <tree editable="bottom">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="crosssectional_area"/>
+                          <field name="wt_of_cement_cube"/>
+                          <field name="crushing_load" />
+                          <field name="compressive_strength" />
+                        </tree>
+                      </field>
+                      <field name="average_casting_7days"/>
+                      <field name="compressive_strength_7_days"/>
+                      <field name="compressive_strength_7days_confirmity"
+                               decoration-success="compressive_strength_7days_confirmity == 'pass'" 
+                               decoration-danger="compressive_strength_7days_confirmity == 'fail'" 
+                               readonly="1"/>
+                      <field name="days7_nabl"/>
+                    </group>
+                     <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                            <field name="status_28days"/>
+                      
+                    </group>
+                    
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+
+                      <field name="casting_date_28days"/>
+                      <field name="testing_date_28days"/>
+
+                      <field name="casting_28_days_tables">
+                        <tree editable="bottom">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="crosssectional_area"/>
+                          <field name="wt_of_cement_cube"/>
+                          <field name="crushing_load" />
+                          <field name="compressive_strength" />
+                        </tree>
+                      </field>
+                      <field name="average_casting_28days"/>
+                      <field name="compressive_strength_28_days"/>
+                      <field name="compressive_strength_28days_confirmity"
+                               decoration-success="compressive_strength_28days_confirmity == 'pass'" 
+                               decoration-danger="compressive_strength_28days_confirmity == 'fail'" 
+                               readonly="1"/>
+                      <field name="days28_nabl"/>
+                              
+                    </group>
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                  
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

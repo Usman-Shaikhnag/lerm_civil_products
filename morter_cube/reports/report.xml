@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	   <template id="mortar_cube_report1">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+						
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12">Customer Party Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<!-- <td colspan="12">Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+											,
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td> -->
+								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Sample Description : <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						</table>
+						<table>
+							<tr>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Size :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Brand :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">Consultant Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Client Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">Client Reference :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material/Test Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+
+                            <tr>
+								<td colspan="6">Age in Days :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.age_of_test"/>
+									<span> Days</span>
+								</td>
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.date_of_casting"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+                    <div>
+						<span></span>
+					</div>
+					<div style="padding-top:5px">
+						<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>: 
+						
+						
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12547kluy-8d45-416c-b5e0-c9533235f188')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						
+					</div>
+					
+                   
+                   
+                    <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+
+							<td colspan="1" style="text-align:center;">Length (mm)
+							</td>
+
+                            <td colspan="1" style="text-align:center;">Width (mm)
+							</td>
+                            <td colspan="1" style="text-align:center;">Area (mm²)
+							</td>
+
+                            <td colspan="1" style="text-align:center;">ID Mark/Location
+							</td>
+
+                            <td colspan="1" style="text-align:center;">Weight of Sample in kgs
+							</td>
+                            <td colspan="1" style="text-align:center;">Crushing Load in kN
+							</td>
+                             <td colspan="1" style="text-align:center;">Compressive Strength N/mm²
+							</td>
+                         
+
+                         
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.morter_cube_child_lines" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['length']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['width']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['area']"  t-options='{"widget": "float", "precision": 1}'/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['id_mark']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['wt_sample']" />
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['crushing_load']" />
+							</td>
+                           
+                            <td colspan="1">
+								<span t-esc="r['compressive_strength']"  t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                         
+						</tr>
+						</tbody>
+					</table>
+
+                    <table style="margin-top:5px">
+                            <tr cols="12">
+                                <td colspan="6"><b>Average Compressive Strength in N/mm2 :</b></td>
+                                <td colspan="6" style="text-align: center;">
+                                    <span t-field="data.average_morter_cube" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                            </tr>
+                          
+
+                           
+                        </table>
+               
+
+
+
+				
+						<div style="margin-top:20px" class="noteContainer">
+							<div>
+								<b>Note :-</b>
+							</div>
+							<div>
+								<ul>
+									<li>
+										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+									</li>
+									<li>
+										Sample(s) was/were not drawn by laboratory.
+									</li>
+									<li>
+										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+									</li>
+									<li t-if="eln.has_witness">
+										Test witnessed by : <span t-esc="eln.witness_name"/>
+										
+									</li>
+									<li t-if="eln.remarks">
+										<span t-esc="eln.remarks"/>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.technician.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+
+							<div>
+								<div>
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
+							
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							
+							</div>
+						</div>
+						<div style="text-align:center;margin-top:25px">
+							......End of Report......
+						</div>
+
+					 </div>
+
+			</t>
+		</t>
+	</template>
+</odoo>

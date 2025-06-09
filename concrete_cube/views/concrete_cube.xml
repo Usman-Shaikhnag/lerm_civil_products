@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_concrete_cube1_view" model="ir.ui.view">
+        <field name="name">mechanical.concrete.cube1.form</field>
+        <field name="model">mechanical.concrete.cube1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="grade" exception="grade"  string="Grade" identity="extra"/>   
+                    </group>
+                    <group>
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="date_of_casting"  string="Date of Casting" identity="extra"/>
+                        </group>
+                        <group>
+                            <field name="date_of_testing"  string="Date of Testing" identity="extra"/>
+                        </group>
+                        <group>
+                            <field name="age_of_days"/>
+                        </group>
+                        <group>
+                            <field name="age_of_test"/>
+                        </group>
+                        <group>
+                            <field name="difference"/>
+                        </group>
+                        
+                    </group>
+                    
+                        <field name="child_lines" nolabel="1">
+                            <tree>
+                                <field name='sr_no' string="Sr. NO"/>
+                                <field name='id_mark' string="ID Mark/Location" />
+                                <field name='length' string="Length (mm)"/>
+                                <field name='width' string="Width (mm)"/>
+                                <field name='area' string="Area (mm²)"/>
+                                <field name='wt_sample' string="Weight of Sample in kg"/>
+                                <field name="crushing_load" string="Crushing Load in kN"/>
+                                <field name='compressive_strength' string="Compressive Strength N/mm²"/>
+                            </tree>
+                            
+                        </field> 
+                    
+                        <group>
+                            <field name='average_strength' string="Average Compressive Strength in N/mm2" identity="result"/>
+                            <!-- <field name="confirmity" /> -->
+                            <field name="confirmity"  style="color: green;" attrs="{'invisible': [('confirmity','!=','pass')]}"/>
+                            <field name="confirmity"  style="color: red;" attrs="{'invisible': [('confirmity','!=','fail')]}"/>
+                            <field name="confirmity"  style="color: black;" attrs="{'invisible': [('confirmity','!=','not_applicable')]}"/>
+
+                            <!-- <field name="nabl" style="background-color:green;color:white;"/> -->
+                            <field name="nabl"  style="color: green;" attrs="{'invisible': [('nabl','!=','pass')]}"/>
+                            <field name="nabl"  style="color: red;" attrs="{'invisible': [('nabl','!=','fail')]}"/>
+                            
+
+                        </group>
+
+                        
+                        <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                </sheet>
+            </form>
+        </field>
+    </record>
+  
+    <record id="mechanical_concrete_cube_line1_view" model="ir.ui.view">
+        <field name="name">mechanical.concrete.cube.line1.form</field>
+        <field name="model">mechanical.concrete.cube.line1</field>
+        <field name="arch" type="xml">
+            <form>
+            <group>
+            <group>
+            <field name='sr_no' string="Sr. NO"/>
+                <field name='id_mark' string="ID Mark/Location"/>
+                <field name='length' string="Length (mm)"/>
+                <field name='width' string="Width (mm)"/>
+                <field name='area' string="Area (mm²)"/>
+            </group>
+            <group>
+                <field name='wt_sample' string="Weight of Sample in kg"/>
+                <field name="crushing_load" string="Crushing Load in kN"/>
+                <field name='compressive_strength' string="Compressive Strength N/mm²"/>
+                <field name="parent_id" invisible="1"/>
+            </group>
+            </group>
+                
+            </form>
+        </field>
+    </record>
+
+    </data>
+</odoo>
