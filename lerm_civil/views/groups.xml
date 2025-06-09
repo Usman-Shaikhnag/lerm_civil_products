@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="lerm_civil_group_form" model="ir.ui.view">
+        <field name="name">lerm_civil.group.form</field>
+        <field name="model">lerm_civil.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="discipline"/>
+                            <field name="group"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+
+    </record>
+
+    <record id="lerm_civil_group_action" model="ir.actions.act_window">
+        <field name="name">Group</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm_civil.group</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Group</p>
+        </field>
+
+    </record>
+
+
+    <record id="lerm_civil_parameter_master_action" model="ir.actions.act_window">
+        <field name="name">Parameter Master</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.parameter.master</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Parameter Master</p>
+        </field>
+
+    </record>
+
+    <record id="grade_master_action" model="ir.actions.act_window">
+        <field name="name">Grade Master</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.grade.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Grade Master</p>
+        </field>
+
+    </record>
+
+    
+
+    <record id="lerm_grade_line_tree" model="ir.ui.view">
+        <field name="name">lerm.grade.line.form</field>
+        <field name="model">lerm.grade.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="product_id"/>
+                <field name="grade"/>
+            </tree>
+        </field>
+
+    </record>
+
+    <record id="lerm_size_line_tree" model="ir.ui.view">
+        <field name="name">lerm.size.line.form</field>
+        <field name="model">lerm.size.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="product_id"/>
+                <field name="size"/>
+            </tree>
+        </field>
+
+    </record>
+
+
+    <record id="lerm_civil_datasheet_master_action" model="ir.actions.act_window">
+        <field name="name">Datasheet Master</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.datasheet.master</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Datasheet Master</p>
+        </field>
+    </record>
+
+
+    <menuitem id="lerm_civil_group"
+        name="Group Master"
+        parent="lerm_menu"
+        action="lerm_civil_group_action"
+        sequence="10" />
+
+     <menuitem id="lerm_civil_parameter_master"
+        name="Parameter Master"
+        parent="lerm_menu"
+        action="lerm_civil_parameter_master_action"
+        sequence="11" />
+
+    
+     <menuitem id="grade_master"
+        name="Grade Master"
+        parent="lerm_menu"
+        action="grade_master_action"
+        sequence="12" />
+
+    <menuitem id="lerm_civil_daatasheet_master"
+        name="Datasheet Master"
+        parent="lerm_menu"
+        action="lerm_civil_datasheet_master_action"
+        sequence="11" />
+</odoo>

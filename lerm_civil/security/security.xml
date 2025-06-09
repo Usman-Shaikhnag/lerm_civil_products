@@ -1,0 +1,232 @@
+<odoo>
+    <data  noupdate="1">
+
+        <record model="ir.module.category" id="kes_lerm_access_categories">
+            <field name="name">LERM Civil</field>
+        </record>
+
+        <record model="res.groups" id="kes_confirm_srf">
+            <field name="name">SRF Confirm</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+  
+
+        <record model="res.groups" id="kes_access_srf">
+            <field name="name">SRF</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+        <record model="res.groups" id="srf_sample_editable">
+            <field name="name">SRF Sample Edit</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+        <record model="res.groups" id="kes_srf_backdate_creation_group">
+            <field name="name">SRF Backdate creation</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+        <record model="res.groups" id="lerm_master">
+            <field name="name">Master Data</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+        <record model="res.groups" id="lerm_product_master">
+            <field name="name">Product Master</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+        <record model="res.groups" id="kes_verified_by">
+            <field name="name">Verified by</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+        <record model="res.groups" id="kes_technician_access_group">
+            <field name="name">Technician</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+        <!-- <record model="res.groups" id="kes_technician_access_mechanical">
+            <field name="name">Technician Mechanical</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record> -->
+
+        <record model="res.groups" id="kes_checked_by">
+            <field name="name">Checked by</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+
+        <record model="res.groups" id="kes_job_allocation">
+            <field name="name">Job Allocation</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+        
+
+       <record model="res.groups" id="kes_report">
+            <field name="name">Report</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+        <record model="res.groups" id="kes_quality_manager">
+            <field name="name">Quality Manager</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+
+        <record model="res.groups" id="kes_mechanical">
+            <field name="name">Mechanical</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+        <record model="res.groups" id="kes_chemical">
+            <field name="name">Chemical</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+        <record model="res.groups" id="kes_ndt">
+            <field name="name">NDT</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>        
+
+        <record model="res.groups" id="kes_hod_access_group">
+            <field name="name">Head of Department</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+
+       
+
+        <record id="hod_discipline_record" model="ir.rule">
+            <field name="name">HOD can see only their Discipline</field>
+            <field ref="model_lerm_srf_sample" name="model_id"/>
+            <!-- <field name="domain_force">[('discipline_id.hod.id','=',user.id)]</field> -->
+            <field name="domain_force">[('department_id','=',user.department_id.name)]</field>
+            <field name="groups" eval="[(4, ref('kes_hod_access_group'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="technician_eln_record" model="ir.rule">
+            <field name="name">Technician can only see their eln</field>
+            <field ref="model_lerm_eln" name="model_id"/>
+            <field name="domain_force">[('technician.id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('kes_technician_access_group'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+   
+
+
+        <record id="technician_eln_record_mechanical" model="ir.rule">
+            <field name="name">Technician can only see their eln</field>
+            <field ref="model_lerm_eln" name="model_id"/>
+            <field name="domain_force">[('technician.id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('kes_mechanical'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+       
+
+        
+
+      
+
+        <record id="technician_eln_record_chemical" model="ir.rule">
+            <field name="name">Technician can only see their eln</field>
+            <field ref="model_lerm_eln" name="model_id"/>
+            <field name="domain_force">[('technician.id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('kes_chemical'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="technician_eln_record_ndt" model="ir.rule">
+            <field name="name">Technician can only see their eln</field>
+            <field ref="model_lerm_eln" name="model_id"/>
+            <field name="domain_force">[('technician.id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('kes_ndt'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record model="res.groups" id="kes_admin_access_group">
+            <field name="name">Lerm Admin</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+        <record id="admin_discipline_record" model="ir.rule">
+            <field name="name">Admin can see all Discipline</field>
+            <field ref="model_lerm_srf_sample" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('kes_admin_access_group'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="verified_by_discipline_record" model="ir.rule">
+            <field name="name">Verified can see all Discipline</field>
+            <field ref="model_lerm_srf_sample" name="model_id"/>
+            <!-- <field name="domain_force">[]</field> -->
+           <field name="domain_force">[('department_id','=',user.department_id.name)]</field>
+            <field name="groups" eval="[(4, ref('kes_verified_by'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+        <record id="admin_eln_record" model="ir.rule">
+            <field name="name">Admin can see all ELN</field>
+            <field ref="model_lerm_eln" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('kes_admin_access_group'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+
+        <record id="hod_eln_record" model="ir.rule">
+            <field name="name">HOD can see their discipline ELN</field>
+            <field ref="model_lerm_eln" name="model_id"/>
+            <!-- <field name="domain_force">[]</field> -->
+            <field name="domain_force">[('discipline.hod.id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('kes_hod_access_group'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+
+       <record id="group_no_account_access" model="res.groups">
+            <field name="name">No Account Access</field>
+            <field name="category_id" ref="kes_lerm_access_categories"/>
+        </record>
+
+      
+
+    </data>
+</odoo>

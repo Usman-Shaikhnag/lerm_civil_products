@@ -1,0 +1,4 @@
+DO $$
+DECLARE
+
+END $$;

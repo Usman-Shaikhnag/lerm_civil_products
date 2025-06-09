@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_employee_form_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.form.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='personal_information']" position="after">
+                    <page name="others" string="Others">
+                            <group style="width:50%;margin:20px;">
+                                <field name='signature' widget="image" sclass="oe_avatar" style="height: 50px; width: 200px;"/>
+                            </group>
+                    </page>
+                    
+                </xpath>
+            </field>
+        </record>
+
+
+   
+    </data>
+</odoo>

@@ -1,0 +1,3324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<template id="custom_layout_header_footer_lerm_eln">
+        <div t-attf-class="header article" t-att-style="report_header_style">
+			<div class="row">
+				<t t-if="eln.sample_id.lab_location">
+					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
+						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')"/>
+					</div>
+					
+					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
+						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"/>
+					</div>
+				</t>
+				<t t-else="">
+					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
+						<img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/>
+					</div>
+					
+					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
+						<img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/>
+					</div>
+				</t>
+				
+			</div>
+			<div class="row backgroundimage" style="opacity:0.2; font-size:100px; width:85%; text-align:center;top:500px; right:100px; position: fixed; z-index:-99;">
+				
+				<img src="/lerm_civil/static/src/img/watermark.png" style="max-height:370px;"/>
+			</div>
+			<!-- <div class="container_eln row" style="position: fixed; z-index:99;margin-bottom:20px;">
+				
+			
+					<table style="border:none;">
+						<tr cols="12" style="border:none;">
+							<td colspan="1" style="border:none;"><span></span>
+							</td>
+							<td colspan="1" style="border:none;"><span></span>
+							</td>
+							<td colspan="1" style="border:none;"><span></span>
+							</td>
+							<td colspan="1" style="border:none;"><span></span>
+							</td>
+							<td colspan="1" style="border:none;"><span></span>
+							</td>
+							<td colspan="1" style="border:none;"><span></span>
+							</td>
+							<td colspan="1" style="border:none;"><span><b>Test Report</b></span>
+							</td>
+						</tr>
+					</table>
+			</div> -->
+			<div style="width:100%;text-align:center;">
+				<div style="font-size:1rem"><b>Test Report</b></div>
+			</div>
+			<div class="container_eln row" style="margin-right:4px;margin-left:4px;">
+
+					<table>
+						<tr>
+							<td colspan="3">Test Report no :
+							</td>
+							<!-- <td t-if="(o.sample_id.scope = 'non_nabl'" colspan="3">
+								<span t-field="o.kes_no"/><span>N</span>
+							</td>
+							<td t-if="(nabl)" colspan="3">
+								<span t-field="o.kes_no"/>
+							</td> -->
+							<t t-if="fromEln">
+								<td t-if="(eln.sample_id.scope == 'non_nabl')" colspan="3">
+									<span t-field="o.kes_no"/><span>N</span>
+								</td>
+								<td t-if="(eln.sample_id.scope == 'nabl')" colspan="3">
+									<span t-field="o.kes_no"/>
+								</td>
+							</t>
+							<t t-else="">
+								<td t-if="(eln.sample_id.scope == 'non_nabl') or not nabl" colspan="3">
+									<span t-field="o.kes_no"/><span>N</span>
+								</td>
+								<td t-if="(eln.sample_id.scope == 'nabl') or nabl" colspan="3">
+									<span t-field="o.kes_no"/>
+								</td>
+							</t>
+							<!-- <td t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" colspan="3">
+								<span t-field="o.kes_no"/><span>N</span>
+							</td>
+							<td t-if="(eln.sample_id.scope == 'nabl' or nabl) and not fromEln" colspan="3">
+								<span t-field="o.kes_no"/>
+							</td> -->
+							<td colspan="3">Report Issue Date :
+							</td>
+							<td colspan="3">
+								<span t-field="o.end_date"/>
+							</td>
+							<td colspan="3"  t-if="nabl or fromEln">ULR NO :
+							</td>
+							<td colspan="3" t-if="nabl or fromEln">
+								<span t-field="o.sample_id.ulr_no"/>
+							</td>
+						</tr>
+					</table>
+			</div>
+			<!-- <t t-call="lerm_civil.custom_watermark"/>  -->
+
+			<!-- <div class="first-page">
+				<t t-call="lerm_civil.custom_watermark"/> 
+			</div>
+			<div class="not-first-page">
+				<t t-call="lerm_civil.custom_watermark"/> 
+			</div> -->
+
+			
+        </div>
+		
+        <div t-attf-class="article" t-att-style="report_header_style">
+			
+            <t t-out="0"/>
+				
+        </div>
+		
+		<div t-attf-class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+                <ul class="list-inline mb4 footerQR">
+					<!-- <div style="border-top: 1px solid black;">
+						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 50px; height: 50px;"/>
+					</div> -->
+					<div>
+						<div class="footertext">
+							<t t-if="eln.sample_id.lab_location">
+								<t t-esc="eln.sample_id.lab_location.street"/><t t-esc="eln.sample_id.lab_location.street2"/>
+							</t>
+							<t t-else="">
+								316, The Great Eastern Galleria, Plot-20, Sector-4 Nerul, Navimumbai-400703
+							</t>
+						</div>
+						<div>
+							<!-- <div>
+								<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 70px; height: 70px;"/>
+							</div> -->
+							<div class="footerQR">
+								<div style="padding-right : 20px">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+								</div>
+								
+								<div style="margin-left:90px">
+									<div class="footertext">
+										<span>
+											Email : henry.dsa@esehat.org <span style="padding-left:10px">Website :  www.lerm.in</span> 
+										</span>
+									</div>
+									<div class="footertext">
+										CIN No.: U45209MH2017PTC291168
+									</div>
+									
+									
+								</div>
+								<div  style="padding-left : 80px;">
+									<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 60px; height: 55px;"/>
+								</div>
+							</div>
+						</div>
+					</div>
+                </ul>
+                <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+				
+					
+            </div>	
+        </div>
+	</template>
+
+	<template id="data_sheet_header">
+        <div t-attf-class="header article" t-att-style="report_header_style">
+			<div class="row">
+				<div class="col-12"  style="display: flex; justify-content: space-between;">
+					<!-- <div style="text-align:left;">	
+						FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.material.data_sheet_format_no.name"/>
+					</div>
+					<div style="text-align:middle; margin-top:6px">	
+						Job No. <![CDATA[&nbsp;]]> <span t-esc="eln.kes_no"/>
+					</div>
+					<div style="text-align:right; margin-top:6px;">	
+						End Date. <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
+					</div> -->
+				
+					<span style="text-align:left; display: flex; justify-content: space-between; margin-right: 3rem;" >
+						FORMAT No. <span t-esc="eln.material.data_sheet_format_no.name"/>
+					</span>
+					
+					<span style="text-align:center; display: flex; justify-content: space-between;  margin-left: 3rem;  margin-right: 3rem;">
+						Job No. <span t-esc="eln.kes_no"/>
+					</span>
+					
+					<span style="text-align:right; display: flex; justify-content: space-between;  margin-left: 3rem;  ">
+						Date. <span t-esc="eln.end_date"/>
+					</span>
+				
+					<div style="text-align:center;margin-top:12px">	
+						Esehat Meditech Ltd.
+					</div>
+					<div style="text-align:center;">
+						TEST DATA SHEET
+					</div>
+					<div class="container_eln">
+						<table>
+								<tr>
+									<td colspan="12">
+										<div style="text-align:center;">
+											<span t-esc="eln.group.group"/> <![CDATA[&nbsp;]]> (<span t-esc="eln.material.name"/>)
+										</div>
+										<div style="text-align:center;">
+												<span t-foreach="eln.parameters_result" t-as="r">
+													<span t-if="r['specification'] != '--' and r['specification']">
+														<span t-esc="r['specification']"/> <![CDATA[&nbsp;]]>,<![CDATA[&nbsp;]]>
+													</span>
+												</span>
+										</div>
+									</td>
+								</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+        </div>
+        <div t-attf-class="article" t-att-style="report_header_style">
+            <t t-out="0"/>
+        </div>
+		<div t-attf-class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+                
+				
+                <div t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+	</template>
+
+	<template id="eln_report_template">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+
+			 	<!-- <t t-call="lerm_civil.custom_watermark"/> -->
+
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+				<div class="container_eln">
+
+					<div t-foreach="eln" t-as="o">
+					
+						<table style="margin-top:20px;">
+							<tr>
+								<td colspan="12">#Customer Party Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<!-- <td colspan="12">Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+											,
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td> -->
+								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">#Sample Description : <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						</table>
+						
+						<table>
+							<tr>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Sample Id Mark: <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Size :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">#Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Brand :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">#Consultant Name :
+									<![CDATA[&nbsp;]]>
+										<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Client Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">#Client Reference :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material/Test Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.lab_name"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+					
+					<div style="margin-top:20px;">
+						<u>Results</u>
+					</div>
+					
+
+					<t t-set="non_nabl_parameters" t-value="[]"/>
+					<t t-set="nabl_parameters" t-value="[]"/>
+
+					<t t-foreach="eln.parameters_result" t-as="parameter">
+						<t t-if="parameter['nabl_status'] == 'non-nabl' or eln.sample_id.scope != 'nabl'">
+							<t t-if="'(depend)' not in parameter['parameter'].parameter_name">
+								<t t-set="non_nabl_parameters" t-value="non_nabl_parameters + [parameter]"/>
+							</t>
+						</t>
+						<t t-elif="parameter['nabl_status'] == 'nabl'">
+							<t t-if="'(depend)' not in parameter['parameter'].parameter_name">
+								<t t-set="nabl_parameters" t-value="nabl_parameters + [parameter]"/>
+							</t>
+						</t>
+					</t>
+					
+
+					<t t-if='not nabl'>
+						<t t-set="i" t-value="0"/>
+						<t t-if="len(non_nabl_parameters) &lt;= o.sample_id.page_break">
+							<table>
+								<thead>
+									<tr>
+										<th>
+											<span>
+												Sr. No
+											</span>
+										</th>
+										<th>
+											<span>
+												Test Parameters
+											</span>
+										</th>
+										
+										<th>
+											<span>
+												Results
+											</span>
+										</th>
+
+										<th>
+											<span>
+												Units
+											</span>
+										</th>
+										<th style="max-width: 250px;">
+											<span>
+												
+												<span t-esc="eln.material.specifications"/>
+											</span>
+										</th>
+										<th style="max-width: 200px;">
+											<span>
+												<span t-esc="eln.material.method_reference"/>
+												
+
+											</span>
+										</th>
+										
+										<th t-if="eln.conformity">
+											<span>
+												Confirmity Status
+											</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-foreach="non_nabl_parameters" t-as="parameter">
+										<tr t-if="'(depend)' not in parameter['parameter'].parameter_name">
+											<td>
+												<div>
+													<span t-esc="i + 1"/>
+													<t t-set="i" t-value="i+1"/>
+												</div>
+											</td>
+											<td>
+												<span t-esc="parameter['parameter'].parameter_name"/>
+											</td>
+											<td t-if="parameter['result_type'] == 'number'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+
+
+												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+												
+											</td>
+											<td t-if="parameter['result_type'] == 'char'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<span t-esc="parameter['result_char']"/>
+											</td>
+											<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification_permissible_limit']"/>
+											</td>
+											<!-- <td style="max-width: 250px;">
+												<span t-esc="parameter['test_method'].test_method"/>
+											</td> -->
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification']"/>
+											</td>
+											<!-- <td>
+												<span t-esc="parameter['nabl_status']"/>
+											</td> -->
+											<td t-if="eln.conformity">
+												<span t-esc="parameter['conformity_status']"/>
+											</td>
+										</tr>
+									</t>
+								</tbody>
+							</table>
+						</t>
+						<t t-if="len(non_nabl_parameters) &gt; o.sample_id.page_break">
+							<table>
+								<thead>
+									<tr>
+										<th>
+											<span>
+												Sr. No
+											</span>
+										</th>
+										<th>
+											<span>
+												Test Parameters
+											</span>
+										</th>
+										
+										<th>
+											<span>
+												Results
+											</span>
+										</th>
+
+										<th>
+											<span>
+												Units
+											</span>
+										</th>
+										<th style="max-width: 250px;">
+											<span>
+												
+												<span t-esc="eln.material.specifications"/>
+											</span>
+										</th>
+										<th style="max-width: 200px;">
+											<span>
+												<span t-esc="eln.material.method_reference"/>
+												
+
+											</span>
+										</th>
+										
+										<th t-if="eln.conformity">
+											<span>
+												Confirmity Status
+											</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-foreach="non_nabl_parameters[:o.sample_id.page_break]" t-as="parameter">
+										<tr t-if="'(depend)' not in parameter['parameter'].parameter_name">
+											<td>
+												<div>
+													<span t-esc="i + 1"/>
+													<t t-set="i" t-value="i+1"/>
+												</div>
+											</td>
+											<td>
+												<span t-esc="parameter['parameter'].parameter_name"/>
+											</td>
+											<td t-if="parameter['result_type'] == 'number'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+											</td>
+											<td t-if="parameter['result_type'] == 'char'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<span t-esc="parameter['result_char']"/>
+											</td>
+											<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification_permissible_limit']"/>
+											</td>
+											<!-- <td style="max-width: 250px;">
+												<span t-esc="parameter['test_method'].test_method"/>
+											</td> -->
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification']"/>
+											</td>
+											<!-- <td>
+												<span t-esc="parameter['nabl_status']"/>
+											</td> -->
+											<td t-if="eln.conformity">
+												<span t-esc="parameter['conformity_status']"/>
+											</td>
+										</tr>
+									</t>
+								</tbody>
+							</table>
+							<div style="margin-top:10px; page-break-inside: avoid; text-align: center;">
+								<div class="signatureContainer girdgird" style="display: inline-block;">
+									<div>
+										<div t-if="stamp and stamp == '4-in_report'">
+											<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+										</div>
+										<div style="padding-top:5px">
+											Format No. <span t-esc="eln.material.test_format_no"/>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div style="page-break-before: always;"></div>
+							<table>
+								<thead>
+									<tr>
+										<th>
+											<span>
+												Sr. No
+											</span>
+										</th>
+										<th>
+											<span>
+												Test Parameters
+											</span>
+										</th>
+										
+										<th>
+											<span>
+												Results
+											</span>
+										</th>
+
+										<th>
+											<span>
+												Units
+											</span>
+										</th>
+										<th style="max-width: 250px;">
+											<span>
+												
+												<span t-esc="eln.material.specifications"/>
+											</span>
+										</th>
+										<th style="max-width: 200px;">
+											<span>
+												<span t-esc="eln.material.method_reference"/>
+												
+
+											</span>
+										</th>
+										
+										<th t-if="eln.conformity">
+											<span>
+												Confirmity Status
+											</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-foreach="non_nabl_parameters[o.sample_id.page_break:]" t-as="parameter">
+										<tr t-if="'(depend)' not in parameter['parameter'].parameter_name">
+											<td>
+												<div>
+													<span t-esc="i + 1"/>
+													<t t-set="i" t-value="i+1"/>
+												</div>
+											</td>
+											<td>
+												<span t-esc="parameter['parameter'].parameter_name"/>
+											</td>
+											<td t-if="parameter['result_type'] == 'number'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+												<!-- <span t-esc="str(parameter['result'])"/> -->
+											</td>
+											<td t-if="parameter['result_type'] == 'char'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<span t-esc="parameter['result_char']"/>
+											</td>
+											<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification_permissible_limit']"/>
+											</td>
+											<!-- <td style="max-width: 250px;">
+												<span t-esc="parameter['test_method'].test_method"/>
+											</td> -->
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification']"/>
+											</td>
+											<!-- <td>
+												<span t-esc="parameter['nabl_status']"/>
+											</td> -->
+											<td t-if="eln.conformity">
+												<span t-esc="parameter['conformity_status']"/>
+											</td>
+										</tr>
+									</t>
+								</tbody>
+							</table>
+						</t>
+						
+					</t>
+					
+
+					<t t-if='nabl'>
+						<t t-set="i" t-value="0"/>
+						<t t-if="len(nabl_parameters) &lt;= o.sample_id.page_break">
+							<table>
+								<thead>
+									<tr>
+										<th>
+											<span>
+												Sr. No
+											</span>
+										</th>
+										<th>
+											<span>
+												Test Parameters
+											</span>
+										</th>
+										
+										<th>
+											<span>
+												Results
+											</span>
+										</th>
+
+										<th>
+											<span>
+												Units
+											</span>
+										</th>
+										<th style="max-width: 250px;">
+											<span>
+												
+												<span t-esc="eln.material.specifications"/>
+											</span>
+										</th>
+										<th style="max-width: 200px;">
+											<span>
+												<span t-esc="eln.material.method_reference"/>
+												
+
+											</span>
+										</th>
+										
+										<th t-if="eln.conformity">
+											<span>
+												Confirmity Status
+											</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-foreach="nabl_parameters" t-as="parameter">
+										<tr t-if="parameter['parameter'].parameter_name">
+											<td>
+												<div>
+													<span t-esc="i + 1"/>
+													<t t-set="i" t-value="i+1"/>
+												</div>
+											</td>
+											<td>
+												<span t-esc="parameter['parameter'].parameter_name"/>
+											</td>
+											<td t-if="parameter['result_type'] == 'number'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+												<!-- <span t-esc="str(parameter['result'])"/> -->
+											</td>
+											<td t-if="parameter['result_type'] == 'char'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<span t-esc="parameter['result_char']"/>
+											</td>
+											<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification_permissible_limit']"/>
+											</td>
+											<!-- <td style="max-width: 250px;">
+												<span t-esc="parameter['test_method'].test_method"/>
+											</td> -->
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification']"/>
+											</td>
+											<!-- <td>
+												<span t-esc="parameter['nabl_status']"/>
+											</td> -->
+											<td t-if="eln.conformity">
+												<span t-esc="parameter['conformity_status']"/>
+											</td>
+										</tr>
+									</t>
+								</tbody>
+							</table>
+						</t>
+						<t t-if="len(nabl_parameters) &gt; o.sample_id.page_break">
+							<table>
+								<thead>
+									<tr>
+										<th>
+											<span>
+												Sr. No
+											</span>
+										</th>
+										<th>
+											<span>
+												Test Parameters
+											</span>
+										</th>
+										
+										<th>
+											<span>
+												Results
+											</span>
+										</th>
+
+										<th>
+											<span>
+												Units
+											</span>
+										</th>
+										<th style="max-width: 250px;">
+											<span>
+												
+												<span t-esc="eln.material.specifications"/>
+											</span>
+										</th>
+										<th style="max-width: 200px;">
+											<span>
+												<span t-esc="eln.material.method_reference"/>
+												
+
+											</span>
+										</th>
+										
+										<th t-if="eln.conformity">
+											<span>
+												Confirmity Status
+											</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-foreach="nabl_parameters[:o.sample_id.page_break]" t-as="parameter">
+										<tr t-if="parameter['parameter'].parameter_name">
+											<td>
+												<div>
+													<span t-esc="i + 1"/>
+													<t t-set="i" t-value="i+1"/>
+												</div>
+											</td>
+											<td>
+												<span t-esc="parameter['parameter'].parameter_name"/>
+											</td>
+											<td t-if="parameter['result_type'] == 'number'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+												<!-- <span t-esc="str(parameter['result'])"/> -->
+											</td>
+											<td t-if="parameter['result_type'] == 'char'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<span t-esc="parameter['result_char']"/>
+											</td>
+											<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification_permissible_limit']"/>
+											</td>
+											<!-- <td style="max-width: 250px;">
+												<span t-esc="parameter['test_method'].test_method"/>
+											</td> -->
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification']"/>
+											</td>
+											<!-- <td>
+												<span t-esc="parameter['nabl_status']"/>
+											</td> -->
+											<td t-if="eln.conformity">
+												<span t-esc="parameter['conformity_status']"/>
+											</td>
+										</tr>
+									</t>
+								</tbody>
+							</table>
+							<div style="margin-top:10px; page-break-inside: avoid; text-align: center;">
+								<div class="signatureContainer girdgird" style="display: inline-block;">
+									<div>
+										<div t-if="stamp and stamp == '4-in_report'">
+											<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+										</div>
+										<div style="padding-top:5px">
+											Format No. <span t-esc="eln.material.test_format_no"/>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div style="page-break-before: always;"></div>
+							<table>
+								<thead>
+									<tr>
+										<th>
+											<span>
+												Sr. No
+											</span>
+										</th>
+										<th>
+											<span>
+												Test Parameters
+											</span>
+										</th>
+										
+										<th>
+											<span>
+												Results
+											</span>
+										</th>
+
+										<th>
+											<span>
+												Units
+											</span>
+										</th>
+										<th style="max-width: 250px;">
+											<span>
+												
+												<span t-esc="eln.material.specifications"/>
+											</span>
+										</th>
+										<th style="max-width: 200px;">
+											<span>
+												<span t-esc="eln.material.method_reference"/>
+												
+
+											</span>
+										</th>
+										
+										<th t-if="eln.conformity">
+											<span>
+												Confirmity Status
+											</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-foreach="nabl_parameters[o.sample_id.page_break:]" t-as="parameter">
+										<tr t-if="parameter['parameter'].parameter_name">
+											<td>
+												<div>
+													<span t-esc="i + 1"/>
+													<t t-set="i" t-value="i+1"/>
+												</div>
+											</td>
+											<td>
+												<span t-esc="parameter['parameter'].parameter_name"/>
+											</td>
+											<td t-if="parameter['result_type'] == 'number'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+												<!-- <span t-esc="str(parameter['result'])"/> -->
+											</td>
+											<td t-if="parameter['result_type'] == 'char'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<span t-esc="parameter['result_char']"/>
+											</td>
+											<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification_permissible_limit']"/>
+											</td>
+											<!-- <td style="max-width: 250px;">
+												<span t-esc="parameter['test_method'].test_method"/>
+											</td> -->
+											<td style="max-width: 250px;">
+												<span t-esc="parameter['specification']"/>
+											</td>
+											<!-- <td>
+												<span t-esc="parameter['nabl_status']"/>
+											</td> -->
+											<td t-if="eln.conformity">
+												<span t-esc="parameter['conformity_status']"/>
+											</td>
+										</tr>
+									</t>
+								</tbody>
+							</table>
+						</t>
+						
+					</t>
+					
+
+					
+
+					<!-- <t t-set="split_data" t-value="eln.parameters_result.split(',')"/>
+					<t t-set="data_length" t-value="len(split_data or [])"/>
+					<t t-foreach="range(0, data_length, 3)" t-as="index"> -->
+					
+
+
+
+
+					<div style="page-break-inside: avoid;">
+						<div style="margin-top:10px" class="noteContainer">
+							<div>
+								<b>Note :-</b>
+							</div>
+							<div>
+								<ul>
+									<li>
+										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+									</li>
+									<li>
+										Sample(s) was/were not drawn by laboratory.
+									</li>
+									<li>
+										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+									</li>
+									<li>
+											# - Information provided by the customer.
+									</li>
+									 <li t-if="eln.has_witness">
+										<p>Test witnessed by : <span t-esc="eln.witness_name"/></p>
+									</li>
+									<li t-if="eln.remarks">
+										<span t-esc="eln.remarks"/>
+									</li>
+								</ul>
+							</div>
+						</div>
+						
+						<div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
+						
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+							<div>
+								<div t-if="stamp and stamp == '4-in_report'">
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								<!-- <div>
+									<b>
+										Chemical Department ()
+									</b>
+								</div> -->
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+					   </div>
+					
+			
+						<div style="text-align:center;margin-top:25px">
+							......End of Report......
+						</div>
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
+
+	<template id="datasheet_report_template">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.data_sheet_header">
+				<!-- <div style="text-align:center;">
+					<p style="font-size:15px"><b>Test Data Sheet</b></p>
+				</div> -->
+				<div class="container_eln" style="margin-top:5px">
+					<div t-foreach="eln" t-as="o">
+						<table>
+							<tr cols="12">
+								<td colspan="6">Job no :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Material :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.technician.name"/>
+								</td>
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+						</table>
+					</div>
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Parameters
+										</span>
+									</th>
+
+									<th>
+										<span>
+											Identifiers
+										</span>
+									</th>
+									<th>
+										<span>
+											Inputs
+										</span>
+									</th>
+									<th>
+										<span>
+											Values
+										</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="datasheet" t-as="r">
+									<td>
+										<span t-esc="r['parameter_name']"/>
+									</td>
+									<td>
+										<span t-esc="r['identifier']"/>
+									</td>
+									<td>
+										<span t-esc="r['inputs']"/>
+									</td>
+									<td>
+										<span t-esc="r['value']"/>
+										 <!-- <span t-esc="'{:.{}f}'.format(r['value'], r['decimal'])"/> -->
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- <div class="authorizeRowDataSheet">
+							<div>
+								
+								<div>
+									<b>
+										(JR Chemist)
+									</b>
+								</div>
+								<div>
+									<b>
+										Tested By
+									</b>
+								</div>
+							</div>
+							<div style="margin-left:500px">
+								
+								<div>
+									<b>
+										Chemical Department (HOD)
+									</b>
+								</div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+							</div>
+						</div> -->
+							<div class="authorizeRowDataSheet">
+				<div>
+					<div>
+						<b>
+							Tested By 
+						</b>
+						
+					</div>
+					<div style="height:40px">
+
+					</div>
+					<div>
+						<b>
+						<span t-esc="eln.sample_id.filled_by.name"/>
+						</b>
+					</div>
+					<div>
+						<b>
+							(<span t-esc="eln.sample_id.filled_by.job_title"/>)
+						</b>
+					</div>
+				</div>
+				
+				<div style="margin-left:500px">
+							
+					<div>
+						<b>
+							Checked By
+						</b>
+					</div>
+					<div style="height: 40px;">
+						<t t-if="eln.sample_id.checkby_signature_required">
+							<div t-if="eln.sample_id.check_by.employee_id.signature">
+								<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+							</div>
+							
+						</t>
+					</div>
+					<div>
+						<b>
+						<span t-esc="eln.sample_id.check_by.name"/>
+						</b>
+					</div>
+					
+					 <div>
+						<b>
+							(<span t-esc="eln.sample_id.check_by.job_title"/>)
+						</b>
+					</div>
+				</div>
+			</div>
+
+					<!-- <div style="text-align:center;margin-top:25px">
+						......End of Report......
+					</div> -->
+
+					
+				</div>
+			</t>
+		</t>
+	</template>
+
+
+	
+
+	<template id="cement_datasheet">
+		<t t-call="web.html_container">
+		   <t t-call="web.basic_layout">
+			 <t t-call="lerm_civil.data_sheet_header_generaltemplate">
+                <div style="text-align:center;font-size:18px">
+                    Cement
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+					<div t-if="data.normal_consistency_visible">
+					
+
+						<div style="text-align:center;font-size:18px">
+							Normal Consistency
+						</div>
+						
+				
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_percent_normal"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_normal"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_normal"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_normal" />
+								</td>
+							</tr>
+							<tr cols="12" style="margin-top:20px">
+								<td colspan="6">Weight of Cement(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_cement_trial1"/>
+									
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Water Required(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_water_req_trial1"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Penetraion of vicat's Plunger (mm) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.penetration_of_vicat_plunger_trial1"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Normal Consistency (%) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.normal_consistency_trial1"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- Setting time  -->
+
+					<div t-if="data.setting_time_visible">
+						<div style="text-align:center;font-size:18px">
+							Setting Time
+						</div>
+						<table>
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_percent_setting"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_setting"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_setting"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_setting"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Cement(g) :
+									<![CDATA[&nbsp;]]>
+									<!-- <span t-field="data.material.name"/> -->
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_cement_setting_time"/>
+								</td>
+							</tr>
+
+							<tr cols="12">
+								<td colspan="12">
+									<h6>
+										<span t-field="data.initial_setting_time"/>
+									</h6>
+								</td>
+							</tr>
+
+							<tr cols="12">
+								<td colspan="6">The Time When water is added to cement (t1) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.time_water_added"/>
+								</td>
+							</tr>
+							
+
+							<tr cols="12">
+								<td colspan="6">The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.time_needle_fails"/>
+								</td>
+							</tr>
+							
+							<tr cols="12">
+								<td colspan="6">Initial Setting Time (t2-t1) (Hours) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.initial_setting_time_hours"/>
+								</td>
+							</tr>
+
+							<tr cols="12">
+								<td colspan="6">Initial Setting Time :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.initial_setting_time_minutes"/>
+								</td>
+							</tr>
+						</table>
+						<table>
+							<tr cols="12">
+								<td colspan="12">
+									<h6>
+										<span t-field="data.final_setting_time"/>
+									</h6>
+								</td>
+							</tr>
+
+							<tr cols="12">
+								<td colspan="6">The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.time_needle_make_impression"/>
+								</td>
+							</tr>
+							
+
+							<tr cols="12">
+								<td colspan="6">Final Setting Time (t2-t1) (Hours) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.final_setting_time_hours"/>
+								</td>
+							</tr>
+							
+							<tr cols="12">
+								<td colspan="6">Final Setting Time :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.final_setting_time_minutes"/>
+								</td>
+							</tr>
+
+							
+						</table>
+					</div>
+
+					<!-- Density  -->
+					<div t-if="data.density_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Density
+						</div>
+						<table>
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_percent_density"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_density"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_density"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_density"/>
+								</td>
+							</tr>
+
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Trial 1
+								</td>
+								<td colspan="6">Trial 2
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Wt. of Cement(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_cement_density_trial1"/>
+								</td>
+								<td colspan="6">Wt. of Cement(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_cement_density_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Initial Volume of kerosine (ml)V1 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.initial_volume_kerosene_trial1"/>
+								</td>
+								<td colspan="6">Initial Volume of kerosine (ml)V1 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.initial_volume_kerosene_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Final Volume of kerosine and Cement (After immersion in constant water bath) (ml) V2 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.final_volume_kerosene_trial1"/>
+								</td>
+								<td colspan="6">Final Volume of kerosine and Cement (After immersion in constant water bath) (ml) V2 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.final_volume_kerosene_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Displaced volume (cm³) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.displaced_volume_trial1"/>
+								</td>
+								<td colspan="6">Displaced volume (cm³) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.displaced_volume_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Density (g/cm³) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_trial1"/>
+								</td>
+								<td colspan="6">Density (g/cm³) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.average_density"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- Soundness  -->
+
+
+					<div t-if="data.soundness_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Soundness by Le-Chatelier Method
+						</div>
+						<table>
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_percent_soundness"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_soundness"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_soundness"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_soundness"/>
+								</td>
+							</tr>
+
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Weight of Cement(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_cement_soundness"/>
+								</td>
+								<td colspan="6">Weight of water required(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_water_req_soundness"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+
+							<tr cols="12">
+								<td colspan="3">Sr no 
+								</td>
+								<td colspan="3">Intial distance separating the indicator points (L1).mm 
+								</td>
+								<td colspan="3">Final distance separating the indicator points (L2).mm
+								</td>
+								<td colspan="3">Expansion
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.soundness_table" t-as="r">
+								<td colspan="3">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="3">
+									<span t-esc="r['initial_distance']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['final_distance']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['expansion']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_soundness"/>
+								</td>
+								<td colspan="6">Expansion :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.expansion_soundness"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- Dry sieving  -->
+
+					<div t-if="data.dry_sieving_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Fineness by Dry Sieving
+						</div>
+						<table>
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_percent_dry_sieving"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_dry_sieving"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_dry_sieving"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_dry_sieving"/>
+								</td>
+							</tr>
+
+						</table>
+						
+						<table style="margin-top:20px">
+
+							<tr cols="12">
+								<td colspan="3">Sr no 
+								</td>
+								<td colspan="3">Sample Weight(g) 
+								</td>
+								<td colspan="3">Retained Weight on 90 mic sieve (g)
+								</td>
+								<td colspan="3">Fineness by dry sieving %
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.dry_sieving_table" t-as="r">
+								<td colspan="3">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="3">
+									<span t-esc="r['sample_weight_fineness']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['retained_weight']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['fineness']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_fineness"/>
+								</td>
+								<td colspan="6">Fineness by dry sieving % :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.fineness_dry_sieving"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- Compressive Strength  -->
+
+					<div t-if="data.compressive_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Compressive Strength
+						</div>
+						<table>
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_percent_compressive"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_compressive"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_compressive"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_compressive"/>
+								</td>
+							</tr>
+
+						</table>
+						<table style="margin-top:20px">
+							
+							<tr cols="12">
+								<td colspan="6">Wt. of Cement(g) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_cement_compressive"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Standard Sand (g) Grade-I :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_standard_sand_grade1"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Standard Sand (g) Grade-II :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_standard_sand_grade2"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Standard Sand (g) Grade-III :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_standard_sand_grade3"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Total Weight :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.total_weight"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Quantity of Water :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.quantity_of_water"/>
+								</td>
+								
+							</tr>
+						</table>
+
+
+						<!-- 3 days  -->
+
+
+						<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.status_3days">
+							3 Days
+						</div>
+						<table style="margin-top:20px" t-if="data.status_3days">
+						<tr cols="12">
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.casting_date_3days"/>
+								</td>
+								<td colspan="6">Date of Testing :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.testing_date_3days"/>
+								</td>
+							</tr>
+						</table>
+						
+						<table style="margin-top:20px" t-if="data.status_3days">
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Length in mm 
+								</td>
+								<td colspan="1">Width in mm
+								</td>
+								<td colspan="2">Crosssectional Area
+								</td>
+								<td colspan="2">wt of Cement Cube in gm
+								</td>
+								<td colspan="2">Crushing Load in KN
+								</td>
+								<td colspan="3">Compressive Strength (N/mm²)
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.casting_3_days_tables" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="1">
+									<span t-esc="r['length']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['width']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crosssectional_area']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['wt_of_cement_cube']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crushing_load']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['compressive_strength']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_casting_3days"/>
+								</td>
+								<td colspan="6">Compressive Strength :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.compressive_strength_3_days"/>
+								</td>
+							</tr>
+						</table>
+
+
+						<!-- 7 Days  -->
+
+						<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.status_7days">
+							7 Days
+						</div>
+						<table style="margin-top:20px" t-if="data.status_7days">
+						<tr cols="12">
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.casting_date_7days"/>
+								</td>
+								<td colspan="6">Date of Testing :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.testing_date_7days"/>
+								</td>
+							</tr>
+						</table>
+						
+						<table style="margin-top:20px" t-if="data.status_7days">
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Length in mm 
+								</td>
+								<td colspan="1">Width in mm
+								</td>
+								<td colspan="2">Crosssectional Area
+								</td>
+								<td colspan="2">wt of Cement Cube in gm
+								</td>
+								<td colspan="2">Crushing Load in KN
+								</td>
+								<td colspan="3">Compressive Strength (N/mm²)
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.casting_7_days_tables" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="1">
+									<span t-esc="r['length']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['width']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crosssectional_area']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['wt_of_cement_cube']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crushing_load']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['compressive_strength']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_casting_7days"/>
+								</td>
+								<td colspan="6">Compressive Strength :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.compressive_strength_7_days"/>
+								</td>
+							</tr>
+						</table>
+
+						<!-- 28 Days  -->
+
+						<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.status_28days">
+							28 Days
+						</div>
+						<table style="margin-top:20px" t-if="data.status_28days">
+						<tr cols="12">
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.casting_date_28days"/>
+								</td>
+								<td colspan="6">Date of Testing :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.testing_date_28days"/>
+								</td>
+							</tr>
+						</table>
+						
+						<table style="margin-top:20px" t-if="data.status_28days">
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Length in mm 
+								</td>
+								<td colspan="1">Width in mm
+								</td>
+								<td colspan="2">Crosssectional Area
+								</td>
+								<td colspan="2">wt of Cement Cube in gm
+								</td>
+								<td colspan="2">Crushing Load in KN
+								</td>
+								<td colspan="3">Compressive Strength (N/mm²)
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.casting_28_days_tables" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="1">
+									<span t-esc="r['length']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['width']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crosssectional_area']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['wt_of_cement_cube']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crushing_load']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['compressive_strength']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_casting_28days"/>
+								</td>
+								<td colspan="6">Compressive Strength :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.compressive_strength_28_days"/>
+								</td>
+							</tr>
+						</table>
+						
+					</div>
+
+					<!-- Fineness By Blaine Air Permeability Method -->
+					<div t-if="data.fineness_blaine_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Fineness By Blaine Air Permeability Method
+						</div>
+						<table>
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_percent_fineness"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_fineness"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_fineness"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_fineness"/>
+								</td>
+							</tr>
+
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Observation
+								</td>
+								<td colspan="3">Trial 1
+								</td>
+								<td colspan="3">Trial 2
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of mercury before placing the sample in the permeability cell  (m₁),g. :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.weight_of_mercury_before_trial1"/>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.weight_of_mercury_before_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of mercury after placing the sample in the permeability cell  (m₂),g.
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.weight_of_mercury_after_trail1"/>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.weight_of_mercury_after_trail2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Density of mercury :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_of_mercury"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Bed Volume (V=m₂-m₁/D),cm3. :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.bed_volume_trial1"/>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.bed_volume_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Average Bed Volume (cm3) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_bed_volume"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Difference between the two Values :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.difference_between_2_values"/>
+								</td>
+							</tr>
+							
+						</table>
+						<div style="text-align:center;font-size:15px;margin-top:20px" t-if="data.fineness_blaine_visible">
+							Determination of Apparatus Constant (k)
+						</div>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Density :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_fineness_reference"/>
+								</td>
+								<td colspan="6">Mass of Sample taken(g)
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.mass_of_sample_taken_fineness_reference"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Time(t),sec. :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_fineness_trial1"/>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_fineness_trial2"/>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_fineness_trial3"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_time_fineness"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">S0 is the Specific surface of reference sample (m²/kg) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.specific_surface_of_reference_sample"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">ɳₒ is the Air viscosity at the mean of the three temperatures :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.air_viscosity_of_three_temp"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">ρ0 is the Density of reference sample  (g/cm3) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_of_reference_sample"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">t0 is the Mean of three measured times (sec) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.mean_of_three_measured_times"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Apparatus Constant(k) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.apparatus_constant"/>
+								</td>
+							</tr>
+						</table>
+						<div style="text-align:center;font-size:15px;margin-top:20px" t-if="data.fineness_blaine_visible">
+							Determination of Fineness
+						</div>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Density :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_fineness_calculated"/>
+								</td>
+								<td colspan="6">Mass of Sample taken(g)
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.mass_of_sample_taken_fineness_calculated"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Time(t),sec. :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_sample_trial1"/>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_sample_trial2"/>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_sample_trial3"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_sample_time"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Fineness of Sample :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.fineness_of_sample"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Fineness By Blaine Air Permeability Method (m2/kg) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.fineness_air_permeability"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+
+					<div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									(JR Chemist)
+								</b>
+							</div>
+							<div>
+								<b>
+									Tested By
+								</b>
+							</div>
+						</div>
+						<div style="margin-left:500px">
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+								</b>
+							</div>
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+						</div>
+					</div>
+				</div>
+			  </t>
+			</t>
+		</t>
+	</template>
+
+
+	
+	<template id="microsilica_datasheet">
+		<t t-call="web.html_container">
+		<t t-call="lerm_civil.data_sheet_header_generaltemplate">
+			<div style="text-align:center;font-size:18px">
+				Microsilica
+			</div>
+			<div class="container_eln" style="margin-top:5px">
+					<!--1 Accelerated pozzolanic activity index with portland cement , 7 Days in % -->
+
+				<div t-if="data.compressive_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+							Accelerated pozzolanic activity index with portland cement , 7 Days in %
+					</div>
+					
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_percent_compressive"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.start_date_compressive"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_compressive"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.end_date_compressive"/>
+								</td>
+							</tr>
+								
+						</table>
+						<table style="margin-top: 20px">
+								
+							
+							<tr>
+								<td colspan="2" style="text-align: center; font-size: 18px;">
+									Compressive Strength of Test Mixture
+
+								</td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;">High Range water reducer (g)</td>
+								<td style="text-align: center;"><span t-field="data.high_range_compressive"/></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;">Weight of Microsilica (g)</td>
+								<td style="text-align: center;"><span t-field="data.wt_of_microsilica"/></td>
+							</tr>
+							
+							<tr>
+								<td style="font-weight: bold;">Weight of Cement (g)</td>
+								<td style="text-align: center;"><span t-field="data.wt_of_cement_compressive"/></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-I</td>
+								<td style="text-align: center;"><span t-field="data.wt_of_standerd_comp1"/></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-II</td>
+								<td style="text-align: center;"><span t-field="data.wt_of_standerd_comp2"/></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-III</td>
+								<td style="text-align: center;"><span t-field="data.wt_of_standerd_comp3"/></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;">Quantity of Water (g)</td>
+								<td style="text-align: center;"><span t-field="data.quantity_water"/></td>
+							</tr>
+						</table>
+
+						<table style="margin-top: 20px">
+							<tr>
+								<td colspan="2" style="text-align: center; font-size: 18px;">
+									Calculation of Flow (Acceptable : 100 to 115 %)
+								</td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">Sr. No.</td>
+								<td style="text-align: center; font-weight: bold;">Measured Values</td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">1</td>
+								<td style="text-align: center;"><span t-field="data.measured_value1"/></td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">2</td>
+								<td style="text-align: center;"><span t-field="data.measured_value2"/></td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">3</td>
+								<td style="text-align: center;"><span t-field="data.measured_value3"/></td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">4</td>
+								<td style="text-align: center;"><span t-field="data.measured_value4"/></td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">Average</td>
+								<td style="text-align: center;"><span t-field="data.average_measured" t-options='{"widget": "float", "precision": 2}'/></td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">% Flow</td>
+								<td style="text-align: center;"><span t-field="data.percent_flow" t-options='{"widget": "float", "precision": 2}'/></td>
+							</tr>
+						</table>
+
+						<!-- 7 Days  -->
+
+						<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.status_7days">
+							7 Days
+						</div>
+						<table style="margin-top:20px" t-if="data.status_7days">
+						<tr cols="12">
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.casting_date_7days"/>
+								</td>
+								<td colspan="6">Date of Testing :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.testing_date_7days"/>
+								</td>
+							</tr>
+						</table>
+								
+						<table style="margin-top:20px" t-if="data.status_7days">
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Length in mm 
+								</td>
+								<td colspan="1">Width in mm
+								</td>
+								<td colspan="2">Crosssectional Area
+								</td>
+								<td colspan="2">wt of Cement Cube in gm
+								</td>
+								<td colspan="2">Crushing Load in KN
+								</td>
+								<td colspan="3">Compressive Strength (N/mm²)
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.casting_7_days_tables" t-as="r">
+								<td colspan="1" style="text-align: center;">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r['length']"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r['width']"/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['crosssectional_area']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['wt_of_cement_cube']"/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['crushing_load']"/>
+								</td>
+								<td colspan="3" style="text-align: center;">
+									<span t-esc="r['compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+									
+						<table style="margin-top: 20px">
+							<tr>
+								<td style="font-weight: bold;">Average</td>
+								<td style="text-align: center;"><span t-field="data.average_casting_7days" t-options='{"widget": "float", "precision": 2}'/></td>
+							</tr>
+						</table>
+						<table style="margin-top: 20px">
+						
+					
+							<tr>
+								<td colspan="2" style="text-align: center; font-size: 18px;">
+									Compressive Strength of control Sample
+
+								</td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;">Weight of Cement (g)</td>
+								<td style="text-align: center;"><span t-field="data.wt_of_cement"/></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;">Weight of Standard Sand (g)Grade-I</td>
+								<td style="text-align: center;"><span t-field="data.wt_of_sand1"/></td>
+							</tr>
+							
+							<tr>
+								<td style="font-weight: bold;">Weight of Standard Sand (g)Grade-II</td>
+								<td style="text-align: center;"><span t-field="data.wt_of_sand2"/></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;">Weight of Standard Sand (g)Grade-III</td>
+								<td style="text-align: center;"><span t-field="data.wt_of_sand3"/></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;">Quantity of Water (g)</td>
+								<td style="text-align: center;"><span t-field="data.quanity_of_water"/></td>
+							</tr>
+						</table>
+						<table style="margin-top: 20px">
+							<tr>
+								<td colspan="2" style="text-align: center; font-size: 18px;">
+									Calculation of Flow (Acceptable : 100 to 115 %)
+								</td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">Sr. No.</td>
+								<td style="text-align: center; font-weight: bold;">Measured Values</td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">1</td>
+								<td style="text-align: center;"><span t-field="data.sample_measured_value1"/></td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">2</td>
+								<td style="text-align: center;"><span t-field="data.sample_measured_value2"/></td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">3</td>
+								<td style="text-align: center;"><span t-field="data.sample_measured_value3"/></td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">4</td>
+								<td style="text-align: center;"><span t-field="data.sample_measured_value4"/></td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">Average</td>
+								<td style="text-align: center;"><span t-field="data.sample_average_measured" t-options='{"widget": "float", "precision": 2}'/></td>
+							</tr>
+							<tr>
+								<td style="text-align: center; font-weight: bold;">% Flow</td>
+								<td style="text-align: center;"><span t-field="data.sample_percent_flow" t-options='{"widget": "float", "precision": 2}'/></td>
+							</tr>
+						</table>
+
+						<!-- 7 Days  -->
+
+						<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.control_status_7days">
+							7 Days
+						</div>
+						<table style="margin-top:20px" t-if="data.control_status_7days">
+						<tr cols="12">
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.control_casting_date_7days"/>
+								</td>
+								<td colspan="6">Date of Testing :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.control_testing_date_7days"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px" t-if="data.control_status_7days">
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Length in mm 
+								</td>
+								<td colspan="1">Width in mm
+								</td>
+								<td colspan="2">Crosssectional Area
+								</td>
+								<td colspan="2">wt of Cement Cube in gm
+								</td>
+								<td colspan="2">Crushing Load in KN
+								</td>
+								<td colspan="3">Compressive Strength (N/mm²)
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.control_casting_7_days_tables" t-as="r">
+								<td colspan="1" style="text-align: center;">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r['control_length']"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r['control_width']"/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['control_crosssectional_area']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['control_wt_of_cement_cube']"/>
+								</td>
+								<td colspan="2" style="text-align: center;">
+									<span t-esc="r['control_crushing_load']"/>
+								</td>
+								<td colspan="3" style="text-align: center;">
+									<span t-esc="r['control_compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top: 20px">
+							<tr>
+								<td style="font-weight: bold;">Average</td>
+								<td style="text-align: center;"><span t-field="data.control_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;">Compressive Strength of  Sample (%)</td>
+								<td style="text-align: center;"><span t-field="data.control_compressive_strength_7_days" t-options='{"widget": "float", "precision": 2}'/></td>
+							</tr>
+						</table>
+				</div>
+
+					<!--2 Oversize % Retained on 45 Micron IS sieve -->
+				<div t-if="data.oversize_retain_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+							Oversize % Retained on 45 Micron IS sieve
+					</div>
+					<table>
+						<tr cols="12">
+							<td colspan="6">Temperature :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.temp_percent_oversize"/>
+							</td>
+							<td colspan="6">Test Start Date :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.start_date_oversize"/>
+							</td>
+						</tr>
+						<tr cols="12">
+							<td colspan="6">Humidity :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.humidity_percent_oversize"/>
+							</td>
+							<td colspan="6">Test End Date :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.end_date_oversize"/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top:20px">
+
+						<tr cols="12">
+							<td colspan="3">Sr no 
+							</td>
+							<td colspan="3">Sample Weight(g) 
+							</td>
+							<td colspan="3">Retained Weight on 45 Micron Sieve (g)
+							</td>
+							<td colspan="3">% Weight Retained
+							</td>
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.oversize_retained_tables" t-as="r">
+							<td colspan="3" style="text-align: center;">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['wt_sample']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['wt_retain']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['retained_percent_wt']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top: 20px">
+						<tr>
+							<td style="font-weight: bold;">Average</td>
+							<td style="text-align: center;"><span t-field="data.retain_wt_avrg" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">% Weight Retained</td>
+							<td style="text-align: center;"><span t-field="data.retain_wt_rounded"/></td>
+						</tr>
+					</table>
+				</div>
+
+					<!--3 Specific Gravity -->
+
+				<div t-if="data.specific_gravity_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+							Specific Gravity
+					</div>
+					<table>
+						<tr cols="12">
+							<td colspan="6">Temperature :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.temp_percent_specific"/>
+							</td>
+							<td colspan="6">Test Start Date :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.start_date_specific"/>
+							</td>
+						</tr>
+						<tr cols="12">
+							<td colspan="6">Humidity :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.humidity_percent_specific"/>
+							</td>
+							<td colspan="6">Test End Date :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.end_date_specific"/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top:20px">
+
+						<tr cols="12">
+							<td colspan="3">Trial 
+							</td>
+							<td colspan="3">Mass of Micrsilica (g)
+							</td>
+							<td colspan="3">Initial Volume of kerosine (ml)V1
+							</td>
+							<td colspan="3">Final Volume of kerosine and Cement (After immersion in constant water bath) (ml) V2
+							</td>
+							<td colspan="3">Displaced volume (cm³)
+							</td>
+							<td colspan="3">Specific gravity
+							</td>
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.specific_gravity_tables" t-as="r">
+							<td colspan="3" style="text-align: center;">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['mass_of_microsilica']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['initial_vol_kerosine']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['final_vol_kero_cement']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['displaced_volume']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['spe_gravt_microsilica']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top: 20px">
+						<tr>
+							<td style="font-weight: bold;">Average</td>
+							<td style="text-align: center;"><span t-field="data.specific_gravity_avrg" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>	
+				</div>
+
+					<!--4 Compressive Strength -->
+
+				<div t-if="data.compressive_strength_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+						Compressive Strength	
+					</div>
+					<table>
+						<tr cols="12">
+							<td colspan="6">Temperature :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.temp_percent_cmp_strngth"/>
+							</td>
+							<td colspan="6">Test Start Date :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.start_date_cmp_strngth"/>
+							</td>
+						</tr>
+						<tr cols="12">
+							<td colspan="6">Humidity :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.humidity_percent_cmp_strngth"/>
+							</td>
+							<td colspan="6">Test End Date :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.end_date_cmp_strngth"/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top: 20px">
+								
+							
+						<tr>
+							<td colspan="2" style="text-align: center; font-size: 18px;">
+								Compressive Strength of Test Mortar
+
+							</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">N (as per IS 15388)</td>
+							<td style="text-align: center;"><span t-field="data.n_is"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Microsilica (100*N)</td>
+							<td style="text-align: center;"><span t-field="data.microsilica_wt"/></td>
+						</tr>
+						
+						<tr>
+							<td style="font-weight: bold;">Weight of Cement (g)</td>
+							<td style="text-align: center;"><span t-field="data.cement_wt"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-I</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_standerd_sand1"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-II</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_standerd_sand2"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-III</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_standerd_sand3"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Quantity of Water (g)</td>
+							<td style="text-align: center;"><span t-field="data.water_quantity"/></td>
+						</tr>
+					</table>
+					<table style="margin-top: 20px">
+						<tr>
+							<td colspan="2" style="text-align: center; font-size: 18px;">
+								Calculation of Flow (Acceptable : 105 ± 5 %)
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">Sr. No.</td>
+							<td style="text-align: center; font-weight: bold;">Measured Values</td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">1</td>
+							<td style="text-align: center;"><span t-field="data.comp_measured_value1"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">2</td>
+							<td style="text-align: center;"><span t-field="data.comp_measured_value2"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">3</td>
+							<td style="text-align: center;"><span t-field="data.comp_measured_value3"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">4</td>
+							<td style="text-align: center;"><span t-field="data.comp_measured_value4"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">Average</td>
+							<td style="text-align: center;"><span t-field="data.comp_average_measured" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">% Flow</td>
+							<td style="text-align: center;"><span t-field="data.comp_percent_flow" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>
+					<!-- 7 Days  -->
+
+					<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.comp_status_7days">
+						7 Days
+					</div>
+					<table style="margin-top:20px" t-if="data.comp_status_7days">
+					<tr cols="12">
+							<td colspan="6">Date of Casting :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.comp_casting_date_7days"/>
+							</td>
+							<td colspan="6">Date of Testing :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.comp_testing_date_7days"/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top:20px" t-if="data.comp_status_7days">
+						<tr cols="12">
+							<td colspan="1">Sr no 
+							</td>
+							<td colspan="1">Length in mm 
+							</td>
+							<td colspan="1">Width in mm
+							</td>
+							<td colspan="2">Crosssectional Area
+							</td>
+							<td colspan="2">wt of Cement Cube in gm
+							</td>
+							<td colspan="2">Crushing Load in KN
+							</td>
+							<td colspan="3">Compressive Strength (N/mm²)
+							</td>
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.comp_casting_7_days_tables" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1" style="text-align: center;">
+								<span t-esc="r['compressive_length']"/>
+							</td>
+							<td colspan="1" style="text-align: center;">
+								<span t-esc="r['compressive_width']"/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['compressive_crosssectional_area']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['compressive_wt_of_cement_cube']"/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['compressive_crushing_load']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['comp_strength']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top: 20px">
+						<tr>
+							<td style="font-weight: bold;">Average</td>
+							<td style="text-align: center;"><span t-field="data.comp_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>
+
+						<!-- Compressive Strength of control Sample -->
+
+					<table style="margin-top: 20px">
+								
+							
+						<tr>
+							<td colspan="2" style="text-align: center; font-size: 18px;">
+								Compressive Strength of control Sample
+
+							</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Cement (g)</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_cement_wt"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-I</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_wt_of_standerd_sand1"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-II</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_wt_standerd_sand2"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-III</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_wt_standerd_sand3"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Total Weight (g)</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_total_wt"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Quantity of Water (g)</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_water_quantity"/></td>
+						</tr>
+					</table>
+					<table style="margin-top: 20px">
+						<tr>
+							<td colspan="2" style="text-align: center; font-size: 18px;">
+								Calculation of Flow (Acceptable : 105 ± 5 %)
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">Sr. No.</td>
+							<td style="text-align: center; font-weight: bold;">Measured Values</td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">1</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_measured_value1"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">2</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_measured_value2"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">3</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_measured_value3"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">4</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_measured_value4"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">Average</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_average_measured" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">% Flow</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_percent_flow" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>
+
+					<!-- 7 Days  -->
+
+					<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.comp_control_status_7days">
+						7 Days
+					</div>
+					<table style="margin-top:20px" t-if="data.comp_control_status_7days">
+					<tr cols="12">
+							<td colspan="6">Date of Casting :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.comp_control_castingdate_7days"/>
+							</td>
+							<td colspan="6">Date of Testing :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.comp_control_testingdate_7days"/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top:20px" t-if="data.comp_control_status_7days">
+						<tr cols="12">
+							<td colspan="1">Sr no 
+							</td>
+							<td colspan="1">Length in mm 
+							</td>
+							<td colspan="1">Width in mm
+							</td>
+							<td colspan="2">Crosssectional Area
+							</td>
+							<td colspan="2">wt of Cement Cube in gm
+							</td>
+							<td colspan="2">Crushing Load in KN
+							</td>
+							<td colspan="3">Compressive Strength (N/mm²)
+							</td>
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.comp_control_casting_7days_tables" t-as="r">
+							<td colspan="1" style="text-align: center;">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1" style="text-align: center;">
+								<span t-esc="r['comp_control_length']"/>
+							</td>
+							<td colspan="1" style="text-align: center;">
+								<span t-esc="r['comp_control_width']"/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['comp_control_crosssectional_area']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['comp_control_wt_cement_cube']"/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['comp_control_crushing_load']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['comp_control_strength']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top: 20px">
+						<tr>
+							<td style="font-weight: bold;">Average</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Compressive Strength of  Sample (%)</td>
+							<td style="text-align: center;"><span t-field="data.comp_control_strngth_7_days" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>
+				</div>
+
+					<!--5 Oversize Percent Retained on 45 Micron IS sieve variation from Avg. % -->
+
+				<div t-if="data.oversize_percent_retain_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+							Oversize Percent Retained on 45 Micron IS sieve variation from Avg. %
+					</div>
+					<table>
+						<tr cols="12">
+							<td colspan="6">Temperature :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.oversize_temp_percent"/>
+							</td>
+							<td colspan="6">Test Start Date :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.oversize_start_date_specific"/>
+							</td>
+						</tr>
+						<tr cols="12">
+							<td colspan="6">Humidity :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.oversize_humidity_percent_specific"/>
+							</td>
+							<td colspan="6">Test End Date :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.oversize_end_date_specific"/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top:20px">
+
+						<tr cols="12">
+							<td colspan="3">S.No 
+							</td>
+							<td colspan="3">Sample Weight (g)
+							</td>
+							<td colspan="3">Retained Weight on 45 Micron Sieve (g)
+							</td>
+							<td colspan="3">% Retained Weight 
+							</td>
+							<td colspan="3">Variation from Avg. %
+							</td>
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.oversize_percent_tables" t-as="r">
+							<td colspan="3" style="text-align: center;">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['sample_wt_g']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['retain_wt_45micron']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['retain_wt_percent']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['variation_from_avrg']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top: 20px">
+						<tr>
+							<td style="font-weight: bold;">Average</td>
+							<td style="text-align: center;"><span t-field="data.avrg_oversize_percent"/></td>
+						</tr>
+					</table>	
+				</div>
+
+				<!--6 Dry Loose Bulk Density -->
+
+				<div t-if="data.bulk_density_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+							Dry Loose Bulk Density
+					</div>
+					<table>
+						<tr cols="12">
+							<td colspan="6">Temperature :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.bulk_density_temp_percent"/>
+							</td>
+							<td colspan="6">Test Start Date :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.bulk_density_start_date"/>
+							</td>
+						</tr>
+						<tr cols="12">
+							<td colspan="6">Humidity :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.bulk_density_humidity_percent"/>
+							</td>
+							<td colspan="6">Test End Date :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.bulk_density_end_date"/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top:20px">
+
+						<tr cols="12">
+							<td colspan="3">S.No 
+							</td>
+							<td colspan="3">Weight of empty Cylinder (w1) (gm)
+							</td>
+							<td colspan="3">Weight of empty Cylinder  + Microsilica (w2) (gm)
+							</td>
+							<td colspan="3">weight of the microsilica (w3) (gm) 
+							</td>
+							<td colspan="3">Volume of Cylinder (m³)
+							</td>
+							<td colspan="3">Dry Loose Bulk Density (kg/m³)
+							</td>
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.bulk_density_tables" t-as="r">
+							<td colspan="3" style="text-align: center;">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['wt_empty_cylinder_dry_density']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['wt_cylinder_microsilica_dry_density']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['wt_microsilica_dry_density']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['vlm_of_cylinder']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['dryloose_bulk_density']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top: 20px">
+						<tr>
+							<td style="font-weight: bold;">Average Dry Loose Bulk Density (kg/m³)</td>
+							<td style="text-align: center;"><span t-field="data.avrg_bulk_density" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>
+						
+				</div>
+
+					<!-- authorizeRowDataSheet -->
+					
+				<div class="authorizeRowDataSheet">
+					<div>
+						<div>
+							<b>
+								(JR Chemist)
+							</b>
+						</div>
+						<div>
+							<b>
+								Tested By
+							</b>
+						</div>
+					</div>
+					<div style="margin-left:500px">
+						<div>
+							<b>
+								(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+							</b>
+						</div>
+						<div>
+							<b>
+								Checked By
+							</b>
+						</div>
+					</div>
+				</div>
+
+
+				
+
+			</div>
+		</t>
+		</t>
+	</template>
+
+
+	 <!-- <template id="purchase_order_inherit" inherit_id="purchase.report_purchaseorder_document">
+            <xpath expr="//div[@id='total']" position="after">
+              
+                    <div >
+                        <span>Total in words: </span>
+                        <span t-field="tax_totals"/>
+                    </div>
+               
+            </xpath>
+    </template> -->
+	
+</odoo>

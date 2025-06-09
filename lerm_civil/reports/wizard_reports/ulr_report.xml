@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	<template id="ulr_wizard_report_template">
+		<t t-call="web.html_container">
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_wizard">
+				<div class="container_eln">
+				
+						<table style="margin-top:30px;">
+							<tr>
+								<td colspan="3">ULR no :
+								</td>
+								<td colspan="3">
+									<span t-esc="ulr"/>
+								</td>
+								
+	
+							</tr>
+						</table>
+						<div >
+							<table style="margin-top:30px;">
+								<thead>
+									<tr>
+										<th>
+											<span>
+												Sr. No
+											</span>
+										</th>
+										<th>
+											<span>
+												ID
+											</span>
+										</th>
+										<th>
+											<span>
+												ULR No
+											</span>
+										</th>
+										<th>
+											<span>
+												Material
+											</span>
+										</th>
+										<th>
+											<span>
+												Sample Condition
+											</span>
+										</th>
+										<th>
+											<span>
+												Sample Des.
+											</span>
+										</th>
+										<th>
+											<span>
+												Witness
+											</span>
+										</th>
+										<th>
+											<span>
+												Size
+											</span>
+										</th>
+										<th>
+											<span>
+												Grade
+											</span>
+										</th>
+										<th>
+											<span>
+												Brand
+											</span>
+										</th>
+										<th>
+											<span>
+												Date of casting
+											</span>
+										</th>
+										<th>
+											<span>
+												Identification Mark
+											</span>
+										</th>
+										
+
+										<th>
+											<span>
+												Test to be done
+											</span>
+										</th>
+										<th>
+											<span>
+												Test Method
+											</span>
+										</th>
+										<th>
+											<span>
+												State
+											</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-set="i" t-value="0"/>
+									<tr t-foreach="sample_ids" t-as="r">
+										<td>
+											<div>
+												<span t-esc="i + 1" />
+												<t t-set="i" t-value="i+1"/>
+											</div>
+										</td>
+										<td>
+											<span t-esc="r.kes_no"/>
+										</td>
+										
+										<td>
+											<span t-esc="r.ulr_no"/>
+										</td>
+										<td>
+											<span t-esc="r['material_id'].name"/>
+										</td>
+										<td>
+											<span t-esc="r['sample_condition']"/>
+										</td>
+										<td>
+											<span t-esc="r['sample_description']"/>
+										</td>
+										<!-- <td>
+											<span t-esc="r['sample_description']"/>
+										</td> -->
+										<td>
+											<span t-esc="r['witness']"/>
+										</td>
+										<td>
+											<span t-esc="r['size_id'].size"/>
+										</td>
+										<td>
+											<span t-esc="r['grade_id'].grade"/>
+										</td>
+										<td>
+											<span t-esc="r['brand']"/>
+										</td>
+										<td>
+											<t t-if="r['date_casting']">
+												<span t-esc="r['date_casting'].strftime('%d/%m/%y')"/>
+											</t>
+											<t t-else="">
+												<span t-esc="r['date_casting']"/>
+											</t>
+										</td>
+										<td>
+											<!-- <span t-esc="r['grade_id'].grade"/> -->
+											<span t-esc="r['client_sample_id']"/>
+										</td>
+										
+										<td>
+											<span t-foreach="r['parameters']" t-as="param">
+												<span t-if="param.parameter_name">
+													<span t-esc="param.parameter_name"/> 
+												</span>
+											</span>
+										</td>
+										<td>
+											<span t-foreach="r['parameters']" t-as="param">
+												<span t-if="param.test_method.test_method">
+													<span t-esc="param.test_method.test_method"/> 
+												</span>
+											</span>
+										</td>
+										<td>
+											<span t-if="r['state']">
+												<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=','state'),('model_id.model','=','lerm.srf.sample')])"/>
+
+												<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',r['state'])])"/>
+												<!-- <span>Selection </span> -->
+												
+												<t style="text-align:center;" t-esc="selection.name"/>
+											</span>
+										</td>
+										
+										
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+
+
+					
+				</div>
+			</t>
+			 
+		</t>
+	</template>
+</odoo>

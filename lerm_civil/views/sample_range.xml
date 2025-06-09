@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="sample_range_line_form" model="ir.ui.view">
+        <field name="name">sample.range.line.form</field>
+        <field name="model">sample.range.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group style="width:100%">
+                        <field name="srf_id"  invisible="context.get('is_local',False)"/>
+                    </group>
+
+                    <group style="width:50%">
+                        <field name="sample_range"/>
+                        <field name="discipline_id"/>
+                        <field name="lab_no_value"/>
+                        <!-- <field name="lab_l_id"/>  -->
+                        <!-- <field name="lab_no"/> -->
+                        <field name="material_id"  context="{'lab_name':True}" domain="[('id', 'in', material_ids)]"/>
+                        <field name="material_id_lab_name"/>
+
+                        
+                        <field name="brand"/>
+                        <field name='casting_date'/>
+                        <field name="grade_id" domain="[('id', 'in', grade_ids)]"/>
+                        <field name="department_id"/>
+                        <field name="client_sample_id"/>
+                        <field name="received_by_id"/>
+                        <field name="sample_condition"/>
+                        <field name="material_ids" invisible='1'/>
+                        <field name="grade_ids" invisible='1'/>
+                        <field name='conformity'/>
+                    </group>
+                    <group style="width:50%">
+                        <field name='kes_range'/>
+                        <field name="group_id" domain="[('id', 'in', group_ids)]"/>
+                        <!-- <field name="alias"/> -->
+                        <field name="product_name"/>
+                        <field name="main_name"/>
+                        <field name="price"/>
+                        <field name="sample_qty"/>
+                        <field name="size_id" domain="[('id', 'in', size_ids)]"/>
+                        <!-- <field name="sample_quantity"/> -->
+                        <field name="sample_received_date" readonly="1"/>
+                        <field name="location"/>
+                        <field name="casting"/>
+                        <field name="group_ids" invisible='1'/>
+                        <field name="size_ids" invisible='1'/>
+                        <field name="qty_ids" invisible='1'/>
+                    </group>
+                     <group style="width:100%">
+                        <field name="sample_reject_reason" attrs="{'required': [('sample_condition','=','non_satisfactory')] , 'invisible': [('sample_condition', '=', 'satisfactory')]}"/>
+                    </group>
+                    <group style="width:50%">
+                        <field name="has_witness"/>
+                        <field name="witness" attrs="{'invisible': [('has_witness','!=',True)]}"/>
+                    </group>
+                    <group style="width:50%">
+                        <field name="scope"/>
+                    </group>
+                    <group style="width:100%">
+                        <field name="days_casting" attrs="{'invisible':[('casting','!=',True)]}"/>
+                        <field name="sample_description"/>
+                    </group>
+                    <group style="width:50%">
+                        <field name="volume"/>
+                    </group>
+                    <!-- <group style="width:100%">
+                        <field name="days_casting"/>
+                    </group> -->
+                    <group style="width:100%">
+                        <field name="casting_date"/>
+                    </group>
+                    <group style="width:50%">
+                        <field name="customer_id" invisible='1'/>
+                        <field name="casting" invisible='1'/>
+                    </group>
+                    <group style="width:50%">
+                        <field name="days_casting" attrs="{'invisible':[('casting','!=',True)]}"/>
+                    </group>
+                   
+                    
+                    
+                    <group style="width:100%">
+                        <!-- <field name="parameters_ids" invisible="1"/> -->
+                        <field name="parameters" options="{'no_create': True}" />
+                    </group>
+                    
+                </sheet>
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div> -->
+
+            </form>
+        </field>
+    </record>
+    </data>
+</odoo>

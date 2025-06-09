@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="sample_rejection_wizard" model="ir.ui.view">
+        <field name="name">sample.cancellation.wizard.form</field>
+        <field name="model">sample.cancellation.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="sample" invisible="1"/>
+                    <field name="cancellation_reason" required="1"/>
+                    <field name="other_cancellation_reason" attrs="{'invisible': [('cancellation_reason', '!=', 'other')]}"/>
+                    
+                </group>
+                <footer>
+                    <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="cancel_current_sample"
+                            string="Cancel"/>
+                    <button
+                            type="object"
+                            name="discard_cancel"
+                            string="Discard"/>
+                </footer>
+
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>

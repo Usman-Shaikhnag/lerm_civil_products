@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="lerm_contractor_form" model="ir.ui.view">
+            <field name="name">lerm.contractor.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="before">
+                    <group style="width:50%">
+                        <field name='signature' widget="image" class="oe_avatar"/>
+                    </group>
+                    <group style="width:50%">
+                        <field name='stamp' widget="image" class="oe_avatar"/>
+                    </group>
+                </xpath>
+                <xpath expr="//page[@name='internal_notes']" position="after">
+                    <page string="Contractor">
+                        <field name="contractor_table" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name="name" />
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

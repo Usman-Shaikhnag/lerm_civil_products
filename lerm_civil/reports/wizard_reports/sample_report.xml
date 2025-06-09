@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="custom_layout_header_footer_lerm_wizard">
+        <div t-attf-class="header article" t-att-style="report_header_style">
+			<div class="row">
+				<div class="col-12 imageContainer" >
+					<img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/>
+				</div>
+				
+			</div>
+			<div class="row backgroundimage" style="opacity:0.3; font-size:100px; width:85%; text-align:center;top:500px; right:100px; position: fixed; z-index:99;">
+				<img src="/lerm_civil/static/src/img/watermark.png" style="width:100%;"/>
+			</div>
+        </div>
+		
+        <div t-attf-class="article" t-att-style="report_header_style">
+			
+            <t t-out="0"/>
+				
+        </div>
+		
+		<div t-attf-class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+                <ul class="list-inline mb4 footerQR">
+					<!-- <div style="border-top: 1px solid black;">
+						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 50px; height: 50px;"/>
+					</div> -->
+					<div>
+						<div class="footertext">
+							316, The Great Eastern Galleria, Plot-20, Sector-4 Nerul, Navimumbai-400703
+						</div>
+						<div>
+							<!-- <div>
+								<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 70px; height: 70px;"/>
+							</div> -->
+							<div class="footerQR">
+								<!-- <div style="padding-right : 20px">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+								</div> -->
+								
+								<div style="margin-left:90px">
+									<div class="footertext">
+										<span>
+											Email : henry.dsa@esehat.org <span style="padding-left:10px">Website :  www.lerm.in</span> 
+										</span>
+									</div>
+									<div class="footertext">
+										CIN No.: U45209MH2017PTC291168
+									</div>
+									
+									
+								</div>
+								<div  style="padding-left : 80px;">
+									<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 60px; height: 55px;"/>
+								</div>
+							</div>
+						</div>
+					</div>
+                </ul>
+                <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+				
+					
+            </div>	
+        </div>
+	</template>
+
+
+	<template id="sample_wizard_report_template">
+		<t t-call="web.html_container">
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_wizard">
+				<div class="container_eln">
+				
+						<table style="margin-top:30px;">
+							<tr>
+								<td colspan="3">Customer :
+								</td>
+								<td colspan="3">
+									<span t-esc="customer"/>
+								</td>
+								<td colspan="3">From Date :
+								</td>
+								<td colspan="3">
+									<span t-esc="from_date"/>
+								</td>
+								<td colspan="3"  >To Date :
+									<span t-esc="to_date"/>
+								</td>
+								
+								
+								
+							</tr>
+						</table>
+						<div >
+							<table style="margin-top:30px;">
+								<thead>
+									<tr>
+										<th>
+											<span>
+												Sr. No
+											</span>
+										</th>
+										<th>
+											<span>
+												ID
+											</span>
+										</th>
+										<th>
+											<span>
+												ULR No
+											</span>
+										</th>
+										<th>
+											<span>
+												Material
+											</span>
+										</th>
+										<th>
+											<span>
+												Sample Condition
+											</span>
+										</th>
+										<th>
+											<span>
+												Sample Des.
+											</span>
+										</th>
+										<th>
+											<span>
+												Witness
+											</span>
+										</th>
+										<th>
+											<span>
+												Size
+											</span>
+										</th>
+										<th>
+											<span>
+												Grade
+											</span>
+										</th>
+										<th>
+											<span>
+												Brand
+											</span>
+										</th>
+										<th>
+											<span>
+												Date of casting
+											</span>
+										</th>
+										<th>
+											<span>
+												Identification Mark
+											</span>
+										</th>
+										
+
+										<th>
+											<span>
+												Test to be done
+											</span>
+										</th>
+										<th>
+											<span>
+												Test Method
+											</span>
+										</th>
+										<th>
+											<span>
+												State
+											</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-set="i" t-value="0"/>
+									<tr t-foreach="sample_ids" t-as="r">
+										<td>
+											<div>
+												<span t-esc="i + 1" />
+												<t t-set="i" t-value="i+1"/>
+											</div>
+										</td>
+										<td>
+											<span t-esc="r.kes_no"/>
+										</td>
+										
+										<td>
+											<span t-esc="r.ulr_no"/>
+										</td>
+										<td>
+											<span t-esc="r['material_id'].name"/>
+										</td>
+										<td>
+											<span t-esc="r['sample_condition']"/>
+										</td>
+										<td>
+											<span t-esc="r['sample_description']"/>
+										</td>
+										<!-- <td>
+											<span t-esc="r['sample_description']"/>
+										</td> -->
+										<td>
+											<span t-esc="r['witness']"/>
+										</td>
+										<td>
+											<span t-esc="r['size_id'].size"/>
+										</td>
+										<td>
+											<span t-esc="r['grade_id'].grade"/>
+										</td>
+										<td>
+											<span t-esc="r['brand']"/>
+										</td>
+										<td>
+											<t t-if="r['date_casting']">
+												<span t-esc="r['date_casting'].strftime('%d/%m/%y')"/>
+											</t>
+											<t t-else="">
+												<span t-esc="r['date_casting']"/>
+											</t>
+										</td>
+										<td>
+											<!-- <span t-esc="r['grade_id'].grade"/> -->
+											<span t-esc="r['client_sample_id']"/>
+										</td>
+										
+										<td>
+											<span t-foreach="r['parameters']" t-as="param">
+												<span t-if="param.parameter_name">
+													<span t-esc="param.parameter_name"/> 
+												</span>
+											</span>
+										</td>
+										<td>
+											<span t-foreach="r['parameters']" t-as="param">
+												<span t-if="param.test_method.test_method">
+													<span t-esc="param.test_method.test_method"/> 
+												</span>
+											</span>
+										</td>
+										<td>
+											<span t-if="r['state']">
+												<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=','state'),('model_id.model','=','lerm.srf.sample')])"/>
+
+												<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',r['state'])])"/>
+												<!-- <span>Selection </span> -->
+												
+												<t style="text-align:center;" t-esc="selection.name"/>
+											</span>
+										</td>
+										
+										
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+
+
+					
+				</div>
+			</t>
+			 
+		</t>
+	</template>
+</odoo>

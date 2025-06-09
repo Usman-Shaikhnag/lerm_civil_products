@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="edit_srf_wizard_form" model="ir.ui.view">
+        <field name="name">edit.lerm.civil.srf</field>
+        <field name="model">edit.lerm.civil.srf</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group style="width:50%" >
+                        <field name="srf_id" readonly="1"/>
+                        <field name="kes_number"  invisible="1"/>
+                        <field name="srf_date" readonly="1"/>
+                        <!-- <field name="contact_person" context="{'hide_reference':True}" domain="[('id', 'in', contact_contact_ids)]" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"/> -->
+                        <field name="contact_person" domain="[('id', 'in', contact_site_ids)]" />
+                        <!-- <field name="site_address" domain="[('id', 'in', contact_site_ids)]" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"/> -->
+                        <field name="site_address"/>
+                        <field name="client_refrence" />
+                    </group>
+                    <group style="width:50%">
+                        <field name="customer"  groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                        <field name='client'   groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                        <field name='contractor' domain="[('id', 'in', contractor_ids)]"  groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                        <field name='contractor_ids' invisible='1'/>
+                        <field name="contact_other_ids" invisible='1'/>
+                        <field name="billing_customer"  groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                        <field name="name_work"  domain="[('id', 'in', name_works)]"/>
+                        <field name="name_works" invisible="1"/>
+                        <field name="attachment" filename="attachment_name" />
+                        <field name='attachment_name' invisible='1'/>
+                    </group>
+
+                      <group style="width:50%">
+                        <field name="contact_site_ids" invisible='1'/>
+                        <!-- <field name='name_of_work'/> -->
+                        <field name="contact_contact_ids" invisible='1'/>
+                    </group>
+                </sheet>
+                <footer>
+                        <button name="update_sample_header" string="Update" type="object" class="btn-primary"/>
+                        <!-- <button name="close_sample_wizard" string="Close" type="object"/> -->
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+  
+</odoo>

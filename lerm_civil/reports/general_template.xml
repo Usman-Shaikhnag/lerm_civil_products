@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="data_sheet_header_generaltemplate">
+        <div t-attf-class="header article" t-att-style="report_header_style">
+            <div class="row">
+                <div class="col-12">
+				<!-- <div>
+                    <span style="text-align:left;">	
+                        FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.parameters_result[0].parameter.datasheet_no"/>
+                    </span>
+					<span style="text-align:left;margin-left:23%;">	
+                        Report No. <![CDATA[&nbsp;]]> <span t-esc="eln.kes_no"/>
+                    </span>
+					<span style="text-align:left;margin-left:20%;">	
+                        Date <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
+                    </span>
+				</div> -->
+				<div style="margin-top:1.5rem;height:1rem;">
+					<span> </span>
+				</div>
+				<div class="container_eln" >
+					<table style="border:none;">
+						<tr cols="12" style="border:none;">
+							<td colspan="4" style="border:none;">
+								<span style="text-align:left;">	
+									FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.parameters_result[0].parameter.datasheet_no"/>
+								</span>
+							</td>
+							<td colspan="4" style="border:none;">
+								<span style="text-align:left;margin-left:23%;">	
+									Test Report No. <![CDATA[&nbsp;]]> <span t-esc="eln.kes_no"/>
+								</span>
+							</td>
+							<td colspan="4" style="border:none;">
+								<span style="text-align:left;margin-left:20%;">	
+									Date <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
+								</span>
+							</td>
+						</tr>
+					
+					</table>
+
+				</div>
+                    <div style="text-align:center;margin-top:12px">	
+                        Esehat Meditech Ltd.
+                    </div>
+                    <div style="text-align:center;">
+                        TEST DATA SHEET
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div t-attf-class="article" t-att-style="report_header_style">
+            <t t-out="0"/>
+        </div>
+        <div t-attf-class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+                
+                <div t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="datasheet_generaltemplate_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.data_sheet_header_generaltemplate">
+                <div style="text-align:center;font-size:18px">
+                    <span t-field="data.parameter_id.parameter.parameter_name"/>
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+					<div t-foreach="eln" t-as="o">
+						<table>
+							<tr cols="12">
+								<td colspan="6">Job no :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Material :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr  cols="12">
+								<td colspan="6">Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.grade_id.grade"/>
+								</td>
+								<td colspan="6">Instrument :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.instrument.name"/>
+								</td>
+							</tr>
+							<t t-foreach="data" t-as="formdata" t-if="extradata and len(extradata) &gt; 0">
+								<tr cols="12">
+									<td colspan="6" t-foreach="extradata" t-as="result">
+										<span>
+											<t t-esc="result[1]"/>
+										</span> : 
+										<![CDATA[&nbsp;]]>
+										<span>
+											<t t-esc="formdata[result[0]]" />
+										</span>
+									</td>
+								</tr>
+							</t>
+							<tr>
+								<td>Test Method :	
+									<span>
+										<t t-foreach="o.parameters_result.parameter[0].parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == o.grade_id.id">
+													<span t-field="parameter.specification"/>
+											</t>
+										</t>
+									</span>
+								</td>
+							</tr>
+							
+							<!-- <tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.technician.name"/>
+								</td>
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr> -->
+						</table>
+					</div>
+
+					<!-- <table style="margin-top:30px;" t-foreach="data" t-as="formdata" t-if="extradata and len(extradata) &gt; 0">
+						<tr cols="12">
+							<td colspan="6" t-foreach="extradata" t-as="result">
+								<span>
+									<t t-esc="result[1]"/>
+								</span> : 
+								<![CDATA[&nbsp;]]>
+								<span>
+									<t t-esc="formdata[result[0]]" />
+								</span>
+							</td>
+						</tr>
+					</table> -->
+
+					<table style="margin-top:30px;">
+						<thead>
+							<tr>
+								<!-- <th>
+									<div>SR.No</div>
+								</th> -->
+								<t t-foreach="tabledata" t-as="column">
+									<th>
+										<span>
+											<t t-esc="column[1]" />
+										</span>
+									</th>
+								</t>
+							</tr>
+						</thead>
+						<!-- <tbody>
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.child_lines" t-as="r">
+								<td>
+									<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+									</div>
+								</td>
+								<t t-foreach="tabledata" t-as="row">
+									<td>
+										<span>
+											<t t-esc="r[row[0]]"/>
+										</span>
+									</td>
+								</t>
+							</tr>
+						</tbody> -->
+
+						<tbody>
+							<tr t-foreach="data.child_lines" t-as="r">
+								<t t-foreach="tabledata" t-as="row">
+									<td>
+									<!-- <span>
+										<t t-if="str(r[row[0]]).replace('.', '', 1).isdigit()">
+											<t t-esc="round(float(r[row[0]]),2)"/>
+										</t>
+										<t t-else="">
+											<t t-esc="r[row[0]]"/>
+										</t>
+									</span> -->
+
+
+									<span>
+										<t t-if="str(r[row[0]]).replace('.', '', 1).isdigit()">
+											<t t-esc="round(float(r[row[0]]),2)"/>
+										</t>
+										<t t-else="">
+											<t t-set="model_name" t-value="str(r).split('(')[0].strip() if '(' in str(r) else str(r).strip()"/>
+											<t t-set="field_name" t-value="row[0]"/>
+											<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=',field_name),('model_id.model','=',model_name)])"/>
+
+											<t t-if="field_type.ttype == 'selection'">
+												<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',r[row[0]])])"/>
+												<!-- <span>Selection </span> -->
+												
+												<t t-esc="selection.name"/>
+											</t>
+											<t t-else="">
+
+												<t t-esc="r[row[0]]"/>
+											</t>
+										</t>
+									</span>
+									</td>
+								</t>
+							</tr>
+						</tbody>
+					</table>
+
+					<table style="margin-top:30px;" t-foreach="data" t-as="formdata" t-if="resultdata and len(resultdata) &gt; 0">
+						<tr cols="12">
+							<td colspan="6" t-foreach="resultdata" t-as="result">
+								<span>
+									<t t-esc="result[1]"/>
+								</span> : 
+								<![CDATA[&nbsp;]]>
+								<!-- <span>
+									<t t-esc="formdata[result[0]]" />
+								</span> -->
+								<span>
+										<t t-if="str(formdata[result[0]]).replace('.', '', 1).isdigit()">
+											<t t-esc="round(float(formdata[result[0]]),2)"/>
+										</t> 
+										<t t-else="">
+											<t t-set="model_name" t-value="str(r).split('(')[0].strip() if '(' in str(r) else str(r).strip()"/>
+											<t t-set="field_name" t-value="row[0]"/>
+											<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=',field_name),('model_id.model','=',model_name)])"/>
+
+											<t t-if="field_type.ttype == 'selection'">
+												<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',formdata[result[0]])])"/>
+												<!-- <span>Selection </span> -->
+												
+												<t t-esc="selection.name"/>
+											</t>
+											<t t-else="">
+
+												<t t-esc="formdata[result[0]]"/>
+											</t>
+										</t>
+									</span>
+							</td>
+						</tr>
+					</table>
+
+
+					
+					
+					<div class="authorizeRowDataSheet">
+						<div>
+							
+							<div>
+								<b>
+									Tested By
+								</b>
+							</div>
+							<div style="height: 40px;">
+									<t t-if="eln.sample_id.testedby_signature_required">
+										<div t-if="eln.sample_id.filled_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+							<div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+						<div style="margin-left:600px">
+							<div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.check_by.name"/>
+                                </b>
+                            </div>
+                            
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+					</div>
+				
+
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>

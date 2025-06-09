@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_layout_header_footer_lerm_eln_general">
+        <div t-attf-class="header article" t-att-style="report_header_style">
+			<div class="row">
+				<div t-if="nabl" class="col-12 imageContainer" >
+					<img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/>
+				</div>
+				
+				<div t-if="not nabl" class="col-12 imageContainer" >
+					<img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/>
+				</div>
+				
+			</div>
+			<div class="row backgroundimage" style="opacity:0.3; font-size:100px; width:85%; text-align:center;top:500px; right:100px; position: fixed; z-index:99;">
+				<img src="/lerm_civil/static/src/img/watermark.png" style="width:100%;"/>
+			</div>
+
+			
+			<div style="width:100%;text-align:center;">
+				<span style="font-size:1rem"><b>Test Report</b></span>
+			</div>
+			<div class="container_eln" style="margin-right:4px;margin-left:4px;">
+			
+
+			
+					<table>
+						<tr>
+							<td colspan="3">Report no :
+							</td>
+							<td t-if="(not nabl)" colspan="3">
+								<span t-field="o.kes_no"/><span>N</span>
+							</td>
+							<td t-if="(nabl)" colspan="3">
+								<span t-field="o.kes_no"/>
+							</td>
+							<td colspan="3">Report Date :
+							</td>
+							<td colspan="3">
+								<span t-field="o.end_date"/>
+							</td>
+							<td colspan="3"  t-if="nabl">ULR NO :
+							</td>
+							<td colspan="3" t-if="nabl">
+								<span t-field="o.sample_id.ulr_no"/>
+							</td>
+						</tr>
+					</table>
+			</div>
+        </div>
+	
+        <div t-attf-class="article" t-att-style="report_header_style">
+			
+            <t t-out="0"/>
+        </div>
+		<div t-attf-class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+                <ul class="list-inline mb4 footerQR">
+					<!-- <div style="border-top: 1px solid black;">
+						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 50px; height: 50px;"/>
+					</div> -->
+					<div>
+						<div class="footertext">
+							316, The Great Eastern Galleria, Plot-20, Sector-4 Nerul, Navimumbai-400703
+						</div>
+						<div>
+							<!-- <div>
+								<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 70px; height: 70px;"/>
+							</div> -->
+							<div class="footerQR">
+								<div style="padding-right : 20px">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+								</div>
+								
+								<div style="margin-left:90px">
+									<div class="footertext">
+										<span>
+											Email : henry.dsa@esehat.org <span style="padding-left:10px">Website :  www.lerm.in</span> 
+										</span>
+									</div>
+									<div class="footertext">
+										CIN No.: U45209MH2017PTC291168
+									</div>
+									
+									
+								</div>
+								<div  style="padding-left : 80px;">
+									<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 60px; height: 55px;"/>
+								</div>
+							</div>
+						</div>
+					</div>
+                </ul>
+                <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+				
+					
+            </div>	
+        </div>
+	</template>
+	
+    <template id="general_report_template">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+			 	<!-- <div style="position:absolute;opacity:0.25;font-size:3em;width:100%;height:100%;z-index:1000;margin:-10px">
+					<img src="/lerm_civil/static/src/img/watermark2.jpg"/>
+				</div> -->
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+				
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+						<!-- <table>
+							<tr>
+								<td colspan="3">Report no :
+								</td>
+								<td colspan="3">
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="3">Report Date :
+								</td>
+								<td colspan="3">
+									<span t-field="o.srf_date"/>
+								</td>
+								<td colspan="3"  t-if="nabl">ULR NO :
+								</td>
+								<td colspan="3" t-if="nabl">
+									<span t-field="o.sample_id.ulr_no"/>
+								</td>
+							</tr>
+						</table> -->
+						<table style="margin-top:20px;">
+							<tr>
+								<td colspan="12">#Customer Party Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<!-- <td colspan="12">Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+											,
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td> -->
+								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">#Sample Description : <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						</table>
+						<table>
+							<tr>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Sample Id Mark: <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Size :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">#Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Brand :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">#Consultant Name :
+									<![CDATA[&nbsp;]]>
+										<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">#Client Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">#Client Reference :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+								
+							</tr>
+							<tr>
+								<td colspan="12">Test Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.parameters_result.parameter[0].parameter_name"/>
+								</td>
+							</tr>
+                            <tr>
+								<td colspan="6">Instrument :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.instrument.name"/>
+								</td>
+								<td colspan="3">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temperature"/>°C
+								</td>
+								<td colspan="3">#Structure Age :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.structure"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div style="margin-top:20px;">
+						<u>Test Method</u><![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>
+						<!-- <span t-field="eln.parameters_result.parameter[0].test_method.test_method"/> -->
+						<span>
+							<t t-foreach="o.parameters_result.parameter[0].parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == o.grade_id.id">
+										<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						</span>
+					</div>
+					
+
+
+					<t t-set="data_length" t-value="len(data.child_lines or [])"/>
+					<t t-if="data_length &lt;= o.sample_id.page_break">
+						<table style="margin-top:15px;">
+								<thead>
+									<tr>
+										<t t-foreach="tabledata" t-as="column">
+											<th>
+												<span>
+													<t style="text-align:center;" t-esc="column[1]" />
+												</span>
+											</th>
+										</t>
+									</tr>
+								</thead>
+								<!-- <tbody>
+									<t t-set="i" t-value="0"/>
+									<tr t-foreach="data.child_lines" t-as="r">
+										
+										<t t-foreach="tabledata" t-as="row">
+											<td>
+												<span>
+													<t t-esc="r[row[0]]"/>
+												</span>
+											</td>
+										</t>
+									</tr>
+								</tbody> -->
+
+
+								<!-- <tbody>
+									<t t-set="i" t-value="0"/>
+									<tr t-foreach="data.child_lines" t-as="r">
+										<t t-foreach="tabledata" t-as="row">
+											<td>
+											<span>
+												<t t-if="str(r[row[0]]).replace('.', '', 1).isdigit()">
+													<t t-esc="round(float(r[row[0]]),2)"/>
+												</t>
+												<t t-else="">
+													<t t-esc="r[row[0]]"/>
+												</t>
+											</span>
+											</td>
+										</t>
+									</tr>
+								</tbody> -->
+								
+									<tbody>
+										<t t-set="i" t-value="0"/>
+										<tr t-foreach="range(len(data.child_lines))" t-as="index">
+											<t t-set="r" t-value="data.child_lines[index]"/>
+											<t t-foreach="tabledata" t-as="row">
+												<td>
+													<span style="text-align:center;">
+														<t t-if="str(r[row[0]]).replace('.', '', 1).isdigit()">
+															<t style="text-align:center;" t-esc="round(float(r[row[0]]),2)"/>
+														</t> 
+														<t t-else="">
+															<t t-set="model_name" t-value="str(r).split('(')[0].strip() if '(' in str(r) else str(r).strip()"/>
+															<t t-set="field_name" t-value="row[0]"/>
+															<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=',field_name),('model_id.model','=',model_name)])"/>
+
+															<t t-if="field_type.ttype == 'selection'">
+																<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',r[row[0]])])"/>
+																<!-- <span>Selection </span> -->
+																
+																<t style="text-align:center;" t-esc="selection.name"/>
+															</t>
+															<t t-else="">
+
+																<t style="text-align:center;" t-esc="r[row[0]]"/>
+															</t>
+														</t>
+													</span>
+												</td>
+											</t>
+										</tr>
+									</tbody>
+								
+								<!-- <t t-if="data_length &gt;= 8">
+									<tbody>
+										<t t-set="i" t-value="0"/>
+										<tr t-foreach="range(8)" t-as="index">
+											<t t-set="r" t-value="data.child_lines[index]"/>
+											<t t-foreach="tabledata" t-as="row">
+												<td>
+													<span>
+														<t t-if="str(r[row[0]]).replace('.', '', 1).isdigit()">
+															<t t-esc="round(float(r[row[0]]),2)"/>
+														</t>
+														<t t-else="">
+															<t t-esc="r[row[0]]"/>
+														</t>
+													</span>
+												</td>
+											</t>
+										</tr>
+									</tbody>
+								</t> -->
+
+
+						</table>
+						
+					</t>
+					<t t-if="data_length &gt; o.sample_id.page_break">
+						<table style="margin-top:15px;">
+								<thead>
+									<tr>
+										
+										<t t-foreach="tabledata" t-as="column">
+											<th>
+												<span>
+													<t style="text-align:center;" t-esc="column[1]" />
+												</span>
+											</th>
+										</t>
+									</tr>
+								</thead>
+								
+									<tbody>
+										<t t-set="i" t-value="0"/>
+										<tr t-foreach="range(o.sample_id.page_break)" t-as="index">
+											<t t-set="r" t-value="data.child_lines[index]"/>
+											<t t-foreach="tabledata" t-as="row">
+												<td>
+													<span>
+														<t t-if="str(r[row[0]]).replace('.', '', 1).isdigit()">
+															<t style="text-align:center;" t-esc="round(float(r[row[0]]),2)"/>
+														</t> 
+														<t t-else="">
+															<t t-set="model_name" t-value="str(r).split('(')[0].strip() if '(' in str(r) else str(r).strip()"/>
+															<t t-set="field_name" t-value="row[0]"/>
+															<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=',field_name),('model_id.model','=',model_name)])"/>
+
+															<t t-if="field_type.ttype == 'selection'">
+																<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',r[row[0]])])"/>
+																<!-- <span>Selection </span> -->
+																
+																<t style="text-align:center;" t-esc="selection.name"/>
+															</t>
+															<t t-else="">
+
+																<t style="text-align:center;" t-esc="r[row[0]]"/>
+															</t>
+														</t>
+													</span>
+												</td>
+											</t>
+										</tr>
+									</tbody>
+						</table>
+						<!-- <div t-if="stamp and stamp == '4-in_report'" style="margin-top:20px;">
+							<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.parameters_result[0].parameter.report_format_no"/>
+						</div> -->
+						<div style="page-break-before: always;"></div>
+						<table style="margin-top:15px;">
+								<thead>
+									<tr>
+										
+										<t t-foreach="tabledata" t-as="column">
+											<th>
+												<span>
+													<t style="text-align:center;" t-esc="column[1]" />
+												</span>
+											</th>
+										</t>
+									</tr>
+								</thead>
+								
+									<tbody>
+										<t t-set="i" t-value="0"/>
+										<tr t-foreach="range(o.sample_id.page_break, len(data.child_lines))" t-as="index">
+											<t t-set="r" t-value="data.child_lines[index]"/>
+											<t t-foreach="tabledata" t-as="row">
+												<td>
+													<span>
+														<t t-if="str(r[row[0]]).replace('.', '', 1).isdigit()">
+															<t style="text-align:center;" t-esc="round(float(r[row[0]]),2)"/>
+														</t> 
+														<t t-else="">
+															<t t-set="model_name" t-value="str(r).split('(')[0].strip() if '(' in str(r) else str(r).strip()"/>
+															<t t-set="field_name" t-value="row[0]"/>
+															<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=',field_name),('model_id.model','=',model_name)])"/>
+
+															<t t-if="field_type.ttype == 'selection'">
+																<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',r[row[0]])])"/>
+																<!-- <span>Selection </span> -->
+																
+																<t style="text-align:center;" t-esc="selection.name"/>
+															</t>
+															<t t-else="">
+
+																<t style="text-align:center;" t-esc="r[row[0]]"/>
+															</t>
+														</t>
+													</span>
+												</td>
+											</t>
+										</tr>
+									</tbody>
+						</table>
+						
+					</t>
+					
+
+					<div style="page-break-inside: avoid;">
+					<table style="margin-top:10px;" t-foreach="data" t-as="formdata" t-if="resultdata and len(resultdata) &gt; 0">
+							<tr cols="12">
+								<td colspan="6" t-foreach="resultdata" t-as="result">
+									<span>
+										<t t-esc="result[1]"/>
+									</span> : 
+									<![CDATA[&nbsp;]]>
+									<!-- <span>
+										<t t-esc="formdata[result[0]]" />
+										
+									</span> -->
+									<span>
+										<t t-if="str(formdata[result[0]]).replace('.', '', 1).isdigit()">
+											<t t-esc="round(float(formdata[result[0]]),2)"/>
+										</t> 
+										<t t-else="">
+											<t t-set="model_name" t-value="str(r).split('(')[0].strip() if '(' in str(r) else str(r).strip()"/>
+											<t t-set="field_name" t-value="row[0]"/>
+											<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=',field_name),('model_id.model','=',model_name)])"/>
+
+											<t t-if="field_type.ttype == 'selection'">
+												<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',formdata[result[0]])])"/>
+												<!-- <span>Selection </span> -->
+												
+												<t t-esc="selection.name"/>
+											</t>
+											<t t-else="">
+
+												<t t-esc="formdata[result[0]]"/>
+											</t>
+										</t>
+									</span>
+								</td>
+							</tr>
+						</table>
+					<div >
+						<div style="margin-top:20px" class="noteContainer">
+							<div>
+								<b>Note :-</b>
+							</div>
+							<div>
+								<ul>
+									<li>
+										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+									</li>
+									<li>
+										Sample(s) was/were not drawn by laboratory.
+									</li>
+									<li>
+										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+									</li>
+										<li>
+										# - Information provided by the customer.
+									</li>
+									
+									<t t-foreach="data.notes" t-as="note" style="margin-bottom: 0px;margin-top: 0px;">
+										<li style="margin-bottom: 0px;margin-top: 0px;">
+											<span t-esc="note.notes"/>
+										</li>
+									</t>
+									<li style="margin-bottom: 0px;" t-if="eln.has_witness">
+										<p>Test witnessed by : <span style="margin-bottom: 0px;margin-top: 0px;" t-esc="eln.witness_name"/></p>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div t-if="o.witness_photo or o.attachment">
+							<b>PHOTOS</b>
+						</div>
+						<div t-if="o.witness_photo" style="margin-top: 20px;width:100%;text-align:center;align-items:right;z-index:1000;">
+							<img t-att-src="'data:image/png;base64,' + o.witness_photo.decode('utf-8')" style="max-width: 100%; height: 250px;z-index:1000;" />
+						</div>
+
+						<div t-if="o.attachment" style="margin-top: 20px;width:100%;text-align:center;z-index:1000;">
+							<img t-att-src="'data:image/png;base64,' + o.attachment.decode('utf-8')" style="max-width: 100%;z-index:1000;height:250px;"/>
+						</div>
+
+						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+								
+							</div>
+							<div>
+								<div t-if="stamp and stamp == '4-in_report'">
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.parameters_result[0].parameter.report_format_no"/>
+								</div>
+							</div>
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								<!-- <div>
+									<b>
+										NDT Department (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div> -->
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+						</div>
+						</div>
+					</div>
+					<div style="margin-top: 10px; text-align: center;">
+							<p style="border-top: 1px dashed #000; padding-top: 10px;">
+								...... End Of Report......
+							</p>
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
+	
+</odoo>

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="srf_form_id" model="ir.actions.act_window">
+        <field name="name">SRF</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.civil.srf</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+        <!-- <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Test Method</p>
+        </field> -->
+    </record>
+    <!-- <menuitem id="srf_form" groups="kes_hod_access_group,kes_admin_access_group,lerm_civil.kes_access_srf" name="SRF" parent="lerm_transaction_data" action="srf_form_id" sequence="10" /> -->
+    <menuitem id="srf_form" 
+        name="SRF" 
+        groups="lerm_civil.kes_access_srf,lerm_civil.kes_quality_manager,lerm_civil.kes_verified_by,lerm_civil.kes_hod_access_group,lerm_civil.kes_confirm_srf,lerm_civil.kes_report" 
+        parent="lerm_transaction_data" 
+        action="srf_form_id" 
+        sequence="10"/>
+
+    <record id="lerm_civil_srf_form" model="ir.ui.view">
+        <field name="name">lerm.civil.srf.form</field>
+        <field name="model">lerm.civil.srf</field>
+        <field name="arch" type="xml">
+            <form>
+            <header>
+                <button
+                    type="object"
+                    name="confirm_srf"
+                    string="Confirm"
+                    attrs="{'invisible': [('state', 'in', ('2-confirm'))]}"
+                    groups="lerm_civil.kes_verified_by,lerm_civil.kes_confirm_srf" 
+                    />
+
+                    
+                    <button name="open_edit_srf_header_wizard"
+                                type="object"
+                                string="Edit SRF"
+                                groups="lerm_civil.srf_sample_editable"
+                               />          
+
+                    <button name="action_srf_sent_mail"
+                                type="object"
+                                string="Send Mail"
+                               />       
+                                 
+                    <field   readonly="1" name="state" widget="statusbar"/>
+            </header>
+                <sheet>
+                        <div class="oe_button_box" name="button_box" attrs="{'invisible':[('state','!=','2-confirm')]}" >
+                            <button name="sample_count_button" 
+                                type="object" class="oe_stat_button" icon="fa-align-justify">
+                            <field name="sample_count" string="Samples" widget="statinfo"/>
+                            </button>
+                            <button name="eln_count_button"
+                                type="object" class="oe_stat_button" icon="fa-align-justify">
+                            <field string="ELN" name="eln_count" widget="statinfo"/>
+                            </button>
+                        </div>
+
+                            
+
+                    <group style="width:50%" >
+                        <field name="srf_id" readonly="1"/>
+                        <field name="kes_number"  invisible="1"/>
+                        <field name="srf_date" attrs="{'readonly': ['|', ('state', '=', '2-confirm'), ('date_editable', '=', False)]}"/>
+                        <!-- <field name="contact_person" context="{'hide_reference':True}" domain="[('id', 'in', contact_contact_ids)]" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"/> -->
+                        <field name="contact_person" domain="[('id', 'in', contact_site_ids)]" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"/>
+                        <!-- <field name="site_address" domain="[('id', 'in', contact_site_ids)]" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"/> -->
+                        <field name="site_address"/>
+                        <field name="client_refrence" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"/>
+                        <field name="date_editable" invisible="1"/>
+                        <field name="active" invisible='1'/>
+
+
+                    </group>
+                    <group style="width:50%">
+
+                        <!-- <field name='department_id'/> -->
+                        <!-- <field name="department"/> -->
+                        <field name="customer" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}" groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                        <field name='client' attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"  groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                        <field name='contractor' domain="[('id', 'in', contractor_ids)]"  groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                        <field name='contractor_ids' invisible='1'/>
+                        <field name="contact_other_ids" invisible='1'/>
+                        <field name="billing_customer"  attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"  groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                        <field name="name_work" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}" domain="[('id', 'in', name_works)]"/>
+                        <field name="consultant_name1"/>
+                        <field name="name_works" invisible="1"/>
+                        <field name="attachment" filename="attachment_name" />
+                        <field name='attachment_name' invisible='1'/>
+                    </group>
+                    <!-- <group style="width:33.33%">
+                    </group> -->
+                    <group style="width:50%">
+                        <field name="contact_site_ids" invisible='1'/>
+                        <!-- <field name='name_of_work'/> -->
+                        <field name="contact_contact_ids" invisible='1'/>
+                    </group>
+                    <group>
+                    <group style="width:14%">
+                        <button name="open_new_sample_add_wizard" string="New Sample" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ('2-confirm'))]}"/>                    </group>
+                    <group style="width:14%">
+                        <button name="open_sample_add_wizard" string="Repeat Sample" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ('2-confirm'))]}"/>
+                    </group>
+                    </group>
+                    <field readonly="1" name="samples" context = "{'default_customer_id' : customer,'is_local': True}" invisible='0'>
+                        <tree>
+                            <field name='kes_no'/>
+                            <field name="material_id"/>
+                            <field name="discipline_id"/>
+                            <field name="lab_no_value" invisible="1"/>
+                             <!-- <field name="department_id"/> -->
+                            <!-- <field name="disciplaine_value"/> -->
+                            <!-- <field name="lab_l_id"/> -->
+                            <field name="group_id"/>
+                            <field name="department_id"/>
+                            <field name='parameters' widget="many2many_tags"/>
+                            <field name='casting'/>
+                            <!-- <field name="sample_quantity"/> -->
+                            <field name="sample_received_date" />
+                            <field name="sample_description"/>
+                            <button name="edit_sample" string="Edit" type="object" groups="lerm_civil.srf_sample_editable" class="btn-primary" />                          
+                            <button name="reallocate_sample" string="Reallocate" type="object" groups="lerm_civil.kes_job_allocation,lerm_civil.kes_hod_access_group,lerm_civil.kes_verified_by,lerm_civil.kes_quality_manager" class="btn-primary" />                          
+
+                        </tree>
+                    </field>
+                    <!-- <field attrs="{'readonly': [('state', 'in', ('2-confirm'))]}" name="sample_range_table" readonly="1" context = "{'default_customer_id' : customer,'is_local': True}">
+                        <tree>
+                            <field name='kes_range'/>
+                            <field name="material_id_lab_name"  invisible="1"/>
+                            <field name="material_id" />
+                            <field name="discipline_id"/>
+                            <field name="group_id"/>
+                            <field name='parameters' options='{"always_reload": True}' context="{'test_method' : True }" widget="many2many_tags"/>
+                            <field name='casting'/>
+                            <field name="sample_received_date"/>
+                            <field name="sample_description"/>                           
+                        </tree>
+                    </field> -->
+                </sheet>
+                <div class="oe_chatter"  >
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name= "message_ids" widget="mail_thread"/>
+                    <field name= "activity_ids" widget="mail_activity"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="srf_graph_view" model="ir.ui.view">
+        <field name="name">lerm.srf.graph</field>
+        <field name="model">lerm.civil.srf</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="state" type="row"/>
+                <!-- <field name="create_date" interval="month" type="col"/> -->
+            </graph>
+        </field>
+
+    </record>
+
+
+
+    <record id="lerm_civil_srf_tree" model="ir.ui.view">
+        <field name="name">lerm.civil.srf.tree</field>
+        <field name="model">lerm.civil.srf</field>
+        <field name="arch" type="xml">
+            <tree default_order='create_date desc' >
+                <field name="srf_id"/>
+                <field name="srf_date" optional="show"/>
+                <field name="customer" optional="show"/>
+                <field name="contact_person" optional="show"/>
+                <field name="billing_customer" optional="show"/>
+                <field name="name_work" optional="show"/>
+                <field name="client_refrence" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="lerm_civil_srf_search_view" model="ir.ui.view">
+    <field name="name">lerm.civil.srf.search.view</field>
+    <field name="model">lerm.civil.srf</field>
+    <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="srf_id" string="SRF ID" />
+                <field name="kes_number" string="KES No" />
+                <field name="srf_date" string="SRF Date" />
+                <field name="job_date" string="JOB Date" />
+                <field name="customer" string="Customer" />
+                <field name="billing_customer" string="Billing Customer" />
+                <field name="contact_person" string="Contact Person" />
+                <field name="client" string="Client" />
+                <field name="site_address" string="Site Address" />
+                <field name="name_work" string="Name of Work" />
+                <field name="client_refrence" string="Client Reference Letter" />
+                <field name="state" string="State" />
+                <filter string="Draft" name="state_draft" domain="[('state', '=', '1-draft')]" />
+                <filter string="Confirm" name="state_confirm" domain="[('state', '=', '2-confirm')]" />
+                <field name="sample_count" string="Sample Count" />
+                <field name="eln_count" string="ELN Count" />
+                <field name="casting" string="Casting" />
+                <filter string="Casting" name="casting_true" domain="[('casting', '=', True)]" />
+                <filter string="Not Casting" name="casting_false" domain="[('casting', '=', False)]" />
+            </search>
+        </field>
+    </record>
+    
+
+    <record id="srf_sample_wizard_form" model="ir.ui.view">
+        <field name="name">create.srf.sample.wizard</field>
+        <field name="model">create.srf.sample.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                <group>
+                    <group style="width:50%">
+                        <field name="edit_mode" invisible="1"/>
+
+                        <field name="discipline_id"  options="{'no_create': True}"/>
+                        <field name="lab_no_value"  options="{'no_create': True}" invisible="1"/>
+                        <!-- <field name="lab_l_id"  options="{'no_create': True}"/> -->
+                        <field name="material_id" context="{'lab_name':True}" domain="[('id', 'in', material_ids)]"  options="{'no_create': True}"/>
+                        <field name="brand"/>
+                        <field name="grade_id" domain="[('id', 'in', grade_ids)]"  options="{'no_create': True}"/>
+                        <field name="client_sample_id"/>
+                        <field name="received_by_id"/>
+                        <field name="sample_condition"/>
+                        <field name="material_ids" invisible='1'/>
+                        <field name="grade_ids" invisible='1'/>
+                        <field name='conformity'/>
+                        <field name='lab_location'/>
+                        <field name='location_name'/>
+                        <field name="sample" attrs="{'invisible': [('is_update','!=',True)]}" readonly="1"/>
+
+                        <!--<field name="grade_ids" invisible='1'/> -->
+                    </group>
+                    <group style="width:50%">
+                    <!-- <br></br> -->
+                        <field name="group_id" domain="[('id', 'in', group_ids)]"  options="{'no_create': True}"/>
+                        <field name="department_id"  options="{'no_create': True}"/>
+                        <!-- <field name="product_aliases" invisible="1"/> -->
+                        <!-- <field name="product_alias" domain="[('id', 'in', product_aliases)]"   options="{'no_create': True}" />
+                        <field name="pricelist"/> -->
+                        <field name="product_name"  invisible="1"/>
+                        <field name="main_name"   invisible="1"/>
+                        <field name="price"   invisible="1"/>
+                        <field name="size_id" domain="[('id', 'in', size_ids)]"  options="{'no_create': True}"/>
+                        <field name="sample_qty" attrs="{'readonly': [('is_update','=',True)]}"/>
+                        <field name="sample_received_date" readonly="1"/>
+                        <field name="location"/>
+                        <field name="casting" />
+                        <field name="grade_required" />
+                        <field name="group_ids" invisible='1'/>
+                        <field name="size_ids" invisible='1'/>
+                        <!-- <field name="size_ids" invisible='1'/>
+                        <field name="qty_ids" invisible='1'/> -->
+                    </group>
+                    </group>
+                    <group style="width:100%">
+                        <field name="sample_reject_reason" attrs="{'required': [('sample_condition','=','non_satisfactory')] , 'invisible': [('sample_condition', '=', 'satisfactory')]}"/>
+                    </group>
+                    <group style="width:50%">
+                        <field name="has_witness"/>
+                        <field name="witness" attrs="{'invisible': [('has_witness','!=',True)]}"/>
+                    </group>
+                    <group style="width:50%">
+                        <field name="scope" attrs="{'readonly': [('is_update','=',True)]}"/>
+                    </group>
+                    <group style="width:100%">
+                        <field name="sample_description"/>
+                    </group>
+                    <group>
+                        <field name="volume"/>
+                    </group>
+                    <group style="width:50%">
+                        <field name="days_casting" attrs="{'invisible':[('casting','!=',True)]}" string="Days of Testing"/>
+                    </group>
+                    <group style="width:50%">
+                        <field name="date_casting" attrs="{'invisible':[('casting','!=',True)]}"/>
+                    </group>
+                    <group style="width:50%">
+                        <field name="customer_id" invisible='1' />
+                        
+                    </group>
+                    <group style="width:100%">
+                        <!-- <field name="parameters_ids" invisible="1"/> -->
+                        <field name="parameters" options="{'no_create': True}" >
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                         
+                        <field name="is_update" invisible="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                        <button name="add_sample" string="Add Sample" type="object" class="btn-primary" attrs="{'invisible': [('is_update','=',True)]}"/>
+                        <button name="edit_current_sample" string="Save" type="object" class="btn-primary" attrs="{'invisible': [('is_update','!=',True)]}"/>
+                        <button name="close_sample_wizard" string="Close" type="object" />
+
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="open_srf_sample_wizard_action" model="ir.actions.act_window">
+        <field name="name">Add Sample</field>
+        <field name="res_model">create.srf.sample.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="lerm_civil.srf_sample_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+
+  
+</odoo>

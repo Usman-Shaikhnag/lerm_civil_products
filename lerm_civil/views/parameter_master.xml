@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="lerm_parameter_master_form" model="ir.ui.view">
+            <field name="name">lerm.parameter.master.form</field>
+            <field name="model">lerm.parameter.master</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group style="width:100%">
+                            <field name="internal_id"/>
+                            <field name="parameter_name"/>
+                            
+                        </group>
+                        <group>
+                            <group style="width:50%">
+                                <field name="material"/>
+                                <field name="lab_min_value"/>
+                                <field name="datasheet_no"/>
+                                <field name="nabl_min_value" invisible="1"/>
+                                <field name="client_min_value" invisible="1"/>
+                                <field name="test_method"/>
+                                <field name="decimal"/>
+                                <field name="calculated"/>
+                                <field name="calculation_type"/>
+                                <field name="ir_model" attrs="{'invisible': [('calculation_type', '=', 'parameter_based')], 'required': [('calculation_type', '=', 'form_based')]}"  />
+                                <field name="time_based"/>  
+                                <field name="main_report_template"/>
+                                <field name="datasheet_report_template"/>
+                                <field name="discipline"/>
+                                <field name="sheets"/>
+                            </group>
+                            <group style="width:50%">
+                                <field name="group"/>
+                                <field name="lab_max_value"/>
+                                <field name="report_format_no"/>
+                                <field name="mu_value" widget="percentage"/>
+                                <field name="nabl_max_value" invisible="1"/>
+                                <field name="client_max_value" invisible="1"/>
+                                <field name="unit"/>
+                                <field name='nabl_select'/>
+                                <field name='spreadsheet_template'/>
+                                <field name="cell"/>
+                                <field name="fetch_by_grade"/>
+                                <field name="fetch_by_size"/>
+                            </group>
+                        </group>
+                        <group style="width:100%">
+                            <field name='parameter_table'>
+                                <tree edidable="bottom">
+                                    <field name="material"/>
+                                    <field name="grade"/>
+                                    <field name="size"/>
+                                    <field name="permissable_limit"/>
+                                    <field name="specification"/>
+                                    <field name="req_min"/>
+                                    <field name="req_max"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="material"/>
+                                        <field name="grade" domain="[('id', 'in', grade_ids)]"/>
+                                        <field name="size" domain="[('id', 'in', size_ids)]"/>
+                                        <field name="specification"/>
+                                        <field name="permissable_limit"/>
+                                        <field name="req_min"/>
+                                        <field name="req_max"/>
+                                        <field name="size_ids" invisible='1'/>
+                                        <field name="grade_ids" invisible='1'/>
+                                        <field name="material_ids" invisible='1'/>
+                                    </group>
+                                </form>
+                            </field>
+                        </group>
+                        
+                        <field name="dependent_inputs">
+                            <tree editable="bottom">
+                                <field name="is_parameter_dependent"/>
+                                <field name="identifier"/>
+                                <field name="label"/>
+                                <field name='default'/>
+                                <field name="decimal_place"/>
+                                <field name="parameter"/>
+                            </tree>
+                        </field>
+                        <group>
+                            <field name="formula" widget="ace" options="{'mode': 'python'}" />
+                        </group>
+                        
+                        <!-- <notebook>
+                             <page string="Alias">
+                             <field name='alias_table'>
+                             <tree edidable="bottom">
+                             <field name="alias"/>
+                             <field name="customer"/>
+                             </tree>
+                             <form>
+                             <group>
+                             <field name="alias"/>
+                             <field name="customer"/>
+                             </group>
+                             </form>
+                             </field>
+                             </page>
+                             </notebook> -->
+                     </sheet>
+                </form>
+            </field>
+        </record>
+        
+        
+        <record id="lerm_parameter_master_tree" model="ir.ui.view">
+            <field name="name">lerm.parameter.master.tree</field>
+            <field name="model">lerm.parameter.master</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="parameter_name" optional="show"/>
+                    <field name="group" optional="show"/>
+                    <field name="material" optional="show"/>
+                    <field name="lab_min_value" optional="show"/>
+                    <!-- <field name="nabl_min_value" optional="show"/> -->
+                    <field name="client_min_value" optional="show"/>
+                    <field name="test_method" optional="show"/>
+                    <field name="calculated" optional="show"/>
+                    <field name="discipline" optional="show"/>
+                    <field name="sheets" optional="show"/>
+                    <field name="mu_value" optional="show"/>
+                    <field name="lab_max_value" optional="show"/>
+                    <!-- <field name="nabl_max_value" optional="show"/> -->
+                    <field name="client_max_value" optional="show"/>
+                    <field name="unit" optional="show"/>
+                    <field name='nabl_select' optional="show"/>
+                    <field name='spreadsheet_template' optional="show"/>
+                    <field name="parameter_table" optional="show"/>
+                    <field name="dependent_inputs" optional="show"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="lerm_civil_parameter_master_search" model="ir.ui.view">
+            <field name="name">lerm.parameter.master.search.view</field>
+            <field name="model">lerm.parameter.master</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="internal_id" string="Internal ID" />
+                    <field name="parameter_name" string="Parameter Name" />
+                    <field name="material" string="Material" />
+                    <field name="discipline" string="Discipline" />
+                    <field name="group" string="Group" />
+                    <field name="datasheet_no" string="Datasheet Format No" />
+                    <field name="lab_min_value" string="Lab min Value" />
+                    <field name="lab_max_value" string="Lab max Value" />
+                    <field name="nabl_min_value" string="Nabl min value" />
+                    <field name="nabl_max_value" string="Nabl max value" />
+                    <field name="time_based" string="Time Based" />
+                    <field name="unit" string="Unit" />
+                    <field name="calculated" string="Pseudo Parameter" />
+                    <field name="calculation_type" string="Calculation Type" />
+                    <field name="test_method" string="Parameter Test Method" />
+                    <field name="nabl_select" string="NABL" />
+                </search>
+            </field>
+        </record>
+        
+        
+    </data>
+</odoo>

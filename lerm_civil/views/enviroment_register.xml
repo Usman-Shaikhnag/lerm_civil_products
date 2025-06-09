@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form View -->
+        <record id="view_enviroment_register_form" model="ir.ui.view">
+            <field name="name">enviroment.register.form</field>
+            <field name="model">enviroment.register</field>
+            <field name="arch" type="xml">
+                <form string="Environment Register">
+                    <sheet>
+                        <group>
+                            <field name="atmospheric_pressure"/>
+                            <field name="temp_dry_bulb"/>
+                            <field name="temp_wet_bulb"/>
+                            <field name="relative_hum"/>
+                            <field name="date_time"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree View -->
+        <record id="view_enviroment_register_tree" model="ir.ui.view">
+            <field name="name">enviroment.register.tree</field>
+            <field name="model">enviroment.register</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date_time"/>
+                    <field name="atmospheric_pressure"/>
+                    <field name="temp_dry_bulb"/>
+                    <field name="temp_wet_bulb"/>
+                    <field name="relative_hum"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Action for Tree View -->
+        <record id="action_enviroment_register_tree" model="ir.actions.act_window">
+            <field name="name">Environment Register</field>
+            <field name="res_model">enviroment.register</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

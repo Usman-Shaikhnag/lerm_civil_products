@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="lerm_civil_sample_form" model="ir.ui.view">
+            <field name="name">lerm.srf.sample.form</field>
+            <field name="model">lerm.srf.sample</field>
+            <field name="arch" type="xml">
+                <form>
+                    
+                    <header>
+                            <button
+                                type="object"
+                                name="open_sample_allotment_wizard"
+                                string="Allotment"
+                                invisible="context.get('is_local',False)"
+                                attrs="{'invisible': [('state', 'not in', ('1-allotment_pending'))]}"
+                                groups="lerm_civil.kes_job_allocation,lerm_civil.kes_hod_access_group,lerm_civil.kes_verified_by,lerm_civil.kes_quality_manager"
+                                />
+                            
+                            
+
+                            <button
+                                type="object"
+                                name="print_datasheet"
+                                string="Print Datasheet"
+                                />
+                            <button
+                                    type="object"
+                                    name="print_nabl_report"
+                                    string="Print NABL Report"
+                                    attrs="{'invisible': [('print_button_visible', '=', False)]}"
+                                    />
+                            <button
+                                    type="object"
+                                    name="print_non_nabl_report"
+                                    string="Print Non-NABL Report"
+                                    attrs="{'invisible': [('state', 'not in', ('4-in_report'))]}"
+                                    />
+
+                            <button type="object" 
+                            class="oe_highlight" 
+                            name="approve_sample" 
+                            string="Approve " 
+                            attrs="{'invisible': [('state', 'not in', ('3-pending_verification'))]}"
+                            groups="lerm_civil.kes_checked_by,lerm_civil.kes_hod_access_group"/>
+
+                            <button type="object" 
+                            class="oe_highlight" 
+                            name="approve_pending_sample" 
+                            string="Approve" 
+                            attrs="{'invisible': [('state', 'not in', ('5-pending_approval'))]}"
+                            groups="lerm_civil.kes_hod_access_group"/>
+
+                            <button type="object" 
+                            name="reject_sample" 
+                            string="Reject" 
+                            attrs="{'invisible': [('state', 'not in', ('3-pending_verification','5-pending_approval'))]}"/>
+
+
+                            <button type="object" 
+                            name="reallocate_sample" 
+                            string="Reallocate" 
+                            attrs="{'invisible': [('state', 'in', ('1-allotment_pending'))]}"
+                            groups="lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_verified_by"
+                            />
+
+
+                            <button
+                                type="object"
+                                name="cancel_sample" 
+                                attrs="{'invisible': [('state', 'not in', ('1-allotment_pending','2-alloted','3-pending_verification','4-in_report','5-pending_approval'))]}"
+                                string="Cancel Sample"/>
+                                
+
+                            
+        
+                            <field  invisible="context.get('is_local',False)" readonly="1" name="state" widget="statusbar"/>
+                    
+                    
+                    </header>
+                    <sheet>
+                    <div class="oe_button_box" name="button_box"  >
+                                <button attrs="{'invisible': [('state', '=', '1-allotment_pending')]}" string="ELN" name="open_related_eln" type="object" class="oe_stat_button" icon="fa-align-justify">
+                                    <!-- <field name="sample_count" string="Samples" widget="statinfo"/> -->
+                                </button>
+                
+                    </div>
+                    <group style="width:100%">
+                        <field name="srf_id"  invisible="context.get('is_local',False)" readonly="1"/>
+                    </group>
+                        <group style="width:50%">
+                        
+                            <field name="discipline_id" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="lab_no_value" optional="show" invisible="1"/>
+                            <!-- <field name="client_reference1"/> -->
+                            <field name="material_id" domain="[('id', 'in', material_ids)]" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <!-- <field name="lab_l_id" /> -->
+                            <field name="material_id_lab_name"/>
+                            <field name="brand" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name='casting_date' attrs="{'invisible': [('casting', '!=', True)], 'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="grade_id" domain="[('id', 'in', grade_ids)]" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="client_sample_id" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="received_by_id" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="sample_condition" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="material_ids" invisible='1'/>
+                            <field name="grade_ids" invisible='1'/>
+                            <field name='conformity' readonly="1"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name='kes_no'/>
+                            <field name='ulr_no'/>
+                            <field name="group_id" domain="[('id', 'in', group_ids)]" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="department_id"/>
+                            <field name="product_name" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="main_name" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="price" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="size_id" domain="[('id', 'in', size_ids)]" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <!-- <field name="sample_quantity"/> -->
+                            <field name="sample_received_date" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="location" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                            <field name="group_ids" invisible='1'/>
+                            <field name="size_ids" invisible='1'/>
+                            <field name="qty_ids" invisible='1'/>
+                            <field name="lab_location"/>
+
+                        </group>
+                        <group style="width:100%">
+                            <field name="sample_reject_reason" attrs="{'required': [('sample_condition', '=', 'non_satisfactory')], 'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name="has_witness" readonly="1"/>
+                            <field name="witness" attrs="{'invisible': [('has_witness','!=',True)]}"/>
+                        </group>
+                        <group style="width:50%">
+                            <!-- <field name="scope" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/> -->
+                            <field name="scope" />
+                        </group>
+                        <group style="width:100%">
+                            <field name="sample_description" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                        </group>
+                        <group style="width:50%">
+                        <field name="casting" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name="days_casting" attrs="{'invisible': [('casting', '!=', True)], 'readonly': [('state', '!=', '1-allotment_pending')]}" />
+                        </group>
+                        <group style="width:50%">
+                            <field name="date_casting" attrs="{'invisible': [('casting', '!=', True)], 'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name="filled_by" readonly="1"/>
+                        </group>
+                        
+                        <group style="width:50%">
+                            <field name="check_by" readonly="1"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name="approved_by" readonly="1"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name="volume" attrs="{'readonly': [('state', '!=', '1-allotment_pending')]}"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name="sample_no" invisible="1"/>
+                            <field name="customer_id" invisible='1'/>
+                            <field name="casting" invisible='1'/>
+                        </group>
+                    
+                        <group>
+                            <field name="product_or_form_based" />
+                        </group> 
+                        <group>
+                        <group >
+                                
+                            <field name="file_upload" widget="many2many_binary" />
+                        </group>
+                        <group >
+                            <field name="report_upload" widget="many2many_binary" />
+                            <!-- uptill -->
+                        </group>
+                        <group>
+                            <field name="checkby_signature_required" attrs="{'invisible': [('state', 'not in', ('4-in_report'))]}"/>
+                            <field name="approveby_signature_required" attrs="{'invisible': [('state', 'not in', ('4-in_report'))]}"/>
+                             <field name="testedby_signature_required" attrs="{'invisible': [('state', 'not in', ('4-in_report'))]}"/>
+
+                        </group>
+                        <group>
+                            <field name="page_break" />
+                            <field name="invoice_status" attrs="{'invisible': [('state', 'not in', ('4-in_report'))]}"/>
+                            <field name="invoice_number" attrs="{'invisible': [('state', '!=', '4-in_report'), ('invoice_status', '!=', '2-invoiced')]}"/>
+                        </group>
+                        </group>  
+
+
+                        <group>
+                            <button name="open_form" type="object" string="Open Form" attrs="{'invisible':[('product_or_form_based','=',False)]}"/>
+                    
+                        </group>  
+                        <group>
+                            <field name="print_button_visible" invisible="1"/>                
+                        </group>  
+                        
+            
+                        <field invisible="1" name="parameters" nolabel="1" options="{'no_create': True, 'no_open': True}" />
+                        <field name="parameters_result" nolabel="1" attrs="{'invisible':[('product_or_form_based','=',True)]}">
+                                    <tree editable="bottom" >
+                                        <field name="parameter"/>
+                                        <field name="result" />
+                                        <field name="unit" />
+                                        <field name="verified" />
+                                        <field name="specification" />
+                                        <field name="test_method" />
+                                        <!-- <button string="Calculation" name="open_calculation_wizard" type="object" class="oe_highlight"/> -->
+                                    </tree>
+                        </field>
+                    
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+
+                </form>
+            </field>
+
+        </record>
+
+
+    <record id="lerm_civil_sample_kanban" model="ir.ui.view">
+        <field name="name">lerm.srf.sample.kanban</field>
+        <field name="model">lerm.srf.sample</field>
+        <field name="arch" type="xml">
+
+        <kanban records_draggable="0"  default_group_by="state" class="o_res_partner_kanban">
+                <field name='sample_no'/>
+                 <templates>
+                    <t t-name="kanban-box">
+                    <div t-attf-class="oe_kanban_global_click">
+                       <div class="oe_kanban_details">
+                                <!-- <div class="o_kanban_image">
+                                </div> -->
+                                <div id="car_view_kanban" class="o_kanban_record_top mb0">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <span>
+                                                <field name="sample_no"/>
+                                            </span>
+                                        </strong>
+                                        <ul>
+                                            <li>
+                                                <b>KES NO :</b>
+                                                <field name="kes_no"/>
+                                            </li>
+
+                                        </ul>
+
+                                        <ul>
+                                            <li>
+                                                <b>Group :</b>
+                                                <field name="group_id"/>
+                                            </li>
+
+                                        </ul>
+                                        <ul>
+                                            <li>
+                                             <span style="color:Green;">
+                                                <field  name="technicians"/>
+
+                                            </span>
+                                            </li>
+                                        </ul>
+                                         <ul>
+                                            <li>
+                                             <span>
+                                                <field name="activity_ids" widget="kanban_activity"/>
+                                            </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    </t>
+                </templates>
+            </kanban>
+           
+        </field>
+
+    </record>
+
+    <record id="lerm_srf_sample_tree" model="ir.ui.view">
+        <field name="name">lerm.srf.sample.tree</field>
+        <field name="model">lerm.srf.sample</field>
+        <field name="arch" type="xml">
+
+
+            <tree default_order='create_date desc' create="false">
+              <header>
+                    <button type="object" class="oe_highlight" name="open_sample_allotment_wizard"  string="Bulk Allotment" />
+                    <button type="object" class="oe_highlight" name="reallocate_sample"  string="ReAllotment" />
+                </header>
+                      <field name="sample_received_date" optional="show"/>
+                      <field name='kes_no' width="400px"/>
+                      <field name="srf_id" optional="show" />
+                      <!-- <field name="client_reference1" optional="show" /> -->
+                      <field name="activity_ids" widget="list_activity" optional="show"/>
+                      <field name="sample_no" optional="show"/>
+                      <field name="discipline_id" optional="show"/>
+                      <field name="lab_no_value" optional="show" invisible="1"/>
+                      <!-- <field name="lab_l_id" optional="show"/> -->
+                      <field name="group_id" optional="show"/>
+                      <field name="department_id" optional="show"/>
+                      <field name="material_id" optional="show"/>
+                      <field name="alias" optional="show"/>
+                      <!-- <field name="customer_id"/> -->
+                      <field name="brand" optional="show"/>
+                      <field name="size_id" optional="show"/>
+                      <field name="parameters" widget="many2many_tags" optional="show"/>
+                      <field name="casting_date" optional="show"/>
+                      <field name="grade_id" optional="show"/>
+                      <field name="client_sample_id" optional="show"/>
+                      <field name="received_by_id" optional="show"/>
+                      <field name="sample_condition" optional="show"/>
+                      <field name="sample_reject_reason" optional="show"/>
+                      <field name="witness" optional="show"/>
+                      <field name="scope" optional="show"/>
+                      <field name="sample_description" optional="show"/>
+                      <field name="state" optional="show" decoration-success= "state == '4-in_report'" decoration-warning= "state == '1-allotment_pending'" decoration-danger= "state == '6-cancelled'" decoration-info= "state == '3-pending_verification'" widget="badge"/>
+                      <field name="invoice_status" optional="show"  decoration-success= "invoice_status == '2-invoiced'" decoration-danger= "invoice_status == '1-uninvoiced'" widget="badge"/>
+                      <field name="invoice_number" optional="show"/>
+
+                      
+
+            </tree>
+        </field>
+
+    </record>
+
+    <record id="lerm_civil_sample_search_view" model="ir.ui.view">
+    <field name="name">lerm.srf.sample.search.view</field>
+    <field name="model">lerm.srf.sample</field>
+    <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="srf_id" string="SRF ID" />
+                <field name="casting" string="Casting" />
+                <field name="discipline_id" string="Discipline" />
+                <field name="kes_no" string="KES NO" />
+                <field name="lab_no_value" optional="show" invisible="1"/>
+                <!-- <field name="lab_l_id" string="Discipline" /> -->
+                <field name="group_id" string="Group" />
+                <field name="material_id" string="Material" />
+                <field name="sample_qty" string="Sample Quantity" />
+                <field name="sample_condition" string="Sample Condition" />
+                <field name="technicians" string="Technicians" />
+                <field name="location" string="Location" />
+                <field name="scope" string="Scope" />
+                <field name="days_casting" string="Days of Testing" />
+                <field name="customer_id" string="Customer" />
+                <field name="status" string="Status" />
+                <field name="state" string="State" />
+                <field name="conformity" string="Conformity" />
+
+                
+
+
+                 <!-- <searchpanel>
+                        <field name="status" string="Technicians" enable_counters="1"/>
+                </searchpanel> -->
+            </search>
+        </field>
+    </record>
+
+    <record id="srf_sample_allotment_wizard" model="ir.ui.view">
+        <field name="name">sample.allotment.wizard</field>
+        <field name="model">sample.allotment.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group style="width:100%">
+                        <field name='technicians'/>
+                        <!-- <field name="message_ids" widget="mail_thread"/>
+                        <field name="activity_ids" widget="mail_activity"/> -->
+                    </group>
+                    <footer>
+                        <button name="allot_sample" string="Allot Sample" type="object" class="btn-primary"/>
+                        <button name="close_allotment_wizard" string="Close" type="object"/>
+                        <!-- <button name="schedule_activity" string="Schedule Activity" type="object" class="oe_highlight"/> -->
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="srf_sample_allotment_wizard_action" model="ir.actions.act_window">
+        <field name="name">Allotment</field>
+        <field name="res_model">sample.allotment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="lerm_civil.srf_sample_allotment_wizard"/>
+        <field name="target">new</field>
+    </record>
+
+    <record id="sample_reject_wizard" model="ir.ui.view">
+        <field name="name">sample.reject.wizard</field>
+        <field name="model">sample.reject.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+            <group>
+                <field name="sample_id" invisible='1'/>
+                <field name="reject_reason"/>
+            </group>
+            <footer>
+                    <button name="reject_sample_button" string="Reject Sample" type="object" class="btn-primary"/>
+                    <button name="close_reject_wizard" string="Close" type="object"/>
+            </footer>
+            </form>
+        </field>
+    </record>
+    <record id="sample_graph_view" model="ir.ui.view">
+        <field name="name">lerm.srf.sample.graph</field>
+        <field name="model">lerm.srf.sample</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="state" type="row"/>
+                <!-- <field name="create_date" interval="month" type="col"/> -->
+            </graph>
+        </field>
+
+    </record>
+
+    
+
+    </data>
+
+</odoo>

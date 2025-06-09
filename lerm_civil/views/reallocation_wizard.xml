@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="sample_reallocation_wizard" model="ir.ui.view">
+        <field name="name">sample.reallocation.wizard.form</field>
+        <field name="model">sample.reallocation.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="technicians" required="1"/>
+
+                </group>
+                <footer>
+                    <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="reallocate_current_sample"
+                            string="Reallocate"/>
+                    <button
+                            type="object"
+                            name="discard_reallocation"
+                            string="Cancel"/>
+                </footer>
+
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>

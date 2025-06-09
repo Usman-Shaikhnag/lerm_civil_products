@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="mechanical_data_sheet_header">
+        <div t-attf-class="header article" t-att-style="report_header_style">
+			<div class="row">
+				<div class="col-12"  style="display: flex; justify-content: space-between;">
+					<!-- <div style="text-align:left;">	
+						FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.material.data_sheet_format_no.name"/>
+					</div>
+					<div style="text-align:middle; margin-top:6px">	
+						Job No. <![CDATA[&nbsp;]]> <span t-esc="eln.kes_no"/>
+					</div>
+					<div style="text-align:right; margin-top:6px;">	
+						End Date. <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
+					</div> -->
+				
+					<span style="text-align:left; display: flex; justify-content: space-between; margin-right: 4rem;" >
+						FORMAT No. <span t-esc="eln.material.data_sheet_format_no.name"/>
+					</span>
+					
+					<span style="text-align:center; display: flex; justify-content: space-between;  margin-left: 5rem;  margin-right: 3rem;">
+						Job No. <span t-esc="eln.kes_no"/>
+					</span>
+					
+					<span style="text-align:left; display: flex; justify-content: space-between;  margin-left: 4rem;  ">
+						Date. <span t-esc="eln.end_date"/>
+					</span>
+				
+					<div style="text-align:center;margin-top:12px">	
+						Esehat Meditech Ltd.
+					</div>
+					<div style="text-align:center;">
+						TEST DATA SHEET
+					</div>
+					
+				</div>
+			</div>
+        </div>
+        <div t-attf-class="article" t-att-style="report_header_style">
+            <t t-out="0"/>
+        </div>
+		<div t-attf-class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+            
+				
+                <div t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+	</template>
+ 
+
+</odoo>

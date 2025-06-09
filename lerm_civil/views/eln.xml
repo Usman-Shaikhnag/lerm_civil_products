@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="lerm_eln_forms" model="ir.ui.view">
+            <field name="name">lerm.eln.form</field>
+            <field name="model">lerm.eln</field>
+            <field name="arch" type="xml">
+                <form string="ELN">
+                <header>
+                    <button
+                    type="object"
+                    name="confirm_eln"
+                    string="Confirm"
+                    attrs="{'invisible': [('state', 'not in', ('1-draft','4-rejected'))]}" />      
+                    <field readonly="1" name="state" widget="statusbar" statusbar_visible="1-draft,2-confirm,3-approved"/>
+                    
+                    <button
+                            type="object"
+                            name="print_report"
+                            string="Print Report"
+                            />
+                    
+                    <button
+                            type="object"
+                            name="reupdate_result"
+                            string="Update Results"
+                            />
+
+                  
+                    
+                    <button
+                            type="object"
+                            name="print_datasheet"
+                            string="Print Datasheet"
+                            />
+                    
+                    <!-- <button
+                                type="object"
+                                name="print_nabl_report"
+                                string="Print NABL Report"
+                                attrs="{'invisible': [('state', 'not in', ('3-approved'))]}"
+                                />
+                    <button
+                            type="object"
+                            name="print_non_nabl_report"
+                            string="Print Non-NABL Report"
+                            attrs="{'invisible': [('state', 'not in', ('3-approved'))]}"
+                            /> -->
+
+
+
+                </header>
+                    <sheet>
+                        <group style="width:100%">
+                            <field name='eln_id' invisible="1"/>
+                            <field name='technician' readonly="1"/>
+                        </group>
+                        <group>
+                            <group style="width:50%">
+                                <field name='srf_id' readonly="1"/>
+                                <field name='srf_date' readonly="1"/>
+                                <field name='discipline' readonly="1"/>
+                                <field name='lab_no_value' invisible="1"/>
+                                <!-- <field name='lab_l_id' readonly="1"/> -->
+                                <field name='material' readonly="1"/>
+                                <field name='size_id' domain="[('id', 'in', size_ids)]"/>
+                                <field name='start_date' required="1"/>
+                                <field name='witness_description'/>
+                                <field name='remarks'/>
+                              
+                                <field name='conformity' readonly="1"/>
+                                <field name='has_witness'/>
+                                <field name='is_product_based_calculation'/>
+                                <field name='file_upload' widget="many2many_binary"/>
+
+                                <!-- <field name='is_form_based_calculation'/> -->
+                                <field name='invisible_fetch_inputs' invisible="1" />
+                                <field name='size_ids' invisible="1"/>
+
+
+                            </group>
+                            <group style="width:50%">
+                                <field name='sample_id' readonly="1"/>
+                                <field name='kes_no' readonly="1"/>
+                                <field name='group' readonly="1"/>
+                                <field name='department_id'/>
+                                <field name='witness_name'/>
+                                <field name='grade_id' domain="[('id', 'in', grade_ids)]"/>
+                                <field name='end_date'/>
+                                <field name="witness_photo" filename='witness_photo_name'/>
+                                <field name='witness_photo_name' invisible='1'/>
+                                <field name='attachment' filename='attachment_name'/>
+                                <field name='attachment_name' invisible='1'/>
+                                <field name='casting_date' />
+                                <field name='date_testing'/>
+                                <field name='instrument'/>
+                                <!-- <field name="file_upload_eln"/> -->
+                                <field name='grade_ids' invisible="1"/>
+                                <field name='ir_model' invisible="1"/>
+                                <!-- <field name='report_upload'/> -->
+
+                            </group>
+                        </group>
+                         <group>
+                                <button string="Open Form" name="open_product_based_form" class="oe_highlight"  type="object" attrs="{'invisible': [('is_product_based_calculation', '=', False)]}"/>
+                        </group>
+                         <group>
+                                <button string="Fetch Inputs" name="fetch_inputs" class="oe_highlight" type="object" attrs="{'invisible': ['|',('invisible_fetch_inputs', '=', True),('is_product_based_calculation', '=', True)]}"/>
+                        </group>
+
+                        <group style="width:50%" invisible="1">
+                            <field name="datasheets" nolabel="1">
+                                <tree>
+                                    <field name="datasheet"/>
+                                    <field name="spreadsheet_template" />
+                                    <field name="related_parameters" widget="badge"/>
+                                </tree>
+                            </field>
+                            <field name='fetch_ds_button' widget="fetch_datasheet" nolabel="1"/>
+                            <field name='update_result' widget="update_result" nolabel="1"/>
+                        </group>
+
+                        <group style="width:100%" invisible="1">
+
+                            <field name="parameters" nolabel="1">
+                                <tree>
+                                    <field name="parameter"/>
+                                    <field name='test_method'/>
+                                    <field name='result'/>
+                                    <field name="spreadsheet_template"/>
+                                    <field name='specification'/>
+                                    <!-- <field name='button' widget="datasheet"/>                          -->
+                                </tree>
+                            </field>
+                        </group>
+
+                        
+                            <field name="parameters_result" nolabel="1">
+                                <tree editable="bottom" >
+                                    <field name="sequence" string="Sequence" widget="handle" />
+                                    <field name="parameter"/>
+                                    <field name="result_type" optional="show"/>
+                                    <field name="result_char" optional="show" attrs="{'readonly': [('result_type', '=', 'number')]}"/>
+                                    <field name="result" optional="show" readonly="1" attrs="{'column_invisible': [('parent.is_product_based_calculation', '=', True)]}" />
+                                    <!-- <field name="context_data" /> -->
+                                    <field name="calculation_type" optional="show" attrs="{'column_invisible': [('parent.is_product_based_calculation', '=', True)]}"  />
+                                    <field name="calculated" optional="show"/>
+                                    <field name="unit" optional="show" attrs="{'column_invisible': [('parent.is_product_based_calculation', '=', True)]}" />
+                                    <field name="test_method" optional="show" attrs="{'column_invisible': [('parent.is_product_based_calculation', '=', True)]}" string="Parameter Test Method" />
+                                    <field name="specification_permissible_limit" optional="show" attrs="{'column_invisible': [('parent.is_product_based_calculation', '=', True)]}" />                                    
+                                    <field name="specification" optional="show" attrs="{'column_invisible': [('parent.is_product_based_calculation', '=', True)]}" />
+                                    <field name="nabl_status" optional="show" attrs="{'readonly': [('result_type', '=', 'number')]}" />
+                                    <!-- <field name="nabl_status"  attrs="{'column_invisible': [('parent.is_product_based_calculation', '=', True)]}" /> -->
+                                    <field name="conformity_status"  optional="show"
+                                           decoration-success="conformity_status == 'pass'" 
+                                           decoration-danger="conformity_status == 'fail'" 
+                                           readonly="1" 
+                                           attrs="{'column_invisible': [('parent.is_product_based_calculation', '=', True)]}" 
+                                           />
+                                    <field name="model_id" optional="show" readonly="1" attrs="{'column_invisible': [('parent.is_product_based_calculation', '=', True)]}" />
+                                    <button string="Calculation" optional="show" name="open_calculation_wizard" type="object" class="oe_highlight" attrs="{'invisible': [('calculation_type','=','form_based')] , 'column_invisible': [('parent.is_product_based_calculation', '=', True)]}" />
+                                    <button string="Open Form" optional="show" name="open_form" type="object" class="oe_highlight" attrs="{'invisible': [('calculation_type','=','parameter_based')], 'column_invisible': [('parent.is_product_based_calculation', '=', True)]}" />
+                                    
+                                </tree>
+                            </field>
+
+                         
+
+                            <field  name="sop" />
+                        
+
+                        <!-- <button string="Calculate Graph" name="calculate_graphs"  type="object"/> -->
+                            <!-- <field name='fetch_ds_button' widget="fetch_datasheet" nolabel="1"/>
+                            <field name='update_result' widget="update_result" nolabel="1"/> -->
+                        <!-- <group>
+                            <field name="name"/>
+                            <field name="image" widget="image"/>
+                        </group> -->
+                        <group style="width:100%">
+                            <field name="parameters_input" attrs="{'invisible': [('is_product_based_calculation', '=', True)]}" nolabel="1">
+                                <tree editable="bottom" delete="1">
+                                    <field name="parameter_result" />
+                                    <field name="is_parameter_dependent"/>
+                                    <field name="identifier" invisible="1" />
+                                    <field name="inputs" />
+                                    <field name="value" />
+                                    <field name="date_time" />
+                                </tree>
+                            </field>
+                            <!-- <field name='fetch_ds_button' widget="fetch_datasheet" nolabel="1"/>
+                            <field name='update_result' widget="update_result" nolabel="1"/> -->
+                        </group>
+
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name= "message_ids" widget="mail_thread"/>
+                        <field name= "activity_ids" widget="mail_activity"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="lerm_eln_spreadsheet" model="ir.ui.view">
+            <field name="name">eln.spreadsheets.form</field>
+            <field name="model">eln.spreadsheets</field>
+            <field name="arch" type="xml">
+                <form string="Spread Sheet">
+                    <sheet>
+                        <field name='datasheet'/>
+                        <field name='spreadsheet_template'/>
+                        <field name='related_parameters'/>
+                        <field name='fill_datasheet' widget="fill_datasheet" />
+                        
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="lerm_eln_parameters_form" model="ir.ui.view">
+            <field name="name">eln.parameters.form</field>
+            <field name="model">eln.parameters</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group invisible="1" style="width:50%">
+                            <field name='eln_id'/>
+
+                        </group>
+                        <group style="width:100%">
+                            <field name='parameter'/>
+                            <field name='test_method'/>
+                        </group>
+                        <group style="width:100%">
+                            <field class="set_result_class" name='result'/>
+                            <field name='datasheet'/>
+                            <field name="spreadsheet_template"/>
+
+                            
+                        </group>
+                        <group style="width:50%">
+                            <field name='button' widget="datasheet" nolabel="1"/>
+                        </group>
+
+
+                        <group style="width:50%">
+                            <field name='set_result_button' widget="set_result" nolabel="1"/>
+                        </group>
+                        <!-- <group style="width:100%">                    
+                            <field name='result_json'/>
+                        </group> -->
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="lerm_eln_tree" model="ir.ui.view">
+            <field name="name">lerm.eln.tree</field>
+            <field name="model">lerm.eln</field>
+            <field name="arch" type="xml">
+                <tree default_order='create_date desc' create="false">
+                    <!-- <field name='eln_id' optional="show"/> -->
+                    <field name='eln_id' optional="show"/>
+                    <field name='srf_id' optional="show"/>
+                    <field name='sample_id' optional="show"/>
+                    <field name='technician' optional="show"/>
+                    <field name='srf_date' optional="show"/>
+                    <field name='kes_no' optional="show"/>
+                    <field name='discipline' optional="show"/>
+                     <!-- <field name='lab_l_id' optional="show"/> -->
+                    <field name='lab_no_value' optional="show" invisible="1"/>
+                    <field name='group' optional="show"/>
+                    <field name='material' optional="show"/>
+                    <field name='witness_name' optional="show"/>
+                    <field name='casting_date' optional="show"/>
+                    <field name='date_testing' optional="show"/>
+
+                </tree>
+            </field>
+        </record>
+
+
+   
+
+
+
+        <record id="eln_result_update_wizard" model="ir.ui.view">
+            <field name="name">eln.update.result.wizard</field>
+            <field name="model">eln.update.result.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group style="width:100%">
+                            <!-- <field name='results'/> -->
+                            <field name="results" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="parameter"/>
+                                    <!-- <field name='test_method'/> -->
+                                    <field name='result' />
+                                </tree>
+                            </field>
+                        </group>
+
+                    </sheet>
+                    <footer>
+                        <button name="update_result" string="Update Result" type="object" class="btn-primary"/>
+                        <!-- <button name="close_sample_wizard" string="Close" type="object"/> -->
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="eln_result_update_wizard_action" model="ir.actions.act_window">
+            <field name="name">Update Result</field>
+            <field name="res_model">eln.update.result.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="lerm_civil.eln_result_update_wizard"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="lerm_civil_eln_search_view" model="ir.ui.view">
+        <field name="name">lerm.eln.search.view</field>
+        <field name="model">lerm.eln</field>
+        <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="eln_id" string="ELN ID" />
+                    <field name="srf_id" string="SRF ID" />
+                    <field name="kes_no" string="KES NO" />
+                    <field name="technician" string="Technicians" />
+                    <field name="casting_date" string="Casting Date" />
+                    <field name="discipline" string="Discipline" />
+                    <field name='lab_no_value' string="Lab Location" invisible="1"/>
+                      <!-- <field name="lab_l_id" string="Lab No" /> -->
+                    <field name="group" string="Group" />
+                    <field name="material" string="Material" />
+                    <field name="state" string="State" />
+                    <filter string="In-Test" name="state_in_test" domain="[('state', '=', '1-draft')]" />
+                    <filter string="In-Check" name="state_in_check" domain="[('state', '=', '2-confirm')]" />
+                    <filter string="Approved" name="state_approved" domain="[('state', '=', '3-approved')]" />
+                    <filter string="Rejected" name="state_rejected" domain="[('state', '=', '4-rejected')]" />
+                    <field name="start_date" string="Start Date" />
+                    <field name="end_date" string="End Date" />
+                    <field name="conformity" string="Conformity" />
+                    <field name="has_witness" string="Witness" />
+                    <searchpanel>
+                        <field name="state" enable_counters="1" />
+                        <!-- <field name="institute_id" enable_counters="1"/> -->
+                    </searchpanel>
+                    </search>
+                </field>
+            </record>
+
+
+<!-- 
+        <record id="parameter_calculation_wizard_action" model="ir.actions.act_window">
+            <field name="name">Calculation Wizard</field>
+            <field name="res_model">parameter.calculation.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="lerm_civil.parameter_calculation_wizard"/>
+            <field name="target">new</field>
+        </record> -->
+
+        <record id="parameter_calculation_wizard" model="ir.ui.view">
+        <field name="name">parameter.calculation.wizard.form</field>
+        <field name="model">parameter.calculation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Your Wizard">
+                <group>
+                    <field name="parameter"/>
+                    <field name="time_based" invisible="1"/>
+                    <field name="result_editable" invisible="1"/>
+                    <field name="eln_state" invisible="1"/>
+
+                </group>
+                <notebook>
+                    <page string="Input Lines">
+                        <field name="inputs_lines" >
+                            <tree editable="bottom">
+                                <field name="wizard_id" invisible="1"/>
+                                <field name="inputs_id" invisible="1"/>
+                                <field name="parameter_result"/>
+                                <field name="is_parameter_dependent"/>
+                                <field name="identifier"/>
+                                <field name="inputs" />
+                                <field name="value" attrs="{'readonly':[('parent.time_based','=',True)]}" />
+                                <field name="date_time" attrs="{'column_invisible': [('parent.time_based','=',False)]}" />
+                            </tree>
+                        </field>
+                        <group>
+                            <field name="result"/>
+                            <!-- <field name="result_char"/> -->
+                            <field name="nabl_status" readonly="1" />
+                            <field name="conformity_status" readonly="1" />
+                        </group>
+
+                    </page>
+                    
+
+                </notebook>
+                <footer>
+                    <button name="update_result" string="Update" type="object" class="btn-primary" attrs="{'invisible': [('result_editable', '=', False)]}"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="eln_graph_view" model="ir.ui.view">
+        <field name="name">lerm.eln.graph</field>
+        <field name="model">lerm.eln</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="state" type="row"/>
+                <!-- <field name="create_date" interval="month" type="col"/> -->
+            </graph>
+        </field>
+
+    </record>
+
+       
+
+
+
+    </data>
+</odoo>
