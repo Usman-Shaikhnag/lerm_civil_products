@@ -12,6 +12,7 @@ This module contains all the common features of Sales Management and eCommerce.
     """,
     'depends': ['base','sale','lerm_civil'],
     'data': [
+                 'security/ir.model.access.csv',
                  'views/aac_block.xml',
                  'reports/aac_datasheet.xml',
                  'reports/aac_report.xml'

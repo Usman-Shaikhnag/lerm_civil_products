@@ -11,7 +11,8 @@
 This module contains all the common features of Sales Management and eCommerce.
     """,
     'depends': ['base','sale','lerm_civil'],
-    'data': [   'security/ir.model.access.csv',
+    'data': [   
+                 'security/ir.model.access.csv',
                  'views/cement_chequerd_tile.xml',
                  'reports/cement_tile_datasheet.xml',
                  'reports/cement_tile_report.xml'

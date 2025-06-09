@@ -1,0 +1,864 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_door1" model="ir.ui.view">
+        <field name="name">mechanical.door1.form</field>
+        <field name="model">mechanical.door1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                   <group >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                         <field name="grade" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                   
+                   
+
+                      <group attrs="{'invisible': [('door_length_visible', '=', False)]}">
+                        <h1>
+                            <field name="door_length_name" readonly="1" nolabel="1"/>
+                            <field name="door_length_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                   
+                     <group attrs="{'invisible': [('door_length_visible', '=', False)]}">
+                        <label for="lenght_observations1" string="Observations" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="lenght_observations1" string="1" />
+                            <field  name="lenght_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="lenght_observations2" string=" 2" />
+                            <field  name="lenght_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="lenght_observations3" string="3" />
+                            <field  name="lenght_observations3"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="lenght_observations4" string="4" />
+                            <field  name="lenght_observations4"  colspan="12"  nolabel="1"/>
+                          </group>
+                        
+                          
+
+                        </div>
+                    </group>
+
+                     <group attrs="{'invisible': [('door_length_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_length_avg' col="4"/>
+                      
+                    </group>
+
+                       <group attrs="{'invisible': [('door_length_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" attrs="{'invisible': [('door_length_visible', '=', False)]}">
+                                <field name='door_length_avg_conformity'
+                                       decoration-success="door_length_avg_conformity == 'pass'" 
+                                       decoration-danger="door_length_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_length_visible', '=', False)]}">
+                                <field name="door_length_avg_nabl"
+                                       decoration-success="door_length_avg_nabl == 'pass'" 
+                                       decoration-danger="door_length_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+
+                     <group attrs="{'invisible': [('door_width_visible', '=', False)]}">
+                        <h1>
+                            <field name="door_width_name" readonly="1" nolabel="1"/>
+                            <field name="door_width_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                   
+                     <group attrs="{'invisible': [('door_width_visible', '=', False)]}">
+                        <label for="width_observations1" string="Observations" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="width_observations1" string="1" />
+                            <field  name="width_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="width_observations2" string=" 2" />
+                            <field  name="width_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="width_observations3" string="3" />
+                            <field  name="width_observations3"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="width_observations4" string="4" />
+                            <field  name="width_observations4"  colspan="12"  nolabel="1"/>
+                          </group>
+                        
+                          
+
+                        </div>
+                    </group>
+
+                     <group attrs="{'invisible': [('door_width_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_width_avg' col="4"/>
+                      
+                    </group>
+
+
+                     <group attrs="{'invisible': [('door_width_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" attrs="{'invisible': [('door_width_visible', '=', False)]}">
+                                <field name='door_width_avg_conformity'
+                                       decoration-success="door_width_avg_conformity == 'pass'" 
+                                       decoration-danger="door_width_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_width_visible', '=', False)]}">
+                                <field name="door_width_avg_nabl"
+                                       decoration-success="door_width_avg_nabl == 'pass'" 
+                                       decoration-danger="door_width_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+
+
+                     <group attrs="{'invisible': [('door_thickess_visible', '=', False)]}">
+                        <h1>
+                            <field name="door_thickess_name" readonly="1" nolabel="1"/>
+                            <field name="door_thickess_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                   
+                     <group attrs="{'invisible': [('door_thickess_visible', '=', False)]}">
+                        <label for="thickess_observations1" string="Observations" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="thickess_observations1" string="1" />
+                            <field  name="thickess_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="thickess_observations2" string=" 2" />
+                            <field  name="thickess_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="thickess_observations3" string="3" />
+                            <field  name="thickess_observations3"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="thickess_observations4" string="4" />
+                            <field  name="thickess_observations4"  colspan="12"  nolabel="1"/>
+                          </group>
+
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="thickess_observations5" string="5" />
+                            <field  name="thickess_observations5"  colspan="12"  nolabel="1"/>
+                          </group>
+
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="thickess_observations6" string="6" />
+                            <field  name="thickess_observations6"  colspan="12"  nolabel="1"/>
+                          </group>
+                        
+                          
+
+                        </div>
+                    </group>
+
+                     <group attrs="{'invisible': [('door_thickess_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_thickess_avg' col="4"/>
+                      
+                    </group>
+
+                     <group attrs="{'invisible': [('door_thickess_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" attrs="{'invisible': [('door_thickess_visible', '=', False)]}">
+                                <field name='door_thickess_avg_conformity'
+                                       decoration-success="door_thickess_avg_conformity == 'pass'" 
+                                       decoration-danger="door_thickess_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_thickess_visible', '=', False)]}">
+                                <field name="door_thickess_avg_nabl"
+                                       decoration-success="door_thickess_avg_nabl == 'pass'" 
+                                       decoration-danger="door_thickess_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+
+
+                      <group attrs="{'invisible': [('door_squareness_visible', '=', False)]}">
+                        <h1>
+                            <field name="door_squareness_name" readonly="1" nolabel="1"/>
+                            <field name="door_squareness_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                   
+                     <group attrs="{'invisible': [('door_squareness_visible', '=', False)]}">
+                        <label for="squareness_observations1" string="Observations" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="squareness_observations1" string="1" />
+                            <field  name="squareness_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="squareness_observations2" string=" 2" />
+                            <field  name="squareness_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="squareness_observations3" string="3" />
+                            <field  name="squareness_observations3"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="squareness_observations4" string="4" />
+                            <field  name="squareness_observations4"  colspan="12"  nolabel="1"/>
+                          </group>
+                        
+                          
+
+                        </div>
+                    </group>
+
+                     <group attrs="{'invisible': [('door_squareness_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_squareness_avg' col="4"/>
+                      
+                    </group>
+
+                    <group attrs="{'invisible': [('door_squareness_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" attrs="{'invisible': [('door_squareness_visible', '=', False)]}">
+                                <field name='door_squareness_avg_conformity'
+                                       decoration-success="door_squareness_avg_conformity == 'pass'" 
+                                       decoration-danger="door_squareness_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_squareness_visible', '=', False)]}">
+                                <field name="door_squareness_avg_nabl"
+                                       decoration-success="door_squareness_avg_nabl == 'pass'" 
+                                       decoration-danger="door_squareness_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+                      <group attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}">
+                        <h1>
+                            <field name="door_general_flatness_name" readonly="1" nolabel="1"/>
+                            <field name="door_general_flatness_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                   
+                     <group attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}">
+                        <label for="cupping_observations1" string="Observations" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="cupping_observations1" string="Cupping 1" />
+                            <field  name="cupping_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="cupping_observations2" string=" Cupping 2" />
+                            <field  name="cupping_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                          
+                        </div>
+                    </group>
+
+                     <group attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}">
+                        <label for="warping_observations1" string="" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="warping_observations1" string="Warping 1" />
+                            <field  name="warping_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="warping_observations2" string=" Warping 2" />
+                            <field  name="warping_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                          
+                        </div>
+                    </group>
+                     <group attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}">
+                        <label for="twisting_observations1" string="" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="twisting_observations1" string="Twisting 1" />
+                            <field  name="twisting_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="twisting_observations2" string=" Twisting 2" />
+                            <field  name="twisting_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                          
+                        </div>
+                    </group>
+
+                      <group attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_cupping_avg' col="4"/>
+                      
+                    </group>
+                     <group attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_warping_avg' col="4"/>
+                      
+                    </group>
+                      <group attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_twisting_avg' col="4"/>
+                      
+                    </group>
+
+                      <group attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}">
+                                <field name='door_cupping_avg_conformity'
+                                       decoration-success="door_cupping_avg_conformity == 'pass'" 
+                                       decoration-danger="door_cupping_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}">
+                                <field name="door_cupping_avg_nabl"
+                                       decoration-success="door_cupping_avg_nabl == 'pass'" 
+                                       decoration-danger="door_cupping_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+                      <group attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}">
+                                <field name='door_warping_avg_conformity'
+                                       decoration-success="door_warping_avg_conformity == 'pass'" 
+                                       decoration-danger="door_warping_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}">
+                                <field name="door_warping_avg_nabl"
+                                       decoration-success="door_warping_avg_nabl == 'pass'" 
+                                       decoration-danger="door_warping_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+                       <group attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}">
+                                <field name='door_twisting_avg_conformity'
+                                       decoration-success="door_twisting_avg_conformity == 'pass'" 
+                                       decoration-danger="door_twisting_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_general_flatness_visible', '=', False)]}">
+                                <field name="door_twisting_avg_nabl"
+                                       decoration-success="door_twisting_avg_nabl == 'pass'" 
+                                       decoration-danger="door_twisting_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+
+                     <group attrs="{'invisible': [('door_local_planeness_visible', '=', False)]}">
+                        <h1>
+                            <field name="door_local_planeness_name" readonly="1" nolabel="1"/>
+                            <field name="door_local_planeness_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                   
+                     <group attrs="{'invisible': [('door_local_planeness_visible', '=', False)]}">
+                        <label for="local_planeness_observations1" string="Observations" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="local_planeness_observations1" string="1" />
+                            <field  name="local_planeness_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="local_planeness_observations2" string=" 2" />
+                            <field  name="local_planeness_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="local_planeness_observations3" string="3" />
+                            <field  name="local_planeness_observations3"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="local_planeness_observations4" string="4" />
+                            <field  name="local_planeness_observations4"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="local_planeness_observations5" string="5" />
+                            <field  name="local_planeness_observations5"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="local_planeness_observations6" string="6" />
+                            <field  name="local_planeness_observations6"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="local_planeness_observations7" string="7" />
+                            <field  name="local_planeness_observations7"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="local_planeness_observations8" string="8" />
+                            <field  name="local_planeness_observations8"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="local_planeness_observations9" string="9" />
+                            <field  name="local_planeness_observations9"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="local_planeness_observations10" string="10" />
+                            <field  name="local_planeness_observations10"  colspan="12"  nolabel="1"/>
+                          </group>
+                        
+                          
+
+                        </div>
+                    </group>
+
+                     <group attrs="{'invisible': [('door_local_planeness_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_local_planeness_avg' col="4"/>
+                      
+                    </group>
+
+                    <group attrs="{'invisible': [('door_local_planeness_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" attrs="{'invisible': [('door_local_planeness_visible', '=', False)]}">
+                                <field name='door_local_planeness_avg_conformity'
+                                       decoration-success="door_local_planeness_avg_conformity == 'pass'" 
+                                       decoration-danger="door_local_planeness_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_local_planeness_visible', '=', False)]}">
+                                <field name="door_local_planeness_avg_nabl"
+                                       decoration-success="door_local_planeness_avg_nabl == 'pass'" 
+                                       decoration-danger="door_local_planeness_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+                        
+
+
+
+
+                      <group attrs="{'invisible': [('door_impact_visible', '=', False)]}">
+                        <h1>
+                            <field name="door_impact_name" readonly="1" nolabel="1"/>
+                            <field name="door_impact_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                   
+                     <group attrs="{'invisible': [('door_impact_visible', '=', False)]}">
+                        <label for="impact_observations1" string="Observations" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="impact_observations1" string="1" />
+                            <field  name="impact_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="impact_observations2" string=" 2" />
+                            <field  name="impact_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="impact_observations3" string="3" />
+                            <field  name="impact_observations3"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="impact_observations4" string="4" />
+                            <field  name="impact_observations4"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="impact_observations5" string="5" />
+                            <field  name="impact_observations5"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="impact_observations6" string="6" />
+                            <field  name="impact_observations6"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="impact_observations7" string="7" />
+                            <field  name="impact_observations7"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="impact_observations8" string="8" />
+                            <field  name="impact_observations8"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="impact_observations9" string="9" />
+                            <field  name="impact_observations9"  colspan="12"  nolabel="1"/>
+                          </group>
+                            <group colspan="1" class="oe_inline"  >
+                            <label for="impact_observations10" string="10" />
+                            <field  name="impact_observations10"  colspan="12"  nolabel="1"/>
+                          </group>
+                        
+                          
+
+                        </div>
+                    </group>
+
+                     <group attrs="{'invisible': [('door_impact_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_impact_avg' col="4"/>
+                      
+                    </group>
+
+                     <group attrs="{'invisible': [('door_impact_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" attrs="{'invisible': [('door_impact_visible', '=', False)]}">
+                                <field name='door_impact_avg_conformity'
+                                       decoration-success="door_impact_avg_conformity == 'pass'" 
+                                       decoration-danger="door_impact_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_impact_visible', '=', False)]}">
+                                <field name="door_impact_avg_nabl"
+                                       decoration-success="door_impact_avg_nabl == 'pass'" 
+                                       decoration-danger="door_impact_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+                       <group attrs="{'invisible': [('edge_loading_visible', '=', False)]}">
+                        <h1>
+                            <field name="edge_loading_name" readonly="1" nolabel="1"/>
+                            <field name="edge_loading_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                      <group attrs="{'invisible': [('edge_loading_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='edge_loading_obsrvetions1' col="4"/>
+
+                      
+                    </group>
+
+                      <group attrs="{'invisible': [('edge_loading_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" attrs="{'invisible': [('edge_loading_visible', '=', False)]}">
+                                <field name='edge_loading_obsrvetions1_conformity'
+                                       decoration-success="edge_loading_obsrvetions1_conformity == 'pass'" 
+                                       decoration-danger="edge_loading_obsrvetions1_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('edge_loading_visible', '=', False)]}">
+                                <field name="edge_loading_obsrvetions1_nabl"
+                                       decoration-success="edge_loading_obsrvetions1_nabl == 'pass'" 
+                                       decoration-danger="edge_loading_obsrvetions1_nabl == 'fail'" 
+                                       readonly="1"/>
+                           </group>
+                        </group>
+                     <group attrs="{'invisible': [('edge_loading_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='edge_loading_obsrvetions2' col="4"/>
+                      
+                    </group>
+                    <group attrs="{'invisible': [('edge_loading_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                     <group style="width:25%" attrs="{'invisible': [('edge_loading_visible', '=', False)]}">
+                                <field name='edge_loading_obsrvetions2_conformity'
+                                       decoration-success="edge_loading_obsrvetions2_conformity == 'pass'" 
+                                       decoration-danger="edge_loading_obsrvetions2_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('edge_loading_visible', '=', False)]}">
+                                <field name="edge_loading_obsrvetions2_nabl"
+                                       decoration-success="edge_loading_obsrvetions2_nabl == 'pass'" 
+                                       decoration-danger="edge_loading_obsrvetions2_nabl == 'fail'" 
+                                       readonly="1"/>
+                           </group>
+                  </group>
+                       
+
+
+
+
+                       <group attrs="{'invisible': [('shock_resisrance_visible', '=', False)]}">
+                        <h1>
+                            <field name="shock_resisrance_name" readonly="1" nolabel="1"/>
+                            <field name="shock_resisrance_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                      <group attrs="{'invisible': [('shock_resisrance_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='shock_resisrance_obsrvetions1' col="4"/>
+                      
+                    </group>
+                     <group attrs="{'invisible': [('shock_resisrance_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='shock_resisrance_obsrvetions2' col="4"/>
+                      
+                    </group>
+
+              
+                     <group attrs="{'invisible': [('bucklin_resistance_visible', '=', False)]}">
+                        <h1>
+                            <field name="bucklin_resistance_name" readonly="1" nolabel="1"/>
+                            <field name="bucklin_resistance_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                   <group attrs="{'invisible': [('bucklin_resistance_visible', '=', False)]}">
+                      <group >
+                        <field name='bucklin_resistance_obsrvetions1' col="4"/>
+                      
+                    </group>
+
+                     <group  >
+                        <field name='bucklin_resistance_obsrvetions2' col="4"/>
+                      
+                    </group>
+                    </group>
+
+                    <group attrs="{'invisible': [('bucklin_resistance_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                     <group style="width:25%" attrs="{'invisible': [('bucklin_resistance_visible', '=', False)]}">
+                                <field name='bucklin_resistance_obsrvetions1_conformity'
+                                       decoration-success="bucklin_resistance_obsrvetions1_conformity == 'pass'" 
+                                       decoration-danger="bucklin_resistance_obsrvetions1_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('bucklin_resistance_visible', '=', False)]}">
+                                <field name="bucklin_resistance_obsrvetions1_nabl"
+                                       decoration-success="bucklin_resistance_obsrvetions1_nabl == 'pass'" 
+                                       decoration-danger="bucklin_resistance_obsrvetions1_nabl == 'fail'" 
+                                       readonly="1"/>
+                           </group>
+                  </group>
+
+                   <group attrs="{'invisible': [('bucklin_resistance_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                     <group style="width:25%" attrs="{'invisible': [('bucklin_resistance_visible', '=', False)]}">
+                                <field name='bucklin_resistance_obsrvetions2_conformity'
+                                       decoration-success="bucklin_resistance_obsrvetions2_conformity == 'pass'" 
+                                       decoration-danger="bucklin_resistance_obsrvetions2_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('bucklin_resistance_visible', '=', False)]}">
+                                <field name="bucklin_resistance_obsrvetions2_nabl"
+                                       decoration-success="bucklin_resistance_obsrvetions2_nabl == 'pass'" 
+                                       decoration-danger="bucklin_resistance_obsrvetions2_nabl == 'fail'" 
+                                       readonly="1"/>
+                           </group>
+                  </group>
+
+
+                     <group attrs="{'invisible': [('slamming_visible', '=', False)]}">
+                        <h1>
+                            <field name="slamming_name" readonly="1" nolabel="1"/>
+                            <field name="slamming_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                      <group attrs="{'invisible': [('slamming_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='slamming_obsrvetions1' col="4"/>
+                      
+                     </group>
+
+
+                        <group attrs="{'invisible': [('misuse_visible', '=', False)]}">
+                        <h1>
+                            <field name="misuse_name" readonly="1" nolabel="1"/>
+                            <field name="misuse_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                      <group attrs="{'invisible': [('misuse_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='misuse_obsrvetions1' col="4"/>
+                      
+                     </group>
+
+
+                       <group attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}">
+                        <h1>
+                            <field name="door_varying_humidity_name" readonly="1" nolabel="1"/>
+                            <field name="door_varying_humidity_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                   
+                     <group attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}">
+                        <label for="varying_cupping_observations1" string="Observations" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="varying_cupping_observations1" string="Cupping 1" />
+                            <field  name="varying_cupping_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="varying_cupping_observations2" string=" Cupping 2" />
+                            <field  name="varying_cupping_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                          
+                        </div>
+                    </group>
+
+                     <group attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}">
+                        <label for="varying_warping_observations1" string="" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="varying_warping_observations1" string="Warping 1" />
+                            <field  name="varying_warping_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="varying_warping_observations2" string=" Warping 2" />
+                            <field  name="varying_warping_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                          
+                        </div>
+                    </group>
+                     <group attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}">
+                        <label for="varying_twisting_observations1" string="" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="varying_twisting_observations1" string="Twisting 1" />
+                            <field  name="varying_twisting_observations1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="varying_twisting_observations2" string=" Twisting 2" />
+                            <field  name="varying_twisting_observations2"  colspan="12"  nolabel="1"/>
+                          </group>
+                          
+                        </div>
+                    </group>
+
+                  
+
+                      <group attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_varying_cupping_avg' col="4"/>
+                      
+                    </group>
+                     <group attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_varying_warping_avg' col="4"/>
+                      
+                    </group>
+                      <group attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_varying_twisting_avg' col="4"/>
+                      
+                    </group>
+
+                      <group attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='door_varying_humidity' col="4"/>
+                      
+                    </group>
+
+                    <group attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                     <group style="width:25%" attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}">
+                                <field name='door_varying_cupping_avg_conformity'
+                                       decoration-success="door_varying_cupping_avg_conformity == 'pass'" 
+                                       decoration-danger="door_varying_cupping_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}">
+                                <field name="door_varying_cupping_avg_nabl"
+                                       decoration-success="door_varying_cupping_avg_nabl == 'pass'" 
+                                       decoration-danger="door_varying_cupping_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                           </group>
+                  </group>
+
+                      <group attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                     <group style="width:25%" attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}">
+                                <field name='door_varying_warping_avg_conformity'
+                                       decoration-success="door_varying_warping_avg_conformity == 'pass'" 
+                                       decoration-danger="door_varying_warping_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}">
+                                <field name="door_varying_warping_avg_nabl"
+                                       decoration-success="door_varying_warping_avg_nabl == 'pass'" 
+                                       decoration-danger="door_varying_warping_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                           </group>
+                  </group>
+                     <group attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                     <group style="width:25%" attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}">
+                                <field name='door_varying_twisting_avg_conformity'
+                                       decoration-success="door_varying_twisting_avg_conformity == 'pass'" 
+                                       decoration-danger="door_varying_twisting_avg_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" attrs="{'invisible': [('door_varying_humidity_visible', '=', False)]}">
+                                <field name="door_varying_twisting_avg_nabl"
+                                       decoration-success="door_varying_twisting_avg_nabl == 'pass'" 
+                                       decoration-danger="door_varying_twisting_avg_nabl == 'fail'" 
+                                       readonly="1"/>
+                           </group>
+                  </group>
+
+                      <group attrs="{'invisible': [('end_immpresion_visible', '=', False)]}">
+                        <h1>
+                            <field name="end_immpresion_name" readonly="1" nolabel="1"/>
+                            <field name="end_immpresion_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                      <group attrs="{'invisible': [('end_immpresion_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='end_immpresion_obsrvetions1' col="4"/>
+                      
+                     </group>
+
+
+                      <group attrs="{'invisible': [('knife_visible', '=', False)]}">
+                        <h1>
+                            <field name="knife_name" readonly="1" nolabel="1"/>
+                            <field name="knife_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                      <group attrs="{'invisible': [('knife_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='knife_obsrvetions1' col="4"/>
+                      
+                     </group>
+
+
+                       <group attrs="{'invisible': [('glue_adhesion_visible', '=', False)]}">
+                        <h1>
+                            <field name="glue_adhesion_name" readonly="1" nolabel="1"/>
+                            <field name="glue_adhesion_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                      <group attrs="{'invisible': [('glue_adhesion_visible', '=', False)]}" style="white-space: nowrap; width:70%;">
+                        <field name='glue_adhesion_obsrvetions1' col="4"/>
+                      
+                     </group>
+
+
+
+
+                   
+
+
+                  
+
+
+
+
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+                     
+
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

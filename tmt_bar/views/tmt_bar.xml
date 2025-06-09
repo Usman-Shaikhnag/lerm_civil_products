@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="steel_tmt_bar_view1" model="ir.ui.view">
+        <field name="name">steel.tmt.bar1.form</field>
+        <field name="model">steel.tmt.bar1</field>
+        <field name="arch" type="xml">
+            <form>
+
+                <sheet>
+                   <group>
+                       
+                       
+                         <field name='eln_ref' readonly="1"/>
+                          <field name='name' readonly="1"/>
+                    </group>
+                         
+                            <group>
+                                <group>
+                                    <field name='Id_no' invisible="1"/>
+                                </group>
+                                <group>
+                                    <field name='grade'/>
+                                </group>
+                                <group>
+                                    <field name='size'/>
+                                </group>
+                                
+                            </group>
+                            <group>
+                                <field name="sample_parameters">
+                                    <tree>
+                                        <field name="parameter_name"/>
+                                        <field name="test_method"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group>
+                                    <field name='tests' options="{'no_create':True}" invisible="1"/>
+                            </group>
+
+                            <group style="width:51%"> 
+                                <field name='diameter'/>
+                            </group>
+                            <group style="width:51%">
+                                <field name='lentgh'/>
+                            </group>
+                            <group style="width:51%">
+                                <field name='weight'/>
+                            </group>
+                            <!-- <group style="width:51%">
+                                <field name='weight_per_meter'/>
+                            </group> -->
+                            <group style="width:51%">
+                                <field name='crossectional_area'/>
+                            </group>
+                            <group style="width:51%">
+                                <field name='gauge_length'/>
+                            </group>
+                            <group style="width:51%">
+                                <field name='elongated_gauge_length'/>
+                            </group>
+                            <group attrs="{'invisible': [('elongation_visible', '=', False)]}">
+                                <group style="width:25%">
+                                <field name='percent_elongation'/>
+                                <field name="elongation_visible" invisible="1"/>
+                                </group>
+                                <group style="width:25%">
+                                <field name='requirement_elongation'/>
+                                </group>
+                                <group style="width:25%">
+                                <field name='elongation_nabl'
+                                       decoration-success="elongation_nabl == 'pass'" 
+                                       decoration-danger="elongation_nabl == 'fail'" 
+                                       readonly="1"/>
+                                </group>
+                                <group style="width:25%">
+                                <field name="elongation_conformity"
+                                       decoration-success="elongation_conformity == 'pass'" 
+                                       decoration-danger="elongation_conformity == 'fail'" 
+                                       readonly="1"/>
+                                </group>
+                            </group>
+                            <group attrs="{'invisible': [('weight_per_meter_visible', '=', False)]}">
+                                <group style="width:20%" >
+                                <field name='weight_per_meter'/>
+                                <field name="weight_per_meter_visible" invisible="1"/>
+                                </group>
+                                <!-- <group style="width:20%">
+                                <field name='variation'/>
+                                </group> -->
+                                <group style="width:20%">
+                                <field name='requirement_weight_per_meter'/>
+                                </group>
+                                <group style="width:20%">
+                                <field name='weight_per_meter_nabl'
+                                        decoration-success="weight_per_meter_nabl == 'pass'" 
+                                       decoration-danger="weight_per_meter_nabl == 'fail'" 
+                                       readonly="1"/>
+                                </group>
+                                <group style="width:20%">
+                                <field name='weight_per_meter_conformity'
+                                        decoration-success="weight_per_meter_conformity == 'pass'" 
+                                       decoration-danger="weight_per_meter_conformity == 'fail'" 
+                                       readonly="1"/>
+                                </group>
+                            </group>
+                            <group style="width:51%">
+                                <field name='yeild_load'/>
+                            </group>
+                            <group style="width:51%">
+                                <field name='ultimate_load'/>
+                            </group>
+                            <group attrs="{'invisible': [('yield_visible', '=', False)]}">
+                                <group style="width:25%" >
+                                <field name='proof_yeid_stress'/>
+                                <field name="yield_visible" invisible="1"/>
+                                </group>
+                                <group style="width:25%">
+                                <field name='requirement_yield'/>
+                                </group>
+                                <group style="width:25%">
+                                <field name='yield_nabl'
+                                        decoration-success="yield_nabl == 'pass'" 
+                                       decoration-danger="yield_nabl == 'fail'" 
+                                       readonly="1"/>
+                                </group>
+                                <group style="width:25%">
+                                <field name='yield_conformity'
+                                       decoration-success="yield_conformity == 'pass'" 
+                                       decoration-danger="yield_conformity == 'fail'" 
+                                       readonly="1"/>
+                                </group>
+                            </group>
+                            <group attrs="{'invisible': [('uts_visible', '=', False)]}">
+                                <group style="width:25%" >
+                                <field name='ult_tens_strgth'/>
+                                <field name="uts_visible" invisible="1"/>
+                                </group>
+                                <group style="width:25%">
+                                <field name='requirement_utl'/>
+                                </group>
+                                <group style="width:25%">
+                                <field name='uts_nabl'
+                                        decoration-success="uts_nabl == 'pass'" 
+                                       decoration-danger="uts_nabl == 'fail'" 
+                                       readonly="1"/>
+                                </group>
+                                <group style="width:25%">
+                                <field name='uts_conformity'
+                                        decoration-success="uts_conformity == 'pass'" 
+                                       decoration-danger="uts_conformity == 'fail'" 
+                                       readonly="1"/>
+                                </group>
+                            </group>
+                            <group attrs="{'invisible': [('ts_ys_visible', '=', False)]}">
+                                <group style="width:25%" >
+                                <field name='ts_ys_ratio'/>
+                                <field name="ts_ys_visible" invisible="1"/>
+                                </group>
+                                <group style="width:25%">
+                                <field name='requirement_ts_ys'/>
+                                </group>
+                                <group style="width:25%">
+                                <field name='ts_ys_nabl'
+                                       decoration-success="ts_ys_nabl == 'pass'" 
+                                       decoration-danger="ts_ys_nabl == 'fail'" 
+                                       readonly="1"/>
+                                </group>
+                                <group style="width:25%">
+                                <field name='ts_ys_conformity'
+                                       decoration-success="ts_ys_conformity == 'pass'" 
+                                       decoration-danger="ts_ys_conformity == 'fail'" 
+                                       readonly="1"/>
+                                </group>
+                            </group>
+                            
+                            <group style="width:51%" attrs="{'invisible': [('bend_visible', '=', False)]}">
+                                <field name="bend_visible" invisible="1"/>
+                                <field name='bend_test1'/>
+                            </group>
+                             <group style="width:51%" attrs="{'invisible': [('rebend_visible', '=', False)]}">
+                                <field name="rebend_visible" invisible="1"/>
+                                <field name='re_bend_test1'/>
+                            </group>
+                            <group style="width:51%" attrs="{'invisible': [('fracture_visible', '=', False)]}">
+                                <field name="fracture_visible" invisible="1"/>
+                                <field name='fracture'/>
+                            </group>
+
+                            <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+              
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+   
+
+
+    </data>
+</odoo>

@@ -12,7 +12,7 @@ This module contains all the common features of Sales Management and eCommerce.
     """,
     'depends': ['base','sale','lerm_civil'],
     'data': [
-
+        'security/ir.model.access.csv',
         'views/wmm.xml',
         'reports/wmm_datasheet.xml',
         'reports/wmm_report.xml'

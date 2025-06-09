@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="dring_shrinkage_mechanical1_view1" model="ir.ui.view">
+        <field name="name">drying.shrinkage1.form</field>
+        <field name="model">drying.shrinkage1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                   <group >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="grade"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        
+                        </tree>
+                      </field>
+                    </group>
+                    <group  attrs="{'invisible': [('drying_shrinkage_visible', '=', False)]}">
+                        <h1>
+                            
+                            <field name="drying_shrinkage_name" readonly="1" nolabel="1"/>
+                            <field name="drying_shrinkage_visible" invisible="1"/>
+
+                      
+                        </h1>
+                    </group>
+                     <group attrs="{'invisible': [('drying_shrinkage_visible', '=', False)]}">
+                       <field name="drying_child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='original_length'/>
+                                <field name='dry_mesurment'/>
+                                <field name='dry_length'/>
+                                <field name='initial_drying'/>
+                               
+                            </tree>
+                           
+                    </field> 
+                    </group>
+                    <group attrs="{'invisible': [('drying_shrinkage_visible', '=', False)]}">
+                        <field name='average1'/>
+                    </group>
+                    <group attrs="{'invisible': [('drying_shrinkage_visible', '=', False)]}">
+                          <group>
+                            <field  name="drying_shrinkage_conformity"
+                                           decoration-success="drying_shrinkage_conformity == 'pass'" 
+                                           decoration-danger="drying_shrinkage_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="drying_shrinkage_nabl"/>
+                          </group>
+                    </group>
+
+
+                    <!-- Moisture Movement -->
+                     <group attrs="{'invisible': [('moisture_movement_visible', '=', False)]}">
+                        <h1>
+                            <field name="moisture_movement_name" readonly="1" nolabel="1"/>
+                            <field name="moisture_movement_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('moisture_movement_visible', '=', False)]}">
+                       <field name="moisture_child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='final_wet'/>
+                                <field name='moisture_movement'/>
+                               
+                            </tree>
+                           
+                    </field> 
+                    </group>
+                    <group attrs="{'invisible': [('moisture_movement_visible', '=', False)]}">
+                        <field name='average2'/>
+                    </group>
+                    <group attrs="{'invisible': [('moisture_movement_visible', '=', False)]}">
+                          <group>
+                            <field  name="moisture_movement_conformity"
+                                           decoration-success="moisture_movement_conformity == 'pass'" 
+                                           decoration-danger="moisture_movement_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="moisture_movement_nabl"/>
+                          </group>
+                    </group>
+                    <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                    />
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="mechanical_microsilica1" model="ir.ui.view">
+        <field name="name">mechanical.microsilica1.form</field>
+        <field name="model">mechanical.microsilica1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                <group >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id"  readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                     <!-- <group >
+                            
+                            <field name="tests" widget="many2many_tags"/>
+                    </group> -->
+                    <group >
+                    <group>
+                      <field name="temp_percent_compressive"/>
+                      <field name="humidity_percent_compressive"/>
+                    </group>
+                    <group>
+                      <field name="start_date_compressive"/>
+                      <field name="end_date_compressive"/>
+                    </group>
+                    </group>
+                     <!-- compressive strength -->
+                    <group attrs="{'invisible': [('compressive_visible', '=', False)]}">
+                        <h1>
+                            <field name="compressive_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    
+                    <group>
+                     <group attrs="{'invisible': [('compressive_visible', '=', False)]}" style="width:50%" class="center-group">
+                     <h4 class="center-heading">Compressive Strength of Test Mixture</h4>
+                      <field  name="high_range_compressive"  colspan="3" />
+                      <field  name="wt_of_microsilica"  colspan="3" />
+                      <field  name="wt_of_cement_compressive"  colspan="3" />
+                      <field  name="wt_of_standerd_comp1"  colspan="3" />
+                      <field  name="wt_of_standerd_comp2"  colspan="3" />
+                      <field  name="wt_of_standerd_comp3"  colspan="3" />
+                      <field  name="quantity_water"  colspan="3" />
+                    </group>
+                     <group attrs="{'invisible': [('compressive_visible', '=', False)]}" style="width:50%" class="center-group">
+                    <group>
+                    <h4 class="center-heading">Calculation of Flow (Acceptable : 100 to 115 %)</h4>
+                    </group>
+                       
+                        <label for="measured_value1" string="Measured Values" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="measured_value1" string="" />
+                            <group>
+                            <field  name="measured_value1"  colspan="3"  nolabel="1"/>
+                            <field  name="measured_value2"  colspan="3"  nolabel="1"/>
+                            </group>
+                            <group>
+                            <field  name="measured_value3"  colspan="3"  nolabel="1"/>
+                            <field  name="measured_value4"  colspan="3"  nolabel="1"/>  
+                            </group>
+                            <group>
+                            <field name="average_measured" string="Average"/>
+                            <field name="percent_flow" string="% Flow"/>
+                            </group>          
+                            
+                            </group>
+                           
+                        </div>   
+                    </group>
+                    </group>
+
+
+                     <!-- 7 Days Casting  -->
+                    <group attrs="{'invisible': [('compressive_visible', '=', False)]}">
+                        <h1>
+                            <field name="casting_7_name" readonly="1" nolabel="1"/>
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('compressive_visible', '=', False)]}">
+                            <field name="status_7days"/>
+                      
+                    </group>
+                    
+                    <group attrs="{'invisible': [('compressive_visible', '=', False)]}">
+
+                      <field name="casting_date_7days" style="width:120px"/>
+                      <field name="testing_date_7days"/>
+                      
+                      <field name="casting_7_days_tables">
+                        <tree editable="bottom">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="crosssectional_area"/>
+                          <field name="wt_of_cement_cube"/>
+                          <field name="crushing_load" />
+                          <field name="compressive_strength" />
+                        </tree>
+                      </field>
+                      <field name="average_casting_7days"/>
+                      <!-- <field name="compressive_strength_7_days"/> -->
+                    </group>
+
+                     <!-- Compressive Strength of control Sample -->
+                     <group>
+                     <group attrs="{'invisible': [('compressive_visible', '=', False)]}" style="width:50%" class="center-group">
+                     <h4 class="center-heading">Compressive Strength of control Sample</h4>
+                      <field  name="high_range_control_comp"  colspan="3" />
+                      <field  name="wt_of_cement"  colspan="3" />
+                      <field  name="wt_of_sand1"  colspan="3" />
+                      <field  name="wt_of_sand2"  colspan="3" />
+                      <field  name="wt_of_sand3"  colspan="3" />
+                      <field  name="quanity_of_water"  colspan="3" />
+                      
+                    </group>
+                     <group attrs="{'invisible': [('compressive_visible', '=', False)]}" style="width:50%" class="center-group">
+                    <group>
+                    <h4 class="center-heading">Calculation of Flow (Acceptable : 100 to 115 %)</h4>
+                    </group>
+                       
+                        <label for="sample_measured_value1" string="Measured Values" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="sample_measured_value1" string="" />
+                            <group>
+                            <field  name="sample_measured_value1"  colspan="3"  nolabel="1"/>
+                            <field  name="sample_measured_value2"  colspan="3"  nolabel="1"/>
+                            </group>
+                            <group>
+                            <field  name="sample_measured_value3"  colspan="3"  nolabel="1"/>
+                            <field  name="sample_measured_value4"  colspan="3"  nolabel="1"/>  
+                            </group>
+                            <group>
+                            <field name="sample_average_measured" string="Average"/>
+                            <field name="sample_percent_flow" string="% Flow"/>
+                            </group>          
+                            
+                            </group>
+                           
+                           
+                        </div>
+                    </group>
+                     </group>
+                    <group attrs="{'invisible': [('compressive_visible', '=', False)]}">
+                        <h1>
+                            <field name="control_casting_7_name" readonly="1" nolabel="1"/>
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('compressive_visible', '=', False)]}">
+                            <field name="control_status_7days"/>
+                      
+                    </group>
+
+                    <group attrs="{'invisible': [('compressive_visible', '=', False)]}">
+
+                      <field name="control_casting_date_7days" style="width:120px"/>
+                      <field name="control_testing_date_7days"/>
+                      
+                      <field name="control_casting_7_days_tables">
+                        <tree editable="bottom">
+                          <field name="control_length"/>
+                          <field name="control_width"/>
+                          <field name="control_crosssectional_area"/>
+                          <field name="control_wt_of_cement_cube"/>
+                          <field name="control_crushing_load" />
+                          <field name="control_compressive_strength" />
+                        </tree>
+                      </field>
+                      <field name="control_average_casting_7days"/>
+                      <field name="control_compressive_strength_7_days"/>
+                      <field name="accelerated_pozzolanic_conformity" 
+                      decoration-success="accelerated_pozzolanic_conformity == 'pass'" 
+                      decoration-danger="accelerated_pozzolanic_conformity == 'fail'" 
+                      readonly="1" />
+                      <field name="accelerated_pozzolanic_nabl"/>
+                    </group>
+
+                     <!--Start  Oversize % Retained on 45 Micron IS sieve -->
+
+                    <group attrs="{'invisible': [('oversize_retain_visible', '=', False)]}">
+                        <h1>
+                            <field name="oversize_name" readonly="1" nolabel="1"/>
+                            <field name="oversize_retain_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <!-- <group attrs="{'invisible': [('oversize_retain_visible', '=', False)]}">
+                    <group>
+                      <field name="temp_percent_oversize"/>
+                      <field name="humidity_percent_oversize"/>
+                    </group>
+                    <group>
+                      <field name="start_date_oversize"/>
+                      <field name="end_date_oversize"/>
+                    </group>
+                    </group> -->
+                    
+                    <group attrs="{'invisible': [('oversize_retain_visible', '=', False)]}">
+                    <!-- <group> -->
+                    <field name="oversize_retained_tables" nolabel="1" >
+                        <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='wt_sample'/>
+                                <field name='wt_retain'/>
+                                <field name='retained_percent_wt'/>
+                            </tree>
+                           
+                    </field>
+                        <group>
+                            <field name='retain_wt_avrg'/>
+                            <field name='retain_wt_rounded'/>
+                            <field name='oversize_retained_conformity'
+                            decoration-success="oversize_retained_conformity == 'pass'" 
+                            decoration-danger="oversize_retained_conformity == 'fail'" 
+                            readonly="1" 
+                            />
+                            <field name='oversize_retained_nabl'/>
+                        </group>  
+                      
+                    <!-- </group> -->
+                    </group>
+
+                     <!-- specific Gravity Start -->
+
+                    <group attrs="{'invisible': [('specific_gravity_visible', '=', False)]}">
+                        <h1>
+                            <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <!-- <group attrs="{'invisible': [('specific_gravity_visible', '=', False)]}">
+                    <group>
+                      <field name="temp_percent_specific"/>
+                      <field name="humidity_percent_specific"/>
+                    </group>
+                    <group>
+                      <field name="start_date_specific"/>
+                      <field name="end_date_specific"/>
+                    </group>
+                    </group> -->
+
+                    <group attrs="{'invisible': [('specific_gravity_visible', '=', False)]}">
+                    <!-- <group> -->
+                    <field name="specific_gravity_tables" nolabel="1" >
+                        <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='mass_of_microsilica'/>
+                                <field name='initial_vol_kerosine'/>
+                                <field name='final_vol_kero_cement'/>
+                                <field name='displaced_volume'/>
+                                <field name='spe_gravt_microsilica'/>
+                            </tree>
+                           
+                    </field>
+                        <group>
+                            <field name='specific_gravity_avrg'/>
+                            <field name='specific_gravity_conformity'
+                            decoration-success="specific_gravity_conformity == 'pass'" 
+                            decoration-danger="specific_gravity_conformity == 'fail'" 
+                            readonly="1"
+                            />
+                            <field name='specific_gravity_nabl'/>
+                        </group>  
+                      
+                    <!-- </group> -->
+                    </group>
+                       
+                     <!-- Start Compressive Strength Test -->
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <h1>
+                            <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_strength_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <!-- <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                    <group>
+                      <field name="temp_percent_cmp_strngth"/>
+                      <field name="humidity_percent_cmp_strngth"/>
+                    </group>
+                    <group>
+                      <field name="start_date_cmp_strngth"/>
+                      <field name="end_date_cmp_strngth"/>
+                    </group>
+                    </group> -->
+                    <group>
+                     <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}" style="width:50%" class="center-group">
+                     <h4 class="center-heading">Compressive Strength of Test Mortar</h4>
+                      <field  name="n_is"  colspan="3" />
+                      <field  name="microsilica_wt"  colspan="3" />
+                      <field  name="cement_wt"  colspan="3" />
+                      <field  name="wt_of_standerd_sand1"  colspan="3" />
+                      <field  name="wt_of_standerd_sand2"  colspan="3" />
+                      <field  name="wt_of_standerd_sand3"  colspan="3" />
+                      <field  name="water_quantity"  colspan="3" />
+                    </group>
+                     <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}" style="width:50%" class="center-group">
+                    <group>
+                    <h4 class="center-heading">Calculation of Flow (Acceptable : 100 to 110 %)</h4>
+                    </group>
+                       
+                        <label for="comp_measured_value1" string="Measured Values" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="comp_measured_value1" string="" />
+                            <group>
+                            <field  name="comp_measured_value1"  colspan="3"  nolabel="1"/>
+                            <field  name="comp_measured_value2"  colspan="3"  nolabel="1"/>
+                            </group>
+                            <group>
+                            <field  name="comp_measured_value3"  colspan="3"  nolabel="1"/>
+                            <field  name="comp_measured_value4"  colspan="3"  nolabel="1"/>  
+                            </group>
+                            <group>
+                            <field name="comp_average_measured" string="Average"/>
+                            <field name="comp_percent_flow" string="% Flow"/>
+                            </group>          
+                            
+                            </group>
+                           
+                        </div>   
+                    </group>
+                    </group>
+
+                     <!-- 7Days comp strngth -->
+
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <h1>
+                            <field name="comp_casting_7_name" readonly="1" nolabel="1"/>
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                            <field name="comp_status_7days"/>
+                      
+                    </group>
+                    
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+
+                      <field name="comp_casting_date_7days" style="width:120px"/>
+                      <field name="comp_testing_date_7days"/>
+                      
+                      <field name="comp_casting_7_days_tables">
+                        <tree editable="bottom">
+                          <field name="compressive_length"/>
+                          <field name="compressive_width"/>
+                          <field name="compressive_crosssectional_area"/>
+                          <field name="compressive_wt_of_cement_cube"/>
+                          <field name="compressive_crushing_load" />
+                          <field name="comp_strength" />
+                        </tree>
+                      </field>
+                      <field name="comp_average_casting_7days"/>
+                      <!-- <field name="comp_strngth_7_days"/> -->
+                    </group>
+                     
+                      <!-- Compressive Strength of control Sample -->
+
+                    <group>
+                     <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}" style="width:50%" class="center-group">
+                     <h4 class="center-heading">Compressive Strength of Control Sample</h4>
+                      <field  name="comp_control_cement_wt"  colspan="3" />
+                      <field  name="comp_control_wt_of_standerd_sand1"  colspan="3" />
+                      <field  name="comp_control_wt_standerd_sand2"  colspan="3" />
+                      <field  name="comp_control_wt_standerd_sand3"  colspan="3" />
+                      <field  name="comp_control_total_wt"  colspan="3" />
+                      <field  name="comp_control_water_quantity"  colspan="3" />
+                    </group>
+                     <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}" style="width:50%" class="center-group">
+                    <group>
+                    <h4 class="center-heading">Calculation of Flow (Acceptable : 100 to 110 %)</h4>
+                    </group>
+                       
+                        <label for="comp_control_measured_value1" string="Measured Values" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="comp_control_measured_value1" string="" />
+                            <group>
+                            <field  name="comp_control_measured_value1"  colspan="3"  nolabel="1"/>
+                            <field  name="comp_control_measured_value2"  colspan="3"  nolabel="1"/>
+                            </group>
+                            <group>
+                            <field  name="comp_control_measured_value3"  colspan="3"  nolabel="1"/>
+                            <field  name="comp_control_measured_value4"  colspan="3"  nolabel="1"/>  
+                            </group>
+                            <group>
+                            <field name="comp_control_average_measured" string="Average"/>
+                            <field name="comp_control_percent_flow" string="% Flow"/>
+                            </group>          
+                            
+                            </group>
+                           
+                        </div>   
+                    </group>
+                    </group>
+
+                    <!-- 7Days comp strngth -->
+
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                        <h1>
+                            <field name="comp_control_casting_7name" readonly="1" nolabel="1"/>
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+                            <field name="comp_control_status_7days"/>
+                      
+                    </group>
+                    
+                    <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
+
+                      <field name="comp_control_castingdate_7days" style="width:120px"/>
+                      <field name="comp_control_testingdate_7days"/>
+                      
+                      <field name="comp_control_casting_7days_tables">
+                        <tree editable="bottom">
+                          <field name="comp_control_length"/>
+                          <field name="comp_control_width"/>
+                          <field name="comp_control_crosssectional_area"/>
+                          <field name="comp_control_wt_cement_cube"/>
+                          <field name="comp_control_crushing_load" />
+                          <field name="comp_control_strength" />
+                        </tree>
+                      </field>
+                      <field name="comp_control_average_casting_7days"/>
+                      <field name="comp_control_strngth_7_days"/>
+                      <field name="comp_strngth_7_days_conformity"
+                      decoration-success="comp_strngth_7_days_conformity == 'pass'" 
+                      decoration-danger="comp_strngth_7_days_conformity == 'fail'" 
+                      readonly="1"
+                      />
+                      <field name="comp_strngth_7_days_nabl"/>
+                    </group>
+
+
+                    <!-- Oversize Percent Retained on 45 Micron IS sieve variation from Avg. % -->
+
+                    <group attrs="{'invisible': [('oversize_percent_retain_visible', '=', False)]}">
+                        <h1>
+                            <field name="oversize_percent_name" readonly="1" nolabel="1"/>
+                            <field name="oversize_percent_retain_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <!-- <group attrs="{'invisible': [('oversize_percent_retain_visible', '=', False)]}">
+                    <group>
+                      <field name="oversize_temp_percent"/>
+                      <field name="oversize_humidity_percent_specific"/>
+                    </group>
+                    <group>
+                      <field name="oversize_start_date_specific"/>
+                      <field name="oversize_end_date_specific"/>
+                    </group>
+                    </group> -->
+
+                    <group attrs="{'invisible': [('oversize_percent_retain_visible', '=', False)]}">
+                    <!-- <group> -->
+                    <field name="oversize_percent_tables" nolabel="1" >
+                        <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='sample_wt_g'/>
+                                <field name='retain_wt_45micron'/>
+                                <field name='retain_wt_percent'/>
+                                <field name='variation_from_avrg'/>
+                            </tree>
+                           
+                    </field>
+                        <group>
+                            <field name='avrg_oversize_percent'/>
+                            <field name='oversize_retained_conformity'
+                            decoration-success="oversize_retained_conformity == 'pass'" 
+                            decoration-danger="oversize_retained_conformity == 'fail'" 
+                            readonly="1"
+                            />
+                            <field name='oversize_retained_nabl'/>
+                        </group>  
+                      
+                    <!-- </group> -->
+                    </group>
+
+
+                    <!-- Dry Loose Bulk Density -->
+
+                    <group attrs="{'invisible': [('bulk_density_visible', '=', False)]}">
+                        <h1>
+                            <field name="bulk_density_name" readonly="1" nolabel="1"/>
+                            <field name="bulk_density_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <!-- <group attrs="{'invisible': [('bulk_density_visible', '=', False)]}">
+                    <group>
+                      <field name="bulk_density_temp_percent"/>
+                      <field name="bulk_density_humidity_percent"/>
+                    </group>
+                    <group>
+                      <field name="bulk_density_start_date"/>
+                      <field name="bulk_density_end_date"/>
+                    </group>
+                    </group> -->
+
+                    <group attrs="{'invisible': [('bulk_density_visible', '=', False)]}">
+                    <!-- <group> -->
+                    <field name="bulk_density_tables" nolabel="1" >
+                        <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='wt_empty_cylinder_dry_density'/>
+                                <field name='wt_cylinder_microsilica_dry_density'/>
+                                <field name='wt_microsilica_dry_density'/>
+                                <field name='vlm_of_cylinder'/>
+                                <field name='dryloose_bulk_density'/>
+                            </tree>
+                           
+                    </field>
+                        <group>
+                            <field name='avrg_bulk_density'/>
+                            <field name='bulk_density_conformity'
+                            decoration-success="bulk_density_conformity == 'pass'" 
+                            decoration-danger="bulk_density_conformity == 'fail'" 
+                            readonly="1"
+                            />
+                            <field name='bulk_density_nabl'/>
+                        </group>  
+                      
+                    <!-- </group> -->
+                    </group>
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+               
+                </sheet>
+            </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+
+
+

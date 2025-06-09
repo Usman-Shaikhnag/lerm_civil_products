@@ -12,6 +12,7 @@ This module contains all the common features of Sales Management and eCommerce.
     """,
     'depends': ['base','sale','lerm_civil'],
     'data': [
+               'security/ir.model.access.csv',
                'views/ggbs.xml',
                'reports/ggbs_datasheet.xml',
                'reports/ggbs_report.xml'

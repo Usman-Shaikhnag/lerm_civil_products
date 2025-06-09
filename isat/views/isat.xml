@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mech_isat_form1" model="ir.ui.view">
+        <field name="name">mech.isat1.form</field>
+        <field name="model">mech.isat1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+
+                <group >
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="isat_child_lines" nolabel="1"/>
+                        
+
+                    </group>
+                    <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+        <record id="mech_isat_line_form1" model="ir.ui.view">
+        <field name="name">mech.isat.line1.form</field>
+        <field name="model">mech.isat.line1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <field name='sample_id' style="width:30%"/>
+                    <field name='age_days' style="width:30%"/>
+                    <field name='time_hrs' style="width:30%"/>
+                    <field name='child_lines' >
+                        <tree editable="bottom">
+                            <field name="elapsed_time"/>
+                            <field name="no_of_scale_div_5sec"/>
+                            <field name="period_movement_measured"/>
+                            <field name="no_of_div_moved_selected_period"/>
+                            <field name="no_of_scale_div_1min"/>
+                            <field name="isat_sec"/>
+                            <field name="correction_factor"/>
+                            <field name="isat_corrected"/>
+                        </tree>
+                    </field>
+
+                    </group>
+                    <group>
+                        <field name="comments"/>
+                    </group>
+                     
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+        <record id="mech_isat_line_tree1" model="ir.ui.view">
+        <field name="name">mech.isat.line1.tree</field>
+        <field name="model">mech.isat.line1</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name='sample_id'/>
+                <field name='age_days'/>
+                <field name='time_hrs'/>
+                <field name='child_lines'/>
+            </tree>
+        </field>
+    </record>
+    </data>
+</odoo>

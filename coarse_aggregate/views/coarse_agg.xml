@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_coarse_aggregate_form1" model="ir.ui.view">
+        <field name="name">mechanical.coarse.aggregate1.form</field>
+        <field name="model">mechanical.coarse.aggregate1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                     <group >
+                       <field name="grade"/>
+                    </group>
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="size_id"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                        <field name="sample_parameters">
+                            <tree>
+                            <field name="parameter_name"/>
+                            <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </group>
+                      <!-- Sieve Alanysis  -->
+                    <group attrs="{'invisible': [('sieve_visible', '=', False)]}">
+                        <h1>
+                            <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
+                            <field name="sieve_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <div attrs="{'invisible': [('sieve_visible', '=', False)]}">
+                        <button string="Calculate" type="object" name="calculate_sieve" class="oe_highlight"/>
+                    </div>
+                    <group attrs="{'invisible': [('sieve_visible', '=', False)]}" style="width:75%">
+                    <field name="sieve_analysis_child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <!-- <field name="serial_no" string="Sr.No"/> -->
+                                <field name='sieve_size' string="IS Sieve Size" style="width:10px"/>
+                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='percent_retained' string="% Retained"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1" string="Cum. Retained %"/>
+                                <field name='passing_percent' string="Passing %" readonly="1"/>
+                            </tree>
+                    </field>
+                    </group>
+                    <group attrs="{'invisible': [('sieve_visible', '=', False)]}">
+                        <field name="total_sieve_analysis"/>
+                    </group>
+                       <!-- Specific Gravity and Water Absorbtion  -->
+
+                    <group attrs="{'invisible': [('specific_gravity_visible', '=', False)]}">
+                        <h1>
+                            <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('specific_gravity_visible', '=', False)]}" style="white-space: nowrap; width:60%">
+                        <field name="wt_surface_dry" />
+                        <field name="wt_sample_inwater" />
+                        <field name="oven_dried_wt" />
+                        <field name="specific_gravity" />
+                        <field name="water_absorption" />
+                    </group>
+
+                     <!-- <field name="specific_gravity_child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='wt_surface_dry'/>
+                                <field name='wt_sample_inwater'/>
+                                <field name='oven_dried_wt'/>
+                                <field name='specific_gravity'/>
+                                <field name='water_absorption'/>
+                            </tree>
+                           
+                    </field>  -->
+
+                     <group attrs="{'invisible': [('specific_gravity_visible', '=', False)]}">
+                          <group>
+                            <field  name="specific_gravity_conformity"
+                                           decoration-success="specific_gravity_conformity == 'pass'" 
+                                           decoration-danger="specific_gravity_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="specific_gravity_nabl"/>
+                          </group>
+                    </group>
+
+                     <!-- <group attrs="{'invisible': [('flakiness_visible', '=', False)]}">
+                        <h1>
+                            <field name="flakiness_name" readonly="1" nolabel="1"/>
+                            <field name="flakiness_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('flakiness_visible', '=', False)]}">
+                    <field name="flakiness_child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='sieve_size'/>
+                                <field name='wt_retained'/>
+                                <field name='flaky_passing'/>
+                            </tree>
+                           
+                    </field> 
+                    </group>
+                    <group attrs="{'invisible': [('flakiness_visible', '=', False)]}">
+                            <group style="width:30%">
+                               <field name='wt_retained_total_flakiness'/>
+                            </group>
+                            <group style="width:30%">
+                               <field name='flaky_passing_total'/>
+                            </group>
+                            <group style="width:30%">
+                               <field name='aggregate_flakiness'/>
+                            </group>
+                    </group>
+                               
+                        <group style="width:30%" attrs="{'invisible': [('flakiness_visible', '=', False)]}"> 
+                            <field name='combine_elongation_flakiness'/>
+                        </group>
+
+
+                    <group attrs="{'invisible': [('elongation_visible', '=', False)]}">
+                        <h1>
+                            <field name="elongation_name" readonly="1" nolabel="1"/>
+                            <field name="elongation_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('elongation_visible', '=', False)]}">
+                    <field name="elongation_child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='sieve_size'/>
+                                <field name='wt_retained'/>
+                                <field name='elongated_retain'/>
+                            </tree>
+                    </field> 
+                    </group>    
+                    <group attrs="{'invisible': [('elongation_visible', '=', False)]}">
+                        <group style="width:30%">
+                               <field name='wt_retained_total_elongation'/>
+                            </group>
+                            <group style="width:30%">
+                               <field name='elongated_retain_total'/>
+                            </group>
+                            <group style="width:30%">
+                               <field name='aggregate_elongation'/>
+                            </group>
+                    </group> -->
+                     <!-- Elongation and Flakiness  -->
+                    <group attrs="{'invisible': ['|', ('elongation_visible', '=', False), ('flakiness_visible', '=', False)]}">
+                        <h1>
+                            <field name="elongation_name" readonly="1" nolabel="1"/>
+                            <field name="elongation_visible" invisible="1"/>
+                            <field name="flakiness_visible" invisible="1"/>
+
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': ['|', ('elongation_visible', '=', False), ('flakiness_visible', '=', False)]}">
+                        <field name="elongation_table" style="width:90%">
+                            <tree>
+                                <field name="sieve_size"  />
+                                <field name="wt_retained" />
+                                <field name="elongated_retained" />
+                                <field name="flakiness_retained" />
+                            </tree>
+                          
+                        </field>
+                       
+                    </group>
+                        
+                
+                    <group attrs="{'invisible': ['|', ('elongation_visible', '=', False), ('flakiness_visible', '=', False)]}" style="white-space:nowrap; ">
+                            
+                        <group>
+                            <field name="total_wt_retained_fl_el"/>
+                        
+                            <field name="total_elongated_retained"/>
+                        
+                            <field name="total_flakiness_retained"/>
+                        </group>
+                       
+                        <group>
+                            <field name="aggregate_elongation"/>
+                        
+                            <field name="aggregate_flakiness"/>
+                        
+                            <field name="aggregate_combine"/>
+                        </group>
+                    </group>
+               
+
+                     <group attrs="{'invisible': [('elongation_visible', '=', False)]}">
+                          <group>
+                            <field  name="aggregate_combine_conformity"
+                                           decoration-success="aggregate_combine_conformity == 'pass'" 
+                                           decoration-danger="aggregate_combine_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="aggregate_combine_nabl"/>
+                          </group>
+                    </group>
+
+
+                     <!-- Bulk Density  -->
+                    <group attrs="{'invisible': [('loose_bulk_visible', '=', False)]}">
+                        <h1>
+                            <field name="loose_bulk_density_name" readonly="1" nolabel="1"/>
+                            <field name="loose_bulk_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('loose_bulk_visible', '=', False)]}" style="white-space: nowrap; width:50%">
+                    <!-- <field name="loose_bulk_density_child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='weight_empty_bucket'/>
+                                <field name='volume_of_bucket'/>
+                                <field name='sample_plus_bucket'/>
+                                <field name='sample_weight'/>
+                                <field name='loose_bulk_density'/>
+                            </tree>
+                           
+                    </field>  -->
+                    <field name="weight_empty_bucket_loose"/>
+                    <field name="volume_of_bucket_loose"/>
+                    <field name="sample_plus_bucket_loose"/>
+                    <field name="sample_weight_loose"/>
+                    <field name="loose_bulk_density"/>
+                    </group>
+                     <group attrs="{'invisible': [('loose_bulk_visible', '=', False)]}">
+                          <group>
+                            <field  name="loose_bulk_density_conformity"
+                                          decoration-success="loose_bulk_density_conformity == 'pass'" 
+                                           decoration-danger="loose_bulk_density_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="loose_bulk_density_nabl"/>
+                          </group>
+                    </group>
+
+
+                    <group attrs="{'invisible': [('rodded_bulk_visible', '=', False)]}">
+                        <h1>
+                            <field name="rodded_bulk_density_name" readonly="1" nolabel="1"/>
+                            <field name="rodded_bulk_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('rodded_bulk_visible', '=', False)]}" style="white-space: nowrap; width:50%">
+                    <!-- <field name="rodded_bulk_density_child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='weight_empty_bucket'/>
+                                <field name='volume_of_bucket'/>
+                                <field name='sample_plus_bucket'/>
+                                <field name='sample_weight'/>
+                                <field name='rodded_bulk_density'/>
+                            </tree>
+                           
+                    </field>  -->
+                    <field name="weight_empty_bucket_rodded"/>
+                    <field name="volume_of_bucket_rodded"/>
+                    <field name="sample_plus_bucket_rodded"/>
+                    <field name="sample_weight_rodded"/>
+                    <field name="rodded_bulk_density"/>
+                    </group>
+                     <group attrs="{'invisible': [('rodded_bulk_visible', '=', False)]}">
+                          <group>
+                            <field  name="rodded_bulk_density_conformity"
+                                           decoration-success="rodded_bulk_density_conformity == 'pass'" 
+                                           decoration-danger="rodded_bulk_density_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="rodded_bulk_density_nabl"/>
+                          </group>
+                    </group>
+                      <!-- Impact Value  -->
+                    <group attrs="{'invisible': [('impact_visible', '=', False)]}">
+                        <h1>
+                            <field name="impact_value_name" readonly="1" nolabel="1"/>
+                            <field name="impact_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('impact_visible', '=', False)]}" >
+                    <field name="impact_value_child_lines" nolabel="1" style="width:100%" >
+                            <tree >
+                                <field name='sample_no'/>
+                                <field name='wt_of_cylinder' />
+                                <field name='total_wt_of_dried'  />
+                                <field name='total_wt_aggregate'  />
+                                <field name='wt_of_aggregate_passing'  />
+                                <field name='wt_of_aggregate_retained' />
+                                <field name='impact_value'/>
+                            </tree>
+                           
+                    </field> 
+                    </group>
+                   
+
+                            <group attrs="{'invisible': [('impact_visible', '=', False)]}">
+                               <field name='average_impact_value'/>
+                            </group>
+
+                     <group attrs="{'invisible': [('impact_visible', '=', False)]}">
+                          <group>
+                            <field  name="average_impact_value_conformity"
+                                           decoration-success="average_impact_value_conformity == 'pass'" 
+                                           decoration-danger="average_impact_value_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="impact_value_nabl"/>
+                          </group>
+                    </group>
+                     
+
+                  
+
+                    <!-- Crushing Value  -->
+                    <group attrs="{'invisible': [('crushing_visible', '=', False)]}">
+                        <h1>
+                            <field name="crushing_value_name" readonly="1" nolabel="1"/>
+                            <field name="crushing_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('crushing_visible', '=', False)]}">
+                    <field name="crushing_value_child_lines" nolabel="1" >
+                            <tree>
+                                <field name='sample_no'/>
+                                <field name='wt_of_cylinder'/>
+                                <field name='total_wt_of_dried'/>
+                                <field name='total_wt_aggregate'/>
+                                <field name='wt_of_aggregate_passing'/>
+                                <field name='wt_of_aggregate_retained'/>
+                                <field name='crushing_value'/>
+                              
+                            </tree>
+                           
+                    </field> 
+                    </group>
+                    <group attrs="{'invisible': [('crushing_visible', '=', False)]}">
+                        <field name='average_crushing_value'/>
+                    </group>
+
+                     <group attrs="{'invisible': [('crushing_visible', '=', False)]}">
+                          <group>
+                            <field  name="average_crushing_value_conformity"
+                                           decoration-success="average_crushing_value_conformity == 'pass'" 
+                                           decoration-danger="average_crushing_value_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="average_crushing_value_nabl"/>
+                          </group>
+                    </group>
+
+                   <!-- 10% fine value  -->
+                <group attrs="{'invisible': [('fine10_visible', '=', False)]}">
+                    <h1>
+                        <field name="name_10fine" readonly="1" nolabel="1"/>
+                            <field name="fine10_visible" invisible="1"/>
+
+                    </h1>
+                </group>
+                <group style="white-space: nowrap; width:60%" attrs="{'invisible': [('fine10_visible', '=', False)]}"> 
+                    <field name="wt_sample_10fine"/>
+                    <field name="wt_sample_passing_10fine"/>
+                    <field name="percent_of_fines"/>
+                    <field name="load_applied_10fine"/>
+                    <field name="load_10percent_fine_values"/>
+
+                </group>
+
+                 <group attrs="{'invisible': [('fine10_visible', '=', False)]}">
+                          <group>
+                            <field  name="load_10percent_fine_values_conformity"
+                                           decoration-success="load_10percent_fine_values_conformity == 'pass'" 
+                                           decoration-danger="load_10percent_fine_values_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="load_10percent_fine_values_nabl"/>
+                          </group>
+                    </group>
+                     
+
+                 
+                  
+
+                <!-- Abrasion Value  -->
+                <group attrs="{'invisible': [('abrasion_visible', '=', False)]}">
+                        <h1>
+                            <field name="abrasion_value_name" readonly="1" nolabel="1"/>
+                            <field name="abrasion_visible" invisible="1"/>
+
+                        </h1>
+                </group>
+                <group attrs="{'invisible': [('abrasion_visible', '=', False)]}" style="white-space: nowrap; width:50%">
+                    <field name="total_weight_sample_abrasion"/>
+                    <field name="weight_passing_sample_abrasion"/>
+                    <field name="weight_retain_sample_abrasion"/>
+                    <field name="abrasion_value_percentage"/>
+                </group>
+
+                 <group attrs="{'invisible': [('abrasion_visible', '=', False)]}">
+                          <group>
+                            <field  name="abrasion_value_percentage_conformity"
+                                           decoration-success="abrasion_value_percentage_conformity == 'pass'" 
+                                           decoration-danger="abrasion_value_percentage_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="abrasion_value_percentage_nabl"/>
+                          </group>
+                    </group>
+
+                  <!-- Deleterious Material -->
+                    <group attrs="{'invisible': [('finer75_visible', '=', False)]}">
+                        <h1>
+                            <field name="name_finer75" readonly="1" nolabel="1"/>
+                            <field name="finer75_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group style="white-space: nowrap; width:50%" attrs="{'invisible': [('finer75_visible', '=', False)]}" >
+                        <field name='wt_sample_finer75'/>
+                        <field name='wt_dry_sample_finer75'/>
+                        <field name='material_finer75'/>
+                    </group>
+
+                     <group attrs="{'invisible': [('finer75_visible', '=', False)]}">
+                          <group>
+                            <field  name="material_finer75_conformity"
+                                           decoration-success="material_finer75_conformity == 'pass'" 
+                                           decoration-danger="material_finer75_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="material_finer75_nabl"/>
+                          </group>
+                    </group>
+
+
+                    <group attrs="{'invisible': [('clay_lump_visible', '=', False)]}">
+                        <h1>
+                            <field name="name_clay_lumps" readonly="1" nolabel="1"/>
+                            <field name="clay_lump_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group style="white-space: nowrap; width:50%" attrs="{'invisible': [('clay_lump_visible', '=', False)]}" >
+                        <field name='wt_sample_clay_lumps'/>
+                        <field name='wt_dry_sample_clay_lumps'/>
+                        <field name='clay_lumps_percent'/>
+                    </group>
+
+
+                    <group attrs="{'invisible': [('clay_lump_visible', '=', False)]}">
+                          <group>
+                            <field  name="clay_lumps_percent_conformity"
+                                           decoration-success="clay_lumps_percent_conformity == 'pass'" 
+                                           decoration-danger="clay_lumps_percent_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="clay_lumps_percent_nabl"/>
+                          </group>
+                    </group>
+
+
+                    <group attrs="{'invisible': [('light_weight_visible', '=', False)]}">
+                        <h1>
+                            <field name="name_light_weight" readonly="1" nolabel="1"/>
+                            <field name="light_weight_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group style="white-space: nowrap; width:50%" attrs="{'invisible': [('light_weight_visible', '=', False)]}" >
+                        <field name='wt_sample_light_weight'/>
+                        <field name='wt_dry_sample_light_weight'/>
+                        <field name='light_weight_percent'/>
+                    </group>
+
+
+                     <group attrs="{'invisible': [('light_weight_visible', '=', False)]}">
+                          <group>
+                            <field  name="light_weight_percent_conformity"
+                                           decoration-success="light_weight_percent_conformity == 'pass'" 
+                                           decoration-danger="light_weight_percent_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="light_weight_percent_nabl"/>
+                          </group>
+                    </group>
+
+
+
+
+             
+
+                <!-- Surface Moisture -->
+                <!-- <group>
+                    <h1>
+                        <field name="name_surface_moisture" readonly="1" nolabel="1"/>
+                    </h1>
+                </group>
+                <group>
+                    <field name="wt_container_filled_water"/>
+                    <field name="wt_sample_surface_moisture"/>
+                    <field name="wt_container_filled_sample"/>
+                    <field name="vs_surface_moisture"/>
+                    <field name="md_surface_moisture"/>
+                    <field name="vd_surface_moisture"/>
+                    <field name="moisture_content"/>
+
+                </group> -->
+                   <!-- Soundness Mgso4  -->
+                <group attrs="{'invisible': [('soundness_mgso4_visible', '=', False)]}">
+                        <h1>
+                            <field name="soundness_mgso4_name" readonly="1" nolabel="1"/>
+                            <field name="soundness_mgso4_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('soundness_mgso4_visible', '=', False)]}">
+                        <field name="soundness_mgso4_child_lines" nolabel="1" style="width:80%">
+                            <tree >
+                                <field name="sieve_size_passing"/>
+                                <field name="sieve_size_retained"/>
+                                <field name="grading_original_sample" readonly='1'/>
+                                <field name="weight_before_test"/>
+                                <field name="weight_after_test"/>
+                                <field name="passing_percent" readonly='1'/>
+                                <field name="cumulative_loss_percent"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <!-- <group style="width:100%"> -->
+                     <group style="white-space:nowrap; width:25%" attrs="{'invisible': [('soundness_mgso4_visible', '=', False)]}">
+                            <field name="total_grading1"/>
+                        <!-- </group>
+                         <group style="width:25%" attrs="{'invisible': [('soundness_mgso4_visible', '=', False)]}"> -->
+                            <field name="total_weight_before_test1"/>
+                        <!-- </group>
+                        <group style="width:25%" attrs="{'invisible': [('soundness_mgso4_visible', '=', False)]}"> -->
+                            <field name="total_weight_after1"/>
+                        <!-- </group>
+                        <group style="width:25%" attrs="{'invisible': [('soundness_mgso4_visible', '=', False)]}"> -->
+                            <field name="total_commulative1"/>
+                        <!-- </group> -->
+                    </group>
+                    <group attrs="{'invisible': [('soundness_mgso4_visible', '=', False)]}">
+                        <!-- <field name="total_mgso4"/> -->
+                        <field name="soundness_mgso4"/>
+                    </group>
+
+                    <group attrs="{'invisible': [('soundness_mgso4_visible', '=', False)]}">
+                          <group>
+                            <field  name="soundness_mgso4_conformity"
+                                           decoration-success="soundness_mgso4_conformity == 'pass'" 
+                                           decoration-danger="soundness_mgso4_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="soundness_mgso4_nabl"/>
+                          </group>
+                    </group>
+
+
+                <!-- Soundness Na2So4  -->
+                <group attrs="{'invisible': [('soundness_na2so4_visible', '=', False)]}">
+                        <h1>
+                            <field name="soundness_na2so4_name" readonly="1" nolabel="1"/>
+                            <field name="soundness_na2so4_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('soundness_na2so4_visible', '=', False)]}">
+                    <field name="soundness_na2so4_child_lines" nolabel="1" style="width:80%" >
+                            <tree>
+                                <field name="sieve_size_passing"/>
+                                <field name="sieve_size_retained"/>
+                                <field name="grading_original_sample" readonly='1'/>
+                                <field name="weight_before_test"/>
+                                <field name="weight_after_test"/>
+                                <field name="passing_percent" readonly='1'/>
+                                <field name="cumulative_loss_percent"/>
+                            </tree>
+                    </field>
+                    </group>
+                   <group style="width:100%">
+                        <group style="white-space:nowrap; width:25%" attrs="{'invisible': [('soundness_na2so4_visible', '=', False)]}">
+                            <field name="total_grading"/>
+                        <!-- </group>
+                         <group style="width:25%" attrs="{'invisible': [('soundness_na2so4_visible', '=', False)]}"> -->
+                            <field name="total_weight_before"/>
+                        <!-- </group>
+                        <group style="width:25%" attrs="{'invisible': [('soundness_na2so4_visible', '=', False)]}"> -->
+                            <field name="total_weight_after"/>
+                        <!-- </group>
+                        <group style="width:25%" attrs="{'invisible': [('soundness_na2so4_visible', '=', False)]}"> -->
+                            <field name="total_commulative"/>
+                        </group>
+                    </group>
+                       
+                  
+                     <group attrs="{'invisible': [('soundness_na2so4_visible', '=', False)]}">
+                     <field name="soundness_na2so4"/>
+                    </group>
+
+                    <group attrs="{'invisible': [('soundness_na2so4_visible', '=', False)]}">
+                          <group>
+                            <field  name="soundness_na2so4_conformity"
+                                           decoration-success="soundness_na2so4_conformity == 'pass'" 
+                                           decoration-danger="soundness_na2so4_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="soundness_na2so4_nabl"/>
+                          </group>
+                    </group>
+
+
+                     <group style="width:100%">
+                        
+                       
+                    </group>
+
+                 
+                   
+                  
+                   
+                  
+
+             
+                    <!-- Angularity Number  -->
+                    <group attrs="{'invisible': [('angularity_visible', '=', False)]}">
+                        <h1>
+                            <field name="angularity_name" readonly="1" nolabel="1"/>
+                            <field name="angularity_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <group style="white-space: nowrap; width:50%" attrs="{'invisible': [('angularity_visible', '=', False)]}" > 
+                        <field name="mean_wt_aggregate"/>
+                        <field name="wt_water_required_angularity"/>
+                        <field name="specific_gravity_aggregate_angularity"/>
+                        <field name="angularity_number"/>
+                    </group>
+
+                    <group attrs="{'invisible': [('angularity_visible', '=', False)]}">
+                          <group>
+                            <field  name="angularity_number_conformity"
+                                           decoration-success="angularity_number_conformity == 'pass'" 
+                                           decoration-danger="angularity_number_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="angularity_number_conformity_nabl"/>
+                          </group>
+                    </group>
+
+
+                       <!-- Aggregate Grading  -->
+                    <group attrs="{'invisible': [('aggregate_grading_visible', '=', False)]}">
+                        <h1>
+                            <field name="aggregate_grading_name" readonly="1" nolabel="1"/>
+                            <field name="aggregate_grading_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <div attrs="{'invisible': [('aggregate_grading_visible', '=', False)]}">
+                        <button string="Calculate" type="object" name="calculate_aggregate" class="oe_highlight"/>
+                    </div>
+                    <group attrs="{'invisible': [('aggregate_grading_visible', '=', False)]}">
+                        <field name="aggregate_grading_child_lines" nolabel="1">
+                            <tree>
+                                <field name="serial_no" string="Sr.No"/>
+                                <field name="sieve_size" string="IS Sieve Size"/>
+                                <field name="wt_retained" string="Wt. Retained in gms"/>
+                                <field name="percent_retained" string="% Retained"/>
+                                <field name="cumulative_retained" context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
+                                <field name="passing_percent" string="Passing %" readonly="1"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group attrs="{'invisible': [('aggregate_grading_visible', '=', False)]}">
+                        <field name="total_aggregate_grading"/>
+                    </group>
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>

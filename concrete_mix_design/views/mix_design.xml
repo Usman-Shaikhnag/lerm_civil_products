@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_concrete_mix_design_view1" model="ir.ui.view">
+        <field name="name">mechanical.concrete.design1.form</field>
+        <field name="model">mechanical.concrete.design1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                     <group>
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade" exception="grade"  string="Grade" identity="extra"/>   
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+
+                     
+
+                    <group >
+                        <!-- <label for="kgm3_1" string="Kg/M3" />
+                        <div class="address_format " >
+                          <group colspan="18"  class="oe_inline">
+                            <label for="kgm3_1" string="Cement" />
+                            <field  name="kgm3_1"  colspan="12"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="kgm3_2" string="Slag" />
+                            <field  name="kgm3_2"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="kgm3_3" string="Mirosilica" />
+                            <field  name="kgm3_3"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="kgm3_4" string="W/(C+F)" />
+                            <field  name="kgm3_4"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="kgm3_5" string="(C+F)" />
+                            <field  name="kgm3_5"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="kgm3_6" string="R/SAND" />
+                            <field  name="kgm3_6"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="kgm3_7" string="C/SAND" />
+                            <field  name="kgm3_7"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="kgm3_8" string="10 MM" />
+                            <field  name="kgm3_8"  colspan="12"  nolabel="1"/>
+                          </group>
+                           <group colspan="1" class="oe_inline"  >
+                            <label for="kgm3_9" string="20 MM" />
+                            <field  name="kgm3_9"  colspan="12"  nolabel="1"/>
+                          </group>
+                       
+                        </div> -->
+
+                      <field name="child_lines_concrete_design" nolabel="1" >
+                            <tree editable="bottom">
+                                <!-- <field name='serial_no'  /> -->
+                                <field name='abstract'  />
+                                <!-- <field name='cement' /> -->
+                                 <field name='cement_display' />
+                                <field name='slag' />
+                                <field name='miro_silica' />
+                                <field name='w_c_f' />
+                                <field name='c_f' />
+                                <field name='r_Sand' />
+                                <field name='c_Sand' />
+                                <field name='mm10' />
+                                <field name='mm20' />
+                                <field name='adm' />
+                            </tree>
+                    </field>
+
+
+                         
+                    </group>
+                    <group>
+                         <field name='total_kg_per_m3' />
+                         <field name='sp_gr' />
+                          <field name='mix_grade' />
+                    </group>
+
+                      <group>
+                        <h1>
+                            <field name="design_stipulations_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                     <group style="white-space: nowrap; width:70%;">
+                
+                         <field name="design_stipulations_com"  />
+                   
+                         <field name='design_stipulations_max_size'  />
+                          <field name='design_stipulations_work'  />
+
+                            <field name='design_stipulations_exposure'  />
+                          <field name='design_stipulations_cement'  />
+                            <field name='design_stipulations_water'  />
+                          <field name='design_stipulations_tolerance'  />
+                            <field name='design_stipulations_admicture'  />
+                    </group>
+                     
+                      <group>
+                        <h1>
+                            <field name="test_data_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                     <group style="white-space: nowrap; width:70%;">
+                
+                        <field name="test_data_gravity_cement"  />
+                        <field name='test_data_gravity_flyash'  />
+                        <field name='test_data_admixture'  />
+                        <field name='test_data_flyash'  />
+                          
+                    </group>
+
+                        <!-- SPECIFIC GRAVITY & WATER ABSORPTION OF COARSE & FINE AGGREGATE (SSD) -->
+
+                       <group>
+                        <h1>
+                            <field name="material_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                     <group style="white-space: nowrap; width:70%;">
+                
+                         <field name="child_lines_concrete_design_material" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='material'  />
+                                 <field name='specific_gravity' />
+                                <field name='water_absorption' />
+                            
+                            </tree>
+                    </field>
+                          
+                    </group>
+
+
+                    <group >
+                        <h1>
+                            <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
+                            
+                            <field name="sieve_visible20mm" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('sieve_visible20mm', '=', False)]}">
+                     <field name="size_20mm" string="Aggregate Size"/>
+                     </group>
+
+
+                    <div  attrs="{'invisible': [('sieve_visible20mm', '=', False)]}">
+                        <button string="Calculate" type="object" name="calculate20mm" class="oe_highlight"/>
+                    </div>
+                    <group style="width:75%" attrs="{'invisible': [('sieve_visible20mm', '=', False)]}">
+                    <field name="sieve_analysis_child_lines_20mm" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sieve_size' string="IS Sieve Size" />
+                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='percent_retained' string="% Retained"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1" string="Cum. Retained %"/>
+                                <field name='passing_percent' string="Passing %" readonly="1"/>
+                                <field name='ll' />
+                                <field name='up' />
+                            </tree>
+                    </field>
+                    </group>
+
+                     <group attrs="{'invisible': [('sieve_visible20mm', '=', False)]}">
+                          <field name="graph_image_20mm" widget="image" readonly="1"/>
+                    </group>
+                
+
+
+
+                    <group attrs="{'invisible': [('sieve_visible10mm', '=', False)]}">
+                      <field name="sieve_visible10mm" invisible="1"/>
+                     <field name="size_10mm" string="Aggregate Size"/>
+                     </group>
+
+
+                    <div attrs="{'invisible': [('sieve_visible10mm', '=', False)]}">
+                        <button string="Calculate" type="object" name="calculate_sieve" class="oe_highlight"/>
+                    </div>
+                    <group  style="width:75%" attrs="{'invisible': [('sieve_visible10mm', '=', False)]}">
+                    <field name="sieve_analysis_child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sieve_size' string="IS Sieve Size" />
+                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='percent_retained' string="% Retained"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1" string="Cum. Retained %"/>
+                                <field name='passing_percent' string="Passing %" readonly="1"/>
+                                <field name='ll' />
+                                <field name='up' />
+                            </tree>
+                    </field>
+                    </group>
+                    <!-- <group >
+                        <field name="total_sieve_analysis"/>
+                    </group> -->
+
+
+                    <group attrs="{'invisible': [('sieve_visible10mm', '=', False)]}">
+                          <field name="graph_image_10mm" widget="image" readonly="1"/>
+                    </group>
+
+
+
+                     <group attrs="{'invisible': [('aggregate_visible', '=', False)]}">
+                        <h1>
+                            <field name="sieve_name1" readonly="1" nolabel="1"/>
+                            <field name="aggregate_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group attrs="{'invisible': [('aggregate_visible', '=', False)]}">
+                   
+                     <field name="Aggregate_name" />
+                     </group>
+
+                    <div attrs="{'invisible': [('aggregate_visible', '=', False)]}">
+                        <button string="Calculate" type="object" name="calculate" class="oe_highlight"/>
+                    </div>
+                    <group attrs="{'invisible': [('aggregate_visible', '=', False)]}">
+                    <field name="child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <!-- <field name="serial_no" string="Sr.No"/> -->
+                                <field name='sieve_size' string="IS Sieve Size"/>
+                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='percent_retained' string="% Retained"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
+                                <field name='passing_percent' string="Passing %" readonly="1"/>
+                                  <field name='cs_ll' />
+                                <field name='cs_up' />
+                                
+                            </tree>
+                    </field>
+                    </group>
+
+                     <group attrs="{'invisible': [('aggregate_visible', '=', False)]}">
+                          <field name="graph_image_crush_sand" widget="image" readonly="1"/>
+                    </group>
+
+           <!--  D. COMBINATION AND ANALYSIS OF COARSE AGGREGATE FRACTIONS: -->
+                      <group  attrs="{'invisible': ['|', ('sieve_visible20mm', '=', False), ('sieve_visible10mm', '=', False)]}">
+                        <h1>
+                            <field name="combination10and20mm" readonly="1" nolabel="1"/>
+
+                        </h1>
+                      </group>
+                      <!-- <div >
+                      <button name="action_calculate_combination" 
+                            string="Calculate" 
+                            type="object" 
+                            class="btn-primary"/>
+                        </div> -->
+                        <group attrs="{'invisible': ['|', ('sieve_visible20mm', '=', False), ('sieve_visible10mm', '=', False)]}" >
+                    <field name="combination10and20mm_child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sieve_size' />
+                                <field name='passing_20mm' />
+                                <field name='passing_10mm' />
+                                <field name='passing_combined38' />
+                                <field name='passing_combined62' />
+                                <field name='combine_grading' />
+                                <field name='combine_grading_ll' />
+                                <field name='combine_grading_up' />
+                                
+                                
+                            </tree>
+                    </field>
+                    </group>
+
+
+                    <group attrs="{'invisible': ['|', ('sieve_visible20mm', '=', False), ('sieve_visible10mm', '=', False)]}">
+                          <field name="graph_image_combination10and20mm" widget="image" readonly="1"/>
+                    </group>
+
+
+                     <!--  E. COMBINED GRADING : -->
+                      <group  >
+                        <h1>
+                            <field name="combine_granding" readonly="1" nolabel="1"/>
+
+                        </h1>
+                      </group>
+
+                       <group  >
+                        <h4>
+                            <field name="mix_proporation_name" readonly="1" nolabel="1"/>
+
+                        </h4>
+                      </group>
+                      <group  >
+                          <field name='mix_proporation_20mm' />
+                          <field name='mix_proporation_10mm' />
+                          <field name='mix_proporation_rsand' />
+                          <field name='mix_proporation_csand' />
+                      </group>
+                      
+                        <group  >
+                    <field name="combine_granding_child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sieve_size' />
+                                <field name='combine_grading_20mm' />
+                                <field name='combine_grading_10mm' />
+                                <field name='combine_grading_csand' />
+                                <field name='combine_grading_nsand' />
+
+                                <field name='combine_grading_all' />
+                                <field name='combine_grading_ll_all' />
+                                <field name='combine_grading_up_all' />
+                               
+                            </tree>
+                    </field>
+                    </group>
+
+
+                     <group>
+                        <h1>
+                            <field name="target_mean_strength_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                     <group style="white-space: nowrap; width:70%;">
+                          <field name='target_mean_strength_com'  />
+                            <field name='target_mean_strength_chara' />
+                          <field name='target_mean_strength_sd' />
+                    </group>
+
+
+                      <group>
+                        <h1>
+                            <field name="selection_water_cement_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                     <group style="white-space: nowrap; width:70%;">
+                          <field name='selection_maximum_water_cement'  />
+                            <field name='selection_adopt_water_cement' />
+                    </group>
+
+
+
+                       <group>
+                        <h1>
+                            <field name="selection_water_content_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                     <group style="white-space: nowrap; width:70%;">
+                          <field name='selection_water_content_maximum'  />
+                            <field name='selection_water_content_superplasticizer' />
+                    </group>
+
+
+                        <group>
+                        <h1>
+                            <field name="calculation_cement_content_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                     <group style="white-space: nowrap; width:70%;">
+                          <field name='calculation_cement_content_wc'  />
+                          <field name='calculation_cement_content' />
+                          <field name='calculation_cement_content_minimum' />
+
+                    </group>
+
+
+
+                       <group>
+                        <h1>
+                            <field name="blending_proportion_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                     <group style="white-space: nowrap; width:70%;">
+                          <field name='blending_proportion_20mm'  />
+                          <field name='blending_proportion10mm' />
+                          <field name='blending_proportion_rsand' />
+                          <field name='blending_proportion_csand' />
+
+
+                    </group>
+                    
+
+
+                   
+              
+                          
+                </sheet>
+            </form>
+        </field>
+    </record>
+    </data>
+</odoo>

@@ -1,0 +1,2107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	
+	<template id="lerm_microsilica_report1">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+						
+
+						<table>
+								<tr>
+								<td colspan="12">Customer Party Name :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/>
+									<br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								
+
+								<td colspan="12">Project / Site Address : 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Sample Description : 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						<!-- </table>
+						<table> -->
+							<tr>
+								<td colspan="6">Test Start Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Sample Id Mark: 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Size :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">Grade :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Brand :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">Consultant Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Client Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">Client Reference :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material/Test Name :
+																											<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+							<!-- <tr>
+							    <td colspan="3" style="font-weight: bold;">Room Temp °c :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="3">
+									<span t-field="microsilica.temp_percent_compressive"/>
+								</td>
+								<td colspan="3" style="font-weight: bold;">Room RH % :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="3">
+									<span t-field="microsilica.humidity_percent_compressive"/>
+								</td> 
+							</tr> -->
+
+						</table>
+					</div>
+					<div style="margin-top:5px;">
+						<p><strong>Results</strong>:<![CDATA[&nbsp;]]></p>
+						<!-- <span t-field="eln.parameters_result.parameter[0].test_method.test_method"/> -->
+					</div>
+					<table style="margin-top:10px;">
+						<t t-set="i" t-value="0"/>
+						<thead>
+							<tr>
+								<th style="text-align: center;">
+									<span style="font-weight: bold;">
+										Sr No
+									</span>
+								</th>
+								<th style="text-align: center;max-width:200px">
+									<span style="font-weight: bold;">
+										Test Parameters
+									</span>
+								</th>
+								<th style="text-align: center;max-width:100px">
+									<span style="font-weight: bold;">
+										Unit
+									</span>
+								</th>
+								<th style="text-align: center;">
+									<span style="font-weight: bold;">
+										Result
+									</span>
+								</th>
+								<!-- <th style="text-align: center;">
+									<span style="font-weight: bold;">
+										Test Method
+									</span>
+								</th> -->
+								<th style="text-align: center;font-weight: bold;">
+									<span>
+										<span t-esc="eln.material.method_reference"/>
+										
+									</span>
+								</th>
+								<!-- <th style="text-align: center;max-width:150px">
+									<span colspan="3" style="font-weight: bold;">
+										Limits As per IS
+									</span>
+								</th> -->
+								<th style="text-align: center;font-weight: bold;">
+									<span>
+										<span t-esc="eln.material.specifications"/>
+										
+									</span>
+								</th>
+							</tr>
+						</thead>
+					<tbody>
+
+							<!--1 Accelerated pozzolanic activity index with portland cement , 7 Days in % -->
+
+						<tr t-if="microsilica.compressive_visible and (microsilica.accelerated_pozzolanic_nabl == 'pass' and nabl or (microsilica.accelerated_pozzolanic_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
+							
+
+							
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+
+							
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_name"/>
+							</td>
+							
+							
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).unit"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span style="text-align: center;" >
+									<span t-field="microsilica.control_compressive_strength_7_days" t-options='{"widget": "float", "precision": 2}'/>
+								</span>									
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+							<!-- <td style="text-align: center;max-width:150px">
+								<span style="text-align: center;" >
+									Min 105 ,As per ASTM C1240 : 2020
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+						</tr>
+
+
+						<tr t-if="microsilica.compressive_visible and fromEln">
+							
+
+							
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+
+							
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_name"/>
+							</td>
+							
+							
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).unit"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span style="text-align: center;" >
+									<span t-field="microsilica.control_compressive_strength_7_days" t-options='{"widget": "float", "precision": 2}'/>
+								</span>									
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+							<!-- <td style="text-align: center;max-width:150px">
+								<span style="text-align: center;" >
+									Min 105 ,As per ASTM C1240 : 2020
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+						</tr>
+							<!--2 Oversize % Retained on 45 Micron wet sieve -->
+						<tr t-if="microsilica.oversize_retain_visible and (microsilica.oversize_retained_nabl == 'pass' and nabl or (microsilica.oversize_retained_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
+							<!-- <td colspan="1" style="text-align: center;">
+								<div>
+									<span>2</span>
+								</div>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<!-- <td style="text-align: center;max-width:200px">
+								<span style="text-align: center;">
+									Oversize % Retained on 45 Micron wet sieve
+								</span>
+								
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_name"/>
+							</td>
+							
+							<!-- <td style="text-align: center;max-width:100px">
+								<span style="text-align: center;" >
+									<span t-field="env['lerm.parameter.master'].search([('parameter_name','=','Oversize % Retained on 45 Micron IS sieve')]).unit.name"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).unit"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span style="text-align: center;" >
+									<span t-field="microsilica.retain_wt_rounded" t-options='{"widget": "float", "precision": 2}'/>
+								</span>									
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+							<!-- <td style="text-align: center;max-width:150px">
+								<span style="text-align: center;" >
+									(10 Max) As Per IS 15388 : 2003
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+						</tr>
+
+						<tr t-if="microsilica.oversize_retain_visible and fromEln">
+							<!-- <td colspan="1" style="text-align: center;">
+								<div>
+									<span>2</span>
+								</div>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<!-- <td style="text-align: center;max-width:200px">
+								<span style="text-align: center;">
+									Oversize % Retained on 45 Micron wet sieve
+								</span>
+								
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_name"/>
+							</td>
+							
+							<!-- <td style="text-align: center;max-width:100px">
+								<span style="text-align: center;" >
+									<span t-field="env['lerm.parameter.master'].search([('parameter_name','=','Oversize % Retained on 45 Micron IS sieve')]).unit.name"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).unit"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span style="text-align: center;" >
+									<span t-field="microsilica.retain_wt_rounded" t-options='{"widget": "float", "precision": 2}'/>
+								</span>									
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+							<!-- <td style="text-align: center;max-width:150px">
+								<span style="text-align: center;" >
+									(10 Max) As Per IS 15388 : 2003
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+						</tr>
+
+
+							<!--3 Specific Gravity -->
+						<tr t-if="microsilica.specific_gravity_visible and (microsilica.specific_gravity_nabl == 'pass' and nabl or (microsilica.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
+							<!-- <td colspan="1" style="text-align: center;">
+								<div>
+									<span>3</span>
+								</div>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<!-- <td style="text-align: center;max-width:200px">
+								<span style="text-align: center;">
+									Specific Gravity
+								</span>
+								
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_name"/>
+							</td>
+							
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).unit"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span style="text-align: center;" >
+									<span t-field="microsilica.specific_gravity_avrg" t-options='{"widget": "float", "precision": 2}'/>
+								</span>									
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+							
+						</tr>
+
+						<tr t-if="microsilica.specific_gravity_visible and fromEln">
+							<!-- <td colspan="1" style="text-align: center;">
+								<div>
+									<span>3</span>
+								</div>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<!-- <td style="text-align: center;max-width:200px">
+								<span style="text-align: center;">
+									Specific Gravity
+								</span>
+								
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_name"/>
+							</td>
+							
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).unit"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span style="text-align: center;" >
+									<span t-field="microsilica.specific_gravity_avrg" t-options='{"widget": "float", "precision": 2}'/>
+								</span>									
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+							
+						</tr>
+							<!--4 Compressive Strength -->
+						<tr t-if="microsilica.compressive_strength_visible and (microsilica.comp_strngth_7_days_nabl == 'pass' and nabl or (microsilica.comp_strngth_7_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">	
+							<!-- <td colspan="1" style="text-align: center;">
+								<div>
+									<span>4</span>
+								</div>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<td style="text-align: center;vertical-align: middle;padding:0px;max-width:200px">
+								<div style="text-align: center; border-bottom:1px solid black;min-height:50px">
+									<!-- Compressive Strength of Microsilica Sample 7 days -->
+									<!-- <td style="text-align: center;"> -->
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_name"/>
+									<!-- </td> -->
+								</div>
+								<div style="text-align: center; border-bottom:1px solid black;min-height:25px">
+									Compressive Strength of control Sample 7 days
+								</div>
+								<div style="text-align: center;min-height:25px">
+									In Percent
+								</div>	
+							</td>
+
+							<td style="text-align: center;vertical-align: middle;padding:0px;max-width:100px">
+								<div rowspan="2" style="text-align: center;vertical-align: middle; border-bottom:1px solid black;min-height:50px">
+									
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).unit.name"/>
+								</div>
+								<div style="text-align: center;vertical-align: middle; border-bottom:1px solid black;min-height:25px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).unit.name"/>
+									
+								</div>
+								<div style="text-align: center;vertical-align: middle;min-height:25px">
+									%
+								</div>	
+							</td>
+							
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;" >
+									<span t-field="env['lerm.parameter.master'].search([('parameter_name','=','Compressive Strength')]).unit.name"/>
+								</span>
+							</td> -->
+
+							
+							<td style="text-align: center;vertical-align: middle; padding: 0px">
+								<div style="text-align: center;vertical-align: middle; border-bottom: 1px solid black;min-height:50px">
+									<span t-field="microsilica.comp_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/>
+								</div>
+								<div style="text-align: center;vertical-align: middle; border-bottom: 1px solid black;min-height:25px">
+									<span t-field="microsilica.comp_control_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/>
+								</div>
+								<div style="text-align: center;vertical-align: middle;min-height:25px">
+									<span t-field="microsilica.comp_control_strngth_7_days" t-options='{"widget": "float", "precision": 2}'/>
+								</div>
+							</td>
+							<!-- <td style="text-align: center;max-width:200px">
+								<span style="text-align: center; display: block;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center;vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+
+							<!-- <td style="text-align: center;max-width:150px">
+								<span style="text-align: center;" >
+									As Per IS 15388 : 2003 Compressive Strength at 7 days as Percent of Control Sample Min.85 %
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+						</tr>
+
+						<tr t-if="microsilica.compressive_strength_visible and fromEln">	
+							<!-- <td colspan="1" style="text-align: center;">
+								<div>
+									<span>4</span>
+								</div>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<td style="text-align: center;vertical-align: middle;padding:0px;max-width:200px">
+								<div style="text-align: center; border-bottom:1px solid black;min-height:50px">
+									<!-- Compressive Strength of Microsilica Sample 7 days -->
+									<!-- <td style="text-align: center;"> -->
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_name"/>
+									<!-- </td> -->
+								</div>
+								<div style="text-align: center; border-bottom:1px solid black;min-height:25px">
+									Compressive Strength of control Sample 7 days
+								</div>
+								<div style="text-align: center;min-height:25px">
+									In Percent
+								</div>	
+							</td>
+
+							<td style="text-align: center;vertical-align: middle;padding:0px;max-width:100px">
+								<div rowspan="2" style="text-align: center;vertical-align: middle; border-bottom:1px solid black;min-height:50px">
+									
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).unit.name"/>
+								</div>
+								<div style="text-align: center;vertical-align: middle; border-bottom:1px solid black;min-height:25px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).unit.name"/>
+									
+								</div>
+								<div style="text-align: center;vertical-align: middle;min-height:25px">
+									%
+								</div>	
+							</td>
+							
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;" >
+									<span t-field="env['lerm.parameter.master'].search([('parameter_name','=','Compressive Strength')]).unit.name"/>
+								</span>
+							</td> -->
+
+							
+							<td style="text-align: center;vertical-align: middle; padding: 0px">
+								<div style="text-align: center;vertical-align: middle; border-bottom: 1px solid black;min-height:50px">
+									<span t-field="microsilica.comp_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/>
+								</div>
+								<div style="text-align: center;vertical-align: middle; border-bottom: 1px solid black;min-height:25px">
+									<span t-field="microsilica.comp_control_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/>
+								</div>
+								<div style="text-align: center;vertical-align: middle;min-height:25px">
+									<span t-field="microsilica.comp_control_strngth_7_days" t-options='{"widget": "float", "precision": 2}'/>
+								</div>
+							</td>
+							<!-- <td style="text-align: center;max-width:200px">
+								<span style="text-align: center; display: block;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center;vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+
+							<!-- <td style="text-align: center;max-width:150px">
+								<span style="text-align: center;" >
+									As Per IS 15388 : 2003 Compressive Strength at 7 days as Percent of Control Sample Min.85 %
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+						</tr>
+
+							<!--5 Oversize Percent Retained on 45 Micron IS sieve variation from Avg. % -->
+						<tr t-if="microsilica.oversize_percent_retain_visible and (microsilica.oversize_retained_nabl == 'pass' and nabl or (microsilica.oversize_retained_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
+							<!-- <td colspan="1" style="text-align: center;">
+								<div>
+									<span>5</span>
+								</div>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<!-- <td style="text-align: center;max-width:200px">
+								<span style="text-align: center;">
+									Oversize Percent Retained on 45 Micron IS sieve variation from Avg. %
+								</span>
+								
+							</td> -->
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_name"/>
+							</td>
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).unit"/>
+							</td>
+							
+							<!-- <td style="text-align: center;max-width:100px">
+								<span style="text-align: center;" >
+									<span t-field="env['lerm.parameter.master'].search([('parameter_name','=','Oversize Percent Retained on 45 Micron IS sieve variation from Avg. %')]).unit.name"/>
+								</span>
+							</td> -->
+							<td style="text-align: center;vertical-align: middle;">
+								<span style="text-align: center;" >
+									<span t-field="microsilica.avrg_oversize_percent" t-options='{"widget": "float", "precision": 2}'/>
+								</span>									
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+							<!-- <td style="text-align: center;max-width:150px">
+								<span style="text-align: center;" >
+									-
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+						</tr>
+
+						<tr t-if="microsilica.oversize_percent_retain_visible and fromEln">
+							<!-- <td colspan="1" style="text-align: center;">
+								<div>
+									<span>5</span>
+								</div>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<!-- <td style="text-align: center;max-width:200px">
+								<span style="text-align: center;">
+									Oversize Percent Retained on 45 Micron IS sieve variation from Avg. %
+								</span>
+								
+							</td> -->
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_name"/>
+							</td>
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).unit"/>
+							</td>
+							
+							<!-- <td style="text-align: center;max-width:100px">
+								<span style="text-align: center;" >
+									<span t-field="env['lerm.parameter.master'].search([('parameter_name','=','Oversize Percent Retained on 45 Micron IS sieve variation from Avg. %')]).unit.name"/>
+								</span>
+							</td> -->
+							<td style="text-align: center;vertical-align: middle;">
+								<span style="text-align: center;" >
+									<span t-field="microsilica.avrg_oversize_percent" t-options='{"widget": "float", "precision": 2}'/>
+								</span>									
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+							<!-- <td style="text-align: center;max-width:150px">
+								<span style="text-align: center;" >
+									-
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+						</tr>
+
+							<!--6 Dry Loose Bulk Density -->
+						<tr t-if="microsilica.bulk_density_visible and (microsilica.bulk_density_nabl == 'pass' and nabl or (microsilica.bulk_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
+							<!-- <td colspan="1" style="text-align: center;">
+								<div>
+									<span>6</span>
+								</div>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;max-width:200px">
+									Dry Loose Bulk Density
+								</span>
+								
+							</td> -->
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_name"/>
+							</td>
+							
+							<!-- <td style="text-align: center;max-width:100px">
+								<span style="text-align: center;" >
+									<span t-field="env['lerm.parameter.master'].search([('parameter_name','=','Dry Loose Bulk Density')]).unit.name"/>
+								</span>
+							</td> -->
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).unit"/>
+							</td>
+							<td style="text-align: center;vertical-align: middle;">
+								<span style="text-align: center;" >
+									<span t-field="microsilica.avrg_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
+								</span>									
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+							<!-- <td style="text-align: center;max-width:150px">
+								<span style="text-align: center;" >
+									-
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+						</tr>
+
+						<tr t-if="microsilica.bulk_density_visible and fromEln">
+							<!-- <td colspan="1" style="text-align: center;">
+								<div>
+									<span>6</span>
+								</div>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;max-width:200px">
+									Dry Loose Bulk Density
+								</span>
+								
+							</td> -->
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_name"/>
+							</td>
+							
+							<!-- <td style="text-align: center;max-width:100px">
+								<span style="text-align: center;" >
+									<span t-field="env['lerm.parameter.master'].search([('parameter_name','=','Dry Loose Bulk Density')]).unit.name"/>
+								</span>
+							</td> -->
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).unit"/>
+							</td>
+							<td style="text-align: center;vertical-align: middle;">
+								<span style="text-align: center;" >
+									<span t-field="microsilica.avrg_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
+								</span>									
+							</td>
+							<!-- <td style="text-align: center;">
+								<span style="text-align: center;min-height:100px">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).test_method.test_method"/>
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+							<!-- <td style="text-align: center;max-width:150px">
+								<span style="text-align: center;" >
+									-
+								</span>
+							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div>
+
+				</div>
+				<div style="page-break-inside: avoid;">
+					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+						<div>
+							<b>Remarks: -</b>
+						</div>
+						<div>
+							<ul>
+								<li>
+									The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+								</li>
+								<li>
+									Sample(s) was/were not drawn by laboratory.
+								</li>
+								<li>
+									This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+								</li>
+								<li t-if="eln.has_witness">
+									Test witnessed by : <span t-esc="eln.witness_name"/>
+											
+								</li>
+								<li t-if="eln.remarks">
+									<span t-esc="eln.remarks"/>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+
+					<div class="signatureContainer girdgird">
+						<div>
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checkby_signature_required">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+									<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+						<div>
+							<div>
+								<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+							</div>
+							<div style="padding-top:5px">
+								Format No. <span t-esc="eln.material.test_format_no"/>
+							</div>
+						</div>
+						<div>
+							<div>
+								<b>
+									Approved By 
+								</b>
+								
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.approveby_signature_required">
+									<div t-if="eln.sample_id.approved_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.approved_by.name"/>
+								</b>
+							</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+								</b>
+							</div>
+							
+						</div>		
+					</div>
+				</div>
+														
+				</div>
+				
+			</t>
+		</t>
+	</template>
+
+
+
+    <template id="microsilica_datasheet1">
+    <t t-call="web.html_container">
+	<!-- <t t-call="lerm_civil.data_sheet_header_generaltemplate"> -->
+	<t t-call="lerm_civil.mechanical_data_sheet_header">
+		<div style="text-align:center;font-size:18px;font-weight: bold;">
+			Microsilica
+		</div>
+		<div class="container_eln" style="margin-top:5px">
+				<!--1 Accelerated pozzolanic activity index with portland cement , 7 Days in % -->
+			<table style="margin-top:20px">
+				<tr cols="12">
+					<td colspan="6">Temperature :
+						<![CDATA[&nbsp;]]>
+						<span t-field="data.temp_percent_compressive"/>
+					</td>
+					<td colspan="6">Humidity :
+						<![CDATA[&nbsp;]]>
+						<span t-field="data.humidity_percent_compressive"/>
+					</td>
+					
+				</tr>
+				<tr cols="12">
+					<td colspan="4">Material: <span t-field="eln.material"></span>
+					</td>
+					<td colspan="4">Test Start Date :
+						<![CDATA[&nbsp;]]>
+						<span t-field="data.start_date_compressive"/>
+					</td>
+					<td colspan="4">Test End Date :
+						<![CDATA[&nbsp;]]>
+						<span t-field="data.end_date_compressive"/>
+					</td>
+				</tr>
+				<tr style="height:50px" cols="12">
+					<td colspan="4">Performed By :
+						<![CDATA[&nbsp;]]>
+						<span t-field="eln.technician.name"/>
+					</td>
+					<td colspan="4">Witness Name :
+						<![CDATA[&nbsp;]]>
+						<span t-field="eln.witness_name"/>
+					</td>
+					<td colspan="4">Witness Signature :
+						<![CDATA[&nbsp;]]>
+						<span style='padding:20px'></span>
+					</td>
+				</tr>
+					
+			</table>
+			<div t-if="data.compressive_visible" style="margin-top:20px">
+				
+				
+					
+					<!-- <div style="margin-top:20px;text-align:center;font-size:18px">
+						Accelerated pozzolanic activity index with portland cement , 7 Days in %
+					</div> -->
+					<div style="margin-top:20px;text-align:center;font-size:18px">
+						<span t-field="env['lerm.parameter.master'].search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_name"/>
+					</div>
+
+					<table style="margin-top: 20px">
+							
+						
+						<tr>
+							<td colspan="2" style="text-align: center; font-size: 18px;">
+								Compressive Strength of Test Mixture
+
+							</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">High Range water reducer (g)</td>
+							<td style="text-align: center;"><span t-field="data.high_range_compressive"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Microsilica (g)</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_microsilica"/></td>
+						</tr>
+						
+						<tr>
+							<td style="font-weight: bold;">Weight of Cement (g)</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_cement_compressive"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-I</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_standerd_comp1"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-II</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_standerd_comp2"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-III</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_standerd_comp3"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Quantity of Water (g)</td>
+							<td style="text-align: center;"><span t-field="data.quantity_water"/></td>
+						</tr>
+					</table>
+
+					<table style="margin-top: 20px">
+						<tr>
+							<td colspan="2" style="text-align: center; font-size: 18px;">
+								Calculation of Flow (Acceptable : 100 to 115 %)
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">Sr. No.</td>
+							<td style="text-align: center; font-weight: bold;">Measured Values</td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">1</td>
+							<td style="text-align: center;"><span t-field="data.measured_value1"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">2</td>
+							<td style="text-align: center;"><span t-field="data.measured_value2"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">3</td>
+							<td style="text-align: center;"><span t-field="data.measured_value3"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">4</td>
+							<td style="text-align: center;"><span t-field="data.measured_value4"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">Average</td>
+							<td style="text-align: center;"><span t-field="data.average_measured" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">% Flow</td>
+							<td style="text-align: center;"><span t-field="data.percent_flow" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>
+
+					<!-- 7 Days  -->
+
+					<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.status_7days">
+						7 Days
+					</div>
+					<table style="margin-top:20px" t-if="data.status_7days">
+					<tr cols="12">
+							<td colspan="6">Date of Casting :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.casting_date_7days"/>
+							</td>
+							<td colspan="6">Date of Testing :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.testing_date_7days"/>
+							</td>
+						</tr>
+					</table>
+							
+					<table style="margin-top:20px" t-if="data.status_7days">
+						<tr cols="12">
+							<td colspan="1">Sr no 
+							</td>
+							<td colspan="1">Length in mm 
+							</td>
+							<td colspan="1">Width in mm
+							</td>
+							<td colspan="2">Crosssectional Area
+							</td>
+							<td colspan="2">wt of Cement Cube in gm
+							</td>
+							<td colspan="2">Crushing Load in KN
+							</td>
+							<td colspan="3">Compressive Strength (N/mm²)
+							</td>
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.casting_7_days_tables" t-as="r">
+							<td colspan="1" style="text-align: center;">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1" style="text-align: center;">
+								<span t-esc="r['length']"/>
+							</td>
+							<td colspan="1" style="text-align: center;">
+								<span t-esc="r['width']"/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['crosssectional_area']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['wt_of_cement_cube']"/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['crushing_load']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+					</table>
+								
+					<table style="margin-top: 20px">
+						<tr>
+							<td style="font-weight: bold;">Average</td>
+							<td style="text-align: center;"><span t-field="data.average_casting_7days" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>
+
+							<!-- Compressive Strength of control Sample -->
+
+					<table style="margin-top: 20px">
+					
+				
+						<tr>
+							<td colspan="2" style="text-align: center; font-size: 18px;">
+								Compressive Strength of control Sample
+
+							</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">High Range water reducer (g)</td>
+							<td style="text-align: center;"><span t-field="data.high_range_control_comp"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Cement (g)</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_cement"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g)Grade-I</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_sand1"/></td>
+						</tr>
+						
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g)Grade-II</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_sand2"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Weight of Standard Sand (g)Grade-III</td>
+							<td style="text-align: center;"><span t-field="data.wt_of_sand3"/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Quantity of Water (g)</td>
+							<td style="text-align: center;"><span t-field="data.quanity_of_water"/></td>
+						</tr>
+					</table>
+					<table style="margin-top: 20px">
+						<tr>
+							<td colspan="2" style="text-align: center; font-size: 18px;">
+								Calculation of Flow (Acceptable : 100 to 115 %)
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">Sr. No.</td>
+							<td style="text-align: center; font-weight: bold;">Measured Values</td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">1</td>
+							<td style="text-align: center;"><span t-field="data.sample_measured_value1"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">2</td>
+							<td style="text-align: center;"><span t-field="data.sample_measured_value2"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">3</td>
+							<td style="text-align: center;"><span t-field="data.sample_measured_value3"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">4</td>
+							<td style="text-align: center;"><span t-field="data.sample_measured_value4"/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">Average</td>
+							<td style="text-align: center;"><span t-field="data.sample_average_measured" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+						<tr>
+							<td style="text-align: center; font-weight: bold;">% Flow</td>
+							<td style="text-align: center;"><span t-field="data.sample_percent_flow" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>
+
+					<!-- 7 Days  -->
+
+					<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.control_status_7days">
+						7 Days
+					</div>
+					<table style="margin-top:20px" t-if="data.control_status_7days">
+					<tr cols="12">
+							<td colspan="6">Date of Casting :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.control_casting_date_7days"/>
+							</td>
+							<td colspan="6">Date of Testing :
+								<![CDATA[&nbsp;]]>
+								<span t-field="data.control_testing_date_7days"/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top:20px" t-if="data.control_status_7days">
+						<tr cols="12">
+							<td colspan="1">Sr no 
+							</td>
+							<td colspan="1">Length in mm 
+							</td>
+							<td colspan="1">Width in mm
+							</td>
+							<td colspan="2">Crosssectional Area
+							</td>
+							<td colspan="2">wt of Cement Cube in gm
+							</td>
+							<td colspan="2">Crushing Load in KN
+							</td>
+							<td colspan="3">Compressive Strength (N/mm²)
+							</td>
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.control_casting_7_days_tables" t-as="r">
+							<td colspan="1" style="text-align: center;">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="1" style="text-align: center;">
+								<span t-esc="r['control_length']"/>
+							</td>
+							<td colspan="1" style="text-align: center;">
+								<span t-esc="r['control_width']"/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['control_crosssectional_area']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['control_wt_of_cement_cube']"/>
+							</td>
+							<td colspan="2" style="text-align: center;">
+								<span t-esc="r['control_crushing_load']"/>
+							</td>
+							<td colspan="3" style="text-align: center;">
+								<span t-esc="r['control_compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+					</table>
+					<table style="margin-top: 20px">
+						<tr>
+							<td style="font-weight: bold;">Average</td>
+							<td style="text-align: center;"><span t-field="data.control_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;">Compressive Strength of  Sample (%)</td>
+							<td style="text-align: center;"><span t-field="data.control_compressive_strength_7_days" t-options='{"widget": "float", "precision": 2}'/></td>
+						</tr>
+					</table>
+			</div>
+
+				<!--2 Oversize % Retained on 45 Micron IS sieve -->
+			<div t-if="data.oversize_retain_visible" style="margin-top:20px">
+				<!-- <div style="text-align:center;font-size:18px">
+						Oversize % Retained on 45 Micron IS sieve
+				</div> -->
+				<div style="text-align:center;font-size:18px;margin-top:30px">
+					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_name"/>
+				</div>
+				<!-- <table>
+					<tr cols="12">
+						<td colspan="6">Temperature :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.temp_percent_oversize"/>
+						</td>
+						<td colspan="6">Test Start Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.start_date_oversize"/>
+						</td>
+					</tr>
+					<tr cols="12">
+						<td colspan="6">Humidity :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.humidity_percent_oversize"/>
+						</td>
+						<td colspan="6">Test End Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.end_date_oversize"/>
+						</td>
+					</tr>
+				</table> -->
+				<table style="margin-top:20px">
+
+					<tr cols="12">
+						<td colspan="3">Sr no 
+						</td>
+						<td colspan="3">Sample Weight(g) 
+						</td>
+						<td colspan="3">Retained Weight on 45 Micron Sieve (g)
+						</td>
+						<td colspan="3">% Weight Retained
+						</td>
+						
+					</tr>
+
+					<t t-set="i" t-value="0"/>
+					<tr t-foreach="data.oversize_retained_tables" t-as="r">
+						<td colspan="3" style="text-align: center;">
+							<div>
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</div>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['wt_sample']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['wt_retain']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['retained_percent_wt']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+				</table>
+				<table style="margin-top: 20px">
+					<tr>
+						<td style="font-weight: bold;">Average</td>
+						<td style="text-align: center;"><span t-field="data.retain_wt_avrg" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">% Weight Retained</td>
+						<td style="text-align: center;"><span t-field="data.retain_wt_rounded"/></td>
+					</tr>
+				</table>
+			</div>
+
+				<!--3 Specific Gravity -->
+
+			<div t-if="data.specific_gravity_visible" style="margin-top:20px">
+				<!-- <div style="text-align:center;font-size:18px">
+						Specific Gravity
+				</div> -->
+				<div style="text-align:center;font-size:18px">
+					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_name"/>
+				</div>
+				<!-- <table>
+					<tr cols="12">
+						<td colspan="6">Temperature :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.temp_percent_specific"/>
+						</td>
+						<td colspan="6">Test Start Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.start_date_specific"/>
+						</td>
+					</tr>
+					<tr cols="12">
+						<td colspan="6">Humidity :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.humidity_percent_specific"/>
+						</td>
+						<td colspan="6">Test End Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.end_date_specific"/>
+						</td>
+					</tr>
+				</table> -->
+				<table style="margin-top:20px">
+
+					<tr cols="12">
+						<td colspan="3">Trial 
+						</td>
+						<td colspan="3">Mass of Micrsilica (g)
+						</td>
+						<td colspan="3">Initial Volume of kerosine (ml)V1
+						</td>
+						<td colspan="3">Final Volume of kerosine and Cement (After immersion in constant water bath) (ml) V2
+						</td>
+						<td colspan="3">Displaced volume (cm³)
+						</td>
+						<td colspan="3">Specific gravity
+						</td>
+					</tr>
+
+					<t t-set="i" t-value="0"/>
+					<tr t-foreach="data.specific_gravity_tables" t-as="r">
+						<td colspan="3" style="text-align: center;">
+							<div>
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</div>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['mass_of_microsilica']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['initial_vol_kerosine']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['final_vol_kero_cement']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['displaced_volume']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['spe_gravt_microsilica']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+				</table>
+				<table style="margin-top: 20px">
+					<tr>
+						<td style="font-weight: bold;">Average</td>
+						<td style="text-align: center;"><span t-field="data.specific_gravity_avrg" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+				</table>	
+			</div>
+
+				<!--4 Compressive Strength -->
+
+			<div t-if="data.compressive_strength_visible" style="margin-top:20px">
+				<!-- <div style="text-align:center;font-size:18px">
+					Compressive Strength	
+				</div> -->
+				<div style="text-align:center;font-size:18px">
+					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_name"/>
+				</div>
+				<!-- <table>
+					<tr cols="12">
+						<td colspan="6">Temperature :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.temp_percent_cmp_strngth"/>
+						</td>
+						<td colspan="6">Test Start Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.start_date_cmp_strngth"/>
+						</td>
+					</tr>
+					<tr cols="12">
+						<td colspan="6">Humidity :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.humidity_percent_cmp_strngth"/>
+						</td>
+						<td colspan="6">Test End Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.end_date_cmp_strngth"/>
+						</td>
+					</tr>
+				</table> -->
+				<table style="margin-top: 20px">
+							
+						
+					<tr>
+						<td colspan="2" style="text-align: center; font-size: 18px;">
+							Compressive Strength of Test Mortar
+
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">N (as per IS 15388)</td>
+						<td style="text-align: center;"><span t-field="data.n_is"/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Weight of Microsilica (100*N)</td>
+						<td style="text-align: center;"><span t-field="data.microsilica_wt"/></td>
+					</tr>
+					
+					<tr>
+						<td style="font-weight: bold;">Weight of Cement (g)</td>
+						<td style="text-align: center;"><span t-field="data.cement_wt"/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-I</td>
+						<td style="text-align: center;"><span t-field="data.wt_of_standerd_sand1"/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-II</td>
+						<td style="text-align: center;"><span t-field="data.wt_of_standerd_sand2"/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-III</td>
+						<td style="text-align: center;"><span t-field="data.wt_of_standerd_sand3"/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Quantity of Water (g)</td>
+						<td style="text-align: center;"><span t-field="data.water_quantity"/></td>
+					</tr>
+				</table>
+				<table style="margin-top: 20px">
+					<tr>
+						<td colspan="2" style="text-align: center; font-size: 18px;">
+							Calculation of Flow (Acceptable : 105 ± 5 %)
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">Sr. No.</td>
+						<td style="text-align: center; font-weight: bold;">Measured Values</td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">1</td>
+						<td style="text-align: center;"><span t-field="data.comp_measured_value1"/></td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">2</td>
+						<td style="text-align: center;"><span t-field="data.comp_measured_value2"/></td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">3</td>
+						<td style="text-align: center;"><span t-field="data.comp_measured_value3"/></td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">4</td>
+						<td style="text-align: center;"><span t-field="data.comp_measured_value4"/></td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">Average</td>
+						<td style="text-align: center;"><span t-field="data.comp_average_measured" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">% Flow</td>
+						<td style="text-align: center;"><span t-field="data.comp_percent_flow" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+				</table>
+				<!-- 7 Days  -->
+
+				<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.comp_status_7days">
+					7 Days
+				</div>
+				<table style="margin-top:20px" t-if="data.comp_status_7days">
+				<tr cols="12">
+						<td colspan="6">Date of Casting :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.comp_casting_date_7days"/>
+						</td>
+						<td colspan="6">Date of Testing :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.comp_testing_date_7days"/>
+						</td>
+					</tr>
+				</table>
+				<table style="margin-top:20px" t-if="data.comp_status_7days">
+					<tr cols="12">
+						<td colspan="1">Sr no 
+						</td>
+						<td colspan="1">Length in mm 
+						</td>
+						<td colspan="1">Width in mm
+						</td>
+						<td colspan="2">Crosssectional Area
+						</td>
+						<td colspan="2">wt of Cement Cube in gm
+						</td>
+						<td colspan="2">Crushing Load in KN
+						</td>
+						<td colspan="3">Compressive Strength (N/mm²)
+						</td>
+					</tr>
+
+					<t t-set="i" t-value="0"/>
+					<tr t-foreach="data.comp_casting_7_days_tables" t-as="r">
+						<td colspan="1">
+							<div>
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</div>
+						</td>
+						<td colspan="1" style="text-align: center;">
+							<span t-esc="r['compressive_length']"/>
+						</td>
+						<td colspan="1" style="text-align: center;">
+							<span t-esc="r['compressive_width']"/>
+						</td>
+						<td colspan="2" style="text-align: center;">
+							<span t-esc="r['compressive_crosssectional_area']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+						<td colspan="2" style="text-align: center;">
+							<span t-esc="r['compressive_wt_of_cement_cube']"/>
+						</td>
+						<td colspan="2" style="text-align: center;">
+							<span t-esc="r['compressive_crushing_load']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['comp_strength']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+				</table>
+				<table style="margin-top: 20px">
+					<tr>
+						<td style="font-weight: bold;">Average</td>
+						<td style="text-align: center;"><span t-field="data.comp_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+				</table>
+
+					<!-- Compressive Strength of control Sample -->
+
+				<table style="margin-top: 20px">
+							
+						
+					<tr>
+						<td colspan="2" style="text-align: center; font-size: 18px;">
+							Compressive Strength of control Sample
+
+						</td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Weight of Cement (g)</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_cement_wt"/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-I</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_wt_of_standerd_sand1"/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-II</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_wt_standerd_sand2"/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Weight of Standard Sand (g) Grade-III</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_wt_standerd_sand3"/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Total Weight (g)</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_total_wt"/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Quantity of Water (g)</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_water_quantity"/></td>
+					</tr>
+				</table>
+				<table style="margin-top: 20px">
+					<tr>
+						<td colspan="2" style="text-align: center; font-size: 18px;">
+							Calculation of Flow (Acceptable : 105 ± 5 %)
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">Sr. No.</td>
+						<td style="text-align: center; font-weight: bold;">Measured Values</td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">1</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_measured_value1"/></td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">2</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_measured_value2"/></td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">3</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_measured_value3"/></td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">4</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_measured_value4"/></td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">Average</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_average_measured" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight: bold;">% Flow</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_percent_flow" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+				</table>
+
+				<!-- 7 Days  -->
+
+				<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.comp_control_status_7days">
+					7 Days
+				</div>
+				<table style="margin-top:20px" t-if="data.comp_control_status_7days">
+				<tr cols="12">
+						<td colspan="6">Date of Casting :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.comp_control_castingdate_7days"/>
+						</td>
+						<td colspan="6">Date of Testing :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.comp_control_testingdate_7days"/>
+						</td>
+					</tr>
+				</table>
+				<table style="margin-top:20px" t-if="data.comp_control_status_7days">
+					<tr cols="12">
+						<td colspan="1">Sr no 
+						</td>
+						<td colspan="1">Length in mm 
+						</td>
+						<td colspan="1">Width in mm
+						</td>
+						<td colspan="2">Crosssectional Area
+						</td>
+						<td colspan="2">wt of Cement Cube in gm
+						</td>
+						<td colspan="2">Crushing Load in KN
+						</td>
+						<td colspan="3">Compressive Strength (N/mm²)
+						</td>
+					</tr>
+
+					<t t-set="i" t-value="0"/>
+					<tr t-foreach="data.comp_control_casting_7days_tables" t-as="r">
+						<td colspan="1" style="text-align: center;">
+							<div>
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</div>
+						</td>
+						<td colspan="1" style="text-align: center;">
+							<span t-esc="r['comp_control_length']"/>
+						</td>
+						<td colspan="1" style="text-align: center;">
+							<span t-esc="r['comp_control_width']"/>
+						</td>
+						<td colspan="2" style="text-align: center;">
+							<span t-esc="r['comp_control_crosssectional_area']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+						<td colspan="2" style="text-align: center;">
+							<span t-esc="r['comp_control_wt_cement_cube']"/>
+						</td>
+						<td colspan="2" style="text-align: center;">
+							<span t-esc="r['comp_control_crushing_load']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['comp_control_strength']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+				</table>
+				<table style="margin-top: 20px">
+					<tr>
+						<td style="font-weight: bold;">Average</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Compressive Strength of  Sample (%)</td>
+						<td style="text-align: center;"><span t-field="data.comp_control_strngth_7_days" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+				</table>
+			</div>
+
+				<!--5 Oversize Percent Retained on 45 Micron IS sieve variation from Avg. % -->
+
+			<div t-if="data.oversize_percent_retain_visible" style="margin-top:20px">
+				<!-- <div style="text-align:center;font-size:18px">
+						Oversize Percent Retained on 45 Micron IS sieve variation from Avg. %
+				</div> -->
+				<div style="text-align:center;font-size:18px">
+					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_name"/>
+				</div>
+				<!-- <table>
+					<tr cols="12">
+						<td colspan="6">Temperature :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.oversize_temp_percent"/>
+						</td>
+						<td colspan="6">Test Start Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.oversize_start_date_specific"/>
+						</td>
+					</tr>
+					<tr cols="12">
+						<td colspan="6">Humidity :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.oversize_humidity_percent_specific"/>
+						</td>
+						<td colspan="6">Test End Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.oversize_end_date_specific"/>
+						</td>
+					</tr>
+				</table> -->
+				<table style="margin-top:20px">
+
+					<tr cols="12">
+						<td colspan="3">S.No 
+						</td>
+						<td colspan="3">Sample Weight (g)
+						</td>
+						<td colspan="3">Retained Weight on 45 Micron Sieve (g)
+						</td>
+						<td colspan="3">% Retained Weight 
+						</td>
+						<td colspan="3">Variation from Avg. %
+						</td>
+					</tr>
+
+					<t t-set="i" t-value="0"/>
+					<tr t-foreach="data.oversize_percent_tables" t-as="r">
+						<td colspan="3" style="text-align: center;">
+							<div>
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</div>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['sample_wt_g']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['retain_wt_45micron']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['retain_wt_percent']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['variation_from_avrg']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+				</table>
+				<table style="margin-top: 20px">
+					<tr>
+						<td style="font-weight: bold;">Average</td>
+						<td style="text-align: center;"><span t-field="data.avrg_oversize_percent"/></td>
+					</tr>
+					<!-- added -->
+					<tr>
+						<td style="font-weight: bold;">Variation from Avg. %</td>
+						<td style="text-align: center;"><span t-field="data.variation_from_avg_percent"/></td>
+					</tr>
+					<!-- uptill -->
+				</table>	
+			</div>
+
+			  <!--6 Dry Loose Bulk Density -->
+
+			<div t-if="data.bulk_density_visible" style="margin-top:20px">
+				<!-- <div style="text-align:center;font-size:18px">
+						Dry Loose Bulk Density
+				</div> -->
+				<div style="text-align:center;font-size:18px">
+					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_name"/>
+				</div>
+				<!-- <table>
+					<tr cols="12">
+						<td colspan="6">Temperature :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.bulk_density_temp_percent"/>
+						</td>
+						<td colspan="6">Test Start Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.bulk_density_start_date"/>
+						</td>
+					</tr>
+					<tr cols="12">
+						<td colspan="6">Humidity :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.bulk_density_humidity_percent"/>
+						</td>
+						<td colspan="6">Test End Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.bulk_density_end_date"/>
+						</td>
+					</tr>
+				</table> -->
+				<table style="margin-top:20px">
+
+					<tr cols="12">
+						<td colspan="3">S.No 
+						</td>
+						<td colspan="3">Weight of empty Cylinder (w1) (gm)
+						</td>
+						<td colspan="3">Weight of empty Cylinder  + Microsilica (w2) (gm)
+						</td>
+						<td colspan="3">weight of the microsilica (w3) (gm) 
+						</td>
+						<td colspan="3">Volume of Cylinder (m³)
+						</td>
+						<td colspan="3">Dry Loose Bulk Density (kg/m³)
+						</td>
+					</tr>
+
+					<t t-set="i" t-value="0"/>
+					<tr t-foreach="data.bulk_density_tables" t-as="r">
+						<td colspan="3" style="text-align: center;">
+							<div>
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</div>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['wt_empty_cylinder_dry_density']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['wt_cylinder_microsilica_dry_density']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['wt_microsilica_dry_density']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['vlm_of_cylinder']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['dryloose_bulk_density']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+				</table>
+				<table style="margin-top: 20px">
+					<tr>
+						<td style="font-weight: bold;">Average Dry Loose Bulk Density (kg/m³)</td>
+						<td style="text-align: center;"><span t-field="data.avrg_bulk_density" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+				</table>
+					
+			</div>
+
+				<!-- authorizeRowDataSheet -->
+				
+			<div class="authorizeRowDataSheet">
+				<div>
+					<div>
+						<b>
+							Tested By 
+						</b>
+						
+					</div>
+					<div style="height:40px">
+
+					</div>
+					<div>
+						<b>
+						<span t-esc="eln.sample_id.filled_by.name"/>
+						</b>
+					</div>
+					<div>
+						<b>
+							(<span t-esc="eln.sample_id.filled_by.job_title"/>)
+						</b>
+					</div>
+				</div>
+				
+				<div style="margin-left:500px">
+							
+					<div>
+						<b>
+							Checked By
+						</b>
+					</div>
+					<div style="height: 40px;">
+						<t t-if="eln.sample_id.checkby_signature_required">
+							<div t-if="eln.sample_id.check_by.employee_id.signature">
+								<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+							</div>
+							
+						</t>
+					</div>
+					<div>
+						<b>
+						<span t-esc="eln.sample_id.check_by.name"/>
+						</b>
+					</div>
+					
+					 <div>
+						<b>
+							(<span t-esc="eln.sample_id.check_by.job_title"/>)
+						</b>
+					</div>
+				</div>
+			</div>
+
+
+			
+
+		</div>
+
+	</t>
+</t>
+</template>
+</odoo>
