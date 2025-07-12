@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!--    Budgetary Position views and actions-->
     <record id="view_budget_post_search" model="ir.ui.view">
         <field name="name">account.budget.post.search</field>
         <field name="model">account.budget.post</field>
         <field name="arch" type="xml">
             <search string="Budgetary Position">
-                <field name="name" filter_domain="[('name','ilike',self)]" string="Budgetary Position"/>
+                <field name="name" filter_domain="[('name','ilike',self)]"
+                       string="Budgetary Position"/>
                 <field name="company_id" groups="base.group_multi_company"/>
             </search>
         </field>
@@ -17,7 +19,8 @@
         <field name="arch" type="xml">
             <tree string="Budgetary Position">
                 <field name="name"/>
-                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                <field name="company_id" options="{'no_create': True}"
+                       groups="base.group_multi_company"/>
             </tree>
         </field>
     </record>
@@ -29,9 +32,10 @@
         <field name="view_id" ref="view_budget_post_tree"/>
         <field name="search_view_id" ref="view_budget_post_search"/>
     </record>
-    <menuitem action="open_budget_post_form" id="menu_budget_post_form" parent="account.account_management_menu"
-              sequence="5"/>
 
+    <menuitem action="open_budget_post_form" id="menu_budget_post_form"
+              parent="account.account_management_menu"
+              sequence="5"/>
 
     <record model="ir.ui.view" id="view_budget_post_form">
         <field name="name">account.budget.post.form</field>
@@ -41,7 +45,9 @@
                 <sheet>
                     <group col="4">
                         <field name="name"/>
-                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        <field name="company_id"
+                               groups="base.group_multi_company"
+                               options="{'no_create': True}"/>
                     </group>
                     <notebook>
                         <page string="Accounts">
@@ -64,73 +70,106 @@
         <field name="arch" type="xml">
             <form string="Budget">
                 <header>
-                    <button string="Confirm" name="action_budget_confirm" states="draft" type="object"
+                    <button string="Confirm" name="action_budget_confirm"
+                            invisible="state != 'draft'" type="object"
                             class="oe_highlight"/>
-                    <button string="Approve" name="action_budget_validate" states="confirm" type="object"
+                    <button string="Approve" name="action_budget_validate"
+                            invisible="state != 'confirm'" type="object"
                             class="oe_highlight"/>
-                    <button string="Done" name="action_budget_done" states="validate" type="object"
+                    <button string="Done" name="action_budget_done"
+                            invisible="state != 'validate'" type="object"
                             class="oe_highlight"/>
-                    <button string="Reset to Draft" name="action_budget_draft" states="cancel" type="object"/>
-                    <button string="Cancel Budget" name="action_budget_cancel" states="confirm,validate" type="object"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                    <button string="Reset to Draft" name="action_budget_draft"
+                            invisible="state != 'cancel'" type="object"/>
+                    <button string="Cancel Budget" name="action_budget_cancel"
+                            invisible="state not in ('confirm','validate')"
+                            type="object"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirm"/>
                 </header>
                 <sheet string="Budget">
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1>
-                            <field name="name" attrs="{'readonly':[('state','!=','draft')]}" placeholder="Budget Name"/>
+                            <field name="name" readonly="state != 'draft'"
+                                   placeholder="Budget Name"/>
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="creating_user_id" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="creating_user_id"
+                                   readonly="state != 'draft'"/>
                         </group>
                         <group>
                             <label for="date_from" string="Period"/>
                             <div>
-                                <field name="date_from" placeholder="From" class="oe_inline"
-                                       attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="date_from" placeholder="From"
+                                       class="oe_inline"
+                                       readonly="state != 'draft'"/>
                                 -
-                                <field name="date_to" placeholder="To" class="oe_inline" attrs="{'readonly':[('state','!=','draft')]}"
+                                <field name="date_to" placeholder="To"
+                                       class="oe_inline"
+                                       readonly="state != 'draft'"
                                        nolabel="1"/>
                             </div>
-                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"
+                                   options="{'no_create': True}"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Budget Lines">
                             <field name="budget_line"
-                                   context="{'default_date_from': date_from,'default_date_to': date_to}" colspan="4"
-                                   nolabel="1" attrs="{'readonly':[('state','!=','draft')]}">
+                                   context="{'default_date_from': date_from,'default_date_to': date_to}"
+                                   colspan="4"
+                                   nolabel="1" readonly="state != 'draft'">
                                 <tree string="Budget Lines">
                                     <field name="general_budget_id"/>
-                                    <field name="analytic_account_id" groups="analytic.group_analytic_accounting"
+                                    <field name="analytic_account_id"
+                                           groups="analytic.group_analytic_accounting"
                                            required="1"/>
                                     <field name="date_from"/>
+                                    <field name="currency_id" invisible="1"/>
                                     <field name="date_to"/>
-                                    <field name="paid_date" groups="base.group_no_one"/>
-                                    <field name="planned_amount" sum="Planned Amount" widget="monetary"/>
-                                    <field name="practical_amount" sum="Practical Amount" widget="monetary"/>
-                                    <field name="theoretical_amount" sum="Theoretical Amount" widget="monetary"/>
+                                    <field name="paid_date"
+                                           groups="base.group_no_one"/>
+                                    <field name="planned_amount"
+                                           sum="Planned Amount"
+                                           widget="monetary"/>
+                                    <field name="practical_amount"
+                                           sum="Practical Amount"
+                                           widget="monetary"/>
+                                    <field name="theoretical_amount"
+                                           sum="Theoretical Amount"
+                                           widget="monetary"/>
                                     <field name="percentage"/>
                                 </tree>
                                 <form string="Budget Lines">
                                     <group>
                                         <group>
                                             <field name="general_budget_id"/>
-                                            <field name="planned_amount" widget="monetary"/>
+                                            <field name="planned_amount"
+                                                   widget="monetary"/>
                                             <field name="analytic_account_id"
-                                                   groups="analytic.group_analytic_accounting" required="1"/>
+                                                   groups="analytic.group_analytic_accounting"
+                                                   required="1"/>
                                         </group>
                                         <group>
-                                            <label for="date_from" string="Period"/>
+                                            <label for="date_from"
+                                                   string="Period"/>
                                             <div>
-                                                <field name="date_from" placeholder="From" class="oe_inline"/>
+                                                <field name="date_from"
+                                                       placeholder="From"
+                                                       class="oe_inline"/>
                                                 -
-                                                <field name="date_to" placeholder="To" class="oe_inline"/>
+                                                <field name="date_to"
+                                                       placeholder="To"
+                                                       class="oe_inline"/>
                                             </div>
-                                            <field name="paid_date" groups="base.group_no_one"/>
-                                            <field name="company_id" options="{'no_create': True}"
+                                            <field name="paid_date"
+                                                   groups="base.group_no_one"/>
+                                            <field name="company_id"
+                                                   options="{'no_create': True}"
                                                    groups="base.group_multi_company"/>
                                         </group>
                                     </group>
@@ -140,7 +179,8 @@
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_follower_ids" widget="mail_followers"
+                           groups="base.group_user"/>
                     <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
@@ -151,11 +191,14 @@
         <field name="name">budget.view.tree</field>
         <field name="model">budget.budget</field>
         <field name="arch" type="xml">
-            <tree decoration-info="state == 'draft'" decoration-muted="state in ('done','cancel')" string="Budget">
+            <tree decoration-info="state == 'draft'"
+                  decoration-muted="state in ('done','cancel')"
+                  string="Budget">
                 <field name="name" colspan="1"/>
                 <field name="date_from"/>
                 <field name="date_to"/>
-                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                <field name="company_id" options="{'no_create': True}"
+                       groups="base.group_multi_company"/>
                 <field name="creating_user_id"/>
                 <field name="state"/>
             </tree>
@@ -183,7 +226,8 @@
                                 </div>
                                 <div class="col-4">
                                     <span class="float-right">
-                                        <field name="state" widget="label_selection"
+                                        <field name="state"
+                                               widget="label_selection"
                                                options="{'classes': {'draft': 'default', 'done': 'success'}}"/>
                                     </span>
                                 </div>
@@ -196,8 +240,10 @@
                                 </div>
                                 <div class="col-xs-2">
                                     <span class="float-right">
-                                        <img alt="" t-att-src="kanban_image('res.users', 'image_small', record.creating_user_id.raw_value)"
-                                             t-att-title="record.creating_user_id.value" width="24" height="24"
+                                        <img alt=""
+                                             t-att-src="kanban_image('res.users', 'image_small', record.creating_user_id.raw_value)"
+                                             t-att-title="record.creating_user_id.value"
+                                             width="24" height="24"
                                              class="oe_kanban_avatar float-right"/>
                                     </span>
                                 </div>
@@ -220,7 +266,8 @@
             </p>
             <p>
                 A budget is a forecast of your company's income and/or expenses
-                expected for a period in the future. A budget is defined on some
+                expected for a period in the future. A budget is defined on
+                some
                 financial accounts and/or analytic accounts (that may represent
                 projects, departments, categories of products, etc.)
             </p>
@@ -256,7 +303,8 @@
             <tree string="Budget Lines">
                 <field name="budget_id" invisible="1"/>
                 <field name="general_budget_id"/>
-                <field name="analytic_account_id" groups="analytic.group_analytic_accounting"/>
+                <field name="analytic_account_id"
+                       groups="analytic.group_analytic_accounting"/>
                 <field name="date_from"/>
                 <field name="date_to"/>
                 <field name="paid_date" groups="base.group_no_one"/>
@@ -284,7 +332,8 @@
                         <field name="practical_amount" widget="monetary"/>
                         <field name="theoretical_amount" widget="monetary"/>
                         <field name="percentage"/>
-                        <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                        <field name="company_id" options="{'no_create': True}"
+                               groups="base.group_multi_company"/>
                     </group>
                 </sheet>
             </form>

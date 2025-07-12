@@ -3,7 +3,7 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2019-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Copyright (C) 2023-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
 #    Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
 #
 #    You can modify it under the terms of the GNU LESSER
@@ -32,11 +32,11 @@ class ReportFinancial(models.AbstractModel):
 
     def _compute_account_balance(self, accounts):
         mapping = {
-            'balance': "COALESCE(SUM(debit),0) - COALESCE(SUM(credit), 0) as balance",
+            'balance': "COALESCE(SUM(debit),0)"
+                       " - COALESCE(SUM(credit), 0) as balance",
             'debit': "COALESCE(SUM(debit), 0) as debit",
             'credit': "COALESCE(SUM(credit), 0) as credit",
         }
-
         res = {}
         for account in accounts:
             res[account.id] = dict.fromkeys(mapping, 0.0)
@@ -61,7 +61,6 @@ class ReportFinancial(models.AbstractModel):
         return res
 
     def _compute_report_balance(self, reports):
-
         res = {}
         fields = ['credit', 'debit', 'balance']
         for report in reports:
@@ -84,16 +83,18 @@ class ReportFinancial(models.AbstractModel):
                         'base_accounting_kit.cash_in_investing0')
                     cash_out_investing = self.env.ref(
                         'base_accounting_kit.cash_out_investing1')
-                    if report == cash_in_operation or report == cash_in_financial or report == cash_in_investing:
+                    if (report == cash_in_operation or report ==
+                            cash_in_financial or report == cash_in_investing):
                         res[report.id]['debit'] += value['debit']
                         res[report.id]['balance'] += value['debit']
-                    elif report == cash_out_operation or report == cash_out_financial or report == cash_out_investing:
+                    elif (report == cash_out_operation or report ==
+                          cash_out_financial or report == cash_out_investing):
                         res[report.id]['credit'] += value['credit']
                         res[report.id]['balance'] += -(value['credit'])
             elif report.type == 'account_type':
                 # it's the sum the leaf accounts with such an account type
                 accounts = self.env['account.account'].search(
-                    [('user_type_id', 'in', report.account_type_ids.ids)])
+                    [('account_type', 'in', report.account_type_ids)])
                 res[report.id]['account'] = self._compute_account_balance(
                     accounts)
                 for value in res[report.id]['account'].values():
@@ -106,7 +107,6 @@ class ReportFinancial(models.AbstractModel):
                 for value in res[report.id]['account'].values():
                     for field in fields:
                         res[report.id][field] += value.get(field)
-
             elif report.type == 'sum':
                 # it's the sum of the linked accounts
                 res[report.id]['account'] = self._compute_account_balance(
@@ -134,7 +134,6 @@ class ReportFinancial(models.AbstractModel):
                     for account_id, val in comparison_res[report_id].get(
                             'account').items():
                         report_acc[account_id]['comp_bal'] = val['balance']
-
         for report in child_reports:
             vals = {
                 'name': report.name,
@@ -148,39 +147,40 @@ class ReportFinancial(models.AbstractModel):
             if data['debit_credit']:
                 vals['debit'] = res[report.id]['debit']
                 vals['credit'] = res[report.id]['credit']
-
             if data['enable_filter']:
                 vals['balance_cmp'] = res[report.id]['comp_bal'] * int(
                     report.sign)
-
             lines.append(vals)
             if report.display_detail == 'no_detail':
-                # the rest of the loop is used to display the details of the financial report, so it's not needed here.
+                # the rest of the loop is used to display the details of the
+                # financial report, so it's not needed here.
                 continue
             if res[report.id].get('account'):
                 # if res[report.id].get('debit'):
                 sub_lines = []
                 for account_id, value in res[report.id]['account'].items():
-                    # if there are accounts to display, we add them to the lines with a level equals to their level in
-                    # the COA + 1 (to avoid having them with a too low level that would conflicts with the level of data
+                    # if there are accounts to display, we add them to the
+                    # lines with a level equals to their level in
+                    # the COA + 1 (to avoid having them with a too low level
+                    # that would conflicts with the level of data
                     # financial reports for Assets, liabilities...)
                     flag = False
                     account = self.env['account.account'].browse(account_id)
-
                     vals = {
                         'name': account.code + ' ' + account.name,
                         'balance': value['balance'] * int(report.sign) or 0.0,
                         'type': 'account',
-                        'level': report.display_detail == 'detail_with_hierarchy' and 4,
+                        'level': report.display_detail ==
+                                 'detail_with_hierarchy' and 4,
                         'account_type': account.internal_type,
                     }
                     if data['debit_credit']:
                         vals['debit'] = value['debit']
                         vals['credit'] = value['credit']
-                        if not account.company_id.currency_id.is_zero(
+                        if (not account.company_id.currency_id.is_zero(
                                 vals[
-                                    'debit']) or not account.company_id.currency_id.is_zero(
-                            vals['credit']):
+                                    'debit']) or not account.company_id.
+                                currency_id.is_zero(vals['credit'])):
                             flag = True
                     if not account.company_id.currency_id.is_zero(
                             vals['balance']):

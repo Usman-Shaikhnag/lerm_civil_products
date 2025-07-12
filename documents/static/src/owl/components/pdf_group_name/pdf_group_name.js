@@ -1,20 +1,26 @@
-odoo.define('documents.component.PdfGroupName', function (require) {
-'use strict';
+/** @odoo-module **/
 
-const { useRef, useState } = owl.hooks;
+import { Component, useRef } from "@odoo/owl";
 
-class PdfGroupName extends owl.Component {
+export class PdfGroupName extends Component {
+    static props = {
+        groupId: String,
+        name: String,
+        edit: Boolean,
+        onToggleEdit: {
+            type: Function,
+            optional: true,
+        },
+        onEditName: {
+            type: Function,
+            optional: true,
+        },
+    };
+    static template = "documents.component.PdfGroupName";
 
-    /**
-     * @override
-     */
-    constructor() {
-        super(...arguments);
-        this.state = useState({
-            edit: false,
-        });
+    setup() {
         // used to get the value of the input when renaming.
-        this.nameInputRef = useRef('nameInput');
+        this.nameInputRef = useRef("nameInput");
     }
 
     //--------------------------------------------------------------------------
@@ -22,47 +28,27 @@ class PdfGroupName extends owl.Component {
     //--------------------------------------------------------------------------
 
     /**
-     * @private
+     * @public
      */
-    _onBlur() {
-        this.trigger('edit-name', {
-            groupId: this.props.groupId,
-            name: this.nameInputRef.el.value,
-        });
-        this.state.edit = false;
+    onBlur() {
+        this.props.onEditName(this.props.groupId, this.nameInputRef.el.value);
     }
     /**
-     * @private
-     * @param {MouseEvent} ev
+     * @public
      */
-    _onClickGroupName(ev) {
-        ev.stopPropagation();
-        this.state.edit = true;
+    onClickGroupName() {
+        this.props.onToggleEdit(this.props.groupId, true);
     }
     /**
-     * @private
+     * @public
      * @param {MouseEvent} ev
      */
-    _onKeyDown(ev) {
+    onKeyDown(ev) {
         if (ev.code !== "Enter") {
             return;
         }
         ev.stopPropagation();
-        this.trigger('edit-name', {
-            groupId: this.props.groupId,
-            name: this.nameInputRef.el.value,
-        });
-        this.state.edit = false;
+        this.props.onEditName(this.props.groupId, this.nameInputRef.el.value);
+        this.props.onToggleEdit(this.props.groupId, false);
     }
 }
-
-PdfGroupName.props = {
-    groupId: String,
-    name: String,
-};
-
-PdfGroupName.template = 'documents.component.PdfGroupName';
-
-return PdfGroupName;
-
-});

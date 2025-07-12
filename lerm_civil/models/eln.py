@@ -45,7 +45,6 @@ class ELN(models.Model):
     attachment = fields.Binary(string="Attachment")
     attachment_name = fields.Char(string="Attachment Name")
     parameters = fields.One2many('eln.parameters','eln_id',string="Parameters")
-    datasheets = fields.One2many('eln.spreadsheets','eln_id',string="Datasheets")
     fetch_ds_button = fields.Float(string="Fetch Datasheet")
     ir_model = fields.Many2one('ir.model',string="Model")
 
@@ -927,14 +926,7 @@ class InputLines(models.TransientModel):
                 
 
 
-class ELNSpreadsheet(models.Model):
-    _name = 'eln.spreadsheets'
-    _rec_name = 'datasheet'
-    eln_id = fields.Many2one('lerm.eln',string="ELN ID")
-    datasheet = fields.Many2one('documents.document',string="Datasheet")
-    spreadsheet_template = fields.Many2one("spreadsheet.template",string="Spreadsheet Template")
-    related_parameters = fields.Many2many("eln.parameters",string="Related Parameters")
-    fill_datasheet = fields.Integer("Fill Spreadsheet")
+
 
 
 class ELNParametersResult(models.Model):
@@ -1167,7 +1159,6 @@ class ELNParameters(models.Model):
     result = fields.Float(string="Result")
     button = fields.Float(string="Button")
     result_json = fields.Text(string="Result JSON")
-    spreadsheet_template = fields.Many2one("spreadsheet.template",string="Spreadsheet Template")
     set_result_button = fields.Float(string="Button")
 
 

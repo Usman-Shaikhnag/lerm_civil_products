@@ -3,7 +3,7 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2019-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Copyright (C) 2023-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
 #    Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
 #
 #    You can modify it under the terms of the GNU LESSER
@@ -19,9 +19,7 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-
 from _datetime import datetime
-
 from odoo import api, models, _
 from odoo.exceptions import UserError
 
@@ -41,21 +39,23 @@ class ReportTax(models.AbstractModel):
         }
 
     def _sql_from_amls_one(self):
-        sql = """SELECT "account_move_line".tax_line_id, COALESCE(SUM("account_move_line".debit-"account_move_line".credit), 0)
+        sql = """SELECT "account_move_line".tax_line_id, 
+        COALESCE(SUM("account_move_line".debit-"account_move_line".credit), 0)
                     FROM %s
                     WHERE %s  GROUP BY "account_move_line".tax_line_id"""
         return sql
 
     def _sql_from_amls_two(self):
-        sql = """SELECT r.account_tax_id, COALESCE(SUM("account_move_line".debit-"account_move_line".credit), 0)
+        sql = """SELECT r.account_tax_id, COALESCE(SUM(
+        "account_move_line".debit-"account_move_line".credit), 0)
                  FROM %s
-                 INNER JOIN account_move_line_account_tax_rel r ON ("account_move_line".id = r.account_move_line_id)
+                 INNER JOIN account_move_line_account_tax_rel r ON
+                  ("account_move_line".id = r.account_move_line_id)
                  INNER JOIN account_tax t ON (r.account_tax_id = t.id)
                  WHERE %s GROUP BY r.account_tax_id"""
         return sql
 
     def _compute_from_amls(self, options, taxes):
-        print("hhhh")
         # compute the tax amount
         sql = self._sql_from_amls_one()
         tables, where_clause, where_params = self.env[
@@ -63,11 +63,9 @@ class ReportTax(models.AbstractModel):
         query = sql % (tables, where_clause)
         self.env.cr.execute(query, where_params)
         results = self.env.cr.fetchall()
-        print("3333",results)
         for result in results:
             if result[0] in taxes:
                 taxes[result[0]]['tax'] = abs(result[1])
-
         # compute the net amount
         sql2 = self._sql_from_amls_two()
         query = sql2 % (tables, where_clause)
@@ -109,7 +107,6 @@ class ReportTax(models.AbstractModel):
             self.with_context(date_to=date_to,
                               strict_range=True)._compute_from_amls(options,
                                                                     taxes)
-
         groups = dict((tp, []) for tp in ['sale', 'purchase'])
         for tax in taxes.values():
             if tax['tax']:

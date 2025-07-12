@@ -17,131 +17,108 @@
         action="srf_form_id" 
         sequence="10"/>
 
-    <record id="lerm_civil_srf_form" model="ir.ui.view">
+   <record id="lerm_civil_srf_form" model="ir.ui.view">
         <field name="name">lerm.civil.srf.form</field>
         <field name="model">lerm.civil.srf</field>
         <field name="arch" type="xml">
             <form>
-            <header>
-                <button
-                    type="object"
-                    name="confirm_srf"
-                    string="Confirm"
-                    attrs="{'invisible': [('state', 'in', ('2-confirm'))]}"
-                    groups="lerm_civil.kes_verified_by,lerm_civil.kes_confirm_srf" 
-                    />
+                <header>
+                    <button name="confirm_srf" type="object" string="Confirm"
+                        groups="lerm_civil.kes_verified_by,lerm_civil.kes_confirm_srf"
+                        invisible="state in ('2-confirm')"/>
 
-                    
-                    <button name="open_edit_srf_header_wizard"
-                                type="object"
-                                string="Edit SRF"
-                                groups="lerm_civil.srf_sample_editable"
-                               />          
+                    <button name="open_edit_srf_header_wizard" type="object" string="Edit SRF"
+                        groups="lerm_civil.srf_sample_editable"/>
 
-                    <button name="action_srf_sent_mail"
-                                type="object"
-                                string="Send Mail"
-                               />       
-                                 
-                    <field   readonly="1" name="state" widget="statusbar"/>
-            </header>
+                    <button name="action_srf_sent_mail" type="object" string="Send Mail"/>
+
+                    <field name="state" readonly="1" widget="statusbar"/>
+                </header>
+
                 <sheet>
-                        <div class="oe_button_box" name="button_box" attrs="{'invisible':[('state','!=','2-confirm')]}" >
-                            <button name="sample_count_button" 
-                                type="object" class="oe_stat_button" icon="fa-align-justify">
+                    
+                    <div class="oe_button_box" name="button_box"
+                        invisible='"state", "!=", "2-confirm"' >
+                        <button name="sample_count_button" type="object" class="oe_stat_button" icon="fa-align-justify">
                             <field name="sample_count" string="Samples" widget="statinfo"/>
-                            </button>
-                            <button name="eln_count_button"
-                                type="object" class="oe_stat_button" icon="fa-align-justify">
-                            <field string="ELN" name="eln_count" widget="statinfo"/>
-                            </button>
-                        </div>
+                        </button>
+                        <button name="eln_count_button" type="object" class="oe_stat_button" icon="fa-align-justify">
+                            <field name="eln_count" string="ELN" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group style="width:100%">
+                        <group style="width:50%">
+                            <field name="srf_id" readonly="1"/>
+                            <field name="srf_date" readonly="state == '2-confirm' and date_editable == False"/>
+                            <field name="kes_number" invisible='1'/>
+                            <field name="customer" readonly="state == '2-confirm'"
+                                groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                            <field name="contact_person" domain="[('id', 'in', contact_site_ids)]"
+                                readonly="state == '2-confirm'"/>
+                            <field name="site_address"/>
+                            <field name="client_refrence" readonly="state == '2-confirm'"/>
+                            <field name="date_editable" invisible='1'/>
+                            <field name="active" invisible='1'/>
+                        </group>
 
-                            
-
-                    <group style="width:50%" >
-                        <field name="srf_id" readonly="1"/>
-                        <field name="kes_number"  invisible="1"/>
-                        <field name="srf_date" attrs="{'readonly': ['|', ('state', '=', '2-confirm'), ('date_editable', '=', False)]}"/>
-                        <!-- <field name="contact_person" context="{'hide_reference':True}" domain="[('id', 'in', contact_contact_ids)]" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"/> -->
-                        <field name="contact_person" domain="[('id', 'in', contact_site_ids)]" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"/>
-                        <!-- <field name="site_address" domain="[('id', 'in', contact_site_ids)]" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"/> -->
-                        <field name="site_address"/>
-                        <field name="client_refrence" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"/>
-                        <field name="date_editable" invisible="1"/>
-                        <field name="active" invisible='1'/>
-
-
+                        <group style="width:50%">
+                            <field name="client" readonly="state == '2-confirm'"
+                                groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                            <field name="contractor" domain="[('id', 'in', contractor_ids)]"
+                                groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                            <field name="contractor_ids" invisible='1'/>
+                            <field name="contact_other_ids" invisible='1'/>
+                            <field name="billing_customer" readonly="state == '2-confirm'"
+                                groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                            <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'"/>
+                            <field name="name_works" invisible='1'/>
+                            <field name="consultant_name1"/>
+                            <field name="attachment" filename="attachment_name"/>
+                            <field name="attachment_name" invisible='1'/>
+                        </group>
                     </group>
-                    <group style="width:50%">
 
-                        <!-- <field name='department_id'/> -->
-                        <!-- <field name="department"/> -->
-                        <field name="customer" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}" groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
-                        <field name='client' attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"  groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
-                        <field name='contractor' domain="[('id', 'in', contractor_ids)]"  groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
-                        <field name='contractor_ids' invisible='1'/>
-                        <field name="contact_other_ids" invisible='1'/>
-                        <field name="billing_customer"  attrs="{'readonly': [('state', 'in', ('2-confirm'))]}"  groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
-                        <field name="name_work" attrs="{'readonly': [('state', 'in', ('2-confirm'))]}" domain="[('id', 'in', name_works)]"/>
-                        <field name="consultant_name1"/>
-                        <field name="name_works" invisible="1"/>
-                        <field name="attachment" filename="attachment_name" />
-                        <field name='attachment_name' invisible='1'/>
-                    </group>
-                    <!-- <group style="width:33.33%">
-                    </group> -->
                     <group style="width:50%">
                         <field name="contact_site_ids" invisible='1'/>
-                        <!-- <field name='name_of_work'/> -->
                         <field name="contact_contact_ids" invisible='1'/>
                     </group>
+
                     <group>
-                    <group style="width:14%">
-                        <button name="open_new_sample_add_wizard" string="New Sample" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ('2-confirm'))]}"/>                    </group>
-                    <group style="width:14%">
-                        <button name="open_sample_add_wizard" string="Repeat Sample" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ('2-confirm'))]}"/>
+                        <div class="o_row">
+                            <button name="open_new_sample_add_wizard" string="New Sample" type="object" class="btn btn-primary mr-2"
+                                invisible="state in ('2-confirm')"/>
+                            <button name="open_sample_add_wizard" string="Repeat Sample" type="object" class="btn btn-primary"
+                                invisible="state in ('2-confirm')"/>
+                        </div>
                     </group>
-                    </group>
-                    <field readonly="1" name="samples" context = "{'default_customer_id' : customer,'is_local': True}" invisible='0'>
+
+                    <field name="samples"
+                                        readonly="1"
+                                        context="{'default_customer_id': customer, 'is_local': True}"
+                                        groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf">
                         <tree>
-                            <field name='kes_no'/>
+                            <field name="kes_no"/>
                             <field name="material_id"/>
                             <field name="discipline_id"/>
-                            <field name="lab_no_value" invisible="1"/>
-                             <!-- <field name="department_id"/> -->
-                            <!-- <field name="disciplaine_value"/> -->
-                            <!-- <field name="lab_l_id"/> -->
+                            <field name="lab_no_value" invisible='1'/>
                             <field name="group_id"/>
                             <field name="department_id"/>
-                            <field name='parameters' widget="many2many_tags"/>
-                            <field name='casting'/>
-                            <!-- <field name="sample_quantity"/> -->
-                            <field name="sample_received_date" />
+                            <field name="parameters" widget="many2many_tags"/>
+                            <field name="casting"/>
+                            <field name="sample_received_date"/>
                             <field name="sample_description"/>
-                            <button name="edit_sample" string="Edit" type="object" groups="lerm_civil.srf_sample_editable" class="btn-primary" />                          
-                            <button name="reallocate_sample" string="Reallocate" type="object" groups="lerm_civil.kes_job_allocation,lerm_civil.kes_hod_access_group,lerm_civil.kes_verified_by,lerm_civil.kes_quality_manager" class="btn-primary" />                          
-
+                            <button name="edit_sample" string="Edit" type="object" class="btn-primary"
+                                groups="lerm_civil.srf_sample_editable"/>
+                            <button name="reallocate_sample" string="Reallocate" type="object" class="btn-primary"
+                                groups="lerm_civil.kes_job_allocation,lerm_civil.kes_hod_access_group,lerm_civil.kes_verified_by,lerm_civil.kes_quality_manager"/>
                         </tree>
                     </field>
-                    <!-- <field attrs="{'readonly': [('state', 'in', ('2-confirm'))]}" name="sample_range_table" readonly="1" context = "{'default_customer_id' : customer,'is_local': True}">
-                        <tree>
-                            <field name='kes_range'/>
-                            <field name="material_id_lab_name"  invisible="1"/>
-                            <field name="material_id" />
-                            <field name="discipline_id"/>
-                            <field name="group_id"/>
-                            <field name='parameters' options='{"always_reload": True}' context="{'test_method' : True }" widget="many2many_tags"/>
-                            <field name='casting'/>
-                            <field name="sample_received_date"/>
-                            <field name="sample_description"/>                           
-                        </tree>
-                    </field> -->
                 </sheet>
-                <div class="oe_chatter"  >
+
+                <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name= "message_ids" widget="mail_thread"/>
-                    <field name= "activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids" widget="mail_activity"/>
                 </div>
             </form>
         </field>
@@ -171,7 +148,7 @@
                 <field name="customer" optional="show"/>
                 <field name="contact_person" optional="show"/>
                 <field name="billing_customer" optional="show"/>
-                <field name="name_work" optional="show"/>
+                <!-- <field name="name_work" optional="show"/> -->
                 <field name="client_refrence" optional="show"/>
             </tree>
         </field>
@@ -192,7 +169,7 @@
                 <field name="contact_person" string="Contact Person" />
                 <field name="client" string="Client" />
                 <field name="site_address" string="Site Address" />
-                <field name="name_work" string="Name of Work" />
+                <!-- <field name="name_work" string="Name of Work" /> -->
                 <field name="client_refrence" string="Client Reference Letter" />
                 <field name="state" string="State" />
                 <filter string="Draft" name="state_draft" domain="[('state', '=', '1-draft')]" />
@@ -213,59 +190,54 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                <group>
-                    <group style="width:50%">
-                        <field name="edit_mode" invisible="1"/>
+                    <group>
+                        <field name="is_update" invisible='1'/>
+                        <field name="show_witness" invisible='1'/>
+                        <field name="show_days_casting" invisible='1'/>
 
-                        <field name="discipline_id"  options="{'no_create': True}"/>
-                        <field name="lab_no_value"  options="{'no_create': True}" invisible="1"/>
-                        <!-- <field name="lab_l_id"  options="{'no_create': True}"/> -->
-                        <field name="material_id" context="{'lab_name':True}" domain="[('id', 'in', material_ids)]"  options="{'no_create': True}"/>
-                        <field name="brand"/>
-                        <field name="grade_id" domain="[('id', 'in', grade_ids)]"  options="{'no_create': True}"/>
-                        <field name="client_sample_id"/>
-                        <field name="received_by_id"/>
-                        <field name="sample_condition"/>
-                        <field name="material_ids" invisible='1'/>
-                        <field name="grade_ids" invisible='1'/>
-                        <field name='conformity'/>
-                        <field name='lab_location'/>
-                        <field name='location_name'/>
-                        <field name="sample" attrs="{'invisible': [('is_update','!=',True)]}" readonly="1"/>
-
-                        <!--<field name="grade_ids" invisible='1'/> -->
-                    </group>
-                    <group style="width:50%">
-                    <!-- <br></br> -->
-                        <field name="group_id" domain="[('id', 'in', group_ids)]"  options="{'no_create': True}"/>
-                        <field name="department_id"  options="{'no_create': True}"/>
-                        <!-- <field name="product_aliases" invisible="1"/> -->
-                        <!-- <field name="product_alias" domain="[('id', 'in', product_aliases)]"   options="{'no_create': True}" />
-                        <field name="pricelist"/> -->
-                        <field name="product_name"  invisible="1"/>
-                        <field name="main_name"   invisible="1"/>
-                        <field name="price"   invisible="1"/>
-                        <field name="size_id" domain="[('id', 'in', size_ids)]"  options="{'no_create': True}"/>
-                        <field name="sample_qty" attrs="{'readonly': [('is_update','=',True)]}"/>
-                        <field name="sample_received_date" readonly="1"/>
-                        <field name="location"/>
-                        <field name="casting" />
-                        <field name="grade_required" />
-                        <field name="group_ids" invisible='1'/>
-                        <field name="size_ids" invisible='1'/>
-                        <!-- <field name="size_ids" invisible='1'/>
-                        <field name="qty_ids" invisible='1'/> -->
-                    </group>
+                        <!-- <field name="show_reject_reason " invisible='1'/> -->
+                        <group style="width:50%">
+                            <field name="edit_mode" invisible='1'/>
+                            <field name="discipline_id" options="{'no_create': True}"/>
+                            <field name="lab_no_value" options="{'no_create': True}" invisible='1'/>
+                            <field name="material_id" context="{'lab_name': True}" domain="[('id', 'in', material_ids)]" options="{'no_create': True}"/>
+                            <field name="brand"/>
+                            <field name="grade_id" domain="[('id', 'in', grade_ids)]" options="{'no_create': True}"/>
+                            <field name="client_sample_id"/>
+                            <field name="received_by_id"/>
+                            <field name="sample_condition"/>
+                            <field name="material_ids" invisible='1'/>
+                            <field name="grade_ids" invisible='1'/>
+                            <field name="conformity"/>
+                            <field name="lab_location"/>
+                            <field name="location_name"/>
+                            <field name="sample" invisible="is_update != True" readonly="1"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name="group_id" domain="[('id', 'in', group_ids)]" options="{'no_create': True}"/>
+                            <field name="department_id" options="{'no_create': True}"/>
+                            <field name="product_name" invisible='1'/>
+                            <field name="main_name" invisible='1'/>
+                            <field name="price" invisible='1'/>
+                            <field name="size_id" domain="[('id', 'in', size_ids)]" options="{'no_create': True}"/>
+                            <field name="sample_qty" readonly="is_update == True"/>
+                            <field name="sample_received_date" readonly="1"/>
+                            <field name="location"/>
+                            <field name="casting"/>
+                            <field name="grade_required"/>
+                            <field name="group_ids" invisible='1'/>
+                            <field name="size_ids" invisible='1'/>
+                        </group>
                     </group>
                     <group style="width:100%">
-                        <field name="sample_reject_reason" attrs="{'required': [('sample_condition','=','non_satisfactory')] , 'invisible': [('sample_condition', '=', 'satisfactory')]}"/>
+                        <!-- <field name="sample_reject_reason" invisible="show_reject_reason == False" required="show_reject_reason == True"/> -->
                     </group>
                     <group style="width:50%">
                         <field name="has_witness"/>
-                        <field name="witness" attrs="{'invisible': [('has_witness','!=',True)]}"/>
+                        <field name="witness" invisible="show_witness == False"/>
                     </group>
                     <group style="width:50%">
-                        <field name="scope" attrs="{'readonly': [('is_update','=',True)]}"/>
+                        <field name="scope" readonly="is_update == True"/>
                     </group>
                     <group style="width:100%">
                         <field name="sample_description"/>
@@ -274,32 +246,27 @@
                         <field name="volume"/>
                     </group>
                     <group style="width:50%">
-                        <field name="days_casting" attrs="{'invisible':[('casting','!=',True)]}" string="Days of Testing"/>
+                        <field name="days_casting" string="Days of Testing" invisible="show_days_casting == False"/>
                     </group>
                     <group style="width:50%">
-                        <field name="date_casting" attrs="{'invisible':[('casting','!=',True)]}"/>
+                        <field name="date_casting" invisible="show_days_casting == False"/>
                     </group>
                     <group style="width:50%">
-                        <field name="customer_id" invisible='1' />
-                        
+                        <field name="customer_id" invisible='1'/>
                     </group>
                     <group style="width:100%">
-                        <!-- <field name="parameters_ids" invisible="1"/> -->
-                        <field name="parameters" options="{'no_create': True}" >
+                        <field name="parameters" options="{'no_create': True}">
                             <tree>
                                 <field name="parameter_name"/>
                                 <field name="test_method"/>
                             </tree>
                         </field>
-                         
-                        <field name="is_update" invisible="1"/>
                     </group>
                 </sheet>
                 <footer>
-                        <button name="add_sample" string="Add Sample" type="object" class="btn-primary" attrs="{'invisible': [('is_update','=',True)]}"/>
-                        <button name="edit_current_sample" string="Save" type="object" class="btn-primary" attrs="{'invisible': [('is_update','!=',True)]}"/>
-                        <button name="close_sample_wizard" string="Close" type="object" />
-
+                    <button name="add_sample" string="Add Sample" type="object" class="btn-primary" invisible="is_update == True"/>
+                    <button name="edit_current_sample" string="Save" type="object" class="btn-primary" invisible="is_update != True"/>
+                    <button name="close_sample_wizard" string="Close" type="object"/>
                 </footer>
             </form>
         </field>

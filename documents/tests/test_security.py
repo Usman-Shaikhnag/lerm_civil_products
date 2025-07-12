@@ -1,12 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import io
+import json
 
+from reportlab.pdfgen import canvas
+
+from odoo import http
+from odoo.addons.base.tests.common import HttpCaseWithUserDemo
+from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, ValidationError
 from odoo.tools import mute_logger
 
 from psycopg2 import IntegrityError
+
+GIF = b"R0lGODdhAQABAIAAAP///////ywAAAAAAQABAAACAkQBADs="
 
 
 class TestCaseSecurity(TransactionCase):
@@ -345,6 +354,48 @@ class TestCaseSecurity(TransactionCase):
         self.assertEqual(len(available_documents), 1, "there should be 1 available document")
         self.assertEqual(available_documents.name, 'filec.gif', "the document C should be available")
 
+    def test_share_parent_folder_with_ids(self):
+        """
+        Tests the access rights of a share link when the parent folder is shared with ids.
+        """
+        TEXT = base64.b64encode(bytes("TEST", 'utf-8'))
+        folder_share_parent = self.env['documents.folder'].create({
+            'name': 'folder share',
+            'read_group_ids': [(6, 0, [self.ref('documents.group_documents_user')])]
+        })
+        folder_share_child_a = self.env['documents.folder'].create({
+            'name': 'folder share',
+            'parent_folder_id': folder_share_parent.id,
+            'read_group_ids': [(6, 0, [self.ref('documents.group_documents_user')])]
+        })
+        folder_share_child_b = self.env['documents.folder'].create({
+            'name': 'folder share',
+            'parent_folder_id': folder_share_parent.id,
+            'read_group_ids': [(6, 0, [self.ref('documents.group_documents_user')])]
+        })
+        document_a = self.env['documents.document'].create({
+            'datas': b"R0lGODdhAQABAIAAAP///////ywAAAAAAQABAAACAkQBADs=",
+            'owner_id': self.document_manager.id,
+            'name': 'filea.gif',
+            'mimetype': 'image/gif',
+            'folder_id': folder_share_child_a.id,
+        })
+        document_b = self.env['documents.document'].create({
+            'datas': TEXT,
+            'owner_id': self.document_manager.id,
+            'name': 'fileb.gif',
+            'mimetype': 'image/gif',
+            'folder_id': folder_share_child_b.id,
+        })
+        test_share = self.env['documents.share'].with_user(self.document_user).create({
+            'folder_id': folder_share_parent.id,
+            'type': 'ids',
+            'document_ids': [(6, 0, [document_a.id, document_b.id])]
+        })
+
+        available_documents = test_share._get_documents_and_check_access(test_share.access_token, operation='read')
+        self.assertEqual(len(available_documents), 2, "there should be 2 available documents")
+
     def test_folder_user_specific_write(self):
         """
         Tests that `user_specific_write` is disabled when `user_specific` is disabled
@@ -362,3 +413,153 @@ class TestCaseSecurity(TransactionCase):
             with self.assertRaises(IntegrityError):
                 with self.cr.savepoint():
                     folder.write({'user_specific_write': True})
+
+    def test_folder_has_write_access(self):
+        """
+        Tests that user has right write  access for folder using `has_write_access`.
+        """
+
+        # No groups on folder
+        folder = self.env['documents.folder'].create({
+            'name': 'Test Folder',
+        })
+
+        self.assertTrue(folder.with_user(self.document_manager).has_write_access, "Document manager should have write access on folder")
+        self.assertTrue(folder.with_user(self.document_user).has_write_access, "Document user should have write access on folder")
+
+        # manager can write and arbitary group can read
+        folder.write({
+            'group_ids': [(6, 0, [self.ref('documents.group_documents_manager')])],
+            'read_group_ids': [(6, 0, [self.arbitrary_group.id])],
+        })
+        self.assertTrue(folder.with_user(self.document_manager).has_write_access, "Document manager should have write access on folder")
+        self.assertFalse(folder.with_user(self.document_user).has_write_access, "Document user should not have write access on folder")
+
+    def test_link_constrains(self):
+        folder = self.env['documents.folder'].create({'name': 'folder'})
+        for url in ("wrong URL format", "https:/ example.com", "test https://example.com"):
+            with self.assertRaises(ValidationError):
+                self.env['documents.document'].create({
+                    'name': 'Test Document',
+                    'folder_id': folder.id,
+                    'url': url,
+                })
+
+
+@tagged('post_install', '-at_install')
+class TestCaseSecurityRoutes(HttpCaseWithUserDemo):
+
+    def setUp(self):
+        super(TestCaseSecurityRoutes, self).setUp()
+
+        self.raw_gif = b"R0lGODdhAQABAIAAAP///////ywAAAAAAQABAAACAkQBADs="
+        pdf_buffer = io.BytesIO()
+        canva = canvas.Canvas(pdf_buffer, pagesize=(600, 800))
+        canva.drawString(100, 750, "Minimal PDF")
+        canva.save()
+        self.raw_pdf = base64.b64encode(pdf_buffer.getvalue())
+
+        self.user_folder, self.admin_folder = self.env['documents.folder'].create([
+            {
+                'name': 'User Folder',
+                'group_ids': [(6, 0, [self.ref('base.group_user')])],
+                'read_group_ids': [(6, 0, [self.ref('base.group_user')])],
+            },
+            {
+                'name': 'Folder',
+                'group_ids': [(6, 0, [self.ref('base.group_system')])],
+                'read_group_ids': [(6, 0, [self.ref('base.group_system')])],
+            }
+        ])
+        self.user_attachment_gif, self.admin_attachment_gif, \
+        self.user_attachment_pdf, self.admin_attachment_pdf = self.env['ir.attachment'].create([
+            {
+                'datas': self.raw_gif,
+                'name': 'attachmentGif_A.gif',
+                'res_model': 'documents.document',
+                'res_id': 0,
+            },
+            {
+                'datas': self.raw_gif,
+                'name': 'attachmentGif_B.gif',
+                'res_model': 'documents.document',
+                'res_id': 0,
+            },
+            {
+                'datas': self.raw_pdf,
+                'name': 'attachmentPdf_A.pdf',
+                'mimetype': 'application/pdf',
+                'res_model': 'documents.document',
+                'res_id': 0,
+            },
+            {
+                'datas': self.raw_pdf,
+                'name': 'attachmentPdf_B.pdf',
+                'mimetype': 'application/pdf',
+                'res_model': 'documents.document',
+                'res_id': 0,
+            }
+        ])
+        self.user_document_gif, self.admin_document_gif, \
+        self.user_document_pdf, self.admin_document_pdf = self.env['documents.document'].create([
+            {
+                'folder_id': self.user_folder.id,
+                'name': 'GIF A',
+                'attachment_id': self.user_attachment_gif.id,
+            },
+            {
+                'folder_id': self.admin_folder.id,
+                'name': 'GIF B',
+                'attachment_id': self.admin_attachment_gif.id,
+            },
+            {
+                'folder_id': self.user_folder.id,
+                'name': 'PDF A',
+                'attachment_id': self.user_attachment_pdf.id,
+            },
+            {
+                'folder_id': self.admin_folder.id,
+                'name': 'PDF B',
+                'attachment_id': self.admin_attachment_pdf.id,
+            }
+        ])
+        self.document_user = self.env['res.users'].create({
+            'name': "user",
+            'login': "user",
+            'password': "useruser",
+            'email': "user@yourcompany.com",
+            'groups_id': [(6, 0, [self.ref('documents.group_documents_user')])]
+        })
+
+    @mute_logger('odoo.http')
+    def test_documents_zip_access(self):
+        self.authenticate("user", "useruser")
+        response = self.url_open('/document/zip', data={
+            'file_ids': ','.join(map(str, [self.user_document_gif.id, self.admin_document_gif.id])),
+            'zip_name': 'testZip.zip',
+            'csrf_token': http.Request.csrf_token(self),
+        })
+        self.assertNotEqual(response.status_code, 200)
+
+    @mute_logger('odoo.http')
+    def test_documents_split_access(self):
+        self.authenticate("user", "useruser")
+        response = self.url_open('/documents/pdf_split', data={
+            'vals': json.dumps({
+                "folder_id": self.user_folder.id,
+                "tag_ids": [],
+                "owner_id": self.document_user.id,
+                "active": True
+            }),
+            'new_files': json.dumps([{
+                "name": "Test",
+                "new_pages": [{
+                    "old_file_type": "document",
+                    "old_file_index": self.admin_document_pdf.id,
+                    "old_page_number": 1
+                }]
+            }]),
+            'archive': False,
+            'csrf_token': http.Request.csrf_token(self),
+        })
+        self.assertNotEqual(response.status_code, 200)

@@ -3,7 +3,7 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2019-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Copyright (C) 2023-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
 #    Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
 #
 #    You can modify it under the terms of the GNU LESSER
@@ -19,20 +19,24 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-from odoo import models, fields, api, _
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
 class AccountRegisterPayments(models.TransientModel):
+    """Inherits the account.payment.register model to add the new
+     fields and functions"""
     _inherit = "account.payment.register"
 
-    bank_reference = fields.Char(copy=False)
-    cheque_reference = fields.Char(copy=False)
+    bank_reference = fields.Char(string="Bank Reference", copy=False)
+    cheque_reference = fields.Char(string="Cheque Reference", copy=False)
     effective_date = fields.Date('Effective Date',
                                  help='Effective date of PDC', copy=False,
                                  default=False)
 
     def _prepare_payment_vals(self, invoices):
+        """Its prepare the payment values for the invoice and update
+         the MultiPayment"""
         res = super(AccountRegisterPayments, self)._prepare_payment_vals(
             invoices)
         # Check payment method is Check or PDC
@@ -52,18 +56,60 @@ class AccountRegisterPayments(models.TransientModel):
             })
         return res
 
+    def _create_payment_vals_from_wizard(self, batch_result):
+        """It super the wizard action of the create payment values and update
+         the bank and cheque values"""
+        res = super(AccountRegisterPayments,
+                    self)._create_payment_vals_from_wizard(
+            batch_result)
+        if self.effective_date:
+            res.update({
+                'bank_reference': self.bank_reference,
+                'cheque_reference': self.cheque_reference,
+                'effective_date': self.effective_date,
+            })
+        return res
+
+    def _create_payment_vals_from_batch(self, batch_result):
+        """It super the batch action of the create payment values and update
+         the bank and cheque values"""
+        res = super(AccountRegisterPayments,
+                    self)._create_payment_vals_from_batch(
+            batch_result)
+        if self.effective_date:
+            res.update({
+                'bank_reference': self.bank_reference,
+                'cheque_reference': self.cheque_reference,
+                'effective_date': self.effective_date,
+            })
+        return res
+
+    def _create_payments(self):
+        """USed to create a list of payments and update the bank and
+         cheque reference"""
+        payments = super(AccountRegisterPayments, self)._create_payments()
+
+        for payment in payments:
+            payment.write({
+                'bank_reference': self.bank_reference,
+                'cheque_reference': self.cheque_reference
+            })
+        return payments
+
 
 class AccountPayment(models.Model):
+    """"It inherits the account.payment model for adding new fields
+     and functions"""
     _inherit = "account.payment"
 
-    bank_reference = fields.Char(copy=False)
-    cheque_reference = fields.Char(copy=False)
+    bank_reference = fields.Char(string="Bank Reference", copy=False)
+    cheque_reference = fields.Char(string="Cheque Reference",copy=False)
     effective_date = fields.Date('Effective Date',
                                  help='Effective date of PDC', copy=False,
                                  default=False)
 
     def open_payment_matching_screen(self):
-        # Open reconciliation view for customers/suppliers
+        """Open reconciliation view for customers/suppliers"""
         move_line_id = False
         for move_line in self.line_ids:
             if move_line.account_id.reconcile:
@@ -90,26 +136,26 @@ class AccountPayment(models.Model):
         sent and call print_checks() """
         # Since this method can be called via a client_action_multi, we
         # need to make sure the received records are what we expect
-        self = self.filtered(lambda r:
-                             r.payment_method_id.code
-                             in ['check_printing', 'pdc']
-                             and r.state != 'reconciled')
-        if len(self) == 0:
+        selfs = self.filtered(lambda r:
+                              r.payment_method_id.code
+                              in ['check_printing', 'pdc']
+                              and r.state != 'reconciled')
+        if len(selfs) == 0:
             raise UserError(_(
                 "Payments to print as a checks must have 'Check' "
                 "or 'PDC' selected as payment method and "
                 "not have already been reconciled"))
-        if any(payment.journal_id != self[0].journal_id for payment in self):
+        if any(payment.journal_id != selfs[0].journal_id for payment in selfs):
             raise UserError(_(
                 "In order to print multiple checks at once, they "
                 "must belong to the same bank journal."))
 
-        if not self[0].journal_id.check_manual_sequencing:
+        if not selfs[0].journal_id.check_manual_sequencing:
             # The wizard asks for the number printed on the first
             # pre-printed check so payments are attributed the
             # number of the check the'll be printed on.
-            last_printed_check = self.search([
-                ('journal_id', '=', self[0].journal_id.id),
+            last_printed_check = selfs.search([
+                ('journal_id', '=', selfs[0].journal_id.id),
                 ('check_number', '!=', "0")], order="check_number desc",
                 limit=1)
             next_check_number = last_printed_check and int(
@@ -145,12 +191,23 @@ class AccountPayment(models.Model):
                 line[2]['date_maturity'] = self.effective_date
         return res
 
+    def mark_as_sent(self):
+        """Updates the is_move_sent value of the payment model"""
+        self.write({'is_move_sent': True})
+
+    def unmark_as_sent(self):
+        """Updates the is_move_sent value of the payment model"""
+        self.write({'is_move_sent': False})
+
 
 class AccountPaymentMethod(models.Model):
+    """The class inherits the account payment method for supering the
+    _get_payment_method_information function"""
     _inherit = "account.payment.method"
 
     @api.model
     def _get_payment_method_information(self):
+        """Super the function to update the pdc values"""
         res = super()._get_payment_method_information()
         res['pdc'] = {'mode': 'multi', 'domain': [('type', '=', 'bank')]}
         return res

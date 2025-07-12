@@ -16,61 +16,6 @@ class LermSampleForm(models.Model):
     _rec_name = 'kes_no'
 
     client_reference1 = fields.Char(string="Client Reference",compute="_compute_client_reference", store=True)
-
-    @api.depends('srf_id.client_refrence')
-    def _compute_client_reference(self):
-        for record in self:
-            record.client_reference1 = record.srf_id.client_refrence
-
-
-   
-
-
-  
-
-    # ref = fields.Char(string="ULR No.",required=True,readonly=True, default=lambda self: 'New',store=True)
- 
-    # @api.model
-    # def create(self, vals):
-    #     discipline = self.env['lerm_civil.discipline'].browse(vals.get('discipline_id'))
-    #     if discipline:
-    #         lab_cert_no = discipline.lab_c_seq_no
-    #         lab_loc = discipline.lab_seq_no
-    #         # lab_date = discipline.start_date
-
-    #         # lab_date_str = str(lab_date)
-    #         # last_two_digits_year = str(lab_date.year)[-2:]
-    #         # lab_date = discipline.start_date
-    #         ref = self.env['ir.sequence'].next_by_code('lerm_civil.discipline') or 'New'
-    #         ref = ref.replace('(lab_c_seq_no)', lab_cert_no)
-    #         # ref = ref.replace('(start_date)', str(lab_date))  # Convert lab_date to string               
-    #         ref = ref.replace('(lab_seq_no)', lab_loc)
-    #         # ref = ref.replace('(start_date)', last_two_digits_year)
-
-    #         # Update the 'ref' value in the 'vals' dictionary
-    #         vals['ref'] = ref
-
-    #     return super(LermSampleForm, self).create(vals)
-
-
-    # @api.model
-    # def create(self, vals):
-    #     discipline = self.env['lerm_civil.discipline'].browse(vals.get('discipline_id'))
-    #     lab_location = discipline.lab_l_ids and discipline.lab_l_ids[0]  # Assuming there is at least one lab location
-    #     if lab_location:
-    #         lab_cert_no = str(lab_location.lab_c_no)  # Convert to string
-    #         lab_loc = str(lab_location.lab_no)  # Convert to string
-
-    #         ref = self.env['ir.sequence'].next_by_code('lerm_civil.discipline') or 'New'
-    #         ref = ref.replace('(lab_c_no)', lab_cert_no)
-    #         ref = ref.replace('(lab_no)', lab_loc)
-
-    #         vals['ulr_no'] = ref  # Assign the value to the correct field
-
-    #     return super(LermSampleForm, self).create(vals)
-                
-    
-
     srf_id = fields.Many2one('lerm.civil.srf' , string="SRF ID" ,ondelete="cascade",tracking=True)
     sample_range_id = fields.Many2one('sample.range.line',string="Sample Range")
     eln_id = fields.Many2one('lerm.eln',string="ELN",ondelete="cascade")
@@ -78,8 +23,6 @@ class LermSampleForm(models.Model):
     casting = fields.Boolean(string="Casting")
     discipline_id = fields.Many2one('lerm_civil.discipline',string="Discipline")
     lab_no_value = fields.Char(string="Value")
-    # lab_l_id = fields.Integer(string="Lab Locations")
-    # lab_l_id = fields.Many2one('lab.location', string="Lab Locations",required=True,domain="[('parent_id', '=', discipline_id)]")
     group_id = fields.Many2one('lerm_civil.group',string="Group")
     # department_id = fields.Many2one('hr.department', string='Department')
     department_id = fields.Char(string='Department')
@@ -128,7 +71,6 @@ class LermSampleForm(models.Model):
     alias = fields.Char(string="Alias")
     product_alias = fields.Many2one('product.product',string="Product Alias")
     parameters = fields.Many2many('lerm.parameter.master',string="Parameter")
-    # parameters_ids = fields.Many2many('lerm.datasheet.line',string="Parameter" , compute="compute_param_ids")
     kes_no = fields.Char("KES No",required=True,readonly=True, default=lambda self: 'New' ,tracking=True)
     casting_date = fields.Date(string="Casting Date")
     client_sample_id = fields.Char(string='Client Sample ID')
@@ -143,14 +85,14 @@ class LermSampleForm(models.Model):
 
     active = fields.Boolean(string="Active",default=True)
 
-    invoice_number = fields.Many2one(
-        'account.move',  
-        string="Invoice Number",  
-        help="Select the invoice number",  
-        domain="[('move_type', '=', 'out_invoice')]",  
+    # invoice_number = fields.Many2one(
+    #     'account.move',  
+    #     string="Invoice Number",  
+    #     help="Select the invoice number",  
+    #     domain="[('move_type', '=', 'out_invoice')]",  
        
-        store=True
-    )
+    #     store=True
+    # )
 
     invoice_status = fields.Selection([
         ('1-uninvoiced', 'Uninvoiced'),
@@ -163,28 +105,6 @@ class LermSampleForm(models.Model):
     lab_location = fields.Many2one('lerm.lab.master',string="Lab Location")
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
 
-
-
-    # file_upload = fields.Binary(string="Datasheet Upload")
-    # report_upload = fields.Binary(string="Report Upload")
-    # file_upload = fields.Many2many(
-    #     'ir.attachment',
-    #     'lerm_sample_image_rel',
-    #     'sample_id',
-    #     'attachment_id',
-    #     string='Datasheet Upload',
-    #     help='Attach multiple images to the sample',
-    # )
-
-    # report_upload = fields.Many2many(
-    #     'ir.attachment',
-    #     'lerm_sample_image_rel',
-    #     'sample_id',
-    #     'attachment_id',
-    #     string='Report Upload',
-    #     help='Attach multiple images to the sample',
-    # )
-
     file_upload = fields.Many2many(
         'ir.attachment',
         'lerm_file_upload_rel',
@@ -194,12 +114,6 @@ class LermSampleForm(models.Model):
         help='Attach multiple images to the sample',
     )
     
-    # file_upload = fields.Binary(string="Data Sheet", attachment=True)
-    
-    
-   
-   
-
     report_upload = fields.Many2many(
         'ir.attachment',
         'lerm_report_upload_rel',
@@ -210,25 +124,6 @@ class LermSampleForm(models.Model):
     )
     
 
-   
-    # @api.depends('client_refrence')
-    # def _compute_client_reference(self):
-    #     for record in self:
-    #         client_reference = record.client_refrence
-    #         record.client_reference = client_reference
-
-    # @api.onchange('discipline_id')
-    # def onchange_discipline_id(self):
-    #     # Trigger the computation of lab_no_value
-    #     self._compute_client_reference()
-
-
-
-    # @api.model
-    # def create(self, vals):
-    #     # Generate lab_c sequence number during creation
-    #     vals['ref'] = self.env['ir.sequence'].next_by_code('ulr.line') or '/'
-    #     return super(LermSampleForm, self).create(vals)
 
 
 
@@ -263,59 +158,14 @@ class LermSampleForm(models.Model):
     ])
     other_cancellation_reason = fields.Text("Cancellation Reason")
 
-    # @api.model
-    # def create(self, vals):
-    #     sample = super(LermSampleForm, self).create(vals)
+    @api.depends('srf_id.client_refrence')
+    def _compute_client_reference(self):
+        for record in self:
+            record.client_reference1 = record.srf_id.client_refrence
 
-    #     # Assuming lab_l_id is a Many2one field in LermSampleForm
-    #     lab_location = vals.get('lab_l_id')
-    #     if lab_location:
-    #         lab_cert_no = str(lab_location.lab_c_no)
-    #         lab_loc = str(lab_location.lab_no)
 
-    #         ref = self.env['ir.sequence'].next_by_code('lerm_civil.discipline') or 'New'
-    #         ref = ref.replace('(lab_c_no)', lab_cert_no)
-    #         ref = ref.replace('(lab_no)', lab_loc)
 
-    #         sample.write({'ulr_no': ref})
 
-    #     return sample
-    # @api.model
-    # def create(self, vals):
-    #     sample = super(LermSampleForm, self).create(vals)
-
-    #     # Assuming lab_l_id is a Many2one field in LermSampleForm
-    #     lab_location = vals.get('lab_l_id')
-    #     if lab_location:
-    #         lab_location = self.env['lab.location'].browse(lab_location[0])  # Assuming you are interested in the first selected location
-    #         lab_cert_no = str(lab_location.lab_c_no)
-    #         lab_loc = str(lab_location.lab_no)
-
-    #         ref = self.env['ir.sequence'].next_by_code('lerm_civil.discipline') or 'New'
-    #         ref = ref.replace('(lab_c_no)', lab_cert_no)
-    #         ref = ref.replace('(lab_no)', lab_loc)
-
-    #         sample.write({'ulr_no': ref})
-
-    #     return sample
-    
-    # @api.model
-    # def create(self, vals):
-    #     sample = super(LermSampleForm, self).create(vals)
-
-    #     # Assuming lab_l_id is a Many2one field in LermSampleForm
-    #     lab_location = self.lab_l_id
-    #     if lab_location:
-    #         lab_cert_no = str(lab_location.lab_c_no)
-    #         lab_loc = str(lab_location.lab_no)
-
-    #         ref = self.env['ir.sequence'].next_by_code('lerm_civil.discipline') or 'New'
-    #         ref = ref.replace('(lab_c_no)', lab_cert_no)
-    #         ref = ref.replace('(lab_no)', lab_loc)
-
-    #         sample.write({'ulr_no': ref})
-
-    #     return sample
     @api.depends('scope','state')
     def _compute_print_nabl_visible(self):
         for record in self:
@@ -582,7 +432,6 @@ class LermSampleForm(models.Model):
     def print_nabl_report(self):
         inreport = self.state
         eln = self.env["lerm.eln"].sudo().search([('sample_id','=', self.id)])
-        print("ELNNNNNNNNNNNNNNNNN",eln)
         is_product_based = eln.is_product_based_calculation
         if is_product_based == True:
             template_name = eln.material.product_based_calculation[0].main_report_template.report_name

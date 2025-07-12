@@ -4,9 +4,8 @@
  'website': "http://www.esehat.org", 
  'category': 'Uncategorized', 
  'version': '13.0.1', 
- 'depends':['base' , 'contacts','stock','product' , 'mail','documents','documents_spreadsheet','lerm_civil_inv','attachment_indexation','maintenance','portal'],
+ 'depends':['base' , 'contacts','product' ,'hr','lerm_civil_inv', 'mail','attachment_indexation','maintenance','portal'],
  'data': [
-    'security/ir.model.access.csv',
     'security/security.xml',
     'data/sequence.xml',
     'views/enviroment_register.xml',
@@ -24,12 +23,14 @@
     'views/contractor.xml',
     'views/lab_master.xml',
     'views/employee.xml',
+    'views/product_grade_wizard.xml',
     # 'views/mechanical/sieve_analysis.xml',
     'reports/eln_report_action.xml',
     'reports/eln_report_template.xml',
     'reports/general_report_template.xml',
     'reports/general_template.xml',
-    'reports/mechanical_general_template.xml'
+    'reports/mechanical_general_template.xml',
+    'security/ir.model.access.csv'
    
 
 
@@ -47,7 +48,7 @@
     ],
     'assets': {
     'web.assets_backend':[
-        '/lerm_civil/static/src/js/spreadsheet.js'
+        'lerm_civil/static/src/css/custom_styles.css'
     ],
     'web.report_assets_common': [
             '/lerm_civil/static/src/css/eln_report.scss',
@@ -55,7 +56,6 @@
 
         ],
     'web.assets_qweb': [
-        '/lerm_civil/static/src/xml/spreadsheet.xml'
     ],
         }
 }

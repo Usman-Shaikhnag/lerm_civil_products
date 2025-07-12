@@ -103,19 +103,6 @@ class SrfForm(models.Model):
     _rec_name = 'srf_id'
 
 
-    # group_id = fields.Many2one('lerm_civil.group', string='Group')
-    # discipline_id = fields.Many2one('lerm_civil.discipline', string='Discipline', related='group_id.discipline')
-    # lab_no = fields.Integer(string="Lab Location", compute='_compute_lab_no', store=True)
-
-    # @api.depends('group_id.discipline.lab_no')
-    # def _compute_lab_no(self):
-    #     for record in self:
-    #         lab_no = record.group_id.discipline.lab_no
-    #         record.lab_no = lab_no
-    #         print(f"Computed lab_no: {lab_no}")
-
-
-  
 
     srf_id = fields.Char(string="SRF ID",tracking=True)
     kes_number = fields.Char(string="KES No",tracking=True)
@@ -125,11 +112,12 @@ class SrfForm(models.Model):
     customer = fields.Many2one('res.partner',string="Customer",tracking=True)
     billing_customer = fields.Many2one('res.partner',string="Billing Customer")
     contact_person = fields.Many2one('res.partner',string="Contact Person")
-    client = fields.Char("Client",compute="_compute_name_client1")
+    client = fields.Char("Client")
     # site_address = fields.Many2one('res.partner',string="Site Address")
     site_address = fields.Char(string="Site Address",compute="_compute_site_address")
     name_work = fields.Many2one('res.partner.project',string="Name of Work")
-    consultant_name1 = fields.Char(string="Consultant Name",compute="_compute_consultant_name1")
+
+    consultant_name1 = fields.Char(string="Consultant Name")
     # department_id = fields.Many2one('hr.department', string='Department')
 
     department_id = fields.Char(string='Department')
@@ -174,6 +162,9 @@ class SrfForm(models.Model):
 
     def _compute_date_editable(self):
         for record in self:
+            print("COMPUTE SRF DATE")
+            # import wdb;wdb.set_trace()
+
             backdate_group_id = record.env.ref('lerm_civil.kes_srf_backdate_creation_group').id
 
             if backdate_group_id in self.env.user.groups_id.ids:
@@ -186,17 +177,6 @@ class SrfForm(models.Model):
         self._compute_date_editable()
         
         return super(SrfForm, self).read(fields=fields, load=load)
-
-
-
-
-    # @api.depends('department_id')
-    # def _compute_department(self):
-    #     for record in self:
-    #         record.department = record.department_id.name if record.department_id else False
-
-
-   
 
 
     @api.depends('contact_person')
@@ -217,17 +197,6 @@ class SrfForm(models.Model):
     
 
 
-    # @api.depends('customer')
-    # def _compute_name_work(self):
-    #     for record in self:
-    #         customer = record.customer
-    #         if(customer):
-    #             name_work = record.env['res.partner'].search([("id","=",record.customer.id)]).projects
-    #             print("Name Work",name_work)
-    #             record.name_works = name_work
-
-    #         else:
-    #             record.name_works = None
     @api.depends('customer')
     def _compute_name_work(self):
         for record in self:
@@ -243,21 +212,6 @@ class SrfForm(models.Model):
                 record.name_works = name_work
             else:
                 record.name_works = None
-    # @api.depends('customer')
-    # def _compute_name_work(self):
-    #     for record in self:
-    #         if record.customer:
-    #             import wdb; wdb.set_trace() 
-    #             child_ids = record.env['res.partner'].sudo().search([('child_ids', 'in',record.customer.id)])
-    #             if child_ids:
-    #                 partner_record = record.env['res.partner'].browse(child_ids.id)
-    #             else:
-    #                 partner_record = record.env['res.partner'].browse(record.customer.id)
-    #             name_work = partner_record.projects
-    #             print("Name Work", name_work)
-    #             record.name_works = name_work
-    #         else:
-    #             record.name_works = None
 
     @api.onchange('name_work')
     def _onchange_name_work(self):
@@ -290,6 +244,7 @@ class SrfForm(models.Model):
                 record.client = record.name_work.client_name
             else:
                 record.client = False
+
 
     @api.model
     def create(self, vals):
@@ -657,7 +612,7 @@ class SrfForm(models.Model):
     @api.depends('customer')
     def compute_site_ids(self):
         for record in self:
-            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.customer.id),('type','=','delivery')])
+            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.customer.id)])
             record.contact_site_ids = contact_ids
     
     def open_edit_srf_header_wizard(self):
@@ -783,31 +738,7 @@ class SrfForm(models.Model):
 
 class CreateSampleWizard(models.TransientModel):
     _name = 'create.srf.sample.wizard'
-    # _rec_name = 'lab_l_id'
-
-    # lab_l_id = fields.Many2one('lab.location', string="Lab Locations",domain="[('parent_id', '=', discipline_id)]")
-    # lab_l_id = fields.Integer(string="Lab Locations",domain="[('parent_id', '=', discipline_id)]")
-
-   
-    # @api.onchange('discipline_id')
-    # def onchange_discipline_id(self):
-    #     if self.discipline_id:
-    #         domain = [('parent_id', '=', self.discipline_id.id)]
-    #         return {'domain': {'lab_l_id': domain}}
-    #     else:
-    #         return {'domain': {'lab_l_id': []}}
-  
-  
-
-
-
-
-    # def name_get(self):
-    #     result = []
-    #     for record in self:
-    #         name = f"Lab Locations: {', '.join(str(lab.lab_no) for lab in record.lab_l_id)}"
-    #         result.append((record.id, name))
-    #     return result
+    
     lab_no_value = fields.Char(string="Value")
     @api.depends('discipline_id.lab_no')
     def _compute_lab_no(self):
@@ -870,9 +801,7 @@ class CreateSampleWizard(models.TransientModel):
     group_ids = fields.Many2many('lerm_civil.group',string="Group Ids")
     material_ids = fields.Many2many('product.template',string="Material Ids")
     client_sample_id = fields.Char(string="Client Sample Id")
-    # size_ids = fields.Many2many('lerm.size.line',string="Size Ids")
-    # grade_ids = fields.Many2many('lerm.grade.line',string="Grade Ids")
-    # qty_ids = fields.Many2many('lerm.qty.line',string="Qty Ids")
+    
     days_casting = fields.Selection([
         ('1', '1 Days'),
         ('3', '3 Days'),
@@ -885,7 +814,7 @@ class CreateSampleWizard(models.TransientModel):
         ('112', '112 Days'),
     ], string='Days of Testing', default='3')
     date_casting = fields.Date(string="Date of Casting")
-    customer_id = fields.Many2one('res.partner' , string="Customer")
+    customer_id = fields.Many2one('res.partner' , string="Customer",compute="_compute_customer_id")
     product_aliases = fields.Many2many('product.product',string="Product Aliases")
     product_alias = fields.Many2one('product.product',string="Product Alias")
     parameters = fields.Many2many('lerm.parameter.master',string="Parameter")
@@ -902,6 +831,38 @@ class CreateSampleWizard(models.TransientModel):
     department_id = fields.Char(string='Department')
     lab_location = fields.Many2one('lerm.lab.master',string="Lab Location")
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
+    customer = fields.Many2one('res.partner', string="Customer")
+
+    show_reject_reason = fields.Boolean(compute='_compute_show_reject_reason')
+    show_witness = fields.Boolean(compute='_compute_show_witness')
+    show_days_casting = fields.Boolean(compute='_compute_show_casting')
+    is_readonly_qty = fields.Boolean(compute='_compute_is_readonly_qty')
+
+    @api.depends('sample_condition')
+    def _compute_show_reject_reason(self):
+        for rec in self:
+            rec.show_reject_reason = rec.sample_condition == 'non_satisfactory'
+
+    @api.depends('has_witness')
+    def _compute_show_witness(self):
+        for rec in self:
+            rec.show_witness = rec.has_witness
+
+    @api.depends('casting')
+    def _compute_show_casting(self):
+        for rec in self:
+            rec.show_days_casting = rec.casting
+
+    @api.depends('is_update')
+    def _compute_is_readonly_qty(self):
+        for rec in self:
+            rec.is_readonly_qty = rec.is_update
+
+
+    @api.depends('customer')
+    def _compute_customer_id(self):
+        for rec in self:
+            rec.customer_id = rec.customer if rec.customer else False
 
     @api.onchange('discipline_id', 'group_id', 'material_id')
     def onchange_discipline_group_material(self):
@@ -913,23 +874,6 @@ class CreateSampleWizard(models.TransientModel):
                 ('group', '=', self.group_id.id)], limit=1)
             if material:
                 self.department_id = material.department_ids.name
-
-    # @api.depends('discipline_id', 'group_id')
-    # def compute_discipline_id(self):
-    #     for record in self:
-    #         material = self.env['product.template'].search([('discipline', '=', record.discipline_id.id), ('group', '=', record.group_id.id)], limit=1)
-    #         if material:
-    #             record.department_id = material.department_id.id
-
-
-   
-   
-
-    # @api.depends('discipline_id')
-    # def compute_grade_required(self):
-    #     for wizard in self:
-    #         wizard.grade_required = wizard.discipline_id and wizard.discipline_id.lab_l_ids
-
 
     @api.depends('product_name')
     def compute_main_name(self):
@@ -1105,26 +1049,6 @@ class CreateSampleWizard(models.TransientModel):
         return {'type': 'ir.actions.act_window_close'}
 
 
-           
-
-    # @api.onchange('material_id' ,'customer_id', 'material_id')
-    # def onchange_material_id(self):
-    #     for record in self:
-    #         result = self.env['lerm.alias.line'].search([('customer', '=', record.customer_id.id),('product_id', '=', record.material_id.id)])
-    #         print(result)
-            
-    #         record.product_alias = result.product_alias.id
-
-    # @api.onchange('discipline_id', 'lab_l_id')
-    # def onchange_discipline_id(self):
-    #     if self.discipline_id and self.lab_l_id:
-    #         # Assuming you are interested in the first selected location
-    #         self.lab_l_id = self.lab_l_id[0]
-    #     else:
-    #         self.lab_l_id = False
-       
-   
-
     def add_sample(self,data=False):
 
         # import wdb; wdb.set_trace()
@@ -1188,9 +1112,7 @@ class CreateSampleWizard(models.TransientModel):
         
         
         else:
-            # print("From else")
-          
-
+           
             group_id =  self.group_id.id
             # alias = self.alias
             material_id = self.material_id.id
@@ -1238,10 +1160,7 @@ class CreateSampleWizard(models.TransientModel):
             
 
             srf_ids = []
-            #     for i in range(1, self.qty_id + 1):
-            #         srf_number = str(i).zfill(4)  # Pad the number with leading zeros
-            #         srf_id = f"SRF/{srf_number}-{str(self.qty_id).zfill(4)}"
-            #         srf_ids.append(srf_id)
+            
 
             if self.sample_qty > 0:
 
@@ -1360,7 +1279,6 @@ class CreateSampleWizard(models.TransientModel):
                 sample = self.env['lerm.srf.sample'].sudo().search([('id','=',id)])
                 if sample.state == '1-allotment_pending':
                     for parameter in sample.parameters:
-                        parameters.append((0,0,{'parameter':parameter.id ,'spreadsheet_template':parameter.spreadsheet_template.id}))
                         parameters_result.append((0,0,{'parameter':parameter.id,'unit': parameter.unit.id,'test_method':parameter.test_method.id}))
                     
                     eln_id = self.env['lerm.eln'].sudo().create({

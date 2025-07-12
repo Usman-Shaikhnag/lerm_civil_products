@@ -13,7 +13,7 @@ class Material(models.Model):
     method_reference = fields.Char("Method Reference Column Title")
     result_remark = fields.Char("Results Remark Column Title")
     discipline = fields.Many2one('lerm_civil.discipline',string="Discipline")
-    group = fields.Many2one('lerm_civil.group',string="Group")
+    group = fields.Many2many('lerm_civil.group',string="Group")
     department_ids = fields.Many2one('hr.department', string='Department')
     test_format_no = fields.Char(string="Test Format No")
     data_sheet_format_no = fields.Many2one('lerm.datasheet.master',string="Data Sheet Format No")
@@ -23,13 +23,21 @@ class Material(models.Model):
     qty_table = fields.One2many('lerm.qty.line','product_id',string="Qty")
     grade_table = fields.One2many('lerm.grade.line','product_id',string="Grade")
     alias_table = fields.One2many('lerm.alias.line','product_id',string="Alias")
-    datasheet_table = fields.One2many('lerm.material.datasheet.line','product_id',string="Datasheet Table")
     parameter_master_ids = fields.Many2many('lerm.parameter.master',string="Parameter Master IDS",compute="compute_parameter_master_ids")
     parameter_table1 = fields.Many2many('lerm.parameter.master',string="Parameters",)
     volume = fields.Char("Volume")
     lab_name = fields.Char(string="Lab Name")
     product_based_calculation = fields.One2many('lerm.product.based.calculation','product_id',string="Product Based Calculation")
     sop = fields.Html(string='SOP')
+
+    show_lerm_tabs = fields.Boolean(compute="_compute_visibility_flags", store=False)
+    show_product_based_tab = fields.Boolean(compute="_compute_visibility_flags", store=False)
+
+    @api.depends('is_sample', 'is_product_based_calculation')
+    def _compute_visibility_flags(self):
+        for rec in self:
+            rec.show_lerm_tabs = bool(rec.is_sample)
+            rec.show_product_based_tab = bool(rec.is_product_based_calculation)
 
 
     @api.onchange('department_id')
@@ -110,11 +118,7 @@ class Material(models.Model):
 
     
 
-class DatasheetLine(models.Model):
-    _name = 'lerm.material.datasheet.line'
 
-    product_id = fields.Many2one('product.template',string="Product ID")
-    datasheet = fields.Many2one('lerm.datasheet.master',string="Datasheet")
 
 class ParameterMasterAliasLine(models.Model):
     _name = 'lerm.alias.line'
@@ -254,46 +258,46 @@ class ProductProduct(models.Model):
         }
     
 
-class AccountMoveLineInherited(models.Model):
-    _inherit = 'account.move.line'
-    report_no = fields.Char(string="Report No")
-    pricelist_id = fields.Many2one("product.pricelist",string="Pricelist",compute='_compute_pricelist')
-    product_id = fields.Many2one('product.product', string='Product', ondelete='restrict')
-    # report_ids = fields.Many2many("lerm.srf.sample",compute="_compute_report_ids")
-    report_no1 = fields.Many2many("lerm.srf.sample", string="KES No.",domain="['&',('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced'),'|',('srf_id.customer', '=', partner_id),('srf_id.billing_customer', '=', partner_id)]")
+# class AccountMoveLineInherited(models.Model):
+#     _inherit = 'account.move.line'
+#     report_no = fields.Char(string="Report No")
+#     pricelist_id = fields.Many2one("product.pricelist",string="Pricelist")
+#     product_id = fields.Many2one('product.product', string='Product', ondelete='restrict')
+#     # report_ids = fields.Many2many("lerm.srf.sample",compute="_compute_report_ids")
+#     report_no1 = fields.Many2many("lerm.srf.sample", string="KES No.",domain="['&',('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced'),'|',('srf_id.customer', '=', partner_id),('srf_id.billing_customer', '=', partner_id)]")
 
 
-    @api.onchange('partner_id')
-    def _compute_report_ids(self):
-        report_ids = []
-        samples = self.env['lerm.srf.sample'].sudo().search([('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced')])
-        # for sample in samples:
-        #     if sample.srf_id.billing_customer.id == self.partner_id.id:
-        #         report_ids.append(sample)
-        # import wdb; wdb.set_trace();
-        # self.report_ids = samples
+#     @api.onchange('partner_id')
+#     def _compute_report_ids(self):
+#         report_ids = []
+#         samples = self.env['lerm.srf.sample'].sudo().search([('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced')])
+#         # for sample in samples:
+#         #     if sample.srf_id.billing_customer.id == self.partner_id.id:
+#         #         report_ids.append(sample)
+#         # import wdb; wdb.set_trace();
+#         # self.report_ids = samples
         
 
                 
 
 
     
-    @api.onchange("pricelist_id")
-    def onchange_pricelist_id(self):
-        for record in self:
-            # import wdb; wdb.set_trace();
-            # data = []
-            if self.pricelist_id:
-                data = self.pricelist_id.item_ids.product_tmpl_id.product_variant_ids.ids
-                # for product in self.pricelist_id.item_ids:
-                #     data.append(product.product_tmpl_id.id)
-                return {'domain': {'product_id': [('id','in', data)]}}
-            else:
-                return{}
+#     @api.onchange("pricelist_id")
+#     def onchange_pricelist_id(self):
+#         for record in self:
+#             # import wdb; wdb.set_trace();
+#             # data = []
+#             if self.pricelist_id:
+#                 data = self.pricelist_id.item_ids.product_tmpl_id.product_variant_ids.ids
+#                 # for product in self.pricelist_id.item_ids:
+#                 #     data.append(product.product_tmpl_id.id)
+#                 return {'domain': {'product_id': [('id','in', data)]}}
+#             else:
+#                 return{}
     
 
 
-    @api.depends("move_id.pricelist_id")
-    def _compute_pricelist(self):
-        # import wdb; wdb.set_trace();
-        self.pricelist_id = self.move_id.pricelist_id.id 
+#     # @api.depends("move_id.pricelist_id")
+#     # def _compute_pricelist(self):
+#     #     # import wdb; wdb.set_trace();
+#     #     self.pricelist_id = self.move_id.pricelist_id.id 

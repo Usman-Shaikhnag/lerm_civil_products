@@ -37,7 +37,6 @@ class ReallocationWizard(models.TransientModel):
             parameters_result = []
             
             for parameter in sample.parameters:
-                parameters.append((0,0,{'parameter':parameter.id ,'spreadsheet_template':parameter.spreadsheet_template.id}))
                 parameters_result.append((0,0,{'parameter':parameter.id,'unit': parameter.unit.id,'test_method':parameter.test_method.id}))
             
             record.env['lerm.eln'].sudo().create({

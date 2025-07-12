@@ -3,7 +3,7 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2019-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Copyright (C) 2023-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
 #    Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
 #
 #    You can modify it under the terms of the GNU LESSER
@@ -19,7 +19,6 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-
 from odoo import fields, models
 
 
@@ -28,6 +27,18 @@ class AccountPrintJournal(models.TransientModel):
     _name = "account.print.journal"
     _description = "Account Print Journal"
 
+    section_main_report_ids = fields.Many2many(string="Section Of",
+                                               comodel_name='account.report',
+                                               relation="account_common_print_report_section_rel",
+                                               column1="sub_report_id",
+                                               column2="main_report_id")
+    section_report_ids = fields.Many2many(string="Sections",
+                                          comodel_name='account.report',
+                                          relation="account_common_print_report_section_rel",
+                                          column1="main_report_id",
+                                          column2="sub_report_id")
+    name = fields.Char(string="Journal Audit", default="Journal Audit",
+                       required=True, translate=True)
     sort_selection = fields.Selection(
         [('date', 'Date'), ('move_name', 'Journal Entry Number')],
         'Entries Sorted by', required=True, default='move_name')

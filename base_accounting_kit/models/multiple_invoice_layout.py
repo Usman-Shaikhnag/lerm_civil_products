@@ -1,7 +1,25 @@
 # -*- coding: utf-8 -*-
-
+#############################################################################
+#
+#    Cybrosys Technologies Pvt. Ltd.
+#
+#    Copyright (C) 2023-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+#
+#    You can modify it under the terms of the GNU LESSER
+#    GENERAL PUBLIC LICENSE (LGPL v3), Version 3.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU LESSER GENERAL PUBLIC LICENSE (LGPL v3) for more details.
+#
+#    You should have received a copy of the GNU LESSER GENERAL PUBLIC LICENSE
+#    (LGPL v3) along with this program.
+#    If not, see <http://www.gnu.org/licenses/>.
+#
+#############################################################################
 from odoo import api, fields, models
-
 from odoo.modules import get_resource_path
 
 try:
@@ -19,33 +37,29 @@ class MultipleInvoiceLayout(models.TransientModel):
     _description = 'Multiple Invoice Document Layout'
 
     def _get_default_journal(self):
+        """The default function to return the journal for the invoice"""
         return self.env['account.journal'].search(
             [('id', '=', self.env.context.get('active_id'))]).id
 
     company_id = fields.Many2one(
-        'res.company', default=lambda self: self.env.company, required=True)
-
+        'res.company', default=lambda self: self.env.company,
+        required=True)
     layout = fields.Char(related="company_id.external_report_layout_id.key")
-
-    journal_id = fields.Many2one('account.journal', string='Journal',
+    journal_id = fields.Many2one('account.journal',
+                                 string='Journal',
                                  required=True, default=_get_default_journal)
-
     multiple_invoice_type = fields.Selection(
         related='journal_id.multiple_invoice_type', readonly=False,
         required=True)
-
     text_position = fields.Selection(related='journal_id.text_position',
                                      readonly=False, required=True,
                                      default='header')
-
     body_text_position = fields.Selection(
         related='journal_id.body_text_position',
         readonly=False)
-
     text_align = fields.Selection(
         related='journal_id.text_align',
         readonly=False)
-
     preview = fields.Html(compute='_compute_preview',
                           sanitize=False,
                           sanitize_tags=False,
@@ -55,7 +69,8 @@ class MultipleInvoiceLayout(models.TransientModel):
                           strip_style=False,
                           strip_classes=False)
 
-    @api.depends('multiple_invoice_type', 'text_position', 'body_text_position',
+    @api.depends('multiple_invoice_type', 'text_position',
+                 'body_text_position',
                  'text_align')
     def _compute_preview(self):
         """ compute a qweb based preview to display on the wizard """
@@ -82,15 +97,11 @@ class MultipleInvoiceLayout(models.TransientModel):
                 wizard.preview = False
 
     def _get_asset_style(self):
-        template_style = self.env.ref('web.styles_company_report',
-                                      raise_if_not_found=False)
-        if not template_style:
-            return b''
-
-        company_styles = template_style._render({
-            'company_ids': self.company_id,
-        })
-
+        """Used to set the asset style"""
+        company_styles = self.env['ir.qweb']._render(
+            'web.styles_company_report', {
+                'company_ids': self.company_id,
+            }, raise_if_not_found=False)
         return company_styles
 
     @api.model
@@ -115,9 +126,9 @@ class MultipleInvoiceLayout(models.TransientModel):
 
         precision = 8
         output_style = 'expanded'
-        bootstrap_path = get_resource_path('web', 'static', 'lib', 'bootstrap',
+        bootstrap_path = get_resource_path('web', 'static',
+                                           'lib', 'bootstrap',
                                            'scss')
-
         try:
             return libsass.compile(
                 string=scss_source,
@@ -131,6 +142,7 @@ class MultipleInvoiceLayout(models.TransientModel):
             raise libsass.CompileError(e.args[0])
 
     def _get_layout_for_preview(self):
+        """Returns the layout Preview for the accounting module"""
         if self.layout == 'web.external_layout_boxed':
             new_layout = 'base_accounting_kit.boxed'
 
@@ -146,6 +158,6 @@ class MultipleInvoiceLayout(models.TransientModel):
         return new_layout
 
     def document_layout_save(self):
-        # meant to be overridden
+        """meant to be overridden document_layout_save"""
         return self.env.context.get('report_action') or {
             'type': 'ir.actions.act_window_close'}

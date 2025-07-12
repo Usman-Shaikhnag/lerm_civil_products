@@ -95,10 +95,10 @@ class CleanupPurgeLineModel(models.TransientModel):
                     # Fails if the model on the target side
                     # cannot be instantiated
                     relation.unlink()
-                except KeyError as exc:
-                    self.logger.exception("Unlink models - KeyError: %s" % exc)
-                except AttributeError as exc:
-                    self.logger.exception("Unlink models - AttributeError: %s" % exc)
+                except KeyError:
+                    _logger.error("")
+                except AttributeError:
+                    _logger.error("")
             self.env["ir.model.relation"].search(
                 [("model", "=", line.name)]
             ).with_context(**context_flags).unlink()

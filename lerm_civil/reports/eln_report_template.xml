@@ -59,12 +59,7 @@
 						<tr>
 							<td colspan="3">Test Report no :
 							</td>
-							<!-- <td t-if="(o.sample_id.scope = 'non_nabl'" colspan="3">
-								<span t-field="o.kes_no"/><span>N</span>
-							</td>
-							<td t-if="(nabl)" colspan="3">
-								<span t-field="o.kes_no"/>
-							</td> -->
+							
 							<t t-if="fromEln">
 								<td t-if="(eln.sample_id.scope == 'non_nabl')" colspan="3">
 									<span t-field="o.kes_no"/><span>N</span>
@@ -81,12 +76,7 @@
 									<span t-field="o.kes_no"/>
 								</td>
 							</t>
-							<!-- <td t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" colspan="3">
-								<span t-field="o.kes_no"/><span>N</span>
-							</td>
-							<td t-if="(eln.sample_id.scope == 'nabl' or nabl) and not fromEln" colspan="3">
-								<span t-field="o.kes_no"/>
-							</td> -->
+							
 							<td colspan="3">Report Issue Date :
 							</td>
 							<td colspan="3">
@@ -100,15 +90,6 @@
 						</tr>
 					</table>
 			</div>
-			<!-- <t t-call="lerm_civil.custom_watermark"/>  -->
-
-			<!-- <div class="first-page">
-				<t t-call="lerm_civil.custom_watermark"/> 
-			</div>
-			<div class="not-first-page">
-				<t t-call="lerm_civil.custom_watermark"/> 
-			</div> -->
-
 			
         </div>
 		
@@ -121,9 +102,7 @@
 		<div t-attf-class="footer o_standard_footer">
             <div class="text-center" style="border-top: 1px solid black;">
                 <ul class="list-inline mb4 footerQR">
-					<!-- <div style="border-top: 1px solid black;">
-						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 50px; height: 50px;"/>
-					</div> -->
+					
 					<div>
 						<div class="footertext">
 							<t t-if="eln.sample_id.lab_location">
@@ -134,9 +113,7 @@
 							</t>
 						</div>
 						<div>
-							<!-- <div>
-								<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 70px; height: 70px;"/>
-							</div> -->
+							
 							<div class="footerQR">
 								<div style="padding-right : 20px">
 									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
@@ -174,16 +151,7 @@
         <div t-attf-class="header article" t-att-style="report_header_style">
 			<div class="row">
 				<div class="col-12"  style="display: flex; justify-content: space-between;">
-					<!-- <div style="text-align:left;">	
-						FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.material.data_sheet_format_no.name"/>
-					</div>
-					<div style="text-align:middle; margin-top:6px">	
-						Job No. <![CDATA[&nbsp;]]> <span t-esc="eln.kes_no"/>
-					</div>
-					<div style="text-align:right; margin-top:6px;">	
-						End Date. <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
-					</div> -->
-				
+					
 					<span style="text-align:left; display: flex; justify-content: space-between; margin-right: 3rem;" >
 						FORMAT No. <span t-esc="eln.material.data_sheet_format_no.name"/>
 					</span>
@@ -239,14 +207,9 @@
 
 	<template id="eln_report_template">
 		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 
-			 	<!-- <t t-call="lerm_civil.custom_watermark"/> -->
-
-				<!-- <div style="text-align:center;margin-top:10px">
-					<p style="font-size:15px"><b>Test Report</b></p>
-				</div> -->
+			 	
 				<div class="container_eln">
 
 					<div t-foreach="eln" t-as="o">
@@ -266,17 +229,7 @@
 								</td>
 							</tr>
 							<tr>
-								<!-- <td colspan="12">Project / Site Address :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-											,
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
+								
 								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.name_work"/>
 								</td>
