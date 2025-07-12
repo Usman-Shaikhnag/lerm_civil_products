@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_soil_ssl" model="ir.ui.view">
+        <field name="name">mechanical.soil.ssl.form</field>
+        <field name="model">mechanical.soil.ssl</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                   <group >
+                        <h1>
+                            <field name="name_soil" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                     <group>
+                        <field name='grade'/>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+
+                    
+
+                    <!-- Sieve Analysis -->
+                    <group invisible = "sieve_visible == False" style="white-space: nowrap; width:70%;" >
+                        <h1>
+                            <field name="sieve_name" readonly="1" nolabel="1"/>
+                            <field name="sieve_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    
+                  
+                    <group invisible = "sieve_visible == False" style="white-space: nowrap; width:70%;">
+                  
+                      <field name="child_lines">
+                        <tree editable="bottom">
+                          <field name="serial_no"/>
+                          <field name="sieve_size"/>
+                          <field name="particle_size"/>
+                           <field name="wt_retained"/>
+                          <field name="percent_retained"/>
+                          <field name="cumulative_retained"/>
+                          <field name="passing_percent"/>
+                        </tree>
+                      </field>
+                      <group invisible = "sieve_visible == False">
+                      <field name="total1" string="Total Weight "/>
+                      </group>
+
+                      <group invisible = "sieve_visible == False">
+                       <field name="gravel" />
+                      
+                       <field name="sand" />
+                     
+                       <field name="silt_clay" />
+                    
+                       <field name="total" />
+                      </group>
+
+                     
+                      <!-- <! <field name="cumulative"/>> -->
+                      
+                    </group>
+
+                     <group invisible = "sieve_visible == False" style="white-space: nowrap; width:70%;">
+                        <button string="Calculate Sieve Analysis" type="object" name="calculate" class="oe_highlight"/>
+                    </group>
+
+
+                     <!-- Liquid Limit-->
+                     <group invisible = "liquid_limit_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="liquid_limit_name" readonly="1" nolabel="1"/>
+                            <field name="liquid_limit_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    
+                 
+                    <group invisible = "liquid_limit_visible == False" >
+                  
+                      <field name="child_liness" style="width:100%">
+                       <tree editable="bottom" >
+                                <field name='serial_no' />
+                                 <field name='sample_of_wet' />
+                                 <field name='blwo_no1' />
+                                <field name="container_no1" />
+                                <field name='wt_of_con' />
+                                <field name='wet_sample_con' />
+                                <field name='dry_sample_con' />
+                                <field name='wt_water' />
+                                <field name='oven_dry_wt' />
+                                  <field name='water_content' />
+                                
+                            </tree>
+                      </field>
+                 
+                      
+                    </group>
+
+                    
+                    <group invisible = "liquid_limit_visible == False">
+                     <field name="liquid_limit" style="width:50%"/>
+                    
+                     <field name='liquid_limit_conformity' col="4"
+                                           decoration-success="liquid_limit_conformity == 'pass'" 
+                                           decoration-danger="liquid_limit_conformity == 'fail'" 
+                                           readonly="1"/>
+                     <field name='liquid_limit_nabl' col="4"/>
+                    </group>
+
+
+                    <!-- Plastic Limit -->
+                     <group invisible = "plastic_limit_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="plastic_limit_name" readonly="1" nolabel="1"/>
+                            <field name="plastic_limit_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    
+                
+                    
+                    <group invisible = "plastic_limit_visible == False">
+                  
+                      <field name="plastic_limit_table">
+                       <tree editable="bottom">
+                                <field name='serial_no'/>
+                                <field name='container_no'/>
+                                <field name='wt_of_con'/>
+                                <field name='wt_of_con_wet'/>
+                                <field name='wt_of_con_dry'/>
+                                <field name='wt_of_water'/>
+                                <field name='wt_of_oven'/>
+                                <field name='water_content_pastic'/>
+                                
+                            </tree>
+                      </field>
+                   
+                      
+                    </group>
+                    <group invisible = "plastic_limit_visible == False" style="white-space: nowrap;">
+                     <field name="plastic_limit" style="width:50%" />
+
+                      <field name="plasticity_index" style="width:50%" />
+
+                  
+                     <field name='plastic_limit_conformity' col="4"
+                                           decoration-success="plastic_limit_conformity == 'pass'" 
+                                           decoration-danger="plastic_limit_conformity == 'fail'" 
+                                           readonly="1"/>
+                     <field name='plastic_limit_nabl' col="4"/>
+                    </group>
+
+
+                  
+
+                     <!-- Heavy Compaction MDD -->
+                     <group invisible = "heavy_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="heavy_name" readonly="1" nolabel="1"/>
+                            <field name="heavy_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    
+                   
+                 
+                    <group invisible = "heavy_visible == False">
+                  
+                      <field name="heavy_table" style="width:100%">
+                        <tree editable="bottom">
+                          <field name="serial_no"/>
+                          <field name="amount_soil"/>
+                          <field name="amount_water"/>
+                           <field name="empty_wt_mould"/>
+                          <field name="wt_soil"/>
+                          <field name="wt_of_wet"/>
+                          <field name="volume_mould"/>
+                          <field name="bulk_density"/>
+                          <field name="con_no"/>
+                           <field name="empty_wt"/>
+                          <field name="wet_con_ovenwet"/>
+                           <field name="wet_con_ovendry"/>
+                          <field name="water_content"/>
+                          <field name="dry_density"/>
+                        </tree>
+                      </field>
+                  
+                    </group>
+
+                      <group invisible = "heavy_visible == False" style="white-space: nowrap;">
+                 
+                  
+                     <field name='max_dry_density'/>
+                      <field name='omc'/>
+                    </group>
+
+                     <group invisible = "heavy_visible == False">
+                      <field name="graph_image_density" widget="image" readonly="1"/>
+                    </group>
+                  
+
+                     <group invisible = "heavy_visible == False">
+                 
+                     <field name='heavy_table_conformity' col="4"
+                                           decoration-success="heavy_table_conformity == 'pass'" 
+                                           decoration-danger="heavy_table_conformity == 'fail'" 
+                                           readonly="1"/>
+                     <field name='heavy_table_nabl' col="4"/>
+                    </group>
+
+
+
+                     <!-- TRIAXIAL SHEAR TEST (By LVDT Reading ) -->
+                     <group invisible = "triaxial_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="triaxial_name" readonly="1" nolabel="1"/>
+                            <field name="triaxial_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+
+                     <group invisible = "triaxial_visible == False" style="white-space: nowrap;">
+                 
+                  
+                     <field name='observations'/>
+                      <field name='diameter_triaxial'/>
+                      <field name='length_triaxial'/>
+                       <field name='area_triaxial'/>
+                    </group>
+                    
+                   
+                 
+                    <group invisible = "triaxial_visible == False">
+                  
+                      <field name="triaxial_table" style="width:100%">
+                        <tree editable="bottom">
+                          <field name="serial_no"/>
+                          <field name="lvdt_triaxial"/>
+                          <field name="load_triaxial31"/>
+                           <field name="load_triaxial32"/>
+                          <field name="al_l"/>
+                          <field name="ac"/>
+                          <field name="deviatore_triaxial31"/>
+                          <field name="deviatore_triaxial32"/>
+                         
+                        </tree>
+                      </field>
+                  
+                    </group>
+
+
+
+
+                      <!-- CALCULATIONS OF COHESION AND ANGLE OF INTERNAL FRICTION-->
+                     <group invisible = "internal_fraction_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="internal_fraction_name" readonly="1" nolabel="1"/>
+                            <field name="internal_fraction_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+
+                   
+                   
+                 
+                    <group invisible = "internal_fraction_visible == False">
+                  
+                      <field name="internal_fraction_table" style="width:100%">
+                        <tree editable="bottom">
+                          <field name="serial_no"/>
+                          <field name="normal_lbs"/>
+                          <field name="normal_kgs"/>
+                           <field name="load_5"/>
+                          <field name="shear_division"/>
+                          <field name="shear_lc"/>
+                          <field name="noraml_stress"/>
+                          <field name="shear_stress"/>
+                         
+                        </tree>
+                      </field>
+                  
+                    </group>
+
+
+
+                     <!-- CBR -->
+                     <group invisible = "soil_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="soil_name" readonly="1" nolabel="1"/>
+                            <field name="soil_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    
+                  
+                    <group invisible = "soil_visible == False">
+                      <field name="soil_table">
+                        <tree editable="bottom">
+                          <field name="penetration"/>
+                          <field name="proving_reading"/>
+                          <field name="load"/>
+                          <!-- <field name="wt_retained"/> -->
+                        </tree>
+                      </field>
+                      
+                    </group>
+                    <group invisible = "soil_visible == False">
+                      <field name="chart_image_cbr" widget="image" readonly="1"/>
+                    </group>
+
+
+                      <group invisible = "soil_visible == False">
+                        <group style="width:50%; white-space: nowrap;">
+                          <field name="ps_2mm" />
+                          <field name="pt_2mm" />
+                          <field name="cbr_2mm" />
+                        </group>
+                        <group style="width:50%; white-space: nowrap;">
+                          <field name="ps_5mm" />
+                          <field name="pt_5mm" />
+                          <field name="cbr_5mm" />
+                          
+                        </group>
+
+                     </group>
+
+                    
+
+
+                   <!--  FSI -->
+                     <group  invisible = "fsi_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="fsi_name" readonly="1" nolabel="1"/>
+                            <field name="fsi_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    
+                  
+                  
+
+                      <group  invisible = "fsi_visible == False">
+                        <group style="width:100%; white-space: nowrap;">
+                          <field name="wt_sample" />
+                          <field name="valume_water" />
+                          <field name="valime_kerosen" />
+                          <field name="fsi" />
+                        </group>
+
+
+                        <group  invisible = "fsi_visible == False">
+                     <field name='fsi_conformity' col="4"
+                                           decoration-success="fsi_conformity == 'pass'" 
+                                           decoration-danger="fsi_conformity == 'fail'" 
+                                           readonly="1"/>
+                     <field name='fsi_nabl' col="4"/>
+                    </group>
+                  </group>
+
+
+                    <!-- DETERMINATION OF 'K'-->
+                     <group invisible = "determination_visible == False"  style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="determination_name" readonly="1" nolabel="1"/>
+                            <field name="determination_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    
+                  
+                  
+
+                      <group invisible = "determination_visible == False">
+                        <group style="width:100%; white-space: nowrap;">
+                          <field name="dia_burette" />
+                          <field name="dia_specimen" />
+                          <field name="area_burrette" />
+                          <field name="area_specimen" />
+                          <field name="lenght_specimen" />
+                          <field name="initial_height" />
+                          <field name="final_height" />
+                          <field name="permeability" />
+                        </group>
+
+
+                        <group invisible = "determination_visible == False">
+                     <field name='permeability_conformity' col="4"
+                                           decoration-success="permeability_conformity == 'pass'" 
+                                           decoration-danger="permeability_conformity == 'fail'" 
+                                           readonly="1"/>
+                     <field name='permeability_nabl' col="4"/>
+                    </group>
+                  </group>
+
+                  
+
+                     
+                       <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+
+
+
+
+
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

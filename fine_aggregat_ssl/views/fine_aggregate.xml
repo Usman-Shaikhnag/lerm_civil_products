@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_fine_aggregate_ssl" model="ir.ui.view">
+        <field name="name">mechanical.fine.aggregate.ssl.form</field>
+        <field name="model">mechanical.fine.aggregate.ssl</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                   <group style="white-space: nowrap; width:70%;"  >
+                        <h1>
+                            <field name="name_aggregate" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group >
+                       <field name="grade"/>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        
+                        </tree>
+                      </field>
+                    </group>
+                  
+               
+                    <group invisible = "sieve_visible == False" style="white-space: nowrap; width:70%;" >
+                        <h1>
+                            <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
+                            <field name="sieve_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <div invisible = "sieve_visible == False">
+                        <button string="Calculate" type="object" name="calculate_sieve" class="oe_highlight"/>
+                    </div>
+                    <group invisible = "sieve_visible == False"  style="width:50%">
+                    <field name="sieve_analysis_child_lines" nolabel="1" mode="tree,form" colspan="3">
+                            <tree editable="bottom">
+                                <field name="serial_no" string="Sr.No"/>
+                                <field name='sieve_size' string="IS Sieve Size"/>
+                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='percent_retained' string="% Retained"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
+                                <field name='passing_percent' string="Passing %" readonly="1"/>
+                                  <field name='specific_limt' string="Specified Limits"/>
+                                
+                            </tree>
+                    </field>
+                    </group>
+                  <group style="width:100%">
+                    <group style="width:50%"  invisible = "sieve_visible == False">
+                        <field name="total_sieve_analysis"/>
+                    </group>
+                    <group style="width:50%"  invisible = "sieve_visible == False">
+                        <field name="fineness_modulus"/>
+                    </group>
+                  </group>
+
+
+                      <!-- Soundness Na2So4  -->
+                <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group invisible = "specific_gravity_visible == False">
+                    <field name="specific_gravity_child_lines"  style="width:100%" >
+                            <tree editable="bottom">
+                                <field name="serial_no"/>
+                                <field name="wt_of_staurated_a"/>
+                                <field name="wt_of_pycnometer_b" />
+                                <field name="wt_of_pycnometer_c"/>
+                                <field name="wt_of_oven_d"/>
+                                <!-- <field name="specific_gravity" readonly='1'/>
+                                <field name="water_absorption"/> -->
+                            </tree>
+                    </field>
+                   
+                    </group>
+                     <group invisible = "specific_gravity_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
+                     
+                        <field name="avg_staurated_a" readonly="1"/>
+                        <field name="avg_pycnometer_b" readonly="1"/>
+                        <field name="avg_pycnometer_c" readonly="1"/>
+                        <field name="avg_oven_d" readonly="1"/>
+                  
+                    </group>
+                
+                    <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;margin-top: 10px">
+                        <field name="specific_gravity" />
+                        <field name="water_absorption" />
+                    </group>
+                    <group  invisible = "specific_gravity_visible == False">
+                          <group>
+                            <field  name="specific_gravity_conformity"
+                                           decoration-success="specific_gravity_conformity == 'pass'" 
+                                           decoration-danger="specific_gravity_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="specific_gravity_nabl"/>
+                          </group>
+                    </group>
+
+                                   <!-- loose_bulk_visible -->
+
+                     <group invisible = "loose_bulk_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="loose_bulk_name" readonly="1" nolabel="1"/>
+                            <field name="loose_bulk_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                   
+                   
+
+                    <group invisible = "loose_bulk_visible == False" style="white-space: nowrap; width:50%;" >
+                        <field name="weight_bucket" />
+                        <field name="empty_bucket" />
+                        <field name="bucket_compact"  />
+                        <field name="bucket_loos"   />
+                        <field name="loose_bulk_density" />
+                          <field name="compact_bulk_density" />
+                    </group>
+
+                    <group invisible = "loose_bulk_visible == False">
+                          <group>
+                            <field  name="loose_bulk_density_conformity"
+                                          decoration-success="loose_bulk_density_conformity == 'pass'" 
+                                           decoration-danger="loose_bulk_density_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="loose_bulk_density_nabl"/>
+                          </group>
+                    </group>
+
+
+
+                         <!-- Bulking of Sand -->
+                <group invisible = "bulking_sand_visible == False" style="white-space: nowrap; width:70%;" >
+                        <h1>
+                            <field name="bulking_sand_name" readonly="1" nolabel="1"/>
+                            <field name="bulking_sand_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group invisible = "bulking_sand_visible == False">
+                    <field name="bulking_sand_child_lines"  style="width:100%" >
+                            <tree editable="bottom">
+                                <field name="serial_no"/>
+                                <field name="height_of_sand"/>
+                                <field name="height_of_settled"/>
+                                <field name="loss_off_height"/>
+                                <!-- <field name="bulking_of_sand"/> -->
+                           
+                            </tree>
+                    </field>
+                   
+                    </group>
+
+                    <group invisible = "bulking_sand_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
+                     
+                        <field name="avg_height_sand_a" readonly="1"/>
+                        <field name="avg_height_sattled_b" readonly="1"/>
+                        <field name="avg_loss_c" readonly="1"/>
+                  
+                    </group>
+                
+                    <group invisible = "bulking_sand_visible == False" style="white-space: nowrap; width:70%;">
+                        <field name="avg_bulking_of_sand"/>
+                       
+                    </group>
+                    <group invisible = "bulking_sand_visible == False">
+                          <group>
+                            <field  name="avg_bulking_of_sand_conformity"
+                                           decoration-success="avg_bulking_of_sand_conformity == 'pass'" 
+                                           decoration-danger="avg_bulking_of_sand_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="avg_bulking_of_sand_nabl"/>
+                          </group>
+                    </group>
+
+
+
+                      <!-- site_content_visible -->
+                <group invisible = "site_content_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="site_content_name" readonly="1" nolabel="1"/>
+                            <field name="site_content_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group invisible = "site_content_visible == False">
+                    <field name="site_content_child_lines"  style="width:100%" >
+                            <tree editable="bottom">
+                                <field name="serial_no"/>
+                                <field name="heigh_sand_silt"/>
+                                <field name="height_of_sand" />
+                                <field name="height_silt"/>
+                                <!-- <field name="bulking_of_sand1"/> -->
+                           
+                            </tree>
+                    </field>
+                   
+                    </group>
+
+                    <group invisible = "site_content_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
+                     
+                        <field name="content_height_sand_a" readonly="1"/>
+                        <field name="content_height_sand_b" readonly="1"/>
+                        <field name="content_slit_c" readonly="1"/>
+                  
+                    </group>
+                
+                    <group invisible = "site_content_visible == False" style="white-space: nowrap; width:70%;margin-top: 10px">
+                        <field name="avg_bulking_of_sand1"/>
+                       
+                    </group>
+                    <group invisible = "site_content_visible == False" tyle="white-space: nowrap; width:70%;margin-top: 10px">
+                          <group>
+                            <field  name="avg_bulking_of_sand1_conformity"
+                                           decoration-success="avg_bulking_of_sand1_conformity == 'pass'" 
+                                           decoration-danger="avg_bulking_of_sand1_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="avg_bulking_of_sand1_nabl"/>
+                          </group>
+                    </group>
+
+
+                     <!-- Moisture Content -->
+                <group invisible = "moisture_content_visible == False"  style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="moisture_content_name1" readonly="1" nolabel="1"/>
+                            <field name="moisture_content_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                    <group invisible = "moisture_content_visible == False">
+                    <field name="moisture_content_child_lines"  style="width:100%" >
+                            <tree editable="bottom">
+                                <field name="serial_no"/>
+                                <field name="wt_sand"/>
+                                <field name="wt_dry" />
+                                <field name="diff_wet_sand"/>
+                                <!-- <field name="moisture_content"/> -->
+                           
+                            </tree>
+                    </field>
+                   
+                    </group>
+
+                      <group invisible = "moisture_content_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
+                     
+                        <field name="wet_sand" readonly="1"/>
+                        <field name="wet_dry" readonly="1"/>
+                        <field name="diff_wd" readonly="1"/>
+                  
+                    </group>
+                
+                    <group invisible = "moisture_content_visible == False" style="white-space: nowrap; width:70%;">
+                        <field name="avg_moisture"/>
+                       
+                    </group>
+                    <group invisible = "moisture_content_visible == False">
+                          <group>
+                            <field  name="avg_moisture_conformity"
+                                           decoration-success="avg_moisture_conformity == 'pass'" 
+                                           decoration-danger="avg_moisture_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="avg_moisture_nabl"/>
+                          </group>
+                    </group>
+
+
+                  
+                  
+                 
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+
+
+              
+              
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
