@@ -401,7 +401,7 @@ class LermSampleForm(models.Model):
             }
     
     def reallocate_sample(self):
-
+        # import wdb ; wdb.set_trace()
         action = self.env.ref('lerm_civil.sample_reallocation_wizard')
         return {
             'name': "Reallocate",
