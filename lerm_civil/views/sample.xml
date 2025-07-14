@@ -274,9 +274,8 @@
                       <field name="srf_id" optional="show" />
                       <!-- <field name="client_reference1" optional="show" /> -->
                       <field name="activity_ids" widget="list_activity" optional="show"/>
-                      <field name="sample_no" optional="show"/>
+                      <!-- <field name="sample_no" optional="show"/> -->
                       <field name="discipline_id" optional="show"/>
-                      <field name="lab_no_value" optional="show" invisible="1"/>
                       <!-- <field name="lab_l_id" optional="show"/> -->
                       <field name="group_id" optional="show"/>
                       <field name="department_id" optional="show"/>
@@ -334,9 +333,9 @@
                 
 
 
-                 <!-- <searchpanel>
-                        <field name="status" string="Technicians" enable_counters="1"/>
-                </searchpanel> -->
+                 <searchpanel>
+                        <field name="state" enable_counters="1"/>
+                </searchpanel>
             </search>
         </field>
     </record>
