@@ -1136,9 +1136,94 @@ class CementNormalConsistency(models.Model):
                     record.compressive_28_visible = True
                 if sample.internal_id == 'ed89d6b3-783f-4044-aef7-d2dd847d3cce':
                     record.dry_sieving_visible = True
-                if sample.internal_id == '97ca92ab-492a-44a2-8245-0c3a2d40e313':
+                if sample.internal_id == 'ca17d450-c526-4092-a3a7-6b0ff7e69c0a':
                     record.fineness_blaine_visible = True
                     record.density_visible = True
+
+    def open_eln_page(self):
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == 'a9e97cea-372f-4775-9bcb-e9dd70e6e6df':
+                result.result_char = round(self.normal_consistency_trial1,2)
+                if self.normal_consistency_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '40ce7425-30fe-4043-b518-015f5c60d916':
+                result.result_char = round(self.initial_setting_time_minutes_unrounded,2)
+                if self.initial_setting_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'd339933c-5e9c-4335-9ea2-2d87624c3061':
+                result.result_char = round(self.final_setting_time_minutes_unrounded,2)
+                if self.final_setting_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '8fcf78c9-dd02-4664-bba4-b887a64a6952':
+                result.result_char = round(self.average_density,2)
+                if self.density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '5d2e505d-1d50-48aa-a8c8-9f70fe4b421b':
+                result.result_char = round(self.expansion_soundness,2)
+                if self.soundness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '8ff8bce6-fb91-4673-8789-557cf91c3449':
+                result.result_char = round(self.compressive_strength_3_days,2)
+                if self.compressive_3days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'a267dec2-59df-4c9d-827b-69778c31c29b':
+                result.result_char = round(self.compressive_strength_7_days,2)
+                if self.compressive_7days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '6a0229a9-ba1d-4fc9-b2fa-3383699d3464':
+                result.result_char = round(self.compressive_strength_28_days,2)
+                if self.compressive_28days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'ed89d6b3-783f-4044-aef7-d2dd847d3cce':
+                result.result_char = round(self.fineness_dry_sieving,2)
+                if self.dry_seiving_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'ca17d450-c526-4092-a3a7-6b0ff7e69c0a':
+                result.result_char = round(self.fineness_air_permeability,2)
+                if self.fineness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+           
+            
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
 
 
 

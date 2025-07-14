@@ -6,7 +6,7 @@
         <field name="name">ndt.half.cell.form</field>
         <field name="model">ndt.half.cell</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false">
                 <sheet>
                     <group>
                         <field name="srf_id" invisible="1"/>
@@ -66,6 +66,12 @@
                                
                             </tree>
                     </field>
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
                     
                 </sheet>
             </form>

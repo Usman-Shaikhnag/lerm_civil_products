@@ -6,7 +6,7 @@
         <field name="name">mechanical.cement.ppc.ssl.form</field>
         <field name="model">mechanical.cement.ppc.ssl</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false">
                   <sheet>
                     <group>
                         <h1><field name="name" readonly="1" nolabel="1"/></h1>
@@ -594,6 +594,13 @@
                       <field name="fineness_conformity"/>
                       <field name="fineness_nabl"/>
                     </group>
+
+                      <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
 
                 </sheet>
             </form>
