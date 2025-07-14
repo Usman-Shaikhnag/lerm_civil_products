@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="upv_view" model="ir.ui.view">
+        <field name="name">ndt.upv.form</field>
+        <field name="model">ndt.upv</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="srf_id" readonly="1"/>
+                        <field name="sample_id"  readonly="1"/>
+                        <field name="parameter_id" readonly="1"/>
+                        <field name="eln_ref"  readonly="1"/>
+                        
+                    </group>
+                     <group style="width:50%">
+                        <field name="structure" string="Structure Age" identity="extra"/>
+                        <field name="temperature"  string="Concrete Temperature °C" identity="extra"/>
+                    </group>
+                    <group style="width:50%">
+                        <field name="grade_id"  />
+                        <field name="instrument" />
+                    </group>
+
+                    <group>
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <field name="child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name="element_type" string="Element Type/Member Name" />
+                                <field name="level_id" string="Location" />
+                                <field name="dist" string="Dist. (m)" />
+                                <field name="time" string="Time. (μs)" />
+                                <field name="velocity" string="Velocity(km/sec)" />
+                                <field name="condition_concrete" string="Condition Of Concrete" />
+                                <field name="surface" string="Surface" widget="selection"/>
+                                <field name="quality" string="Quality" />
+                                <field name="method" string="Method" />
+                            </tree>
+                    </field>
+                    <group>
+                        <field name="average" string="Average km/s" identity="result"/>
+                        <field name="minimum" string="Min Value km/s" identity="result" />
+                        <field name="maximum" string="Max Value km/s" identity="result"/>
+                    </group>
+                    <field name="notes" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name="notes" />
+                               
+                            </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

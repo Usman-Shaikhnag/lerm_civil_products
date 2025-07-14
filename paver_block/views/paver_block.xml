@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_pever_block1" model="ir.ui.view">
+        <field name="name">mechanical.paver.block.ssl.form</field>
+        <field name="model">mechanical.paver.block.ssl</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                   <group >
+                        <h1>
+                            <field name="name_paver" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group >
+                       <field name="grade"/>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                   
+                    
+                    <!-- <group >
+                            
+                            <field name="tests" widget="many2many_tags"/>
+                    </group> -->
+                    <group invisible = "paver_visible == False"  style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="paver_name" readonly="1" nolabel="1"/>
+                            <field name="paver_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                   
+                     
+                    <group invisible = "paver_visible == False" style="white-space: nowrap; width:70%;">
+                        <field name='thickness' col="4"/>
+                        
+                    </group>
+
+                    <group  invisible = "paver_visible == False">
+                        <group>
+                            <field name="gms1"/>
+                             <field name="gms2"/>
+                            </group>
+                            <group>
+                            <field name="n1"/>
+                           
+                            <field name="n2"/>
+                        </group>
+                    </group>
+
+                    <group invisible = "paver_visible == False">
+                    <field name="thickness_child_lines"  style="width:100%" >
+                            <tree editable="bottom">
+                              
+                                <field name="thickness1"/>
+                                  <field name="Correction_factore"/>
+                               
+                               
+                            </tree>
+                    </field>
+                   
+                    </group>
+
+
+
+
+                    <group invisible = "paver_visible == False" style="white-space: nowrap; width:70%;">
+                        <field name='mass_specimen' col="4"/>
+                        <field name='mass_size'  col="4"/> 
+                        <field name='area_paver' col="4"/>
+                    </group>
+
+                      <group  invisible = "paver_visible == False">
+                          <group>
+                            <field  name="area_paver_conformity"
+                                           decoration-success="area_paver_conformity == 'pass'" 
+                                           decoration-danger="area_paver_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="area_paver_nabl"/>
+                          </group>
+                    </group>
+
+
+                    <group invisible = "water_absorption_visible == False"  style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="water_absorption_name" readonly="1" nolabel="1"/>
+                            <field name="water_absorption_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+
+                    <group invisible = "water_absorption_visible == False">
+                    <field name="water_absorption_child_lines"  style="width:100%" >
+                            <tree editable="bottom">
+                                <field name="serial_no"/>
+                                <field name="sample_identification"/>
+                                <field name="dry_wt_w1" />
+                                <field name="wet_w2"/>
+                                <field name="water_absorption"/>
+                               
+                            </tree>
+                    </field>
+                   
+                    </group>
+                     <group invisible = "water_absorption_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
+                     
+                        <field name="avg_water_absorption" readonly="1"/>
+                        
+                  
+                    </group>
+                      <group  invisible = "water_absorption_visible == False">
+                          <group>
+                            <field  name="avg_water_absorption_conformity"
+                                           decoration-success="avg_water_absorption_conformity == 'pass'" 
+                                           decoration-danger="avg_water_absorption_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="avg_water_absorption_nabl"/>
+                          </group>
+                    </group>
+
+
+                    <group invisible = "commpressive_visible == False"  style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="commpressive_name" readonly="1" nolabel="1"/>
+                            <field name="commpressive_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+
+                    <group invisible = "commpressive_visible == False">
+                    <field name="commpressive_child_lines"  style="width:100%" >
+                            <tree editable="bottom">
+                                <field name="serial_no"/>
+                                <field name="sample_identification_com"/>
+                                <field name="wt_block" />
+                                <field name="correction_factor"/>
+                                <field name="load"/>
+                                <field name="compressive_strenght"/>
+                                <field name="thickness"/>
+                               
+                            </tree>
+                    </field>
+                   
+                    </group>
+                     <group invisible = "commpressive_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
+                     
+                        <field name="avg_commpressive" readonly="1"/>
+                         <field name="avg_thickness" readonly="1"/>
+                        
+                  
+                    </group>
+
+                     <group  invisible = "commpressive_visible == False">
+                          <group>
+                            <field  name="avg_commpressive_conformity"
+                                           decoration-success="avg_commpressive_conformity == 'pass'" 
+                                           decoration-danger="avg_commpressive_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="avg_commpressive_nabl"/>
+                          </group>
+                    </group>
+
+                      <group  invisible = "commpressive_visible == False">
+                          <group>
+                            <field  name="avg_thickness_conformity"
+                                           decoration-success="avg_thickness_conformity == 'pass'" 
+                                           decoration-danger="avg_thickness_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="avg_thickness_nabl"/>
+                          </group>
+                    </group>
+
+
+
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+                     
+
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

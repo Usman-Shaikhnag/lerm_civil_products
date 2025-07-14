@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="crack_width_view" model="ir.ui.view">
+        <field name="name">ndt.crack.width.form</field>
+        <field name="model">ndt.crack.width</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id"  readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group style="width:50%">
+                        <field name="temperature" string="Temperature °C" identity="extra"/>
+                        <field name="structure" string="Structure Age" identity="extra"/>
+                    </group>
+                    <field name="child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="member" string="Element Type"/>
+                                <field name="location" string="Location"/>
+                                <field name="crack_width_mm" string="Crack Width in mm"/>
+                            </tree>
+                    </field>
+                     <group>
+                            <field name="average" string="Average (mm)" identity="result"/>
+                            <field name="min" string="Min Value (mm)" identity="result"/>
+                            <field name="max" string="Max Value (mm)" identity="result"/>
+                    </group>
+                    <field name="notes" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name="notes" />
+                               
+                            </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>
