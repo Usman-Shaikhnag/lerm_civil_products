@@ -38,7 +38,7 @@
                 <sheet>
                     
                     <div class="oe_button_box" name="button_box"
-                        invisible='"state", "!=", "2-confirm"' >
+                        invisible='state != "2-confirm"' >
                         <button name="sample_count_button" type="object" class="oe_stat_button" icon="fa-align-justify">
                             <field name="sample_count" string="Samples" widget="statinfo"/>
                         </button>
@@ -62,6 +62,7 @@
                         </group>
 
                         <group style="width:50%">
+                            <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'"/>
                             <field name="client" readonly="state == '2-confirm'"
                                 groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
                             <field name="contractor" domain="[('id', 'in', contractor_ids)]"
@@ -70,7 +71,6 @@
                             <field name="contact_other_ids" invisible='1'/>
                             <field name="billing_customer" readonly="state == '2-confirm'"
                                 groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
-                            <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'"/>
                             <field name="name_works" invisible='1'/>
                             <field name="consultant_name1"/>
                             <field name="attachment" filename="attachment_name"/>
@@ -78,26 +78,23 @@
                         </group>
                     </group>
 
+                    
                     <group style="width:50%">
                         <field name="contact_site_ids" invisible='1'/>
                         <field name="contact_contact_ids" invisible='1'/>
                     </group>
 
-                    <group>
-                        <div class="o_row">
-                            <button name="open_new_sample_add_wizard" string="New Sample" type="object" class="btn btn-primary mr-2"
-                                invisible="state in ('2-confirm')"/>
-                            <button name="open_sample_add_wizard" string="Repeat Sample" type="object" class="btn btn-primary"
-                                invisible="state in ('2-confirm')"/>
-                        </div>
-                    </group>
+                    <div class="oe_button_box d-flex gap-2">
+                        <button name="open_new_sample_add_wizard" string="New Sample" type="object" class="btn btn-primary mr-2" invisible="state in ('2-confirm')"/>
+                        <button name="open_sample_add_wizard" string="Repeat Sample" type="object" class="btn btn-primary" invisible="state in ('2-confirm')"/>
+                    </div>
 
                     <field name="samples"
                                         readonly="1"
                                         context="{'default_customer_id': customer, 'is_local': True}"
                                         groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf">
                         <tree>
-                            <field name="kes_no"/>
+                            <field name="kes_no" string="Sample No."/>
                             <field name="material_id"/>
                             <field name="discipline_id"/>
                             <field name="lab_no_value" invisible='1'/>
@@ -107,6 +104,7 @@
                             <field name="casting"/>
                             <field name="sample_received_date"/>
                             <field name="sample_description"/>
+                            <field name="quantity"/>
                             <button name="edit_sample" string="Edit" type="object" class="btn-primary"
                                 groups="lerm_civil.srf_sample_editable"/>
                             <button name="reallocate_sample" string="Reallocate" type="object" class="btn-primary"
@@ -242,9 +240,12 @@
                     <group style="width:100%">
                         <field name="sample_description"/>
                     </group>
+                    
                     <group>
-                        <field name="volume"/>
+                        <!-- <field name="volume"/> -->
+                        <field name="quantity"/>
                     </group>
+                    
                     <group style="width:50%">
                         <field name="days_casting" string="Days of Testing" invisible="show_days_casting == False"/>
                     </group>
@@ -256,6 +257,7 @@
                         <field name="available_parameter_ids" invisible='1'/>
 
                     </group>
+                    
                     <group style="width:100%">
                         <field name="parameters" domain="[('id', 'in', available_parameter_ids)]" options="{'no_create': True}">
                             <tree>
