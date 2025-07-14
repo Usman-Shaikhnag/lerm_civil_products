@@ -264,7 +264,7 @@ class ProductProduct(models.Model):
 #     pricelist_id = fields.Many2one("product.pricelist",string="Pricelist")
 #     product_id = fields.Many2one('product.product', string='Product', ondelete='restrict')
 #     # report_ids = fields.Many2many("lerm.srf.sample",compute="_compute_report_ids")
-#     report_no1 = fields.Many2many("lerm.srf.sample", string="KES No.",domain="['&',('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced'),'|',('srf_id.customer', '=', partner_id),('srf_id.billing_customer', '=', partner_id)]")
+#     report_no1 = fields.Many2many("lerm.srf.sample", string="SSL NO.",domain="['&',('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced'),'|',('srf_id.customer', '=', partner_id),('srf_id.billing_customer', '=', partner_id)]")
 
 
 #     @api.onchange('partner_id')

@@ -19,7 +19,7 @@
 
 #     @http.route(['/my/lerm'], type='http', auth="user", website=True)
 #     def portal_my_Kes(self,  **kw):
-#         print("KES No.")
+#         print("SSL NO.")
 #         report_obj = request.env['lerm.srf.sample']
 #         reports = report_obj.search([])
 #         vals =  {'reports': reports, 'page_name':'kes_list_view'}

@@ -6,7 +6,7 @@
     <field name="name">lerm.srf.sample.form</field>
     <field name="model">lerm.srf.sample</field>
     <field name="arch" type="xml">
-        <form>
+        <form create="false">
             <field name="print_button_visible" invisible="1" />
             <field name="casting" invisible="1" />
 
@@ -218,7 +218,7 @@
                                         </strong>
                                         <ul>
                                             <li>
-                                                <b>KES NO :</b>
+                                                <b>SSL NO :</b>
                                                 <field name="kes_no"/>
                                             </li>
 
@@ -315,7 +315,7 @@
                 <field name="srf_id" string="SRF ID" />
                 <field name="casting" string="Casting" />
                 <field name="discipline_id" string="Discipline" />
-                <field name="kes_no" string="KES NO" />
+                <field name="kes_no" string="SSL NO" />
                 <field name="lab_no_value" optional="show" invisible="1"/>
                 <!-- <field name="lab_l_id" string="Discipline" /> -->
                 <field name="group_id" string="Group" />
