@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="carbonation_test_view" model="ir.ui.view">
+        <field name="name">ndt.carbonation.test.form</field>
+        <field name="model">ndt.carbonation.test</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id"  readonly="1"/>
+                        <field name="parameter_id"/>
+                    </group>
+                    <group>
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group style="width:50%">
+                        <field name="temperature" string="Temperature °C" identity="extra"/>
+                        <field name="structure" string="Structure Age" identity="extra"/>
+                    </group>
+                    <field name="child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name="member" string="Member / Element Type"/>
+                                <field name="location" string="Location"/>
+                                <field name="condition_of_concrete"  string="Condition of Concrete"/>
+                                <field name="depth" string="Depth of Carbonation in mm" attrs="{'readonly': [('condition_of_concrete', '!=', 'carbonated')]}" />
+                            </tree>
+                    </field>
+                    <group>
+                        <field name="average" string="Average of Depth of Carbonation in mm" identity="result"/>
+                        <field name="min_depth" string="Min mm" identity="result"/>
+                        <field name="max_depth" string="Max mm" identity="result"/>
+
+                    </group>
+                    <field name="notes" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name="notes" />
+                               
+                            </tree>
+                    </field>
+                   
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

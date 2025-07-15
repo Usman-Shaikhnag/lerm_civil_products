@@ -71,7 +71,7 @@ class LermSampleForm(models.Model):
     alias = fields.Char(string="Alias")
     product_alias = fields.Many2one('product.product',string="Product Alias")
     parameters = fields.Many2many('lerm.parameter.master',string="Parameter")
-    kes_no = fields.Char("KES No",required=True,readonly=True, default=lambda self: 'New' ,tracking=True)
+    kes_no = fields.Char("UID",required=True,readonly=True, default=lambda self: 'New' ,tracking=True)
     casting_date = fields.Date(string="Casting Date")
     client_sample_id = fields.Char(string='Client Sample ID')
     filled_by = fields.Many2one('res.users',string="Filled By")
@@ -401,7 +401,7 @@ class LermSampleForm(models.Model):
             }
     
     def reallocate_sample(self):
-
+        # import wdb ; wdb.set_trace()
         action = self.env.ref('lerm_civil.sample_reallocation_wizard')
         return {
             'name': "Reallocate",
@@ -490,7 +490,7 @@ class LermSampleForm(models.Model):
 
 
         # sample = self
-        # # print(self.kes_no , 'kes no of self')
+        # # print(self.kes_no , 'UID of self')
 
         # template_name = sample.parameters_result.parameter[0].datasheet_report_template.report_name
 

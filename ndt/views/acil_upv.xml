@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="acil_upv" model="ir.ui.view">
+        <field name="name">ndt.acil.upv.form</field>
+        <field name="model">ndt.acil.upv</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id"  readonly="1" />
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <field name="child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name="member" />
+                                <field name="location" />
+                                <field name="level" />
+                                <field name="dist" />
+                                <field name="time" />
+                                <field name="velocity" />
+                                <field name="concrete_condition" />
+                                <field name="quality" />
+                                <field name="method" />
+                            </tree>
+                    </field>
+                    <group>
+                        <field name="average" />
+                        <field name="min"  />
+                        <field name="max"/>
+                    </group>
+                   
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

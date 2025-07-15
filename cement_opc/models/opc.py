@@ -5,9 +5,8 @@ import math
 
 
 class CementNormalConsistency(models.Model):
-    _name = "cement.opc1"
+    _name = "cement.opc.ssl"
     _inherit = "lerm.eln"
-    _description = 'cement.opc1'
     _rec_name = "name"
 
     name = fields.Char("Name",default="Cement")
@@ -415,7 +414,7 @@ class CementNormalConsistency(models.Model):
     wt_of_cement_soundness = fields.Float("Weight of Cement(g)",default=100)
     wt_of_water_req_soundness = fields.Float("Weight of water required(g)",compute="_compute_water_weight_soundness")
 
-    soundness_table = fields.One2many('cement.soundness.line','parent_id',string="Soundness")
+    soundness_table = fields.One2many('cement.soundness.ssl.line','parent_id',string="Soundness")
     average_soundness = fields.Float("Average",compute="_compute_average_soundness")
     expansion_soundness = fields.Float("Expansion(mm)",compute="_compute_expansion_soundness" ,digits=(16,1))
 
@@ -517,7 +516,7 @@ class CementNormalConsistency(models.Model):
     start_date_dry_sieving = fields.Date("Start Date")
     end_date_dry_sieving = fields.Date("End Date")
 
-    dry_sieving_table = fields.One2many('cement.dry.sieving.line1','parent_id',string="Dry Sieving")
+    dry_sieving_table = fields.One2many('cement.dry.sieving.ssl.line','parent_id',string="Dry Sieving")
     average_fineness = fields.Float("Average",compute="_compute_average_fineness")
     fineness_dry_sieving = fields.Float("Fineness by dry sieving %",compute="_compute_fineness_dry_sieving" ,digits=(16,1))
 
@@ -620,7 +619,7 @@ class CementNormalConsistency(models.Model):
 
     casting_date_3days = fields.Date(string="Date of Casting")
     testing_date_3days = fields.Date(string="Date of Testing",compute="_compute_testing_date_3days")
-    casting_3_days_tables = fields.One2many('cement.casting.3days.line1','parent_id',string="3 Days")
+    casting_3_days_tables = fields.One2many('cement.casting.3days.ssl.line','parent_id',string="3 Days")
     average_casting_3days = fields.Float("Average",compute="_compute_average_3days")
     status_3days = fields.Boolean("Done")
     compressive_strength_3_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_3days" ,digits=(16,1))
@@ -718,7 +717,7 @@ class CementNormalConsistency(models.Model):
 
     casting_date_7days = fields.Date(string="Date of Casting")
     testing_date_7days = fields.Date(string="Date of Testing",compute="_compute_testing_date_7days")
-    casting_7_days_tables = fields.One2many('cement.casting.7days.line1','parent_id',string="7 Days")
+    casting_7_days_tables = fields.One2many('cement.casting.7days.ssl.line','parent_id',string="7 Days")
     average_casting_7days = fields.Float("Average",compute="_compute_average_7days")
     status_7days = fields.Boolean("Done")
     compressive_strength_7_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_7days" ,digits=(16,1))
@@ -818,7 +817,7 @@ class CementNormalConsistency(models.Model):
 
     casting_date_28days = fields.Date(string="Date of Casting")
     testing_date_28days = fields.Date(string="Date of Testing",compute="_compute_testing_date_28days")
-    casting_28_days_tables = fields.One2many('cement.casting.28days.line1','parent_id',string="28 Days")
+    casting_28_days_tables = fields.One2many('cement.casting.28days.ssl.line','parent_id',string="28 Days")
     average_casting_28days = fields.Float("Average",compute="_compute_average_28days")
     status_28days = fields.Boolean("Done")
     compressive_strength_28_days = fields.Float("Compressive Strength",compute="_compute_compressive_strength_28days" ,digits=(16,1))
@@ -1168,7 +1167,7 @@ class CementNormalConsistency(models.Model):
             print("Records",records)
 
     def get_all_fields(self):
-        record = self.env['cement.opc1'].browse(self.ids[0])
+        record = self.env['cement.opc.ssl'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -1201,9 +1200,9 @@ class CementTest(models.Model):
 
 
 class SoundnessCementLine(models.Model):
-    _name= "cement.soundness.line"
+    _name= "cement.soundness.ssl.line"
 
-    parent_id = fields.Many2one('cement.opc1')
+    parent_id = fields.Many2one('cement.opc.ssl')
     initial_distance = fields.Float("Intial distance separating the indicator points (L1).mm")
     final_distance = fields.Float("Final distance separating the indicator points (L2).mm")
     expansion = fields.Float("Expansion",compute="_compute_expansion")
@@ -1214,9 +1213,9 @@ class SoundnessCementLine(models.Model):
             record.expansion = round(record.final_distance - record.initial_distance,2)
 
 class DrySievingLine(models.Model):
-    _name = "cement.dry.sieving.line1"
+    _name = "cement.dry.sieving.ssl.line"
 
-    parent_id = fields.Many2one('cement.opc1')
+    parent_id = fields.Many2one('cement.opc.ssl')
     sample_weight_fineness = fields.Float("Sample Weight(g)",default=100)
     retained_weight = fields.Float("Retained Weight on 90 mic sieve (g)")
     fineness = fields.Float("Fineness by dry sieving %",compute="_compute_fineness")
@@ -1230,9 +1229,9 @@ class DrySievingLine(models.Model):
                 record.fineness = 0
 
 class Casting3DaysLine(models.Model):
-    _name = "cement.casting.3days.line1"
+    _name = "cement.casting.3days.ssl.line"
 
-    parent_id = fields.Many2one('cement.opc1',string="Parent Id")
+    parent_id = fields.Many2one('cement.opc.ssl',string="Parent Id")
     length = fields.Float("Length in mm")
     width = fields.Float("Width in mm")
     crosssectional_area = fields.Float("Crosssectional Area",compute="_compute_crosssectional_area")
@@ -1254,9 +1253,9 @@ class Casting3DaysLine(models.Model):
                 record.compressive_strength = 0
 
 class Casting7DaysLine(models.Model):
-    _name = "cement.casting.7days.line1"
+    _name = "cement.casting.7days.ssl.line"
 
-    parent_id = fields.Many2one('cement.opc1')
+    parent_id = fields.Many2one('cement.opc.ssl')
 
     length = fields.Float("Length in mm")
     width = fields.Float("Width in mm")
@@ -1279,9 +1278,9 @@ class Casting7DaysLine(models.Model):
                 record.compressive_strength = 0
 
 class Casting28DaysLine(models.Model):
-    _name = "cement.casting.28days.line1"
+    _name = "cement.casting.28days.ssl.line"
 
-    parent_id = fields.Many2one('cement.opc1')
+    parent_id = fields.Many2one('cement.opc.ssl')
 
     length = fields.Float("Length in mm")
     width = fields.Float("Width in mm")

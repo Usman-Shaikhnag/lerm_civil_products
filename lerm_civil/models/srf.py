@@ -105,7 +105,7 @@ class SrfForm(models.Model):
 
 
     srf_id = fields.Char(string="SRF ID",tracking=True)
-    kes_number = fields.Char(string="KES No",tracking=True)
+    kes_number = fields.Char(string="UID",tracking=True)
     # job_no = fields.Char(string="Job NO.")
     srf_date = fields.Date(string="SRF Date",default=lambda self: self._get_default_date(),tracking=True)
     job_date = fields.Date(string="JOB Date")
@@ -353,7 +353,7 @@ class SrfForm(models.Model):
             kes_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample.kes')]).number_next_actual
            
             sample_range = "SAM/"+str(sam_next_number)+"-"+str(sam_next_number+record.sample_qty-1)
-            kes_range = "SSL/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
+            kes_range = "SSL/TR/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
             record.write({'sample_range': sample_range , 'kes_range': kes_range })
             samples = self.env['lerm.srf.sample'].search([('sample_range_id','=',record.id)])
             
@@ -367,9 +367,8 @@ class SrfForm(models.Model):
                 day = str(self.srf_date.day).zfill(2)
                 count = count + 1
 
-                kes_no = "SSL"+ year+month+day + str(count).zfill(3) or "New"
+                kes_no = "SSL/TR/"+ year+month+day + str(count).zfill(3) or "New"
 
-                # kes_no = "KES"+ str(record.srf_date) + self.env['ir.sequence'].next_by_code('lerm.srf.sample.kes') or 'New'
                 kes_no_daywise = self.env['ir.sequence'].next_by_code('lerm.sample.daywise.seq') 
                 # kes_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample.kes') + kes_no_daywise or 'New'
                 # lab_l_id =  self.env['lab.location'].search([('id','=',self.env.context['allowed_company_ids'][0])])
@@ -440,7 +439,7 @@ class SrfForm(models.Model):
 
       
         modified_srf_id = f"SRF/"+year+month+day+srffirstnumber_str.zfill(3)+"-"+year+month+day+srf_last_number.zfill(3)
-        modified_kes_number = f"KES/DUS"
+        modified_kes_number = f"SSL/TR/DUS"
         self.write({'srf_id': modified_srf_id})
         self.write({'kes_number': modified_kes_number})
         self.write({'state': '2-confirm'})
@@ -696,6 +695,21 @@ class CreateSampleWizard(models.TransientModel):
     show_witness = fields.Boolean(compute='_compute_show_witness')
     show_days_casting = fields.Boolean(compute='_compute_show_casting')
     is_readonly_qty = fields.Boolean(compute='_compute_is_readonly_qty')
+    
+    available_parameter_ids = fields.Many2many(
+        'lerm.parameter.master',
+        compute='_compute_available_parameters',
+        string='Available Parameters'
+    )
+
+    @api.depends('material_id')
+    def _compute_available_parameters(self):
+        for rec in self:
+            if rec.material_id:
+                rec.available_parameter_ids = rec.material_id.parameter_table1
+            else:
+                rec.available_parameter_ids = [(5, 0, 0)]  # clear
+
 
     available_parameter_ids = fields.Many2many(
         'lerm.parameter.master',
