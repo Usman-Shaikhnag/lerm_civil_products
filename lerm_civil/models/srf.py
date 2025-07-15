@@ -105,7 +105,7 @@ class SrfForm(models.Model):
 
 
     srf_id = fields.Char(string="SRF ID",tracking=True)
-    kes_number = fields.Char(string="KES No",tracking=True)
+    kes_number = fields.Char(string="Sample No",tracking=True)
     # job_no = fields.Char(string="Job NO.")
     srf_date = fields.Date(string="SRF Date",default=lambda self: self._get_default_date(),tracking=True)
     job_date = fields.Date(string="JOB Date")
@@ -838,6 +838,17 @@ class CreateSampleWizard(models.TransientModel):
     show_days_casting = fields.Boolean(compute='_compute_show_casting')
     is_readonly_qty = fields.Boolean(compute='_compute_is_readonly_qty')
 
+    quantity = fields.Integer(string="Quantity")
+    # sample_quantity = fields.Integer(string="Sample Quantity")
+    uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
+    quantity_received = fields.Integer(string="Quantiyty Received")
+    quantity_consumed = fields.Integer(string="Quantity Consumed")
+    quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
+
+    @api.depends('quantity_received', 'quantity_consumed')
+    def compute_quantity_balance(self):
+        for rec in self:
+            rec.quantity_balance = rec.quantity_received - rec.quantity_consumed
     @api.depends('sample_condition')
     def _compute_show_reject_reason(self):
         for rec in self:

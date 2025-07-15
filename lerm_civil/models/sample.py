@@ -71,7 +71,7 @@ class LermSampleForm(models.Model):
     alias = fields.Char(string="Alias")
     product_alias = fields.Many2one('product.product',string="Product Alias")
     parameters = fields.Many2many('lerm.parameter.master',string="Parameter")
-    kes_no = fields.Char("KES No",required=True,readonly=True, default=lambda self: 'New' ,tracking=True)
+    kes_no = fields.Char("Sample No",required=True,readonly=True, default=lambda self: 'New' ,tracking=True)
     casting_date = fields.Date(string="Casting Date")
     client_sample_id = fields.Char(string='Client Sample ID')
     filled_by = fields.Many2one('res.users',string="Filled By")
@@ -158,6 +158,7 @@ class LermSampleForm(models.Model):
     ])
     other_cancellation_reason = fields.Text("Cancellation Reason")
 
+    quantity = fields.Integer(string="Quantity")
     @api.depends('srf_id.client_refrence')
     def _compute_client_reference(self):
         for record in self:
