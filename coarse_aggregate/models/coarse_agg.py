@@ -201,9 +201,9 @@ class CoarseAggregateMechanical(models.Model):
 
     #  specific_gravity_child_lines = fields.One2many('mechanical.specific.gravity.and.water.absorption.line','parent_id',string="Parameter")
 
-    wt_surface_dry = fields.Float(string="Weight of saturated surface dry (SSD) sample in air in gms")
-    wt_sample_inwater = fields.Float(string="Weight of saturated sample in water in gms")
-    oven_dried_wt = fields.Float(string="Oven dried weight of sample in gms")
+    wt_surface_dry = fields.Float(string="Wt of Saturated surface dry  Aggregate in Air:- (B)")
+    wt_sample_inwater = fields.Float(string="Wt of Saturated Aggregate in Water:- (A)")
+    oven_dried_wt = fields.Float(string="Wt of Oven Dried Aggregate in Air :- ( C )")
     specific_gravity = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity")
     water_absorption = fields.Float(string="Water absorption  %",compute="_compute_water_absorption")
 
@@ -1306,43 +1306,39 @@ class CoarseAggregateMechanical(models.Model):
         print("From Default Value")
         res = super(CoarseAggregateMechanical, self).default_get(fields)
 
-        coarse_sieve_20mm = ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan']
-        coarse_sieve_10mm = ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan']
+        sieve_mapping = {
+            63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+            40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+            20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
+            16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+            12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+            10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+        }
 
         default_sieve_sizes = []
         eln_ref = res['eln_ref']
 
-        size_id = self.env['lerm.eln'].sudo().search([('id','=',eln_ref)]).size_id.size
+        if eln_ref:
+            eln = self.env['lerm.eln'].sudo().browse(eln_ref)
+            size_str = eln.size_id.size or ''
+            print("Size:", size_str)
 
-        print("Size",size_id)
-        pattern = r'\d+'
-        match = re.search(pattern, size_id)
-        if match:
-            number = int(match.group())
-            print("Number",number)
-            if number == 10:
-                for i in range(5):  # You can change the number of default lines as needed
-                    size = {
-                        'sieve_size': coarse_sieve_10mm[i] # Set the default product
-                        # Set the default quantity
-                    }
-                    default_sieve_sizes.append((0, 0, size))
-                res['sieve_analysis_child_lines'] = default_sieve_sizes
-            elif number == 20:
-                for i in range(5):  # You can change the number of default lines as needed
-                    size = {
-                        'sieve_size': coarse_sieve_20mm[i] # Set the default product
-                        # Set the default quantity
-                    }
-                    default_sieve_sizes.append((0, 0, size))
-                res['sieve_analysis_child_lines'] = default_sieve_sizes
-            else :
-                res['sieve_analysis_child_lines'] = default_sieve_sizes
+            # Extract numeric part
+            match = re.search(r'\d+', size_str)
+            if match:
+                number = int(match.group())
+                print("Number:", number)
 
+                # Find matching sieve list by size
+                sieve_list = sieve_mapping.get(number)
+                if sieve_list:
+                    for sieve_size in sieve_list:
+                        size = {
+                            'sieve_size': sieve_size
+                        }
+                        default_sieve_sizes.append((0, 0, size))
+                    res['sieve_analysis_child_lines'] = default_sieve_sizes
 
-        else:
-            pass
-        
         return res
 
 
@@ -1546,11 +1542,11 @@ class CoarseAggregateMechanical(models.Model):
 
                 if sample.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
                     record.elongation_visible = True
-                    record.flakiness_visible = True
+                    # record.flakiness_visible = True
 
                 if sample.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
                     record.flakiness_visible = True
-                    record.elongation_visible = True
+                    # record.elongation_visible = True
                 if sample.internal_id == '988f5bf6-c865-453c-9cd6-993a5a59ad95':
                     record.finer75_visible = True
                 if sample.internal_id == 'd7e389bc-21ad-41eb-a602-f448f996eb2f':
@@ -1571,22 +1567,43 @@ class CoarseAggregateMechanical(models.Model):
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
         for result in self.eln_ref.parameters_result:
-            # crushing 
-            if result.parameter.internal_id == 'ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71':
-                result.result_char = round(self.average_crushing_value,2)
-                if self.average_crushing_value_nabl == 'pass':
+
+            # Elongation
+            if result.parameter.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
+                result.result_char = round(self.aggregate_elongation,2)
+                if self.aggregate_combine_conformity == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            # abrasion 
-            if result.parameter.internal_id == '37f2161e-5cc0-413f-b76c-10478c65baf9':
-                result.result_char = round(self.abrasion_value_percentage,2)
-                if self.abrasion_value_percentage_nabl == 'pass':
+
+            # Flakiness
+            if result.parameter.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
+                result.result_char = round(self.aggregate_flakiness,2)
+                if self.aggregate_combine_conformity == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            # Loose bulk
+            if result.parameter.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
+                result.result_char = round(self.loose_bulk_density,2)
+                if self.loose_bulk_density_conformity == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # rodded bulk
+            if result.parameter.internal_id == '357f579d-a310-4015-bc11-28a85c53ac83':
+                result.result_char = round(self.rodded_bulk_density,2)
+                if self.rodded_bulk_density_conformity == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
             # specific gravity 
             if result.parameter.internal_id == '3114db41-cfa7-49ad-9324-fcdbc9661038':
                 result.result_char = round(self.specific_gravity,2)
@@ -1595,10 +1612,16 @@ class CoarseAggregateMechanical(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
             # water absorbtion
             if result.parameter.internal_id == '22ee804f-41a3-4fd1-a301-a8d9180fba10':
                 result.result_char = round(self.water_absorption,2)
+                if self.specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
                 continue 
+
             # impact value 
             if result.parameter.internal_id == '2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2':
                 result.result_char = round(self.average_impact_value,2)
@@ -1607,31 +1630,6 @@ class CoarseAggregateMechanical(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            # fine 10
-            if result.parameter.internal_id == '5f506c08-4369-491d-93a6-030514c29661':
-                result.result_char = round(self.load_10percent_fine_values,2)
-                if self.load_10percent_fine_values_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            # soundness na2so4
-            if result.parameter.internal_id == '153f3c8b-6ccb-4db0-b89d-02db61f61e81':
-                result.result_char = round(self.soundness_na2so4,2)
-                if self.soundness_na2so4_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            # soundness mgso4
-            if result.parameter.internal_id == '89650e58-11a6-42af-8eb7-187467443a79':
-                result.result_char = round(self.soundness_mgso4,2)
-                if self.soundness_mgso4_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            
 
 
         return {
@@ -1775,9 +1773,9 @@ class SieveAnalysisLine(models.Model):
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size mm")
     wt_retained = fields.Float(string="Wt. Retained in gms")
-    cumulative_retained = fields.Float(string="Cum. Retained %", store=True,digits=(16,2))
-    percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained",digits=(16,2))
-    passing_percent = fields.Float(string="Passing %",digits=(16,2))
+    percent_retained = fields.Float(string='% of Weight Retained', compute="_compute_percent_retained",digits=(16,2))
+    cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained ", store=True,digits=(16,2))
+    passing_percent = fields.Float(string="% of wt passing",digits=(16,2))
 
 
 
@@ -1828,11 +1826,11 @@ class SieveAnalysisLine(models.Model):
         return res
 
 
-    @api.depends('wt_retained', 'parent_id.total_sieve_analysis')
+    @api.depends('wt_retained', 'parent_id.weight_of_sample')
     def _compute_percent_retained(self):
         for record in self:
             try:
-                record.percent_retained = record.wt_retained / self.parent_id.total_sieve_analysis * 100
+                record.percent_retained = (record.wt_retained / self.parent_id.weight_of_sample) * 100
             except ZeroDivisionError:
                 record.percent_retained = 0
 
