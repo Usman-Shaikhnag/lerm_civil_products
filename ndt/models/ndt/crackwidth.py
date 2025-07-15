@@ -17,6 +17,14 @@ class CrackWidth(models.Model):
     structure = fields.Char("Structure")
 
     notes = fields.One2many('ndt.crack.width.notes','parent_id',string="Notes")
+    eln_ref = fields.Many2one('lerm.eln',string="Eln")
+
+    def open_eln_page(self):
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '76474ec4-4d05-4614-9aac-d0fed62199a3':
+                result.result_char = round(self.average,2)
+                continue
 
 
 

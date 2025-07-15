@@ -22,6 +22,14 @@ class CrackDepth(models.Model):
     max_cd = fields.Float(string="Max mm", compute='_compute_max_cd', store=True)
     structure = fields.Char("Structure")
     notes = fields.One2many('ndt.crack.depth.notes','parent_id',string="Notes")
+    eln_ref = fields.Many2one('lerm.eln',string="Eln")
+
+    def open_eln_page(self):
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == 'b6daa925-6296-4f2e-991e-6c4cb6e4da68':
+                result.result_char = round(self.average,2)
+                continue
 
 
 

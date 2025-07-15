@@ -6,7 +6,7 @@
         <field name="name">ndt.upv.form</field>
         <field name="model">ndt.upv</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false">
                 <sheet>
                     <group>
                         <field name="srf_id" readonly="1"/>
@@ -53,6 +53,12 @@
                                
                             </tree>
                     </field>
+                      <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
                 </sheet>
             </form>
         </field>

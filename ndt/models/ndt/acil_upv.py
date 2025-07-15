@@ -14,6 +14,14 @@ class AcilUPV(models.Model):
     average = fields.Float("Average", compute="_compute_velocity_stats")
     min = fields.Float("Min", compute="_compute_velocity_stats")
     max = fields.Float("Max", compute="_compute_velocity_stats")
+    eln_ref = fields.Many2one('lerm.eln',string="Eln")
+
+    def open_eln_page(self):
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == 'fe02d1e0-c893-4991-a463-650b73264c1a':
+                result.result_char = round(self.average_mpa,2)
+                continue
 
     @api.model
     def create(self, vals):

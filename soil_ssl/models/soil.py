@@ -433,6 +433,56 @@ class Soil(models.Model):
     length_triaxial = fields.Float(string="Length of the specimen (L) in meters",digits=(12,3))
     area_triaxial = fields.Float(string="Area of the specimen  in m2",compute="_compute_area_triaxial",digits=(12,3))
 
+    area_triaxial_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_area_triaxial_conformity", store=True)
+
+    @api.depends('area_triaxial','eln_ref','grade')
+    def _compute_area_triaxial_conformity(self):
+        
+        for record in self:
+            record.area_triaxial_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-145ght27854l')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-145ght27854l')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.area_triaxial - record.area_triaxial*mu_value
+                    upper = record.area_triaxial + record.area_triaxial*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.area_triaxial_conformity = 'pass'
+                        break
+                    else:
+                        record.area_triaxial_conformity = 'fail'
+
+    area_triaxial_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_area_triaxial_nabl", store=True)
+
+    @api.depends('area_triaxial','eln_ref','grade')
+    def _compute_area_triaxial_nabl(self):
+        
+        for record in self:
+            record.area_triaxial_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-145ght27854l')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-145ght27854l')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.area_triaxial - record.area_triaxial*mu_value
+            upper = record.area_triaxial + record.area_triaxial*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.area_triaxial_nabl = 'pass'
+                break
+            else:
+                record.area_triaxial_nabl = 'fail'
+
     @api.depends('diameter_triaxial')
     def _compute_area_triaxial(self):
         for rec in self:
@@ -733,8 +783,70 @@ class Soil(models.Model):
                     record.determination_visible = True
 
 
+    # def open_eln_page(self):
+    #     # import wdb; wdb.set_trace()
+
+    #     return {
+    #             'view_mode': 'form',
+    #             'res_model': "lerm.eln",
+    #             'type': 'ir.actions.act_window',
+    #             'target': 'current',
+    #             'res_id': self.eln_ref.id,
+                
+    #         }
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
+                result.result_char = round(self.liquid_limit,2)
+                if self.liquid_limit_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
+                result.result_char = round(self.plastic_limit,2)
+                if self.plastic_limit_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
+                result.result_char = round(self.plasticity_index,2)
+                if self.plastic_limit_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
+                result.result_char = round(self.max_dry_density,2)
+                if self.heavy_table_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'ght4125-ca64-44dd-b0ae-228aacf04998':
+                result.result_char = round(self.fsi,2)
+                if self.fsi_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '5487gt21-ca64-44dd-b0ae-228aacf04965':
+                result.result_char = round(self.permeability,2)
+                if self.permeability_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-145ght27854l':
+                result.result_char = round(self.area_triaxial,2)
+                if self.area_triaxial_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            
 
         return {
                 'view_mode': 'form',
@@ -744,6 +856,8 @@ class Soil(models.Model):
                 'res_id': self.eln_ref.id,
                 
             }
+            
+    
 
     @api.model
     def create(self, vals):

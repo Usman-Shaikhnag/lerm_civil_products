@@ -17,7 +17,20 @@ class HalfCell(models.Model):
     child_lines_2 = fields.One2many('ndt.half.cell.two', 'parent_id', string="Parameter")
 
     notes = fields.One2many('ndt.half.cell.notes','parent_id',string="Notes")
+    eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
+    def open_eln_page(self):
+        # import wdb; wdb.set_trace()
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
+   
 
     def upgrade(self):
         # Your custom logic to check for conditions that may raise an error

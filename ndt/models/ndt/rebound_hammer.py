@@ -15,6 +15,7 @@ class ReboundHammer(models.Model):
     minimum_mpa = fields.Float(string="Minimum Mpa",compute="_compute_average",store=True)
     maximum_mpa = fields.Float(string="Maximum Mpa",compute="_compute_average",store=True)
     structure = fields.Char("Structure")
+    eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
     notes = fields.One2many('ndt.rebound.hammer.notes','parent_id',string="Notes")
 
@@ -50,6 +51,23 @@ class ReboundHammer(models.Model):
     #         values = record.child_lines.mapped('avg')
     #         self.minimum = round(float(min(values)),2) if values else 0.0
     #         self.maximum = round(float(max(values)),2) if values else 0.0
+
+    def open_eln_page(self):
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == 'fe02d1e0-c893-4991-a463-650b73264c1a':
+                result.result_char = round(self.average_mpa,2)
+                continue
+          
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
 
 
     @api.model
