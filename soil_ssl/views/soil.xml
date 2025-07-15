@@ -6,7 +6,7 @@
         <field name="name">mechanical.soil.ssl.form</field>
         <field name="model">mechanical.soil.ssl</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false">
                 <sheet>
                    <group >
                         <h1>
@@ -257,6 +257,14 @@
                         </tree>
                       </field>
                   
+                    </group>
+
+                      <group  invisible = "triaxial_visible == False">
+                     <field name='area_triaxial_conformity' col="4"
+                                           decoration-success="area_triaxial_conformity == 'pass'" 
+                                           decoration-danger="area_triaxial_conformity == 'fail'" 
+                                           readonly="1"/>
+                     <field name='area_triaxial_nabl' col="4"/>
                     </group>
 
 

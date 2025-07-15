@@ -162,11 +162,8 @@
                 </group>
                 </group>  
 
+                <button name="open_form" type="object" class="btn btn-primary" string="Open Form" invisible="product_or_form_based == False"/>
 
-                <group>
-                    <button name="open_form" type="object" string="Open Form" invisible="product_or_form_based == False"/>
-            
-                </group>  
                 <group>
                     <field name="print_button_visible" invisible="1"/>                
                 </group>  
@@ -174,15 +171,15 @@
     
                 <field invisible="1" name="parameters" nolabel="1" options="{'no_create': True, 'no_open': True}" />
                 <field name="parameters_result" nolabel="1" invisible="product_or_form_based == True">
-                            <tree editable="bottom" >
-                                <field name="parameter"/>
-                                <field name="result" />
-                                <field name="unit" />
-                                <field name="verified" />
-                                <field name="specification" />
-                                <field name="test_method" />
-                                <!-- <button string="Calculation" name="open_calculation_wizard" type="object" class="oe_highlight"/> -->
-                            </tree>
+                    <tree editable="bottom" >
+                        <field name="parameter"/>
+                        <field name="result" />
+                        <field name="unit" />
+                        <field name="verified" />
+                        <field name="specification" />
+                        <field name="test_method" />
+                        <!-- <button string="Calculation" name="open_calculation_wizard" type="object" class="oe_highlight"/> -->
+                    </tree>
                 </field>
             </sheet>
 

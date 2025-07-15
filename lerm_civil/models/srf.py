@@ -711,6 +711,17 @@ class CreateSampleWizard(models.TransientModel):
                 rec.available_parameter_ids = [(5, 0, 0)]  # clear
 
 
+    quantity = fields.Integer(string="Quantity")
+    # sample_quantity = fields.Integer(string="Sample Quantity")
+    uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
+    quantity_received = fields.Integer(string="Quantiyty Received")
+    quantity_consumed = fields.Integer(string="Quantity Consumed")
+    quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
+
+    @api.depends('quantity_received', 'quantity_consumed')
+    def compute_quantity_balance(self):
+        for rec in self:
+            rec.quantity_balance = rec.quantity_received - rec.quantity_consumed
     @api.depends('sample_condition')
     def _compute_show_reject_reason(self):
         for rec in self:

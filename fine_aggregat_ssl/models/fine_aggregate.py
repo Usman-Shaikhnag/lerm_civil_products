@@ -630,8 +630,57 @@ class FineAggregate(models.Model):
 
             
               
+    # def open_eln_page(self):
+    #     # import wdb; wdb.set_trace()
+
+    #     return {
+    #             'view_mode': 'form',
+    #             'res_model': "lerm.eln",
+    #             'type': 'ir.actions.act_window',
+    #             'target': 'current',
+    #             'res_id': self.eln_ref.id,
+                
+    #         }
+
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '45875ght-7188-4086-b132-62b50e63f1245gt':
+                result.result_char = round(self.specific_gravity,2)
+                if self.specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '4587tyhloos-3fa3-4b83-ae31-9d281767188c':
+                result.result_char = round(self.loose_bulk_density,2)
+                if self.loose_bulk_density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '45789bhgt25-3fa3-4b83-ae31-9d28176718457':
+                result.result_char = round(self.avg_bulking_of_sand,2)
+                if self.avg_bulking_of_sand_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '2547ghty124m-3fa3-4b83-ae31-9d281457nhy14':
+                result.result_char = round(self.avg_bulking_of_sand1,2)
+                if self.avg_bulking_of_sand1_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '1457htyu1245-3fa3-4b83-ae31-9d281457457hy':
+                result.result_char = round(self.avg_moisture,2)
+                if self.avg_moisture_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            
 
         return {
                 'view_mode': 'form',
@@ -641,6 +690,8 @@ class FineAggregate(models.Model):
                 'res_id': self.eln_ref.id,
                 
             }
+            
+    
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()

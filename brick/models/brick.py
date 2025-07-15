@@ -382,6 +382,25 @@ class MechanicalBricks(models.Model):
      
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            
+            # crushing 
+            if result.parameter.internal_id == '31478fghht-9287-48c7-a607-bf1b64a8115d':
+                result.result_char = round(self.avrg_compressive_strength,2)
+                if self.comp_strength_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # water absorbtion
+            if result.parameter.internal_id == '321475gfet1-f3ab-4b19-af25-91a4671baf5f':
+                result.result_char = round(self.avrg_water_absorption,2)
+                if self.water_absorption_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue 
 
         return {
                 'view_mode': 'form',

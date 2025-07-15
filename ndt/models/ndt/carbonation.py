@@ -18,6 +18,14 @@ class CarbonationTest(models.Model):
     structure = fields.Char("Structure")
 
     notes = fields.One2many('ndt.carbonation.test.notes','parent_id',string="Notes")
+    eln_ref = fields.Many2one('lerm.eln',string="Eln")
+
+    def open_eln_page(self):
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '889d7c7a-1d9e-42c9-a3db-e3d29551cb26':
+                result.result_char = round(self.average,2)
+                continue
 
 
 
