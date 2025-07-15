@@ -28,7 +28,7 @@ class ELN(models.Model):
     technician = fields.Many2one('res.users',string="Technicians",tracking=5)
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample ID',tracking=True,ondelete="cascade")
     srf_date = fields.Date(string='SRF Date',tracking=True)
-    kes_no = fields.Char(string="KES NO",tracking=True)
+    kes_no = fields.Char(string="UID",tracking=True)
     discipline = fields.Many2one('lerm_civil.discipline',string="Discipline",tracking=4)
     lab_no_value = fields.Char(string="Value")
     # lab_l_id = fields.Integer(string="Lab Locations",domain="[('parent_id', '=', discipline_id)]")
