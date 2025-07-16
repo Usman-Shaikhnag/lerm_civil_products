@@ -53,9 +53,9 @@
 								<p style="font-size:15px"><b><span t-field="data.soil_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										</t>
+										</t> -->
 									</t>
 								</span>
 						</div>
@@ -117,9 +117,9 @@
 								<p style="font-size:15px"><b><span t-field="data.fsi_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','ght4125-ca64-44dd-b0ae-228aacf04998')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										</t>
+										</t> -->
 									</t>
 								</span>
 							</div>
@@ -161,9 +161,9 @@
 								<p style="font-size:15px"><b><span t-field="data.sieve_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12014fgr-5c56-475b-9a89-93a59c9ee3a2')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										</t>
+										</t> -->
 									</t>
 								</span>
 							</div>
@@ -267,15 +267,19 @@
 						</div>
 					</div>
 
+					<div t-if="data.graph_image_slive" style="margin-top: 20px;">
+								<img t-att-src="'data:image/png;base64,' + data.graph_image_slive.decode('utf-8')" style="max-width: 100%;"/>
+					</div>
+
 					<div>
 						<div style="margin-top:20px" t-if="data.heavy_visible">
 							<div style="text-align:center;">
 								<p style="font-size:15px"><b><span t-field="data.heavy_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										</t>
+										</t> -->
 									</t>
 								</span>
 							</div>
@@ -424,8 +428,175 @@
 									</td>
 								</tr>
 							</table>
+
+							
+						</div>
+							<div t-if="data.graph_image_density" style="margin-top: 20px;">
+								<img t-att-src="'data:image/png;base64,' + data.graph_image_density.decode('utf-8')" style="max-width: 100%;"/>
+							</div>
+
+
+
+						<div style="margin-top:20px" t-if="data.omc_table">
+							<div style="text-align:center;">
+								<p style="font-size:15px"><b><span t-field="data.heavy_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+						
+						</div>
+						<table style="margin-top:30px;" t-if="data.omc_table">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th>
+										<span>
+											Amount of soil (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+											Amount of water added (%)
+										</span>
+									</th>
+									<th>
+										<span>
+										Empty weight of mould without collar, W1 (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of soil compacted + mould, W2 (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of wet soil (W2-W1) (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Volume of mould (V) (cm3)
+										</span>
+									</th>
+									<th>
+										<span>
+											 Bulk density (ρ) (g/cc)
+										</span>
+									</th>
+									<th>
+										<span>
+											Container Number
+										</span>
+									</th>
+									<th>
+										<span>
+										Empty weight of container (M1) (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of container + wet soil (M2) (gm)
+
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of container + Weight of oven dry soil (M3) (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Water Content (%)
+										</span>
+									</th>
+									<th>
+										<span>
+									Dry Density (γd ) (g/cc)   
+
+										</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.omc_table" t-as="r">
+									<td>
+										<div>
+											<span t-esc="k + 1" />
+											<t t-set="k" t-value="k+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.amount_soil1"/>
+									</td>
+									<td>
+										<span t-esc="r.amount_water1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.empty_wt_mould1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_soil1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_wet1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.volume_mould1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.bulk_density1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.con_no1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.empty_wt1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wet_con_ovenwet1"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wet_con_ovendry1"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.water_content1"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.dry_density1"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						
+					<div style="margin-top:10px" t-if="data.omc_table">
+							<table>
+								<tr> 
+									<td colspan="12">Maximum Dry Density (MDD) g/cc = :<![CDATA[&nbsp;]]>
+										<span t-esc="data.max_dry_density1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								<tr> 
+									<td colspan="12">Optimum Moisture Content (OMC) %  :<![CDATA[&nbsp;]]>
+										<span t-esc="data.omc1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</table>
 						</div>
 
+						<div t-if="data.graph_image_density1" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_density1.decode('utf-8')" style="max-width: 100%;"/>
+                     </div>
 
 					
 
@@ -435,9 +606,9 @@
 								<p style="font-size:15px"><b><span t-field="data.liquid_limit_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										</t>
+										</t> -->
 									</t>
 								</span>
 							</div>
@@ -550,6 +721,10 @@
 
 						
 					</div>
+
+						<div t-if="data.graph_image_liquid" style="margin-top: 20px;">
+								<img t-att-src="'data:image/png;base64,' + data.graph_image_liquid.decode('utf-8')" style="max-width: 100%;"/>
+						</div>
  
 
 					<div t-if="data.plastic_limit_visible">
@@ -558,9 +733,9 @@
 								<p style="font-size:15px"><b><span t-field="data.plastic_limit_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','120vbf14-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										</t>
+										</t> -->
 									</t>
 								</span>
 							</div>
@@ -658,8 +833,7 @@
 							<table>
 								<tr cols="12">
 									<td colspan="6">Plasticity index=Liquid limit-Plastic limit :
-										<![CDATA[&nbsp;]]>
-										<span t-esc="float(data.plasticity_index) if data.plasticity_index.replace('.', '', 1).isdigit() else data.plasticity_index" />
+										<span t-field="data.plasticity_index" t-options='{"widget": "float", "precision": 2}' />
 									</td>
 								</tr>
 							</table>
@@ -673,9 +847,9 @@
 								<p style="font-size:15px"><b><span t-field="data.triaxial_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3210vbf-20fb-4843-aa0e-145ght27854l')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										</t>
+										</t> -->
 									</t>
 								</span>
 							</div>
@@ -792,9 +966,9 @@
 								<p style="font-size:15px"><b><span t-field="data.internal_fraction_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','14578nhy87-20fb-4843-aa0e-145ght27854l')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										</t>
+										</t> -->
 									</t>
 								</span>
 							</div>
@@ -888,9 +1062,9 @@
 								<p style="font-size:15px"><b><span t-field="data.determination_name"/></b></p>
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5487gt21-ca64-44dd-b0ae-228aacf04965')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										</t>
+										</t> -->
 									</t>
 								</span>
 							</div>
