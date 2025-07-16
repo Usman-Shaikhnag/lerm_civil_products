@@ -320,17 +320,32 @@ class FineAggregate(models.Model):
     avg_height_sattled_b = fields.Float(string="Height of Settled Sand:- (B)", compute="_compute_avg_bulking_lines")
     avg_loss_c = fields.Float(string="Loss of Height of Sand:- (A-B)", compute="_compute_avg_bulking_lines")
 
+   
+
     @api.depends('bulking_sand_child_lines')
     def _compute_avg_bulking_lines(self):
         for rec in self:
             lines = rec.bulking_sand_child_lines
-            count = len(lines)
-            if count:
-                rec.avg_height_sand_a = sum(line.height_of_sand for line in lines) / count
-                rec.avg_height_sattled_b = sum(line.height_of_settled for line in lines) / count
-                rec.avg_loss_c = sum(line.loss_off_height for line in lines) / count
+            all_count = len(lines)
+            selected_lines = lines[:2]  # Only first two lines (0 and 1)
+            selected_count = len(selected_lines)
+
+            # Compute avg from 1st two lines
+            if selected_count:
+                rec.avg_height_sand_a = sum(line.height_of_sand for line in selected_lines) / selected_count
+                rec.avg_height_sattled_b = sum(line.height_of_settled for line in selected_lines) / selected_count
             else:
-                rec.avg_height_sand_a = rec.avg_height_sattled_b = rec.avg_loss_c  = 0.0
+                rec.avg_height_sand_a = 0.0
+                rec.avg_height_sattled_b = 0.0
+
+            # Compute avg of loss_c from all lines
+            if all_count:
+                rec.avg_loss_c = sum(line.loss_off_height for line in lines) / all_count
+            else:
+                rec.avg_loss_c = 0.0
+
+
+  
                 
 
     avg_bulking_of_sand = fields.Float(
@@ -411,17 +426,37 @@ class FineAggregate(models.Model):
     content_height_sand_b = fields.Float(string="Height of Sand:- (B)", compute="_compute_avg_content_lines")
     content_slit_c = fields.Float(string="Height of Silt:- (A-B)", compute="_compute_avg_content_lines")
 
+    # @api.depends('site_content_child_lines')
+    # def _compute_avg_content_lines(self):
+    #     for rec in self:
+    #         lines = rec.site_content_child_lines
+    #         count = len(lines)
+    #         if count:
+    #             rec.content_height_sand_a = sum(line.heigh_sand_silt for line in lines) / count
+    #             rec.content_height_sand_b = sum(line.height_of_sand for line in lines) / count
+    #             rec.content_slit_c = sum(line.height_silt for line in lines) / count
+    #         else:
+    #             rec.content_height_sand_a = rec.content_height_sand_b = rec.content_slit_c  = 0.0
     @api.depends('site_content_child_lines')
     def _compute_avg_content_lines(self):
         for rec in self:
             lines = rec.site_content_child_lines
-            count = len(lines)
-            if count:
-                rec.content_height_sand_a = sum(line.heigh_sand_silt for line in lines) / count
-                rec.content_height_sand_b = sum(line.height_of_sand for line in lines) / count
-                rec.content_slit_c = sum(line.height_silt for line in lines) / count
+            all_count = len(lines)
+            selected_lines = lines[:2]  # फक्त पहिल्या 2 lines (index 0 आणि 1)
+            selected_count = len(selected_lines)
+
+            if selected_count:
+                rec.content_height_sand_a = sum(line.heigh_sand_silt for line in selected_lines) / selected_count
+                rec.content_height_sand_b = sum(line.height_of_sand for line in selected_lines) / selected_count
             else:
-                rec.content_height_sand_a = rec.content_height_sand_b = rec.content_slit_c  = 0.0
+                rec.content_height_sand_a = 0.0
+                rec.content_height_sand_b = 0.0
+
+            if all_count:
+                rec.content_slit_c = sum(line.height_silt for line in lines) / all_count
+            else:
+                rec.content_slit_c = 0.0
+
 
 
     avg_bulking_of_sand1 = fields.Float(

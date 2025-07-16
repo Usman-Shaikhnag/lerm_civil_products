@@ -13,6 +13,7 @@ from scipy.optimize import minimize_scalar
 from io import BytesIO
 
 
+
 class Soil(models.Model):
     _name = "mechanical.soil.ssl"
     _inherit = "lerm.eln"
@@ -127,6 +128,76 @@ class Soil(models.Model):
             line._compute_percent_retained()
             # line._compute_cumulative_retained()
 
+    graph_image_slive = fields.Binary("Sieve Graph", compute="_compute_graph_image_slive", store=True)
+
+    @api.depends('child_lines.cumulative_retained', 'child_lines.passing_percent')
+    def _compute_graph_image_slive(self):
+        for record in self:
+            if record.child_lines:
+                record.graph_image_slive = record.generate_line_chart_slive()
+            else:
+                record.graph_image_slive = False
+
+    
+
+    def generate_line_chart_slive(self):
+    
+
+        x_value = []
+        y_value = []
+        for line in self.child_lines:
+            if line.cumulative_retained and line.cumulative_retained > 0 and line.passing_percent is not None:
+                x_value.append(line.cumulative_retained)
+                y_value.append(line.passing_percent)
+
+        if not x_value or not y_value:
+            return False
+
+        plt.figure(figsize=(10, 5))
+
+        # ✅ Logarithmic X-axis
+        plt.xscale('log')
+
+        # ✅ Plot
+        plt.plot(x_value, y_value, color='gray', marker='o', linestyle='-', linewidth=2)
+
+        # ✅ Axis labels
+        plt.xlabel('Cumulative % Weight Retained (Log Scale)', fontsize=12)
+        plt.ylabel('Passing %', fontsize=12)
+        plt.title('WET SIEVE ANALYSIS OF SOIL SAMPLE', fontsize=14)
+
+        # ✅ Custom ticks for actual values from your data
+        ticks = sorted(set(x_value))
+        plt.xticks(ticks, [str(round(t, 2)) for t in ticks])
+
+        # ✅ Grid
+        plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+
+        # ✅ Limits
+        plt.xlim(left=min(x_value) / 1.5, right=max(x_value) * 1.5)
+        plt.ylim(bottom=0, top=100)
+
+        # ✅ Highlight max
+        max_index = y_value.index(max(y_value))
+        max_x = x_value[max_index]
+        max_y = y_value[max_index]
+
+        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=2)
+        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=2)
+        plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
+        plt.text(max_x * 1.1, max_y + 2, f"{max_x:.2f}, {max_y:.2f}%", color='red')
+
+        # ✅ Save image
+        buffer = io.BytesIO()
+        plt.tight_layout()
+        plt.savefig(buffer, format='png')
+        plt.close()
+        buffer.seek(0)
+
+        return base64.b64encode(buffer.read())
+
+
+
 
         # Liquid Limit
     liquid_limit_name = fields.Char("Name",default="Liquid Limit")
@@ -141,8 +212,13 @@ class Soil(models.Model):
     @api.depends('child_liness.water_content')
     def _compute_liquid_limit(self):
         for record in self:
-            total_water_content = sum(record.child_liness.mapped('water_content'))
-            record.liquid_limit = total_water_content / len(record.child_liness) if record.child_liness else 0.0
+            if record.child_liness:
+                total_water_content = sum(record.child_liness.mapped('water_content'))
+                average = total_water_content / len(record.child_liness)
+                record.liquid_limit = round(average)  # ⬅️ Rounds to nearest integer
+            else:
+                record.liquid_limit = 0.0
+
 
     # remarks_liquid_limit = fields.Selection([
     #     ('plastic', 'Plastic'),
@@ -199,6 +275,73 @@ class Soil(models.Model):
                 record.liquid_limit_nabl = 'fail'
 
 
+    graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
+
+    
+    def generate_line_chart_liquid(self):
+        x_value = []
+        y_value = []
+        for line in self.child_liness:
+            if line.blwo_no1 and line.water_content is not None:
+                x_value.append(line.blwo_no1)
+                y_value.append(line.water_content)
+
+        if not x_value or not y_value:
+            return False
+
+        plt.figure(figsize=(10, 5))
+
+        # Plot points
+        plt.plot(x_value, y_value, color='gray', marker='o', linestyle='-', linewidth=2)
+
+        plt.xlabel('No. of Blows', fontsize=12)
+        plt.ylabel('Water Content (%)', fontsize=12)
+        plt.title('LIQUID LIMIT', fontsize=14)
+        plt.grid(True)
+
+        # Round Y-axis (Water Content) up to nearest 10
+        max_y = max(y_value)
+        y_limit = (int(max_y / 10) + 1) * 10  # e.g., 43 → 50
+        plt.ylim(bottom=0, top=y_limit)
+
+        # Round X-axis (Blows) up to nearest 10
+        max_x = max(x_value)
+        x_limit = (int(max_x / 10) + 1) * 10  # e.g., 36 → 40
+        plt.xlim(left=0, right=x_limit)
+
+        # Optional: highlight maximum point
+        max_index = y_value.index(max_y)
+        highlight_x = x_value[max_index]
+        highlight_y = y_value[max_index]
+
+        plt.axhline(y=highlight_y, color='red', linestyle='--', linewidth=2)
+        plt.axvline(x=highlight_x, color='red', linestyle='--', linewidth=2)
+        plt.plot(highlight_x, highlight_y, marker='o', color='red', markersize=8)
+        plt.text(highlight_x + 1, highlight_y + 1, f"{highlight_y:.2f}%", color='red')
+
+        # Save to buffer
+        buffer = io.BytesIO()
+        plt.tight_layout()
+        plt.savefig(buffer, format='png')
+        plt.close()
+        buffer.seek(0)
+
+        return base64.b64encode(buffer.read()).decode('utf-8')
+
+        
+       
+    
+
+    @api.depends('child_liness')
+    def _compute_graph_image_liquid(self):
+        try:
+            for record in self:
+                chart_image_liquid = record.generate_line_chart_liquid()
+                record.graph_image_liquid = chart_image_liquid
+        except:
+            pass 
+
+
       # Plastic Limit
     plastic_limit_name = fields.Char("Name",default="Plastic Limit")
     plastic_limit_visible = fields.Boolean("Plastic Limit Visible",compute="_compute_visible")
@@ -206,17 +349,15 @@ class Soil(models.Model):
     plastic_limit_table = fields.One2many('mechanical.plasticl.limit.ssl.line','parent_id',string="Parameter")
 
     plastic_limit = fields.Float(string="Average ",compute="_compute_plastic_limit")
-    plasticity_index = fields.Char(string="Plasticity Index", compute="_compute_plasticity_index")
+    plasticity_index = fields.Float(string="Plasticity Index", compute="_compute_plasticity_index")
 
-    @api.depends('plastic_limit','liquid_limit')
+    @api.depends('plastic_limit', 'liquid_limit')
     def _compute_plasticity_index(self):
         for record in self:
-            if record.plastic_limit == 0.0:
-                record.plasticity_index = 'Null'
+            if record.liquid_limit is not None and record.plastic_limit is not None:
+                record.plasticity_index = record.liquid_limit - record.plastic_limit
             else:
-                plasticity_value = record.liquid_limit - record.plastic_limit
-                # Format the string representation with 2 decimal places
-                record.plasticity_index = '{:.2f}'.format(plasticity_value)
+                record.plasticity_index = 0.0
 
     @api.depends('plastic_limit_table.water_content_pastic')
     def _compute_plastic_limit(self):
@@ -227,7 +368,7 @@ class Soil(models.Model):
 
     plastic_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_plasticity_limit_conformity", store=True)
+            ('fail', 'Fail')], string="Plastic Limit Conformity", compute="_compute_plasticity_limit_conformity", store=True)
 
     @api.depends('plastic_limit','eln_ref','grade')
     def _compute_plasticity_limit_conformity(self):
@@ -252,7 +393,7 @@ class Soil(models.Model):
 
     plastic_limit_nabl = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_plasticity_limi_nabl", store=True)
+        ('fail', 'Fail')], string="Plastic Limit NABL", compute="_compute_plasticity_limi_nabl", store=True)
 
     @api.depends('plastic_limit','eln_ref','grade')
     def _compute_plasticity_limi_nabl(self):
@@ -274,6 +415,57 @@ class Soil(models.Model):
                 break
             else:
                 record.plastic_limit_nabl = 'fail'
+
+
+    plasticity_index_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Plasticity Index Conformity", compute="_compute_plasticity_limit_conformity", store=True)
+
+    @api.depends('plasticity_index','eln_ref','grade')
+    def _compute_plasticity_limit_conformity(self):
+        
+        for record in self:
+            record.plasticity_index_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1045789654-2ff0-4b81-aca1-0e07dab7cd87')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1045789654-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.plasticity_index - record.plasticity_index*mu_value
+                    upper = record.plasticity_index + record.plasticity_index*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.plasticity_index_conformity = 'pass'
+                        break
+                    else:
+                        record.plasticity_index_conformity = 'fail'
+
+    plasticity_index_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="Plasticity Index NABL", compute="_compute_plasticity_limi_nabl", store=True)
+
+    @api.depends('plasticity_index','eln_ref','grade')
+    def _compute_plasticity_limi_nabl(self):
+        
+        for record in self:
+            record.plasticity_index_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1045789654-2ff0-4b81-aca1-0e07dab7cd87')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1045789654-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.plasticity_index - record.plasticity_index*mu_value
+            upper = record.plasticity_index + record.plasticity_index*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.plasticity_index_nabl = 'pass'
+                break
+            else:
+                record.plasticity_index_nabl = 'fail'
 
 
    
@@ -361,55 +553,55 @@ class Soil(models.Model):
     
     graph_image_density = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light", store=True)
 
-    def generate_line_chart_light_omc (self):
-        # Prepare data for the chart
-        plt.figure(figsize=(12, 6))
+
+    def generate_line_chart_light_omc(self):
+    # Prepare data for the chart
         x_value = []
         y_value = []
         for line in self.heavy_table:
             x_value.append(line.water_content)
             y_value.append(line.dry_density)
 
-
-
-        plt.plot(x_value, y_value, marker='o')
-        plt.xlabel(' Water Content g/cc')
-        plt.ylabel('Dry Density (%)')
-        plt.title('DETERMINATION COMPACTION OMC/MDD')
-
-       
-        # Adjust xlim to add space on both ends of the x-axis
-        plt.xlim(left=5.0, right=max(x_value) + 1.5 )
-
-        plt.ylim(bottom=0, top=max(y_value) + 1.0)
-
-        for i in range(len(x_value)):
-            plt.plot([x_value[i], x_value[i]], [0, y_value[i]], color='black', linestyle='--', alpha=0.5)
-            if i < len(x_value) - 1:
-                plt.plot([x_value[i], x_value[i + 1]], [y_value[i], y_value[i + 1]], color='black', linestyle='-', alpha=0.5)
-
-
-
-        # Find the index of the maximum y value
-        max_y_index = y_value.index(max(y_value))
-
-        # Add a horizontal line at the maximum y value
-        plt.axhline(y=y_value[max_y_index], color='red', linestyle='--')
-
-        # Add a vertical line at the corresponding x value
-        plt.axvline(x=x_value[max_y_index], color='red', linestyle='--')
-
-
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png')
-        plt.close()  # Close the figure to free up resources
-        buffer.seek(0)
-    
-        # Convert the chart image to base64
-        chart_image_light_omc = base64.b64encode(buffer.read()).decode('utf-8')  
-        return chart_image_light_omc
-        plt.close()
+        plt.figure(figsize=(10, 5))
         
+        # Plot the data points
+        plt.plot(x_value, y_value, color='gray', marker='o', linestyle='-', linewidth=2)
+
+        plt.xlabel('Water Content (%)', fontsize=12)
+        plt.ylabel('Dry Density (g/cc)', fontsize=12)
+        plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
+
+        # Grid and limits
+        plt.grid(True)
+        plt.xlim(left=0, right=max(x_value) + 2)
+        plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
+
+        # Find the index of the maximum dry density
+        max_index = y_value.index(max(y_value))
+        max_x = x_value[max_index]
+        max_y = y_value[max_index]
+
+        # Draw red dashed lines
+        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=2)
+        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=2)
+
+        # Highlight max point
+        plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
+
+        # Optional: annotate the max point
+        plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
+
+        # Save to buffer
+        buffer = io.BytesIO()
+        plt.tight_layout()
+        plt.savefig(buffer, format='png')
+        plt.close()
+        buffer.seek(0)
+
+        # Convert to base64
+        chart_image_light_omc = base64.b64encode(buffer.read()).decode('utf-8')
+        return chart_image_light_omc
+            
        
     
 
@@ -421,6 +613,152 @@ class Soil(models.Model):
                 record.graph_image_density = chart_image_light_omc
         except:
             pass 
+
+
+
+    # Light Compaction-MDD
+    omc_name = fields.Char("Name",default="DETERMINATION  OMC BY PROCTOR TEST ")
+    omc_visible = fields.Boolean("omc Compaction-MDD Visible",compute="_compute_visible")
+    omc_table = fields.One2many('mechanical.omc.compaction.ssl.line','parent_id',string="OMC Compaction")
+
+    max_dry_density1 = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_dry_density1", store=True)
+
+    omc1 = fields.Float(string="Optimum Moisture Content (OMC%)", compute="_compute_max_density_and_omc1", store=True)
+
+    @api.depends('omc_table.dry_density1', 'omc_table.water_content1')
+    def _compute_max_density_and_omc1(self):
+        for rec in self:
+            max_density1 = 0.0
+            omc_value1 = 0.0
+            for line in rec.omc_table:
+                if line.dry_density1 > max_density1:
+                    max_density1 = line.dry_density1
+                    omc_value1 = line.water_content1
+            rec.max_dry_density1 = max_density1
+            rec.omc1 = omc_value1
+
+    @api.depends('omc_table.dry_density1')
+    def _compute_max_dry_density1(self):
+        for rec in self:
+            densities = rec.omc_table.mapped('dry_density1')
+            rec.max_dry_density1 = max(densities) if densities else 0.0
+ 
+   
+
+
+    omc_table_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_omc_table_conformity", store=True)
+
+    @api.depends('omc1','eln_ref','grade')
+    def _compute_omc_table_conformity(self):
+        
+        for record in self:
+            record.omc_table_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.omc1 - record.omc1*mu_value
+                    upper = record.omc1 + record.omc1*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.omc_table_conformity = 'pass'
+                        break
+                    else:
+                        record.omc_table_conformity = 'fail'
+
+    omc_table_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_omc_table_nabl", store=True)
+
+    @api.depends('omc1','eln_ref','grade')
+    def _compute_omc_table_nabl(self):
+        
+        for record in self:
+            record.omc_table_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.omc1 - record.omc1*mu_value
+            upper = record.omc1 + record.omc1*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.omc_table_nabl = 'pass'
+                break
+            else:
+                record.omc_table_nabl = 'fail'
+
+    
+    graph_image_density1 = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light1", store=True)
+
+    def generate_line_chart_light_omc1(self):
+    # Prepare data for the chart
+        x_value = []
+        y_value = []
+        for line in self.omc_table:
+            x_value.append(line.water_content1)
+            y_value.append(line.dry_density1)
+
+        plt.figure(figsize=(10, 5))
+        
+        # Plot the data points
+        plt.plot(x_value, y_value, color='gray', marker='o', linestyle='-', linewidth=2)
+
+        plt.xlabel('Water Content (%)', fontsize=12)
+        plt.ylabel('Dry Density (g/cc)', fontsize=12)
+        plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
+
+        # Grid and limits
+        plt.grid(True)
+        plt.xlim(left=0, right=max(x_value) + 2)
+        plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
+
+        # Find the index of the maximum dry density
+        max_index = y_value.index(max(y_value))
+        max_x = x_value[max_index]
+        max_y = y_value[max_index]
+
+        # Draw red dashed lines
+        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=2)
+        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=2)
+
+        # Highlight max point
+        plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
+
+        # Optional: annotate the max point
+        plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
+
+        # Save to buffer
+        buffer = io.BytesIO()
+        plt.tight_layout()
+        plt.savefig(buffer, format='png')
+        plt.close()
+        buffer.seek(0)
+
+        # Convert to base64
+        chart_image_light_omc1 = base64.b64encode(buffer.read()).decode('utf-8')
+        return chart_image_light_omc1
+        
+       
+    
+
+    @api.depends('omc_table')
+    def _compute_graph_image_density_omc_light1(self):
+        try:
+            for record in self:
+                chart_image_light_omc1 = record.generate_line_chart_light_omc1()
+                record.graph_image_density1 = chart_image_light_omc1
+        except:
+            pass 
+
 
 
      # TRIAXIAL SHEAR TEST (By LVDT Reading )
@@ -745,6 +1083,7 @@ class Soil(models.Model):
             record.liquid_limit_visible = False
             record.plastic_limit_visible = False
             record.heavy_visible = False
+            record.omc_visible = False
             record.triaxial_visible = False
             record.internal_fraction_visible = False
             record.soil_visible = False
@@ -766,6 +1105,9 @@ class Soil(models.Model):
 
                 if sample.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
                     record.heavy_visible = True
+
+                if sample.internal_id == '3210vbf-20fb-4843-aa0e-142578bgtyu':
+                    record.omc_visible = True
 
                 if sample.internal_id == '3210vbf-20fb-4843-aa0e-145ght27854l':
                     record.triaxial_visible = True
@@ -811,9 +1153,9 @@ class Soil(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
+            if result.parameter.internal_id == '1045789654-2ff0-4b81-aca1-0e07dab7cd87':
                 result.result_char = round(self.plasticity_index,2)
-                if self.plastic_limit_nabl == 'pass':
+                if self.plasticity_index_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -821,6 +1163,13 @@ class Soil(models.Model):
             if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
                 result.result_char = round(self.max_dry_density,2)
                 if self.heavy_table_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-142578bgtyu':
+                result.result_char = round(self.omc1,2)
+                if self.omc_table_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -846,6 +1195,7 @@ class Soil(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+            
             
 
         return {
@@ -1268,3 +1618,78 @@ class SoilCBRLine(models.Model):
     def _compute_load(self):
         for record in self:
             record.load = record.proving_reading * 6.96
+
+
+class LIGHTCOMPACTIONLINE(models.Model):
+    _name = "mechanical.omc.compaction.ssl.line"
+    parent_id = fields.Many2one('mechanical.soil.ssl',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+
+    amount_soil1 = fields.Float(string="Amount of soil (gm)")
+    amount_water1 = fields.Integer(string="Amount of water added (%)")
+    empty_wt_mould1 = fields.Integer(string="Empty weight of mould without collar, W1 (gm)")
+    wt_soil1 = fields.Float(string="Weight of soil compacted + mould, W2 (gm)")
+    wt_of_wet1 = fields.Integer(string="Weight of wet soil (W2-W1) (gm)",compute="_compute_wt_of_wet1")
+    volume_mould1 = fields.Float(string="Volume of mould (V) (cm3)")
+    bulk_density1 = fields.Float(string=" Bulk density (ρ) (g/cc)",compute="_compute_bulk_density1")
+    con_no1 = fields.Float(string="Container Number")
+    empty_wt1 = fields.Float(string="Empty weight of container (M1) (gm)")
+    wet_con_ovenwet1 = fields.Float(string="Weight of container + wet soil (M2) (gm)")
+    wet_con_ovendry1 = fields.Float(string="Weight of container + Weight of oven dry soil (M3) (gm)")
+    water_content1 = fields.Float(string="Water Content (%)",compute="_compute_water_and_dry_density1")
+    dry_density1 = fields.Float(string="Dry Density (γd ) (g/cc)",compute="_compute_water_and_dry_density1")
+
+
+    @api.depends('wt_soil1', 'empty_wt_mould1')
+    def _compute_wt_of_wet1(self):
+        for line in self:
+            line.wt_of_wet1 = line.wt_soil1 - line.empty_wt_mould1
+
+
+
+    @api.depends('wt_of_wet1', 'volume_mould1')
+    def _compute_bulk_density1(self):
+        for line in self:
+            if line.volume_mould1 != 0:
+                line.bulk_density1 = line.wt_of_wet1 / line.volume_mould1
+            else:
+                line.bulk_density1 = 0.0
+
+
+    @api.depends('wet_con_ovendry1', 'wet_con_ovenwet1', 'empty_wt1', 'bulk_density1')
+    def _compute_water_and_dry_density1(self):
+        for rec in self:
+            m2 = rec.wet_con_ovenwet1     # container + wet soil
+            m3 = rec.wet_con_ovendry1         # container + oven dry soil
+            m1 = rec.empty_wt1        # empty container
+
+            if m2 and m3 and m1 and (m3 - m1) != 0:
+                rec.water_content1 = ((m2 - m3) / (m3 - m1)) * 100
+            else:
+                rec.water_content1 = 0.0
+
+            if rec.bulk_density1 and rec.water_content1 is not None:
+                rec.dry_density1 = rec.bulk_density1 / (1 + (rec.water_content1 / 100))
+            else:
+                rec.dry_density1 = 0.0
+
+
+  
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(LIGHTCOMPACTIONLINE, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
