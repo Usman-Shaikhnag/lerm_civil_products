@@ -413,6 +413,18 @@ class LermSampleForm(models.Model):
             'target': 'new'
             }
 
+    def send_mail_action(self):
+        # import wdb ; wdb.set_trace()
+        action = self.env.ref('lerm_civil.send_mail_wizard')
+        return {
+            'name': "Send Mail",
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'send.mail.wizard',
+            'view_id': action.id,
+            'target': 'new'
+            }
 
     def print_datasheet(self):
         eln = self.env["lerm.eln"].sudo().search([('sample_id','=', self.id)])

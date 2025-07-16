@@ -51,6 +51,12 @@
                     invisible="state not in ('1-allotment_pending', '2-alloted', '3-pending_verification', '4-in_report', '5-pending_approval')"/>
 
                 <field name="state" readonly="1" widget="statusbar" invisible="context.is_local == True"/>
+                
+                <button
+                    type="object"
+                    name="send_mail_action"
+                    string="Send Mail"
+                    invisible="state not in ('4-in_report')"/>
             </header>
 
             <sheet>
