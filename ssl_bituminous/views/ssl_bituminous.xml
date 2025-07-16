@@ -26,12 +26,12 @@
                     <!-- <button type="object" class="oe_highlight" name="open_eln_page" string="Submit" /> -->
                     
                     <!-- Bitumen  -->
-                    <group invisible="not bitumen_content_visible">
+                    <div invisible="not bitumen_content_visible">
                         <h1 style="text-align: center;">
                             <field name="bitumen_content_name" readonly="1" nolabel="1"/>
                             <field name="bitumen_content_visible" invisible="1"/>
                         </h1>
-                    </group> 
+                    </div> 
                     <group invisible="not bitumen_content_visible">
 
                         <field name="wt_of_sample"/>
@@ -43,18 +43,18 @@
                     </group> 
 
                     <!-- Combined Gradation  -->
-                    <group invisible="not combined_gradation_visible">
+                    <div invisible="not combined_gradation_visible">
                         <h1 style="text-align: center;">
-                            <field name="combined_gradation_name" readonly="1" nolabel="1"/>
+                            <field name="combined_gradation_name" readonly="1"/>
                             <field name="combined_gradation_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
 
                     <group invisible="not combined_gradation_visible">
                         <field name="weight_of_sample" style="text-align: left;"/>
                     </group>
 
-                    <group invisible="not combined_gradation_visible">
+                    <div invisible="not combined_gradation_visible">
                         <field name="combined_gradation_child_lines" nolabel="1">
                             <tree editable="bottom">
                                 <field name='sieve_size'/>
@@ -64,7 +64,7 @@
                                 <field name='passing_percent' string="Passing %" readonly="1"/>
                             </tree>
                         </field>
-                    </group>
+                    </div>
 
                     <group invisible="not combined_gradation_visible">
                         <button type="object" name="calculate_combined_gradation" class="btn btn-primary">

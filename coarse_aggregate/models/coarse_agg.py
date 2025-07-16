@@ -1631,6 +1631,15 @@ class CoarseAggregateMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
+            # crushing value 
+            if result.parameter.internal_id == 'ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71':
+                result.result_char = round(self.average_crushing_value,2)
+                if self.average_crushing_value_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
 
         return {
                 'view_mode': 'form',
