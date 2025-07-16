@@ -47,66 +47,42 @@ class BituminousMechanical(models.Model):
         print("From Default Value")
         res = super(BituminousMechanical, self).default_get(fields)
 
-        combined_gradation_40mm = ['80 mm','40 mm', '20 mm', '10 mm', '4.75 mm', 'pan']
-        combined_gradation_20mm = ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan']
-        combined_gradation_12_5mm = [ '20 mm', '10 mm', '4.75 mm', 'pan']
-        combined_gradation_10mm = ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan']
+        sieve_mapping = {
+            63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+            40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+            20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
+            16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+            12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+            10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+        }
 
-        default_combined_gradation_sizes = []
-        eln_ref = res.get('eln_ref')
+        default_sieve_sizes = []
+        eln_ref = res['eln_ref']
 
-        size_id = self.env['lerm.eln'].sudo().search([('id','=',eln_ref)]).size_id.size
+        if eln_ref:
+            eln = self.env['lerm.eln'].sudo().browse(eln_ref)
+            size_str = eln.size_id.size or ''
+            print("Size:", size_str)
 
-        print("Size",size_id)
-        pattern = r'\d+'
-        # match = re.search(pattern, size_id)
-        if size_id:
-            match = re.search(pattern, str(size_id))
-        else:
-            match = None
-        if match:
-            number = int(match.group())
-            print("Number",number)
-            if number == 10:
-                for i in range(5):  # You can change the number of default lines as needed
-                    size = {
-                        'sieve_size': combined_gradation_10mm[i] # Set the default product
-                        # Set the default quantity
-                    }
-                    default_combined_gradation_sizes.append((0, 0, size))
-                res['combined_gradation_child_lines'] = default_combined_gradation_sizes
-            elif number == 20:
-                for i in range(5):  # You can change the number of default lines as needed
-                    size = {
-                        'sieve_size': combined_gradation_20mm[i] # Set the default product
-                        # Set the default quantity
-                    }
-                    default_combined_gradation_sizes.append((0, 0, size))
-                res['combined_gradation_child_lines'] = default_combined_gradation_sizes
-            elif number == 12.5:
-                for i in range(5):  # You can change the number of default lines as needed
-                    size = {
-                        'sieve_size': combined_gradation_12_5mm[i] # Set the default product
-                        # Set the default quantity
-                    }
-                    default_combined_gradation_sizes.append((0, 0, size))
-                res['combined_gradation_child_lines'] = default_combined_gradation_sizes
-            elif number == 40:
-                for i in range(5):  # You can change the number of default lines as needed
-                    size = {
-                        'sieve_size': combined_gradation_40mm[i] # Set the default product
-                        # Set the default quantity
-                    }
-                    default_combined_gradation_sizes.append((0, 0, size))
-                res['combined_gradation_child_lines'] = default_combined_gradation_sizes
-            else :
-                res['combined_gradation_child_lines'] = default_combined_gradation_sizes
+            # Extract numeric part
+            match = re.search(r'\d+', size_str)
+            if match:
+                number = int(match.group())
+                print("Number:", number)
 
+                # Find matching sieve list by size
+                sieve_list = sieve_mapping.get(number)
+                if sieve_list:
+                    for sieve_size in sieve_list:
+                        size = {
+                            'sieve_size': sieve_size
+                        }
+                        default_sieve_sizes.append((0, 0, size))
+                    res['sieve_analysis_child_lines'] = default_sieve_sizes
 
-        else:
-            pass
-        
         return res
+
+
     
 
     # Combined Gradation 
