@@ -5,7 +5,7 @@
         <field name="name">ndt.crack.width.form</field>
         <field name="model">ndt.crack.width</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false">
                 <sheet>
                     <group>
                         <field name="srf_id" invisible="1"/>
@@ -39,6 +39,13 @@
                                
                             </tree>
                     </field>
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
                 </sheet>
             </form>
         </field>

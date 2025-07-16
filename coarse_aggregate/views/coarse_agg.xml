@@ -2,18 +2,16 @@
 <odoo>
     <data>
 
-        <record id="mechanical_coarse_aggregate_form" model="ir.ui.view">
+    <record id="mechanical_coarse_aggregate_form" model="ir.ui.view">
         <field name="name">mechanical.coarse.aggregate.form</field>
         <field name="model">mechanical.coarse.aggregate</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false"> 
                 <sheet>
-                    <group >
-                        <h1>
-                            <field name="name" readonly="1" nolabel="1"/>
-                        </h1>
-                    </group>
-                     <group >
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    <group>
                        <field name="grade"/>
                     </group>
 
@@ -34,49 +32,52 @@
                     </group>
 
                     <!-- Sieve Alanysis  -->
-                    <group invisible="sieve_visible == False">
+                    <div invisible="sieve_visible == False">
                         <h1 style="text-align: center;">
                             <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
                             <field name="sieve_visible" invisible="1"/>
                         </h1>
-                    </group>
-                    
-                    <group invisible="sieve_visible == False">
-                        <field name="weight_of_sample" style="text-align: left;"/>
-                    </group>
-
-                    <group invisible="sieve_visible == False">
-                        <field name="sieve_analysis_child_lines">
-                            <tree editable="bottom">
-                                <!-- <field name="serial_no" string="Sr.No"/> -->
-                                <field name='sieve_size'/>
-                                <field name='wt_retained' style="width:90%" string="Wt. Retained in gms"/>
-                                <field name='percent_retained' readonly="1" style="width:90%" string="% Retained"/>
-                                <field name='cumulative_retained' style="width:90%" context="{'default_cumulative_retained': cumulative_retained}" readonly="1" string="Cum. Retained %"/>
-                                <field name='passing_percent' string="Passing %" style="width:90%" readonly="1"/>
-                            </tree>
-                        </field>
-                    </group>
-                    
-                    <div invisible="sieve_visible == False">
-                        <button string=" Calculate" type="object" name="calculate_sieve" class="btn-primary" icon="fa-calculator"/>
                     </div>
                     
                     <group invisible="sieve_visible == False">
+                        <field name="weight_of_sample"/>
+                    </group>
+
+                    <div invisible="sieve_visible == False">
+                        <field name="sieve_analysis_child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <!-- <field name="serial_no" string="Sr.No"/> -->
+                                <field name='sieve_size'/>
+                                <field name='wt_retained'/>
+                                <field name='percent_retained' readonly="1"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1"/>
+                                <field name='passing_percent' readonly="1"/>
+                            </tree>
+                        </field>
+                    </div>
+                    
+                    <div invisible="sieve_visible == False">
+                        <button type="object" name="calculate_sieve" class="btn btn-primary">
+                            <i class="fa fa-calculator mr-1"/> Calculate
+                        </button>
+                    </div>
+                    
+                    <group invisible="sieve_visible == False" class="text-bold mt-2">
                         <field name="total_sieve_analysis"/>
                     </group>
                        <!-- Specific Gravity and Water Absorbtion  -->
 
-                    <group invisible="specific_gravity_visible == False">
+                    <div invisible="specific_gravity_visible == False">
                         <h1>
                             <field name="specific_gravity_name" readonly="1" nolabel="1"/>
                             <field name="specific_gravity_visible" invisible="1"/>
 
                         </h1>
-                    </group>
+                    </div>
+                    
                     <group invisible="specific_gravity_visible == False" style="white-space: nowrap; width:60%">
-                        <field name="wt_surface_dry" />
                         <field name="wt_sample_inwater" />
+                        <field name="wt_surface_dry" />
                         <field name="oven_dried_wt" />
                         <field name="specific_gravity" />
                         <field name="water_absorption" />
@@ -97,9 +98,9 @@
                      <group invisible="specific_gravity_visible == False">
                           <group>
                             <field  name="specific_gravity_conformity"
-                                           decoration-success="specific_gravity_conformity == 'pass'" 
-                                           decoration-danger="specific_gravity_conformity == 'fail'" 
-                                           readonly="1"/>
+                                    decoration-success="specific_gravity_conformity == 'pass'" 
+                                    decoration-danger="specific_gravity_conformity == 'fail'" 
+                                    readonly="1"/>
                             <field  name="specific_gravity_nabl"/>
                           </group>
                     </group>
@@ -167,28 +168,26 @@
                                <field name='aggregate_elongation'/>
                             </group>
                     </group> -->
+
                      <!-- Elongation and Flakiness  -->
-                    <group invisible="elongation_visible == False or flakiness_visible == False">
+                    <div invisible="elongation_visible == False or flakiness_visible == False">
                         <h1>
                             <field name="elongation_name" readonly="1" nolabel="1"/>
                             <field name="elongation_visible" invisible="1"/>
                             <field name="flakiness_visible" invisible="1"/>
-
-
                         </h1>
-                    </group>
-                    <group invisible="elongation_visible == False or flakiness_visible == False">
-                        <field name="elongation_table" style="width:90%">
+                    </div>
+
+                    <div invisible="elongation_visible == False or flakiness_visible == False">
+                        <field name="elongation_table" nolabel="1">
                             <tree>
                                 <field name="sieve_size"  />
                                 <field name="wt_retained" />
                                 <field name="elongated_retained" />
                                 <field name="flakiness_retained" />
                             </tree>
-                          
                         </field>
-                       
-                    </group>
+                    </div>
                         
                 
                     <group invisible="elongation_visible == False or flakiness_visible == False" style="white-space:nowrap; ">
@@ -217,19 +216,22 @@
                                     decoration-success="aggregate_combine_conformity == 'pass'" 
                                     decoration-danger="aggregate_combine_conformity == 'fail'" 
                                     readonly="1"/>
-                            <field  name="aggregate_combine_nabl"/>
+                            <field  name="aggregate_combine_nabl"
+                                    decoration-success="aggregate_combine_nabl == 'pass'" 
+                                    decoration-danger="aggregate_combine_nabl == 'fail'" 
+                            />
                           </group>
                     </group>
 
 
                      <!-- Bulk Density  -->
-                    <group invisible= "loose_bulk_visible == False">
+                    <div invisible= "loose_bulk_visible == False">
                         <h1>
                             <field name="loose_bulk_density_name" readonly="1" nolabel="1"/>
                             <field name="loose_bulk_visible" invisible="1"/>
 
                         </h1>
-                    </group>
+                    </div>
                     <group invisible= "loose_bulk_visible == False" style="white-space: nowrap; width:50%">
                     <!-- <field name="loose_bulk_density_child_lines" nolabel="1" >
                             <tree editable="bottom">
@@ -248,27 +250,35 @@
                         <field name="sample_plus_bucket_loose"/>
                         
                         <!-- <field name="sample_weight_loose"/> -->
-                        <field name="loose_bulk_density"/>
+
                     </group>
+                    <div invisible= "loose_bulk_visible == False" class="mb-2">
+                        <label for="loose_bulk_density"/>
+                        <field name="loose_bulk_density" nolabel="1"/><span> kg/cu.m</span>
+                    </div>
+                    
 
                      <group invisible= "loose_bulk_visible == False">
                           <group>
                             <field  name="loose_bulk_density_conformity"
-                                          decoration-success="loose_bulk_density_conformity == 'pass'" 
-                                           decoration-danger="loose_bulk_density_conformity == 'fail'" 
+                                    decoration-success="loose_bulk_density_conformity == 'pass'" 
+                                    decoration-danger="loose_bulk_density_conformity == 'fail'" 
                                            readonly="1"/>
-                            <field  name="loose_bulk_density_nabl"/>
+                            <field  name="loose_bulk_density_nabl"
+                                    decoration-success="loose_bulk_density_nabl == 'pass'" 
+                                    decoration-danger="loose_bulk_density_nabl == 'fail'" 
+                            />
                           </group>
                     </group>
 
 
-                    <group invisible="rodded_bulk_visible == False">
+                    <div invisible="rodded_bulk_visible == False">
                         <h1>
                             <field name="rodded_bulk_density_name" readonly="1" nolabel="1"/>
                             <field name="rodded_bulk_visible" invisible="1"/>
 
                         </h1>
-                    </group>
+                    </div>
                     <group invisible="rodded_bulk_visible == False" style="white-space: nowrap; width:50%">
                     <!-- <field name="rodded_bulk_density_child_lines" nolabel="1" >
                             <tree editable="bottom">
@@ -285,28 +295,37 @@
                         <field name="weight_empty_bucket_rodded"/>
                         <field name="sample_plus_bucket_rodded"/>
                         <!-- <field name="sample_weight_rodded"/> -->
-                        <field name="rodded_bulk_density"/>
                     </group>
-                     <group invisible="rodded_bulk_visible == False">
+                    <div invisible= "loose_bulk_visible == False" class="mb-2">
+                        <label for="rodded_bulk_density"/>
+                        <field name="rodded_bulk_density" nolabel="1"/><span> kg/cu.m</span>
+                    </div>
+
+
+                    
+                    <group invisible="rodded_bulk_visible == False">
                           <group>
                             <field  name="rodded_bulk_density_conformity"
-                                           decoration-success="rodded_bulk_density_conformity == 'pass'" 
-                                           decoration-danger="rodded_bulk_density_conformity == 'fail'" 
-                                           readonly="1"/>
-                            <field  name="rodded_bulk_density_nabl"/>
+                                    decoration-success="rodded_bulk_density_conformity == 'pass'" 
+                                    decoration-danger="rodded_bulk_density_conformity == 'fail'" 
+                                    readonly="1"/>
+                            <field  name="rodded_bulk_density_nabl"
+                                    decoration-success="rodded_bulk_density_nabl == 'pass'" 
+                                    decoration-danger="rodded_bulk_density_nabl == 'fail'" 
+                            />
                           </group>
                     </group>
                       <!-- Impact Value  -->
-                    <group invisible = "impact_visible == False">
+                    <div invisible = "impact_visible == False">
                         <h1>
                             <field name="impact_value_name" readonly="1" nolabel="1"/>
                             <field name="impact_visible" invisible="1"/>
 
                         </h1>
-                    </group>
+                    </div>
 
-                    <group invisible = "impact_visible == False" >
-                        <field name="impact_value_child_lines" style="width:100%" >
+                    <div invisible = "impact_visible == False" >
+                        <field name="impact_value_child_lines" nolabel="1">
                             <tree>
                                 <field name='sample_no'/>
                                 <!-- <field name='wt_of_cylinder' /> -->
@@ -317,7 +336,7 @@
                                 <field name='impact_value'/>
                             </tree>
                         </field> 
-                    </group>
+                    </div>
                    
 
                     <group invisible = "impact_visible == False">
@@ -329,22 +348,25 @@
                                 decoration-success="average_impact_value_conformity == 'pass'" 
                                 decoration-danger="average_impact_value_conformity == 'fail'" 
                                 readonly="1"/>
-                        <field  name="impact_value_nabl"/>
+                        <field  name="impact_value_nabl"
+                                decoration-success="impact_value_nabl == 'pass'" 
+                                decoration-danger="impact_value_nabl == 'fail'"
+                                />
                     </group>
                      
 
                   
 
                     <!-- Crushing Value  -->
-                    <group invisible= "crushing_visible == False">
+                    <div invisible= "crushing_visible == False">
                         <h1>
                             <field name="crushing_value_name" readonly="1" nolabel="1"/>
                             <field name="crushing_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
 
-                    <group invisible= "crushing_visible == False">
-                        <field name="crushing_value_child_lines" >
+                    <div invisible= "crushing_visible == False">
+                        <field name="crushing_value_child_lines" nolabel="1">
                                 <tree>
                                     <field name='sample_no'/>
                                     <!-- <field name='wt_of_cylinder'/>
@@ -355,7 +377,7 @@
                                     <field name='crushing_value'/>
                                 </tree>
                         </field> 
-                    </group>
+                    </div>
                     
                     <group invisible= "crushing_visible == False">
                         <field name='average_crushing_value'/>
@@ -366,7 +388,10 @@
                                 decoration-success="average_crushing_value_conformity == 'pass'" 
                                 decoration-danger="average_crushing_value_conformity == 'fail'" 
                                 readonly="1"/>
-                        <field  name="average_crushing_value_nabl"/>
+                        <field  name="average_crushing_value_nabl"
+                                decoration-success="average_crushing_value_nabl == 'pass'" 
+                                decoration-danger="average_crushing_value_nabl == 'fail'" 
+                            />
                     </group>
 
                    <!-- 10% fine value  -->

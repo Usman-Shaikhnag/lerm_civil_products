@@ -15,6 +15,19 @@ class ConcreteCore(models.Model):
     structure = fields.Char("Structure")
 
     notes = fields.One2many('ndt.concrete.core.notes','parent_id',string="Notes")
+    eln_ref = fields.Many2one('lerm.eln',string="Eln")
+
+    def open_eln_page(self):
+        # import wdb; wdb.set_trace()
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
 
 
     

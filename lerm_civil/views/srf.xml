@@ -104,7 +104,7 @@
                             <field name="casting"/>
                             <field name="sample_received_date"/>
                             <field name="sample_description"/>
-                            <!-- <field name="quantity"/> -->
+                            <field name="quantity"/>
                             <button name="edit_sample" string="Edit" type="object" class="btn-primary"
                                 groups="lerm_civil.srf_sample_editable"/>
                             <button name="reallocate_sample" string="Reallocate" type="object" class="btn-primary"
@@ -243,9 +243,28 @@
                     
                     <group>
                         <!-- <field name="volume"/> -->
-                        <!-- <field name="quantity"/> -->
+                        <field name="quantity"/>
                     </group>
-                    
+
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Sample Quantity</th>
+                                <th>Received</th>
+                                <th>Consumed</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><field name="uom_id"/></td>
+                                <td><field name="quantity_received"/></td>
+                                <td><field name="quantity_consumed"/></td>
+                                <td><field name="quantity_balance"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <group style="width:50%">
                         <field name="days_casting" string="Days of Testing" invisible="show_days_casting == False"/>
                     </group>
@@ -256,7 +275,7 @@
                         <field name="customer_id" invisible='1'/>
                         <field name="available_parameter_ids" invisible='1'/>
                     </group>
-                    
+
                     <group style="width:100%">
                         <field name="parameters" domain="[('id', 'in', available_parameter_ids)]" options="{'no_create': True}">
                             <tree>

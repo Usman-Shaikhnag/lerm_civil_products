@@ -43,7 +43,7 @@
                     </group>
                     <group style="width:50%">
                         <field name='sample_id' readonly="1"/>
-                        <field name='kes_no' readonly="1"/>
+                        <field name='kes_no' invisible="1" readonly="1"/>
                         <field name='group' readonly="1"/>
                         <field name='department_id'/>
                         <field name='witness_name'/>
@@ -61,10 +61,8 @@
                     </group>
                 </group>
 
-                <group>
-                    <button string="Open Form" name="open_product_based_form" class="oe_highlight" type="object"
+                <button string="Open Form" name="open_product_based_form" class="oe_highlight" type="object"
                             invisible="is_product_based_calculation == False"/>
-                </group>
                 <group>
                     <button string="Fetch Inputs" name="fetch_inputs" class="oe_highlight" type="object"
                             invisible="invisible_fetch_inputs == True or is_product_based_calculation == True"/>

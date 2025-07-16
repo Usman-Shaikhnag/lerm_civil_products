@@ -6,7 +6,7 @@
         <field name="name">mechanical.soil.ssl.form</field>
         <field name="model">mechanical.soil.ssl</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false">
                 <sheet>
                    <group >
                         <h1>
@@ -78,6 +78,10 @@
                         <button string="Calculate Sieve Analysis" type="object" name="calculate" class="oe_highlight"/>
                     </group>
 
+                      <group invisible = "sieve_visible == False">
+                      <field name="graph_image_slive" widget="image" readonly="1"/>
+                    </group>
+
 
                      <!-- Liquid Limit-->
                      <group invisible = "liquid_limit_visible == False" style="white-space: nowrap; width:70%;">
@@ -120,6 +124,10 @@
                      <field name='liquid_limit_nabl' col="4"/>
                     </group>
 
+                    <group invisible = "liquid_limit_visible == False">
+                      <field name="graph_image_liquid" widget="image" readonly="1"/>
+                    </group>
+
 
                     <!-- Plastic Limit -->
                      <group invisible = "plastic_limit_visible == False" style="white-space: nowrap; width:70%;">
@@ -152,7 +160,6 @@
                     <group invisible = "plastic_limit_visible == False" style="white-space: nowrap;">
                      <field name="plastic_limit" style="width:50%" />
 
-                      <field name="plasticity_index" style="width:50%" />
 
                   
                      <field name='plastic_limit_conformity' col="4"
@@ -160,6 +167,18 @@
                                            decoration-danger="plastic_limit_conformity == 'fail'" 
                                            readonly="1"/>
                      <field name='plastic_limit_nabl' col="4"/>
+                    </group>
+
+                    <group invisible = "plastic_limit_visible == False" style="white-space: nowrap;">
+
+                      <field name="plasticity_index" style="width:50%" />
+
+                  
+                     <field name='plasticity_index_conformity' col="4"
+                                           decoration-success="plasticity_index_conformity == 'pass'" 
+                                           decoration-danger="plasticity_index_conformity == 'fail'" 
+                                           readonly="1"/>
+                     <field name='plasticity_index_nabl' col="4"/>
                     </group>
 
 
@@ -221,6 +240,62 @@
 
 
 
+                      <!-- Light Compaction OMC -->
+                     <group invisible = "omc_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="omc_name" readonly="1" nolabel="1"/>
+                            <field name="omc_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    
+                   
+                 
+                    <group invisible = "omc_visible == False">
+                  
+                      <field name="omc_table" style="width:100%">
+                        <tree editable="bottom">
+                          <field name="serial_no"/>
+                          <field name="amount_soil1"/>
+                          <field name="amount_water1"/>
+                           <field name="empty_wt_mould1"/>
+                          <field name="wt_soil1"/>
+                          <field name="wt_of_wet1"/>
+                          <field name="volume_mould1"/>
+                          <field name="bulk_density1"/>
+                          <field name="con_no1"/>
+                           <field name="empty_wt1"/>
+                          <field name="wet_con_ovenwet1"/>
+                           <field name="wet_con_ovendry1"/>
+                          <field name="water_content1"/>
+                          <field name="dry_density1"/>
+                        </tree>
+                      </field>
+                  
+                    </group>
+
+                      <group invisible = "omc_visible == False" style="white-space: nowrap;">
+                 
+                  
+                     <field name='max_dry_density1'/>
+                      <field name='omc1'/>
+                    </group>
+
+                     <group invisible = "omc_visible == False">
+                      <field name="graph_image_density1" widget="image" readonly="1"/>
+                    </group>
+                  
+
+                     <group invisible = "omc_visible == False">
+                 
+                     <field name='omc_table_conformity' col="4"
+                                           decoration-success="omc_table_conformity == 'pass'" 
+                                           decoration-danger="omc_table_conformity == 'fail'" 
+                                           readonly="1"/>
+                     <field name='omc_table_nabl' col="4"/>
+                    </group>
+
+
+
                      <!-- TRIAXIAL SHEAR TEST (By LVDT Reading ) -->
                      <group invisible = "triaxial_visible == False" style="white-space: nowrap; width:70%;">
                         <h1>
@@ -257,6 +332,14 @@
                         </tree>
                       </field>
                   
+                    </group>
+
+                      <group  invisible = "triaxial_visible == False">
+                     <field name='area_triaxial_conformity' col="4"
+                                           decoration-success="area_triaxial_conformity == 'pass'" 
+                                           decoration-danger="area_triaxial_conformity == 'fail'" 
+                                           readonly="1"/>
+                     <field name='area_triaxial_nabl' col="4"/>
                     </group>
 
 

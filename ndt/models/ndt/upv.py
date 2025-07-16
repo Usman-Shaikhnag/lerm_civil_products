@@ -26,6 +26,24 @@ class Upv(models.Model):
     maximum = fields.Float("Max km/s", compute="_compute_velocity_stats",digits=(16,2))
 
     notes = fields.One2many('ndt.upv.notes','parent_id',string="Notes")
+    eln_ref = fields.Many2one('lerm.eln',string="Eln")
+
+    def open_eln_page(self):
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '92b95c11-ccef-4779-8d15-584b82994976':
+                result.result_char = round(self.average,2)
+                continue
+          
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
 
     @api.depends('eln_ref')
     def _compute_grade(self):

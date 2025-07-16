@@ -320,17 +320,32 @@ class FineAggregate(models.Model):
     avg_height_sattled_b = fields.Float(string="Height of Settled Sand:- (B)", compute="_compute_avg_bulking_lines")
     avg_loss_c = fields.Float(string="Loss of Height of Sand:- (A-B)", compute="_compute_avg_bulking_lines")
 
+   
+
     @api.depends('bulking_sand_child_lines')
     def _compute_avg_bulking_lines(self):
         for rec in self:
             lines = rec.bulking_sand_child_lines
-            count = len(lines)
-            if count:
-                rec.avg_height_sand_a = sum(line.height_of_sand for line in lines) / count
-                rec.avg_height_sattled_b = sum(line.height_of_settled for line in lines) / count
-                rec.avg_loss_c = sum(line.loss_off_height for line in lines) / count
+            all_count = len(lines)
+            selected_lines = lines[:2]  # Only first two lines (0 and 1)
+            selected_count = len(selected_lines)
+
+            # Compute avg from 1st two lines
+            if selected_count:
+                rec.avg_height_sand_a = sum(line.height_of_sand for line in selected_lines) / selected_count
+                rec.avg_height_sattled_b = sum(line.height_of_settled for line in selected_lines) / selected_count
             else:
-                rec.avg_height_sand_a = rec.avg_height_sattled_b = rec.avg_loss_c  = 0.0
+                rec.avg_height_sand_a = 0.0
+                rec.avg_height_sattled_b = 0.0
+
+            # Compute avg of loss_c from all lines
+            if all_count:
+                rec.avg_loss_c = sum(line.loss_off_height for line in lines) / all_count
+            else:
+                rec.avg_loss_c = 0.0
+
+
+  
                 
 
     avg_bulking_of_sand = fields.Float(
@@ -411,17 +426,37 @@ class FineAggregate(models.Model):
     content_height_sand_b = fields.Float(string="Height of Sand:- (B)", compute="_compute_avg_content_lines")
     content_slit_c = fields.Float(string="Height of Silt:- (A-B)", compute="_compute_avg_content_lines")
 
+    # @api.depends('site_content_child_lines')
+    # def _compute_avg_content_lines(self):
+    #     for rec in self:
+    #         lines = rec.site_content_child_lines
+    #         count = len(lines)
+    #         if count:
+    #             rec.content_height_sand_a = sum(line.heigh_sand_silt for line in lines) / count
+    #             rec.content_height_sand_b = sum(line.height_of_sand for line in lines) / count
+    #             rec.content_slit_c = sum(line.height_silt for line in lines) / count
+    #         else:
+    #             rec.content_height_sand_a = rec.content_height_sand_b = rec.content_slit_c  = 0.0
     @api.depends('site_content_child_lines')
     def _compute_avg_content_lines(self):
         for rec in self:
             lines = rec.site_content_child_lines
-            count = len(lines)
-            if count:
-                rec.content_height_sand_a = sum(line.heigh_sand_silt for line in lines) / count
-                rec.content_height_sand_b = sum(line.height_of_sand for line in lines) / count
-                rec.content_slit_c = sum(line.height_silt for line in lines) / count
+            all_count = len(lines)
+            selected_lines = lines[:2]  # फक्त पहिल्या 2 lines (index 0 आणि 1)
+            selected_count = len(selected_lines)
+
+            if selected_count:
+                rec.content_height_sand_a = sum(line.heigh_sand_silt for line in selected_lines) / selected_count
+                rec.content_height_sand_b = sum(line.height_of_sand for line in selected_lines) / selected_count
             else:
-                rec.content_height_sand_a = rec.content_height_sand_b = rec.content_slit_c  = 0.0
+                rec.content_height_sand_a = 0.0
+                rec.content_height_sand_b = 0.0
+
+            if all_count:
+                rec.content_slit_c = sum(line.height_silt for line in lines) / all_count
+            else:
+                rec.content_slit_c = 0.0
+
 
 
     avg_bulking_of_sand1 = fields.Float(
@@ -630,8 +665,57 @@ class FineAggregate(models.Model):
 
             
               
+    # def open_eln_page(self):
+    #     # import wdb; wdb.set_trace()
+
+    #     return {
+    #             'view_mode': 'form',
+    #             'res_model': "lerm.eln",
+    #             'type': 'ir.actions.act_window',
+    #             'target': 'current',
+    #             'res_id': self.eln_ref.id,
+                
+    #         }
+
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '45875ght-7188-4086-b132-62b50e63f1245gt':
+                result.result_char = round(self.specific_gravity,2)
+                if self.specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '4587tyhloos-3fa3-4b83-ae31-9d281767188c':
+                result.result_char = round(self.loose_bulk_density,2)
+                if self.loose_bulk_density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '45789bhgt25-3fa3-4b83-ae31-9d28176718457':
+                result.result_char = round(self.avg_bulking_of_sand,2)
+                if self.avg_bulking_of_sand_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '2547ghty124m-3fa3-4b83-ae31-9d281457nhy14':
+                result.result_char = round(self.avg_bulking_of_sand1,2)
+                if self.avg_bulking_of_sand1_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '1457htyu1245-3fa3-4b83-ae31-9d281457457hy':
+                result.result_char = round(self.avg_moisture,2)
+                if self.avg_moisture_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            
 
         return {
                 'view_mode': 'form',
@@ -641,6 +725,8 @@ class FineAggregate(models.Model):
                 'res_id': self.eln_ref.id,
                 
             }
+            
+    
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()

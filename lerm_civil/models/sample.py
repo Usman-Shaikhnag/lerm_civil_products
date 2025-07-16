@@ -158,6 +158,7 @@ class LermSampleForm(models.Model):
     ])
     other_cancellation_reason = fields.Text("Cancellation Reason")
 
+    quantity = fields.Integer(string="Quantity")
     @api.depends('srf_id.client_refrence')
     def _compute_client_reference(self):
         for record in self:

@@ -8,7 +8,7 @@ from lxml import etree
 
 
 
-class CoarseAggregateReport(models.AbstractModel):
+class BituminiousReport(models.AbstractModel):
     _name = 'report.ssl_bituminous.bituminous_report'
     _description = 'Bituminous Report'
     
