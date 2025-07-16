@@ -85,15 +85,6 @@ class FineAggregate(models.Model):
                 # Update previous_cumulative for the next line
                 previous_cumulative = cumulative_retained
             
-            for line in record.sieve_analysis_child_lines:
-                if line.serial_no > 7:
-                    line.write({
-                        'cumulative_retained': 0,
-                        'passing_percent': 100,
-                    })
-                    print(f"Line {line.serial_no} reset to Cumulative Retained: 0 and Passing Percent: 100")
-
-
     
 
 
