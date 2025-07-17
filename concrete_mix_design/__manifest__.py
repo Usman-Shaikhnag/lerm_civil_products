@@ -5,7 +5,7 @@
 {
     'name': 'Concrete Mix Design',
     'version': '1.2',
-    'category': 'Sales/Sales',
+    'category': 'Lerm Civil',
     'summary': 'Sales internal machinery',
     'description': """
 This module contains all the common features of Sales Management and eCommerce.

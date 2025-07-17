@@ -2,7 +2,7 @@
  'summary': "LERM_CIVIL",
  'author': "Usman Shaikhnag", 
  'website': "http://www.esehat.org", 
- 'category': 'Uncategorized', 
+ 'category': 'Lerm Civil', 
  'version': '13.0.1', 
  'depends':['base' , 'contacts','product' ,'hr','lerm_civil_inv', 'mail','attachment_indexation','maintenance','portal'],
  'data': [

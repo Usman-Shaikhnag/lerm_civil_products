@@ -87,6 +87,8 @@ class CoarseAggregateDataSheet(models.AbstractModel):
             general_data = self.env[model_name].sudo().browse(model_id)
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
+        
+
         return {
             'eln': eln,
             'data' : general_data
