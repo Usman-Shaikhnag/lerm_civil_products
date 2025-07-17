@@ -101,22 +101,24 @@
                                     <span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>
                                 <td colspan="2">
-                                    <span t-esc="r['specific_limt']" t-options='{"widget": "float", "precision": 2}'/>
+                                    <span t-esc="r['specific_limt']" />
                                 </td>
                             </tr>
                         </table>
+                        
+                        <!-- added -->
                         <table style="margin-top:20px">
                             <tr cols="12">
-                                <td colspan="6">Total :
-                                                                                                            <![CDATA[&nbsp;]]>
+                                 <td colspan="6">Grading Zone :
+                                    <![CDATA[&nbsp;]]>
                                 </td>
                                 <td colspan="6">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.total_sieve_analysis"/>
+                                    <span t-field="data.grading"/>
                                 </td>
                             </tr>
-                        </table>
-                        <!-- added -->
+                        </table> 
+                        
                        <table style="margin-top:20px">
                             <tr cols="12">
                                 <td colspan="6">Fineness Modulus :

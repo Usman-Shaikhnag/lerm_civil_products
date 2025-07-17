@@ -738,5 +738,25 @@
             <field name="binding_type">report</field>
         </record>
 
+         <record id="concrete_core_ssl_action" model="ir.actions.report">
+            <field name="name">Concrete Core Datasheet SSL</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">concrete_core_ssl.concrete_core_ssl</field>
+            <field name="report_file">concrete_core_ssl.concrete_core_ssl</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="concrete_core_report_ssl_action" model="ir.actions.report">
+            <field name="name">Concrete Core Report SSL</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">concrete_core_ssl.concrete_core_report_ssl</field>
+            <field name="report_file">concrete_core_ssl.concrete_core_report_ssl</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <field name="binding_type">report</field>
+        </record>
+
 
 </odoo>
