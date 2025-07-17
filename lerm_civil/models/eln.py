@@ -47,6 +47,7 @@ class ELN(models.Model):
     parameters = fields.One2many('eln.parameters','eln_id',string="Parameters")
     fetch_ds_button = fields.Float(string="Fetch Datasheet")
     ir_model = fields.Many2one('ir.model',string="Model")
+   
 
 
 
