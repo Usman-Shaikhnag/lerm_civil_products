@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ <template id="concrete_core_report_ssl">
+		<t t-call="web.html_container">
+			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+					
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12" >Customer Party Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name" /><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+							
+								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12">Sample Description : <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+						</table>
+						<table>
+							<tr>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
+								</td>
+								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Size :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">Grade :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Brand :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">Consultant Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Client Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">Client Reference :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="12">Material/Test Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+						
+						</table>
+					</div>
+					
+					
+					<div>
+						
+                    	<div style="text-align:center;font-size:18px;margin-top:25px">
+						<!-- Concrete Cube -->
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_name"/>
+							<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+						</div>
+					</div>
+                    <div >
+				
+							<h5 style="margin-top:20px;text-align: center;">
+								  <span t-field="data.type_of_sample"></span>
+							</h5>
+						
+					</div>
+                    <!-- <table style="margin-top:20px">
+                        <thead >
+                            <tr cols="12">
+                                <td  style="text-align: center;">Sr no 
+                                </td>
+
+                                <td  style="text-align:center;">Dia of Core, mm
+
+                                </td>
+
+                                <td  style="text-align:center;">Correction Factor for dia
+
+                                </td>
+                            
+                            </tr>
+                            
+                            </thead>
+                            <tbody>
+
+                            <t t-set="i" t-value="0"/>
+                            <tr t-foreach="data.dia_lines" t-as="r">
+                                <td  style="text-align: center;">
+                                    <div>
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </div>
+                                </td>
+                                <td style="text-align: center;" >
+                                    <span t-esc="r['dia_core']" />
+                                </td>
+                                <td  style="text-align: center;">
+                                    <span t-esc="r['correction_dia']" />
+                                </td>
+
+                            
+                            </tr>
+                            </tbody>
+					</table> -->
+
+						<table style="margin-top:20px">
+				
+							
+							<tr>
+								<td colspan="6">Dia of core mm:  <span t-field="data.dia_core"></span>
+								</td>
+							
+								<td colspan="6">Area mm2 :  <span t-field="data.area_core"></span>
+								</td>
+							</tr>
+						
+						</table>
+						<table style="margin-top:30px;">
+						<thead>
+							<tr>
+								<th rowspan="2" style="text-align: center; font-weight: bold;"> 
+									<span>
+										Sr. No
+									</span>
+								</th>
+								<th rowspan="2"	style="text-align: center; font-weight: bold;">
+									<span>
+									Location
+									</span>
+								</th>
+
+								<th rowspan="2" style="text-align: center;font-weight: bold;">
+									<span>
+									Grade of  Concrite
+									</span>
+								</th>
+								
+								<th rowspan="2" style="text-align: center; font-weight: bold;">
+									<span>
+									Depth after Trimming in mm
+									</span>
+								</th>
+
+								<th rowspan="2" style="text-align: center; font-weight: bold;">
+									<span>
+									Load kN
+									</span>
+								</th>
+								<th rowspan="2" style="text-align: center; font-weight: bold;">
+									<span>
+									 L /D RATIO  
+									</span>
+								</th>
+								
+								<th rowspan="2" style="text-align: center; font-weight: bold;">
+									<span>
+									Load in N 
+									</span>
+								</th>
+
+								<th rowspan="2" style="text-align: center; font-weight: bold;">
+									<span>
+								Core Comp. strength(N/ mm2)
+									</span>
+								</th>
+								<th colspan="2" style="text-align: center; font-weight: bold;">
+									<span>
+									Correction Factor
+									</span>
+								</th>
+                                	<th rowspan="2" style="text-align: center; font-weight: bold;">
+									<span>
+									Corrected Cyl.Comp.Strength  (N/ mm2)
+									</span>
+								</th>
+                                	<th rowspan="2" style="text-align: center; font-weight: bold;">
+									<span>
+									Equivalent Cube.Comp Strength (N/ mm2)
+									</span>
+								</th>
+							</tr>
+                              <tr>
+                              	<th colspan="1" style="text-align: center; font-weight: bold;">
+									<span>
+								    L/D
+
+									</span>
+								</th>
+                                	<th colspan="1" style="text-align: center; font-weight: bold;">
+									<span>
+									Dia
+									</span>
+								</th>
+                            </tr>
+						</thead>
+						<tbody>
+							<tr t-foreach="data.child_lines" t-as="r">
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.serial_no"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.location"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<!-- <span t-esc="o.sample_id.grade_id.grade"/> -->
+                                    <span t-esc="r.grade_con"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.depth"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.load" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.ld_ratio" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.load_n"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.core_comp" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.correction_factor_ld" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+                                <td colspan="1" style="text-align: center;">
+									<span t-esc="r.correction_factor_dia" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+                                <td colspan="1" style="text-align: center;">
+									<span t-esc="r.correct_comp" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+                                <td colspan="1" style="text-align: center;">
+									<span t-esc="r.equivalent_cube" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+
+                          
+						</tbody>
+					</table>
+
+					<div style="margin-top:10px">
+					<h6 style="margin-top:10px">
+					 Acceptable Criteria: - As per IS 456:2000 Clause 17.4.3       
+					 </h6>
+						<table style="margin-top:10px">
+							<tr>
+								<td colspan="12">The Average Equivalent Cube strength of core is equal to atleast 85 % of  Cube strength of the grade of concrete specified N/mm² :<![CDATA[&nbsp;]]>
+									<span t-field="data.area_equvalent_cube"/>
+								</td>
+							</tr>
+                            <tr>
+								<td colspan="12">Any individual Cube strength computed not less than 75% of the grade of Concrete specified  N/mm² :<![CDATA[&nbsp;]]>
+									<span t-field="data.any_individual_cube"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+					
+				
+
+					
+					<div style="page-break-inside: avoid;">
+						<div style="margin-top:10px" class="noteContainer">
+							<div>
+								<b>Note :-</b>
+							</div>
+							<div>
+								<ul>
+									<li>
+										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+									</li>
+									<li>
+										Sample(s) was/were not drawn by laboratory.
+									</li>
+									<li>
+										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+									</li>
+									<li t-if="eln.has_witness">
+										Test witnessed by : <span t-esc="eln.witness_name"/>
+										
+									</li>
+									<li t-if="eln.remarks">
+										<span t-esc="eln.remarks"/>
+									</li>
+									<!-- <li t-if="eln.remarks">
+									<p style="font-size: 10px;">
+										Remarks : <span t-esc="eln.remarks"/>
+									</p>
+									</li> -->
+								</ul>
+							</div>
+						</div>
+						<div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height: 50px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+							<!-- <div>
+								<div t-if="stamp and stamp == '4-in_report'">
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div> -->
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height: 50px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+						</div>
+						<!-- <div style="text-align:center;margin-top:25px">
+							......End of Report......
+						</div> -->
+						<div style="margin-top: 10px; text-align: center;">
+							<p style="border-top: 1px dashed #000; padding-top: 10px;">
+								...... End Of Report......
+							</p>
+						</div>
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
+    </odoo>
