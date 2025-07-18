@@ -27,6 +27,24 @@
                       <field name="test_end_date"/>
                     </group> -->
 
+                    <table class="table table-sm table-bordered o_form_table">
+                        <thead>
+                            <tr>
+                                <td></td>
+                                <th style="text-align: center;">L</th>
+                                <th style="text-align: center;">B</th>
+                                <th style="text-align: center;">H</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Size of the Brick :- (mm)</th>
+                                <td style="text-align: center;"><field name="length_in_mm" nolabel="1"/></td>
+                                <td style="text-align: center;"><field name="width_in_mm" nolabel="1"/></td>
+                                <td style="text-align: center;"><field name="height_in_mm" nolabel="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
                         <!-- compressive Strength -->
 
                     <div invisible="compressive_strength_visible == False" style="text-align:center">
@@ -109,7 +127,11 @@
                             decoration-danger="comp_strength_confirmity == 'fail'" 
                             readonly="1"
                       />
-                      <field name="comp_strength_nabl"/>
+                      <field name="comp_strength_nabl"
+                            decoration-success="comp_strength_nabl == 'pass'" 
+                            decoration-danger="comp_strength_nabl == 'fail'" 
+                            readonly="1"
+                            />
                     </group>
                     
 
@@ -239,7 +261,11 @@
                             decoration-danger="water_absorption_confirmity == 'fail'" 
                             readonly="1"
                       />
-                      <field name="water_absorption_nabl"/>
+                      <field name="water_absorption_nabl"
+                            decoration-success="water_absorption_nabl == 'pass'" 
+                            decoration-danger="water_absorption_nabl == 'fail'" 
+                            readonly="1"
+                      />
                   </group>
                   <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>

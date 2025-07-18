@@ -18,7 +18,9 @@ class MechanicalBricks(models.Model):
     # test_start_date = fields.Date("Test Start Date")
     # test_end_date = fields.Date("Test End Date")
    
-
+    length_in_mm = fields.Float(string="Length in mm")
+    width_in_mm = fields.Float(string="Width in mm")
+    height_in_mm = fields.Float(string="Height in mm")
         #1------------ Compressive Strength
 
     compressive_strength_visible = fields.Boolean("Compressive Strengt Visible",compute="_compute_visible")
@@ -54,7 +56,7 @@ class MechanicalBricks(models.Model):
     comp_strength_4 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_4")
     comp_strength_5 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_5")
     
-    avrg_compressive_strength = fields.Float(string="Average Compressive Strength",compute="_compute_avrg_compressive_strength")
+    avrg_compressive_strength = fields.Float(string="Average Compressive Strength",compute="_compute_avrg_compressive_strength", digits=(16, 3))
 
     comp_strength_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -102,6 +104,7 @@ class MechanicalBricks(models.Model):
                     
                     lower = record.avrg_compressive_strength - record.avrg_compressive_strength*mu_value
                     upper = record.avrg_compressive_strength + record.avrg_compressive_strength*mu_value
+                    # import wdb;wdb.set_trace()
                     if lower >= lab_min and upper <= lab_max:
                         record.comp_strength_nabl = 'pass'
                         break
@@ -238,7 +241,7 @@ class MechanicalBricks(models.Model):
     water_absorption_3 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_3")
     water_absorption_4 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_4")
     water_absorption_5 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_5")
-    avrg_water_absorption = fields.Float(string="Average Water Absorption, %", compute="_compute_avrg_water_absorption")
+    avrg_water_absorption = fields.Float(string="Average Water Absorption, %", compute="_compute_avrg_water_absorption", digits=(16, 3))
 
     water_absorption_confirmity = fields.Selection([
         ('pass', 'Pass'),

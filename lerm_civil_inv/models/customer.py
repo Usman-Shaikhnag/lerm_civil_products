@@ -163,7 +163,15 @@ class AccountMoveInherited(models.Model):
         if any('state' in vals and vals.get('state') == 'posted' for vals in vals_list):
             raise UserError('You cannot create a move already in the posted state. Please create a draft move and post it after.')
 
-        vals_list = self._move_autocomplete_invoice_lines_create(vals_list)
+        # vals_list = self._move_autocomplete_invoice_lines_create(vals_list)
+        for vals in vals_list:
+            for command in vals.get("invoice_line_ids", []):
+                if command[0] in (0, 1):  # create or update
+                    line_vals = command[2]
+                    if not line_vals.get("account_id"):
+                        line_vals["account_id"] = self.env["account.account"].search(
+                            [('user_type_id.name', '=', 'Revenue')], limit=1
+                        ).id
         return super(AccountMoveInherited, self).create(vals_list)
     
 

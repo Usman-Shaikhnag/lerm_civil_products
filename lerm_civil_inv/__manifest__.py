@@ -2,7 +2,7 @@
  'summary': "Invoicing",
  'author': "Usman Shaikhnag and Khan Afzal", 
  'website': "http://www.esehat.org", 
- 'category': 'Uncategorized', 
+ 'category': 'Lerm Civil', 
  'version': '13.0.1', 
  'depends':['base' ,'sale', 'contacts','account','product', 'web','l10n_in','base_account_budget','account_invoice_pricelist','base_accounting_kit'],
  'data': [
