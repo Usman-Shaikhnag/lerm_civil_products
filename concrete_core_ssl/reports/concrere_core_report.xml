@@ -186,68 +186,68 @@
 						<table style="margin-top:10px;">
 						<thead>
 							<tr>
-								<th rowspan="2" style="text-align: center; font-weight: bold;"> 
+								<th colspan="1" style="text-align: center; font-weight: bold;"> 
 									<span>
 										Sr. No
 									</span>
 								</th>
-								<th rowspan="2"	style="text-align: center; font-weight: bold;">
+								<th colspan="1"	style="text-align: center; font-weight: bold;">
 									<span>
 									Location
 									</span>
 								</th>
 
-								<th rowspan="2" style="text-align: center;font-weight: bold;">
+								<!-- <th colspan="1" style="text-align: center;font-weight: bold;">
 									<span>
 									Grade of  Concrite
 									</span>
-								</th>
+								</th> -->
 								
-								<th rowspan="2" style="text-align: center; font-weight: bold;">
+								<th colspan="1" style="text-align: center; font-weight: bold;">
 									<span>
 									Depth after Trimming in mm
 									</span>
 								</th>
 
-								<th rowspan="2" style="text-align: center; font-weight: bold;">
+								<th colspan="1" style="text-align: center; font-weight: bold;">
 									<span>
 									Load kN
 									</span>
 								</th>
-								<th rowspan="2" style="text-align: center; font-weight: bold;">
+								<th colspan="1" style="text-align: center; font-weight: bold;">
 									<span>
 									 L /D RATIO  
 									</span>
 								</th>
 								
-								<th rowspan="2" style="text-align: center; font-weight: bold;">
+								<th colspan="1" style="text-align: center; font-weight: bold;">
 									<span>
 									Load in N 
 									</span>
 								</th>
 
-								<th rowspan="2" style="text-align: center; font-weight: bold;">
+								<th colspan="1" style="text-align: center; font-weight: bold;">
 									<span>
 								Core Comp. strength(N/ mm2)
 									</span>
 								</th>
-								<th colspan="2" style="text-align: center; font-weight: bold;">
+								<!-- <th colspan="2" style="text-align: center; font-weight: bold;">
 									<span>
 									Correction Factor
 									</span>
-								</th>
-                                	<th rowspan="2" style="text-align: center; font-weight: bold;">
+								</th> -->
+                                	<th colspan="1" style="text-align: center; font-weight: bold;">
 									<span>
 									Corrected Cyl.Comp.Strength  (N/ mm2)
 									</span>
 								</th>
-                                	<th rowspan="2" style="text-align: center; font-weight: bold;">
+                                	<th colspan="1" style="text-align: center; font-weight: bold;">
 									<span>
 									Equivalent Cube.Comp Strength (N/ mm2)
 									</span>
 								</th>
 							</tr>
-                              <tr>
+                              <!-- <tr>
                               	<th colspan="1" style="text-align: center; font-weight: bold;">
 									<span>
 								    L/D
@@ -259,7 +259,7 @@
 									Dia
 									</span>
 								</th>
-                            </tr>
+                            </tr> -->
 						</thead>
 						<tbody>
 							<tr t-foreach="data.child_lines" t-as="r">
@@ -269,10 +269,9 @@
 								<td colspan="1" style="text-align: center;">
 									<span t-esc="r.location"/>
 								</td>
-								<td colspan="1" style="text-align: center;">
-									<!-- <span t-esc="o.sample_id.grade_id.grade"/> -->
+								<!-- <td colspan="1" style="text-align: center;">
                                     <span t-esc="r.grade_con"/>
-								</td>
+								</td> -->
 								<td colspan="1" style="text-align: center;">
 									<span t-esc="r.depth"/>
 								</td>
@@ -288,12 +287,12 @@
 								<td colspan="1" style="text-align: center;">
 									<span t-esc="r.core_comp" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
-								<td colspan="1" style="text-align: center;">
+								<!-- <td colspan="1" style="text-align: center;">
 									<span t-esc="r.correction_factor_ld" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
                                 <td colspan="1" style="text-align: center;">
 									<span t-esc="r.correction_factor_dia" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
+								</td> -->
                                 <td colspan="1" style="text-align: center;">
 									<span t-esc="r.correct_comp" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
