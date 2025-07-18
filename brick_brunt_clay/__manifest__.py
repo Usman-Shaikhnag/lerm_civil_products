@@ -3,7 +3,7 @@
 
 
 {
-    'name': 'Paver Block',
+    'name': 'BRICK BRUNT CLAY',
     'version': '1.2',
     'category': 'Sales/Sales',
     'summary': 'Sales internal machinery',
@@ -12,15 +12,17 @@ This module contains all the common features of Sales Management and eCommerce.
     """,
     'depends': ['base','sale','lerm_civil'],
     'data': [
-                 'security/ir.model.access.csv',
-                 'views/paver_block.xml',
-                 'reports/paver_datasheet.xml'
+            'security/ir.model.access.csv',
+             'views/brick_brunt_clay.xml',
+             'reports/brick_burnt_datasheet.xml',
+             'reports/brick_burnt_clay_report.xml'
     ],
-      'assets': {
+     'assets': {
         'web.assets_backend': [
-            'paver_block/static/src/custom_style.css',
+            'concrete_core_ssl/static/src/css/custom_style.css',
         ],
     },  # ✅ COMMA added here
+  
   
     'installable': True,
     'auto_install': False,

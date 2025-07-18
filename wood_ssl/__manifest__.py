@@ -17,6 +17,12 @@ This module contains all the common features of Sales Management and eCommerce.
                  'reports/wood_datasheet.xml',
                  'reports/wood_report.xml'
     ],
+          'assets': {
+        'web.assets_backend': [
+            'wood_ssl/static/src/css/wood_style.css',
+        ],
+    },  # ✅ COMMA added here
+  
   
     'installable': True,
     'auto_install': False,

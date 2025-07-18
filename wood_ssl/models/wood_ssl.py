@@ -23,7 +23,7 @@ class WOOD(models.Model):
     moisture_content_name = fields.Char("Name",default="Moisture Content")
     moisture_content_visible = fields.Boolean("Moisture Content Visible",compute="_compute_visible")
     
-    wood_child_lines = fields.One2many('mechanical.moisture.ssl.line','parent_id',string="Parameter")
+    wood_child_lines = fields.One2many('mechanical.moisture.ssl.line','parent_id',string="Moisture Line")
     average_moisture = fields.Float(string="Average Moisture Content",compute="_compute_average_moisture", digits=(12,2))
 
     @api.depends('wood_child_lines.per_moisture')
@@ -90,7 +90,7 @@ class WOOD(models.Model):
     specific_gravity_name = fields.Char("Name",default="Specific Gravity ")
     specific_gravity_visible = fields.Boolean("Specific Gravity  Visible",compute="_compute_visible")
     
-    specific_gravity_child_lines = fields.One2many('mechanical.specific.gravity.ssl.line','parent_id',string="Parameter")
+    specific_gravity_child_lines = fields.One2many('mechanical.specific.gravity.ssl.line','parent_id',string="Specific Line")
     average_specific_gravity = fields.Float(string="Average Specific Gravity ",compute="_compute_average_specific_gravity", digits=(12,3))
 
     @api.depends('specific_gravity_child_lines.specific_gravity')
