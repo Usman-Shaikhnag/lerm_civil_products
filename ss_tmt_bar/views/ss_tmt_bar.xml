@@ -7,14 +7,12 @@
         <field name="model">mechanical.stainless.steel.tmt.bar</field>
         <field name="arch" type="xml">
             <form>
-
                 <sheet>
-                   <group>
-                       
-                       
+                        <h1>
+                            <field name='name' readonly="1"/>
+                        </h1>                       
+                    
                          <field name='eln_ref' readonly="1"/>
-                          <field name='name' readonly="1"/>
-                    </group>
                          
                             <group>
                                 <group>
@@ -190,17 +188,17 @@
                                 </group>
                                 
                                 <group style="width:25%">
-                                    <!-- <field name='ts_ys_nabl'
+                                    <field name='ts_ys_nabl'
                                             decoration-success="ts_ys_nabl == 'pass'" 
                                             decoration-danger="ts_ys_nabl == 'fail'" 
-                                            readonly="1"/> -->
+                                            readonly="1"/>
                                 </group>
                                 
                                 <group style="width:25%">
-                                    <!-- <field name='ts_ys_conformity'
+                                    <field name='ts_ys_conformity'
                                             decoration-success="ts_ys_conformity == 'pass'" 
                                             decoration-danger="ts_ys_conformity == 'fail'" 
-                                            readonly="1"/> -->
+                                            readonly="1"/>
                                 </group>
                             </group>
                             

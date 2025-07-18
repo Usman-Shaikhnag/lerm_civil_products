@@ -50,11 +50,6 @@ class MechanicalBricks(models.Model):
     load_3 = fields.Float(string=" Load in, Kn", digits=(12,1))
     load_4 = fields.Float(string=" Load in, Kn", digits=(12,1))
     load_5 = fields.Float(string=" Load in, Kn", digits=(12,1))
-    load_Kn = fields.Float(string=" Load in,  N", digits=(12,1),compute="_compute_load_KN")
-    load_Kn_2 = fields.Float(string=" Load in, N", digits=(12,1),compute="_compute_load_KN")
-    load_Kn_3 = fields.Float(string=" Load in, N", digits=(12,1),compute="_compute_load_KN")
-    load_Kn_4 = fields.Float(string=" Load in, N", digits=(12,1),compute="_compute_load_KN")
-    load_Kn_5 = fields.Float(string=" Load in, N", digits=(12,1),compute="_compute_load_KN")
     comp_strength_1 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_1")
     comp_strength_2 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_2")
     comp_strength_3 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_3")
@@ -71,21 +66,6 @@ class MechanicalBricks(models.Model):
     comp_strength_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail')],string="NABL",compute="_compute_comp_strength_nabl",store=True)
-
-    @api.depends('load','load_2','load_3','load_4','load_5')
-    def _compute_load_KN(self):
-        for record in self:
-            if record.load != 0:
-                record.load_Kn = record.load*1000
-            if record.load_2 != 0:
-                record.load_Kn_2 = record.load_2*1000
-            if record.load_3 != 0:
-                record.load_Kn_3 = record.load_3*1000
-            if record.load_4 != 0:
-                record.load_Kn_4 = record.load_4*1000
-            if record.load_5 != 0:
-                record.load_Kn_5 = record.load_5*1000
-
 
     @api.depends('avrg_compressive_strength','eln_ref')
     def _compute_comp_strength_conformity(self):
@@ -114,20 +94,20 @@ class MechanicalBricks(models.Model):
             record.comp_strength_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avrg_compressive_strength - record.avrg_compressive_strength*mu_value
-                    upper = record.avrg_compressive_strength + record.avrg_compressive_strength*mu_value
-                    # import wdb;wdb.set_trace()
-                    if lower >= lab_min and upper <= lab_max:
-                        record.comp_strength_nabl = 'pass'
-                        break
-                    else:
-                        record.comp_strength_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avrg_compressive_strength - record.avrg_compressive_strength*mu_value
+            upper = record.avrg_compressive_strength + record.avrg_compressive_strength*mu_value
+            # import wdb;wdb.set_trace()
+            if lower >= lab_min and upper <= lab_max:
+                record.comp_strength_nabl = 'pass'
+                break
+            else:
+                record.comp_strength_nabl = 'fail'
 
     
 
@@ -223,11 +203,11 @@ class MechanicalBricks(models.Model):
         #-2----------Efflorescence Visual Observation 
     efflorescence_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
     visual_observation_name_efflorescence = fields.Char("Name",default="Efflorescence")
-    visual_observation_1 = fields.Selection([('like', 'Like'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_2 = fields.Selection([('like', 'Like'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_3 = fields.Selection([('like', 'Like'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_4 = fields.Selection([('like', 'Like'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_5 = fields.Selection([('like', 'Like'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_2 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_3 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_4 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_5 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
 
 
          #-3----------  Dimension As per IS: IS : 1077 -1992 
@@ -298,19 +278,19 @@ class MechanicalBricks(models.Model):
             record.water_absorption_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avrg_water_absorption - record.avrg_water_absorption*mu_value
-                    upper = record.avrg_water_absorption + record.avrg_water_absorption*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.water_absorption_nabl = 'pass'
-                        break
-                    else:
-                        record.water_absorption_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avrg_water_absorption - record.avrg_water_absorption*mu_value
+            upper = record.avrg_water_absorption + record.avrg_water_absorption*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.water_absorption_nabl = 'pass'
+                break
+            else:
+                record.water_absorption_nabl = 'fail'
 
     @api.depends('water_absorption', 'water_absorption_2', 'water_absorption_3', 'water_absorption_4', 'water_absorption_5')
     def _compute_avrg_water_absorption(self):
