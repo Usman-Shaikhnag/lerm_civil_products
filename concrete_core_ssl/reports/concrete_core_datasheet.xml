@@ -55,7 +55,7 @@
 								</td>
 							</tr>
 						</table>
-						<div style="text-align:center;font-size:18px;margin-top:25px">
+						<div style="text-align:center;font-size:18px;margin-top:10px">
 						<!-- Concrete Cube -->
 							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_name"/>
 							<span>
@@ -67,7 +67,7 @@
 							</span>
 						</div>
 					</div>
-                    <table style="margin-top:20px">
+                    <table style="margin-top:10px">
 				
 							<tr>
 								<td colspan="6">Type of Sample :  <span t-field="data.type_of_sample"></span>
@@ -77,7 +77,7 @@
 							</tr>
 						
 						</table>
-                    <table style="margin-top:20px">
+                    <table style="margin-top:10px">
                         <thead >
                             <tr cols="12">
                                 <td  style="text-align: center;">Sr no 
@@ -116,19 +116,27 @@
                             </tbody>
 					</table>
 
-						<table style="margin-top:20px">
+						<table style="margin-top:10px">
 				
 							
 							<tr>
-								<td colspan="6">Dia of core mm:  <span t-field="data.dia_core"></span>
+								<td colspan="6">Dia of core:  </td>
+								<td><span t-field="data.dia_core"></span></td>
+								<td>
+								 mm
 								</td>
+							</tr>
+							<tr>
 							
-								<td colspan="6">Area mm2 :  <span t-field="data.area_core"></span>
+								<td colspan="6">Area  : </td>
+								<td> <span t-field="data.area_core"></span></td>
+								<td>
+								mm2
 								</td>
 							</tr>
 						
 						</table>
-						<table style="margin-top:30px;">
+						<table style="margin-top:10px;">
 						<thead>
 							<tr>
 								<th rowspan="2" style="text-align: center;"> 
@@ -252,15 +260,25 @@
 					</table>
 
 					<div style="margin-top:10px">
-						<table>
+					<table style="margin-top:2px">
 							<tr>
-								<td colspan="12">The Average Equivalent Cube strength of core is equal to atleast 85 % of  Cube strength of the grade of concrete specified N/mm² :<![CDATA[&nbsp;]]>
+								<td colspan="12">The Average Equivalent Cube strength of core is equal to atleast 85 % of  Cube strength of the grade of concrete specified :</td>
+								<![CDATA[&nbsp;]]>
+								<td>
 									<span t-field="data.area_equvalent_cube"/>
+								</td>
+								<td>
+								N/mm² 
 								</td>
 							</tr>
                             <tr>
-								<td colspan="12">Any individual Cube strength computed not less than 75% of the grade of Concrete specified  N/mm² :<![CDATA[&nbsp;]]>
+								<td colspan="12">Any individual Cube strength computed not less than 75% of the grade of Concrete specified  N/mm² :</td>
+								<![CDATA[&nbsp;]]>
+								<td>
 									<span t-field="data.any_individual_cube"/>
+								</td>
+								<td>
+								N/mm² 
 								</td>
 							</tr>
 						</table>

@@ -128,7 +128,7 @@
         <!-- SOP -->
         <page name="sop_page" string="SOP"
               invisible="show_lerm_tabs == False">
-          <!-- <field name="sop" widget="html"/> -->
+          <field name="sop" widget="html"/>
         </page>
 
         <!-- Alias -->
@@ -221,15 +221,15 @@
                
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="after">
                     <field name="pricelist_id" invisible="1"/>
-                    <field name="report_no1" widget="many2many_tags" options="{'no_create': True}"   />
+                    <field name="report_no1"  widget="many2many_tags" options="{'no_create': True}"   />
                
                 </xpath>
                 
               
                 
             </field>
-        </record>
-     -->
+        </record> -->
+    
     
   </data>
   

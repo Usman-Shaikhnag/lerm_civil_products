@@ -23,7 +23,7 @@
                         <field name="grade"/>
 
                     </group>
-                    <group>
+                    <group class="custom_table_borders">
                       <field name="sample_parameters">
                         <tree>
                           <field name="parameter_name"/>
@@ -32,22 +32,50 @@
                       </field>
                     </group>
 
-                    <group style=" width:50%;">
+                    <!-- <group style=" width:50%;">
                       <field name='type_of_sample' />
+                    </group> -->
+                 
+                     
+                     <group  style="white-space: nowrap; width:80%;">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 80%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                             Type of Sample:
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 200px;">
+                                                    <field name="type_of_sample" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                        
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </group>
 
-                     <div>
-                        <field name="dia_lines"  >
-                                <tree editable="bottom">
-                                    <field name="serial_no" />
-                                    <field name="dia_core"/>
-                                      <field name="correction_dia"/>
-                                    
-                                </tree>
-                        </field>
-                    </div>
 
-                     <group>
+
+                  
+                   <field name="dia_lines" mode="tree">
+                    <tree editable="bottom" class="custom_table_borders">
+                        <field name="serial_no"/>
+                        <field name="dia_core"/>
+                        <field name="correction_dia"/>
+                    </tree>
+                </field>
+
+
+
+
+
+
+                     <!-- <group>
                         <group>
                             <field name='dia_core' />
                         </group>
@@ -56,12 +84,69 @@
                         <group>
                             <field name='area_core' />
                         </group>
-                     </group>
+                     </group> -->
+
+                <group style="white-space: nowrap; width:80%;">
+                     <group >
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                                Diameter of Core
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="dia_core" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                mm
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
+
+                   <group >
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                               Area 
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="area_core" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                mm²
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+                </group>
+
+
+                    
+
+
+
                     
                       
                 <div>
-                    <field name="child_lines" >
-                            <tree editable="bottom">
+                    <field name="child_lines"  mode="tree">
+                            <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no" />
                                 <field name="location"/>
                                 <field name="grade_con" />
@@ -78,12 +163,49 @@
                     </field>
                 </div>
 
+                 
                     <group style="white-space: nowrap; width:80%;">
-                        <field name='area_equvalent_cube' />  
-                    </group>
-
-                    <group style="white-space: nowrap; width:80%;">       
-                        <field name='any_individual_cube' />
+                        <div class="custom_table_borders" style="width:100%;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                            Parameter Name
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                            Result
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                            Unit
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="area_equvalent_cube"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="area_equvalent_cube" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            N/mm²
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="any_individual_cube"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="any_individual_cube" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            N/mm²
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </group>
 
 

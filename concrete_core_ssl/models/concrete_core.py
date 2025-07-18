@@ -48,8 +48,8 @@ class ConcreteCore(models.Model):
     type_of_sample = fields.Char("Type of Sample:")
 
 
-    area_equvalent_cube = fields.Float(string="The Average Equivalent Cube strength of core is equal to atleast 85 % of  Cube strength of the grade of concrete specified : N/mm² ",compute="_compute_area_equivalent_cube")
-    any_individual_cube = fields.Float(string="Any individual Cube strength computed not less than 75% of the grade of Concrete specified : N/mm² ",compute="_compute_any_individual_cube")
+    area_equvalent_cube = fields.Float(string="The Average Equivalent Cube strength of core is equal to atleast 85 % of  Cube strength of the grade of concrete specified :",compute="_compute_area_equivalent_cube")
+    any_individual_cube = fields.Float(string="Any individual Cube strength computed not less than 75% of the grade of Concrete specified :  ",compute="_compute_any_individual_cube")
 
     @api.depends('grade.grade')
     def _compute_area_equivalent_cube(self):

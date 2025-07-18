@@ -45,11 +45,16 @@ class MechanicalBricks(models.Model):
     area_3 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_3")
     area_4 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_4")
     area_5 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_5")
-    load = fields.Float(string=" Load in, KN", digits=(12,1))
-    load_2 = fields.Float(string=" Load in, KN", digits=(12,1))
-    load_3 = fields.Float(string=" Load in, KN", digits=(12,1))
-    load_4 = fields.Float(string=" Load in, KN", digits=(12,1))
-    load_5 = fields.Float(string=" Load in, KN", digits=(12,1))
+    load = fields.Float(string=" Load in, Kn", digits=(12,1))
+    load_2 = fields.Float(string=" Load in, Kn", digits=(12,1))
+    load_3 = fields.Float(string=" Load in, Kn", digits=(12,1))
+    load_4 = fields.Float(string=" Load in, Kn", digits=(12,1))
+    load_5 = fields.Float(string=" Load in, Kn", digits=(12,1))
+    load_Kn = fields.Float(string=" Load in,  N", digits=(12,1),compute="_compute_load_KN")
+    load_Kn_2 = fields.Float(string=" Load in, N", digits=(12,1),compute="_compute_load_KN")
+    load_Kn_3 = fields.Float(string=" Load in, N", digits=(12,1),compute="_compute_load_KN")
+    load_Kn_4 = fields.Float(string=" Load in, N", digits=(12,1),compute="_compute_load_KN")
+    load_Kn_5 = fields.Float(string=" Load in, N", digits=(12,1),compute="_compute_load_KN")
     comp_strength_1 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_1")
     comp_strength_2 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_2")
     comp_strength_3 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_3")
@@ -67,6 +72,19 @@ class MechanicalBricks(models.Model):
         ('pass', 'Pass'),
         ('fail', 'Fail')],string="NABL",compute="_compute_comp_strength_nabl",store=True)
 
+    @api.depends('load','load_2','load_3','load_4','load_5')
+    def _compute_load_KN(self):
+        for record in self:
+            if record.load != 0:
+                record.load_Kn = record.load*1000
+            if record.load_2 != 0:
+                record.load_Kn_2 = record.load_2*1000
+            if record.load_3 != 0:
+                record.load_Kn_3 = record.load_3*1000
+            if record.load_4 != 0:
+                record.load_Kn_4 = record.load_4*1000
+            if record.load_5 != 0:
+                record.load_Kn_5 = record.load_5*1000
 
 
     @api.depends('avrg_compressive_strength','eln_ref')
