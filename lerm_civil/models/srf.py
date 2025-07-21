@@ -162,7 +162,7 @@ class SrfForm(models.Model):
 
     def _compute_date_editable(self):
         for record in self:
-            print("COMPUTE SRF DATE")
+            # print("COMPUTE SRF DATE")
             # import wdb;wdb.set_trace()
 
             backdate_group_id = record.env.ref('lerm_civil.kes_srf_backdate_creation_group').id

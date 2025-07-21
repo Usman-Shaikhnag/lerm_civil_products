@@ -4,12 +4,12 @@ import math
 import re
 
 class BituminousMechanical(models.Model):
-    _name = "ssl.bituminous"
+    _name = "bituminous.macadam"
     _inherit = "lerm.eln"
-    _description = 'SSL Bituminous'
+    _description = 'Bituminous Macadam'
     _rec_name = "name"
 
-    name = fields.Char("Name",default="Bituminous")
+    name = fields.Char("Name",default="Bituminous Macadam")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
@@ -64,7 +64,7 @@ class BituminousMechanical(models.Model):
     combined_gradation_name = fields.Char("Name",default="Combined Gradation ")
     combined_gradation_visible = fields.Boolean("Combined Gradation Visible",compute="_compute_visible")
 
-    combined_gradation_child_lines = fields.One2many('ssl.bituminous.combined.gradation.line','parent_id',string="Parameter")
+    combined_gradation_child_lines = fields.One2many('bituminous.macadam.combined.gradation.line','parent_id',string="Parameter")
     total_combined_gradation = fields.Float(string="Total",compute="_compute_total_combined_gradation")
 			
     bitumen_content_name = fields.Char("Name",default="Bitumen Content")
@@ -77,9 +77,9 @@ class BituminousMechanical(models.Model):
             record.combined_gradation_visible = False
 
             for sample in record.sample_parameters:
-                if sample.internal_id == '1afda8c1-5045-494a-aec3-29bd5f2ddade':
+                if sample.internal_id == '8eeeb5c6-4914-410a-a1c0-67af0a955588':
                     record.combined_gradation_visible = True
-                if sample.internal_id == '661bebd2-0149-40f9-93ea-615408b61835':
+                if sample.internal_id == 'e59bcffd-e8ed-45ad-a2d3-879365e45419':
                     record.bitumen_content_visible = True
 
     def calculate_combined_gradation(self): 
@@ -138,8 +138,8 @@ class BituminousMechanical(models.Model):
 
 
 class CombinedGradationLine(models.Model):
-    _name = "ssl.bituminous.combined.gradation.line"
-    parent_id = fields.Many2one('ssl.bituminous', string="Parent Id")
+    _name = "bituminous.macadam.combined.gradation.line"
+    parent_id = fields.Many2one('bituminous.macadam', string="Parent Id")
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size mm")

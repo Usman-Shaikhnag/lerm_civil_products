@@ -251,24 +251,24 @@ class StainlessSteel(models.Model):
 
     
 
-    @api.depends('eln_ref','sample_parameters')
-    def _compute_visible(self):
-        for record in self:
-            record.fracture_visible = False
-            record.bend_visible  = False  
-            record.rebend_visible = False
-            for sample in record.sample_parameters:
-                print("Samples internal id",sample.internal_id)
-                if sample.internal_id == 'fafcb7b0-8df1-47d0-92a9-b6eb99af38e0':
-                    record.fracture_visible = True
-                if sample.internal_id == '25fcb167-68bc-48d0-880f-77ca213fd995':
-                    record.bend_visible = True
-                if sample.internal_id == '709c7024-d1b9-48bb-8c94-fc0742a3e080':
-                    record.rebend_visible = True
+    # @api.depends('eln_ref','sample_parameters')
+    # def _compute_visible(self):
+    #     for record in self:
+    #         record.fracture_visible = False
+    #         record.bend_visible  = False  
+    #         record.rebend_visible = False
+    #         for sample in record.sample_parameters:
+    #             print("Samples internal id",sample.internal_id)
+    #             if sample.internal_id == 'fafcb7b0-8df1-47d0-92a9-b6eb99af38e0':
+    #                 record.fracture_visible = True
+    #             if sample.internal_id == '25fcb167-68bc-48d0-880f-77ca213fd995':
+    #                 record.bend_visible = True
+    #             if sample.internal_id == '709c7024-d1b9-48bb-8c94-fc0742a3e080':
+    #                 record.rebend_visible = True
 
-    fracture_visible = fields.Boolean("Fracture",compute="_compute_visible")
-    bend_visible = fields.Boolean("Bend Test",compute="_compute_visible")
-    rebend_visible = fields.Boolean("Rebend Test",compute="_compute_visible")
+    # fracture_visible = fields.Boolean("Fracture",compute="_compute_visible")
+    # bend_visible = fields.Boolean("Bend Test",compute="_compute_visible")
+    # rebend_visible = fields.Boolean("Rebend Test",compute="_compute_visible")
     
     uts_visible = fields.Boolean("Ultimate Tensile Strength",compute="_compute_visible")
     elongation_visible = fields.Boolean("Elongation",compute="_compute_visible")

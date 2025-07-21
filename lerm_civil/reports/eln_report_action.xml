@@ -758,5 +758,28 @@
             <field name="binding_type">report</field>
         </record>
 
+        <record id="bituminous_macadam_report_action" model="ir.actions.report">
+            <field name="name">Bituminous Macadam Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bituminous_macadam.bituminous_macadam_report</field>
+            <field name="report_file">bituminous_macadam.bituminous_macadam_report</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <!-- <field name="binding_model_id" eval="False"/> -->
+           <field name="binding_type">report</field>
+        </record>
+
+
+        <record id="bituminous_macadam_datasheet_action" model="ir.actions.report">
+            <field name="name">Bituminous Macadam DataSheet</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bituminous_macadam.bituminous_macadam_datasheet</field>
+            <field name="report_file">bituminous_macadam.bituminous_macadam_datasheet</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <!-- <field name="binding_model_id" eval="False"/> -->
+           <field name="binding_type">report</field>
+        </record>
+
 
 </odoo>
