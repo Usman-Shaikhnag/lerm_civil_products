@@ -316,7 +316,7 @@ class MechanicalBricksBurntClay(models.Model):
     def _compute_water_absorption(self):
         for record in self:
             if record.final_wt != 0:
-                record.water_absorption = (record.initial_wt - record.final_wt) / record.final_wt * 100
+                record.water_absorption = (record.final_wt - record.initial_wt) / record.initial_wt * 100
             else:
                 record.water_absorption = 0
 
@@ -324,7 +324,7 @@ class MechanicalBricksBurntClay(models.Model):
     def _compute_water_absorption_2(self):
         for record in self:
             if record.final_wt_2 != 0:
-                record.water_absorption_2 = (record.initial_wt_2 - record.final_wt_2) / record.final_wt_2 * 100
+                record.water_absorption_2 = (record.final_wt_2 - record.initial_wt_2) / record.initial_wt_2 * 100
             else:
                 record.water_absorption_2 = 0
 
@@ -332,7 +332,7 @@ class MechanicalBricksBurntClay(models.Model):
     def _compute_water_absorption_3(self):
         for record in self:
             if record.final_wt_3 != 0:
-                record.water_absorption_3 = (record.initial_wt_3 - record.final_wt_3) / record.final_wt_3 * 100
+                record.water_absorption_3 = (record.final_wt_3 - record.initial_wt_3) / record.initial_wt_3 * 100
             else:
                 record.water_absorption_3 = 0
 
@@ -340,7 +340,7 @@ class MechanicalBricksBurntClay(models.Model):
     def _compute_water_absorption_4(self):
         for record in self:
             if record.final_wt_4 != 0:
-                record.water_absorption_4 = (record.initial_wt_4 - record.final_wt_4) / record.final_wt_4 * 100
+                record.water_absorption_4 = (record.final_wt_4 - record.initial_wt_4) / record.initial_wt_4 * 100
             else:
                 record.water_absorption_4 = 0
 
@@ -348,7 +348,7 @@ class MechanicalBricksBurntClay(models.Model):
     def _compute_water_absorption_5(self):
         for record in self:
             if record.final_wt_5 != 0:
-                record.water_absorption_5 = (record.initial_wt_5 - record.final_wt_5) / record.final_wt_5 * 100
+                record.water_absorption_5 = (record.final_wt_5 - record.initial_wt_5) / record.initial_wt_5 * 100
             else:
                 record.water_absorption_5 = 0
 
