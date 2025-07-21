@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_brick_burnt_clay_ssl_view" model="ir.ui.view">
+        <field name="name">mechanical.bricks.burnt.clay.ssl.form</field>
+        <field name="model">mechanical.bricks.burnt.clay.ssl</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                     <group style="white-space: nowrap; width:70%;">
+                    <h1>
+                        <field name="name1" string="Bricks Burnt Clay" readonly="1" nolabel="1"/>
+                    </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade"/>
+
+                    </group>
+                   <group class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                    <!-- <group>
+                      <field name="test_start_date"/>
+                      <field name="test_end_date"/>
+                    </group> -->
+
+         
+                        <!-- compressive Strength -->
+
+                    <div invisible="compressive_strength_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                          <field name="compressive_strength_visible" invisible='1'/>
+                      </h1>
+                    </div>
+                    
+                     <!-- <group invisible="compressive_strength_visible == False"> -->
+                      <div invisible="compressive_strength_visible == False" class="mb-3" style="white-space: nowrap; width:100%;">
+                        <table class="custom_table_borders">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th style="text-align: center; ">Sample 1</th>
+                                    <th style="text-align: center; ">Sample 2</th>
+                                    <th style="text-align: center; ">Sample 3</th>
+                                    <th style="text-align: center; ">Sample 4</th>
+                                    <th style="text-align: center; ">Sample 5</th>
+                                      <th style="text-align: center; ">Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center; "><strong>Length </strong></td>
+                                    <td style="text-align: center; "><field name="length" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="length_2" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="length_3" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="length_4" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="length_5" nolabel="1"/></td>
+                                     <td style="text-align: center; "><strong>mm</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; "><strong>Width</strong></td>
+                                    <td style="text-align: center; "><field name="width" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="width_2" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="width_3" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="width_4" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="width_5" nolabel="1"/></td>
+                                      <td style="text-align: center; "><strong>mm</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; "><strong>Height</strong></td>
+                                    <td style="text-align: center; "><field name="height" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="height_2" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="height_3" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="height_4" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="height_5" nolabel="1"/></td>
+                                      <td style="text-align: center; "><strong>mm</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; "><strong>Area </strong></td>
+                                    <td style="text-align: center; "><field name="area" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="area_2" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="area_3" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="area_4" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="area_5" nolabel="1"/></td>
+                                      <td style="text-align: center; "><strong>mm²</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; "><strong>Load</strong></td>
+                                    <td style="text-align: center; "><field name="load" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="load_2" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="load_3" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="load_4" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="load_5" nolabel="1"/></td>
+                                      <td style="text-align: center; "><strong>KN</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; "><strong>Compressive Strength</strong></td>
+                                    <td style="text-align: center; "><field name="comp_strength_1" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="comp_strength_2" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="comp_strength_3" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="comp_strength_4" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="comp_strength_5" nolabel="1"/></td>
+                                       <td style="text-align: center; "><strong>MPA</strong></td>
+                                </tr>
+
+                              
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <group style="white-space: nowrap; width:80%;" string="Result" invisible="compressive_strength_visible == False">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                              Average Compressive
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="avrg_compressive_strength" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                             MPA
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
+                    <group  invisible="compressive_strength_visible == False">
+                      <!-- <field name="avrg_compressive_strength"/> -->
+                      <field name="comp_strength_confirmity"
+                            decoration-success="comp_strength_confirmity == 'pass'" 
+                            decoration-danger="comp_strength_confirmity == 'fail'" 
+                            readonly="1"
+                      />
+                      <field name="comp_strength_nabl"
+                            decoration-success="comp_strength_nabl == 'pass'" 
+                            decoration-danger="comp_strength_nabl == 'fail'" 
+                            readonly="1"
+                            />
+                    </group>
+                    
+
+                    <!-- visual_observation -->
+                    <div invisible="efflorescence_visible == False" style="text-align:center">
+                        <h1>
+                            <field name="visual_observation_name_efflorescence" readonly="1" nolabel="1"/>
+                            <field name="efflorescence_visible" invisible='1'/>
+                        </h1>
+                    </div>
+
+                   <div invisible="efflorescence_visible == False" class="mb-3" style="width: 100%;">
+                        <table class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th style="text-align: center; ">Observation 1</th>
+                                    <th style="text-align: center; ">Observation 2</th>
+                                    <th style="text-align: center; ">Observation 3</th>
+                                    <th style="text-align: center; ">Observation 4</th>
+                                    <th style="text-align: center; ">Observation 5</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center; "><strong>Observation</strong></td>
+                                    <td style="text-align: center; "><field name="visual_observation_1" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="visual_observation_2" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="visual_observation_3" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="visual_observation_4" nolabel="1"/></td>
+                                    <td style="text-align: center; "><field name="visual_observation_5" nolabel="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <!--Dimension -->
+
+                    <div invisible="dimension_visible == False" style="text-align:center">
+                        <h1>
+                          <field name="dimension_name1" readonly="1" nolabel="1"/>
+                          20 Bricks
+                        </h1>
+                        <field name="dimension_visible" invisible='1'/>
+                    </div>
+
+                    <div invisible="dimension_visible == False" class="mb-3">
+                        <table class="custom_table_borders"  style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center; ">Dimension Type</th>
+                                    <th style="text-align: center; ">Value (mm)</th>
+                                    <th style="text-align: center; ">Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center; "><strong>Length</strong></td>
+                                    <td style="text-align: center; "><field name="avrg_length" nolabel="1"/></td>
+                                    <td style="text-align: center; "><strong>mm</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; "><strong>Width</strong></td>
+                                    <td style="text-align: center; "><field name="avrg_width" nolabel="1"/></td>
+                                    <td style="text-align: center; "><strong>mm</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; "><strong>Height</strong></td>
+                                    <td style="text-align: center; "><field name="avrg_height" nolabel="1"/></td>
+                                    <td style="text-align: center; "><strong>mm</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Water Absorbtion -->                      
+                    <div invisible="water_absorbtion_visible == False"  style="white-space: nowrap; width:70%;">
+                        <h1>
+                          <field name="wt_absorption_name" readonly="1" nolabel="1"/>
+                          <field name="water_absorbtion_visible" invisible='1'/>
+                        </h1>
+                    </div>
+                                    
+                    <div invisible="water_absorbtion_visible == False" class="mb-3" style="white-space: nowrap; width:100%;">
+                      <table class="custom_table_borders" >
+                          <thead>
+                              <tr>
+                                  <th></th>
+                                  <th style="text-align: center; ">Sample 1</th>
+                                  <th style="text-align: center; ">Sample 2</th>
+                                  <th style="text-align: center; ">Sample 3</th>
+                                  <th style="text-align: center; ">Sample 4</th>
+                                  <th style="text-align: center; ">Sample 5</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td style="text-align: center; "><strong>Dry wt (W1)</strong></td>
+                                  <td style="text-align: center; "><field name="initial_wt" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="initial_wt_2" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="initial_wt_3" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="initial_wt_4" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="initial_wt_5" nolabel="1"/></td>
+                              </tr>
+                              <tr>
+                                  <td style="text-align: center; "><strong>Wet wt (W2)</strong></td>
+                                  <td style="text-align: center; "><field name="final_wt" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="final_wt_2" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="final_wt_3" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="final_wt_4" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="final_wt_5" nolabel="1"/></td>
+                              </tr>
+                              <tr>
+                                  <td style="text-align: center; "><strong>Water Absorption %</strong></td>
+                                  <td style="text-align: center; "><field name="water_absorption" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="water_absorption_2" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="water_absorption_3" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="water_absorption_4" nolabel="1"/></td>
+                                  <td style="text-align: center; "><field name="water_absorption_5" nolabel="1"/></td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+
+
+                     <group style="white-space: nowrap; width:80%;" string="Result"   invisible="water_absorbtion_visible == False">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                            Average Water Absorption
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="avrg_water_absorption" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                              %
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
+
+                    
+                    
+                  <group invisible="water_absorbtion_visible == False">
+                      <!-- <field name="avrg_water_absorption"/> -->
+                      <field name="water_absorption_confirmity"
+                            decoration-success="water_absorption_confirmity == 'pass'" 
+                            decoration-danger="water_absorption_confirmity == 'fail'" 
+                            readonly="1"
+                      />
+                      <field name="water_absorption_nabl"
+                            decoration-success="water_absorption_nabl == 'pass'" 
+                            decoration-danger="water_absorption_nabl == 'fail'" 
+                            readonly="1"
+                      />
+                  </group>
+                  <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

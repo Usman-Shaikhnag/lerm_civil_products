@@ -251,13 +251,19 @@
 							<div>
 								<ul>
 									<li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+									(I)The results relate only to the items tested
 									</li>
 									<li>
-										Sample(s) was/were not drawn by laboratory.
+									(ii) This test report should not be reproduced except in full, without written approval of this Laboratory
 									</li>
 									<li>
-										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+									(iii) Any corrections invalidates the test reports
+									</li>
+									<li>
+									(iv) Any Query regarding the report must be reported immediately.
+									</li>
+									<li>
+									(V) # mark indicates Details given by Client.
 									</li>
 									<li t-if="eln.has_witness">
 										Test witnessed by : <span t-esc="eln.witness_name"/>
@@ -266,6 +272,11 @@
 									<li t-if="eln.remarks">
 										<span t-esc="eln.remarks"/>
 									</li>
+									<!-- <li t-if="eln.remarks">
+									<p style="font-size: 10px;">
+										Remarks : <span t-esc="eln.remarks"/>
+									</p>
+									</li> -->
 								</ul>
 							</div>
 						</div>

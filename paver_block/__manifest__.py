@@ -18,7 +18,7 @@ This module contains all the common features of Sales Management and eCommerce.
     ],
       'assets': {
         'web.assets_backend': [
-            'concrete_core_ssl/static/src/css/custom_style.css',
+            'paver_block/static/src/custom_style.css',
         ],
     },  # ✅ COMMA added here
   
