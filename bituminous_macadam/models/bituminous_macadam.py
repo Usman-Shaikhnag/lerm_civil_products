@@ -3,7 +3,7 @@ from odoo.exceptions import UserError,ValidationError
 import math
 import re
 
-class BituminousMechanical(models.Model):
+class BituminousMacadam(models.Model):
     _name = "bituminous.macadam"
     _inherit = "lerm.eln"
     _description = 'Bituminous Macadam'
@@ -38,12 +38,12 @@ class BituminousMechanical(models.Model):
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(BituminousMechanical, self).create(vals)
+        record = super(BituminousMacadam, self).create(vals)
         record.eln_ref.write({'model_id':record.id})
         return record
         
     def default_get(self, fields):
-        res = super(BituminousMechanical, self).default_get(fields)
+        res = super(BituminousMacadam, self).default_get(fields)
 
         fixed_sieve_sizes = [
             '45 mm', '37.5 mm', '26.5 mm', '19 mm', '13.2 mm',
@@ -134,6 +134,52 @@ class BituminousMechanical(models.Model):
             else:
                 record.binder_content = 0
 
+    binder_content_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_binder_content_conformity", store=True)
+
+    @api.depends('binder_content','eln_ref','grade')
+    def _compute_binder_content_conformity(self):
+        
+        for record in self:
+            record.binder_content_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e59bcffd-e8ed-45ad-a2d3-879365e45419')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e59bcffd-e8ed-45ad-a2d3-879365e45419')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.binder_content - record.binder_content*mu_value
+                    upper = record.binder_content + record.binder_content*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.binder_content_conformity = 'pass'
+                        break
+                    else:
+                        record.binder_content_conformity = 'fail'
+
+    def open_eln_page(self):
+        # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+
+            #Binder Content
+            if result.parameter.internal_id == 'e59bcffd-e8ed-45ad-a2d3-879365e45419':
+                result.result_char = round(self.binder_content,2)
+                if self.binder_content_conformity == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
 
 
 
