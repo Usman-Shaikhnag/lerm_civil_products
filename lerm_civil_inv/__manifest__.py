@@ -1,4 +1,4 @@
-{'name':'Kes_Invoicing',
+{'name':'LERM_Invoicing',
  'summary': "Invoicing",
  'author': "Usman Shaikhnag and Khan Afzal", 
  'website': "http://www.esehat.org", 
