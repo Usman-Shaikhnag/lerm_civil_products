@@ -769,7 +769,6 @@
            <field name="binding_type">report</field>
         </record>
 
-
         <record id="bituminous_macadam_datasheet_action" model="ir.actions.report">
             <field name="name">Bituminous Macadam DataSheet</field>
             <field name="model">lerm.eln</field>
@@ -779,6 +778,26 @@
             <field name="binding_model_id" ref="model_lerm_eln"/>
             <!-- <field name="binding_model_id" eval="False"/> -->
            <field name="binding_type">report</field>
+        </record>
+
+        <record id="lerm_burnt_brick_datasheet_action" model="ir.actions.report">
+            <field name="name">Brick Burnt Clay Datasheet SSL</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">brick_brunt_clay.lerm_burnt_brick_datasheet</field>
+            <field name="report_file">brick_brunt_clay.lerm_burnt_brick_datasheet</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="lerm_brick_burnt_report_ssl_action" model="ir.actions.report">
+            <field name="name">Brick Burnt Clay Report SSL</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">brick_brunt_clay.lerm_brick_burnt_report_ssl</field>
+            <field name="report_file">brick_brunt_clay.lerm_brick_burnt_report_ssl</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <field name="binding_type">report</field>
         </record>
 
 

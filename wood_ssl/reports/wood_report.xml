@@ -10,7 +10,7 @@
 				</div> -->
 
 				<div class="container_eln">
-					<div t-foreach="eln" t-as="o">
+					<!-- <div t-foreach="eln" t-as="o">
 						
 						<table style="margin-top:10px;">
 							<tr>
@@ -27,17 +27,7 @@
 								</td>
 							</tr>
 							<tr>
-								<!-- <td colspan="12">Project / Site Address :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-											,
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
+								
 								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.name_work"/>
 								</td>
@@ -115,11 +105,59 @@
 
                             <tr>
 							
-								<!-- <td colspan="6">Date of Casting :
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.date_of_casting"/>
-								</td> -->
+								
 							</tr>
+						</table>
+					</div> -->
+					 <div class="px-0" t-foreach="eln" t-as="o">
+						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
+							<tbody>
+								<tr>
+									<td style="width: 30%; padding: 5px;"><strong>#Client Details</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.customer.name"/>
+									<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+								
+								</tr>
+								
+								<tr>
+									<td><strong>#Client's Reference</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>#Name of Work</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Date of Testing</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.start_date" style="margin-right:10px;"/> to 
+										<span t-field="o.end_date" style="margin-left:10px;"/>
+									</td>
+								</tr>
+
+								<tr>
+									<td><strong>Type of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Size of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.sample_id.size_id.size"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Source of Sample</strong></td>
+									<td style="padding-left: 10px;">Sample Supplied by Client</td>
+								</tr>
+							</tbody>
 						</table>
 					</div>
 
@@ -251,13 +289,19 @@
 							<div>
 								<ul>
 									<li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+									(I)The results relate only to the items tested
 									</li>
 									<li>
-										Sample(s) was/were not drawn by laboratory.
+									(ii) This test report should not be reproduced except in full, without written approval of this Laboratory
 									</li>
 									<li>
-										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+									(iii) Any corrections invalidates the test reports
+									</li>
+									<li>
+									(iv) Any Query regarding the report must be reported immediately.
+									</li>
+									<li>
+									(V) # mark indicates Details given by Client.
 									</li>
 									<li t-if="eln.has_witness">
 										Test witnessed by : <span t-esc="eln.witness_name"/>
@@ -266,6 +310,11 @@
 									<li t-if="eln.remarks">
 										<span t-esc="eln.remarks"/>
 									</li>
+									<!-- <li t-if="eln.remarks">
+									<p style="font-size: 10px;">
+										Remarks : <span t-esc="eln.remarks"/>
+									</p>
+									</li> -->
 								</ul>
 							</div>
 						</div>
