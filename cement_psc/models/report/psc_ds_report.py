@@ -44,7 +44,7 @@ class CementReportPSC43(models.AbstractModel):
         }
         model = eln.get_product_base_calc_line(data).ir_model.model
         cement_data = self.env[model].search([("id","=",eln.model_id)])
-        print(cement_data.normal_consistency_trial1)
+        # print(cement_data.normal_consistency_trial1)
         return {
             'eln': eln,
             'cement': cement_data,
