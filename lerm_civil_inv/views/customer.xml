@@ -98,7 +98,10 @@
                     <field name="pricelist_id" invisible="1"/>
                     <field name="report_no"  />
                     <!-- <field name="report_ids"   /> -->
-                    <field name="report_no1"  widget="many2many_tags" options="{'no_create': True}" />
+                    <field name="report_no1"   widget="many2many_tags" options="{'no_create': True}" />
+                    <!-- <field name="report_ids"  widget="many2many_tags" options="{'no_create': True}" /> -->
+
+                    
 
                 </xpath>
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="replace">

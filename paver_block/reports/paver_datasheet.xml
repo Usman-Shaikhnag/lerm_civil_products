@@ -64,57 +64,71 @@
                                     <span t-field="data.thickness" t-options='{"widget": "float", "precision": 1}'/>
                                 </td>
                             </tr>
-                            <tr cols="12">
-                                <td colspan="6"><b>Gms 1:</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.gms1" t-options='{"widget": "float", "precision": 6}'/>
-                                </td>
-                            </tr>
-                            <tr cols="12">
-                                <td colspan="6"><b>Gms 2:</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.gms2" t-options='{"widget": "float", "precision": 6}'/>
-                                </td>
-                            </tr>
-                            <tr cols="12">
-                                <td colspan="6"><b>N 1:</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.n1" t-options='{"widget": "float", "precision": 6}'/>
-                                </td>
-                            </tr>
-                             <tr cols="12">
-                                <td colspan="6"><b>N 2:</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.n2" t-options='{"widget": "float", "precision": 6}'/>
-                                </td>
-                            </tr>
+                         
                            
                         </table>
 
-
-
-                         <table style="margin-top:5px">
-                            <tr cols="12">
-                                <td colspan="6"><b>1. Mass of the Specimen Shaped Cardboard Sheet, Msp :</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.mass_specimen" t-options='{"widget": "float", "precision": 1}'/>
-                                </td>
-                            </tr>
-                            <tr cols="12">
-                                <td colspan="6"><b>2. Mass of the 200 X 100 mm size shaped Cardboard Sheet, Mstd:</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.mass_size" t-options='{"widget": "float", "precision": 6}'/>
-                                </td>
-                            </tr>
-
-                            <tr cols="12">
-                                <td colspan="6"><b>Plan Area of Paver Block, Asp mm2:</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.area_paver" t-options='{"widget": "float", "precision": 6}'/>
-                                </td>
-                            </tr>
-                          
+						   <table  style="margin-top:5px" invisible="paver_visible == False"  >
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center; border: 1px solid black;">Gms</th>
+                                    <th style="text-align: center; border: 1px solid black;">N</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center; border: 1px solid black;">
+                                       <span t-field="data.gms1"/>
+                                    </td>
+                                    <td style="text-align: center; border: 1px solid black;">
+                                       <span t-field="data.n2" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; border: 1px solid black;">
+                                        <span t-field="data.gms2" />
+                                    </td>
+                                    <td style="text-align: center; border: 1px solid black;">
+                                        <span t-field="data.gms2" />
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
+
+						<div style="margin-top:10px">
+					<table style="margin-top:2px">
+							<tr>
+								<td colspan="12">1. Mass of the Specimen Shaped Cardboard Sheet, Msp :</td>
+								<![CDATA[&nbsp;]]>
+								<td>
+									<span t-field="data.mass_specimen"/>
+								</td>
+								<td>
+								N
+								</td>
+							</tr>
+                            <tr>
+								<td colspan="12">2. Mass of the 200 X 100 mm size shaped Cardboard Sheet, Mstd:</td>
+								<![CDATA[&nbsp;]]>
+								<td>
+									<span t-field="data.mass_size"/>
+								</td>
+								<td>
+								N
+								</td>
+							</tr>
+							  <tr>
+								<td colspan="12">Plan Area of Paver Block, Asp :</td>
+								<![CDATA[&nbsp;]]>
+								<td>
+									<span t-field="data.area_paver"/>
+								</td>
+								<td>
+								mm² 
+								</td>
+							</tr>
+						</table>
+					</div>
 
                     <table style="margin-top:20px">
                         <thead >
@@ -139,16 +153,16 @@
 
                             <t t-set="i" t-value="0"/>
                             <tr t-foreach="data.thickness_child_lines" t-as="r">
-                                <td >
+                                <td   style="text-align:center;">
                                     <div>
                                         <span t-esc="i + 1" />
                                         <t t-set="i" t-value="i+1"/>
                                     </div>
                                 </td>
-                                <td >
+                                <td   style="text-align:center;">
                                     <span t-esc="r['thickness1']" />
                                 </td>
-                                <td >
+                                <td   style="text-align:center;">
                                     <span t-esc="r['Correction_factore']" />
                                 </td>
 
@@ -204,22 +218,22 @@
 
 						<t t-set="i" t-value="0"/>
 						<tr t-foreach="data.water_absorption_child_lines" t-as="r">
-							<td >
+							<td  style="text-align:center;">
 								<div>
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 								</div>
-							</td>
-							<td >
+							</td >
+							<td  style="text-align:center;">
 								<span t-esc="r['sample_identification']" />
 							</td>
-                            <td >
+                            <td   style="text-align:center;">
 								<span t-esc="r['dry_wt_w1']" />
 							</td>
-                            <td >
+                            <td  style="text-align:center;">
 								<span t-esc="r['wet_w2']" />
 							</td>
-                              <td >
+                              <td  style="text-align:center;">
 								<span t-esc="r['water_absorption']" />
 							</td>
                           
@@ -229,7 +243,7 @@
 						</tbody>
 					</table>
 
-                    <table style="margin-top:5px">
+                    <!-- <table style="margin-top:5px">
                             <tr cols="12">
                                 <td colspan="6"><b>Water Absorption (%):</b></td>
                                 <td colspan="6" style="text-align: center;">
@@ -238,7 +252,21 @@
                             </tr>
                             
                           
-                        </table>
+                        </table> -->
+
+							<table style="margin-top:2px">
+							
+                            <tr>
+								<td colspan="12">Water Absorption:</td>
+								<![CDATA[&nbsp;]]>
+								<td>
+									<span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td>
+							 (%)
+								</td>
+							</tr>
+						</table>
 
                        
                     </div>
@@ -292,28 +320,28 @@
 
 						<t t-set="i" t-value="0"/>
 						<tr t-foreach="data.commpressive_child_lines" t-as="r">
-							<td >
+							<td  style="text-align:center;">
 								<div>
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 								</div>
 							</td>
-							<td >
+							<td   style="text-align:center;">
 								<span t-esc="r['sample_identification_com']" />
 							</td>
-                            <td >
+                            <td   style="text-align:center;">
 								<span t-esc="r['wt_block']" />
 							</td>
-                            <td >
+                            <td  style="text-align:center;">
 								<span t-esc="r['correction_factor']" />
 							</td>
-                              <td >
+                              <td  style="text-align:center;">
 								<span t-esc="r['load']" />
 							</td>
-							<td>
+							<td  style="text-align:center;">
                             	<span t-esc="r['compressive_strenght']" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
-							<td>
+							<td  style="text-align:center;">
                             	<span t-esc="r['thickness']" />
 							</td>
                           
@@ -323,9 +351,9 @@
 						</tbody>
 					</table>
 
-                    <table style="margin-top:5px">
+                    <!-- <table style="margin-top:5px">
                             <tr cols="12">
-                                <td colspan="6"><b>Avg. Compressive Strength (N/mm2) :</b></td>
+                                <td colspan="6"><b>Avg. Compressive Strength :</b></td>
                                 <td colspan="6" style="text-align: center;">
                                     <span t-field="data.avg_commpressive" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>
@@ -338,7 +366,32 @@
                             </tr>
                             
                           
-                        </table>
+                        </table> -->
+
+						<table style="margin-top:2px">
+							
+                            <tr>
+								<td colspan="12">Avg. Compressive Strength:</td>
+								<![CDATA[&nbsp;]]>
+								<td>
+									<span t-field="data.avg_commpressive" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td>
+							  (N/mm2)
+								</td>
+							</tr>
+							 <tr>
+								<td colspan="12">Avg Thickness :</td>
+								<![CDATA[&nbsp;]]>
+								<td>
+									<span t-field="data.avg_thickness" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td>
+                                mm							
+									</td>
+							</tr>
+						</table>
+
 
                        
                     </div>
@@ -710,28 +763,28 @@
 
 						<t t-set="i" t-value="0"/>
 						<tr t-foreach="data.commpressive_child_lines" t-as="r">
-							<td >
+							<td style="text-align:center;">
 								<div>
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 								</div>
 							</td>
-							<td >
+							<td style="text-align:center;">
 								<span t-esc="r['sample_identification_com']" />
 							</td>
-                            <td >
+                            <td style="text-align:center;">
 								<span t-esc="r['wt_block']" />
 							</td>
-                            <td >
+                            <td style="text-align:center;">
 								<span t-esc="r['correction_factor']" />
 							</td>
-                              <td >
+                              <td style="text-align:center;">
 								<span t-esc="r['load']" />
 							</td>
-							<td>
+							<td style="text-align:center;">
                             	<span t-esc="r['compressive_strenght']" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
-							<td>
+							<td style="text-align:center;">
                             	<span t-esc="r['thickness']" />
 							</td>
                           
@@ -741,16 +794,22 @@
 						</tbody>
 					</table>
 
-                    <table style="margin-top:5px">
-                            <tr cols="12">
-                                <td colspan="6"><b>Avg. Compressive Strength (N/mm2) :</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.avg_commpressive" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                            </tr>
-                           
-                          
-                        </table>
+             
+
+						<table style="margin-top:2px">
+							
+                            <tr>
+								<td colspan="12">Avg. Compressive Strength:</td>
+								<![CDATA[&nbsp;]]>
+								<td>
+									<span t-field="data.avg_commpressive" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td>
+							  (N/mm2)
+								</td>
+							</tr>
+							
+						</table>
                  
 
 				
@@ -763,13 +822,19 @@
 							<div>
 								<ul>
 									<li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+									(I)The results relate only to the items tested
 									</li>
 									<li>
-										Sample(s) was/were not drawn by laboratory.
+									(ii) This test report should not be reproduced except in full, without written approval of this Laboratory
 									</li>
 									<li>
-										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+									(iii) Any corrections invalidates the test reports
+									</li>
+									<li>
+									(iv) Any Query regarding the report must be reported immediately.
+									</li>
+									<li>
+									(V) # mark indicates Details given by Client.
 									</li>
 									<li t-if="eln.has_witness">
 										Test witnessed by : <span t-esc="eln.witness_name"/>
@@ -778,6 +843,11 @@
 									<li t-if="eln.remarks">
 										<span t-esc="eln.remarks"/>
 									</li>
+									<!-- <li t-if="eln.remarks">
+									<p style="font-size: 10px;">
+										Remarks : <span t-esc="eln.remarks"/>
+									</p>
+									</li> -->
 								</ul>
 							</div>
 						</div>

@@ -40,11 +40,18 @@
 
                         </h1>
                     </group>
-                    <div invisible = "sieve_visible == False">
-                        <button string="Calculate" type="object" name="calculate_sieve" class="oe_highlight"/>
-                    </div>
-                    <group invisible = "sieve_visible == False"  style="width:50%">
-                    <field name="sieve_analysis_child_lines" nolabel="1" mode="tree,form" colspan="3">
+                   
+                    <group style="margin-top:20px;width:70%">
+                       <group>
+                        <field name="wt_of_sample" />
+                        </group>
+                    
+                        <group style="padding-right: 50px;">
+                        <field name="zone_type" />
+                        </group>
+                    </group>
+                    <div invisible = "sieve_visible == False"  >
+                    <field name="sieve_analysis_child_lines" nolabel="1" >
                             <tree editable="bottom">
                                 <field name="serial_no" string="Sr.No"/>
                                 <field name='sieve_size' string="IS Sieve Size"/>
@@ -52,17 +59,28 @@
                                 <field name='percent_retained' string="% Retained"/>
                                 <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
                                 <field name='passing_percent' string="Passing %" readonly="1"/>
-                                  <field name='specific_limt' string="Specified Limits"/>
+                                  <field name='specific_limt' string="Specified Limits" class="oe_center"/>
                                 
                             </tree>
                     </field>
-                    </group>
-                  <group style="width:100%">
-                    <group style="width:50%"  invisible = "sieve_visible == False">
+                    </div>
+                  <div invisible="sieve_visible == False">
+                    <button string="Calculate"
+                            type="object"
+                            name="calculate_sieve"
+                            class="oe_highlight">
+                        <i class="fa fa-calculator"/> Calculate
+                    </button>
+                </div>
+
+                  <group string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
+                    <!-- <group style="width:50%"  invisible = "sieve_visible == False">
                         <field name="total_sieve_analysis"/>
-                    </group>
+                    </group> -->
                     <group style="width:50%"  invisible = "sieve_visible == False">
+                        <field name="grading"/>
                         <field name="fineness_modulus"/>
+                        
                     </group>
                   </group>
 
@@ -100,7 +118,7 @@
                 
                     <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;margin-top: 10px">
                         <field name="specific_gravity" />
-                        <field name="water_absorption" />
+                        <field name="water_absorption" string="Water Absorption % " />
                     </group>
                     <group  invisible = "specific_gravity_visible == False">
                           <group>

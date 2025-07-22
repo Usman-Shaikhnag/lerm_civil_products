@@ -35,6 +35,8 @@
                         <field name="nabl_select"/>
                         <field name="fetch_by_grade"/>
                         <field name="fetch_by_size"/>
+                        <field name="instrument"/>
+
                     </group>
                 </group>
 
@@ -130,6 +132,33 @@
                     <field name="test_method" string="Parameter Test Method" />
                     <field name="nabl_select" string="NABL" />
                 </search>
+            </field>
+        </record>
+
+        <record id="lerm_test_method_tree" model="ir.ui.view">
+            <field name="name">lerm_civil.test_method.tree</field>
+            <field name="model">lerm_civil.test_method</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="test_method" optional="show"/>
+                    <field name="parameter" optional="show"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="lerm_test_method_form" model="ir.ui.view">
+            <field name="name">lerm_civil.test_method.form</field>
+            <field name="model">lerm_civil.test_method</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group style="width:100%">
+                            <field name="test_method"/>
+                            <field name="product"/>
+                            <field name="parameter" widget="many2many_tags"/>
+                        </group>
+                    </sheet>
+                </form>
             </field>
         </record>
         

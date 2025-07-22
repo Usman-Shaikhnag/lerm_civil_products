@@ -4,7 +4,7 @@
 	<template id="custom_layout_header_footer_lerm_eln">
         <div t-attf-class="header article" t-att-style="report_header_style">
 			<div class="row">
-				<t t-if="eln.sample_id.lab_location">
+				<!-- <t t-if="eln.sample_id.lab_location">
 					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
 						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')"/>
 					</div>
@@ -21,39 +21,22 @@
 					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
 						<img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/>
 					</div>
-				</t>
+				</t> -->
 				
 			</div>
 			<div class="row backgroundimage" style="opacity:0.2; font-size:100px; width:85%; text-align:center;top:500px; right:100px; position: fixed; z-index:-99;">
-				
-				<img src="/lerm_civil/static/src/img/watermark.png" style="max-height:370px;"/>
+				<t t-if="eln.sample_id.lab_location">
+					<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="max-height:370px;"/>
+				</t>
+				<t t-else="">
+					<img src="/lerm_civil/static/src/img/watermark.png" style="max-height:370px;"/>
+				</t>
 			</div>
-			<!-- <div class="container_eln row" style="position: fixed; z-index:99;margin-bottom:20px;">
-				
 			
-					<table style="border:none;">
-						<tr cols="12" style="border:none;">
-							<td colspan="1" style="border:none;"><span></span>
-							</td>
-							<td colspan="1" style="border:none;"><span></span>
-							</td>
-							<td colspan="1" style="border:none;"><span></span>
-							</td>
-							<td colspan="1" style="border:none;"><span></span>
-							</td>
-							<td colspan="1" style="border:none;"><span></span>
-							</td>
-							<td colspan="1" style="border:none;"><span></span>
-							</td>
-							<td colspan="1" style="border:none;"><span><b>Test Report</b></span>
-							</td>
-						</tr>
-					</table>
-			</div> -->
 			<div style="width:100%;text-align:center;">
 				<div style="font-size:1rem"><b>Test Report</b></div>
 			</div>
-			<div class="container_eln row" style="margin-right:4px;margin-left:4px;">
+			<div class="container_eln row p-0" style="margin-right:4px;margin-left:4px;">
 
 					<table>
 						<tr>
@@ -119,7 +102,7 @@
 									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
 								</div>
 								
-								<div style="margin-left:90px">
+								<div style="margin-left:150px">
 									<div class="footertext">
 										<span>
 											Email : henry.dsa@esehat.org <span style="padding-left:10px">Website :  www.lerm.in</span> 
@@ -131,7 +114,7 @@
 									
 									
 								</div>
-								<div  style="padding-left : 80px;">
+								<div  style="padding-left : 250px;">
 									<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 60px; height: 55px;"/>
 								</div>
 							</div>

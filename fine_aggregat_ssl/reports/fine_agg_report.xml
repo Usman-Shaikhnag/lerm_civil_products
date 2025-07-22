@@ -4,7 +4,7 @@
 	   <template id="fineaggregate_report_ssl">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
-			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				<!-- <div style="text-align:center;margin-top:10px">
 					<p style="font-size:15px"><b>Test Report</b></p>
 				</div> -->
@@ -121,121 +121,78 @@
 							<span t-esc="o.material.test_parameter "/> 
 						</div>
 						<table t-if="data.sieve_visible">
-							<tr cols="12">
+                            <tr cols="12">
+                                <td colspan="2">Sr No.
+                                </td>
                                 <td colspan="2">IS Sieve Size
-								</td>
-                                <td colspan="2">Percentage of Passing (in %) observed				
-								</td>
-								<td colspan="2">Grading Zone I
-								 <!-- <span>
-								 	<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','318d72a1-7188-4086-b132-62b50e63f5d1')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-                                	</t>
-								 </span> -->
-                                  <td colspan="2">Grading Zone II				
-								</td>
-                                 <td colspan="2">Grading Zone III				
-								</td>
-                                 <span>
-                                    <span t-esc="eln.material.specifications"/>
-                                </span>
-								</td>
+                                </td>
+                                <td colspan="2">Wt. Retained in gms
+                                </td>
+                                <td colspan="2">% Retained
+                                </td>
+                                <td colspan="2">Cum. Retained %
+                                </td>
+                                <td colspan="2">Passing %
+                                </td>
+                                <td colspan="2">Specified Limits
+                                </td>
+
 
                             </tr>
-							<t t-set="k" t-value="0"/>
-							<tr t-foreach="data.sieve_analysis_child_lines" t-as="r" t-if="'pan' != r['sieve_size']">
+
+                            <t t-set="k" t-value="0"/>
+                            <tr t-foreach="data.sieve_analysis_child_lines" t-as="r">
+                                <td colspan="2">
+                                    <div>
+                                        <span t-esc="k + 1" />
+                                        <t t-set="k" t-value="k+1"/>
+                                    </div>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['sieve_size']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['wt_retained']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['specific_limt']" />
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <!-- added -->
+                       <table style="margin-top:20px">
+                            <tr cols="12">
+							 <td colspan="6">Grading Zone :
+                                    <![CDATA[&nbsp;]]>
+                                </td>
+                                <td colspan="6">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.grading"/>
+                                </td>
+                                <td colspan="6">Fineness Modulus :
+                                    <![CDATA[&nbsp;]]>
+                                </td>
+                                <td colspan="6">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.fineness_modulus"/>
+                                </td>
 								
-								<td colspan="2" >
-									<t t-set="k" t-value="k+1"/>
-									<span t-esc="r['sieve_size']"/>
-								</td>
-								<td colspan="2" >
-									<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								      <td colspan="2" t-if="k == 1">
-                                            <span>100%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 2">
-                                            <span>90% - 100%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 3">
-                                            <span>60% - 95%</span>
-                                        </td>
-                                        	<td colspan="2" t-if="k == 4">
-										<span>30% - 70%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 5">
-                                            <span>15% - 34%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 6">
-                                            <span>5% - 20%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 7">
-                                            <span>0% - 10%</span>
-                                        </td>
-										 <td colspan="2" t-if="k == 8">
-                                            <span>0% - 5%</span>
-                                        </td>
-
-
-                                        <td colspan="2" t-if="k == 1">
-                                            <span>100%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 2">
-                                            <span>90% - 100%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 3">
-                                            <span>75% - 100%</span>
-                                        </td>
-                                        	<td colspan="2" t-if="k == 4">
-										<span>55% - 90%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 5">
-                                            <span>35% - 59%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 6">
-                                            <span>8% - 30%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 7">
-                                            <span>0% - 10%</span>
-                                        </td>
-										  <td colspan="2" t-if="k == 8">
-                                            <span>0% - 5%</span>
-                                        </td>
-
-
-
-                                        <td colspan="2" t-if="k == 1">
-                                            <span>100%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 2">
-                                            <span>90% - 100%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 3">
-                                            <span>85% - 100%</span>
-                                        </td>
-                                        	<td colspan="2" t-if="k == 4">
-										<span>75% - 100%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 5">
-                                            <span>60% - 79%</span>
-                                        </td>
-                                        <td colspan="2" t-if="k == 6">
-                                            <span>12% - 40%</span>
-                                        </td>
-										  <td colspan="2" t-if="k == 7">
-                                            <span>0% - 10%</span>
-                                        </td>
-                                       <td colspan="2" t-if="k == 8">
-                                            <span>0% - 5%</span>
-                                        </td>
-							</tr>
-						</table>
+                            </tr>
+                        </table> 
                      
                         
 					</div>         
+					
 					
                     <table style="margin-top:15px">
 					<thead>
@@ -508,17 +465,12 @@
 
 						</tr>
 
-				
-						
-
-					
-                    
 					</tbody>
 					
 					</table>
 
 				
-						<div style="margin-top:20px" class="noteContainer">
+						<div style="margin-top:30px; page-break-before: always;"  class="noteContainer">
 							<div>
 								<b>Note :-</b>
 							</div>
