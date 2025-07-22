@@ -20,7 +20,7 @@ class ParameterMaster(models.Model):
     calculated = fields.Boolean("Pseudo Parameter")
     calculation_type = fields.Selection([('parameter_based', 'Parameter Based'), ('form_based', 'Form Based')],default='parameter_based',string='Calculation Type')
     ir_model = fields.Many2one('ir.model',string="Model")
-    test_method = fields.Many2one('lerm_civil.test_method',string="Parameter Test Method")
+    test_method = fields.Many2one('lerm_civil.test_method',domain="[('product', '=', material)]",string="Parameter Test Method")
     discipline = fields.Many2one('lerm_civil.discipline',string="Discipline")
     nabl_select = fields.Selection([('nabl', 'NABL'), ('non_nabl', 'Non NABL')], string='NABL')
     group = fields.Many2one('lerm_civil.group',string="Group")
@@ -29,9 +29,6 @@ class ParameterMaster(models.Model):
     formula = fields.Text("Formula")
     material = fields.Many2one('product.template',string="Material")
 
-    fetch_by_grade = fields.Boolean("Fetch by Grade",default="True")
-    fetch_by_size = fields.Boolean("Fetch by Size",default="True")
-    
     fetch_by_grade = fields.Boolean("Fetch by Grade", default=True)
     fetch_by_size = fields.Boolean("Fetch by Size", default=True)
 

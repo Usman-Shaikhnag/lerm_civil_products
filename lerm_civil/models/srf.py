@@ -93,6 +93,9 @@ class TestMethod(models.Model):
     _rec_name = 'test_method'
 
     test_method = fields.Char(string="Test Method", required=True)
+    product = fields.Many2one('product.template',"Product")
+    parameter = fields.Many2many('lerm.parameter.master',domain="[('material', '=', product)]", string="Parameter")
+
 
 
 
@@ -687,7 +690,7 @@ class CreateSampleWizard(models.TransientModel):
     is_update = fields.Boolean('Is Update')
 
     department_id = fields.Char(string='Department')
-    lab_location = fields.Many2one('lerm.lab.master',string="Lab Location")
+    lab_location = fields.Many2one('lerm.lab.master',string="Lab Location",default=lambda self: self._get_oldest_lab())
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
     customer = fields.Many2one('res.partner', string="Customer")
 
@@ -701,6 +704,18 @@ class CreateSampleWizard(models.TransientModel):
         compute='_compute_available_parameters',
         string='Available Parameters'
     )
+
+    @api.model
+    def _get_oldest_lab(self):
+        oldest_lab = self.env['lerm.lab.master'].search([], order="create_date asc", limit=1)
+        return oldest_lab.id if oldest_lab else False
+
+    @api.onchange('lab_location')
+    def _default_location_name(self):
+        for record in self:
+            if record.lab_location and len(record.lab_location.lab_location_line) > 0:
+                record.location_name = record.lab_location.lab_location_line[0]
+
 
     @api.depends('material_id')
     def _compute_available_parameters(self):

@@ -184,39 +184,6 @@ class FineAggregate(models.Model):
 
                 previous_cumulative = cumulative_retained
             
-            for line in record.sieve_analysis_child_lines:
-                if line.serial_no > 7:
-                    line.write({
-                        'cumulative_retained': 100,
-                        'passing_percent': 0.0,
-                    })
-                    print(f"Line {line.serial_no} reset to Cumulative Retained: 0 and Passing Percent: 100")
-
-    # def calculate_sieve(self): 
-    #     for record in self:
-    #         previous_cumulative = 0  
-    #         lines = sorted(record.sieve_analysis_child_lines, key=lambda l: l.serial_no)
-            
-    #         for line in lines:
-    #             if line.serial_no <= 7:
-    #                 cumulative_retained = previous_cumulative + (line.percent_retained or 0.0)
-    #                 passing_percent = 100 - cumulative_retained
-
-    #                 line.write({
-    #                     'cumulative_retained': round(cumulative_retained, 2),
-    #                     'passing_percent': round(passing_percent, 2),
-    #                 })
-
-    #                 previous_cumulative = cumulative_retained
-    #             else:
-    #                 # Reset for 'Pan' or others beyond serial 7
-    #                 line.write({
-    #                     'cumulative_retained': 100,
-    #                     'passing_percent': 0.0,
-    #                 })
-
-
-
     
 
 
