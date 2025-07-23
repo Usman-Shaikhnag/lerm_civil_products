@@ -1158,33 +1158,10 @@
 
     <template id="lerm_coarse_aggregate_mech_report">
 		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
 			
 			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
-				<!-- <div style="text-align:center;margin-top:10px">
-					<p style="font-size:15px"><b>Test Report</b></p>
-				</div> -->
-				<div class="container_eln">
+				<div class="container_eln" style="padding-top:70px;">
 					<div t-foreach="eln" t-as="o">
-						<!-- <table>
-							<tr>
-								<td colspan="3">Report no :
-								</td>
-								<td colspan="3">
-									<span t-field="o.kes_no"/>
-								</td>
-								<td colspan="3">Report Date :
-								</td>
-								<td colspan="3">
-									<span t-field="o.srf_date"/>
-								</td>
-								<td colspan="3"  t-if="nabl">ULR NO :
-								</td>
-								<td colspan="3" t-if="nabl">
-									<span t-field="o.sample_id.ulr_no"/>
-								</td>
-							</tr>
-						</table> -->
 						<table style="margin-top:10px; border:none">
 							<tr>
 								<td colspan="2" style=" font-weight: bold;">Client Details:</td>
@@ -1259,12 +1236,12 @@
                                 <th colspan="6"><span t-field="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).test_method.test_method"/></th>
                             </tr>
 							<tr cols="12">
-                                <th colspan="2">IS Sieve Size</th>
-                                <th colspan="2">Weight Retained (gms)</th>
-                                <th colspan="2">% of Weight Retained</th>
-                                <th colspan="2">% of Cumulative Wt.  Retained</th>
-                                <th colspan="2">% of wt passing</th>
-								<th colspan="2">
+                                <th colspan="2" style="text-align: center;">IS Sieve Size</th>
+                                <th colspan="2" style="text-align: center;">Weight Retained (gms)</th>
+                                <th colspan="2" style="text-align: center;">% of Weight Retained</th>
+                                <th colspan="2" style="text-align: center;">% of Cumulative Wt.  Retained</th>
+                                <th colspan="2" style="text-align: center;">% of wt passing</th>
+								<th colspan="2" style="text-align: center;">
 									<span>
 										<span t-esc="eln.material.specifications"/>
 									</span>
@@ -1273,42 +1250,42 @@
 							<t t-set="k" t-value="0"/>
 							<tr t-foreach="data.sieve_analysis_child_lines" t-as="r" t-if="'pan' != r['sieve_size']">
 								
-								<td colspan="2" >
+								<td colspan="2" style="text-align: center;">
 									<t t-set="k" t-value="k+1"/>
 									<t t-if="r['sieve_size'] and r['sieve_size'].lower() != 'false'">
 										<span t-esc="r['sieve_size']"/>
 									</t>
 								</td>
-								<td colspan="2" >
+								<td colspan="2" style="text-align: center;">
 									<t t-if="r['sieve_size'] and r['sieve_size'].lower() != 'false'">
 										<span t-esc="r['wt_retained']" />
 									</t>
 								</td>
-								<td colspan="2" >
+								<td colspan="2" style="text-align: center;">
 									<t t-if="r['sieve_size'] and r['sieve_size'].lower() != 'false'">
 										<span t-esc="r['percent_retained']" />
 									</t>
 								</td>
-								<td colspan="2" >
+								<td colspan="2" style="text-align: center;">
 									<t t-if="r['sieve_size'] and r['sieve_size'].lower() != 'false'">
 										<span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
 									</t>
 								</td>
-								<td colspan="2" >
+								<td colspan="2" style="text-align: center;">
 									<t t-if="r['sieve_size'] and r['sieve_size'].lower() != 'false'">
 										<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
 									</t>
 								</td>
-								<td colspan="2" t-if="k == 1">
+								<td colspan="2" style="text-align: center;" t-if="k == 1">
 									<span>100</span>
 								</td>
-								<td colspan="2" t-if="k == 2">
+								<td colspan="2" style="text-align: center;" t-if="k == 2">
 									<span>85 - 100</span>
 								</td>
-								<td colspan="2" t-if="k == 3">
+								<td colspan="2" style="text-align: center;" t-if="k == 3">
 									<span>0 - 20</span>
 								</td>
-								<td colspan="2" t-if="k == 4">
+								<td colspan="2" style="text-align: center;" t-if="k == 4">
 									<span>0 - 5</span>
 								</td>
 							</tr>
@@ -1607,7 +1584,7 @@
 											<span t-field="data.aggregate_elongation"  t-options='{"widget": "float", "precision": 2}'/>
 										</span>									
 									</td>
-									<td style="text-align: center;border-bottom:none;">
+									<td style="text-align: center;">
 										<span>
 											<t t-foreach="elongation.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -2073,7 +2050,7 @@
 								Checked By
                                     </b>
                                 </div>
-                                <div style="height:30px">
+                                <div style="height:40px">
 
                                 </div>
                                 <div>
@@ -2094,7 +2071,7 @@
                                     </b>
 
                                 </div>
-                                <div style="height:30px">
+                                <div style="height:40px">
 
                                 </div>
                                 <div>

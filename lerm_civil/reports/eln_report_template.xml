@@ -6,20 +6,20 @@
 			<div class="row">
 				<t t-if="eln.sample_id.lab_location">
 					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
-						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')"/>
+						<!-- <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')"/> -->
 					</div>
 					
 					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
-						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"/>
+						<!-- <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"/> -->
 					</div>
 				</t>
 				<t t-else="">
 					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
-						<img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/>
+						<!-- <img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/> -->
 					</div>
 					
 					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
-						<img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/>
+						<!-- <img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/> -->
 					</div>
 				</t>
 				
@@ -50,7 +50,8 @@
 						</tr>
 					</table>
 			</div> -->
-			<div style="width:100%;text-align:center;">
+
+			<div style="width:100%;text-align:center; margin-bottom:10px; padding-top: 170px;">
 				<div style="font-size:1rem"><b>Test Report</b></div>
 			</div>
 			<div class="container_eln row p-0" style="margin-right:4px;margin-left:4px;">
@@ -100,13 +101,13 @@
         </div>
 		
 		<div t-attf-class="footer o_standard_footer">
-            <div class="text-center" style="border-top: 1px solid black;">
+            <div class="text-center" style="padding-top:45px;">
                 <ul class="list-inline mb4 footerQR">
 					
 					<div>
 						<div class="footertext">
 							<t t-if="eln.sample_id.lab_location">
-								<t t-esc="eln.sample_id.lab_location.street"/><t t-esc="eln.sample_id.lab_location.street2"/>
+								<!-- <t t-esc="eln.sample_id.lab_location.street"/><t t-esc="eln.sample_id.lab_location.street2"/> -->
 							</t>
 							<t t-else="">
 								<!-- 316, The Great Eastern Galleria, Plot-20, Sector-4 Nerul, Navimumbai-400703 -->

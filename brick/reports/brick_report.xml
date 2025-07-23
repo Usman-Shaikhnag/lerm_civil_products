@@ -12,9 +12,9 @@
 				</div> -->
 
 
-				<div class="container_eln">
+				<div class="container_eln" style="padding-top:70px;">
 					
-					<div class="px-0" t-foreach="eln" t-as="o">
+					<div t-foreach="eln" t-as="o">
 						<!-- <table>
 							<tr>
 								<td colspan="3">Report no :
@@ -204,102 +204,101 @@
 							</tbody>
 						</table>
 					</div> -->
-
-					<table class="table table-sm table-bordered" style="width:100%; text-align:center;">
-						<thead>
-							<tr>
-								<th>Description</th>
-								<th>Dimensions</th>
-								<th colspan="2">Requirements as per IS 1077 :1992</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Length (mm)</td>
-								<td t-esc="brick.length_in_mm"/>
-								<td rowspan="3">IS 1077-1992</td>
-								<td rowspan="3">20 No's</td>
-								<td>4600±80mm</td>
-							</tr>
-							<tr>
-								<td>Breadth (mm)</td>
-								<td t-esc="brick.width_in_mm"/>
-								<td>2200±40mm</td>
-							</tr>
-							<tr>
-								<td>Height (mm)</td>
-								<td t-esc="brick.height_in_mm"/>
-								<td>1400±40mm</td>
-							</tr>
-						</tbody>
-					</table>
-
-					<!-- 1 Compressive strength  -->
-
-					<table class="table table-bordered" style="width: 100%; text-align: center; border: 1px solid black; border-collapse: collapse;">
-						<thead>
-							<tr>
-								<th rowspan="2" style="border: 1px solid black; text-align: center;">S.No</th>
-								<th colspan="3" style="border: 1px solid black; text-align: center;">Dimensions<br/>IS 1077 - 1992 RA 2016</th>
-								<th rowspan="2" style="border: 1px solid black; text-align: center;">Compressive Strength, N/mm²<br/>IS 3495 (Part-1): 2016 RA 2019</th>
-								<th rowspan="2" style="border: 1px solid black; text-align: center;">Water Absorption, %<br/>IS 3495 (Part-2): 2016 RA 2019</th>
-								<th rowspan="2" style="border: 1px solid black; text-align: center;">Efflorescence<br/>IS 3495 (Part-3): 2016 RA 2019</th>
-							</tr>
-							<tr>
-								<th style="border: 1px solid black; text-align: center;">Length</th>
-								<th style="border: 1px solid black; text-align: center;">Breadth</th>
-								<th style="border: 1px solid black; text-align: center;">Height</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td style="border: 1px solid black; text-align: center;">1</td>
-								<td t-esc="brick.length" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.width" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.height" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.comp_strength_1" t-options='{"widget": "float", "precision": 2}' style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.water_absorption" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-								<td t-esc="brick.visual_observation_1" style="border: 1px solid black; text-align: center;"/>
-							</tr>
-							<tr>
-								<td style="border: 1px solid black; text-align: center;">2</td>
-								<td t-esc="brick.length_2" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.width_2" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.height_2" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.comp_strength_2" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-								<td t-esc="brick.water_absorption_2" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-								<td t-esc="brick.visual_observation_2" style="border: 1px solid black; text-align: center;"/>
-							</tr>
-							<tr>
-								<td style="border: 1px solid black; text-align: center;">3</td>
-								<td t-esc="brick.length_3" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.width_3" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.height_3" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.comp_strength_3" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-								<td t-esc="brick.water_absorption_3" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-								<td t-esc="brick.visual_observation_3" style="border: 1px solid black; text-align: center;"/>
-							</tr>
-							<tr>
-								<td style="border: 1px solid black; text-align: center;">4</td>
-								<td t-esc="brick.length_4" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.width_4" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.height_4" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.comp_strength_4" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-								<td t-esc="brick.water_absorption_4" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-								<td t-esc="brick.visual_observation_4" style="border: 1px solid black; text-align: center;"/>
-							</tr>
-							<tr>
-								<td style="border: 1px solid black; text-align: center;">5</td>
-								<td t-esc="brick.length_5" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.width_5" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.height_5" style="border: 1px solid black; text-align: center;"/>
-								<td t-esc="brick.comp_strength_5" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-								<td t-esc="brick.water_absorption_5" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-								<td t-esc="brick.visual_observation_5" style="border: 1px solid black; text-align: center;"/>
-							</tr>
-						</tbody>
-					</table>
-
+					
+					<div>
+						<table class="table table-bordered" style="width:100%; text-align:center;">
+							<thead>
+								<tr>
+									<th>Description</th>
+									<th>Dimensions</th>
+									<th colspan="3">Requirements as per IS 1077 :1992</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Length (mm)</td>
+									<td t-esc="brick.length_in_mm"/>
+									<td rowspan="3">IS 1077-1992</td>
+									<td rowspan="3">20 No's</td>
+									<td>4600±80mm</td>
+								</tr>
+								<tr>
+									<td>Breadth (mm)</td>
+									<td t-esc="brick.width_in_mm"/>
+									<td>2200±40mm</td>
+								</tr>
+								<tr>
+									<td>Height (mm)</td>
+									<td t-esc="brick.height_in_mm"/>
+									<td>1400±40mm</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- 1 Compressive strength  -->
+						<table class="table table-bordered" style="width: 100%; text-align: center; border: 1px solid black; border-collapse: collapse;">
+							<thead>
+								<tr>
+									<th rowspan="2" style="border: 1px solid black; text-align: center;">S.No</th>
+									<th colspan="3" style="border: 1px solid black; text-align: center;">Dimensions<br/>IS 1077 - 1992 RA 2016</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center;">Compressive Strength, N/mm²<br/>IS 3495 (Part-1): 2016 RA 2019</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center;">Water Absorption, %<br/>IS 3495 (Part-2): 2016 RA 2019</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center;">Efflorescence<br/>IS 3495 (Part-3): 2016 RA 2019</th>
+								</tr>
+								<tr>
+									<th style="border: 1px solid black; text-align: center;">Length</th>
+									<th style="border: 1px solid black; text-align: center;">Breadth</th>
+									<th style="border: 1px solid black; text-align: center;">Height</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td style="border: 1px solid black; text-align: center;">1</td>
+									<td t-esc="brick.length" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.width" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.height" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.comp_strength_1" t-options='{"widget": "float", "precision": 2}' style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.water_absorption" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
+									<td t-esc="brick.visual_observation_1" style="border: 1px solid black; text-align: center;"/>
+								</tr>
+								<tr>
+									<td style="border: 1px solid black; text-align: center;">2</td>
+									<td t-esc="brick.length_2" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.width_2" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.height_2" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.comp_strength_2" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
+									<td t-esc="brick.water_absorption_2" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
+									<td t-esc="brick.visual_observation_2" style="border: 1px solid black; text-align: center;"/>
+								</tr>
+								<tr>
+									<td style="border: 1px solid black; text-align: center;">3</td>
+									<td t-esc="brick.length_3" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.width_3" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.height_3" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.comp_strength_3" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
+									<td t-esc="brick.water_absorption_3" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
+									<td t-esc="brick.visual_observation_3" style="border: 1px solid black; text-align: center;"/>
+								</tr>
+								<tr>
+									<td style="border: 1px solid black; text-align: center;">4</td>
+									<td t-esc="brick.length_4" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.width_4" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.height_4" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.comp_strength_4" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
+									<td t-esc="brick.water_absorption_4" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
+									<td t-esc="brick.visual_observation_4" style="border: 1px solid black; text-align: center;"/>
+								</tr>
+								<tr>
+									<td style="border: 1px solid black; text-align: center;">5</td>
+									<td t-esc="brick.length_5" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.width_5" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.height_5" style="border: 1px solid black; text-align: center;"/>
+									<td t-esc="brick.comp_strength_5" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
+									<td t-esc="brick.water_absorption_5" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
+									<td t-esc="brick.visual_observation_5" style="border: 1px solid black; text-align: center;"/>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
 						<table class="table table-bordered">
 							<tr>
@@ -329,7 +328,7 @@
 								Checked By
 								</b>
 							</div>
-							<div style="height:30px">
+							<div style="height:40px">
 
 							</div>
 
@@ -341,17 +340,17 @@
 
 							<div>
 								<b>
-										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
 								</b>
 							</div>
 						</div>
 						<div>
 							<div>
 								<b>
-										Approved By
+									Approved By
 								</b>
 							</div>
-							<div style="height:20px">
+							<div style="height:40px">
 
 							</div>
 							<div>
@@ -365,11 +364,11 @@
 									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
 								</b>
 							</div>
-							<div>
+							<!-- <div>
 								<b>
-										(Authorized Signatory)
+									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
 								</b>
-							</div>
+							</div> -->
 						</div>
 					</div>
 					
@@ -377,7 +376,7 @@
 			</div>
 
 			<div style="margin-top: 10px; text-align: center;">
-				<p style="border-top: 1px dashed #000; padding-top: 10px;">
+				<p style="padding-top: 10px;">
 						...... End Of Report......
 				</p>
 			</div>

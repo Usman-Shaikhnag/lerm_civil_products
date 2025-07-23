@@ -40,6 +40,57 @@ class CementNormalConsistency(models.Model):
 
     avg_cement = fields.Float(string="Avg Fineness Cement",compute="_compute_avg_wt_of_residue")
 
+    avg_cement_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_avg_cement_conformity")
+
+    avg_cement_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_avg_cement_nabl")
+
+
+    @api.depends('avg_cement','eln_ref','grade')
+    def _compute_avg_cement_conformity(self):
+        for record in self:
+            record.avg_cement_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.avg_cement - record.avg_cement*mu_value
+                    upper = record.avg_cement + record.avg_cement*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_cement_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_cement_conformity = 'fail'
+
+    @api.depends('avg_cement','eln_ref','grade')
+    def _compute_avg_cement_nabl(self):
+        
+        for record in self:
+            record.avg_cement_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_cement - record.avg_cement*mu_value
+            upper = record.avg_cement + record.avg_cement*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_cement_nabl = 'pass'
+                break
+            else:
+                record.avg_cement_nabl = 'fail'
+
     @api.depends('fneness_cement_lines.wt_of_residue')
     def _compute_avg_wt_of_residue(self):
         for rec in self:
@@ -81,6 +132,57 @@ class CementNormalConsistency(models.Model):
 
     specific_gravity = fields.Float(string="Specific Gravity of Cement",compute="_compute_cement_specific")
 
+    specific_gravity_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_specific_gravity_conformity")
+
+    specific_gravity_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_specific_gravity_nabl")
+
+
+    @api.depends('specific_gravity','eln_ref','grade')
+    def _compute_specific_gravity_conformity(self):
+        for record in self:
+            record.specific_gravity_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578piu-372f-4775-9bcb-e9dd70e6e6df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578piu-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.specific_gravity - record.specific_gravity*mu_value
+                    upper = record.specific_gravity + record.specific_gravity*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.specific_gravity_conformity = 'pass'
+                        break
+                    else:
+                        record.specific_gravity_conformity = 'fail'
+
+    @api.depends('specific_gravity','eln_ref','grade')
+    def _compute_specific_gravity_nabl(self):
+        
+        for record in self:
+            record.specific_gravity_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578piu-372f-4775-9bcb-e9dd70e6e6df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578piu-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.specific_gravity - record.specific_gravity*mu_value
+            upper = record.specific_gravity + record.specific_gravity*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.specific_gravity_nabl = 'pass'
+                break
+            else:
+                record.specific_gravity_nabl = 'fail'
+
     @api.depends('density_cement_lines.density')
     def _compute_avg_density(self):
         for rec in self:
@@ -101,6 +203,57 @@ class CementNormalConsistency(models.Model):
     fineness_blaine_lines = fields.One2many('fineness.blaine.ssl.line','parent_id',string="Fineness blaine")
 
     avg_fineness_blaine = fields.Float(string="Fineness of Cement, m2/kg ",compute="_compute_avg_fineness_blaine")
+
+    avg_fineness_blaine_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_avg_fineness_blaine_conformity")
+
+    avg_fineness_blaine_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_avg_fineness_blaine_nabl")
+
+
+    @api.depends('avg_fineness_blaine','eln_ref','grade')
+    def _compute_avg_fineness_blaine_conformity(self):
+        for record in self:
+            record.avg_fineness_blaine_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.avg_fineness_blaine - record.avg_fineness_blaine*mu_value
+                    upper = record.avg_fineness_blaine + record.avg_fineness_blaine*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_fineness_blaine_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_fineness_blaine_conformity = 'fail'
+
+    @api.depends('avg_fineness_blaine','eln_ref','grade')
+    def _compute_avg_fineness_blaine_nabl(self):
+        
+        for record in self:
+            record.avg_fineness_blaine_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_fineness_blaine - record.avg_fineness_blaine*mu_value
+            upper = record.avg_fineness_blaine + record.avg_fineness_blaine*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_fineness_blaine_nabl = 'pass'
+                break
+            else:
+                record.avg_fineness_blaine_nabl = 'fail'
 
     @api.depends('fineness_blaine_lines.fineness')
     def _compute_avg_fineness_blaine(self):
@@ -123,6 +276,57 @@ class CementNormalConsistency(models.Model):
 
     avg_soundness_cement = fields.Float(string="Fineness of Cement, m2/kg ",compute="_compute_avg_soundness_cement")
 
+    avg_soundness_cement_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_avg_soundness_cement_conformity")
+
+    avg_soundness_cement_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_avg_soundness_cement_nabl")
+
+
+    @api.depends('avg_soundness_cement','eln_ref','grade')
+    def _compute_avg_soundness_cement_conformity(self):
+        for record in self:
+            record.avg_soundness_cement_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547gtyu-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547gtyu-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.avg_soundness_cement - record.avg_soundness_cement*mu_value
+                    upper = record.avg_soundness_cement + record.avg_soundness_cement*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_soundness_cement_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_soundness_cement_conformity = 'fail'
+
+    @api.depends('avg_soundness_cement','eln_ref','grade')
+    def _compute_avg_soundness_cement_nabl(self):
+        
+        for record in self:
+            record.avg_soundness_cement_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547gtyu-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547gtyu-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_soundness_cement - record.avg_soundness_cement*mu_value
+            upper = record.avg_soundness_cement + record.avg_soundness_cement*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_soundness_cement_nabl = 'pass'
+                break
+            else:
+                record.avg_soundness_cement_nabl = 'fail'
+
     @api.depends('soundness_cement_lines.difference')
     def _compute_avg_soundness_cement(self):
         for rec in self:
@@ -138,6 +342,57 @@ class CementNormalConsistency(models.Model):
     consistency_cement_lines = fields.One2many('consistensy.cement.ssl.line','parent_id',string="Consistency")
 
     consitency_of_cement = fields.Float(string="Consistency of Cement ",compute="_compute_consistency_of_cement")
+
+    consitency_of_cement_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_consitency_of_cement_conformity")
+
+    consitency_of_cement_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_consitency_of_cement_nabl")
+
+
+    @api.depends('consitency_of_cement','eln_ref','grade')
+    def _compute_consitency_of_cement_conformity(self):
+        for record in self:
+            record.consitency_of_cement_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.consitency_of_cement - record.consitency_of_cement*mu_value
+                    upper = record.consitency_of_cement + record.consitency_of_cement*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.consitency_of_cement_conformity = 'pass'
+                        break
+                    else:
+                        record.consitency_of_cement_conformity = 'fail'
+
+    @api.depends('consitency_of_cement','eln_ref','grade')
+    def _compute_consitency_of_cement_nabl(self):
+        
+        for record in self:
+            record.consitency_of_cement_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.consitency_of_cement - record.consitency_of_cement*mu_value
+            upper = record.consitency_of_cement + record.consitency_of_cement*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.consitency_of_cement_nabl = 'pass'
+                break
+            else:
+                record.consitency_of_cement_nabl = 'fail'
 
     @api.depends('consistency_cement_lines.water_mix')
     def _compute_consistency_of_cement(self):
@@ -169,6 +424,108 @@ class CementNormalConsistency(models.Model):
     initial_setting_time = fields.Float(string="Initial Setting Time",compute="_compute_setting_times")
     final_setting_time = fields.Float(string="Final Setting Time ",compute="_compute_setting_times")
 
+    initial_setting_time_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_initial_setting_time_conformity")
+
+    initial_setting_time_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_initial_setting_time_nabl")
+
+
+    @api.depends('initial_setting_time','eln_ref','grade')
+    def _compute_initial_setting_time_conformity(self):
+        for record in self:
+            record.initial_setting_time_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.initial_setting_time - record.initial_setting_time*mu_value
+                    upper = record.initial_setting_time + record.initial_setting_time*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.initial_setting_time_conformity = 'pass'
+                        break
+                    else:
+                        record.initial_setting_time_conformity = 'fail'
+
+    @api.depends('initial_setting_time','eln_ref','grade')
+    def _compute_initial_setting_time_nabl(self):
+        
+        for record in self:
+            record.initial_setting_time_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.initial_setting_time - record.initial_setting_time*mu_value
+            upper = record.initial_setting_time + record.initial_setting_time*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.initial_setting_time_nabl = 'pass'
+                break
+            else:
+                record.initial_setting_time_nabl = 'fail'
+
+    final_setting_time_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_final_setting_time_conformity")
+
+    final_setting_time_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_final_setting_time_nabl")
+
+
+    @api.depends('final_setting_time','eln_ref','grade')
+    def _compute_final_setting_time_conformity(self):
+        for record in self:
+            record.final_setting_time_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.final_setting_time - record.final_setting_time*mu_value
+                    upper = record.final_setting_time + record.final_setting_time*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.final_setting_time_conformity = 'pass'
+                        break
+                    else:
+                        record.final_setting_time_conformity = 'fail'
+
+    @api.depends('final_setting_time','eln_ref','grade')
+    def _compute_final_setting_time_nabl(self):
+        
+        for record in self:
+            record.final_setting_time_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.final_setting_time - record.final_setting_time*mu_value
+            upper = record.final_setting_time + record.final_setting_time*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.final_setting_time_nabl = 'pass'
+                break
+            else:
+                record.final_setting_time_nabl = 'fail'
+
     @api.depends('setting_time_lines.duration1')
     def _compute_setting_times(self):
         for rec in self:
@@ -193,8 +550,164 @@ class CementNormalConsistency(models.Model):
     compressive_lines = fields.One2many('compressive.ssl.line','parent_id',string="Compressive")
 
     avg_3_days = fields.Float(string="Avg Strength (3 Days)", compute="_compute_avg_strengths", store=True)
+
+    avg_3_days_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_avg_3_days_conformity")
+
+    avg_3_days_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_avg_3_days_nabl")
+
+
+    @api.depends('avg_3_days','eln_ref','grade')
+    def _compute_avg_3_days_conformity(self):
+        for record in self:
+            record.avg_3_days_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.avg_3_days - record.avg_3_days*mu_value
+                    upper = record.avg_3_days + record.avg_3_days*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_3_days_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_3_days_conformity = 'fail'
+
+    @api.depends('avg_3_days','eln_ref','grade')
+    def _compute_avg_3_days_nabl(self):
+        
+        for record in self:
+            record.avg_3_days_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_3_days - record.avg_3_days*mu_value
+            upper = record.avg_3_days + record.avg_3_days*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_3_days_nabl = 'pass'
+                break
+            else:
+                record.avg_3_days_nabl = 'fail'
+
     avg_7_days = fields.Float(string="Avg Strength (7 Days)", compute="_compute_avg_strengths", store=True)
+
+    avg_7_days_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_avg_7_days_conformity")
+
+    avg_7_days_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_avg_7_days_nabl")
+
+
+    @api.depends('avg_7_days','eln_ref','grade')
+    def _compute_avg_7_days_conformity(self):
+        for record in self:
+            record.avg_7_days_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124587hhhy-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124587hhhy-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.avg_7_days - record.avg_7_days*mu_value
+                    upper = record.avg_7_days + record.avg_7_days*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_7_days_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_7_days_conformity = 'fail'
+
+    @api.depends('avg_7_days','eln_ref','grade')
+    def _compute_avg_7_days_nabl(self):
+        
+        for record in self:
+            record.avg_7_days_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124587hhhy-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124587hhhy-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_7_days - record.avg_7_days*mu_value
+            upper = record.avg_7_days + record.avg_7_days*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_7_days_nabl = 'pass'
+                break
+            else:
+                record.avg_7_days_nabl = 'fail'
+
+
     avg_28_days = fields.Float(string="Avg Strength (28 Days)", compute="_compute_avg_strengths", store=True)
+
+    avg_28_days_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_avg_28_days_conformity")
+
+    avg_28_days_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_avg_28_days_nabl")
+
+
+    @api.depends('avg_28_days','eln_ref','grade')
+    def _compute_avg_28_days_conformity(self):
+        for record in self:
+            record.avg_28_days_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012456998ffff-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012456998ffff-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.avg_28_days - record.avg_28_days*mu_value
+                    upper = record.avg_28_days + record.avg_28_days*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_28_days_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_28_days_conformity = 'fail'
+
+    @api.depends('avg_28_days','eln_ref','grade')
+    def _compute_avg_28_days_nabl(self):
+        
+        for record in self:
+            record.avg_28_days_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012456998ffff-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012456998ffff-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_28_days - record.avg_28_days*mu_value
+            upper = record.avg_28_days + record.avg_28_days*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_28_days_nabl = 'pass'
+                break
+            else:
+                record.avg_28_days_nabl = 'fail'
 
     @api.depends('compressive_lines.days', 'compressive_lines.strenght')
     def _compute_avg_strengths(self):
@@ -254,7 +767,80 @@ class CementNormalConsistency(models.Model):
              
 
     def open_eln_page(self):
-   
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == 'a9e97cea-372f-4775-9bcb-e9dd70e6e6df':
+                result.result_char = round(self.avg_cement,2)
+                if self.avg_cement_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '124578piu-372f-4775-9bcb-e9dd70e6e6df':
+                result.result_char = round(self.specific_gravity,2)
+                if self.specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '32457fg-372f-4775-9bcb-e9dd70214578r':
+                result.result_char = round(self.avg_fineness_blaine,2)
+                if self.avg_fineness_blaine_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '23547gtyu-372f-4775-9bcb-e9dd723547htui':
+                result.result_char = round(self.avg_soundness_cement,2)
+                if self.avg_soundness_cement_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '3214578nbhgt2-372f-4775-9bcb-e9dd723547htui':
+                result.result_char = round(self.consitency_of_cement,2)
+                if self.consitency_of_cement_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '012457896lku-372f-4775-9bcb-e9dd723547htui':
+                result.result_char = round(self.initial_setting_time,2)
+                if self.initial_setting_time_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '301245789liy-372f-4775-9bcb-e9dd723547htui':
+                result.result_char = round(self.final_setting_time,2)
+                if self.final_setting_time_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '0124578hgggt-372f-4775-9bcb-e9dd723547htui':
+                result.result_char = round(self.avg_3_days,2)
+                if self.avg_3_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '30124587hhhy-372f-4775-9bcb-e9dd723547htui':
+                result.result_char = round(self.avg_7_days,2)
+                if self.avg_7_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '3012456998ffff-372f-4775-9bcb-e9dd723547htui':
+                result.result_char = round(self.avg_28_days,2)
+                if self.avg_28_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            
 
         return {
                 'view_mode': 'form',
