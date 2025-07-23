@@ -35,7 +35,73 @@
 								</td>
 							</tr>
 						</table> -->
-						<table style="margin-top:10px; width: 100%;">
+						<table style="margin-top:10px; border:none">
+							<tr>
+								<td colspan="2" style=" font-weight: bold;">Client Details:</td>
+								<td colspan="10">
+									<span t-field="o.srf_id.customer.name"/><br />
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+									,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<!-- <td colspan="12">Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td> -->
+								<td colspan="2" style=" font-weight: bold;">Client Reference:</td>
+								<td colspan="10"><span t-field="o.srf_id.client_refrence"/></td>
+							</tr>
+
+							<tr>
+								<td colspan="2" style=" font-weight: bold;">Name of Work:</td>
+								<td colspan="10"><span t-field="o.srf_id.name_work"/></td>
+							</tr>
+						<!-- </table>
+
+						<table class="table" style="width:100%; font-size: 13px;"> -->
+							<tr>
+								<td colspan="2" style=" font-weight: bold;">Date of Testing:</td>
+								<td colspan="10">
+									<span t-field="o.start_date"/> to <span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" style="font-weight: bold;">Size:</td>
+								<td colspan="10">
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" style="font-weight: bold;">Grade:</td>
+								<td colspan="10">
+									<span t-field="o.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" style="font-weight: bold;">Material/Test Name:</td>
+								<td colspan="10">
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+						</table>
+
+					</div>
+					<div style="text-align:center;">
+						<h4 class="mb-0" style="text-decoration: underline;">Results</h4>
+					</div>
+						<!-- <table style="margin-top:10px; width: 100%;">
 							<tbody>
 								<tr>
 									<td colspan="12">
@@ -137,7 +203,7 @@
 								</tr>
 							</tbody>
 						</table>
-					</div>
+					</div> -->
 
 					<table class="table table-sm table-bordered" style="width:100%; text-align:center;">
 						<thead>
@@ -235,30 +301,25 @@
 					</table>
 
 					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
-						<div>
-							<b>Remarks: -</b>
-						</div>
-						<div>
-							<ul>
-								<li>
-								The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-								</li>
-								<li>
-								Sample(s) was/were not drawn by laboratory.
-								</li>
-								<li>
-								This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-								</li>
-
-								<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-							</ul>
-						</div>
+						<table class="table table-bordered">
+							<tr>
+								<td style="padding: 5px; font-style: italic; font-size: 12px;">
+									<b>Note:-</b>
+									&#160;&#160;(i) The results relate only to the items tested 
+									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+									&#160;&#160;(iii) Any corrections invalidate the test reports 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
+									&#160;&#160;(vi) # mark indicates Details given by Client.
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</td>
+							</tr>
+						</table>
 					</div>
 
 					<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
@@ -282,14 +343,6 @@
 								<b>
 										(<span t-esc="eln.sample_id.check_by.job_title"/>)
 								</b>
-							</div>
-						</div>
-						<div>
-							<div>
-								<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-							</div>
-							<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
 							</div>
 						</div>
 						<div>
