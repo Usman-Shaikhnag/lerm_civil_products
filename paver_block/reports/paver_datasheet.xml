@@ -459,7 +459,7 @@
                
 			
 
-				<div class="container_eln">
+				<div class="container_eln" style="padding-top:70px;">
 					<!-- <div t-foreach="eln" t-as="o">
 					
 						<table style="margin-top:10px;">
@@ -865,61 +865,40 @@
 
 				
 
-					<div style="page-break-inside: avoid;">
-						<div style="margin-top:20px" class="noteContainer">
-							<div>
-								<b>Note :-</b>
-							</div>
-							<div>
-								<ul>
-									<li>
-									(I)The results relate only to the items tested
-									</li>
-									<li>
-									(ii) This test report should not be reproduced except in full, without written approval of this Laboratory
-									</li>
-									<li>
-									(iii) Any corrections invalidates the test reports
-									</li>
-									<li>
-									(iv) Any Query regarding the report must be reported immediately.
-									</li>
-									<li>
-									(V) # mark indicates Details given by Client.
-									</li>
-									<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-									<!-- <li t-if="eln.remarks">
-									<p style="font-size: 10px;">
-										Remarks : <span t-esc="eln.remarks"/>
-									</p>
-									</li> -->
-								</ul>
-							</div>
+					<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
+							<table class="table table-bordered">
+							<tr>
+								<td style="padding: 5px; font-style: italic; font-size: 12px;">
+									<b>Note:-</b>
+									&#160;&#160;(i) The results relate only to the items tested 
+									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+									&#160;&#160;(iii) Any corrections invalidate the test reports 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
+									&#160;&#160;(vi) # mark indicates Details given by Client.
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</td>
+							</tr>
+						</table>
 						</div>
-						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+						<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
 										Checked By
 									</b>
 								</div>
-								<div style="height: 40px;">
-                                    <t t-if="eln.sample_id.checkby_signature_required">
-                                        <div t-if="eln.sample_id.check_by.employee_id.signature">
-                                            <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-                                        </div>
-                                        
-                                    </t>
-                                </div>
+								<div style="height:15px">
+
+								</div>
 								<div>
 									<b>
-										<span t-esc="eln.sample_id.check_by.name"/>
+										<span t-esc="eln.technician.name"/>
 									</b>
 								</div>
 								<div>
@@ -928,14 +907,16 @@
 									</b>
 								</div>
 							</div>
+
 							<!-- <div>
-								<div t-if="stamp and stamp == '4-in_report'">
+								<div>
 									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
 								</div>
 								<div style="padding-top:5px">
 									Format No. <span t-esc="eln.material.test_format_no"/>
 								</div>
-							</div> -->
+							</div>
+							 -->
 							<div>
 								<div>
 									<b>
@@ -943,13 +924,8 @@
 									</b>
 									
 								</div>
-								<div style="height: 40px;">
-									<t t-if="eln.sample_id.approveby_signature_required">
-										<div t-if="eln.sample_id.approved_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
+								<div style="height:15px">
+
 								</div>
 								<div>
 									<b>
@@ -959,17 +935,21 @@
 							
 								<div>
 									<b>
-										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
 									</b>
 								</div>
+								
+								<!-- <div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div> -->
 							</div>
 						</div>
-						<div style="text-align:center;margin-top:25px">
+						<div style="text-align:center;margin-top:2px">
 							......End of Report......
 						</div>
-					</div>
-
-				</div>
+              </div>
              
 			</t>
 		</t>
