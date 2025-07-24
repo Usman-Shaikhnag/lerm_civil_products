@@ -22,7 +22,7 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group>
+                    <group class="custom_table_borders">
                       <field name="sample_parameters">
                         <tree>
                           <field name="parameter_name"/>
@@ -42,10 +42,10 @@
                     </group>
                     
                   
-                    <group invisible = "sieve_visible == False" style="white-space: nowrap; width:70%;">
+                    <group invisible = "sieve_visible == False" style="white-space: nowrap; width:100%;">
                   
                       <field name="child_lines">
-                        <tree editable="bottom">
+                        <tree editable="bottom" class="custom_table_borders">
                           <field name="serial_no"/>
                           <field name="sieve_size"/>
                           <field name="particle_size"/>
@@ -55,30 +55,139 @@
                           <field name="passing_percent"/>
                         </tree>
                       </field>
-                      <group invisible = "sieve_visible == False">
-                      <field name="total1" string="Total Weight "/>
-                      </group>
 
-                      <group invisible = "sieve_visible == False">
-                       <field name="gravel" />
-                      
-                       <field name="sand" />
-                     
-                       <field name="silt_clay" />
+                       <group invisible = "sieve_visible == False">
+                       <button string="Calculate Sieve Analysis"
+                            type="object"
+                            name="calculate"
+                            class="oe_highlight">
+                        <i class="fa fa-calculator"/> Calculate
+                    </button>
+
+                      </group>
+                
+                    </group>
+
+                       
+
+                     <group style="white-space: nowrap; width:80%;" invisible = "sieve_visible == False">
+                     <group >
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style=" padding-left: 200px; text-align: ">
+                                <table style="border: 1px solid black; padding: 10px; padding-left: 200px; text-align: left; vertical-align: middle; color: black;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                            Total Weight
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="total1" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                mm
+                                            </td> -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
+
+                   <group >
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                             Gravel
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="gravel" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                          
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                          Sand
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="sand" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                          
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                         Silt + Clay
+
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="silt_clay" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                          
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                        Total
+
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="total" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                          
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
                     
-                       <field name="total" />
-                      </group>
+                    
+                </group>
 
-                     
-                      <!-- <! <field name="cumulative"/>> -->
-                      
-                    </group>
 
-                     <group invisible = "sieve_visible == False" style="white-space: nowrap; width:70%;">
-                        <button string="Calculate Sieve Analysis" type="object" name="calculate" class="oe_highlight"/>
-                    </group>
-
-                      <group invisible = "sieve_visible == False">
+                    
+                      <group invisible = "sieve_visible == False" class="custom_table_borders">
                       <field name="graph_image_slive" widget="image" readonly="1"/>
                     </group>
 
@@ -95,7 +204,7 @@
                     <group invisible = "liquid_limit_visible == False" >
                   
                       <field name="child_liness" style="width:100%">
-                       <tree editable="bottom" >
+                       <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no' />
                                  <field name='sample_of_wet' />
                                  <field name='blwo_no1' />
@@ -113,9 +222,32 @@
                       
                     </group>
 
+                      <group  invisible = "liquid_limit_visible == False" style="white-space: nowrap; width:70%;">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                              Liquid Limit
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="liquid_limit" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                mm²
+                                            </td> -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
                     
                     <group invisible = "liquid_limit_visible == False">
-                     <field name="liquid_limit" style="width:50%"/>
                     
                      <field name='liquid_limit_conformity' col="4"
                                            decoration-success="liquid_limit_conformity == 'pass'" 
@@ -124,7 +256,7 @@
                      <field name='liquid_limit_nabl' col="4"/>
                     </group>
 
-                    <group invisible = "liquid_limit_visible == False">
+                    <group invisible = "liquid_limit_visible == False" class="custom_table_borders">
                       <field name="graph_image_liquid" widget="image" readonly="1"/>
                     </group>
 
@@ -142,7 +274,7 @@
                     <group invisible = "plastic_limit_visible == False">
                   
                       <field name="plastic_limit_table">
-                       <tree editable="bottom">
+                       <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
                                 <field name='container_no'/>
                                 <field name='wt_of_con'/>
@@ -157,11 +289,35 @@
                    
                       
                     </group>
+
+                    <group  invisible = "plastic_limit_visible == False" style="white-space: nowrap; width:70%;">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                             Average  Plastic Limit
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="plastic_limit" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                mm²
+                                            </td> -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
+
+
                     <group invisible = "plastic_limit_visible == False" style="white-space: nowrap;">
-                     <field name="plastic_limit" style="width:50%" />
 
-
-                  
                      <field name='plastic_limit_conformity' col="4"
                                            decoration-success="plastic_limit_conformity == 'pass'" 
                                            decoration-danger="plastic_limit_conformity == 'fail'" 
@@ -169,9 +325,32 @@
                      <field name='plastic_limit_nabl' col="4"/>
                     </group>
 
+                    <group  invisible = "plastic_limit_visible == False" style="white-space: nowrap; width:70%;">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                             Plasticity Index
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="plasticity_index" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                mm²
+                                            </td> -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
                     <group invisible = "plastic_limit_visible == False" style="white-space: nowrap;">
 
-                      <field name="plasticity_index" style="width:50%" />
 
                   
                      <field name='plasticity_index_conformity' col="4"
@@ -197,7 +376,7 @@
                     <group invisible = "heavy_visible == False">
                   
                       <field name="heavy_table" style="width:100%">
-                        <tree editable="bottom">
+                        <tree editable="bottom" class="custom_table_borders">
                           <field name="serial_no"/>
                           <field name="amount_soil"/>
                           <field name="amount_water"/>
@@ -217,14 +396,56 @@
                   
                     </group>
 
-                      <group invisible = "heavy_visible == False" style="white-space: nowrap;">
-                 
-                  
-                     <field name='max_dry_density'/>
-                      <field name='omc'/>
+                   
+                        <group invisible = "heavy_visible == False" style="white-space: nowrap;">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 25%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                              Max Dry Density 
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="max_dry_density" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                               g/cc
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </group>
 
-                     <group invisible = "heavy_visible == False">
+                     <group invisible = "heavy_visible == False" style="white-space: nowrap;">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                           Optimum Moisture Content 
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="omc" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                            %
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
+                     <group invisible = "heavy_visible == False" class="custom_table_borders">
                       <field name="graph_image_density" widget="image" readonly="1"/>
                     </group>
                   
@@ -253,7 +474,7 @@
                     <group invisible = "omc_visible == False">
                   
                       <field name="omc_table" style="width:100%">
-                        <tree editable="bottom">
+                        <tree editable="bottom" class="custom_table_borders">
                           <field name="serial_no"/>
                           <field name="amount_soil1"/>
                           <field name="amount_water1"/>
@@ -273,14 +494,59 @@
                   
                     </group>
 
-                      <group invisible = "omc_visible == False" style="white-space: nowrap;">
-                 
-                  
-                     <field name='max_dry_density1'/>
-                      <field name='omc1'/>
+                     
+
+                    <group invisible = "omc_visible == False" style="white-space: nowrap;">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 25%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                           Max Dry Density 
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="max_dry_density1" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                            g/cc
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </group>
 
-                     <group invisible = "omc_visible == False">
+                    <group invisible = "heavy_visible == False" style="white-space: nowrap;">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 40%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                           Optimum Moisture Content 
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="omc1" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                            %
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
+
+
+                     <group invisible = "omc_visible == False" class="custom_table_borders">
                       <field name="graph_image_density1" widget="image" readonly="1"/>
                     </group>
                   
@@ -319,7 +585,7 @@
                     <group invisible = "triaxial_visible == False">
                   
                       <field name="triaxial_table" style="width:100%">
-                        <tree editable="bottom">
+                        <tree editable="bottom" class="custom_table_borders">
                           <field name="serial_no"/>
                           <field name="lvdt_triaxial"/>
                           <field name="load_triaxial31"/>
@@ -360,7 +626,7 @@
                     <group invisible = "internal_fraction_visible == False">
                   
                       <field name="internal_fraction_table" style="width:100%">
-                        <tree editable="bottom">
+                        <tree editable="bottom" class="custom_table_borders">
                           <field name="serial_no"/>
                           <field name="normal_lbs"/>
                           <field name="normal_kgs"/>
@@ -388,7 +654,7 @@
                   
                     <group invisible = "soil_visible == False">
                       <field name="soil_table">
-                        <tree editable="bottom">
+                        <tree editable="bottom" class="custom_table_borders">
                           <field name="penetration"/>
                           <field name="proving_reading"/>
                           <field name="load"/>
