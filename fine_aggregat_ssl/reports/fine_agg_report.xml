@@ -10,7 +10,7 @@
 				</div> -->
 
 				<div class="container_eln">
-					<div t-foreach="eln" t-as="o">
+					<!-- <div t-foreach="eln" t-as="o">
 						
 						<table style="margin-top:10px;">
 							<tr>
@@ -27,17 +27,7 @@
 								</td>
 							</tr>
 							<tr>
-								<!-- <td colspan="12">Project / Site Address :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-											,
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
+								
 								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.name_work"/>
 								</td>
@@ -112,6 +102,57 @@
 									<span t-field="o.material.name"/>
 								</td>
 							</tr>
+						</table>
+					</div> -->
+					<div class="px-0" t-foreach="eln" t-as="o">
+						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
+							<tbody>
+								<tr>
+									<td style="width: 30%; padding: 5px;"><strong>#Client Details</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.customer.name"/>
+									<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+								
+								</tr>
+								
+								<tr>
+									<td><strong>#Client's Reference</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>#Name of Work</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Date of Testing</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.start_date" style="margin-right:10px;"/> to 
+										<span t-field="o.end_date" style="margin-left:10px;"/>
+									</td>
+								</tr>
+
+								<tr>
+									<td><strong>Type of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Size of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.sample_id.size_id.size"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Source of Sample</strong></td>
+									<td style="padding-left: 10px;">Sample Supplied by Client</td>
+								</tr>
+							</tbody>
 						</table>
 					</div>
 

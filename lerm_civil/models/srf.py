@@ -95,7 +95,9 @@ class TestMethod(models.Model):
     test_method = fields.Char(string="Test Method", required=True)
     product = fields.Many2one('product.template',"Product")
     parameter = fields.Many2many('lerm.parameter.master',domain="[('material', '=', product)]", string="Parameter")
-    
+
+
+
 
 class SrfForm(models.Model):
     _name = "lerm.civil.srf"
@@ -163,7 +165,7 @@ class SrfForm(models.Model):
 
     def _compute_date_editable(self):
         for record in self:
-            print("COMPUTE SRF DATE")
+            # print("COMPUTE SRF DATE")
             # import wdb;wdb.set_trace()
 
             backdate_group_id = record.env.ref('lerm_civil.kes_srf_backdate_creation_group').id
@@ -1042,6 +1044,7 @@ class CreateSampleWizard(models.TransientModel):
             product_name = self.product_name
             lab_location  = self.lab_location.id
             location_name = self.location_name.id
+            
 
 
 
@@ -1099,7 +1102,8 @@ class CreateSampleWizard(models.TransientModel):
 
                 })
                 for i in range(self.sample_qty):
-                    self.env["lerm.srf.sample"].create({
+                    
+                    sample = self.env["lerm.srf.sample"].create({
                         'srf_id': self.env.context.get('active_id'),
                         'group_id':group_id,
                        
@@ -1137,6 +1141,20 @@ class CreateSampleWizard(models.TransientModel):
                         'product_alias':self.product_alias.id,
                         'lab_location':lab_location,
                         'location_name':location_name,
+                        'quantity':self.quantity,
+                        'uom_id':self.uom_id.id,
+                        'quantity_received':self.quantity_received,
+                        'quantity_consumed':self.quantity_consumed,
+                        'quantity_balance':self.quantity_balance
+
+                    })
+                    self.env['lerm.sample.register'].sudo().create({
+                        'sample':sample.id,
+                        'quantity':self.quantity,
+                        'uom_id':self.uom_id.id,
+                        'quantity_received':self.quantity_received,
+                        'quantity_consumed':self.quantity_consumed,
+                        'quantity_balance':self.quantity_balance
 
                     })
 
@@ -1180,7 +1198,7 @@ class CreateSampleWizard(models.TransientModel):
                 if sample.state == '1-allotment_pending':
                     for parameter in sample.parameters:
                         parameters_result.append((0,0,{'parameter':parameter.id,'unit': parameter.unit.id,'test_method':parameter.test_method.id}))
-                    
+                    # import wdb; wdb.set_trace()
                     eln_id = self.env['lerm.eln'].sudo().create({
                         'srf_id': sample.srf_id.id,
                         'srf_date':sample.srf_id.srf_date,
@@ -1202,6 +1220,12 @@ class CreateSampleWizard(models.TransientModel):
                         'grade_id':sample.grade_id.id,
                         'department_id':sample.department_id,
                         'casting_date':sample.casting_date,
+                        'quantity':sample.quantity,
+                        'uom_id':sample.uom_id.id,
+                        'quantity_received':sample.quantity_received,
+                        'quantity_consumed':sample.quantity_consumed,
+                        'quantity_balance':sample.quantity_balance
+
 
                     })
                     # import wdb;wdb.set_trace()

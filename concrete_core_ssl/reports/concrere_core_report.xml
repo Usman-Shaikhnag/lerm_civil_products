@@ -5,99 +5,55 @@
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				
 				<div class="container_eln">
-					<div t-foreach="eln" t-as="o">
-					
-						<table style="margin-top:10px;">
-							<tr>
-								<td colspan="12" >Customer Party Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.customer.name" /><br/>
+					<div class="px-0" t-foreach="eln" t-as="o">
+						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
+							<tbody>
+								<tr>
+									<td style="width: 30%; padding: 5px;"><strong>#Client Details</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.customer.name"/>
 									<span t-field="o.srf_id.customer.street"/>
-									<span t-field="o.srf_id.customer.street2"/>
-									<span t-field="o.srf_id.customer.city"/>
-									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
-									<span t-field="o.srf_id.customer.state_id"/>
-											,
-									<span t-field="o.srf_id.customer.country_id"/>
-								</td>
-							</tr>
-							<tr>
-							
-								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.name_work"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="12">Sample Description : <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_description"/>
-								</td>
-							</tr>
-						</table>
-						<table>
-							<tr>
-								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.start_date"/>
-								</td>
-								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.end_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.client_sample_id"/>
-								</td>
-								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_received_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Size :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.size_id.size"/>
-								</td>
-								<td colspan="6">Grade :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.grade_id.grade"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Brand :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.brand"/>
-								</td>
-								<td colspan="6">Consultant Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.consultant_name1"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Client Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client"/>
-								</td>
-								<td colspan="6">Client Reference :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client_refrence"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Discipline :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.discipline.discipline"/>
-								</td>
-								<td colspan="6">Group :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.group.group"/>
-								</td>
-							</tr>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+								
+								</tr>
+								
+								<tr>
+									<td><strong>#Client's Reference</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
+								</tr>
 
-							<tr>
-								<td colspan="12">Material/Test Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.material.name"/>
-								</td>
-							</tr>
-						
+								<tr>
+									<td><strong>#Name of Work</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Date of Testing</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.start_date" style="margin-right:10px;"/> Date Of Testing :
+										<span t-field="o.end_date" style="margin-left:10px;"/>
+									</td>
+								</tr>
+
+								<tr>
+									<td><strong>Type of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Grade of Concrete</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.sample_id.grade_id.grade"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Standards Referred</strong></td>
+									<td style="padding-left: 10px;">IS 516 : 1959, IS 456 : 2000, SP 24 - 1983</td>
+								</tr>
+							</tbody>
 						</table>
 					</div>
 					
@@ -124,44 +80,7 @@
 							</h5> -->
 						
 					</div>
-                    <!-- <table style="margin-top:20px">
-                        <thead >
-                            <tr cols="12">
-                                <td  style="text-align: center;">Sr no 
-                                </td>
-
-                                <td  style="text-align:center;">Dia of Core, mm
-
-                                </td>
-
-                                <td  style="text-align:center;">Correction Factor for dia
-
-                                </td>
-                            
-                            </tr>
-                            
-                            </thead>
-                            <tbody>
-
-                            <t t-set="i" t-value="0"/>
-                            <tr t-foreach="data.dia_lines" t-as="r">
-                                <td  style="text-align: center;">
-                                    <div>
-                                        <span t-esc="i + 1" />
-                                        <t t-set="i" t-value="i+1"/>
-                                    </div>
-                                </td>
-                                <td style="text-align: center;" >
-                                    <span t-esc="r['dia_core']" />
-                                </td>
-                                <td  style="text-align: center;">
-                                    <span t-esc="r['correction_dia']" />
-                                </td>
-
-                            
-                            </tr>
-                            </tbody>
-					</table> -->
+           
 
 						<table style="margin-top:5px">
 				
@@ -186,80 +105,80 @@
 						<table style="margin-top:10px;">
 						<thead>
 							<tr>
-								<th colspan="1" style="text-align: center; font-weight: bold;"> 
+								<th rowspan="2" style="text-align: center; font-weight: bold;"> 
 									<span>
 										Sr. No
 									</span>
 								</th>
-								<th colspan="1"	style="text-align: center; font-weight: bold;">
+								<th rowspan="2"	style="text-align: center; font-weight: bold;">
 									<span>
 									Location
 									</span>
 								</th>
 
-								<!-- <th colspan="1" style="text-align: center;font-weight: bold;">
+								<!-- <th rowspan="1" style="text-align: center;font-weight: bold;">
 									<span>
 									Grade of  Concrite
 									</span>
 								</th> -->
 								
-								<th colspan="1" style="text-align: center; font-weight: bold;">
+								<th rowspan="2" style="text-align: center; font-weight: bold;">
 									<span>
 									Depth after Trimming in mm
 									</span>
 								</th>
 
-								<th colspan="1" style="text-align: center; font-weight: bold;">
+								<th rowspan="2" style="text-align: center; font-weight: bold;">
 									<span>
 									Load kN
 									</span>
 								</th>
-								<th colspan="1" style="text-align: center; font-weight: bold;">
+								<th rowspan="2" style="text-align: center; font-weight: bold;">
 									<span>
 									 L /D RATIO  
 									</span>
 								</th>
 								
-								<th colspan="1" style="text-align: center; font-weight: bold;">
+								<th rowspan="2" style="text-align: center; font-weight: bold;">
 									<span>
 									Load in N 
 									</span>
 								</th>
 
-								<th colspan="1" style="text-align: center; font-weight: bold;">
+								<th rowspan="2" style="text-align: center; font-weight: bold;">
 									<span>
 								Core Comp. strength(N/ mm2)
 									</span>
 								</th>
-								<!-- <th colspan="2" style="text-align: center; font-weight: bold;">
+								<th colspan="1" style="text-align: center; font-weight: bold;">
 									<span>
 									Correction Factor
 									</span>
-								</th> -->
-                                	<th colspan="1" style="text-align: center; font-weight: bold;">
+								</th>
+                                	<th rowspan="2" style="text-align: center; font-weight: bold;">
 									<span>
 									Corrected Cyl.Comp.Strength  (N/ mm2)
 									</span>
 								</th>
-                                	<th colspan="1" style="text-align: center; font-weight: bold;">
+                                	<th rowspan="2" style="text-align: center; font-weight: bold;">
 									<span>
 									Equivalent Cube.Comp Strength (N/ mm2)
 									</span>
 								</th>
 							</tr>
-                              <!-- <tr>
+                              <tr>
                               	<th colspan="1" style="text-align: center; font-weight: bold;">
 									<span>
 								    L/D
 
 									</span>
 								</th>
-                                	<th colspan="1" style="text-align: center; font-weight: bold;">
+                                	<!-- <th colspan="1" style="text-align: center; font-weight: bold;">
 									<span>
 									Dia
 									</span>
-								</th>
-                            </tr> -->
+								</th> -->
+                            </tr>
 						</thead>
 						<tbody>
 							<tr t-foreach="data.child_lines" t-as="r">
@@ -287,10 +206,10 @@
 								<td colspan="1" style="text-align: center;">
 									<span t-esc="r.core_comp" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
-								<!-- <td colspan="1" style="text-align: center;">
+								<td colspan="1" style="text-align: center;">
 									<span t-esc="r.correction_factor_ld" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
-                                <td colspan="1" style="text-align: center;">
+                                <!-- <td colspan="1" style="text-align: center;">
 									<span t-esc="r.correction_factor_dia" t-options='{"widget": "float", "precision": 2}'/>
 								</td> -->
                                 <td colspan="1" style="text-align: center;">

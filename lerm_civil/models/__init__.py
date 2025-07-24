@@ -21,3 +21,5 @@ from . import general_template
 
 # from .import dash_bord
 from . import ir_sequence_inherited
+from . import enviroment_register
+from . import sample_register

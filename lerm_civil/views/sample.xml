@@ -168,12 +168,35 @@
                 </group>
                 </group>  
 
-                <button name="open_form" type="object" class="btn btn-primary" string="Open Form" invisible="product_or_form_based == False"/>
 
                 <group>
                     <field name="print_button_visible" invisible="1"/>                
                 </group>  
+
+                <group>
+                    <field name="quantity"/>
+                </group>
+
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Sample Quantity</th>
+                            <th>Received</th>
+                            <th>Consumed</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><field name="uom_id" readonly="1"/></td>
+                            <td><field name="quantity_received" readonly="1"/></td>
+                            <td><field name="quantity_consumed" readonly="1"/></td>
+                            <td><field name="quantity_balance" readonly="1"/></td>
+                        </tr>
+                    </tbody>
+                </table>
                 
+                <button name="open_form" type="object" class="btn btn-primary" string="Open Form" invisible="product_or_form_based == False"/>
     
                 <field invisible="1" name="parameters" nolabel="1" options="{'no_create': True, 'no_open': True}" />
                 <field name="parameters_result" nolabel="1" invisible="product_or_form_based == True">

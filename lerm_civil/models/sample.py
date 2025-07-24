@@ -159,6 +159,17 @@ class LermSampleForm(models.Model):
     other_cancellation_reason = fields.Text("Cancellation Reason")
 
     quantity = fields.Integer(string="Quantity")
+    uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
+    quantity_received = fields.Integer(string="Quantiyty Received")
+    quantity_consumed = fields.Integer(string="Quantity Consumed")
+    quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
+
+    @api.depends('quantity_received', 'quantity_consumed')
+    def compute_quantity_balance(self):
+        for rec in self:
+            rec.quantity_balance = rec.quantity_received - rec.quantity_consumed
+
+            
     @api.depends('srf_id.client_refrence')
     def _compute_client_reference(self):
         for record in self:

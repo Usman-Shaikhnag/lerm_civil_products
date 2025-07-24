@@ -10,6 +10,7 @@
     'data/sequence.xml',
     # 'data/module_category_data.xml',
     'views/enviroment_register.xml',
+    'views/sample_register.xml',
     'views/lerm.xml',
     'views/groups.xml',
     'views/res_company.xml',

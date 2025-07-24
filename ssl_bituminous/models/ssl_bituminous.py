@@ -41,47 +41,21 @@ class BituminousMechanical(models.Model):
         record = super(BituminousMechanical, self).create(vals)
         record.eln_ref.write({'model_id':record.id})
         return record
-    
-
+        
     def default_get(self, fields):
-        print("From Default Value")
         res = super(BituminousMechanical, self).default_get(fields)
 
-        sieve_mapping = {
-            63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-            40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-            20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
-            16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-            12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-            10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
-        }
+        fixed_sieve_sizes = [
+            '45 mm', '37.5 mm', '26.5 mm', '19 mm', '13.2 mm',
+            '4.75 mm', '2.36 mm', '300 μm', '75 μm', '0', 'PAN'
+        ]
 
         default_sieve_sizes = []
-        eln_ref = res['eln_ref']
+        for sieve_size in fixed_sieve_sizes:
+            default_sieve_sizes.append((0, 0, {'sieve_size': sieve_size}))
 
-        if eln_ref:
-            eln = self.env['lerm.eln'].sudo().browse(eln_ref)
-            size_str = eln.size_id.size or ''
-            print("Size:", size_str)
-
-            # Extract numeric part
-            match = re.search(r'\d+', size_str)
-            if match:
-                number = int(match.group())
-                print("Number:", number)
-
-                # Find matching sieve list by size
-                sieve_list = sieve_mapping.get(number)
-                if sieve_list:
-                    for sieve_size in sieve_list:
-                        size = {
-                            'sieve_size': sieve_size
-                        }
-                        default_sieve_sizes.append((0, 0, size))
-                    res['sieve_analysis_child_lines'] = default_sieve_sizes
-
+        res['combined_gradation_child_lines'] = default_sieve_sizes
         return res
-
 
     
 

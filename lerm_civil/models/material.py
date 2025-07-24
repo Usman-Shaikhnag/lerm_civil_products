@@ -3,6 +3,7 @@ from odoo import api, fields, models
 class Material(models.Model):
     _inherit = "product.template"
 
+    display_name = fields.Char('Name', required=True, tracking=True)
     is_sample = fields.Boolean(string="Is Sample?")
     casting_required = fields.Boolean(string="Casting Required")
     is_product_based_calculation = fields.Boolean(string="Product Based Calculation")

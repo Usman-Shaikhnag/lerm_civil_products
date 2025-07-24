@@ -21,7 +21,7 @@
                         <field name="grade" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group>
+                    <group class="custom_table_borders">
                       <field name="sample_parameters">
                         <tree>
                           <field name="parameter_name"/>
@@ -38,8 +38,8 @@
 
                         </h1>
                 </group>
-                <group invisible = "moisture_content_visible == False" style="white-space: nowrap; width:70%;">
-                    <field name="wood_child_lines" >
+                <group invisible = "moisture_content_visible == False" style="white-space: nowrap; width:100%;">
+                    <field name="wood_child_lines" class="custom_table_borders" >
                             <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='initial_we'/>
@@ -51,11 +51,33 @@
                     </field> 
                 </group>
 
-                  <group invisible = "moisture_content_visible == False">
+                  <!-- <group invisible = "moisture_content_visible == False" style="white-space: nowrap; width:70%;">
                        <field name='average_moisture'/>
-                </group>
+                </group> -->
+                <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 50%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                          Average Moisture Content
+
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="average_moisture" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
                  
-                 <group invisible = "moisture_content_visible == False">
+                 <group invisible = "moisture_content_visible == False" >
                        
                         <field  name="moisture_content_conformity"
                                         decoration-success="moisture_content_conformity == 'pass'" 
@@ -75,8 +97,8 @@
 
                         </h1>
                 </group>
-                <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;">
-                    <field name="specific_gravity_child_lines"  >
+                <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:100%;">
+                    <field name="specific_gravity_child_lines"  class="custom_table_borders">
                             <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='length'/>
@@ -91,9 +113,31 @@
                     </field> 
                 </group>
 
-                  <group invisible = "specific_gravity_visible == False">
+                  <!-- <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;">
                        <field name='average_specific_gravity'/>
-                </group>
+                </group> -->
+                <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;">
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 50%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                             Average Specific Gravity
+
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="average_specific_gravity" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
                  
                  <group invisible = "specific_gravity_visible == False">
                        
