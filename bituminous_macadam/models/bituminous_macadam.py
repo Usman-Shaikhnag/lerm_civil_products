@@ -195,7 +195,7 @@ class CombinedGradationLine(models.Model):
     cumulative_retained = fields.Float(string="Cum. Retained %", store=True)
     passing_percent = fields.Float(string="Passing %",digits=(16,2))
     # cumm_wt_retained_per = fields.Float(string="Cumm. % Wt. Retained",compute="_compute_cumm_wt_retained_per",digits=(16,2))
-
+    requirements = fields.Char(string="Requirements")
     @api.model
     def create(self, vals):
         # Set the serial_no based on the existing records for the same parent

@@ -150,235 +150,165 @@
 				<!-- <div style="text-align:center;margin-top:10px">
 					<p style="font-size:15px"><b>Test Report</b></p>
 				</div> -->
-				<div class="container_eln">
+				<div class="container_eln" style="padding-top:70px">
 					<div t-foreach="eln" t-as="o">
-						<!-- <table>
+						<table style="margin-top:10px;">
 							<tr>
-								<td colspan="3">Report no :
-								</td>
-								<td colspan="3">
-									<span t-field="o.kes_no"/>
-								</td>
-								<td colspan="3">Report Date :
-								</td>
-								<td colspan="3">
-									<span t-field="o.srf_date"/>
-								</td>
-								<td colspan="3"  t-if="nabl">ULR NO :
-								</td>
-								<td colspan="3" t-if="nabl">
-									<span t-field="o.sample_id.ulr_no"/>
+								<td colspan="9" style=" font-weight: bold;">Client Details:</td>
+								<td >
+									<span t-field="o.srf_id.customer.name"/><br />
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+									,
+									<span t-field="o.srf_id.customer.country_id"/>
 								</td>
 							</tr>
-						</table> -->
-						<table style="margin-top:10px;">
-							<tbody>
-								<tr>
-									<td colspan="12">
-										Client Details:
-										<![CDATA[&nbsp;]]>
-										<span t-field="o.srf_id.customer.name"/><br/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
-										<span t-field="o.srf_id.customer.state_id"/>,
-										<span t-field="o.srf_id.customer.country_id"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="12">
-										Client's Reference:
-										<![CDATA[&nbsp;]]>
-										<span t-field="o.srf_id.client_refrence"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="12">
-										Name of Work:
-										<![CDATA[&nbsp;]]>
-										<span t-field="o.srf_id.name_work"/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+							<tr>
+								<!-- <td>Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td> -->
+								<td colspan="9" style=" font-weight: bold;">Client Reference:</td>
+								<td ><span t-field="o.srf_id.client_refrence"/></td>
+							</tr>
+							<tr>
+								<td colspan="9" style=" font-weight: bold;">Name of Work:</td>
+								<td ><span t-field="o.srf_id.name_work"/></td>
+							</tr>
+							<tr>
+								<td colspan="9" style=" font-weight: bold;">Date of Testing:</td>
+								<td >
+									<span t-field="o.start_date"/> to <span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="9" style="font-weight: bold;">Size:</td>
+								<td >
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="9" style="font-weight: bold;">Grade:</td>
+								<td >
+									<span t-field="o.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="9" style="font-weight: bold;">Material/Test Name:</td>
+								<td >
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
 
-						<table>
-							<tbody>
-								<tr>
-									<td colspan="6">
-										Test Start Date:
-										<![CDATA[&nbsp;]]>
-										<span t-field="o.start_date"/>
-									</td>
-									<td colspan="6">
-										Test End Date:
-										<![CDATA[&nbsp;]]>
-										<span t-field="o.end_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="12">
-										Type of Sample:
-										<![CDATA[&nbsp;]]>
-										<span t-field="o.sample_id.sample_description"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="12">
-										Location of Sample:
-										<![CDATA[&nbsp;]]>
-										<!-- Assuming a field for location exists -->
-										<span t-field="o.sample_id.location"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="12">
-										Source of Sample:
-										<![CDATA[&nbsp;]]>
-										<!-- Assuming a field for source exists -->
-										<!-- <span t-field="o.sample_id.source_of_sample"/> -->
-									</td>
-								</tr>
-								<tr>
-									<td colspan="12">
-										Test Method Adopted:
-										<![CDATA[&nbsp;]]>
-										<!-- Assuming a field for test method exists -->
-										<!-- <span t-field="o.test_method"/> -->
-									</td>
-								</tr>
+							<!-- Source of Sample (only if value exists) -->
+							<tr t-if="o.material.source_sample">
+								<td colspan="9" style="font-weight: bold;">Source of Sample</td>
+								<td >
+									<span t-field="o.material.source_sample"/>
+								</td>
+							</tr>
 
-								<!--
-								<tr>
-									<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
-										<span t-field="o.sample_id.client_sample_id"/>
-									</td>
-									<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
-										<span t-field="o.sample_id.sample_received_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">Size :<![CDATA[&nbsp;]]>
-										<span t-field="o.sample_id.size_id.size"/>
-									</td>
-									<td colspan="6">Grade :<![CDATA[&nbsp;]]>
-										<span t-field="o.grade_id.grade"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">Brand :<![CDATA[&nbsp;]]>
-										<span t-field="o.sample_id.brand"/>
-									</td>
-									<td colspan="6">Consultant Name :<![CDATA[&nbsp;]]>
-										<span t-field="o.srf_id.consultant_name1"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">Client Name :<![CDATA[&nbsp;]]>
-										<span t-field="o.srf_id.client"/>
-									</td>
-									<td colspan="6">Client Reference :<![CDATA[&nbsp;]]>
-										<span t-field="o.srf_id.client_refrence"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">Discipline :<![CDATA[&nbsp;]]>
-										<span t-field="o.discipline.discipline"/>
-									</td>
-									<td colspan="6">Group :<![CDATA[&nbsp;]]>
-										<span t-field="o.group.group"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="12">Material/Test Name :<![CDATA[&nbsp;]]>
-										<span t-field="o.material.name"/>
-									</td>
-								</tr>
-								-->
-							</tbody>
+							<!-- Test method adopted (only if value exists) -->
+							<tr t-if="o.material.test_method_adopted">
+								<td colspan="9" style="font-weight: bold;">Test method adopted:</td>
+								<td >
+									<span t-field="o.material.test_method_adopted"/>
+								</td>
+							</tr>
+
 						</table>
 					</div>
 
 					<t t-if="data.bitumen_content_visible">
-						<h4><t t-esc="data.bitumen_content_name"/></h4>
-
-						<table class="table table-sm table-bordered">
-							<thead>
-							<tr>
-								<th style="text-align: center;">S.N0.</th>
-								<th style="text-align: center;">Location of Sample</th>
-								<th style="text-align: center;">Test Result</th>
-								<th style="text-align: center;">Requirement as per MORTH (5th Revision) Table 500 - 7</th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr>
-								<td style="text-align: center;">1</td>
-								<td style="text-align: center;">Location</td> <!-- adjust if field name differs -->
-								<td style="text-align: center;"><t t-esc="data.binder_content"/></td>
-								<td style="text-align: center;">Min. 3.4</td>
-							</tr>
-							</tbody>
-						</table>
+						<div class="">
+							<table class="table table-bordered">
+								<thead>
+									<tr style="border:none">
+										<th colspan="12"><t t-esc="data.bitumen_content_name"/></th>
+									</tr>
+									<tr >
+										<th style="text-align: center;">S.N0.</th>
+										<th style="text-align: center;">Location of Sample</th>
+										<th style="text-align: center;">Test Result</th>
+										<th style="text-align: center;">Requirement as per <span t-esc="eln.material.specifications"/></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td style="text-align: center;">1</td>
+										<td style="text-align: center;"><span t-esc="eln.sample_id.location"/></td>
+										<td style="text-align: center;"><t t-esc="data.binder_content"/></td>
+										<td style="text-align: center;">Min. 3.4</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</t>
 
 					<t t-if="data.combined_gradation_visible">
-						<h4><t t-esc="data.combined_gradation_name"/></h4>
-
-						<!-- <p><strong>Weight of Sample:</strong> <t t-esc="data.weight_of_sample"/></p> -->
-
-						<table class="table table-sm table-bordered" style="text-align: center;">
-							<thead>
-								<tr>
-									<th style="text-align: center;">IS Sieve</th>
-									<th style="text-align: center;">Wt. Retained in gms</th>
-									<th style="text-align: center;">% Retained</th>
-									<th style="text-align: center;">Cum. Retained %</th>
-									<th style="text-align: center;">Passing %</th>
-								</tr>
-							</thead>
-							<tbody>
-								<t t-foreach="data.combined_gradation_child_lines" t-as="line">
-									<tr>
-										<td style="text-align: center;"><t t-esc="line.sieve_size"/></td>
-										<td style="text-align: center;"><t t-esc="line.wt_retained"/></td>
-										<td style="text-align: center;"><t t-esc="line.percent_retained" t-options='{"widget": "float", "precision": 2}'/></td>
-										<td style="text-align: center;"><t t-esc="line.cumulative_retained" t-options='{"widget": "float", "precision": 2}'/></td>
-										<td style="text-align: center;"><t t-esc="line.passing_percent"/></td>
+						<div class="">
+							<table class="table table-bordered" style="text-align: center;">
+								<thead>
+									<tr style="border:none">
+										<th colspan="12"><t t-esc="data.combined_gradation_name"/></th>
 									</tr>
-								</t>
-							</tbody>
-						</table>
+									<tr>
+										<th style="text-align: center;">IS Sieve</th>
+										<th style="text-align: center;">Wt. Retained in gms</th>
+										<th style="text-align: center;">% Retained</th>
+										<th style="text-align: center;">Cum. Retained %</th>
+										<th style="text-align: center;">Passing %</th>
+										<th style="text-align: center;">Requirement as per<br/> <span t-esc="eln.material.specifications"/></th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-foreach="data.combined_gradation_child_lines" t-as="line">
+										<tr>
+											<td style="text-align: center;"><t t-esc="line.sieve_size"/></td>
+											<td style="text-align: center;"><t t-esc="line.wt_retained"/></td>
+											<td style="text-align: center;"><t t-esc="line.percent_retained" t-options='{"widget": "float", "precision": 2}'/></td>
+											<td style="text-align: center;"><t t-esc="line.cumulative_retained" t-options='{"widget": "float", "precision": 2}'/></td>
+											<td style="text-align: center;"><t t-esc="line.passing_percent"/></td>
+											<td style="text-align: center;"><t t-esc="line.requirements"/></td>
+										</tr>
+									</t>
+								</tbody>
+							</table>
 
+						</div>
 						<!-- <p><strong>Total:</strong> <t t-esc="data.total_combined_gradation"/></p> -->
 					</t>
 					
 					<div style="page-break-inside: avoid;">
-                        <div style="margin-top:10px" class="noteContainer">
-                            <div>
-                                <b>Note :-</b>
-                            </div>
-                            <div>
-                                <ul>
-                                    <li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-                                    </li>
-                                    <li>
-										Sample(s) was/were not drawn by laboratory.
-                                    </li>
-                                    <li>
-										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-                                    </li>
-                                   <li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-                                </ul>
-                            </div>
+                        <div style="margin-top:10px; padding:0" class="noteContainer">
+                            <table class="table table-bordered">
+								<tr>
+									<td style="padding: 5px; font-style: italic; font-size: 12px;">
+										<b>Note:-</b>
+										&#160;&#160;(i) The results relate only to the items tested 
+										&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+										&#160;&#160;(iii) Any corrections invalidate the test reports 
+										&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+										&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
+										&#160;&#160;(vi) # mark indicates Details given by Client.
+										<t t-if="eln.has_witness">
+											&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+										</t>
+										<t t-if="eln.remarks">
+											&#160;&#160;<span t-esc="eln.remarks"/>
+										</t>
+									</td>
+								</tr>
+							</table>
                         </div>
                         <div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
 
@@ -388,7 +318,7 @@
 								Checked By
                                     </b>
                                 </div>
-                                <div style="height:30px">
+                                <div style="height:40px">
 
                                 </div>
                                 <div>
@@ -404,20 +334,12 @@
                             </div>
                             <div>
                                 <div>
-                                    <img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-                                </div>
-                                <div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-                                </div>
-                            </div>
-                            <div>
-                                <div>
                                     <b>
 								Approved By 
                                     </b>
 
                                 </div>
-                                <div style="height:30px">
+                                <div style="height:40px">
 
                                 </div>
                                 <div>
@@ -433,12 +355,12 @@
                                 
                             </div>
                         </div>
-						<!-- <div style="text-align:center;margin-top:25px">
+						<div style="text-align:center;margin-top:25px">
 							......End of Report......
-                        </div> -->
+                        </div>
                     </div>
                         
-                    </div>
+				</div>
 				<!-- </div> -->
 				
 			</t>
