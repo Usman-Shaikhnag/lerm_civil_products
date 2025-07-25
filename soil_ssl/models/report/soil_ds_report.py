@@ -12,6 +12,8 @@ from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
 from scipy.optimize import minimize_scalar
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 import io
+from matplotlib.ticker import LogLocator, MultipleLocator
+
 
 class SoilDatasheet(models.AbstractModel):
     _name = 'report.soil_ssl.soil_datasheet_ssl'
@@ -292,6 +294,8 @@ class SoilReport(models.AbstractModel):
             'load5': cbry_values[8] if len(cbry_values) > 8 else 0,
         }
 
+
+
     def _generate_sieve_log_chart(self, data):
         x_values = []
         y_values = []
@@ -305,28 +309,45 @@ class SoilReport(models.AbstractModel):
             return None
 
         plt.figure(figsize=(10, 5))
-        plt.xscale('log')
-        plt.plot(x_values, y_values, color='gray', marker='o', linestyle='-', linewidth=2)
+        ax = plt.gca()
+        
+        # ✅ Log scale X-axis
+        ax.set_xscale('log')
 
-        plt.xlabel('Cumulative % Weight Retained (Log Scale)', fontsize=12)
-        plt.ylabel('Passing %', fontsize=12)
-        plt.title('WET SIEVE ANALYSIS OF SOIL SAMPLE', fontsize=14)
-        plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+        # ✅ Main plot
+        ax.plot(x_values, y_values, color='blue', marker='o', linestyle='-', linewidth=2)
+        ax.scatter(x_values, y_values, color='red', edgecolors='black', s=60, zorder=5)
 
+        # ✅ Axis labels
+        ax.set_xlabel('Cumulative % Weight Retained (Log Scale)', fontsize=12)
+        ax.set_ylabel('Passing %', fontsize=12)
+        ax.set_title('WET SIEVE ANALYSIS OF SOIL SAMPLE', fontsize=14)
+
+        # ✅ Grid with minor ticks
+        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=100))
+        ax.yaxis.set_minor_locator(MultipleLocator(2))
+        ax.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+        # ✅ X-ticks formatting
         ticks = sorted(set(x_values))
-        plt.xticks(ticks, [str(round(t, 2)) for t in ticks])
-        plt.xlim(left=min(x_values)/1.5, right=max(x_values)*1.5)
-        plt.ylim(bottom=0, top=100)
+        ax.set_xticks(ticks)
+        ax.set_xticklabels([str(round(t, 2)) for t in ticks])
 
+        # ✅ Axis limits
+        ax.set_xlim(left=min(x_values) / 1.5, right=max(x_values) * 1.5)
+        ax.set_ylim(0, 100)
+
+        # ✅ Highlight max passing %
         max_index = y_values.index(max(y_values))
         max_x = x_values[max_index]
         max_y = y_values[max_index]
 
-        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=2)
-        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=2)
-        plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
-        plt.text(max_x * 1.1, max_y + 2, f"{max_x:.2f}, {max_y:.2f}%", color='red')
+        ax.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
+        ax.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
+        ax.plot(max_x, max_y, marker='o', color='red', markersize=8)
+        ax.text(max_x * 1.1, max_y + 2, f"{max_x:.2f}, {max_y:.2f}%", color='red')
 
+        # ✅ Save to base64
         buffer = BytesIO()
         plt.tight_layout()
         plt.savefig(buffer, format='png')
@@ -334,12 +355,15 @@ class SoilReport(models.AbstractModel):
         buffer.seek(0)
 
         return base64.b64encode(buffer.read()).decode('utf-8')
+        
 
 
-    def generate_line_chart_liquid(self, general_data):
+   
+
+    def generate_line_chart_liquid(self,general_data):
         x_value = []
         y_value = []
-        for line in general_data.child_liness:  # ✅ Correct source of data
+        for line in general_data.child_liness:
             if line.blwo_no1 and line.water_content is not None:
                 x_value.append(line.blwo_no1)
                 y_value.append(line.water_content)
@@ -348,37 +372,47 @@ class SoilReport(models.AbstractModel):
             return False
 
         plt.figure(figsize=(10, 5))
+        ax = plt.gca()
 
-        # Plot points
-        plt.plot(x_value, y_value, color='gray', marker='o', linestyle='-', linewidth=2)
+        # ✅ Blue curve with red dots
+        ax.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+        ax.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
 
-        plt.xlabel('No. of Blows', fontsize=12)
-        plt.ylabel('Water Content (%)', fontsize=12)
-        plt.title('LIQUID LIMIT', fontsize=14)
-        plt.grid(True)
+        # ✅ Title and axis labels
+        ax.set_title('LIQUID LIMIT', fontsize=14)
+        ax.set_xlabel('No. of Blows', fontsize=12)
+        ax.set_ylabel('Water Content (%)', fontsize=12)
 
-        # Round Y-axis (Water Content) up to nearest 10
+        # ✅ X & Y limits
         max_y = max(y_value)
         y_limit = (int(max_y / 10) + 1) * 10
-        plt.ylim(bottom=0, top=y_limit)
+        ax.set_ylim(bottom=0, top=y_limit)
 
-        # Round X-axis (Blows) up to nearest 10
         max_x = max(x_value)
         x_limit = (int(max_x / 10) + 1) * 10
-        plt.xlim(left=0, right=x_limit)
+        ax.set_xlim(left=0, right=x_limit)
 
-        # Highlight maximum point
+        # ✅ Minor ticks: fine spacing
+        ax.xaxis.set_minor_locator(MultipleLocator(1))
+        ax.yaxis.set_minor_locator(MultipleLocator(1))
+
+        # ✅ Dense grid
+        ax.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+        # ✅ Highlight highest water content
         max_index = y_value.index(max_y)
         highlight_x = x_value[max_index]
         highlight_y = y_value[max_index]
 
-        plt.axhline(y=highlight_y, color='red', linestyle='--', linewidth=2)
-        plt.axvline(x=highlight_x, color='red', linestyle='--', linewidth=2)
-        plt.plot(highlight_x, highlight_y, marker='o', color='red', markersize=8)
-        plt.text(highlight_x + 1, highlight_y + 1, f"{highlight_y:.2f}%", color='red')
+        ax.axhline(y=highlight_y, color='red', linestyle='--', linewidth=1)
+        ax.axvline(x=highlight_x, color='red', linestyle='--', linewidth=1)
+        ax.plot(highlight_x, highlight_y, marker='o', color='red', markersize=8)
+        ax.text(highlight_x + 1, highlight_y + 1, f"{highlight_y:.2f}%", color='red')
 
+        # ✅ Save to image buffer
         buffer = io.BytesIO()
         plt.tight_layout()
+        ax.legend()
         plt.savefig(buffer, format='png')
         plt.close()
         buffer.seek(0)

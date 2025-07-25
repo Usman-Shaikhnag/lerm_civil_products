@@ -11,6 +11,8 @@ import math
 from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
 from scipy.optimize import minimize_scalar
 from io import BytesIO
+from scipy.interpolate import make_interp_spline
+from matplotlib.ticker import LogLocator, MultipleLocator
 
 
 
@@ -141,8 +143,6 @@ class Soil(models.Model):
     
 
     def generate_line_chart_slive(self):
-    
-
         x_value = []
         y_value = []
         for line in self.child_lines:
@@ -158,20 +158,28 @@ class Soil(models.Model):
         # ✅ Logarithmic X-axis
         plt.xscale('log')
 
-        # ✅ Plot
-        plt.plot(x_value, y_value, color='gray', marker='o', linestyle='-', linewidth=2)
+        # ✅ Blue line
+        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
 
-        # ✅ Axis labels
+        # ✅ Red data points
+        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+
+        # ✅ Labels & title
         plt.xlabel('Cumulative % Weight Retained (Log Scale)', fontsize=12)
         plt.ylabel('Passing %', fontsize=12)
         plt.title('WET SIEVE ANALYSIS OF SOIL SAMPLE', fontsize=14)
 
-        # ✅ Custom ticks for actual values from your data
+        # ✅ Custom x-ticks
         ticks = sorted(set(x_value))
         plt.xticks(ticks, [str(round(t, 2)) for t in ticks])
 
-        # ✅ Grid
-        plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+        # ✅ More vertical & horizontal lines using minor ticks
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0) * 0.1, numticks=200))
+        ax.yaxis.set_minor_locator(MultipleLocator(2))  # Horizontal barik lines every 2%
+
+        # ✅ Grid lines - barik barik
+        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
         # ✅ Limits
         plt.xlim(left=min(x_value) / 1.5, right=max(x_value) * 1.5)
@@ -182,19 +190,23 @@ class Soil(models.Model):
         max_x = x_value[max_index]
         max_y = y_value[max_index]
 
-        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=2)
-        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=2)
+        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
+        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
         plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
         plt.text(max_x * 1.1, max_y + 2, f"{max_x:.2f}, {max_y:.2f}%", color='red')
 
-        # ✅ Save image
+        # ✅ Save
         buffer = io.BytesIO()
         plt.tight_layout()
+        plt.legend()
         plt.savefig(buffer, format='png')
         plt.close()
         buffer.seek(0)
 
         return base64.b64encode(buffer.read())
+
+
+   
 
 
 
@@ -278,6 +290,9 @@ class Soil(models.Model):
     graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
 
     
+
+
+
     def generate_line_chart_liquid(self):
         x_value = []
         y_value = []
@@ -291,37 +306,46 @@ class Soil(models.Model):
 
         plt.figure(figsize=(10, 5))
 
-        # Plot points
-        plt.plot(x_value, y_value, color='gray', marker='o', linestyle='-', linewidth=2)
+        # ✅ Blue line with red points
+        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
 
+        # ✅ Labels and title
         plt.xlabel('No. of Blows', fontsize=12)
         plt.ylabel('Water Content (%)', fontsize=12)
         plt.title('LIQUID LIMIT', fontsize=14)
-        plt.grid(True)
 
-        # Round Y-axis (Water Content) up to nearest 10
+        # ✅ Axis limits (rounded)
         max_y = max(y_value)
-        y_limit = (int(max_y / 10) + 1) * 10  # e.g., 43 → 50
+        y_limit = (int(max_y / 10) + 1) * 10
         plt.ylim(bottom=0, top=y_limit)
 
-        # Round X-axis (Blows) up to nearest 10
         max_x = max(x_value)
-        x_limit = (int(max_x / 10) + 1) * 10  # e.g., 36 → 40
+        x_limit = (int(max_x / 10) + 1) * 10
         plt.xlim(left=0, right=x_limit)
 
-        # Optional: highlight maximum point
+        # ✅ Minor ticks for fine grid lines
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(MultipleLocator(1))
+        ax.yaxis.set_minor_locator(MultipleLocator(1))
+
+        # ✅ Fine grid
+        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+        # ✅ Highlight max point
         max_index = y_value.index(max_y)
         highlight_x = x_value[max_index]
         highlight_y = y_value[max_index]
 
-        plt.axhline(y=highlight_y, color='red', linestyle='--', linewidth=2)
-        plt.axvline(x=highlight_x, color='red', linestyle='--', linewidth=2)
+        plt.axhline(y=highlight_y, color='red', linestyle='--', linewidth=1)
+        plt.axvline(x=highlight_x, color='red', linestyle='--', linewidth=1)
         plt.plot(highlight_x, highlight_y, marker='o', color='red', markersize=8)
         plt.text(highlight_x + 1, highlight_y + 1, f"{highlight_y:.2f}%", color='red')
 
-        # Save to buffer
+        # ✅ Save to buffer
         buffer = io.BytesIO()
         plt.tight_layout()
+        plt.legend()
         plt.savefig(buffer, format='png')
         plt.close()
         buffer.seek(0)
@@ -554,53 +578,61 @@ class Soil(models.Model):
     graph_image_density = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light", store=True)
 
 
+   
+
     def generate_line_chart_light_omc(self):
-    # Prepare data for the chart
+    # Prepare data
         x_value = []
         y_value = []
         for line in self.heavy_table:
             x_value.append(line.water_content)
             y_value.append(line.dry_density)
 
-        plt.figure(figsize=(10, 5))
-        
-        # Plot the data points
-        plt.plot(x_value, y_value, color='gray', marker='o', linestyle='-', linewidth=2)
+        if not x_value or not y_value:
+            return False
 
+        plt.figure(figsize=(10, 5))
+
+        # ✅ Blue curve with red points
+        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+
+        # ✅ Axis labels and title
         plt.xlabel('Water Content (%)', fontsize=12)
         plt.ylabel('Dry Density (g/cc)', fontsize=12)
         plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
 
-        # Grid and limits
-        plt.grid(True)
+        # ✅ Axis range
         plt.xlim(left=0, right=max(x_value) + 2)
         plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
 
-        # Find the index of the maximum dry density
+        # ✅ Minor ticks for fine grid
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+        ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+        # ✅ Fine grid
+        plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+        # ✅ Highlight max dry density
         max_index = y_value.index(max(y_value))
         max_x = x_value[max_index]
         max_y = y_value[max_index]
 
-        # Draw red dashed lines
-        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=2)
-        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=2)
-
-        # Highlight max point
+        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
+        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
         plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
-
-        # Optional: annotate the max point
         plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
 
-        # Save to buffer
+        # ✅ Save image
         buffer = io.BytesIO()
         plt.tight_layout()
+        plt.legend()
         plt.savefig(buffer, format='png')
         plt.close()
         buffer.seek(0)
 
-        # Convert to base64
-        chart_image_light_omc = base64.b64encode(buffer.read()).decode('utf-8')
-        return chart_image_light_omc
+        return base64.b64encode(buffer.read()).decode('utf-8')
             
        
     
@@ -699,53 +731,108 @@ class Soil(models.Model):
     
     graph_image_density1 = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light1", store=True)
 
+    # def generate_line_chart_light_omc1(self):
+    # # Prepare data for the chart
+    #     x_value = []
+    #     y_value = []
+    #     for line in self.omc_table:
+    #         x_value.append(line.water_content1)
+    #         y_value.append(line.dry_density1)
+
+    #     plt.figure(figsize=(10, 5))
+        
+    #     # Plot the data points
+    #     plt.plot(x_value, y_value, color='gray', marker='o', linestyle='-', linewidth=2)
+
+    #     plt.xlabel('Water Content (%)', fontsize=12)
+    #     plt.ylabel('Dry Density (g/cc)', fontsize=12)
+    #     plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
+
+    #     # Grid and limits
+    #     plt.grid(True)
+    #     plt.xlim(left=0, right=max(x_value) + 2)
+    #     plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
+
+    #     # Find the index of the maximum dry density
+    #     max_index = y_value.index(max(y_value))
+    #     max_x = x_value[max_index]
+    #     max_y = y_value[max_index]
+
+    #     # Draw red dashed lines
+    #     plt.axhline(y=max_y, color='red', linestyle='--', linewidth=2)
+    #     plt.axvline(x=max_x, color='red', linestyle='--', linewidth=2)
+
+    #     # Highlight max point
+    #     plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
+
+    #     # Optional: annotate the max point
+    #     plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
+
+    #     # Save to buffer
+    #     buffer = io.BytesIO()
+    #     plt.tight_layout()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
+
+    #     # Convert to base64
+    #     chart_image_light_omc1 = base64.b64encode(buffer.read()).decode('utf-8')
+    #     return chart_image_light_omc1
+
+
     def generate_line_chart_light_omc1(self):
-    # Prepare data for the chart
+    # Prepare data
         x_value = []
         y_value = []
         for line in self.omc_table:
             x_value.append(line.water_content1)
             y_value.append(line.dry_density1)
 
-        plt.figure(figsize=(10, 5))
-        
-        # Plot the data points
-        plt.plot(x_value, y_value, color='gray', marker='o', linestyle='-', linewidth=2)
+        if not x_value or not y_value:
+            return False
 
+        plt.figure(figsize=(10, 5))
+
+        # ✅ Blue curve with red points
+        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+
+        # ✅ Axis labels and title
         plt.xlabel('Water Content (%)', fontsize=12)
         plt.ylabel('Dry Density (g/cc)', fontsize=12)
         plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
 
-        # Grid and limits
-        plt.grid(True)
+        # ✅ Axis range
         plt.xlim(left=0, right=max(x_value) + 2)
         plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
 
-        # Find the index of the maximum dry density
+        # ✅ Minor ticks for fine grid
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+        ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+        # ✅ Fine grid (major + minor)
+        plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+        # ✅ Highlight max dry density
         max_index = y_value.index(max(y_value))
         max_x = x_value[max_index]
         max_y = y_value[max_index]
 
-        # Draw red dashed lines
-        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=2)
-        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=2)
-
-        # Highlight max point
+        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
+        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
         plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
-
-        # Optional: annotate the max point
         plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
 
-        # Save to buffer
+        # ✅ Save image
         buffer = io.BytesIO()
         plt.tight_layout()
+        plt.legend()
         plt.savefig(buffer, format='png')
         plt.close()
         buffer.seek(0)
 
-        # Convert to base64
-        chart_image_light_omc1 = base64.b64encode(buffer.read()).decode('utf-8')
-        return chart_image_light_omc1
+        return base64.b64encode(buffer.read()).decode('utf-8')
         
        
     

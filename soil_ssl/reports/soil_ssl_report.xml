@@ -9,10 +9,10 @@
 					<p style="font-size:15px"><b>Test Report</b></p>
 				</div> -->
 
-				<div class="container_eln">
+				<div class="container_eln" style="padding-top:50px;">
 					<div t-foreach="eln" t-as="o">
 						
-						<table style="margin-top:10px;">
+						<table style="margin-top:2px;">
 							<tr>
 								<td colspan="12">Customer Party Name :
 									<![CDATA[&nbsp;]]>
@@ -107,10 +107,10 @@
 
       
 					
-                    <table style="margin-top:15px">
+                    <table style="margin-top:3px">
 					<thead>
 
-                        <tr style="height:20px;">
+                        <tr style="height:5px;">
                             <td rowspan="1" >Sr.No</td>
                             <td rowspan="1" >Test Parameters</td>
                                <td rowspan="1"> Test Result</td>
@@ -161,7 +161,7 @@
 									</t>
 								</span>
 							</td>
-                            <td  rowspan="4">
+                            <td  rowspan="4" style="text-align: center; vertical-align: middle;">
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','12014fgr-5c56-475b-9a89-93a59c9ee3a2')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -360,7 +360,7 @@
 									</t>
 								</span>
 							</td>
-                            <td  rowspan="3">
+                            <td  rowspan="3" style="text-align: center; vertical-align: middle;">
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -507,7 +507,7 @@
 									</t>
 								</span>
 							</td>
-                            <td  rowspan="3" >
+                            <td  rowspan="3" style="text-align: center; vertical-align: middle;">
 								<span >
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -654,7 +654,7 @@
 									</t>
 								</span>
 							</td>
-                            <td  rowspan="3" >
+                            <td  rowspan="3" style="text-align: center; vertical-align: middle;">
 								<span >
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -776,7 +776,7 @@
 					
 					</table>
 
-					<div style="page-break-inside: avoid;margin-top:20px">
+					<div style="page-break-inside: avoid;margin-top:5px">
 
 						<table t-if="data.heavy_visible">
 							<tr>
@@ -794,7 +794,7 @@
 								</div>
 							</tr>
 
-							<table style="margin-top:30px;" t-if="data.heavy_visible">
+							<table style="margin-top:5px;" t-if="data.heavy_visible">
 							<thead>
 								<tr>
 									<th>
@@ -938,15 +938,15 @@
 						</table>
 					</div>
 
-					<div t-if="graphHeavy" style="margin-top: 20px;">
+					<div t-if="graphHeavy" style="margin-top: 5px;">
 							<img t-att-src="'data:image/png;base64,'+str(graphHeavy)" style="max-width: 100%;"/>
 					</div>
 
-					<div t-if="data.heavy_visible" style="margin-top: 10px;">
+					<div t-if="data.heavy_visible" style="margin-top: 5px;">
 						From Graph 
 					</div>
 
-					<table t-if="data.heavy_visible" style="margin-top: 10px;">
+					<table t-if="data.heavy_visible" style="margin-top: 5px;">
 						<tr>
 							<td colspan="3">MDD :</td>
 							<td colspan="3">
@@ -961,17 +961,17 @@
 
 
 
-           <div style="page-break-inside: avoid;margin-top:20px">
+           <div style="page-break-inside: avoid;margin-top:5px">
 					<t t-if="graphSieve">
-						<div style="margin-top: 20px;">
+						<div style="margin-top: 5px;">
 							<img t-att-src="'data:image/png;base64,' + graphSieve" style="max-width: 100%;"/>
 						</div>
 					</t>
 			</div>
 
-             <div style="page-break-inside: avoid;margin-top:20px">
+             <div style="page-break-inside: avoid;margin-top:5px">
 					<t t-if="graphliquid">
-						<div style="margin-top: 20px;">
+						<div style="margin-top: 5px;">
 							<img t-att-src="'data:image/png;base64,' + graphliquid" style="max-width: 100%;"/>
 						</div>
 					</t>
@@ -979,7 +979,7 @@
 
 
 
-					<div  style="page-break-before: always;;margin-top:20px">
+					<div  style="page-break-before: always;;margin-top:5px">
 						<table t-if="data.soil_visible">
 								<tr>
 									<div style="text-align:center;letter-spacing : 2px;border:1px solid black;padding:10px">
@@ -992,7 +992,7 @@
 								</tr>
 						</table>
 
-						<table t-if="data.soil_visible and data.soil_table" style="margin-top:20px;">
+						<table t-if="data.soil_visible and data.soil_table" style="margin-top:5px;">
 								<thead>
 									<tr>
 										<th>
@@ -1042,7 +1042,7 @@
 						</table>
 					</div>
 
-					<div t-if="graphCbr" style="margin-top: 20px;">
+					<div t-if="graphCbr" style="margin-top: 5px;">
 							<img t-att-src="'data:image/png;base64,'+str(graphCbr)" style="max-width: 100%;"/>
 					</div>
 
@@ -1075,7 +1075,7 @@
 								From Graph PT = <span t-esc="load5"/>
 							</div>
 							<div>
-								PS = 2055
+								PS =555
 							</div>
 							<div>
 								CBR = <span t-esc="round(load5 / 2055 * 100 , 2)"/>
@@ -1083,7 +1083,7 @@
 						</div>
 					</div>
 					
-					<div  t-if="data.soil_visible "  style="margin-top: 10px;">
+					<div  t-if="data.soil_visible "  style="margin-top: 3px;">
 						<b>Result: CBR at 2.5 mm Penetration is maximum hence CBR is <span t-esc="round(load2 / 1370 * 100 , 2)"/></b>
 					</div>
 
@@ -1096,30 +1096,26 @@
 
 
 				
-						<div style="margin-top:20px" class="noteContainer">
-							<div>
-								<b>Note :-</b>
-							</div>
-							<div>
-								<ul>
-									<li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-									</li>
-									<li>
-										Sample(s) was/were not drawn by laboratory.
-									</li>
-									<li>
-										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-									</li>
-									<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-								</ul>
-							</div>
+						<div style="margin-top:5px" class="noteContainer">
+							<table class="table table-bordered">
+							<tr>
+								<td style="padding: 5px; font-style: italic; font-size: 12px;">
+									<b>Note:-</b>
+									&#160;&#160;(i) The results relate only to the items tested 
+									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+									&#160;&#160;(iii) Any corrections invalidate the test reports 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
+									&#160;&#160;(vi) # mark indicates Details given by Client.
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</td>
+							</tr>
+						</table>
 						</div>
 						<div class="signatureContainer girdgird">
 							<div>
@@ -1181,7 +1177,7 @@
 								</div> -->
 							</div>
 						</div>
-						<div style="text-align:center;margin-top:25px">
+						<div style="text-align:center;margin-top:10px">
 							......End of Report......
 						</div>
 
