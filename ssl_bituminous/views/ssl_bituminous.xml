@@ -16,10 +16,10 @@
                     <field name="eln_ref" readonly="1"/>
                     <field name="size_id"/>
                     <field name="parameter_id" invisible="1"/>
-                    <field name="sample_parameters">
+                    <field name="sample_parameters" class="custom_table_borders">
                         <tree>
-                        <field name="parameter_name"/>
-                        <field name="test_method"/>
+                            <field name="parameter_name"/>
+                            <field name="test_method"/>
                         </tree>
                     </field>
                     
@@ -33,7 +33,7 @@
                         </h1>
                     </div> 
                     <!-- Bitumen Content Table -->
-                    <table class="table table-sm table-bordered w-50" invisible="not bitumen_content_visible" style="white-space:nowrap;">
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not bitumen_content_visible" style="white-space:nowrap;">
                         <tbody>
                             <tr>
                                 <td><span class="fw-bold">Weight of the sample (W1) grams.</span></td>
@@ -70,7 +70,7 @@
                         </h1>
                     </div>
 
-                    <table class="table table-sm table-bordered w-50" invisible="not combined_gradation_visible" style="white-space:nowrap;">
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not combined_gradation_visible" style="white-space:nowrap;">
                         <tbody>
                             <tr>
                                 <td><span class="fw-bold">Weight of Sample in kg.</span></td>
@@ -79,7 +79,7 @@
                         </tbody>
                     </table>
 
-                    <div invisible="not combined_gradation_visible">
+                    <div invisible="not combined_gradation_visible" class="custom_table_borders">
                         <field name="combined_gradation_child_lines">
                             <tree editable="bottom">
                                 <field name='sieve_size'/>
@@ -91,15 +91,21 @@
                         </field>
                     </div>
 
-                    <!-- <group invisible="not combined_gradation_visible"> -->
-                        <button invisible="not combined_gradation_visible" type="object" name="calculate_combined_gradation" class="btn btn-primary">
-                            <i class="fa fa-calculator mr-1"/> Calculate
-                        </button>
-                    <!-- </group>  -->
+                    <button invisible="not combined_gradation_visible" type="object" name="calculate_combined_gradation" class="btn btn-primary">
+                        <i class="fa fa-calculator mr-1"/> Calculate
+                    </button>
 
-                    <group invisible="not combined_gradation_visible">
-                        <field name="total_combined_gradation" widget="monetary" string="Total"/>
-                    </group> 
+                    <table class="table table-sm o_form_table table-bordered w-50 mt-2 custom_table_borders" invisible="not combined_gradation_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="total_combined_gradation" class="text-bold">Total</label></td>
+                                <td><field name="total_combined_gradation" widget="monetary" string="Total" class="text-bold"/></td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                    <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>
             </form>
         </field>

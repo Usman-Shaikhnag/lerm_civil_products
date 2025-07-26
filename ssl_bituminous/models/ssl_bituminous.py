@@ -135,6 +135,53 @@ class BituminousMechanical(models.Model):
                 record.binder_content = 0
 
 
+    binder_content_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_binder_content_conformity", store=True)
+
+    @api.depends('binder_content','eln_ref','grade')
+    def _compute_binder_content_conformity(self):
+        
+        for record in self:
+            record.binder_content_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','661bebd2-0149-40f9-93ea-615408b61835')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','661bebd2-0149-40f9-93ea-615408b61835')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.binder_content - record.binder_content*mu_value
+                    upper = record.binder_content + record.binder_content*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.binder_content_conformity = 'pass'
+                        break
+                    else:
+                        record.binder_content_conformity = 'fail'
+
+    def open_eln_page(self):
+        # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+
+            #Binder Content
+            if result.parameter.internal_id == '661bebd2-0149-40f9-93ea-615408b61835':
+                result.result_char = round(self.binder_content,2)
+                if self.binder_content_conformity == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
+
 
 
 class CombinedGradationLine(models.Model):

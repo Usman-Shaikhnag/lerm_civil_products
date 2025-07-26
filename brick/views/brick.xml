@@ -16,7 +16,7 @@
                       <field name="sample_id"  readonly="1"/>
                       <field name="eln_ref" readonly="1"/>
                       <field name="parameter_id" invisible="1"/>
-                      <field name="sample_parameters">
+                      <field name="sample_parameters" class="custom_table_borders">
                         <tree>
                           <field name="parameter_name"/>
                           <field name="test_method"/>
@@ -27,10 +27,10 @@
                       <field name="test_end_date"/>
                     </group> -->
 
-                    <table class="table table-sm table-bordered o_form_table">
+                    <table class="table o_form_table custom_table_borders">
                         <thead>
                             <tr>
-                                <td></td>
+                                <th></th>
                                 <th style="text-align: center;">L</th>
                                 <th style="text-align: center;">B</th>
                                 <th style="text-align: center;">H</th>
@@ -38,7 +38,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <th>Size of the Brick :- (mm)</th>
+                                <td>Size of the Brick :- (mm)</td>
                                 <td style="text-align: center;"><field name="length_in_mm" nolabel="1"/></td>
                                 <td style="text-align: center;"><field name="width_in_mm" nolabel="1"/></td>
                                 <td style="text-align: center;"><field name="height_in_mm" nolabel="1"/></td>
@@ -55,8 +55,8 @@
                     </div>
                     
                      <!-- <group invisible="compressive_strength_visible == False"> -->
-                      <div invisible="compressive_strength_visible == False" class="mb-3">
-                        <table class="table table-sm table-bordered o_form_table">
+                    <div invisible="compressive_strength_visible == False" class="mb-3">
+                        <table class="table custom_table_borders o_form_table">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -120,20 +120,34 @@
                         </table>
                     </div>
 
-                    <group  invisible="compressive_strength_visible == False">
-                      <field name="avrg_compressive_strength"/>
-                      <field name="comp_strength_confirmity"
-                            decoration-success="comp_strength_confirmity == 'pass'" 
-                            decoration-danger="comp_strength_confirmity == 'fail'" 
-                            readonly="1"
-                      />
-                      <field name="comp_strength_nabl"
-                            decoration-success="comp_strength_nabl == 'pass'" 
-                            decoration-danger="comp_strength_nabl == 'fail'" 
-                            readonly="1"
-                            />
-                    </group>
-                    
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not compressive_strength_visible">
+                        <tbody>
+                            <tr>
+                                <td><strong>Average Compressive Strength</strong></td>
+                                <td>
+                                    <field name="avrg_compressive_strength"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Compressive Strength Conformity</strong></td>
+                                <td>
+                                    <field name="comp_strength_confirmity"
+                                        decoration-success="comp_strength_confirmity == 'pass'"
+                                        decoration-danger="comp_strength_confirmity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong for="comp_strength_nabl">Compressive Strength NABL</strong></td>
+                                <td>
+                                    <field name="comp_strength_nabl"
+                                        decoration-success="comp_strength_nabl == 'pass'"
+                                        decoration-danger="comp_strength_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <!-- visual_observation -->
                     <div invisible="efflorescence_visible == False" style="text-align:center">
@@ -144,7 +158,7 @@
                     </div>
 
                     <div invisible="efflorescence_visible == False" class="mb-3">
-                        <table class="table table-sm table-bordered o_form_table">
+                        <table class="table custom_table_borders o_form_table">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -179,7 +193,7 @@
                     </div>
 
                     <div invisible="dimension_visible == False" class="mb-3">
-                        <table class="table table-sm table-bordered o_form_table">
+                        <table class="table custom_table_borders o_form_table">
                             <thead>
                                 <tr>
                                     <th>Dimension Type</th>
@@ -212,7 +226,7 @@
                     </div>
                                     
                     <div invisible="water_absorbtion_visible == False" class="mb-3">
-                      <table class="table table-sm table-bordered o_form_table">
+                      <table class="table custom_table_borders o_form_table">
                           <thead>
                               <tr>
                                   <th></th>
@@ -250,23 +264,39 @@
                               </tr>
                           </tbody>
                       </table>
-                  </div>
+                    </div>
 
                     
                     
-                  <group invisible="water_absorbtion_visible == False">
-                      <field name="avrg_water_absorption"/>
-                      <field name="water_absorption_confirmity"
-                            decoration-success="water_absorption_confirmity == 'pass'" 
-                            decoration-danger="water_absorption_confirmity == 'fail'" 
-                            readonly="1"
-                      />
-                      <field name="water_absorption_nabl"
-                            decoration-success="water_absorption_nabl == 'pass'" 
-                            decoration-danger="water_absorption_nabl == 'fail'" 
-                            readonly="1"
-                      />
-                  </group>
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not water_absorbtion_visible">
+                        <tbody>
+                            <tr>
+                                <td><strong>Average Water Absorption</strong></td>
+                                <td>
+                                    <field name="avrg_water_absorption"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Water Absorption Conformity</strong></td>
+                                <td>
+                                    <field name="water_absorption_confirmity"
+                                        decoration-success="water_absorption_confirmity == 'pass'"
+                                        decoration-danger="water_absorption_confirmity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Water Absorption NABL</strong></td>
+                                <td>
+                                    <field name="water_absorption_nabl"
+                                        decoration-success="water_absorption_nabl == 'pass'"
+                                        decoration-danger="water_absorption_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                   <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>
             </form>
