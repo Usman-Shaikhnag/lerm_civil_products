@@ -171,7 +171,7 @@ class SrfForm(models.Model):
     
     def download_attachment(self):
         host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
-        ftp_url = f"http://{host}/{self.attachment_path}"
+        ftp_url = f"https://{host}/files/{self.attachment_path}"
         return {
             'type': 'ir.actions.act_url',
             'url': f"/web/binary/download_ftp?url={ftp_url}",

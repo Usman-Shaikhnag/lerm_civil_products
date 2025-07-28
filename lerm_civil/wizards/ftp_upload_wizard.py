@@ -36,7 +36,14 @@ class UploadWizard(models.TransientModel):
         required=True
     )
     
+    field_name = fields.Char(
+        string='Field Name',
+        help='Field that need to be updated',
+        required=True
+    )
+    
     def action_upload_files(self):
+        
         self.ensure_one()
         transport = None
         sftp = None
@@ -94,10 +101,80 @@ class UploadWizard(models.TransientModel):
                 remote_path = f"{remote_dir}/{file_name}"
                 with BytesIO(file_data) as file_obj:
                     sftp.putfo(file_obj, remote_path)
+                    
+                    
+                field = self.field_name
                 
                 # Set file permissions (read/write for owner, read for others)
                 sftp.chmod(remote_path, 0o644)
-                srf.write({"attachment_path":  self.ftp_storage_id.name+"/"+srf_id+"/"+file_name })
+                srf.write({field: self.ftp_storage_id.name+"/"+srf_id+"/"+file_name })
+                
+                message = _("File %s uploaded successfully to %s") % (self.file_name, remote_path)
+                
+                return {
+                    'type': 'ir.actions.act_window_close',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': _("Upload Successful"),
+                        'message': message,
+                        'sticky': False,
+                    }
+                }
+            
+            if self.form_name == "lerm.srf.sample":
+                
+
+                sample_id = self.env.context.get("active_id")
+                sample = self.env[self.form_name].sudo().browse(sample_id)
+                base_dir = f"/home/{self.ftp_storage_id.name}"
+                srf_id = sample.srf_id.srf_id.replace("/", "-")
+                
+                sample_id = sample.kes_no.replace("/", "-")
+                remote_dir = f"{base_dir}/{srf_id}"
+                sample_dir = f"{base_dir}/{srf_id}/{sample_id}"
+                
+                
+                try:
+                    sftp.stat(base_dir)
+                except FileNotFoundError:
+                    sftp.mkdir(base_dir)
+                    sftp.chmod(base_dir, 0o755)  # Set proper permissions
+                    
+                try:
+                    sftp.stat(remote_dir)
+                except FileNotFoundError:
+                    sftp.mkdir(remote_dir)
+                    sftp.chmod(remote_dir, 0o755)
+                    
+                try:
+                    sftp.stat(sample_dir)
+                except FileNotFoundError:
+                    sftp.mkdir(sample_dir)
+                    sftp.chmod(sample_dir, 0o755)
+                    
+                # Prepare file data
+                if isinstance(self.file_data, str):
+                    file_data = self.file_data.encode('utf-8')
+                else:
+                    file_data = base64.b64decode(self.file_data)
+                
+                # Upload file with proper handling
+                file_name = self.file_name.replace(" ", "_")
+
+                remote_path = f"{sample_dir}/{file_name}"
+                with BytesIO(file_data) as file_obj:
+                    sftp.putfo(file_obj, remote_path)
+                    
+                
+                self.ftp_storage_id.name+"/"+srf_id+"/"    
+                    
+                field = self.field_name
+                
+                upload_path = self.ftp_storage_id.name+"/"+srf_id+"/"+sample_id+"/"+file_name
+
+                # Set file permissions (read/write for owner, read for others)
+                sftp.chmod(remote_path, 0o644)
+                sample.write({field: upload_path })
                 
                 message = _("File %s uploaded successfully to %s") % (self.file_name, remote_path)
                 
@@ -111,13 +188,8 @@ class UploadWizard(models.TransientModel):
                     }
                 }
                 
-            #     return {
-            #     'type': 'ir.actions.act_window_close',
-            #     'infos': {
-            #         'message': message,
-            #         'upload_success': True
-            #     }
-            # }
+                
+      
 
                 
         except paramiko.SSHException as e:
