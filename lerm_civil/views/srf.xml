@@ -33,6 +33,7 @@
                     <button name="action_srf_sent_mail" type="object" string="Send Mail"/>
 
                     <field name="state" readonly="1" widget="statusbar"/>
+
                 </header>
 
                 <sheet>
@@ -73,9 +74,11 @@
                                 groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
                             <field name="name_works" invisible='1'/>
                             <field name="consultant_name1"/>
-                            <field name="attachment" filename="attachment_name"/>
-                            <field name="attachment_name" invisible='1'/>
+                            <field name="attachment_path" readonly="1"/>
+                            <button name="open_file_upload" type="object" string="Upload Attachment" />
+                            <button name="download_attachment" type="object" string="Download Attachment"/>
                         </group>
+                        
                     </group>
 
                     
@@ -306,3 +309,4 @@
 
   
 </odoo>
+
