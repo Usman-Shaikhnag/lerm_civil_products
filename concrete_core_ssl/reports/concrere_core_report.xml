@@ -5,13 +5,14 @@
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				
 				<div class="container_eln" style="padding-top:70px;">
-					<div class="px-0" t-foreach="eln" t-as="o">
+					<div class="" t-foreach="eln" t-as="o">
 						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
 							<tbody>
 								<tr>
-									<td style="width: 30%; padding: 5px;"><strong>#Client Details</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.customer.name"/>
-									<span t-field="o.srf_id.customer.street"/>
+									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
 										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
@@ -22,19 +23,19 @@
 								</tr>
 								
 								<tr>
-									<td><strong>#Client's Reference</strong></td>
+									<td><strong>Client's Reference</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
 								</tr>
 
 								<tr>
-									<td><strong>#Name of Work</strong></td>
+									<td><strong>Name of Work</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 								</tr>
 
 								<tr>
 									<td><strong>Date of Testing</strong></td>
 									<td style="padding-left: 10px;">
-										<span t-field="o.start_date" style="margin-right:10px;"/> Date Of Testing :
+										<span t-field="o.start_date" style="margin-right:10px;"/> to 
 										<span t-field="o.end_date" style="margin-left:10px;"/>
 									</td>
 								</tr>
@@ -45,13 +46,20 @@
 								</tr>
 
 								<tr>
-									<td><strong>Grade of Concrete</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.sample_id.grade_id.grade"/></td>
+									<td><strong>Grade of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
 								</tr>
 
-								<tr>
-									<td><strong>Standards Referred</strong></td>
-									<td style="padding-left: 10px;">IS 516 : 1959, IS 456 : 2000, SP 24 - 1983</td>
+								<!-- Source of Sample (only if value exists) -->
+								<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<!-- Test method adopted (only if value exists) -->
+								<tr t-if="o.material.test_method_adopted">
+									<td style="font-weight: bold;">Test method adopted:</td>
+									<td><span t-field="o.material.test_method_adopted"/></td>
 								</tr>
 							</tbody>
 						</table>

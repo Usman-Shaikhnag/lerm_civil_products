@@ -52,7 +52,7 @@
     ],
     'assets': {
     'web.assets_backend':[
-        'lerm_civil/static/src/css/custom_styles.css'
+        'lerm_civil/static/src/css/custom_styles.css',
     ],
     'web.report_assets_common': [
             '/lerm_civil/static/src/css/eln_report.scss',
