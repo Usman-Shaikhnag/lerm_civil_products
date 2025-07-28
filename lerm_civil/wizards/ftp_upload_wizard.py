@@ -97,7 +97,7 @@ class UploadWizard(models.TransientModel):
                 
                 # Set file permissions (read/write for owner, read for others)
                 sftp.chmod(remote_path, 0o644)
-                srf.write({"attachment_path":  self.ftp_storage_id.name+"/"+srf_id+"/"+file_name })
+                srf.write({"attachment_path": self.ftp_storage_id.name+"/"+srf_id+"/"+file_name })
                 
                 message = _("File %s uploaded successfully to %s") % (self.file_name, remote_path)
                 
