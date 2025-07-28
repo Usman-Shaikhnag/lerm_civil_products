@@ -190,7 +190,10 @@ class SrfForm(models.Model):
             'res_model': 'file.upload.wizard',
             'view_id': action.id,
             'target': 'new',
-            'context': {'default_form_name': 'lerm.civil.srf'}
+            'context': {
+                'default_form_name': 'lerm.civil.srf',
+                'default_field_name':'attachment_path'
+                }
             }
 
 
