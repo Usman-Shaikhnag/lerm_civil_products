@@ -171,7 +171,7 @@ class SrfForm(models.Model):
     
     def download_attachment(self):
         host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
-        ftp_url = f"http://{host}/{self.attachment_path}"
+        ftp_url = f"https://{host}/files/{self.attachment_path}"
         return {
             'type': 'ir.actions.act_url',
             'url': f"/web/binary/download_ftp?url={ftp_url}",
@@ -190,7 +190,10 @@ class SrfForm(models.Model):
             'res_model': 'file.upload.wizard',
             'view_id': action.id,
             'target': 'new',
-            'context': {'default_form_name': 'lerm.civil.srf'}
+            'context': {
+                'default_form_name': 'lerm.civil.srf',
+                'default_field_name':'attachment_path'
+                }
             }
 
 

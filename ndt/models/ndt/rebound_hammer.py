@@ -80,17 +80,17 @@ class ReboundHammer(models.Model):
 class CarbonationnLine(models.Model):
     _name = "ndt.rebound.hammer.line"
     parent_id = fields.Many2one('ndt.rebound.hammer',string="Parent Id")
-    element = fields.Char(string="Member / Element Type")
-    location = fields.Char(string="Location")
+    # element = fields.Char(string="Member / Element Type")
+    location = fields.Char(string="Location Of Member")
     f1 = fields.Integer(string="1")
     f2 = fields.Integer(string="2")
     f3 = fields.Integer(string="3")
     f4 = fields.Integer(string="4")
     f5 = fields.Integer(string="5")
     f6 = fields.Integer(string="6")
-    # f7 = fields.Integer(string="7")
-    # f8 = fields.Integer(string="8")
-    # f9 = fields.Integer(string="9")
+    f7 = fields.Integer(string="7")
+    f8 = fields.Integer(string="8")
+    f9 = fields.Integer(string="9")
     # f10 = fields.Integer(string="10")
     avg = fields.Float(string="Average" ,compute="_compute_average")
     mpa = fields.Float(string="Mpa")
@@ -146,10 +146,10 @@ class CarbonationnLine(models.Model):
     #         record.avg = sum(filtered_array) / len(filtered_array)
 
 
-    @api.depends('f1', 'f2', 'f3', 'f4', 'f5', 'f6')
+    @api.depends('f1', 'f2', 'f3', 'f4', 'f5', 'f6','f7','f8','f9')
     def _compute_average(self):
         for record in self:
-            values = [record.f1, record.f2, record.f3, record.f4, record.f5, record.f6]
+            values = [record.f1, record.f2, record.f3, record.f4, record.f5, record.f6,record.f7,record.f8,record.f9]
 
             sorted_array = sorted(values)
             midpoint = len(sorted_array) // 2

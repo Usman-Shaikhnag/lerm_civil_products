@@ -9,6 +9,7 @@
                     <group>
                         <field name="ftp_storage_id" widget="selection"/>
                         <field name="form_name" invisible="1"/>
+                        <field name="field_name" invisible="1"/>
                         <field name="file_data" filename="file_name" widget="binary"/>
                         <field name="file_name" invisible='1'/>
                     </group>
@@ -26,5 +27,5 @@
                 res_model="file.upload.wizard"
                 view_mode="form"
                 target="new"
-                context="{'default_form_name': context.get('form_name')}"/>
+                context="{'default_form_name': context.get('form_name'), 'default_field_name': context.get('field_name')}"/>
 </odoo>
