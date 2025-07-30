@@ -55,8 +55,8 @@ class CementPSC(models.Model):
     def _compute_avg_cement_conformity(self):
         for record in self:
             record.avg_cement_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','12457800-372f-4775-9bcb-e9dd70e6e6df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','12457800-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -76,8 +76,8 @@ class CementPSC(models.Model):
         
         for record in self:
             record.avg_cement_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','12457800-372f-4775-9bcb-e9dd70e6e6df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','12457800-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -147,8 +147,8 @@ class CementPSC(models.Model):
     def _compute_specific_gravity_conformity(self):
         for record in self:
             record.specific_gravity_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578piu-372f-4775-9bcb-e9dd70e6e6df')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578piu-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2104587frt-372f-4775-9bcb-e9dd70e6e6df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2104587frt-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -168,8 +168,8 @@ class CementPSC(models.Model):
         
         for record in self:
             record.specific_gravity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578piu-372f-4775-9bcb-e9dd70e6e6df')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578piu-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2104587frt-372f-4775-9bcb-e9dd70e6e6df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2104587frt-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -219,8 +219,8 @@ class CementPSC(models.Model):
     def _compute_avg_fineness_blaine_conformity(self):
         for record in self:
             record.avg_fineness_blaine_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012478fffrr-372f-4775-9bcb-e9dd70214578r')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012478fffrr-372f-4775-9bcb-e9dd70214578r')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -240,8 +240,8 @@ class CementPSC(models.Model):
         
         for record in self:
             record.avg_fineness_blaine_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012478fffrr-372f-4775-9bcb-e9dd70214578r')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012478fffrr-372f-4775-9bcb-e9dd70214578r')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -291,8 +291,8 @@ class CementPSC(models.Model):
     def _compute_avg_soundness_cement_conformity(self):
         for record in self:
             record.avg_soundness_cement_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547gtyu-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547gtyu-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -312,8 +312,8 @@ class CementPSC(models.Model):
         
         for record in self:
             record.avg_soundness_cement_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547gtyu-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547gtyu-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -358,8 +358,8 @@ class CementPSC(models.Model):
     def _compute_consitency_of_cement_conformity(self):
         for record in self:
             record.consitency_of_cement_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','01247gggty-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','01247gggty-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -379,8 +379,8 @@ class CementPSC(models.Model):
         
         for record in self:
             record.consitency_of_cement_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','01247gggty-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','01247gggty-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -439,8 +439,8 @@ class CementPSC(models.Model):
     def _compute_initial_setting_time_conformity(self):
         for record in self:
             record.initial_setting_time_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214ggt-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214ggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -460,8 +460,8 @@ class CementPSC(models.Model):
         
         for record in self:
             record.initial_setting_time_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214ggt-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214ggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -490,8 +490,8 @@ class CementPSC(models.Model):
     def _compute_final_setting_time_conformity(self):
         for record in self:
             record.final_setting_time_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5557tttyre-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5557tttyre-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -511,8 +511,8 @@ class CementPSC(models.Model):
         
         for record in self:
             record.final_setting_time_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5557tttyre-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5557tttyre-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -566,8 +566,8 @@ class CementPSC(models.Model):
     def _compute_avg_3_days_conformity(self):
         for record in self:
             record.avg_3_days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','358789gtyg-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','358789gtyg-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -587,8 +587,8 @@ class CementPSC(models.Model):
         
         for record in self:
             record.avg_3_days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124578hgggt-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','358789gtyg-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','358789gtyg-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -619,8 +619,8 @@ class CementPSC(models.Model):
     def _compute_avg_7_days_conformity(self):
         for record in self:
             record.avg_7_days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124587hhhy-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124587hhhy-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','555888ggghhjy-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','555888ggghhjy-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -640,8 +640,8 @@ class CementPSC(models.Model):
         
         for record in self:
             record.avg_7_days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124587hhhy-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124587hhhy-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','555888ggghhjy-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','555888ggghhjy-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -673,8 +673,8 @@ class CementPSC(models.Model):
     def _compute_avg_28_days_conformity(self):
         for record in self:
             record.avg_28_days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012456998ffff-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012456998ffff-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5777fffrrtt11-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5777fffrrtt11-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -694,8 +694,8 @@ class CementPSC(models.Model):
         
         for record in self:
             record.avg_28_days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012456998ffff-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3012456998ffff-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5777fffrrtt11-372f-4775-9bcb-e9dd723547htui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5777fffrrtt11-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -742,62 +742,62 @@ class CementPSC(models.Model):
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
-                if sample.internal_id == 'a9e97cea-372f-4775-9bcb-e9dd70e6e6df':
+                if sample.internal_id == '12457800-372f-4775-9bcb-e9dd70e6e6df':
                     record.fineness_cement_visible = True
 
-                if sample.internal_id == '254gt2547-372f-4775-9bcb-e9dd70e3587g':
+                if sample.internal_id == '23145870-372f-4775-9bcb-e9dd70e3587g':
                     record.density_cement_visible = True
 
-                if sample.internal_id == '32457fg-372f-4775-9bcb-e9dd70214578r':
+                if sample.internal_id == '3012478fffrr-372f-4775-9bcb-e9dd70214578r':
                     record.density_cement_visible = True
                     record.fineness_blaine_visible = True
 
-                if sample.internal_id == '23547gtyu-372f-4775-9bcb-e9dd723547htui':
+                if sample.internal_id == '21457896f-372f-4775-9bcb-e9dd723547htui':
                     record.soundness_cement_visible = True
 
-                if sample.internal_id == '3214578nbhgt2-372f-4775-9bcb-e9dd723547htui':
+                if sample.internal_id == '01247gggty-372f-4775-9bcb-e9dd723547htui':
                     record.consistency_cement_visible = True
 
-                if sample.internal_id == '12457888yui14-372f-4775-9bcb-e9dd723547htui2':
+                if sample.internal_id == '3214578gg-372f-4775-9bcb-e9dd723547htui2':
                     record.consistency_cement_visible = True
                     record.setting_time_visible = True
 
-                if sample.internal_id == '2014587ghty1-372f-4775-9bcb-e9dd723547htui':
+                if sample.internal_id == '214578gt-372f-4775-9bcb-e9dd723547htui':
                     record.compressive_visible = True
              
 
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
         for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == 'a9e97cea-372f-4775-9bcb-e9dd70e6e6df':
+            if result.parameter.internal_id == '12457800-372f-4775-9bcb-e9dd70e6e6df':
                 result.result_char = round(self.avg_cement,2)
                 if self.avg_cement_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '124578piu-372f-4775-9bcb-e9dd70e6e6df':
+            if result.parameter.internal_id == '2104587frt-372f-4775-9bcb-e9dd70e6e6df':
                 result.result_char = round(self.specific_gravity,2)
                 if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '32457fg-372f-4775-9bcb-e9dd70214578r':
+            if result.parameter.internal_id == '3012478fffrr-372f-4775-9bcb-e9dd70214578r':
                 result.result_char = round(self.avg_fineness_blaine,2)
                 if self.avg_fineness_blaine_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '23547gtyu-372f-4775-9bcb-e9dd723547htui':
+            if result.parameter.internal_id == '21457896f-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_soundness_cement,2)
                 if self.avg_soundness_cement_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '3214578nbhgt2-372f-4775-9bcb-e9dd723547htui':
+            if result.parameter.internal_id == '01247gggty-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.consitency_of_cement,2)
                 if self.consitency_of_cement_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -805,35 +805,35 @@ class CementPSC(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            if result.parameter.internal_id == '012457896lku-372f-4775-9bcb-e9dd723547htui':
+            if result.parameter.internal_id == '3214ggt-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.initial_setting_time,2)
                 if self.initial_setting_time_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '301245789liy-372f-4775-9bcb-e9dd723547htui':
+            if result.parameter.internal_id == '5557tttyre-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.final_setting_time,2)
                 if self.final_setting_time_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '0124578hgggt-372f-4775-9bcb-e9dd723547htui':
+            if result.parameter.internal_id == '358789gtyg-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_3_days,2)
                 if self.avg_3_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '30124587hhhy-372f-4775-9bcb-e9dd723547htui':
+            if result.parameter.internal_id == '555888ggghhjy-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_7_days,2)
                 if self.avg_7_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '3012456998ffff-372f-4775-9bcb-e9dd723547htui':
+            if result.parameter.internal_id == '5777fffrrtt11-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_28_days,2)
                 if self.avg_28_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
