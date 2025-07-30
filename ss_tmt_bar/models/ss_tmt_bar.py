@@ -291,7 +291,7 @@ class StainlessSteel(models.Model):
             record.ts_ys_visible = False
             
             for sample in record.sample_parameters:
-                print("Samples internal id",sample.internal_id)
+                # print("Samples internal id",sample.internal_id)
                 if sample.internal_id == 'fafcb7b0-8df1-47d0-92a9-b6eb99af38e0':
                     record.fracture_visible = True
                 if sample.internal_id == '25fcb167-68bc-48d0-880f-77ca213fd995':
