@@ -1305,7 +1305,8 @@ class CoarseAggregateMechanical(models.Model):
     def default_get(self, fields):
         print("From Default Value")
         res = super(CoarseAggregateMechanical, self).default_get(fields)
-
+        grade_str = eln.grade_id.grade.lower() or ''
+        
         sieve_mapping = {
             63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
             40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],

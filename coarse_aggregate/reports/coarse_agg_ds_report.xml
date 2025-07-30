@@ -1207,7 +1207,7 @@
 							<tr>
 								<td colspan="2" style="font-weight: bold;">Size:</td>
 								<td colspan="10">
-									<span t-field="o.sample_id.size_id.size"/>
+									<span t-field="o.sample_id.size_id"/>
 								</td>
 							</tr>
 							<tr>
@@ -1315,11 +1315,11 @@
 							<thead>
 								<tr>
 									<th style="text-align: center;">Sr. No</th>
-									<th style="">Name of Test</th>
+									<th style="text-align: center;">Test Parametert</th>
+									<th style="text-align: center;"><span t-esc="eln.material.method_reference"/></th>
 									<th style="text-align: center;">Unit</th>
 									<th style="text-align: center;">Test Result</th>
 									<th style="text-align: center;"><span t-esc="eln.material.specifications"/></th>
-									<th style="text-align: center;"><span t-esc="eln.material.method_reference"/></th>
 								</tr>
 							</thead>
 							<tbody >
