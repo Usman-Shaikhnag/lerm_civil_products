@@ -15,6 +15,7 @@
                     </group>
                     <group >
                        <field name="grade"/>
+                       <field name="size_id" invisible="1"/>
                     </group>
                     <group>
                         <field name="srf_id" invisible="1"/>
@@ -43,8 +44,8 @@
                         </h1>
                     </group>
 
-                     <group invisible = "paver_visible == False">
-                    <field name="thickness_child_lines" mode="tree">
+                     <group invisible = "paver_visible == False" >
+                    <field name="thickness_child_lines" mode="tree"  invisible="1">
                             <tree editable="bottom" class="custom_table_borders">
                               
                                 <field name="thickness1"/>
@@ -74,7 +75,7 @@
                                             </td>
                                             <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
                                                 <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="thickness" nolabel="1"/>
+                                                    <field name="thickness2" nolabel="1"/>
                                                 </div>
                                             </td>
                                             <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
