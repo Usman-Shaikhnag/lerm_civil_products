@@ -236,11 +236,11 @@ class ELN(models.Model):
         model_record = self.material.product_based_calculation.filtered(lambda r: r.grade.id == self.grade_id.id)
         model = model_record.ir_model.model
 
-        print("material ",self.material.product_based_calculation)
-        print("model ",model)
+        # print("material ",self.material.product_based_calculation)
+        # print("model ",model)
 
+        # import wdb; wdb.set_trace()
         if self.model_id != 0:
-            # import wdb; wdb.set_trace()
             return {
                 'view_mode': 'form',
                 'res_model': model,

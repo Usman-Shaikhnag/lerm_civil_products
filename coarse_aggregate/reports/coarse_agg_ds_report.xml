@@ -1269,41 +1269,34 @@
 								
 								<td colspan="2" style="text-align: center;">
 									<t t-set="k" t-value="k+1"/>
-									<t t-if="r['sieve_size'] and r['sieve_size'].lower() != 'false'">
+									<t t-if="r['sieve_size']">
 										<span t-esc="r['sieve_size']"/>
 									</t>
 								</td>
 								<td colspan="2" style="text-align: center;">
-									<t t-if="r['sieve_size'] and r['sieve_size'].lower() != 'false'">
+									<t t-if="r['sieve_size']">
 										<span t-esc="r['wt_retained']" />
 									</t>
 								</td>
 								<td colspan="2" style="text-align: center;">
-									<t t-if="r['sieve_size'] and r['sieve_size'].lower() != 'false'">
+									<t t-if="r['sieve_size']">
 										<span t-esc="r['percent_retained']" />
 									</t>
 								</td>
 								<td colspan="2" style="text-align: center;">
-									<t t-if="r['sieve_size'] and r['sieve_size'].lower() != 'false'">
+									<t t-if="r['sieve_size']">
 										<span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
 									</t>
 								</td>
 								<td colspan="2" style="text-align: center;">
-									<t t-if="r['sieve_size'] and r['sieve_size'].lower() != 'false'">
+									<t t-if="r['sieve_size']">
 										<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
 									</t>
 								</td>
-								<td colspan="2" style="text-align: center;" t-if="k == 1">
-									<span>100</span>
-								</td>
-								<td colspan="2" style="text-align: center;" t-if="k == 2">
-									<span>85 - 100</span>
-								</td>
-								<td colspan="2" style="text-align: center;" t-if="k == 3">
-									<span>0 - 20</span>
-								</td>
-								<td colspan="2" style="text-align: center;" t-if="k == 4">
-									<span>0 - 5</span>
+								<td colspan="2" style="text-align: center;">
+									<t t-if="r['sieve_size']">
+										<span t-esc="r['specific_limits']"/>
+									</t>
 								</td>
 							</tr>
 						</table>
@@ -1330,10 +1323,20 @@
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
-									<td >
-									
+									<td>
 										<span t-esc="specific_gravity.parameter_name"/>
 									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
 									<td style="text-align: center;">
 										<span>
 											<span t-esc="specific_gravity.unit.name"/>
@@ -1354,15 +1357,6 @@
 											</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
 									
 								</tr>
 
@@ -1377,6 +1371,17 @@
 									
 										<span t-field="water_absorption.parameter_name"/>
 									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="water_absorption.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
 									<td style="text-align: center;">
 										<span>
 											<span t-field="water_absorption.unit.name"/>
@@ -1397,15 +1402,6 @@
 											</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="water_absorption.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
 									
 								</tr>
 
@@ -1420,6 +1416,17 @@
 									
 										<span t-field="loose_bulk_density.parameter_name"/>
 									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="loose_bulk_density.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
 									<td style="text-align: center;">
 										<span>
 											<span t-field="loose_bulk_density.unit.name"/>
@@ -1440,15 +1447,6 @@
 											</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="loose_bulk_density.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
 									
 								</tr>
 
@@ -1460,6 +1458,15 @@
 									</td>
 									<td>
 										<span t-field="rodded_bulk_density.parameter_name"/>
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="rodded_bulk_density.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
 									</td>
 									<td style="text-align: center;">
 										<span>
@@ -1481,15 +1488,6 @@
 											</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="rodded_bulk_density.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
 									
 								</tr>
 
@@ -1503,6 +1501,15 @@
 									<td >
 									
 										<span t-field="impact_value.parameter_name"/>
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="impact_value.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
 									</td>
 									<td style="text-align: center;">
 										<span>
@@ -1524,15 +1531,6 @@
 											</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="impact_value.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
 									
 								</tr>
 
@@ -1546,6 +1544,15 @@
 									<td>
 									
 										<span t-field="crushing_value.parameter_name"/>
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="crushing_value.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
 									</td>
 									<td style="text-align: center;">
 										<span>
@@ -1567,15 +1574,6 @@
 											</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="crushing_value.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
 									
 								</tr>
 
@@ -1589,6 +1587,15 @@
 									<td>
 									
 										<span t-field="elongation.parameter_name"/>
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="elongation.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
 									</td>
 									<td style="text-align: center;">
 										<span>
@@ -1610,15 +1617,6 @@
 											</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="elongation.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
 									
 								</tr>
 
@@ -1632,6 +1630,15 @@
 									<td>
 									
 										<span t-field="flakiness.parameter_name"/>
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="flakiness.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
 									</td>
 									<td style="text-align: center;">
 										<span>
@@ -1649,15 +1656,6 @@
 											<t t-foreach="flakiness.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="flakiness.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
 												</t>
 											</t>
 										</span>
