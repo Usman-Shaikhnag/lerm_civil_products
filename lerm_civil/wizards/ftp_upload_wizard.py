@@ -187,6 +187,80 @@ class UploadWizard(models.TransientModel):
                         'sticky': False,
                     }
                 }
+            
+            if self.form_name == "lerm.eln":
+                eln_id = self.env.context.get("active_id")
+                eln = self.env[self.form_name].sudo().browse(eln_id)
+                base_dir = f"/home/{self.ftp_storage_id.name}"
+                srf_id = eln.sample_id.srf_id.srf_id.replace("/", "-")
+                eln_id = eln.eln_id
+                
+                sample_id = eln.sample_id.kes_no.replace("/", "-")
+                remote_dir = f"{base_dir}/{srf_id}"
+                sample_dir = f"{base_dir}/{srf_id}/{sample_id}"
+                eln_dir = f"{base_dir}/{srf_id}/{sample_id}/{eln_id}"
+                
+                
+                try:
+                    sftp.stat(base_dir)
+                except FileNotFoundError:
+                    sftp.mkdir(base_dir)
+                    sftp.chmod(base_dir, 0o755)  # Set proper permissions
+                
+                try:
+                    sftp.stat(remote_dir)
+                except FileNotFoundError:
+                    sftp.mkdir(remote_dir)
+                    sftp.chmod(remote_dir, 0o755)
+                
+                try:
+                    sftp.stat(sample_dir)
+                except FileNotFoundError:
+                    sftp.mkdir(sample_dir)
+                    sftp.chmod(sample_dir, 0o755)
+                    
+                try:
+                    sftp.stat(eln_dir)
+                except FileNotFoundError:
+                    sftp.mkdir(eln_dir)
+                    sftp.chmod(eln_dir, 0o755)
+                
+                
+                
+                # Prepare file data
+                if isinstance(self.file_data, str):
+                    file_data = self.file_data.encode('utf-8')
+                else:
+                    file_data = base64.b64decode(self.file_data)
+                    
+                    
+                file_name = self.file_name.replace(" ", "_")
+                
+                
+                
+                remote_path = f"{eln_dir}/{file_name}"
+                with BytesIO(file_data) as file_obj:
+                    sftp.putfo(file_obj, remote_path)
+                
+                field = self.field_name
+                
+                upload_path = self.ftp_storage_id.name+"/"+srf_id+"/"+sample_id+"/"+eln_id +"/"+file_name
+                # import wdb; wdb.set_trace()
+                
+                sftp.chmod(remote_path, 0o644)
+                eln.write({field: upload_path })
+                
+                message = _("File %s uploaded successfully to %s") % (self.file_name, remote_path)
+                
+                return {
+                    'type': 'ir.actions.act_window_close',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': _("Upload Successful"),
+                        'message': message,
+                        'sticky': False,
+                    }
+                }
                 
                 
       
