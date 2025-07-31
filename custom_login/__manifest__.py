@@ -10,7 +10,7 @@
     ],
     'assets': {
     'web.assets_backend':[
-        'lerm_civil/static/src/css/custom_styles.css',
+        'custom_login/static/src/css/custom_styles.css',
     ],
         },
     'installable': True,
