@@ -147,7 +147,7 @@ class PaverBlock(models.Model):
     water_absorption_name = fields.Char("Name",default="Water Absorption ")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
 
-    water_absorption_child_lines = fields.One2many('paver.water.absorption.ssl.line','parent_id',string="Water Line")
+    water_absorption_child_lines = fields.One2many('paver.water.absorption.ssl.line','parent_id',string="sss")
 
     avg_water_absorption = fields.Float(
         string="Avg. Water Absorption (%)",
@@ -218,7 +218,7 @@ class PaverBlock(models.Model):
     commpressive_name = fields.Char("Name",default="Compressive Strength")
     commpressive_visible = fields.Boolean("Plan Area Visible",compute="_compute_visible")
 
-    commpressive_child_lines = fields.One2many('paver.compressive.ssl.line','parent_id',string="Compressive Line")
+    commpressive_child_lines = fields.One2many('paver.compressive.ssl.line','parent_id',string="")
 
     avg_commpressive = fields.Float(
         string="Avg. Compressive Strength (N/mm2)",compute="_compute_avg_commpressive")

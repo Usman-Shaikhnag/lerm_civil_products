@@ -67,23 +67,23 @@
 							</span>
 						</div>
 					</div>
-						<table style="margin-top:20px">
+						<table style="margin-top:10px">
 				
 							
 							<tr>
-								<td colspan="6">Date of Casting  :  <span t-field="data.date_of_casting"></span>
+								<td > <strong>Grade of Sample</strong> : <span t-field="o.grade_id.grade"/>
 								</td>
-								<!-- <td colspan="6">Date of Testing  :  <span t-field="data.date_of_testing"></span>
-								</td> -->
-								<td colspan="6">Age of Test, Days :  <span t-field="data.age_of_test"></span>
+								
+								<td> <strong>Age Of Cubes</strong> : <span t-field="data.age_of_days"></span>
 								</td>
 							</tr>
-							<!-- <tr cols="12">
-								<td colspan="6">Age of Test, Days :
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.age_of_test"/>
-								</td>
-							</tr> -->
+
+							<tr>
+							<td><strong>Size of Sample</strong> : <span t-field="o.sample_id.size_id.size"/></td>
+							<td><strong>Area Of Cube  : </strong><span t-field="data.area_of_cube"/>  Sq.mm</td>
+										
+								</tr>
+							
 						</table>
 						<table style="margin-top:30px;">
 						<thead>
@@ -95,49 +95,45 @@
 								</th>
 								<th	style="text-align: center;">
 									<span>
-										ID MARK/Location
+										Sample Identification
 									</span>
 								</th>
 
 								<th style="text-align: center;font-weight: bold;">
 									<span>
-										Grade
+									Weight of Cube (gms)
 									</span>
 								</th>
 								
 								<th style="text-align: center;">
 									<span>
-										Length in mm
+									Date of casting
 									</span>
 								</th>
 
 								<th style="text-align: center;">
 									<span>
-										Width in mm
+									No.of Days
 									</span>
 								</th>
 								<th style="text-align: center;">
 									<span>
-										Area in mm²
+									Date of Testing
 									</span>
 								</th>
 								
 								<th style="text-align: center;">
 									<span>
-										Weight of sample in kg
+										Load (kN)
 									</span>
 								</th>
 
 								<th style="text-align: center;">
 									<span>
-										Crushing load in KN
+										Compressive Strength (N/mm2)
 									</span>
 								</th>
-								<th style="text-align: center;">
-									<span>
-										Compressive Strength in N/mm2
-									</span>
-								</th>
+							
 							</tr>
 						</thead>
 						<tbody>
@@ -149,39 +145,79 @@
 									<span t-esc="r.id_mark"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="o.sample_id.grade_id.grade"/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.length"/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.width" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.area" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td style="text-align: center;">
 									<span t-esc="r.wt_sample"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.crushing_load" t-options='{"widget": "float", "precision": 2}'/>
+									<span t-esc="r.dt_of_casting"/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.days" />
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.dt_of_testing1"/>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="r.load"/>
 								</td>
 								<td style="text-align: center;">
 									<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
+								
 							</tr>
 						</tbody>
 					</table>
 
-					<div style="margin-top:10px">
-						<table>
+						<table style="margin-top:10px">
 							<tr>
 								<td colspan="12">Avg. Compressive Strength N/mm2 :<![CDATA[&nbsp;]]>
 									<span t-field="data.average_strength"/>
 								</td>
 							</tr>
 						</table>
-					</div>
+
+					         <table style="width: 100%; border-collapse: collapse;margin-top:10px">
+                                <thead>
+                                    <tr>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                         Permissible Range
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           N/mm2
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           kN
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                           7 Days
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+											<span t-field="data.days_7_kmm"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+										  <span t-field="data.days_7_n"/>
+                                        </td>
+                                    </tr>
+
+                                     <tr>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                          28 Days
+
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+											  <span t-field="data.days_28_kmm"/>
+											
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+										   <span t-field="data.days_28_n"/>
+                                        </td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
 					<div class="authorizeRowDataSheet">
 						<div>
 							<div>
