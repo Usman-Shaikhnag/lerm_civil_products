@@ -4,7 +4,7 @@
  'website': "http://www.esehat.org", 
  'category': 'Lerm Civil', 
  'version': '13.0.1', 
- 'depends':['base' , 'contacts','product' ,'hr','lerm_civil_inv', 'mail','attachment_indexation','maintenance','portal'],
+ 'depends':['base' , 'contacts','product' ,'hr','lerm_civil_inv', 'mail','attachment_indexation','maintenance','portal','ftp_storage'],
  'data': [
     'security/security.xml',
     'data/sequence.xml',

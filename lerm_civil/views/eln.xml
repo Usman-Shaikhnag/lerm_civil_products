@@ -49,10 +49,27 @@
                         <field name='witness_name'/>
                         <field name='grade_id' domain="[('id', 'in', grade_ids)]"/>
                         <field name='end_date'/>
-                        <field name="witness_photo" filename='witness_photo_name'/>
-                        <field name='witness_photo_name' invisible="1"/>
-                        <field name='attachment' filename='attachment_name'/>
-                        <field name='attachment_name' invisible="1"/>
+
+                        <!-- <label string="Witness" for="witness_path" /> -->
+                     
+                        <!-- <field name="witness_path" readonly="1"/>
+                        <button name="open_witness_photo_upload" type="object" string="Upload" class="btn-primary"/>
+                        <button name="download_witness_photo" type="object" string="Download" class="btn-primary"/> -->
+
+                        <field name="witness_path" readonly="1" />
+                        <button name="open_witness_photo_upload" type="object" string="Upload" class="btn-primary"/>
+                        <button name="download_witness_photo"
+                                type="object"
+                                string="Download"
+                                class="btn-primary"/>
+
+                        <!-- <field name='witness_photo_name' invisible="1"/> -->
+                        <!-- <field name='attachment' filename='attachment_name'/> -->
+                        <field name='attachment_path' readonly="1" />
+                        <button name="open_attachment_path_upload" type="object" string="Upload" class="btn-primary" />
+                        <button name="download_attachment" type="object" string="Download" class="btn-primary"/>
+
+                        <!-- <field name='attachment_name' invisible="1"/> -->
                         <field name='casting_date'/>
                         <field name='date_testing'/>
                         <field name='instrument'/>

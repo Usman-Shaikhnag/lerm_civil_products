@@ -656,43 +656,14 @@
 							<t t-set="i" t-value="0"/>
 							<thead>
 								<tr>
-									<th style="text-align: center;">
-										<span>
-											Sr. No
-										</span>
-									</th>
-									<th style="text-align: center;">
-										<span>
-											Test Parameter
-										</span>
-									</th>
-									<!-- <th style="text-align: center;">
-										<span t-field="eln.material.method_reference"></span>
-									</th> -->
-									<th style="text-align: center;">
-										<span>Test Method</span>
-									</th>
-
-									<th style="text-align: center;">
-										<span>
-											Unit
-										</span>
-									</th>
-									
-									<th style="text-align: center;">
-										<span>
-											Test Result
-										</span>
-									</th>
-									
-									
+									<th style="text-align: center;"><span>Sr. No</span></th>
+									<th style="text-align: center;"><span>Test Parameter</span></th>
+									<th style="text-align: center;"><span>Test Method</span></th>
+									<th style="text-align: center;"><span>Unit</span></th>
+									<th style="text-align: center;"><span>Test Result</span></th>
 									<th rowspan="1" style="text-align: center;"> Requirements
 										<span t-field="eln.material.specifications"></span>
 									</th>
-
-									
-
-									
 									<th t-if="eln.conformity" style="text-align: center;">
 										<span>
 											Conformity
@@ -724,12 +695,6 @@
 										</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
-										<span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).unit.name"/>
-										</span>
-									</td>
-									
 									
 									<td style="text-align: center;">
 										<span>

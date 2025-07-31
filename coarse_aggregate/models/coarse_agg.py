@@ -1305,42 +1305,76 @@ class CoarseAggregateMechanical(models.Model):
     def default_get(self, fields):
         print("From Default Value")
         res = super(CoarseAggregateMechanical, self).default_get(fields)
-
-        sieve_mapping = {
-            63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-            40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-            20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
-            16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-            12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-            10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
-        }
-
         default_sieve_sizes = []
-        eln_ref = res['eln_ref']
-
+        
+        # Safely get eln_ref with default None if not exists
+        eln_ref = res.get('eln_ref') 
+        
         if eln_ref:
             eln = self.env['lerm.eln'].sudo().browse(eln_ref)
+            if not eln.exists():
+                return res
+                
             size_str = eln.size_id.size or ''
-            print("Size:", size_str)
+            grade_str = (eln.grade_id.grade or '').lower()
+            
+            # Define mappings
+            if grade_str == 'single sized aggregate':
+                sieve_mapping = {
+                    63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+                    40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
+                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                    10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+                }
+                specific_limits_mapping = {
+                    63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
+                    40: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    20: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    16: ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
+                    12: ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
+                    10: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                }
+            elif grade_str == 'graded aggregate':
+                sieve_mapping = {
+                    40: ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
+                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
+                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                }
+                specific_limits_mapping = {
+                    40: ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
+                    20: ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
+                    16: ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
+                    12: ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+                }
+            else:
+                return res
 
             # Extract numeric part
             match = re.search(r'\d+', size_str)
             if match:
                 number = int(match.group())
-                print("Number:", number)
-
-                # Find matching sieve list by size
-                sieve_list = sieve_mapping.get(number)
-                if sieve_list:
-                    for sieve_size in sieve_list:
-                        size = {
-                            'sieve_size': sieve_size
-                        }
-                        default_sieve_sizes.append((0, 0, size))
-                    res['sieve_analysis_child_lines'] = default_sieve_sizes
+                sieve_list = sieve_mapping.get(number, [])
+                specific_limits = specific_limits_mapping.get(number, [])
+                
+                # Check if lists have same length
+                # if len(sieve_list) != len(specific_limits):
+                #     _logger.warning(f"Mismatch in sieve sizes and limits for size {number}")
+                #     return res
+                    
+                # Create sieve analysis lines
+                for sieve_size, specific_limit in zip(sieve_list, specific_limits):
+                    size = {
+                        'sieve_size': sieve_size,
+                        'specific_limits': specific_limit,
+                    }
+                    default_sieve_sizes.append((0, 0, size))
+                
+                res['sieve_analysis_child_lines'] = default_sieve_sizes
 
         return res
-
 
 
 
@@ -1371,6 +1405,28 @@ class CoarseAggregateMechanical(models.Model):
         for record in self:
             print("recordd",record)
             record.total_sieve_analysis = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
+
+    @api.onchange('sieve_analysis_child_lines')
+    def _onchange_sieve_analysis_child_lines(self):
+        for rec in self:
+            pan_line = None
+            total_retained = 0.0            
+            # Find all unique sieve sizes except pan
+            all_sieves = set()
+            for line in rec.sieve_analysis_child_lines:
+                if line.sieve_size and line.sieve_size.lower() != 'pan':
+                    all_sieves.add(line.sieve_size.strip())
+            
+            # Calculate total retained for all non-pan sieves
+            for line in rec.sieve_analysis_child_lines:
+                if line.sieve_size and line.sieve_size.lower() == 'pan':
+                    pan_line = line
+                elif line.sieve_size in all_sieves:  # Include all non-pan sieves
+                    total_retained += line.wt_retained or 0.0
+
+            # Update pan weight if pan exists and we have a sample weight
+            if pan_line and rec.weight_of_sample:
+                pan_line.wt_retained = rec.weight_of_sample - total_retained
 
 
     # @api.depends('sieve_analysis_child_lines.wt_retained')
@@ -1785,6 +1841,7 @@ class SieveAnalysisLine(models.Model):
     percent_retained = fields.Float(string='% of Weight Retained', compute="_compute_percent_retained",digits=(16,2))
     cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained ", store=True,digits=(16,2))
     passing_percent = fields.Float(string="% of wt passing",digits=(16,2))
+    specific_limits = fields.Char(string="Specified Limits")
 
 
 
@@ -1833,6 +1890,9 @@ class SieveAnalysisLine(models.Model):
             parent_id.sieve_analysis_child_lines._reorder_serial_numbers()
 
         return res
+
+
+
 
 
     @api.depends('wt_retained', 'parent_id.weight_of_sample')
