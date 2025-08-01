@@ -445,8 +445,8 @@ class LermSampleForm(models.Model):
             if not result.verified:
                 raise ValidationError("Not all parameters are verified. Please ensure all parameters are verified before proceeding.")
         
-        if not self.datasheet_path:
-            raise ValidationError("Please attach datasheet before submitting.")
+        # if not self.datasheet_path:
+        #     raise ValidationError("Please attach datasheet before submitting.")
 
         self.approved_by = self.env.user
         self.write({'state': '4-in_report'})
