@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-
+                        <button type="object" class="oe_highlight" name="discard_sample" string="Discard Sample"/>
                     </header>
                     <sheet>
                         <group>
@@ -16,12 +16,18 @@
                                 <field name="quantity" readonly="1"/>
                                 <field name="uom_id" readonly="1"/>
                                 <field name="resample_id" readonly="1"/>
+                                <field name="quantity" readonly="1"/>
+                                <field name="quantity_discarded" readonly="1"/>
+                                
 
                             </group>
                             <group>
                                 <field name="quantity_received" readonly="1"/>
                                 <field name="quantity_consumed" readonly="1"/>
                                 <field name="quantity_balance" readonly="1"/>
+                                <field name="discard_reason"/>
+                                <field name="attachment" filename="attachment_name"/>
+                                <field name="attachment_name" invisible="1"/>
                             </group>
                         </group>
                     </sheet>
@@ -42,6 +48,43 @@
                     <field name="quantity_consumed" />
                     <field name="quantity_balance" />
                 </tree>
+            </field>
+        </record>
+
+
+        <record id="discard_sample_quantity" model="ir.ui.view">
+            <field name="name">sample.register.discard.form</field>
+            <field name="model">sample.register.discard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="discard_reason"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="discard_date"/>
+                            <field name="discard_quantity_unit" readonly="1"/>
+                            
+                        </group>
+                        <group>
+                            <field name="discard_quantity"/>
+                            <field name="attachment" filename="attachment_name"/>
+                            <field name="attachment_name" invisible="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button
+                                type="object"
+                                class="oe_highlight" 
+                                name="discard_sample_quantity"
+                                string="Discard Quantity"/>
+                        <button
+                                type="object"
+                                name="cancel_sample_discard"
+                                string="Cancel"/>
+                    </footer>
+
+                </form>
             </field>
         </record>
     </data>

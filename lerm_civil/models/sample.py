@@ -85,14 +85,14 @@ class LermSampleForm(models.Model):
 
     active = fields.Boolean(string="Active",default=True)
 
-    # invoice_number = fields.Many2one(
-    #     'account.move',  
-    #     string="Invoice Number",  
-    #     help="Select the invoice number",  
-    #     domain="[('move_type', '=', 'out_invoice')]",  
+    invoice_number = fields.Many2one(
+        'account.move',  
+        string="Invoice Number",  
+        help="Select the invoice number",  
+        domain="[('move_type', '=', 'out_invoice')]",  
        
-    #     store=True
-    # )
+        store=True
+    )
 
     invoice_status = fields.Selection([
         ('1-uninvoiced', 'Uninvoiced'),
@@ -162,12 +162,16 @@ class LermSampleForm(models.Model):
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")
     quantity_consumed = fields.Integer(string="Quantity Consumed")
+    quantity_discarded = fields.Integer(string="Quantity Discarded")
     quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
 
-    @api.depends('quantity_received', 'quantity_consumed')
+    resampled = fields.Boolean("Resampled")
+    report_issued_date = fields.Date("Report Issued Date")
+
+    @api.depends('quantity_received', 'quantity_consumed','quantity_discarded')
     def compute_quantity_balance(self):
         for rec in self:
-            rec.quantity_balance = rec.quantity_received - rec.quantity_consumed
+            rec.quantity_balance = rec.quantity_received - rec.quantity_consumed - rec.quantity_discarded
 
             
     @api.depends('srf_id.client_refrence')
@@ -381,10 +385,18 @@ class LermSampleForm(models.Model):
             if not result.verified:
                 raise ValidationError("Not all parameters are verified. Please ensure all parameters are verified before proceeding.")
         if len(self.file_upload) > 0:
-            self.write({'state': '4-in_report'})
+            self.write({
+                'state': '4-in_report',
+                'report_issued_date': fields.Date.today()
+                })
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',self.id)])
             approved_by = self.env.user
             eln.write({'state':'3-approved'})
+            # Write to sample register
+            sample_register = self.env['lerm.sample.register'].sudo().search([('id','=',self.id)],limit=1)
+            sample_register.sudo().write({
+                'report_issued_date':self.report_issued_date
+            })
         else:
             raise ValidationError("Please attach datasheet before submitting")
         

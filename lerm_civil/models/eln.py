@@ -431,13 +431,13 @@ class ELN(models.Model):
         
         self.sample_id.sudo().file_upload = self.file_upload
         sample.parameters_result.sudo().unlink()
-        sample.write({
-            'quantity':self.quantity,
-            'uom_id':self.uom_id.id,
-            'quantity_received':self.quantity_received,
-            'quantity_consumed':self.quantity_consumed,
-            'quantity_balance':self.quantity_balance
-            })
+        # sample.write({
+        #     'quantity':self.quantity,
+        #     'uom_id':self.uom_id.id,
+        #     'quantity_received':self.quantity_received,
+        #     'quantity_consumed':self.quantity_consumed,
+        #     'quantity_balance':self.quantity_balance
+        #     })
         for result in self.parameters_result:
             sample.parameters_result.sudo().create({
                 'sample_id':self.sample_id.id,
