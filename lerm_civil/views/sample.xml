@@ -89,7 +89,8 @@
                                 <field name="sample_received_date" readonly="state != '1-allotment_pending'"/>
                                 <field name="location" readonly="state != '1-allotment_pending'"/>
                                 <field name="lab_location"/>
-                                <field name="invoice_status" invisible="state not in ('4-in_report')"/>
+                                <field name="invoice_status" readonly="1" invisible="state not in ('4-in_report')"/>
+                                <field name="invoice_number" readonly="1"/>
                                 <!-- <field name="file_upload" widget="many2many_binary" />
                                 <field name="report_upload" widget="many2many_binary" /> -->
                                 <field name="datasheet_path" readonly="1" />
@@ -108,8 +109,6 @@
                                 <field name="checkby_signature_required" invisible="state not in ('4-in_report')"/>
                                 <field name="approveby_signature_required" invisible="state not in ('4-in_report')"/>
                                 <field name="page_break" />
-                                    
-                                
                                 <field name="received_by_id" readonly="state != '1-allotment_pending'"/>
                             </group>
                             <group>

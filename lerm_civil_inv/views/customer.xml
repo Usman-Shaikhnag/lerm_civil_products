@@ -61,7 +61,55 @@
 
         
 
-        
+        <record id="account_move_inherited_form" model="ir.ui.view">
+            <field name="name">account.move.inherited.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                
+                <xpath expr="//field[@name='payment_reference']" position="after">
+                    <field name="site_address_ids" invisible="1" />
+
+                    <field name="site_address"  domain="[('id', 'in', site_address_ids)]" />
+                    
+                    <field name='customer_reference'/>
+                    <field name="contact_person_ids" invisible="1" />
+                    <field name='contact_person' context="{'hide_reference':True}" domain="[('id', 'in', contact_person_ids)]"/>
+
+                </xpath>
+
+
+                <xpath expr="//page[@name='other_info']" position="after">
+                    <page string="PO Number">
+                        <field name="po_number" readonly="partner_id == False" context="{'default_customer' : partner_id }" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name="customer" invisible="1"  />
+                                <field name="po_number" />
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+                 <!-- <xpath expr="//field[@name='invoice_payment_term_id']" position="after">
+                    <field name="tds" />
+                    <field name="amount_after_tds" />
+                    <field name="tds_percentage" widget="percentage" />                
+                </xpath> -->
+                <!-- <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="after">
+                    <field name="pricelist_id" invisible="1"/>
+                    <field name="report_no"  invisible="1"/>
+                    <field name="report_no1"   widget="many2many_tags" options="{'no_create': True}" />
+                </xpath> -->
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="replace">
+                    <field name="name"  column_invisible="parent.move_type not in ('out_invoice', 'out_refund', 'out_receipt')"  />
+                </xpath>
+                
+                <!-- <xpath expr="//field[@name='line_ids']/tree/field[@name='account_id']" position="after">
+                    <field name="report_no"  />
+                    <field name="report_no1"  widget="many2many_tags" options="{'no_create': True}" />
+                </xpath> -->
+                
+            </field>
+        </record>
 
         <record id="base_kit_inherited" model="ir.ui.view">
             <field name="name">account.move.inherited.form.category</field>

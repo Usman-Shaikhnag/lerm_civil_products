@@ -85,14 +85,14 @@ class LermSampleForm(models.Model):
 
     active = fields.Boolean(string="Active",default=True)
 
-    # invoice_number = fields.Many2one(
-    #     'account.move',  
-    #     string="Invoice Number",  
-    #     help="Select the invoice number",  
-    #     domain="[('move_type', '=', 'out_invoice')]",  
+    invoice_number = fields.Many2one(
+        'account.move',  
+        string="Invoice Number",  
+        help="Select the invoice number",  
+        domain="[('move_type', '=', 'out_invoice')]",  
        
-    #     store=True
-    # )
+        store=True
+    )
 
     invoice_status = fields.Selection([
         ('1-uninvoiced', 'Uninvoiced'),
