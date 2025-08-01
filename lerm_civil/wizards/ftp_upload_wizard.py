@@ -69,11 +69,14 @@ class UploadWizard(models.TransientModel):
                 srf = self.env[self.form_name].sudo().browse(srf_id)
                 
                 if not srf.srf_id:
-                    raise ValidationError("SRF not Confirmed")
+                    srf_id = str(srf.id)                    
+                else:
+                    srf_id = srf.srf_id.replace("/", "").replace("-","")
+                    
 
                 # Create directory structure if needed
                 base_dir = f"/home/{self.ftp_storage_id.name}"
-                srf_id = srf.srf_id.replace("/", "-")
+                # srf_id = srf.srf_id.replace("/", "-")
                 # remote_dir = f"{base_dir}/{srf.srf_id}"
                 remote_dir = f"{base_dir}/{srf_id}"
                 
@@ -127,7 +130,7 @@ class UploadWizard(models.TransientModel):
                 sample_id = self.env.context.get("active_id")
                 sample = self.env[self.form_name].sudo().browse(sample_id)
                 base_dir = f"/home/{self.ftp_storage_id.name}"
-                srf_id = sample.srf_id.srf_id.replace("/", "-")
+                srf_id = sample.srf_id.srf_id.replace("/", "").replace("-","")
                 
                 sample_id = sample.kes_no.replace("/", "-")
                 remote_dir = f"{base_dir}/{srf_id}"
@@ -192,7 +195,7 @@ class UploadWizard(models.TransientModel):
                 eln_id = self.env.context.get("active_id")
                 eln = self.env[self.form_name].sudo().browse(eln_id)
                 base_dir = f"/home/{self.ftp_storage_id.name}"
-                srf_id = eln.sample_id.srf_id.srf_id.replace("/", "-")
+                srf_id = eln.sample_id.srf_id.srf_id.replace("/", "").replace("-","")
                 eln_id = eln.eln_id
                 
                 sample_id = eln.sample_id.kes_no.replace("/", "-")
