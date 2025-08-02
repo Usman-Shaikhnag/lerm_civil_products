@@ -17,6 +17,11 @@ This module contains all the common features of Sales Management and eCommerce.
          'reports/tile_datasheet_ssl.xml',
          'reports/tile_report_ssl.xml'
     ],
+    'assets': {
+        'web.assets_backend': [
+            'tile_ssl/static/src/css/custom_style.css',
+        ],
+    },
   
     'installable': True,
     'auto_install': False,
