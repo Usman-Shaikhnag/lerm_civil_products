@@ -17,11 +17,7 @@ This module contains all the common features of Sales Management and eCommerce.
              'reports/brick_burnt_datasheet.xml',
              'reports/brick_burnt_clay_report.xml'
     ],
-        'assets': {
-        'web.assets_backend': [
-            'brick_brunt_clay/static/src/css/custom_style.css',
-        ],
-    },
+      
   
   
     'installable': True,
