@@ -4,6 +4,7 @@ import base64
 import qrcode
 from io import BytesIO
 from lxml import etree
+from collections import defaultdict
 
 
 
@@ -41,12 +42,21 @@ class StainlessSteelTmtBar(models.AbstractModel):
             general_data = self.env[model_name].sudo().browse(model_id)
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
+        # Group lines by dia_of_bar
+        grouped_lines = defaultdict(list)
+        for line in general_data.bar_test_line_ids.filtered(lambda l: l.yield_stress > 0 and l.ultimate_tensile_stress > 0 and l.elongation > 0):
+            grouped_lines[line.dia_of_bar].append(line)
+
+        # Convert to list of tuples for sorted access in QWeb
+        grouped_bar_lines = sorted(grouped_lines.items(), key=lambda x: x[0])  # sort by dia_of_bar
+        import wdb; wdb.set_trace()
         return {
             'eln': eln,
             'data' : general_data,
             'qrcode': qr_code,
             # 'stamp' : inreport_value,
-            'nabl' : nabl
+            'nabl' : nabl,
+            'grouped_bar_lines': grouped_bar_lines,
 
         }
 

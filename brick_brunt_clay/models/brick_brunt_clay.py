@@ -9,14 +9,16 @@ class MechanicalBricksBurntClay(models.Model):
     _rec_name = "name1"
 
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-    name1 = fields.Char("Name",default="Bricks Burnt Clay")
+    name1 = fields.Char("Name",default="Fly Ash Bricks")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     # child_lines = fields.One2many('mechanical.water.absorption.bricks.line','parent_id',string="Parameter")
     # test_start_date = fields.Date("Test Start Date")
     # test_end_date = fields.Date("Test End Date")
-   
+    length_in_mm = fields.Float(string="Length in mm")
+    width_in_mm = fields.Float(string="Width in mm")
+    height_in_mm = fields.Float(string="Height in mm")
 
         #1------------ Compressive Strength
 
