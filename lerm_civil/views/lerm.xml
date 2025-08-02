@@ -235,6 +235,16 @@
             <!-- <field name="view_id" ref="print_reports_wizard"/> -->
             <field name="target">new</field>
     </record>
+
+    <record id="action_sample_register" model="ir.actions.act_window">
+        <field name="name">Sample Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.sample.register</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Sample Register</p>
+        </field>
+    </record>
     
     <menuitem id="lerm_root"
         name="LERM CIVIL"
@@ -248,12 +258,23 @@
 
   
 
+    <menuitem id="register_menu"
+        name="Register"
+        parent="lerm_root"
+        sequence="50"  />
+  
+
     <menuitem id="enviroment_register_menu"
         name="Environment Register"
-        parent="lerm_root"
+        parent="register_menu"
         action="action_enviroment_register_tree"
-        sequence="20"  />
-
+        sequence="10"  />
+    
+    <menuitem id="sample_register_menu"
+        name="Sample Register"
+        parent="register_menu"
+        action="action_sample_register"
+        sequence="11"  />
     
 
 
