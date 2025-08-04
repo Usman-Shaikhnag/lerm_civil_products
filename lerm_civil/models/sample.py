@@ -158,6 +158,21 @@ class LermSampleForm(models.Model):
     other_cancellation_reason = fields.Text("Cancellation Reason")
 
     quantity = fields.Integer(string="Quantity")
+    uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
+    quantity_received = fields.Integer(string="Quantiyty Received")
+    quantity_consumed = fields.Integer(string="Quantity Consumed")
+    quantity_discarded = fields.Integer(string="Quantity Discarded")
+    quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
+
+    resampled = fields.Boolean("Resampled")
+    report_issued_date = fields.Date("Report Issued Date")
+
+    @api.depends('quantity_received', 'quantity_consumed','quantity_discarded')
+    def compute_quantity_balance(self):
+        for rec in self:
+            rec.quantity_balance = rec.quantity_received - rec.quantity_consumed - rec.quantity_discarded
+
+            
     
     
     
@@ -432,6 +447,18 @@ class LermSampleForm(models.Model):
             'target': 'new'
             }
 
+    def send_mail_action(self):
+        # import wdb ; wdb.set_trace()
+        action = self.env.ref('lerm_civil.send_mail_wizard')
+        return {
+            'name': "Send Mail",
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'send.mail.wizard',
+            'view_id': action.id,
+            'target': 'new'
+            }
 
     def print_datasheet(self):
         eln = self.env["lerm.eln"].sudo().search([('sample_id','=', self.id)])

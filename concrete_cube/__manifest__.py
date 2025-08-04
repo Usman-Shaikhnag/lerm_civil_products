@@ -17,6 +17,11 @@ This module contains all the common features of Sales Management and eCommerce.
                  'reports/cube_datasheet.xml',
                  'reports/cube_report.xml'
     ],
+    'assets': {
+        'web.assets_backend': [
+            'concrete_cube/static/src/css/custom_style.css',
+        ],
+    },
   
     'installable': True,
     'auto_install': False,

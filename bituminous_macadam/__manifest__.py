@@ -16,6 +16,7 @@ This module contains all the common features of Sales Management and eCommerce.
                 'views/bituminous_macadam.xml',
                 'reports/bituminous_macadam_ds_report.xml'
     ],
+   
   
     'installable': True,
     'auto_install': False,

@@ -10,6 +10,7 @@
     'data/sequence.xml',
     # 'data/module_category_data.xml',
     'views/enviroment_register.xml',
+    'views/sample_register.xml',
     'views/lerm.xml',
     'views/groups.xml',
     'views/res_company.xml',
@@ -26,7 +27,12 @@
     'views/employee.xml',
     'views/product_grade_wizard.xml',
     'views/reallocation_wizard.xml',
+<<<<<<< HEAD
     # 'views/ftp_upload_wizard_views.xml',
+=======
+    'views/send_mail_wizard.xml',
+    'views/ftp_upload_wizard_views.xml',
+>>>>>>> 6f3bccd8eaaf84aefd2d1090f1a763240a77cd9e
 
     # 'views/mechanical/sieve_analysis.xml',
     'reports/eln_report_action.xml',

@@ -16,7 +16,11 @@ This module contains all the common features of Sales Management and eCommerce.
            'views/ss_tmt_bar.xml',
            'reports/ss_tmt_ds_report.xml'
     ],
-  
+    'assets': {
+        'web.assets_backend': [
+            'ss_tmt_bar/static/src/css/custom_style.css',
+        ],
+    },
     'installable': True,
     'auto_install': False,
    

@@ -23,21 +23,21 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group class="custom_table_borders">
-                      <field name="sample_parameters">
-                        <tree>
-                          <field name="parameter_name"/>
-                          <field name="test_method"/>
-                        </tree>
-                      </field>
-                    </group>
+                   <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
                    
                     
                     <!-- <group >
                             
                             <field name="tests" widget="many2many_tags"/>
                     </group> -->
-                    <group invisible = "paver_visible == False"  style="white-space: nowrap; width:70%;">
+                    <group invisible = "paver_visible == False"  style="white-space: nowrap; width:70%;text-align: center">
                         <h1>
                             <field name="paver_name" readonly="1" nolabel="1"/>
                             <field name="paver_visible" invisible="1"/>
@@ -315,55 +315,71 @@
                    
                     </div>
                   
-                        <group invisible="commpressive_visible == False" string="Result" style="white-space: nowrap; width:70%;">
-                            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; width: 100%;">
+                       
+                      
+                    <group invisible="commpressive_visible == False" string="Result" style="width: 100%;">
+                        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; width: 100%;">
 
-                                <!-- Avg. Compressive Strength -->
-                                <div class="custom_table_borders" style="flex: 1; min-width: 300px;">
-                                    <table style="width: 100%; border-collapse: collapse;">
-                                        <tbody>
-                                            <tr>
-                                                <td style="border: 1px solid black; padding: 10px; text-align: left; color: black;">
-                                                    Avg. Compressive Strength
-                                                </td>
-                                                <td style="border: 1px solid black; padding: 10px; text-align: center;">
-                                                    <div style="display: inline-block; min-width: 80px;">
-                                                        <field name="avg_commpressive" nolabel="1"/>
-                                                    </div>
-                                                </td>
-                                                <td style="border: 1px solid black; padding: 10px; text-align: center;">
-                                                    N/mm²
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <!-- Avg Thickness -->
-                                <div class="custom_table_borders" style="flex: 1; min-width: 300px;">
-                                    <table style="width: 100%; border-collapse: collapse;">
-                                        <tbody>
-                                            <tr>
-                                                <td style="border: 1px solid black; padding: 10px; text-align: left; color: black;">
-                                                    Avg Thickness
-                                                </td>
-                                                <td style="border: 1px solid black; padding: 10px; text-align: center;">
-                                                    <div style="display: inline-block; min-width: 80px;">
-                                                        <field name="avg_thickness" nolabel="1"/>
-                                                    </div>
-                                                </td>
-                                                <td style="border: 1px solid black; padding: 10px; text-align: center;">
-                                                    mm
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
+                            <!-- Avg. Compressive Strength -->
+                            <div style="flex: 1; min-width: 300px;">
+                                <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                                    <colgroup>
+                                        <col style="width: 50%;" />
+                                        <col style="width: 30%;" />
+                                        <col style="width: 20%;" />
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left;">
+                                                Avg. Compressive Strength
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center;">
+                                                <field name="avg_commpressive" nolabel="1"/>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center;">
+                                                N/mm²
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                        </group>
+
+                            <!-- Avg Thickness -->
+                            <div style="flex: 1; min-width: 300px;">
+                                <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                                    <colgroup>
+                                        <col style="width: 50%;" />
+                                        <col style="width: 30%;" />
+                                        <col style="width: 20%;" />
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left;">
+                                                Avg Thickness
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center;">
+                                                <field name="avg_thickness" nolabel="1"/>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center;">
+                                                mm
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </group>
 
 
+
+
+                        
+
+                      
+
+
+                  
                      <group  invisible = "commpressive_visible == False" style="white-space: nowrap; width:70%;">
                           <group>
                             <field  name="avg_commpressive_conformity"

@@ -68,6 +68,29 @@
                         <field name='ir_model' invisible="1"/>
                     </group>
                 </group>
+                <group>
+                    <!-- <field name="volume"/> -->
+                    <field name="quantity"/>
+                </group>
+
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Sample Quantity</th>
+                            <th>Received</th>
+                            <th>Consumed</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><field name="uom_id" readonly="1"/></td>
+                            <td><field name="quantity_received" readonly="1"/></td>
+                            <td><field name="quantity_consumed"/></td>
+                            <td><field name="quantity_balance" readonly="1"/></td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <button string="Open Form" name="open_product_based_form" class="oe_highlight" type="object"
                             invisible="is_product_based_calculation == False"/>
