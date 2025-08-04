@@ -17,6 +17,11 @@ This module contains all the common features of Sales Management and eCommerce.
             'reports/ferrous_structural_steel_datasheet.xml',
             'reports/ferrous_structural_steel.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'ferrous_steel/static/src/css/custom_style.css',
+        ],
+    },
   
     'installable': True,
     'auto_install': False,

@@ -16,14 +16,6 @@ This module contains all the common features of Sales Management and eCommerce.
                 'views/coarse_agg.xml',
                 'reports/coarse_agg_ds_report.xml'
     ],
-     'assets': {
-        'web.assets_backend': [
-            # 'static/src/css/custom_style.css',
-            'coarse_aggregate/static/src/css/custom_style.css',
-
-           
-        ],
-    },  # ✅ COMMA added here
     
     'installable': True,
     'auto_install': False,
