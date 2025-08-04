@@ -391,7 +391,7 @@ class SrfForm(models.Model):
             kes_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample.kes')]).number_next_actual
            
             sample_range = "SAM/"+str(sam_next_number)+"-"+str(sam_next_number+record.sample_qty-1)
-            kes_range = "SSL/TR/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
+            kes_range = "SSL/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
             record.write({'sample_range': sample_range , 'kes_range': kes_range })
             samples = self.env['lerm.srf.sample'].search([('sample_range_id','=',record.id)])
             
@@ -923,13 +923,14 @@ class CreateSampleWizard(models.TransientModel):
 
     @api.onchange('material_id')
     def compute_parameters(self):
+
+        # import wdb; wdb.set_trace()
         for record in self:
             if record.material_id:
                 parameters_ids = []
                 print("MATERIAL__IDD",self.env['product.template'].search([('id','=', record.material_id.id)]))
                 product_records = self.env['product.template'].search([('id','=', record.material_id.id)]).parameter_table1
                 record.product_name = self.pricelist.item_ids.search([('pricelist_id','=',self.pricelist.id),('product_tmpl_id.lab_name','=',self.material_id.lab_name)]).product_tmpl_id.id
-                # import wdb; wdb.set_trace()
                 for rec in product_records:
                     parameters_ids.append(rec.id)
                 # domain = {'parameters': [('id', 'in', parameters_ids)]}
@@ -1145,6 +1146,7 @@ class CreateSampleWizard(models.TransientModel):
             product_name = self.product_name
             lab_location  = self.lab_location.id
             location_name = self.location_name.id
+            
 
 
 
@@ -1202,7 +1204,8 @@ class CreateSampleWizard(models.TransientModel):
 
                 })
                 for i in range(self.sample_qty):
-                    self.env["lerm.srf.sample"].create({
+                    
+                    sample = self.env["lerm.srf.sample"].create({
                         'srf_id': self.env.context.get('active_id'),
                         'group_id':group_id,
                        
@@ -1240,6 +1243,20 @@ class CreateSampleWizard(models.TransientModel):
                         'product_alias':self.product_alias.id,
                         'lab_location':lab_location,
                         'location_name':location_name,
+                        'quantity':self.quantity,
+                        'uom_id':self.uom_id.id,
+                        'quantity_received':self.quantity_received,
+                        'quantity_consumed':self.quantity_consumed,
+                        'quantity_balance':self.quantity_balance
+
+                    })
+                    self.env['lerm.sample.register'].sudo().create({
+                        'sample':sample.id,
+                        'quantity':self.quantity,
+                        'uom_id':self.uom_id.id,
+                        'quantity_received':self.quantity_received,
+                        'quantity_consumed':self.quantity_consumed,
+                        'quantity_balance':self.quantity_balance
 
                     })
 
@@ -1283,7 +1300,7 @@ class CreateSampleWizard(models.TransientModel):
                 if sample.state == '1-allotment_pending':
                     for parameter in sample.parameters:
                         parameters_result.append((0,0,{'parameter':parameter.id,'unit': parameter.unit.id,'test_method':parameter.test_method.id}))
-                    
+                    # import wdb; wdb.set_trace()
                     eln_id = self.env['lerm.eln'].sudo().create({
                         'srf_id': sample.srf_id.id,
                         'srf_date':sample.srf_id.srf_date,
@@ -1305,6 +1322,12 @@ class CreateSampleWizard(models.TransientModel):
                         'grade_id':sample.grade_id.id,
                         'department_id':sample.department_id,
                         'casting_date':sample.casting_date,
+                        'quantity':sample.quantity,
+                        'uom_id':sample.uom_id.id,
+                        'quantity_received':sample.quantity_received,
+                        'quantity_consumed':sample.quantity_consumed,
+                        'quantity_balance':sample.quantity_balance
+
 
                     })
                     # import wdb;wdb.set_trace()

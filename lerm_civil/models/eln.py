@@ -40,8 +40,8 @@ class ELN(models.Model):
     witness_name = fields.Char(string="Witness Name")
     witness_description = fields.Char(string="Witness Description")
     
-    witness_path = fields.Char(string="Witness")
-    attachment_path = fields.Char(string="Attachment")
+    # witness_path = fields.Char(string="Witness")
+    # attachment_path = fields.Char(string="Attachment")
     
     witness_photo = fields.Binary(string="Witness Photo")
     witness_photo_name = fields.Char(string="Witness Photo Name")
@@ -105,58 +105,16 @@ class ELN(models.Model):
     
     active = fields.Boolean(string="Active",default=True)
     
-    
-    def open_attachment_path_upload(self):
-        action = self.env.ref('lerm_civil.view_ftp_upload_wizard_form')
-        return {
-            'name': "Upload File Wizard",
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'file.upload.wizard',
-            'view_id': action.id,
-            'target': 'new',
-            'context': {
-                'default_form_name': 'lerm.eln',
-                'default_field_name':'attachment_path'
-                }
-            }
+    quantity = fields.Integer(string="Quantity")
+    uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
+    quantity_received = fields.Integer(string="Quantiyty Received")
+    quantity_consumed = fields.Integer(string="Quantity Consumed")
+    quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
 
-    def download_attachment(self):
-        host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
-        ftp_url = f"https://{host}/files/{self.attachment_path}"
-        return {
-            'type': 'ir.actions.act_url',
-            'url': f"/web/binary/download_ftp?url={ftp_url}",
-            'target': 'self',
-        }
-    
-   
-    def open_witness_photo_upload(self):
-        action = self.env.ref('lerm_civil.view_ftp_upload_wizard_form')
-        return {
-            'name': "Upload File Wizard",
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'file.upload.wizard',
-            'view_id': action.id,
-            'target': 'new',
-            'context': {
-                'default_form_name': 'lerm.eln',
-                'default_field_name':'witness_path'
-                }
-            }
-    
-    def download_witness_photo(self):
-        host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
-        ftp_url = f"https://{host}/files/{self.witness_path}"
-        return {
-            'type': 'ir.actions.act_url',
-            'url': f"/web/binary/download_ftp?url={ftp_url}",
-            'target': 'self',
-        }
-
+    @api.depends('quantity_received', 'quantity_consumed')
+    def compute_quantity_balance(self):
+        for rec in self:
+            rec.quantity_balance = rec.quantity_received - rec.quantity_consumed
 
     # report_upload = fields.Many2many(
     #     'ir.attachment',
@@ -413,72 +371,9 @@ class ELN(models.Model):
             record.write({'result':result})
             print(result) 
 
-
-
-    # def confirm_eln(self):
-    #     self.sample_id.write({'state':'3-pending_verification'})
-    #     # import wdb;wdb.set_trace();
-    #     self.sample_id.parameters_result.unlink()
-    #     self.end_date = datetime.now().date()
-    #     if self.srf_date:
-    #         if self.start_date < self.srf_date:
-    #             raise ValidationError("Start Date cannot be less than SRF Date")
-
-    #     for result in self.parameters_result:
-    #         if not result.calculated:
-    #             raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
-
-    #     for result in self.parameters_result:
-    #         self.env["sample.parameters.result"].create({
-    #             'sample_id':self.sample_id.id,
-    #             'parameter': result.parameter.id,
-    #             'result': result.result,
-    #             'unit':result.unit.id,
-    #             'specification':result.specification,
-    #             'test_method':result.test_method.id
-    #         })
-    #     self.write({'state': '2-confirm'})
-            
-    # def confirm_eln(self):
-    #     self.sample_id.write({'state':'3-pending_verification'})
-    #     # import wdb;wdb.set_trace();
-    #     self.sample_id.parameters_result.unlink()
-        
-    #     # Fetch start_date and set it as end_date
-    #     start_date = self.start_date
-    #     # Ensure end_date is not the current date
-    #     desired_end_date = start_date if start_date != datetime.now().date() else start_date + timedelta(days=1)
-
-    #     self.end_date = desired_end_date
-        
-    #     if self.srf_date:
-    #         if self.start_date < self.srf_date:
-    #             raise ValidationError("Start Date cannot be less than SRF Date")
-
-    #     for result in self.parameters_result:
-    #         if not result.calculated:
-    #             raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
-
-    #     for result in self.parameters_result:
-    #         self.env["sample.parameters.result"].create({
-    #             'sample_id':self.sample_id.id,
-    #             'parameter': result.parameter.id,
-    #             'result': result.result,
-    #             'unit':result.unit.id,
-    #             'specification':result.specification,
-    #             'test_method':result.test_method.id
-    #         })
-    #     self.write({'state': '2-confirm'})
     def confirm_eln(self):
-
-        # if not self.data_sheet:
-        #     raise ValidationError("Please attach a data sheet before confirming ELN.")
-
+  
         
-            
-        sample_id = self.sample_id.sudo()
-        sample_id.write({'state':'3-pending_verification'})
-        sample_id.parameters_result.unlink()
             
         start_date = self.start_date
         
@@ -486,13 +381,7 @@ class ELN(models.Model):
         if self.end_date and self.end_date < start_date:
             raise ValidationError("End Date cannot be before Start Date")
         # import wdb;wdb.set_trace()
-        
-        # if len(self.file_upload) > 0:
-        #     self.sample_id.sudo().file_upload = self.file_upload
-        # else:
-        #     raise ValidationError("Please attach datasheet before submitting")
-        
-        # If end_date is not provided, set it to the next day after start_date
+       
         if not self.end_date:
             self.end_date = start_date + timedelta(days=1)
         else:
@@ -507,7 +396,26 @@ class ELN(models.Model):
         for result in self.parameters_result:
             if not result.calculated:
                 raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
-
+        
+        sample_id = self.sample_id.sudo()
+        sample_id.write({
+            'state':'3-pending_verification',
+            'quantity':self.quantity,
+            'uom_id':self.uom_id.id,
+            'quantity_received':self.quantity_received,
+            'quantity_consumed':self.quantity_consumed,
+            'quantity_balance':self.quantity_balance
+            })
+        sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.sample_id.id)])
+        sample_register.write({
+            'quantity':self.quantity,
+            'uom_id':self.uom_id.id,
+            'quantity_received':self.quantity_received,
+            'quantity_consumed':self.quantity_consumed,
+            'quantity_balance':self.quantity_balance
+        })
+        sample_id.parameters_result.unlink()
+        
         for result in self.parameters_result:
             self.env["sample.parameters.result"].sudo().create({
                 'sample_id':self.sample_id.id,
@@ -522,11 +430,16 @@ class ELN(models.Model):
 
     def reupdate_result(self):
         sample = self.sample_id.sudo()
-        # sample = self.sample_id
-        # import wdb;wdb.set_trace()
-        # print(sample)
+        
         self.sample_id.sudo().file_upload = self.file_upload
         sample.parameters_result.sudo().unlink()
+        # sample.write({
+        #     'quantity':self.quantity,
+        #     'uom_id':self.uom_id.id,
+        #     'quantity_received':self.quantity_received,
+        #     'quantity_consumed':self.quantity_consumed,
+        #     'quantity_balance':self.quantity_balance
+        #     })
         for result in self.parameters_result:
             sample.parameters_result.sudo().create({
                 'sample_id':self.sample_id.id,
@@ -536,17 +449,7 @@ class ELN(models.Model):
                 'specification':result.specification,
                 'test_method':result.test_method.id 
             })
-        # for result in self.parameters_result:
-        #     self.env["sample.parameters.result"].create({
-        #         'sample_id':self.sample_id.id,
-        #         'parameter': result.parameter.id,
-        #         'result': result.result,
-        #         'unit':result.unit.id,
-        #         'specification':result.specification,
-        #         'test_method':result.test_method.id
-        #     })
         
-
 
     
 

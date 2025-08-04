@@ -64,7 +64,6 @@ class ResPartner(models.Model):
         help='Default salesperson for this customer.')
 
 
-
 class AccountMoveLineInherited(models.Model):
     _inherit = 'account.move.line'
     

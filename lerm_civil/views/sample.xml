@@ -93,13 +93,13 @@
                                 <field name="invoice_number" readonly="1"/>
                                 <!-- <field name="file_upload" widget="many2many_binary" />
                                 <field name="report_upload" widget="many2many_binary" /> -->
-                                <field name="datasheet_path" readonly="1" />
+                                <!-- <field name="datasheet_path" readonly="1" />
                                 <button name="open_file_upload_datasheet" type="object" string="Upload" class="btn-primary" />
                                 <button name="download_attachment_datasheet" type="object" string="Download" class="btn-primary" />
 
                                 <field name="report_path"  readonly="1"/>
                                 <button name="open_file_upload_report" type="object" string="Upload" class="btn-primary" />
-                                <button name="download_attachment_report" type="object" string="Download" class="btn-primary" />
+                                <button name="download_attachment_report" type="object" string="Download" class="btn-primary" /> -->
 
 
                                 <field name='casting_date' invisible="casting != True" readonly="state != '1-allotment_pending'"/>
@@ -108,8 +108,23 @@
                                 <field name="testedby_signature_required" invisible="state not in ('4-in_report')"/>
                                 <field name="checkby_signature_required" invisible="state not in ('4-in_report')"/>
                                 <field name="approveby_signature_required" invisible="state not in ('4-in_report')"/>
-                                <field name="page_break" />
                                 <field name="received_by_id" readonly="state != '1-allotment_pending'"/>
+                                <field name="page_break" />
+                                <!-- <div class="o_row">
+                                    <span>Tested By:</span>
+                                    <field name="filled_by" readonly="1" class="oe_inline"/>
+                                    <field name="testedby_signature_required" invisible="state not in ('4-in_report')" class="oe_inline"/>
+                                </div>
+                                <div class="o_row">
+                                    <span>Checked By:</span>
+                                    <field name="check_by" readonly="1" class="oe_inline"/>
+                                    <field name="checkby_signature_required" invisible="state not in ('4-in_report')" class="oe_inline"/>
+                                </div>
+                                <div class="o_row">
+                                    <span>Approved By:</span>
+                                    <field name="approved_by" readonly="1" class="oe_inline"/>
+                                    <field name="approveby_signature_required" invisible="state not in ('4-in_report')" class="oe_inline"/>
+                                </div> -->
                             </group>
                             <group>
                                 <field name="lab_no_value" optional="show" invisible="1"/>
@@ -131,6 +146,27 @@
                             </group>
                            
                         </group>
+                        
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Sample Quantity</th>
+                                    <th>Received</th>
+                                    <th>Consumed</th>
+                                    <th>Discarded</th>
+                                    <th>Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><field name="uom_id" readonly="1"/></td>
+                                    <td><field name="quantity_received" readonly="1"/></td>
+                                    <td><field name="quantity_consumed" readonly="1"/></td>
+                                    <td><field name="quantity_discarded" readonly="1"/></td>
+                                    <td><field name="quantity_balance" readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
                         
                         
                         
