@@ -4,7 +4,7 @@
  'website': "http://www.esehat.org", 
  'category': 'Lerm Civil', 
  'version': '13.0.1', 
- 'depends':['base' , 'contacts','product' ,'hr','lerm_civil_inv', 'mail','attachment_indexation','maintenance','portal','ftp_storage'],
+ 'depends':['base' , 'contacts','product' ,'hr','lerm_civil_inv', 'mail','attachment_indexation','maintenance','portal'],
  'data': [
     'security/security.xml',
     'data/sequence.xml',
@@ -27,9 +27,8 @@
     'views/employee.xml',
     'views/product_grade_wizard.xml',
     'views/reallocation_wizard.xml',
-    'views/send_mail_wizard.xml',
-    'views/ftp_upload_wizard_views.xml',
-
+    # 'views/ftp_upload_wizard_views.xml',
+    # 'views/ftp_upload_wizard_views.xml',
     # 'views/mechanical/sieve_analysis.xml',
     'reports/eln_report_action.xml',
     'reports/eln_report_template.xml',
