@@ -32,6 +32,10 @@ class ParameterMaster(models.Model):
     fetch_by_grade = fields.Boolean("Fetch by Grade", default=True)
     fetch_by_size = fields.Boolean("Fetch by Size", default=True)
 
+    instrument = fields.Many2one('maintenance.equipment',string="Instrument")
+
+
+
 
     def name_get(self):
         res = []

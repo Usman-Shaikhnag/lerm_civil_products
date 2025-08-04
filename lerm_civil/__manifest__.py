@@ -10,6 +10,7 @@
     'data/sequence.xml',
     # 'data/module_category_data.xml',
     'views/enviroment_register.xml',
+    'views/sample_register.xml',
     'views/lerm.xml',
     'views/groups.xml',
     'views/res_company.xml',
@@ -26,6 +27,7 @@
     'views/employee.xml',
     'views/product_grade_wizard.xml',
     'views/reallocation_wizard.xml',
+    'views/send_mail_wizard.xml',
     'views/ftp_upload_wizard_views.xml',
 
     # 'views/mechanical/sieve_analysis.xml',
