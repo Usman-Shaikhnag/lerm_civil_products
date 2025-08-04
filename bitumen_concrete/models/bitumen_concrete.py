@@ -277,7 +277,7 @@ class BitumenConcrete(models.Model):
                         '15 - 30',
                         '9 -- 19',
                         '3 -- 8',
-                        '3 -- 8',
+                        '0',
                         '0',
                         '0',
                         '0',
@@ -385,32 +385,7 @@ class BitumenConcrete(models.Model):
                     line.specific_limt = limits[i]
                 else:
                     line.specific_limt = ''
-
-
-
-
-
-
-
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
+ 
 
     @api.onchange('sieve_analysis_child_lines')
     def _onchange_sieve_analysis_child_lines(self):
