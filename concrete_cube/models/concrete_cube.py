@@ -81,7 +81,7 @@ class MechanicalConcreteCube(models.Model):
             )
             if matching_line:
                 line = matching_line[0]
-                rec.days_28_kmm = rec.grade2 + 1.65 + line.sd
+                rec.days_28_kmm = rec.grade2 + (1.65 * line.sd)
 
     grade2 = fields.Float(string="Grade",compute="_compute_grade2",store=True)
 
@@ -116,7 +116,15 @@ class MechanicalConcreteCube(models.Model):
         ('28days', '28 Days'),
     ], string='Age', default='28days',required=True,compute="_compute_age_of_days")
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
-    date_of_testing = fields.Date(string="Date of Testing")
+    date_of_testing = fields.Date(string="Date of Testing",compute="_compute_date_testing")
+
+
+
+    @api.depends('eln_ref')
+    def _compute_date_testing(self):
+        if self.eln_ref:
+            self.date_of_testing = self.eln_ref.date_testing
+
     confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
