@@ -23,15 +23,14 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group  class="custom_table_borders">
-                      <field name="sample_parameters">
-                        <tree>
-                          <field name="parameter_name"/>
-                          <field name="test_method"/>
-                        
-                        </tree>
-                      </field>
-                    </group>
+                     <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
 
                      <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
                             <div style="width: 100%;">
@@ -61,7 +60,7 @@
 
 
                     <group invisible = "bitumen_content_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
-                        <h1>
+                        <h1 style="text-align: center;">
                             <field name="bitumen_content_name" readonly="1" nolabel="1"/>
                             <field name="bitumen_content_visible" invisible="1"/>
 
@@ -205,13 +204,22 @@
                     </group>
                   
                
-                    <group invisible = "sieve_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
-                        <h1>
+                    <!-- <group invisible = "sieve_visible == False"  >
+                        <h1 style="text-align: center;">
                             <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
                             <field name="sieve_visible" invisible="1"/>
 
                         </h1>
+                    </group> -->
+                    <group invisible="sieve_visible == False">
+                        <div style="text-align: center; width: 100%;">
+                            <h1>
+                                <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
+                            </h1>
+                            <field name="sieve_visible" invisible="1"/>
+                        </div>
                     </group>
+
                    
                     <group style="white-space: nowrap; width:70%;"  invisible = "sieve_visible == False">
                     
