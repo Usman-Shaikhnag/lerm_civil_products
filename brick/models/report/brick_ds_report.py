@@ -73,6 +73,7 @@ class BrickReport1(models.AbstractModel):
         }
         model = eln.get_product_base_calc_line(data).ir_model.model
         brick_data = self.env[model].search([("id","=",eln.model_id)])
+        
         return {
             'eln': eln,
             'brick': brick_data,

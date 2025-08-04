@@ -19,7 +19,7 @@
 						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
 							<tbody>
 								<tr>
-									<td style="width: 30%; padding: 5px;"><strong>#Client Details</strong></td>
+									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.srf_id.customer.name"/>
 									<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
@@ -32,12 +32,12 @@
 								</tr>
 								
 								<tr>
-									<td><strong>#Client's Reference</strong></td>
+									<td><strong>Client's Reference</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
 								</tr>
 
 								<tr>
-									<td><strong>#Name of Work</strong></td>
+									<td><strong>Name of Work</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 								</tr>
 
@@ -59,123 +59,24 @@
 									<td style="padding-left: 10px;"><span t-field="o.sample_id.size_id.size"/></td>
 								</tr>
 
-								<tr>
-									<td><strong>Source of Sample</strong></td>
-									<td style="padding-left: 10px;">Sample Supplied by Client</td>
+								<!-- Source of Sample (only if value exists) -->
+								<tr t-if="o.material.source_sample">
+									<td colspan="9" style="font-weight: bold;">Source of Sample</td>
+									<td >
+										<span t-field="o.material.source_sample"/>
+									</td>
+								</tr>
+
+								<!-- Test method adopted (only if value exists) -->
+								<tr t-if="o.material.test_method_adopted">
+									<td colspan="9" style="font-weight: bold;">Test method adopted:</td>
+									<td >
+										<span t-field="o.material.test_method_adopted"/>
+									</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
-					
-	
-
-
-					<!-- <div class="px-0" t-foreach="eln" t-as="o">
-						
-						<table style="margin-top:10px; width: 100%;">
-							<tbody>
-								<tr>
-									<td colspan="12">
-										<strong>Customer Party Name:</strong>
-										<span t-field="o.srf_id.customer.name"/>
-										<br/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
-									</td>
-								</tr>
-
-								<tr>
-									<td colspan="12">
-										<strong>Project / Site Address:</strong>
-										<span t-field="o.srf_id.name_work"/>
-									</td>
-								</tr>
-
-								<tr>
-									<td colspan="12">
-										<strong>Sample Description:</strong>
-										<span t-field="o.sample_id.sample_description"/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-
-						<table style="width: 100%; margin-top:10px;">
-							<tbody>
-								<tr>
-									<td colspan="6">
-										<strong>Test Start Date:</strong>
-										<span t-field="o.start_date"/>
-									</td>
-									<td colspan="6">
-										<strong>Test End Date:</strong>
-										<span t-field="o.end_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Sample Id Mark:</strong>
-										<span t-field="o.sample_id.client_sample_id"/>
-									</td>
-									<td colspan="6">
-										<strong>Sample Receipt Date:</strong>
-										<span t-field="o.sample_id.sample_received_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Size:</strong>
-										<span t-field="o.sample_id.size_id.size"/>
-									</td>
-									<td colspan="6">
-										<strong>Grade:</strong>
-										<span t-field="o.sample_id.grade_id.grade"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Brand:</strong>
-										<span t-field="o.sample_id.brand"/>
-									</td>
-									<td colspan="6">
-										<strong>Consultant Name:</strong>
-										<span t-field="o.srf_id.consultant_name1"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Client Name:</strong>
-										<span t-field="o.srf_id.client"/>
-									</td>
-									<td colspan="6">
-										<strong>Client Reference:</strong>
-										<span t-field="o.srf_id.client_refrence"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Discipline:</strong>
-										<span t-field="o.discipline.discipline"/>
-									</td>
-									<td colspan="6">
-										<strong>Group:</strong>
-										<span t-field="o.group.group"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="12">
-										<strong>Material/Test Name:</strong>
-										<span t-field="o.material.name"/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div> -->
-
 					
 
 					<!-- 1 Compressive strength  -->
@@ -304,7 +205,7 @@
 										Checked By
 									</b>
 								</div>
-								<div style="height:15px">
+								<div style="height:40px">
 
 								</div>
 								<div>
@@ -335,7 +236,7 @@
 									</b>
 									
 								</div>
-								<div style="height:15px">
+								<div style="height:40px">
 
 								</div>
 								<div>

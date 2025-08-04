@@ -87,6 +87,7 @@
                                 <field name='percent_retained' readonly="1" string="% Retained"/>
                                 <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1" string="Cum. Retained %"/>
                                 <field name='passing_percent' string="Passing %" readonly="1"/>
+                                <field name='requirements' />
                             </tree>
                         </field>
                     </div>
@@ -100,6 +101,8 @@
                     <group invisible="not combined_gradation_visible">
                         <field name="total_combined_gradation" widget="monetary" string="Total"/>
                     </group> 
+
+                    <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>
             </form>
         </field>

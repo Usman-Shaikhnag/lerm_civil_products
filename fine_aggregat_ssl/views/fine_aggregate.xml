@@ -22,361 +22,161 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group  class="custom_table_borders">
-                      <field name="sample_parameters">
-                        <tree>
-                          <field name="parameter_name"/>
-                          <field name="test_method"/>
-                        
-                        </tree>
-                      </field>
-                    </group>
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
                   
                
-                    <group invisible = "sieve_visible == False" style="white-space: nowrap; width:70%;" >
-                        <h1>
+                    <div invisible="sieve_visible == False" >
+                        <h1 style="text-align: center;">
                             <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
                             <field name="sieve_visible" invisible="1"/>
 
                         </h1>
-                    </group>
+                    </div>
                    
-                    <group style="white-space: nowrap; width:70%;"  invisible = "sieve_visible == False">
-                       <!-- <group>
-                        <field name="wt_of_sample" />
-                        </group>
-                    
-                        <group style="padding-right: 50px;">
-                        <field name="zone_type" />
-                        </group> -->
-
-                     <group >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 40%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                            Weight of Sample
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="wt_of_sample" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                              gms
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="wt_of_sample"/></td>
+                                <td  class="w-25">
+                                    <field name="wt_of_sample"/>
+                                </td>
+                                <td class="w-25"><label for="zone_type"/></td>
+                                <td  class="w-25">
+                                    <field name="zone_type"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
-                   <group >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 40%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                            Zone
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="zone_type" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                </group>
-
-            </group>
-                    <div invisible = "sieve_visible == False"  >
-                    <field name="sieve_analysis_child_lines" nolabel="1" >
-                            <tree editable="bottom"  class="custom_table_borders">
-                                <field name="serial_no" string="Sr.No"/>
-                                <field name='sieve_size' string="IS Sieve Size"/>
-                                <field name='wt_retained' string="Wt. Retained in gms"/>
-                                <field name='percent_retained' string="% Retained"/>
-                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
-                                <field name='passing_percent' string="Passing %" readonly="1"/>
-                                  <field name='specific_limt' string="Specified Limits" class="oe_center"/>
+                    <div invisible="sieve_visible == False">
+                        <field name="sieve_analysis_child_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders ">
+                                <field class="" name="serial_no" string="Sr.No"/>
+                                <field class="" name='sieve_size' string="IS Sieve Size"/>
+                                <field class="" name='wt_retained' string="Wt. Retained in gms"/>
+                                <field class="" name='percent_retained' string="% Retained"/>
+                                <field class="" name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
+                                <field class="" name='passing_percent' string="Passing %" readonly="1"/>
+                                <field class=" oe_center" name='specific_limt' string="Specified Limits"/>
                                 
                             </tree>
-                    </field>
+                        </field>
                     </div>
-                  <div invisible="sieve_visible == False">
-                    <button string="Calculate"
-                            type="object"
-                            name="calculate_sieve"
-                            class="oe_highlight">
-                        <i class="fa fa-calculator"/> Calculate
-                    </button>
-                </div>
+                    <div invisible="sieve_visible == False">
+                        <button string="Calculate" type="object" name="calculate_sieve" class="oe_highlight">
+                            <i class="fa fa-calculator"/> Calculate
+                        </button>
+                    </div>
 
-                    <group   invisible = "sieve_visible == False" string="Result"  style="white-space: nowrap; width:70%; margin-top: 10px">
-                        <!-- <field name="grading"/>
-                        <field name="fineness_modulus"/> -->
-
-                          <group   style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                           Grading
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="grading" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                        
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-                      <group   style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                          Fineness Modulus
-
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="fineness_modulus" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                        
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                        
-                    </group>
+                <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
+                    <tbody>
+                        <tr>
+                            <td class=""><label for="grading"/></td>
+                            <td  class=""><field name="grading"/></td>
+                        </tr>
+                        <tr>
+                            <td class=""><label for="fineness_modulus"/></td>
+                            <td  class=""><field name="fineness_modulus"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                    
 
 
                       <!-- Soundness Na2So4  -->
-                <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;">
-                        <h1>
-                            <field name="specific_gravity_name" readonly="1" nolabel="1"/>
-                            <field name="specific_gravity_visible" invisible="1"/>
+                <div invisible="specific_gravity_visible == False">
+                    <h1 class="text-center">
+                        <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                        <field name="specific_gravity_visible" invisible="1"/>
 
-                        </h1>
-                    </group>
-                    <group invisible = "specific_gravity_visible == False">
-                    <field name="specific_gravity_child_lines"  style="width:100%" >
-                            <tree editable="bottom"  class="custom_table_borders">
-                                <field name="serial_no"/>
-                                <field name="wt_of_staurated_a"/>
-                                <field name="wt_of_pycnometer_b" />
-                                <field name="wt_of_pycnometer_c"/>
-                                <field name="wt_of_oven_d"/>
-                                <!-- <field name="specific_gravity" readonly='1'/>
-                                <field name="water_absorption"/> -->
-                            </tree>
+                    </h1>
+                </div>
+                <div invisible="specific_gravity_visible == False">
+                    <field name="specific_gravity_child_lines" nolabel="1"  style="width:100%" >
+                        <tree editable="bottom"  class="custom_table_borders">
+                            <field name="serial_no"/>
+                            <field name="wt_of_staurated_a"/>
+                            <field name="wt_of_pycnometer_b" />
+                            <field name="wt_of_pycnometer_c"/>
+                            <field name="wt_of_oven_d"/>
+                        </tree>
                     </field>
-                   
-                    </group>
-                     <!-- <group invisible = "specific_gravity_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
-                     
-                        <field name="avg_staurated_a" readonly="1"/>
-                        <field name="avg_pycnometer_b" readonly="1"/>
-                        <field name="avg_pycnometer_c" readonly="1"/>
-                        <field name="avg_oven_d" readonly="1"/>
-                  
-                    </group> -->
-
-                    <group invisible = "specific_gravity_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
-
-                     <group style="white-space: nowrap; width:70%"  >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                            Wt of Saturated surface dry Aggregate in Air:- (A)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="avg_staurated_a" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                mm²
-                                            </td> -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                    <group style="white-space: nowrap; width:70%" >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                         Wt of Pycnometer containing sample and Water:- (B)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="avg_pycnometer_b" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                mm²
-                                            </td> -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-                     <group style="white-space: nowrap; width:70%" >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                      Wt of Pycnometer containing Water:- (C)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="avg_pycnometer_c" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                mm²
-                                            </td> -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-                    <group style="white-space: nowrap; width:70%" >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                    Wt of Oven Dried Aggregate :- ( D )
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="avg_oven_d" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                mm²
-                                            </td> -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                    </group>
                 
-                    <!-- <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;margin-top: 10px">
-                        <field name="specific_gravity" />
-                        <field name="water_absorption" string="Water Absorption % " />
-                    </group> -->
-               <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;margin-top: 10px">
-                    <group style="white-space: nowrap; width:70%;margin-top: 10px" >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                  Avg Specific Gravity
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="specific_gravity" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                mm²
-                                            </td> -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
+                </div>
 
-                     <group style="white-space: nowrap; width:70%;margin-top: 10px" >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                              Water Absorption %
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="water_absorption" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                mm²
-                                            </td> -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                    </group>
-                    <group  invisible = "specific_gravity_visible == False">
-                          <group>
-                            <field  name="specific_gravity_conformity"
-                                           decoration-success="specific_gravity_conformity == 'pass'" 
-                                           decoration-danger="specific_gravity_conformity == 'fail'" 
-                                           readonly="1"/>
-                            <field  name="specific_gravity_nabl"/>
-                          </group>
-                    </group>
+                    <!-- Left-side table for A, B, C, D -->
+                <div style="display: flex; gap: 20px;" invisible="not specific_gravity_visible">
+                    <!-- Left table -->
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50">
+                        <tbody>
+                            <tr>
+                                <td><label for="avg_staurated_a">Wt of Saturated surface dry Aggregate in Air: (A)</label></td>
+                                <td><field name="avg_staurated_a"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="avg_pycnometer_b">Wt of Pycnometer containing sample and Water: (B)</label></td>
+                                <td><field name="avg_pycnometer_b"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="avg_pycnometer_c">Wt of Pycnometer containing Water: (C)</label></td>
+                                <td><field name="avg_pycnometer_c"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="avg_oven_d">Wt of Oven Dried Aggregate: (D)</label></td>
+                                <td><field name="avg_oven_d"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Right table -->
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50">
+                        <tbody>
+                            <tr>
+                                <td><label for="specific_gravity">Avg Specific Gravity</label></td>
+                                <td><field name="specific_gravity" nolabel="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="water_absorption">Water Absorption %</label></td>
+                                <td><field name="water_absorption" nolabel="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="specific_gravity_conformity">Specific Gravity Conformity</label></td>
+                                <td>
+                                    <field name="specific_gravity_conformity"
+                                        decoration-success="specific_gravity_conformity == 'pass'"
+                                        decoration-danger="specific_gravity_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="specific_gravity_nabl">Specific Gravity NABL</label></td>
+                                <td>
+                                    <field name="specific_gravity_nabl" readonly="1"
+                                        decoration-success="specific_gravity_nabl == 'pass'"
+                                        decoration-danger="specific_gravity_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
 
                                    <!-- loose_bulk_visible -->
 
-                     <group invisible = "loose_bulk_visible == False" style="white-space: nowrap; width:70%;">
-                        <h1>
+                     <div invisible="loose_bulk_visible == False">
+                        <h1 class="text-center">
                             <field name="loose_bulk_name" readonly="1" nolabel="1"/>
                             <field name="loose_bulk_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
                    
                    
 
@@ -388,210 +188,95 @@
                         <field name="loose_bulk_density" />
                           <field name="compact_bulk_density" />
                     </group> -->
-              
-                     <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                          <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                                Volume of Bucket V
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="weight_bucket" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                        
-                                                 <div style="display: inline-block; min-width: 200px;">
-                                                         ltrs
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                    <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                       Empty weight of bucket M1
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="empty_bucket" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                              <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                            <div style="display: inline-block; min-width: 200px;">
-                                                 g
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-                     <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                     Bucket + Compacted Aggregate
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="bucket_compact" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                              <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                             <div style="display: inline-block; min-width: 200px;">
-                                                  g
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-                    <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                   Bucket + Loose Aggregate
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="bucket_loos" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                              <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                          <div style="display: inline-block; min-width: 200px;">
-                                                 g
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-
-                     <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                  Loose Bulk Density 
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="loose_bulk_density" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                              <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    kg/cu.m
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-
-                     <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                  Compacted Bulk Density 
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="compact_bulk_density" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                              <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                           
-                                             <div style="display: inline-block; min-width: 200px;">
-                                                    kg/cu.m
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-                    <group invisible = "loose_bulk_visible == False">
-                          <group>
-                            <field  name="loose_bulk_density_conformity"
-                                          decoration-success="loose_bulk_density_conformity == 'pass'" 
-                                           decoration-danger="loose_bulk_density_conformity == 'fail'" 
-                                           readonly="1"/>
-                            <field  name="loose_bulk_density_nabl"/>
-                          </group>
-                    </group>
+                            <table invisible="loose_bulk_visible == False" class="table table-sm table-bordered w-50 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><label class="fw-bold" for="weight_bucket"/></td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <field name="weight_bucket"/> 
+                                                <span> ltrs</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="fw-bold" for="empty_bucket"/></td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <field name="empty_bucket"/> 
+                                                <span> g</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="fw-bold" for="bucket_compact"/></td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <field name="bucket_compact"/> 
+                                                <span> g</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="fw-bold" for="bucket_loos"/></td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <field name="bucket_loos"/> 
+                                                <span> g</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table invisible="loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><label class="fw-bold" for="loose_bulk_density"/></td>
+                                        <td><field name="loose_bulk_density"/> <span>kg/cu.m</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="fw-bold" for="compact_bulk_density"/></td>
+                                        <td><field name="compact_bulk_density" nolabel="1"/> <span>kg/cu.m</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="fw-bold" for="loose_bulk_density_conformity"/></td>
+                                        <td><field name="loose_bulk_density_conformity" 
+                                                            decoration-success="loose_bulk_density_conformity == 'pass'" 
+                                                            decoration-danger="loose_bulk_density_conformity == 'fail'" 
+                                                            readonly="1"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="fw-bold" for="loose_bulk_density_nabl"/></td>
+                                        <td><field name="loose_bulk_density_nabl" 
+                                                            decoration-success="loose_bulk_density_nabl == 'pass'" 
+                                                            decoration-danger="loose_bulk_density_nabl == 'fail'" 
+                                                            readonly="1"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
 
 
                          <!-- Bulking of Sand -->
-                <group invisible = "bulking_sand_visible == False" style="white-space: nowrap; width:70%;" >
-                        <h1>
-                            <field name="bulking_sand_name" readonly="1" nolabel="1"/>
+                    <div invisible = "bulking_sand_visible == False">
+                        <h1 class="text-center">
+                            <field name="bulking_sand_name" readonly="1"/>
                             <field name="bulking_sand_visible" invisible="1"/>
-
                         </h1>
-                    </group>
-                    <group invisible = "bulking_sand_visible == False">
-                    <field name="bulking_sand_child_lines"  style="width:100%" >
+                    </div>
+
+                    <div invisible="bulking_sand_visible == False">
+                        <field name="bulking_sand_child_lines"  style="width:100%" nolabel="1">
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no"/>
                                 <field name="height_of_sand"/>
                                 <field name="height_of_settled"/>
                                 <field name="loss_off_height"/>
                                 <!-- <field name="bulking_of_sand"/> -->
-                           
                             </tree>
-                    </field>
+                        </field>
                    
-                    </group>
+                    </div>
 
                     <!-- <group invisible = "bulking_sand_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
                      
@@ -600,417 +285,169 @@
                         <field name="avg_loss_c" readonly="1"/>
                   
                     </group> -->
-               <group invisible = "bulking_sand_visible == False" string="Result">
-                    <group  style="white-space: nowrap; width:70%" >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                         Height of Sand in Cylinder:- (A)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="avg_height_sand_a" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                mm²
-                                            </td> -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                    <group style="white-space: nowrap; width:70%" >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                      Height of Settled Sand:- (B)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="avg_height_sattled_b" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                mm²
-                                            </td> -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-                     <group style="white-space: nowrap; width:70%" >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                     Loss of Height of Sand:- (A-B)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="avg_loss_c" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                mm²
-                                            </td> -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-                   
-                </group>
-                
-                    <group invisible = "bulking_sand_visible == False" style="white-space: nowrap; width:70%;">
-                        <!-- <field name="avg_bulking_of_sand"/> -->
-
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                        Average Bulking of Sand (%)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="avg_bulking_of_sand" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                mm²
-                                            </td> -->
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                       
-                    <group invisible = "bulking_sand_visible == False">
-                          <group>
-                            <field  name="avg_bulking_of_sand_conformity"
-                                           decoration-success="avg_bulking_of_sand_conformity == 'pass'" 
-                                           decoration-danger="avg_bulking_of_sand_conformity == 'fail'" 
-                                           readonly="1"/>
-                            <field  name="avg_bulking_of_sand_nabl"/>
-                          </group>
-                    </group>
+               <table invisible="bulking_sand_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                    <tbody>
+                        <tr>
+                            <td><label class="fw-bold" for="avg_height_sand_a">Height of Sand in Cylinder (A)</label></td>
+                            <td><field name="avg_height_sand_a"/></td>
+                        </tr>
+                        <tr>
+                            <td><label class="fw-bold" for="avg_height_sattled_b">Height of Settled Sand (B)</label></td>
+                            <td><field name="avg_height_sattled_b"/></td>
+                        </tr>
+                        <tr>
+                            <td><label class="fw-bold" for="avg_loss_c">Loss of Height of Sand (A - B)</label></td>
+                            <td><field name="avg_loss_c"/></td>
+                        </tr>
+                        <tr>
+                            <td><label class="fw-bold" for="avg_bulking_of_sand">Average Bulking of Sand (%)</label></td>
+                            <td><field name="avg_bulking_of_sand"/></td>
+                        </tr>
+                        <tr>
+                            <td><label class="fw-bold" for="avg_bulking_of_sand_conformity">Bulking Conformity</label></td>
+                            <td>
+                                <field name="avg_bulking_of_sand_conformity"
+                                    decoration-success="avg_bulking_of_sand_conformity == 'pass'"
+                                    decoration-danger="avg_bulking_of_sand_conformity == 'fail'"
+                                    readonly="1"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="fw-bold" for="avg_bulking_of_sand_nabl">Bulking NABL</label></td>
+                            <td><field name="avg_bulking_of_sand_nabl"
+                                        decoration-success="avg_bulking_of_sand_nabl == 'pass'"
+                                    decoration-danger="avg_bulking_of_sand_nabl == 'fail'"
+                                    readonly="1"/></td>
+                        </tr>
+                    </tbody>
+                </table>
 
 
 
-                      <!-- site_content_visible -->
-                <group invisible = "site_content_visible == False" style="white-space: nowrap; width:70%;">
-                        <h1>
-                            <field name="site_content_name" readonly="1" nolabel="1"/>
-                            <field name="site_content_visible" invisible="1"/>
+                    <!-- site_content_visible -->
+                <div invisible = "site_content_visible == False">
+                    <h1 class="text-center">
+                        <field name="site_content_name" readonly="1" nolabel="1"/>
+                        <field name="site_content_visible" invisible="1"/>
 
-                        </h1>
-                    </group>
-                    <group invisible = "site_content_visible == False">
-                    <field name="site_content_child_lines"  style="width:100%" >
-                            <tree editable="bottom"  class="custom_table_borders">
-                                <field name="serial_no"/>
-                                <field name="heigh_sand_silt"/>
-                                <field name="height_of_sand" />
-                                <field name="height_silt"/>
-                                <!-- <field name="bulking_of_sand1"/> -->
-                           
-                            </tree>
-                    </field>
-                   
-                    </group>
+                    </h1>
+                </div>
 
-                    <group invisible = "site_content_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
-                     
-                        <!-- <field name="content_height_sand_a" readonly="1"/>
-                        <field name="content_height_sand_b" readonly="1"/>
-                        <field name="content_slit_c" readonly="1"/> -->
+                <div invisible = "site_content_visible == False">
+                    <field name="site_content_child_lines"  nolabel="1" >
+                        <tree editable="bottom"  class="custom_table_borders">
+                            <field name="serial_no"/>
+                            <field name="heigh_sand_silt"/>
+                            <field name="height_of_sand" />
+                            <field name="height_silt"/>
+                            <!-- <field name="bulking_of_sand1"/> -->
+                        </tree>
+                    </field>   
+                </div>
 
-                          <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                          <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                             Height of Sand + Silt in the glass Cylinder:- (A)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="content_height_sand_a" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                           
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                    <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                      Height of Sand:- (B)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="content_height_sand_b" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                          
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-                     <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                Height of Silt:- (A-B)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="content_slit_c" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                            
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-                 
-
-
-                
-                    <group invisible = "site_content_visible == False" style="white-space: nowrap; width:70%;margin-top: 10px">
-                        <!-- <field name="avg_bulking_of_sand1"/> -->
-
-                           <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                   Silt Contect
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="avg_bulking_of_sand1" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                              <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                          <div style="display: inline-block; min-width: 200px;">
-                                               %
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                  
-                    </group>
-                       
-                    </group>
-                    <group invisible = "site_content_visible == False" tyle="white-space: nowrap; width:70%;margin-top: 10px">
-                          <group>
-                            <field  name="avg_bulking_of_sand1_conformity"
-                                           decoration-success="avg_bulking_of_sand1_conformity == 'pass'" 
-                                           decoration-danger="avg_bulking_of_sand1_conformity == 'fail'" 
-                                           readonly="1"/>
-                            <field  name="avg_bulking_of_sand1_nabl"/>
-                          </group>
-                    </group>
+                    <table invisible="site_content_visible == False or loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="content_height_sand_a">Height of Sand + Silt in the Cylinder (A)</label></td>
+                                <td><field name="content_height_sand_a" /></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="content_height_sand_b">Height of Sand (B)</label></td>
+                                <td><field name="content_height_sand_b" /></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="content_slit_c">Height of Silt (A - B)</label></td>
+                                <td><field name="content_slit_c" /></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_bulking_of_sand1">Silt Content</label></td>
+                                <td>
+                                    <div class="d-flex">
+                                        <field name="avg_bulking_of_sand1" />
+                                        <span class="ms-2">%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_bulking_of_sand1_conformity">Silt Content Conformity</label></td>
+                                <td>
+                                    <field name="avg_bulking_of_sand1_conformity"
+                                        decoration-success="avg_bulking_of_sand1_conformity == 'pass'"
+                                        decoration-danger="avg_bulking_of_sand1_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_bulking_of_sand1_nabl">Silt Content NABL</label></td>
+                                <td><field name="avg_bulking_of_sand1_nabl"
+                                        decoration-success="avg_bulking_of_sand1_nabl == 'pass'"
+                                        decoration-danger="avg_bulking_of_sand1_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
                      <!-- Moisture Content -->
-                <group invisible = "moisture_content_visible == False"  style="white-space: nowrap; width:70%;">
-                        <h1>
+                    <div invisible = "moisture_content_visible == False">
+                        <h1 class="text-center">
                             <field name="moisture_content_name1" readonly="1" nolabel="1"/>
                             <field name="moisture_content_visible" invisible="1"/>
-
                         </h1>
-                    </group>
-                    <group invisible = "moisture_content_visible == False">
-                    <field name="moisture_content_child_lines"  style="width:100%" >
+                    </div>
+
+                    <div invisible = "moisture_content_visible == False">
+                        <field name="moisture_content_child_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no"/>
                                 <field name="wt_sand"/>
                                 <field name="wt_dry" />
                                 <field name="diff_wet_sand"/>
                                 <!-- <field name="moisture_content"/> -->
-                           
                             </tree>
-                    </field>
-                   
-                    </group>
+                        </field>
+                    </div>
 
-                      <group invisible = "moisture_content_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
-                     
-                        <!-- <field name="wet_sand" readonly="1"/>
-                        <field name="wet_dry" readonly="1"/>
-                        <field name="diff_wd" readonly="1"/> -->
-
-
-                           <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                              Weight of Wet Sand Sample, (W1)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="wet_dry" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                        
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-
-
-
-                      <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                          Weight of Dry Sand Sample, (W2)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="wet_sand" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                        
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-                     <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                           Diff. Between Wet and Dry Sand:- (W1-W2)
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="diff_wd" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                        
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                  
-                  
-                    </group>
-                
-                    <group invisible = "moisture_content_visible == False" >
-                        <!-- <field name="avg_moisture"/> -->
-
-
-
-                         <group invisible = "loose_bulk_visible == False"  style="white-space: nowrap; width:80%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 80%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; min-width: 500px;">
-                                 Average Moisture Content 
-
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 200px;">
-                                                    <field name="avg_moisture" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                              <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                          <div style="display: inline-block; min-width: 200px;">
-                                               %
-                                                </div>
-                                            </td>
-                                        
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                       
-                    </group>
-                    <group invisible = "moisture_content_visible == False">
-                          <group>
-                            <field  name="avg_moisture_conformity"
-                                           decoration-success="avg_moisture_conformity == 'pass'" 
-                                           decoration-danger="avg_moisture_conformity == 'fail'" 
-                                           readonly="1"/>
-                            <field  name="avg_moisture_nabl"/>
-                          </group>
-                    </group>
+                    <table invisible="moisture_content_visible == False or loose_bulk_visible == False" class="table table-sm table-bordered w-75 mt-2 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="wet_dry">Weight of Wet Sand Sample (W1)</label></td>
+                                <td><field name="wet_dry" nolabel="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="wet_sand">Weight of Dry Sand Sample (W2)</label></td>
+                                <td><field name="wet_sand" nolabel="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="diff_wd">Diff. Between Wet and Dry Sand (W1 - W2)</label></td>
+                                <td><field name="diff_wd" nolabel="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_moisture">Average Moisture Content</label></td>
+                                <td>
+                                    <div class="d-flex">
+                                        <field name="avg_moisture" nolabel="1"/>
+                                        <span class="ms-2">%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_moisture_conformity">Moisture Content Conformity</label></td>
+                                <td>
+                                    <field name="avg_moisture_conformity"
+                                        decoration-success="avg_moisture_conformity == 'pass'"
+                                        decoration-danger="avg_moisture_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_moisture_nabl">Moisture Content NABL</label></td>
+                                <td><field name="avg_moisture_nabl" 
+                                            decoration-success="avg_moisture_nabl == 'pass'"
+                                            decoration-danger="avg_moisture_nabl == 'fail'" readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
                   

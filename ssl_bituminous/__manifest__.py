@@ -16,7 +16,12 @@ This module contains all the common features of Sales Management and eCommerce.
                 'views/ssl_bituminous.xml',
                 'reports/bituminous_ds_report.xml'
     ],
-  
+      'assets': {
+        'web.assets_backend': [
+            'coarse_aggregate/static/src/css/custom_style.css',
+
+        ],
+    },  # ✅ COMMA added here
     'installable': True,
     'auto_install': False,
    

@@ -114,6 +114,8 @@ class LermSampleForm(models.Model):
         help='Attach multiple images to the sample',
     )
     
+    datasheet_path = fields.Char(string="Datasheet")
+    
     report_upload = fields.Many2many(
         'ir.attachment',
         'lerm_report_upload_rel',
@@ -122,6 +124,8 @@ class LermSampleForm(models.Model):
         string='Report Upload',
         help='Attach multiple images to the sample',
     )
+    
+    report_path = fields.Char(string="Report")
     
 
 
@@ -174,6 +178,65 @@ class LermSampleForm(models.Model):
             rec.quantity_balance = rec.quantity_received - rec.quantity_consumed - rec.quantity_discarded
 
             
+    
+    
+    def download_attachment_report(self):
+        host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
+        if not self.report_path:
+            raise ValidationError("Report Not Uploaded")
+        ftp_url = f"https://{host}/files/{self.report_path}"
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f"/web/binary/download_ftp?url={ftp_url}",
+            'target': 'self',
+        }
+    
+    
+    
+    def open_file_upload_report(self):
+        action = self.env.ref('lerm_civil.view_ftp_upload_wizard_form')
+        return {
+            'name': "Upload File Wizard",
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'file.upload.wizard',
+            'view_id': action.id,
+            'target': 'new',
+            'context': {
+                'default_form_name': 'lerm.srf.sample',
+                'default_field_name':'report_path'
+                }
+            }
+    
+    
+    def download_attachment_datasheet(self):
+        host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
+        if not self.datasheet_path:
+            raise ValidationError("Datasheet Not Uploaded")
+        ftp_url = f"https://{host}/files/{self.datasheet_path}"
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f"/web/binary/download_ftp?url={ftp_url}",
+            'target': 'self',
+        }
+    
+    def open_file_upload_datasheet(self):
+        action = self.env.ref('lerm_civil.view_ftp_upload_wizard_form')
+        return {
+            'name': "Upload File Wizard",
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'file.upload.wizard',
+            'view_id': action.id,
+            'target': 'new',
+            'context': {
+                'default_form_name': 'lerm.srf.sample',
+                'default_field_name':'datasheet_path'
+                }
+            }
+    
     @api.depends('srf_id.client_refrence')
     def _compute_client_reference(self):
         for record in self:
@@ -379,26 +442,33 @@ class LermSampleForm(models.Model):
         # eln.write({'state':'3-approved'})
 
 
+    # def approve_pending_sample(self):
+    #     for result in self.parameters_result:
+    #         self.approved_by = self.env.user
+    #         if not result.verified:
+    #             raise ValidationError("Not all parameters are verified. Please ensure all parameters are verified before proceeding.")
+    #     if len(self.file_upload) > 0:
+    #         self.write({'state': '4-in_report'})
+    #         eln = self.env['lerm.eln'].sudo().search([('sample_id','=',self.id)])
+    #         approved_by = self.env.user
+    #         eln.write({'state':'3-approved'})
+    #     else:
+    #         raise ValidationError("Please attach datasheet before submitting")
+
     def approve_pending_sample(self):
         for result in self.parameters_result:
-            self.approved_by = self.env.user
             if not result.verified:
                 raise ValidationError("Not all parameters are verified. Please ensure all parameters are verified before proceeding.")
-        if len(self.file_upload) > 0:
-            self.write({
-                'state': '4-in_report',
-                'report_issued_date': fields.Date.today()
-                })
-            eln = self.env['lerm.eln'].sudo().search([('sample_id','=',self.id)])
-            approved_by = self.env.user
-            eln.write({'state':'3-approved'})
-            # Write to sample register
-            sample_register = self.env['lerm.sample.register'].sudo().search([('id','=',self.id)],limit=1)
-            sample_register.sudo().write({
-                'report_issued_date':self.report_issued_date
-            })
-        else:
-            raise ValidationError("Please attach datasheet before submitting")
+        
+        if not self.datasheet_path:
+            raise ValidationError("Please attach datasheet before submitting.")
+
+        self.approved_by = self.env.user
+        self.write({'state': '4-in_report'})
+        
+        eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', self.id)])
+        eln.write({'state': '3-approved'})
+
         
 
     # def reject_pending_sample(self):

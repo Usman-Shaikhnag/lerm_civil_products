@@ -55,7 +55,7 @@ class BituminiousReport(models.AbstractModel):
         }
         model = eln.get_product_base_calc_line(data).ir_model.model
         coarse_data = self.env[model].search([("id","=",eln.model_id)])
-
+        # import wdb;wdb.set_trace()
         return {
             'eln': eln,
             'data': coarse_data,

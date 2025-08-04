@@ -34,6 +34,9 @@ class Material(models.Model):
     show_lerm_tabs = fields.Boolean(compute="_compute_visibility_flags", store=False)
     show_product_based_tab = fields.Boolean(compute="_compute_visibility_flags", store=False)
 
+    source_sample = fields.Char(string="Source Sample")
+    test_method_adopted = fields.Char(string="Test Method Adopted")
+
     @api.depends('is_sample', 'is_product_based_calculation')
     def _compute_visibility_flags(self):
         for rec in self:
