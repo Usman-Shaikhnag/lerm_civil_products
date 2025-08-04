@@ -13,6 +13,8 @@
         'views/ftp_storage_views.xml',
         'views/ftp_upload_wizard_views.xml',
         'views/srf_ftp_views.xml',
+        'views/sample_ftp_views.xml',
+        'views/eln_ftp_views.xml'
     ],
     'installable': True,
     'application': False,

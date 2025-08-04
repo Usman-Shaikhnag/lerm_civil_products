@@ -2,8 +2,7 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
 class SrfFTP(models.Model):
-    _name = 'lerm.civil.srf.ftp'
-    _description = 'SRF FTP Module'
+
     _inherit = 'lerm.civil.srf'
 
     attachment_path = fields.Char("Attachment")
@@ -18,7 +17,7 @@ class SrfFTP(models.Model):
         }
 
     def open_file_upload(self):
-        action = self.env.ref('lerm_civil.view_ftp_upload_wizard_form')
+        action = self.env.ref('ftp_storage.view_ftp_upload_wizard_form')
         return {
             'name': "Upload File Wizard",
             'type': 'ir.actions.act_window',
@@ -32,3 +31,6 @@ class SrfFTP(models.Model):
                 'default_field_name':'attachment_path'
                 }
             }
+
+
+

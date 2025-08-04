@@ -486,63 +486,63 @@ class SrfForm(models.Model):
         attachment_path = self.attachment_path
         pattern = r'(?<=/)\d+(?=/)'
 
-        
-        if re.search(pattern, attachment_path):
-           # Replace the number with your desired value (e.g., 'XX')
-            old_path = re.sub(pattern, str(self.id) , attachment_path)
-            # import wdb;wdb.set_trace()
-            file_name = old_path.rsplit('/', 1)[1]
-            
-            old_path = old_path.rsplit('/', 1)[0]
-            
-          
-            new_path = re.sub(pattern, self.srf_id.replace("/", "").replace("-", ""), attachment_path)
-            # import wdb;wdb.set_trace()
-            
-            new_path = new_path.rsplit('/', 1)[0]
+        if attachment_path:
+            if re.search(pattern, attachment_path):
+                # Replace the number with your desired value (e.g., 'XX')
+                old_path = re.sub(pattern, str(self.id) , attachment_path)
+                # import wdb;wdb.set_trace()
+                file_name = old_path.rsplit('/', 1)[1]
+                
+                old_path = old_path.rsplit('/', 1)[0]
+                
+                
+                new_path = re.sub(pattern, self.srf_id.replace("/", "").replace("-", ""), attachment_path)
+                # import wdb;wdb.set_trace()
+                
+                new_path = new_path.rsplit('/', 1)[0]
 
-            
-            
-            ftp_storage = self.env["ftp.storage"].search([("active","=",True)])
-            
-            transport = paramiko.Transport((ftp_storage.host, ftp_storage.port or 22))
-            transport.banner_timeout = 60
-            transport.connect(
-                username=ftp_storage.username,
-                password=ftp_storage.password
-            )
-            sftp = paramiko.SFTPClient.from_transport(transport)
-            
-            # sftp.rename("/home/"+old_path,"/home/"+new_path)
-            
+                
+                
+                ftp_storage = self.env["ftp.storage"].search([("active","=",True)])
+                
+                transport = paramiko.Transport((ftp_storage.host, ftp_storage.port or 22))
+                transport.banner_timeout = 60
+                transport.connect(
+                    username=ftp_storage.username,
+                    password=ftp_storage.password
+                )
+                sftp = paramiko.SFTPClient.from_transport(transport)
+                
+                # sftp.rename("/home/"+old_path,"/home/"+new_path)
+                
 
-            try:
-                print(f"Source file attributes: {sftp.stat('/home/' + old_path)}")
-            except FileNotFoundError:
-                print("ERROR: Source file doesn't exist!")
-                # List directory contents to see what's actually there
-                dir_path = os.path.dirname('/home/' + old_path)
-                print(f"Contents of {dir_path}: {sftp.listdir(dir_path)}")
-            
-            # Perform the rename
-            # import wdb;wdb.set_trace()
-            
-            try:
-                sftp.rename("/home/"+old_path, "/home/"+new_path)
-                self.write({'attachment_path': new_path+"/"+file_name})
-            except Exception as e:
-                print(f"Rename failed: {str(e)}")
-                raise
+                try:
+                    print(f"Source file attributes: {sftp.stat('/home/' + old_path)}")
+                except FileNotFoundError:
+                    print("ERROR: Source file doesn't exist!")
+                    # List directory contents to see what's actually there
+                    dir_path = os.path.dirname('/home/' + old_path)
+                    print(f"Contents of {dir_path}: {sftp.listdir(dir_path)}")
+                
+                # Perform the rename
+                # import wdb;wdb.set_trace()
+                
+                try:
+                    sftp.rename("/home/"+old_path, "/home/"+new_path)
+                    self.write({'attachment_path': new_path+"/"+file_name})
+                except Exception as e:
+                    print(f"Rename failed: {str(e)}")
+                    raise
 
 
 
-            sftp.close()
+                sftp.close()
+                
+                
+                
+            else:
+                print("No number found in the middle")
             
-            
-            
-        else:
-            print("No number found in the middle")
-        
         
         
         # for record in self:

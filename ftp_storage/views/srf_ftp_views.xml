@@ -5,11 +5,11 @@
         <field name="model">lerm.civil.srf</field>
         <field name="inherit_id" ref="lerm_civil.lerm_civil_srf_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//group[@name='button_box']/following-sibling::group[1]/group[2]" position="inside">
+            <xpath expr="//field[@name='consultant_name1']" position="after">
                 <field name="attachment_path" readonly="1"/>
                 <button name="open_file_upload" type="object" string="Upload" class="btn-primary"/>
                 <button name="download_attachment" type="object" string="Download" class="btn-primary"/>
             </xpath>
         </field>
-    </record>
+    </record>z
 </odoo>

@@ -89,16 +89,17 @@
                                 <field name="sample_received_date" readonly="state != '1-allotment_pending'"/>
                                 <field name="location" readonly="state != '1-allotment_pending'"/>
                                 <field name="lab_location"/>
-                                <field name="invoice_status" invisible="state not in ('4-in_report')"/>
+                                <field name="invoice_status" readonly="1" invisible="state not in ('4-in_report')"/>
+                                <field name="invoice_number" readonly="1"/>
                                 <!-- <field name="file_upload" widget="many2many_binary" />
                                 <field name="report_upload" widget="many2many_binary" /> -->
-                                <field name="datasheet_path" readonly="1" />
+                                <!-- <field name="datasheet_path" readonly="1" />
                                 <button name="open_file_upload_datasheet" type="object" string="Upload" class="btn-primary" />
                                 <button name="download_attachment_datasheet" type="object" string="Download" class="btn-primary" />
 
                                 <field name="report_path"  readonly="1"/>
                                 <button name="open_file_upload_report" type="object" string="Upload" class="btn-primary" />
-                                <button name="download_attachment_report" type="object" string="Download" class="btn-primary" />
+                                <button name="download_attachment_report" type="object" string="Download" class="btn-primary" /> -->
 
 
                                 <field name='casting_date' invisible="casting != True" readonly="state != '1-allotment_pending'"/>
