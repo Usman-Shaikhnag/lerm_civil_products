@@ -14,19 +14,135 @@ class ConcreteCore(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+
+    @api.depends('eln_ref')
+    def _compute_size_id(self):
+        if self.eln_ref:
+            self.size_id = self.eln_ref.size_id.id
 
     @api.depends('eln_ref')
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
 
+    age_of_days = fields.Selection([
+        ('3days', '3 Days'),
+        ('7days', '7 Days'),
+        ('14days', '14 Days'),
+        ('28days', '28 Days'),
+    ], string='Age', default='28days',required=True,compute="_compute_age_of_days")
+    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+    date_of_testing = fields.Date(string="Date of Testing",compute="_compute_date_testing")
 
+    @api.depends('eln_ref')
+    def _compute_date_testing(self):
+        if self.eln_ref:
+            self.date_of_testing = self.eln_ref.date_testing
+
+    age_of_test = fields.Integer("Age of Test, days",compute="compute_age_of_test")
+    difference = fields.Integer("Difference",compute="compute_difference")
+
+
+    @api.depends('age_of_test','age_of_days')
+    def compute_difference(self):
+        for record in self:
+            age_of_days = 0
+            if record.age_of_days == '3days':
+                age_of_days = 3
+            elif record.age_of_days == '7days':
+                age_of_days = 7
+            elif record.age_of_days == '14days':
+                age_of_days = 14
+            elif record.age_of_days == '21days':
+                age_of_days = 21
+            elif record.age_of_days == '28days':
+                age_of_days = 28
+            elif record.age_of_days == '45days':
+                age_of_days = 45
+            elif record.age_of_days == '56days':
+                age_of_days = 56
+            elif record.age_of_days == '112days':
+                age_of_days = 112
+            else:
+                age_of_days = 0
+            record.difference = record.age_of_test - age_of_days
+
+
+
+    @api.depends('date_of_testing','date_of_casting')
+    def compute_age_of_test(self):
+        for record in self:
+            if record.date_of_casting and record.date_of_testing:
+                date1 = fields.Date.from_string(record.date_of_casting)
+                date2 = fields.Date.from_string(record.date_of_testing)
+                date_difference = (date2 - date1).days
+                record.age_of_test = date_difference
+            else:
+                record.age_of_test = 0
+
+
+    @api.onchange('eln_ref')
+    def _compute_age_of_days(self):
+        for record in self:
+            if record.eln_ref.sample_id:
+                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).days_casting
+                if sample_record == '3':
+                    record.age_of_days = '3days'
+                elif sample_record == '7':
+                    record.age_of_days = '7days'
+                elif sample_record == '14':
+                    record.age_of_days = '14days'
+                elif sample_record == '21':
+                    record.age_of_days = '21days'
+                elif sample_record == '28':
+                    record.age_of_days = '28days'
+                elif sample_record == '45':
+                    record.age_of_days = '45days'
+                elif sample_record == '56':
+                    record.age_of_days = '56days'
+                elif sample_record == '112':
+                    record.age_of_days = '112days'
+                else:
+                    record.age_of_days = None
+            else:
+                record.age_of_days = None
+
+    @api.onchange('eln_ref')
+    def compute_date_of_casting(self):
+        for record in self:
+            if record.eln_ref.sample_id:
+                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).date_casting
+                record.date_of_casting = sample_record
+            else:
+                record.date_of_casting = None
+
+
+
+    
       # Dimensions
 
     concrete_visible = fields.Boolean("Dimensions Visible",compute="_compute_visible")   
 
 
-    dia_lines = fields.One2many('mechanical.concrete.core.dia.ssl.line','parent_id',string="Dia Line")
+    dia_lines = fields.One2many('mechanical.concrete.core.dia.ssl.line','parent_id',string="Dia Line",default=lambda self: self._default_dia_lines())
+
+    @api.model
+    def _default_dia_lines(self):
+        default_lines = [
+            (0, 0, {'dia_core': 143, 'correction_dia': 1}),
+            (0, 0, {'dia_core': 94, 'correction_dia': 1.08}),
+            
+        ]
+        return default_lines
+
+
+    thickness2 = fields.Float(string="Thickness of Paver Block:",compute="_compute_thickness2")
+
+    @api.depends('size_id')
+    def _compute_thickness2(self):
+        for rec in self:
+            rec.thickness2 = rec.size_id.size if rec.size_id and rec.size_id.size else 0.0
 
    
 
@@ -35,14 +151,14 @@ class ConcreteCore(models.Model):
     child_lines = fields.One2many('mechanical.concrete.core.ssl.line','parent_id',string="Concrete Core Line")
    
 
-    dia_core = fields.Float("Dia of core:")
+    # dia_core = fields.Float("Dia of core:")
   
     area_core = fields.Float("Area mm2 :",compute="_compute_area_core")
 
-    @api.depends('dia_core')
+    @api.depends('thickness2')
     def _compute_area_core(self):
         for record in self:
-            record.area_core = (3.14 * record.dia_core * record.dia_core) / 4 if record.dia_core else 0
+            record.area_core = (3.14 * record.thickness2 * record.thickness2) / 4 if record.thickness2 else 0
 
 
     type_of_sample = fields.Char("Type of Sample:")
@@ -178,29 +294,42 @@ class ConcreteCoreLine(models.Model):
     load_n = fields.Float(string="Load in N ",compute="_compute_load_n")
     core_comp = fields.Float(string="Core Comp., strength N/ mm2",compute="_compute_core_comp")
     correction_factor_ld = fields.Float(string="Correction Factor LD",compute="_compute_correction_factor_ld")
-    correction_factor_dia = fields.Float(string="Correction Factor Dia",compute="_compute_correction_factor_dia")
+    correction_factor_dia = fields.Float(string="Correction Factor Dia",compute="_compute_correction_factor")
     correct_comp = fields.Float(string="Corrected Cyl.Comp.strength  N/ mm2",compute="_compute_corrected_compression")
     equivalent_cube = fields.Float(string="Equivalent Cube.Comp Strength  (N/ mm2)",compute="_compute_equivalent_cube")
 
-
-
-    @api.depends('parent_id.dia_core', 'parent_id.dia_lines')
-    def _compute_correction_factor_dia(self):
+    @api.depends('parent_id.thickness2', 'parent_id.dia_lines')
+    def _compute_correction_factor(self):
         for line in self:
-            correction = ''
-            core_dia_value = line.parent_id.dia_core
+            correction = 0.0
+            core_dia_value = line.parent_id.thickness2
             if core_dia_value and line.parent_id.dia_lines:
-                matched_line = line.parent_id.dia_lines.filtered(lambda l: float(l.dia_core) == core_dia_value)
+                matched_line = line.parent_id.dia_lines.filtered(
+                    lambda l: float(l.dia_core) == float(core_dia_value)
+                )
                 if matched_line:
                     correction = matched_line[0].correction_dia
             line.correction_factor_dia = correction
 
 
-    @api.depends('depth', 'parent_id.dia_core')
+
+    # @api.depends('parent_id.dia_core', 'parent_id.dia_lines')
+    # def _compute_correction_factor_dia(self):
+    #     for line in self:
+    #         correction = ''
+    #         core_dia_value = line.parent_id.dia_core
+    #         if core_dia_value and line.parent_id.dia_lines:
+    #             matched_line = line.parent_id.dia_lines.filtered(lambda l: float(l.dia_core) == core_dia_value)
+    #             if matched_line:
+    #                 correction = matched_line[0].correction_dia
+    #         line.correction_factor_dia = correction
+
+
+    @api.depends('depth', 'parent_id.thickness2')
     def _compute_ld_ratio(self):
         for record in self:
-            if record.parent_id.dia_core:
-                record.ld_ratio = record.depth / record.parent_id.dia_core
+            if record.parent_id.thickness2:
+                record.ld_ratio = record.depth / record.parent_id.thickness2
             else:
                 record.ld_ratio = 0
 
