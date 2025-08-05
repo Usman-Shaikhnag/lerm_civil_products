@@ -12,7 +12,7 @@
 						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
 							<tbody>
 								<tr>
-									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
+									<td style="width: 30%; padding: 5px;"><strong>#Client Details</strong></td>
 									<td style="padding-left: 10px;">
 										<span t-field="o.srf_id.customer.name"/>
 										<span t-field="o.srf_id.customer.street"/>
@@ -26,12 +26,12 @@
 								</tr>
 								
 								<tr>
-									<td><strong>Client's Reference</strong></td>
+									<td><strong>#Client's Reference</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
 								</tr>
 
 								<tr>
-									<td><strong>Name of Work</strong></td>
+									<td><strong>#Name of Work</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 								</tr>
 
@@ -86,15 +86,15 @@
 				
 							
 							<tr>
-								<td > <strong>Grade of Sample</strong> : <span t-field="o.grade_id.grade"/>
+								<td > <strong>#Grade of Sample</strong> : <span t-field="o.grade_id.grade"/>
 								</td>
 								
-								<td> <strong>Age Of Cubes</strong> : <span t-field="data.age_of_days"></span>
+								<td> <strong>#Age Of Cubes</strong> : <span t-field="data.age_of_days"></span>
 								</td>
 							</tr>
 
 							<tr>
-							<td><strong>Size of Sample</strong> : <span t-field="o.sample_id.size_id.size"/></td>
+							<td><strong>#Size of Cube</strong> : <span t-field="o.sample_id.size_id.size"/></td>
 							<td><strong>Area Of Cube  : </strong><span t-field="data.area_of_cube"/>  Sq.mm</td>
 										
 								</tr>
@@ -108,14 +108,14 @@
 						<table style="margin-top:5px;">
 						<thead>
 							<tr>
-								<th style="text-align: center;"> 
+								<th style="text-align: center;font-weight: bold;"> 
 									<span>
 										Sr. No
 									</span>
 								</th>
-								<th	style="text-align: center;">
+								<th	style="text-align: center;font-weight: bold;">
 									<span>
-										Sample Identification
+										#Sample Identification
 									</span>
 								</th>
 
@@ -125,30 +125,30 @@
 									</span>
 								</th>
 								
-								<th style="text-align: center;">
+								<th style="text-align: center;font-weight: bold;">
 									<span>
-									Date of casting
+									#Date of casting
 									</span>
 								</th>
 
-								<!-- <th style="text-align: center;">
+								<!-- <th style="text-align: center;font-weight: bold;">
 									<span>
 									No.of Days
 									</span>
 								</th> -->
-								<th style="text-align: center;">
+								<th style="text-align: center;font-weight: bold;">
 									<span>
 									Date of Testing
 									</span>
 								</th>
 								
-								<th style="text-align: center;">
+								<th style="text-align: center;font-weight: bold;">
 									<span>
 										Load (kN)
 									</span>
 								</th>
 
-								<th style="text-align: center;">
+								<th style="text-align: center;font-weight: bold;">
 									<span>
 										Compressive Strength (N/mm2)
 									</span>
@@ -216,7 +216,7 @@
                            
 						</table>
 
-					         <table style="width: 100%; border-collapse: collapse;margin-top:5px">
+					         <!-- <table style="width: 100%; border-collapse: collapse;margin-top:5px">
                                 <thead>
                                     <tr>
                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
@@ -258,7 +258,7 @@
                                     </tr>
                                     
                                 </tbody>
-                            </table>
+                            </table> -->
 					<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
 						<table class="table table-bordered">
 							<tr>
