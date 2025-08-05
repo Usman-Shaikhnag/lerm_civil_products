@@ -16,7 +16,11 @@ This module contains all the common features of Sales Management and eCommerce.
                'views/soil.xml',
                'reports/soil_ssl_datasheet.xml',
                'reports/soil_ssl_report.xml'
-    ],
+    ],    'assets': {
+        'web.assets_backend': [
+            'soil_ssl/static/src/css/custom_style.css',
+        ],
+    },
   
     'installable': True,
     'auto_install': False,

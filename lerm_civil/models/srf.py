@@ -7,6 +7,7 @@ import time
 from io import BytesIO
 import os
 import base64
+import re
 # _logger = logging.getLogger(__name__)
 
 class Discipline(models.Model):
