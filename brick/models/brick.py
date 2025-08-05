@@ -6,11 +6,10 @@ import math
 class MechanicalBricks(models.Model):
     _name = "mechanical.bricks"
     _inherit = "lerm.eln"
-    _description = 'mechanical.bricks'
     _rec_name = "name"
 
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-    name = fields.Char("Name",default="Brick")
+    name = fields.Char("Name",default="Clay Bricks")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
