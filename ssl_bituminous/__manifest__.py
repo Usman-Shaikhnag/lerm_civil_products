@@ -18,7 +18,7 @@ This module contains all the common features of Sales Management and eCommerce.
     ],
       'assets': {
         'web.assets_backend': [
-            'coarse_aggregate/static/src/css/custom_style.css',
+            'ssl_bituminous/static/src/css/custom_style.css',
 
         ],
     },  # ✅ COMMA added here

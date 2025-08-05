@@ -18,6 +18,11 @@ This module contains all the common features of Sales Management and eCommerce.
            'reports/fine_agg_report.xml'
         
     ],
+        'assets': {
+        'web.assets_backend': [
+            'fine_aggregat_ssl/static/src/css/custom_style.css',
+        ],
+    },
   
     'installable': True,
     'auto_install': False,
