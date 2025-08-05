@@ -67,45 +67,90 @@ class MechanicalConcreteCube(models.Model):
             rec.days_28_n = rec.days_28_kmm * 22.5 if rec.days_28_kmm else 0.0
 
 
-    @api.depends('grade2', 'grade_child_lines.grade1', 'grade_child_lines.sd')
+    # @api.depends('grade2', 'grade_child_lines.grade1', 'grade_child_lines.sd')
+    # def _compute_days_28_kmm(self):
+    #     for rec in self:
+    #         rec.days_28_kmm = 0.0
+    #         if not rec.grade2:
+    #             continue
+    #         # Convert grade2 (float) to string for comparison
+    #         grade2_str = str(int(rec.grade2)) if rec.grade2.is_integer() else str(rec.grade2)
+    #         # match with line.grade1 (string)
+    #         matching_line = rec.grade_child_lines.filtered(
+    #             lambda l: l.grade1 and l.grade1.strip().lower() == grade2_str.strip().lower()
+    #         )
+    #         if matching_line:
+    #             line = matching_line[0]
+    #             rec.days_28_kmm = rec.grade2 + (1.65 * line.sd)
+
+    @api.depends('grade.grade', 'grade_child_lines.grade1', 'grade_child_lines.sd')
     def _compute_days_28_kmm(self):
         for rec in self:
             rec.days_28_kmm = 0.0
+
             if not rec.grade2:
                 continue
-            # Convert grade2 (float) to string for comparison
-            grade2_str = str(int(rec.grade2)) if rec.grade2.is_integer() else str(rec.grade2)
-            # match with line.grade1 (string)
+
+            grade2_str = rec.grade2.strip().lower()
+
+            # Match grade2 with grade1 in lines
             matching_line = rec.grade_child_lines.filtered(
-                lambda l: l.grade1 and l.grade1.strip().lower() == grade2_str.strip().lower()
+                lambda l: l.grade1 and l.grade1.strip().lower() == grade2_str
             )
+
             if matching_line:
                 line = matching_line[0]
-                rec.days_28_kmm = rec.grade2 + (1.65 * line.sd)
+                # Extract number from grade2 (e.g., from "M25" → 25)
+                number_part = ''.join(filter(str.isdigit, rec.grade2))
+                try:
+                    grade_val = float(number_part)
+                    rec.days_28_kmm = grade_val + (1.65 * line.sd)
+                except (ValueError, TypeError):
+                    rec.days_28_kmm = 0.0
 
-    grade2 = fields.Float(string="Grade",compute="_compute_grade2",store=True)
+
+
+
+
+
+    grade2 = fields.Char(string="Grade",compute="_compute_grade2",store=True)
 
     @api.depends('grade')
     def _compute_grade2(self):
         for rec in self:
-            rec.grade2 = rec.grade.grade if rec.grade and rec.grade.grade else 0.0
+            rec.grade2 = rec.grade.grade if rec.grade and rec.grade.grade else ''
 
 
     grade_child_lines = fields.One2many('mechanical.concrete.cube.grade.line','parent_id',string="Parameter",default=lambda self: self._default_grade_child_lines())
 
+    # @api.model
+    # def _default_grade_child_lines(self):
+    #     default_lines = [
+    #         (0, 0, {'grade1': M10, 'sd': 3.5}),
+    #         (0, 0, {'grade1': M15, 'sd': 3.5}),
+    #         (0, 0, {'grade1': M20, 'sd': 4}),
+    #         (0, 0, {'grade1': M25, 'sd': 4}),
+    #         (0, 0, {'grade1': M30, 'sd': 5}),
+    #         (0, 0, {'grade1': M35, 'sd': 5}),
+    #         (0, 0, {'grade1': M40, 'sd': 5}),
+    #         (0, 0, {'grade1': M45, 'sd': 5})
+    #     ]
+    #     return default_lines
+
     @api.model
     def _default_grade_child_lines(self):
         default_lines = [
-            (0, 0, {'grade1': 10, 'sd': 3.5}),
-            (0, 0, {'grade1': 15, 'sd': 3.5}),
-            (0, 0, {'grade1': 20, 'sd': 4}),
-            (0, 0, {'grade1': 25, 'sd': 4}),
-            (0, 0, {'grade1': 30, 'sd': 5}),
-            (0, 0, {'grade1': 35, 'sd': 5}),
-            (0, 0, {'grade1': 40, 'sd': 5}),
-            (0, 0, {'grade1': 45, 'sd': 5})
+            (0, 0, {'grade1': 'M10', 'sd': 3.5}),
+            (0, 0, {'grade1': 'M15', 'sd': 3.5}),
+            (0, 0, {'grade1': 'M20', 'sd': 4}),
+            (0, 0, {'grade1': 'M25', 'sd': 4}),
+            (0, 0, {'grade1': 'M30', 'sd': 5}),
+            (0, 0, {'grade1': 'M35', 'sd': 5}),
+            (0, 0, {'grade1': 'M40', 'sd': 5}),
+            (0, 0, {'grade1': 'M45', 'sd': 5}),
         ]
         return default_lines
+
 
     
     
