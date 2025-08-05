@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_shuttering_plywood" model="ir.ui.view">
+        <field name="name">mechanical.shuttering.plywood.form</field>
+        <field name="model">mechanical.shuttering.plywood</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+                   <div >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                         <field name="grade" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree class="table-bordered o_list_view">
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                   
+       
+
+
+
+                    <!--  Dimensions -->
+
+                       <div invisible="not dimensions_shuttering_visible">
+                        <h1>
+                            <field name="dimensions_shuttering_name" readonly="1" nolabel="1"/>
+                            <field name="dimensions_shuttering_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+                       <group invisible="not dimensions_shuttering_visible">
+                        <field name="child_lines_dimensions_shuttering" nolabel="1" colspan="2" >
+                            <tree editable="bottom" class="table-bordered o_list_view">
+                                <field name='sr_no'/>
+                                <field name='lenght'/>
+                                <field name='width'/>
+                                <field name='thickness'/>
+                                <field name='squareness'/>
+                                   <field name='edge_straightness'/>
+                            </tree>
+                         </field> 
+                         <group/> 
+                    </group>
+
+                    <div>
+                          <table style="width: 40%; margin-top:10px;">
+                           <tr>
+                             <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Average Length, mm</span></td>
+                              <td style="padding: 8px;border:1px solid black;"><field name='average_length' col="1"/></td>
+                           </tr>
+                           <tr>
+                             <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Average Width, mm</span></td>
+                              <td style="padding: 8px;border:1px solid black;"><field name='average_width' col="1"/></td>
+                           </tr>
+                           <tr>
+                             <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Average Thickness, mm</span></td>
+                              <td style="padding: 8px;border:1px solid black;"><field name='average_thickness' col="1"/></td>
+                           </tr>
+                           <tr>
+                             <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Average Squareness, mm</span></td>
+                              <td style="padding: 8px;border:1px solid black;"><field name='average_squareness' col="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;border:1px solid black;"><span>Average Edge Straightness, mm</span></td>
+                            <td style="padding: 5px;border:1px solid black;"><field name='average_edge_straightness' col="1"/></td>
+                           </tr>
+                     
+                          </table>
+                      </div>
+                      <group/>
+                      <group/>
+
+                    <!-- <group invisible="not dimensions_shuttering_visible"  style="white-space: nowrap; width:70%;">
+                        <field name='average_length' col="4"/>
+                         <field name='average_width' col="4"/>
+                        <field name='average_thickness' col="4"/>
+                        <field name='average_squareness' col="4"/>
+                         <field name='average_edge_straightness' col="4"/>
+                       
+                    </group> -->
+
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Length Conformity</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name='average_length_conformity'
+                                       decoration-success="average_length_conformity == 'pass'" 
+                                       decoration-danger="average_length_conformity == 'fail'" 
+                                       readonly="1"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Width Conformity</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name='average_width_conformity'
+                                       decoration-success="average_width_conformity == 'pass'" 
+                                       decoration-danger="average_width_conformity == 'fail'" 
+                                       readonly="1"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Thickness Conformity</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name='average_thickness_conformity'
+                                       decoration-success="average_thickness_conformity == 'pass'" 
+                                       decoration-danger="average_thickness_conformity == 'fail'" 
+                                       readonly="1"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Squareness Conformity</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name='average_squareness_conformity'
+                                       decoration-success="average_squareness_conformity == 'pass'" 
+                                       decoration-danger="average_squareness_conformity == 'fail'" 
+                                       readonly="1"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Edge Straightness Conformity</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name='average_edge_straightness_conformity'
+                                       decoration-success="average_edge_straightness_conformity == 'pass'" 
+                                       decoration-danger="average_edge_straightness_conformity == 'fail'" 
+                                       readonly="1"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span> Length NABL</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="average_length_nabl"
+                                       decoration-success="average_length_nabl == 'pass'" 
+                                       decoration-danger="average_length_nabl == 'fail'" 
+                                       readonly="1"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Width NABL</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="average_width_nabl"
+                                       decoration-success="average_width_nabl == 'pass'" 
+                                       decoration-danger="average_width_nabl == 'fail'" 
+                                       readonly="1"/></td>
+                            </tr>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span> Thickness NABL</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"> <field name="average_thickness_nabl"
+                                       decoration-success="average_thickness_nabl == 'pass'" 
+                                       decoration-danger="average_thickness_nabl == 'fail'" 
+                                       readonly="1"/></td>
+                            </tr>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Squareness NABL</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="average_squareness_nabl"
+                                       decoration-success="average_squareness_nabl == 'pass'" 
+                                       decoration-danger="average_squareness_nabl == 'fail'" 
+                                       readonly="1"/></td>
+                            </tr>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Edge Straightness NABL</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="average_edge_straightness_nabl"
+                                       decoration-success="average_edge_straightness_nabl == 'pass'" 
+                                       decoration-danger="average_edge_straightness_nabl == 'fail'" 
+                                       readonly="1"/></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+                    <group/>
+
+
+
+
+
+
+
+
+
+                    <!-- <group invisible="not dimensions_shuttering_visible" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" invisible="not dimensions_shuttering_visible">
+                                <field name='average_length_conformity'
+                                       decoration-success="average_length_conformity == 'pass'" 
+                                       decoration-danger="average_length_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" invisible="not dimensions_shuttering_visible">
+                                <field name="average_length_nabl"
+                                       decoration-success="average_length_nabl == 'pass'" 
+                                       decoration-danger="average_length_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+                     <group invisible="not dimensions_shuttering_visible" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" invisible="not dimensions_shuttering_visible">
+                                <field name='average_width_conformity'
+                                       decoration-success="average_width_conformity == 'pass'" 
+                                       decoration-danger="average_width_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" invisible="not dimensions_shuttering_visible">
+                                <field name="average_width_nabl"
+                                       decoration-success="average_width_nabl == 'pass'" 
+                                       decoration-danger="average_width_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+
+                    <group invisible="not dimensions_shuttering_visible" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" invisible="not dimensions_shuttering_visible">
+                                <field name='average_thickness_conformity'
+                                       decoration-success="average_thickness_conformity == 'pass'" 
+                                       decoration-danger="average_thickness_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" invisible="not dimensions_shuttering_visible">
+                                <field name="average_thickness_nabl"
+                                       decoration-success="average_thickness_nabl == 'pass'" 
+                                       decoration-danger="average_thickness_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+
+                     <group invisible="not dimensions_shuttering_visible" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" invisible="not dimensions_shuttering_visible">
+                                <field name='average_squareness_conformity'
+                                       decoration-success="average_squareness_conformity == 'pass'" 
+                                       decoration-danger="average_squareness_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" invisible="not dimensions_shuttering_visible">
+                                <field name="average_squareness_nabl"
+                                       decoration-success="average_squareness_nabl == 'pass'" 
+                                       decoration-danger="average_squareness_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group>
+
+
+                    <group invisible="not dimensions_shuttering_visible" style="white-space: nowrap; width:70%;">
+
+                     <group style="width:25%" invisible="not dimensions_shuttering_visible">
+                                <field name='average_edge_straightness_conformity'
+                                       decoration-success="average_edge_straightness_conformity == 'pass'" 
+                                       decoration-danger="average_edge_straightness_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" invisible="not dimensions_shuttering_visible">
+                                <field name="average_edge_straightness_nabl"
+                                       decoration-success="average_edge_straightness_nabl == 'pass'" 
+                                       decoration-danger="average_edge_straightness_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group> -->
+
+
+
+
+                        <!-- Adhesion of Plies -->
+                                            
+                       <div invisible="not adhesion_plies_visible">
+                        <h1>
+                            <field name="adhesion_plies_name" readonly="1" nolabel="1"/>
+                            <field name="adhesion_plies_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                      <table style="width: 36%; margin-top:10px;border:1px solid black;">
+                        <tr>
+                          <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Observation</span></td>
+                          <td style="padding: 8px;border:1px solid black;"><field name='adhesion_plies' col="1"/></td>
+                         </tr>
+                      </table>
+                    </div>
+                    <group/>
+
+                    <!-- <group invisible="not adhesion_plies_visible"  style="white-space: nowrap; width:70%;">
+                        <field name='adhesion_plies' col="4"/> 
+                    </group> -->
+
+
+
+                       <!--  Resistance to dry heat-->
+
+                       <div invisible="not resistance_heat_visible">
+                        <h1>
+                            <field name="resistance_heat_name" readonly="1" nolabel="1"/>
+                            <field name="resistance_heat_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                      <table style="width: 36%; margin-top:10px;border:1px solid black;">
+                        <tr>
+                          <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Observation</span></td>
+                          <td style="padding: 8px;border:1px solid black;"><field name='resistance_heat' col="1"/></td>
+                         </tr>
+                      </table>
+                    </div>
+                    <group/>
+                    <!-- <group invisible="not resistance_heat_visible"  style="white-space: nowrap; width:70%;">
+                        <field name='resistance_heat' col="4"/>
+                    </group> -->
+
+
+
+                       <!--  Water Resistance Test-->
+
+                       <div invisible="not water_resistance_visible">
+                        <h1>
+                            <field name="water_resistance_name" readonly="1" nolabel="1"/>
+                            <field name="water_resistance_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+                    <div>
+                      <table style="width: 36%; margin-top:10px;border:1px solid black;">
+                        <tr>
+                          <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Observation</span></td>
+                          <td style="padding: 8px;border:1px solid black;"><field name='water_resistance' col="1"/></td>
+                         </tr>
+                      </table>
+                    </div>
+                    <group/>
+
+                    <!-- <group invisible="not water_resistance_visible"  style="white-space: nowrap; width:70%;">
+                        <field name='water_resistance' col="4"/>  
+                    </group> -->
+
+
+
+                     <!--  density -->
+
+                       <group invisible="not density_shuttering_visible">
+                        <h1>
+                            <field name="density_shuttering_name" readonly="1" nolabel="1"/>
+                            <field name="density_shuttering_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                       <group invisible="not density_shuttering_visible">
+                        <field name="child_lines_density_shuttering" nolabel="1" colspan="2" >
+                            <tree editable="bottom" class="table-bordered o_list_view">
+                                <field name='sr_no'/>
+                                <field name='lenght'/>
+                                <field name='width'/>
+                                <field name='thickness'/>
+                                <field name='initial_weight'/>
+                                   <field name='oven_dry_weight'/>
+                                <field name='density_shuttering'/>
+                
+                            </tree>
+                           
+                         </field> 
+                           
+                       
+                    </group>
+
+                    <div>
+                      <table style="width: 36%; margin-top:10px;border:1px solid black;">
+                        <tr>
+                          <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Density, g/cm3</span></td>
+                          <td style="padding: 8px;border:1px solid black;"><field name='average_density_shuttering' col="1"/></td>
+                         </tr>
+                      </table>
+                    </div>
+                    <group/>
+
+                    <!-- <group invisible="not density_shuttering_visible"  style="white-space: nowrap; width:70%;">
+                        <field name='average_density_shuttering' col="4"/>
+                       
+                    </group> -->
+
+
+                    <div>
+                      <table style="width: 20%; margin-top:10px;">
+                        <tr>
+                          <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
+                          <td style="padding: 8px;"><field name='average_density_shuttering_conformity'
+                                       decoration-success="average_density_shuttering_conformity == 'pass'" 
+                                       decoration-danger="average_density_shuttering_conformity == 'fail'" 
+                                       readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                         <td style="padding: 5px;"><field name="average_density_shuttering_nabl"
+                                       decoration-success="average_density_shuttering_nabl == 'pass'" 
+                                       decoration-danger="average_density_shuttering_nabl == 'fail'" 
+                                       readonly="1"/> </td>
+                         </tr>
+                     
+                      </table>
+                    </div>
+
+                    <!-- <group invisible="not density_shuttering_visible">
+
+                     <group style="width:25%" invisible="not density_shuttering_visible">
+                                <field name='average_density_shuttering_conformity'
+                                       decoration-success="average_density_shuttering_conformity == 'pass'" 
+                                       decoration-danger="average_density_shuttering_conformity == 'fail'" 
+                                       readonly="1"/>
+                        </group>
+                          <group style="width:25%" invisible="not density_shuttering_visible">
+                                <field name="average_density_shuttering_nabl"
+                                       decoration-success="average_density_shuttering_nabl == 'pass'" 
+                                       decoration-danger="average_density_shuttering_nabl == 'fail'" 
+                                       readonly="1"/>
+                            </group>
+                        </group> -->
+
+
+                    
+                
+
+
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+                     
+
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,1381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_ggbs_form" model="ir.ui.view">
+        <field name="name">mechanical.ggbs.form</field>
+        <field name="model">mechanical.ggbs</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+                <group >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="grade" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree class="table-bordered o_list_view">
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                    <group/>
+                    <!-- Normal Consistency Start -->
+                    
+                    <group >
+                        <field name="tests" invisible="1" widget="many2many_tags" options="{'no_create':True,'no_open': True}"/>
+                    </group>
+                    <div invisible=" not normal_consistency_visible">
+                        <h1>
+                            <field name="normal_consistency_name" readonly="1" nolabel="1"/>
+                            <field name="normal_consistency_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                      <table class="table table-bordered sm-table" style="width: 50%; height:200px;font-size: 15px; margin:0px;">
+                         <tbody>
+                           <tr >
+                           <td></td>
+                             <td><span>Trial 1</span></td>
+                           </tr>
+                           <tr>
+                             <td><span>Wt. of Cement(g)</span></td>
+                             <td><field  name="wt_of_cement_trial1"  colspan="1"  nolabel="1"/></td>
+                           </tr>
+                           <tr>
+                             <td><span>Wt. of GGBS(g)</span></td>
+                             <td><field  name="wt_of_ggbs_trial1"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Total Wt. of Sample</span></td>
+                             <td><field  name="total_wt_sample"  colspan="1"/></td>
+                           </tr>
+                           <tr>
+                             <td><span>Wt. of water required</span></td>
+                             <td><field  name="wt_water_req"  colspan="1"/></td>
+                           </tr>
+                           <tr>
+                             <td><span>Penetration of vicat's Plunger(mm)</span></td>
+                             <td><field  name="penetration_vicat"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Normal Consistency %</span></td>
+                             <td><field  name="normal_consistency"  colspan="1"/></td>
+                           </tr>
+                          
+                         </tbody>
+                      </table>
+                    </div>
+                    <group/>
+
+
+                    <!-- Normal Consistency Cement  -->
+                    <div invisible=" not normal_consistency_cement_visible">
+                        <h1>
+                            <field name="normal_consistency_cement_name" readonly="1" nolabel="1"/>
+                            <field name="normal_consistency_cement_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                      <table class="table table-bordered sm-table" style="width: 50%; height:200px;font-size: 15px; margin:0px;">
+                         <tbody>
+                           <tr >
+                           <td></td>
+                             <td><span>Trial 1</span></td>
+                           </tr>
+                           <tr>
+                             <td><span>Wt. of Cement(g)</span></td>
+                             <td><field  name="wt_cement"  colspan="1"  nolabel="1"/></td>
+                           </tr>
+                           <tr>
+                             <td><span>Wt.of water required (g)</span></td>
+                             <td><field  name="wt_water_req_cement"  colspan="1"/></td>
+                           </tr>
+                           <tr>
+                             <td><span>Penetraion of vicat's Plunger (mm)</span></td>
+                             <td> <field  name="penetration_vicat_cement"  colspan="1"/></td>
+                           </tr>
+                           <tr>
+                             <td><span>Normal Consistency %</span></td>
+                             <td> <field  name="normal_consistency_cement"  colspan="1"/></td>
+                           </tr>
+                           
+                         </tbody>
+                      </table>
+                    </div>
+                    <group/>
+
+                    <!-- Specific Gravity -->
+                    <div invisible="not specific_gravity_visible">
+                        <h1>
+                            <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                     <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                       <tbody>
+                         <tr>
+                           <td></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 1</span></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 2</span></td>
+                         </tr>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Wt. of GGBS(g)</span></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_ggbs_sg_trial1"  colspan="1"  nolabel="1"/></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_ggbs_sg_trial2"  colspan="1"  nolabel="1"/></td>
+                         <tr>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Initial Volume of kerosine (ml)V1</span></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="initial_volume_kerosine_trial1"  colspan="1"  nolabel="1"/></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="initial_volume_kerosine_trial2"  colspan="1"  nolabel="1"/></td>
+                         </tr>
+                         <tr> 
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Final Volume of kerosine and Cement (After immersion in constant water bath)(ml) V2</span></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="final_volume_kerosine_trial1"  colspan="1"  nolabel="1"/></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="final_volume_kerosine_trial2"  colspan="1"  nolabel="1"/></td>
+                         </tr>
+                         <tr>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Displaced volume (cm³)</span></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="displaced_volume_trial1"  colspan="1"  nolabel="1"/></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="displaced_volume_trial2"  colspan="1"  nolabel="1"/></td>
+                         </tr>
+                         <tr>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Specific Gravity</span></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="specific_gravity_trial1"  colspan="1"  nolabel="1"/></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="specific_gravity_trial2"  colspan="1"  nolabel="1"/></td>
+                         </tr>
+                                                 
+                       </tbody>
+                     </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                          <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
+                            <td style="padding: 5px;"><field name="average_specific_gravity" class="oe_center" /></td>
+                           </tr>
+                           <tr>
+                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
+                              <td style="padding: 8px;"><field name="specific_gravity_confirmity"
+                                           decoration-success="specific_gravity_confirmity == 'pass'" 
+                                           decoration-danger="specific_gravity_confirmity == 'fail'" 
+                                           readonly="1" /></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name="specific_gravity_nabl"/></td>
+                           </tr>
+                     
+                          </table>
+                      </div>
+                      <group/>
+
+
+
+                    <!-- Slag index  -->
+                    <div  modifiers='{"invisible": ["|", ["slag_activity_7_visible", "=", false], ["slag_activity_28_visible", "=", false]]}'>
+                        <h1>
+                            <field name="slag_activity_name" readonly="1" nolabel="1"/>
+                            <field name="slag_activity_7_visible" invisible="1"/>
+                            <field name="slag_activity_28_visible" invisible="1"/>
+                        </h1>
+
+                    </div>
+                    <group/>
+
+                    <div>
+                    <h4 class="center-heading" style="white-space: nowrap;">Compressive Strength of the mortar cube using GGBS</h4>
+                      <table class="table table-bordered sm-table" style="width: 50%; height:200px;font-size: 15px; margin:0px;">
+                         <tbody>
+                             <tr>
+                             <td><span>Wt. of Cement(g)</span></td>
+                             <td><field  name="wt_of_cement_slag"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Wt. of GGBS(g)</span></td>
+                             <td><field  name="wt_of_ggbs_slag"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Weight of Standard Sand (g) Grade-I</span></td>
+                             <td><field  name="wt_of_standard_sand_grade1"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Weight of Standard Sand (g) Grade-II</span></td>
+                             <td><field  name="wt_of_standard_sand_grade2"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Weight of Standard Sand (g) Grade-III</span></td>
+                             <td><field  name="wt_of_standard_sand_grade3"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Total Weight</span></td>
+                             <td><field  name="total_weight_sand"  colspan="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td><span>Quantity of Water</span></td>
+                             <td><field  name="quantity_of_water"  colspan="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+                    <group/>
+
+
+                    <!-- 7 days  -->
+
+                    <div invisible="not slag_activity_7_visible">
+                        <h1>
+                            <field name="casting_7_name" readonly="1" nolabel="1"/>
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        </h1>
+                    </div>
+                    <group/>
+
+
+                    <div>
+                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Done</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"><field name="status_7days"/></td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Casting</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"><field name="casting_date_7days" /></td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Testing</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"><field name="testing_date_7days"/></td>
+                      </tr>
+                    </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+                    <group>
+                    <h4 style="white-space: nowrap;margin-top:5px;">7 Days</h4><br/>
+                      <field name="slag_7days_table" nolabel="1" colspan="2">
+                        <tree editable="bottom" class="o_list_view table-bordered">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="crosssectional_area"/>
+                          <field name="wt_of_cement_cube"/>
+                          <field name="crushing_load" />
+                          <field name="compressive_strength" />
+                        </tree>
+                      </field>
+                    </group>
+                    <group/>
+                    <div>
+                          <table style="width: 20%; ">
+                          <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
+                            <td style="padding: 5px;"><field name="average_7days_slag" class="oe_center" /></td>
+                           </tr>
+                           </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+
+                    <!-- 28 days  -->
+                    <div invisible="not slag_activity_28_visible">
+                        <h1>
+                            <field name="casting_28_name" readonly="1" nolabel="1"/>
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Done</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"><field name="status_28days"/></td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Casting</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"> <field name="casting_date_28days"/></td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Testing</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"><field name="testing_date_28days"/></td>
+                      </tr>
+                    </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+                    <group>
+                    <h4 style="white-space: nowrap;margin-top:5px;">28 Days</h4><br/>
+                    <field name="slag_28days_table" nolabel="1" colspan="2">
+                        <tree editable="bottom" class="o_list_view table-bordered">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="crosssectional_area"/>
+                          <field name="wt_of_cement_cube"/>
+                          <field name="crushing_load" />
+                          <field name="compressive_strength" />
+                        </tree>
+                      </field>
+                    </group>
+                    <group/>
+                    <div>
+                          <table style="width: 20%; ">
+                          <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
+                            <td style="padding: 5px;"><field name="average_28days_slag" class="oe_center" /></td>
+                           </tr>
+                           </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+                    <!-- opc cube  -->
+                    <group modifiers='{"invisible": ["|", ["slag_activity_7_visible", "=", false], ["slag_activity_28_visible", "=", false]]}'>
+                      <h4 class="center-heading" style="white-space: nowrap;">Compressive Strength of the control OPC mortar cube</h4>
+                    </group>
+                    <div>
+                      <table class="table table-bordered sm-table" style="width: 50%; height:200px;font-size: 15px; margin:0px;">
+                         <tbody>
+                             <tr>
+                             <td><span>Wt. of Cement(g)</span></td>
+                             <td><field  name="wt_of_cement_slag_opc"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Weight of Standard Sand (g) Grade-I</span></td>
+                             <td> <field  name="wt_of_standard_sand_grade1_opc"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Weight of Standard Sand (g) Grade-II</span></td>
+                             <td><field  name="wt_of_standard_sand_grade2_opc"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Weight of Standard Sand (g) Grade-III</span></td>
+                             <td><field  name="wt_of_standard_sand_grade3_opc"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Total Weight</span></td>
+                             <td><field  name="total_weight_sand_opc"  colspan="1" /></td>
+                           </tr>
+                           <tr>
+                             <td><span>Quantity of Water</span></td>
+                             <td><field  name="quantity_of_water_opc"  colspan="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+                    <group/>
+
+                     <!-- 7 days  -->
+
+                    <div invisible="not slag_activity_7_visible">
+                        <h1>
+                            <field name="casting_7_name_opc" readonly="1" nolabel="1"/>
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Done</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"><field name="status_7days_opc"/></td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Casting</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"><field name="casting_date_7days_opc"/>
+                      </td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Testing</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"><field name="testing_date_7days_opc"/></td>
+                      </tr>
+                    </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+                    <group>
+                    <h4 style="white-space: nowrap;margin-top:5px;">7 Days</h4><br/>
+                    <field name="slag_7days_table_opc" nolabel="1" colspan="2">
+                        <tree editable="bottom" class="o_list_view table-bordered">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="crosssectional_area"/>
+                          <field name="wt_of_cement_cube"/>
+                          <field name="crushing_load" />
+                          <field name="compressive_strength" />
+                        </tree>
+                      </field>
+                    </group>
+                    <group/>
+                    <div>
+                          <table style="width: 20%; ">
+                          <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
+                            <td style="padding: 5px;"><field name="average_7days_slag_opc" class="oe_center" /></td>
+                           </tr>
+                           </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+                    <!-- 28 days  -->
+                    <div invisible="not slag_activity_28_visible">
+                        <h1>
+                            <field name="casting_28_name_opc" readonly="1" nolabel="1"/>
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        </h1>
+                    </div>
+
+                    <div>
+                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Done</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"><field name="status_28days_opc"/></td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Casting</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"> <field name="casting_date_28days_opc"/>
+                      </td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Testing</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"> <field name="testing_date_28days_opc"/></td>
+                      </tr>
+                    </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+                    <group>
+                    <h4 style="white-space: nowrap;margin-top:5px;">28 Days</h4><br/>
+                    <field name="slag_28days_table_opc" nolabel="1" colspan="2">
+                        <tree editable="bottom" class="o_list_view table-bordered">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="crosssectional_area"/>
+                          <field name="wt_of_cement_cube"/>
+                          <field name="crushing_load" />
+                          <field name="compressive_strength" />
+                        </tree>
+                      </field>
+                    </group>
+                    <group/>
+                    <div>
+                          <table style="width: 20%; ">
+                          <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
+                            <td style="padding: 5px;"><field name="average_28days_slag_opc" class="oe_center" /></td>
+                           </tr>
+                           </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                          <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Slag Activity Index (SAI) 7 days</span></td>
+                            <td style="padding: 5px;"><field name="slag_activity_index_7days" class="oe_center" /></td>
+                           </tr>
+                           <tr>
+                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
+                              <td style="padding: 8px;"><field name="slag_7days_conformity"
+                                           decoration-success="slag_7days_conformity == 'pass'" 
+                                           decoration-danger="slag_7days_conformity == 'fail'" 
+                                           readonly="1" /></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name="slag_7days_nabl"/></td>
+                           </tr>
+                     
+                          </table>
+                      </div>
+                      <group/>
+
+                      <div>
+                          <table style="width: 20%; margin-top:10px;">
+                          <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Slag Activity Index (SAI) 28 days</span></td>
+                            <td style="padding: 5px;"><field name="slag_activity_index_28days" class="oe_center" /></td>
+                           </tr>
+                           <tr>
+                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
+                              <td style="padding: 8px;"><field name="slag_28days_conformity"
+                                           decoration-success="slag_28days_conformity == 'pass'" 
+                                           decoration-danger="slag_28days_conformity == 'fail'" 
+                                           readonly="1" /></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name="slag_28days_nabl"/></td>
+                           </tr>
+                     
+                          </table>
+                      </div>
+                      <group/>
+
+                      <!-- Fineness  -->
+
+                    <div invisible="not fineness_visible">
+                        <h1>
+                            <field name="fineness_name" readonly="1" nolabel="1"/>
+                            <field name="fineness_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                     <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                       <tbody>
+                         <tr>
+                           <td></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 1</span></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 2</span></td>
+                         </tr>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of mercury before placing the sample in the permeability cell (m₁),g.</span></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="weight_of_mercury_before_trial1"  colspan="1"  nolabel="1"/></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="weight_of_mercury_before_trial2"  colspan="1"  nolabel="1"/></td>
+                         <tr>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of mercury after placing the sample in the permeability cell (m₂),g.</span></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="weight_of_mercury_after_trail1"  colspan="1"  nolabel="1"/></td>
+                           <td style="border: 1px solid black; padding: 8px;"><field  name="weight_of_mercury_after_trail2"  colspan="1"  nolabel="1"/></td>
+                         </tr>                                                 
+                       </tbody>
+                     </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+                    <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                      <tbody>
+                        <tr>
+                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Density of mercury , g/cm3</span></td>
+                          <td style="border: 1px solid black; padding: 8px;"><field  name="density_of_mercury"  colspan="1" /></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <group/>
+                    <group/>
+
+                    <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                    <tbody>
+                      <tr>
+                           <td></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 1</span></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 2</span></td>
+                      </tr>
+                      <tr>
+                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Bed Volume (V=m₂-m₁/D),cm3.</span></td>
+                        <td style="border: 1px solid black; padding: 8px;"><field  name="bed_volume_trial1"  colspan="1"  nolabel="1"/></td>
+                        <td style="border: 1px solid black; padding: 8px;"><field  name="bed_volume_trial2"  colspan="1"  nolabel="1"/></td>
+                       </tr>                                                 
+                      </tbody>
+                     </table>
+                     <group/>
+                     <group/>
+
+
+                     <table style="border: 1px solid black; width: 30%; margin:10px 0px;">
+                      <tbody>
+                        <tr>
+                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average Bed Volume (cm3)</span></td>
+                          <td style="border: 1px solid black; padding: 8px;"><field  name="average_bed_volume"  colspan="1"/></td>
+                        </tr>
+                        <tr>
+                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Difference between the two Values</span></td>
+                          <td style="border: 1px solid black; padding: 8px;"><field  name="difference_between_2_values"  colspan="1"/></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <group/>
+                    <group/>
+
+
+                    <div>
+                    <h4 style="width:60%">Repeat the procedure  with fresh cement beds until two values of V are obtained differing by less than 0.005 cm3.Record the mean of these two values as V</h4>
+                    <group/>
+                    <h4 style="width:60%">Determination of Apparatus Constant (k)</h4>
+                    <table style="border: 1px solid black; width: 30%; margin:10px 0px;">
+                     <tr>
+                       <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>mass of sample taken (g)</span></td>
+                       <td style="border: 1px solid black; padding: 8px;"><field  name="mass_of_sample_taken_fineness_reference"  colspan="1"/></td>
+                     </tr>
+                    </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+
+                    <div>
+                    <h4 style="width:60%">Take an amount (m1),g. of standard sample so as to give the sample bed of porosity e=0.500</h4>
+                    <table style="border: 1px solid black; width: 30%; margin:10px 0px;">
+                    <tr>
+                           <td></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> 1</span></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> 2</span></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> 3</span></td>
+                    </tr>
+                     <tr>
+                       <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Time(t),sec.</span></td>
+                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_fineness_trial1"  colspan="1"  nolabel="1"/></td>
+                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_fineness_trial2"  colspan="1"  nolabel="1"/></td>
+                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_fineness_trial3"  colspan="1"  nolabel="1"/></td>
+                     </tr>
+                    </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+                    <table style="width: 20%; margin-top:4px">
+                       <tr>
+                          <td style="padding: 4px;font-weight: bold;"><span>Average Time(tₒ),Sec</span></td>
+                          <td style="padding: 5px;"><field  name="average_time_fineness"  colspan="1"/></td>
+                       </tr>
+                    </table>
+                    <group/>
+                    <group/>
+
+                    <div>
+                      <table style="border: 1px solid black; width: 40%; margin:10px 0px;">
+                        <tr>
+                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>S0 is the Specific surface of reference sample (m²/kg)</span></td>
+                          <td style="border: 1px solid black; padding: 8px;"><field name="specific_surface_of_reference_sample"/></td>
+                        </tr>
+                        <tr>
+                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>ɳₒ is the Air viscosity at the mean of the three temperatures</span></td>
+                          <td style="border: 1px solid black; padding: 8px;"><field name="air_viscosity_of_three_temp"/></td>
+                        </tr>
+                        <tr>
+                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>ρ0 is the Density of reference sample (g/cm3)</span></td>
+                          <td style="border: 1px solid black; padding: 8px;"><field name="density_of_reference_sample"/></td>
+                        </tr>
+                        <tr>
+                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>t0 is the Mean of three measured times (sec)</span></td>
+                          <td style="border: 1px solid black; padding: 8px;"><field name="mean_of_three_measured_times"/></td>
+                        </tr>
+                        <tr>
+                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Apparatus Constant(k)</span></td>
+                          <td style="border: 1px solid black; padding: 8px;"><field name="apparatus_constant"/></td>
+                        </tr>
+                      </table>
+                    </div>
+
+                    <div>
+                    <h4 style="width:60%">Determination of fineness</h4>
+                    <group/>
+                    <h4 style="width:60%">*Using the sample whose fineness is to be calculated.</h4>
+                    <table style="border: 1px solid black; width: 30%; margin:10px 0px;">
+                     <tr>
+                       <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Specific Gravity</span></td>
+                       <td style="border: 1px solid black; padding: 8px;"><field  name="sg_fineness_calculated"  colspan="1"/></td>
+                     </tr>
+                     <tr>
+                       <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>mass of sample taken</span></td>
+                       <td style="border: 1px solid black; padding: 8px;"><field  name="mass_of_sample_taken_fineness_calculated"  colspan="1"/></td>
+                     </tr>
+                    </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+                    <div>
+                    <table style="border: 1px solid black; width: 30%; margin:10px 0px;">
+                    <tr>
+                           <td></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>1</span></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>2</span></td>
+                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>3</span></td>
+                    </tr>
+                     <tr>
+                       <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Time(t),sec.</span></td>
+                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_sample_trial1"  colspan="1"  nolabel="1"/></td>
+                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_sample_trial2"  colspan="1"  nolabel="1"/></td>
+                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_sample_trial3"  colspan="1"  nolabel="1"/></td>
+                     </tr>
+                    </table>
+                    </div>
+                    <group/>
+                    <group/>
+
+                    <table style="width: 20%; margin-top:4px">
+                       <tr>
+                          <td style="padding: 4px;font-weight: bold;"><span>Average Time(tₒ),Sec</span></td>
+                          <td style="padding: 5px;"><field  name="average_sample_time"  colspan="1"/></td>
+                       </tr>
+                       <tr>
+                          <td style="padding: 4px;font-weight: bold;"><span>Fineness of Sample</span></td>
+                          <td style="padding: 5px;"><field  name="fineness_of_sample"  colspan="1"/></td>
+                       </tr>
+                       <tr>
+                          <td style="padding: 4px;font-weight: bold;"><span>Fineness By Blaine Air Permeability Method (m2/kg)</span></td>
+                          <td style="padding: 5px;"><field  name="fineness_air_permeability"  colspan="1"/></td>
+                       </tr>
+                    </table>
+                    <group/>
+                    <group/>
+
+                    <table style="width: 20%; margin-top:6px">
+                      <tr>
+                        <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 5px;"> <field name="fineness_confirmity"
+                            decoration-success="fineness_confirmity == 'pass'" 
+                           decoration-danger="fineness_confirmity == 'fail'" 
+                            readonly="1" />  </td>
+                      </tr>
+                       <tr>
+                          <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                          <td style="padding: 5px;"><field name="fineness_nabl" /></td>
+                       </tr>
+                    </table>
+                    <group/>
+
+                    <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+
+                    
+
+
+                      
+
+
+
+
+
+
+
+
+
+
+
+                    
+                    
+
+
+
+
+
+
+
+
+                   
+
+                   
+                    
+                    
+
+                    
+                    
+                    
+
+                    
+                    
+                    
+
+                    
+
+
+                    
+                    <!-- <group invisible="not normal_consistency_visible" style="white-space:nowrap; width:30%">
+                        
+                        <label for="wt_of_cement_trial1" string="Wt. of Cement(g)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="wt_of_cement_trial1" string="Trial 1" />
+                            <field  name="wt_of_cement_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          
+                        </div> -->
+                    <!-- </group>
+                    <group attrs="{'invisible': [('normal_consistency_visible', '=', False)]}" style="white-space:nowrap;">   -->
+                          <!-- <group > -->
+                            <!-- <label for="wt_of_ggbs_trial1" string="Trial 1" /> -->
+                            <!-- <field  name="wt_of_ggbs_trial1"  colspan="3" /> -->
+                          <!-- </group> -->
+                          
+                    <!-- </group>
+                    <group attrs="{'invisible': [('normal_consistency_visible', '=', False)]}"> -->
+                          <!-- <group > -->
+                            <!-- <label for="total_wt_sample" string="Trial 1" /> -->
+                            <!-- <field  name="total_wt_sample"  colspan="3"/> -->
+                          <!-- </group> -->
+                          
+                    <!-- </group>
+                    <group attrs="{'invisible': [('normal_consistency_visible', '=', False)]}"> -->
+                       
+                          <!-- <group > -->
+                            <!-- <field  name="wt_water_req"  colspan="3"  /> -->
+                          <!-- </group> -->
+                          
+                    <!-- </group>
+                    <group attrs="{'invisible': [('normal_consistency_visible', '=', False)]}"> -->
+                        
+                          <!-- <group > -->
+                            
+                            <!-- <field  name="penetration_vicat"  colspan="3"  /> -->
+                          <!-- </group> -->
+                         
+                    <!-- </group>
+                    <group attrs="{'invisible': [('normal_consistency_visible', '=', False)]}"> -->
+                        
+                          <!-- <group > -->
+                            <!-- <field  name="normal_consistency"  colspan="3"  /> -->
+                          <!-- </group> -->
+                          
+                    <!-- </group> -->
+
+
+                    <!-- Normal Consistency Cement  -->
+                    <!-- <group invisible=" not normal_consistency_cement_visible">
+                        <h1>
+                            <field name="normal_consistency_cement_name" readonly="1" nolabel="1"/>
+                            <field name="normal_consistency_cement_visible" invisible="1"/>
+                        </h1>
+                    </group> -->
+
+                    <!-- <group invisible="not normal_consistency_cement_visible" style="white-space:nowrap; width:30%">
+                        
+                        <label for="wt_cement" string="Wt. of Cement(g)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="wt_cement" string="Trial 1" />
+                            <field  name="wt_cement"  colspan="3"  nolabel="1"/>
+                          </group>
+                          
+                        </div> -->
+                    <!-- </group>
+                    
+                   
+                    <group attrs="{'invisible': [('normal_consistency_cement_visible', '=', False)]}"> -->
+                       
+                         
+                            <!-- <field  name="wt_water_req_cement"  colspan="3"  /> -->
+                          
+                    <!-- </group>
+                    <group attrs="{'invisible': [('normal_consistency_cement_visible', '=', False)]}"> -->
+                        
+                          
+                            
+                            <!-- <field  name="penetration_vicat_cement"  colspan="3"  /> -->
+                          
+                         
+                    <!-- </group>
+                    <group attrs="{'invisible': [('normal_consistency_cement_visible', '=', False)]}"> -->
+                        
+                          
+                            <!-- <field  name="normal_consistency_cement"  colspan="3"  /> -->
+                          
+                          
+                    <!-- </group> -->
+
+
+                    <!-- Specific Gravity -->
+                    <!-- <group invisible="not specific_gravity_visible">
+                        <h1>
+                            <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_visible" invisible="1"/>
+                        </h1>
+                    </group> -->
+                    
+                    
+                    <!-- <group invisible="not specific_gravity_visible">
+                        <label for="wt_of_ggbs_trial1" string="Wt. of GGBS(g)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="wt_of_ggbs_sg_trial1" string="Trial 1" />
+                            <field  name="wt_of_ggbs_sg_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="wt_of_ggbs_sg_trial2" string="Trial 2" />
+                            <field  name="wt_of_ggbs_sg_trial2"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group invisible="not specific_gravity_visible">
+                        <label for="initial_volume_kerosine_trial1" string="Initial Volume of kerosine (ml)V1" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="initial_volume_kerosine_trial1" string="" />
+                            <field  name="initial_volume_kerosine_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="initial_volume_kerosine_trial2" string="" />
+                            <field  name="initial_volume_kerosine_trial2"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group invisible="not specific_gravity_visible">
+                        <label for="final_volume_kerosine_trial1" string="Final Volume of kerosine and Cement (After immersion in constant water bath)(ml) V2" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="final_volume_kerosine_trial1" string="" />
+                            <field  name="final_volume_kerosine_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="final_volume_kerosine_trial2" string="" />
+                            <field  name="final_volume_kerosine_trial2"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group invisible="not specific_gravity_visible">
+                        <label for="displaced_volume_trial1" string="Displaced volume (cm³)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="displaced_volume_trial1" string="" />
+                            <field  name="displaced_volume_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="displaced_volume_trial2" string="" />
+                            <field  name="displaced_volume_trial2"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+
+                    <group invisible="not specific_gravity_visible">
+                        <label for="specific_gravity_trial1" string="Specific Gravity" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="specific_gravity_trial1" string="" />
+                            <field  name="specific_gravity_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="specific_gravity_trial2" string="" />
+                            <field  name="specific_gravity_trial2"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    
+                    <group invisible="not  specific_gravity_visible">
+                      <field name="average_specific_gravity" string="Average"/>
+                      <field name="specific_gravity_confirmity"  style="color: green;"  modifiers='{"invisible": [["specific_gravity_confirmity", "!=", "pass"]]}'/>
+                      <field name="specific_gravity_confirmity"  style="color: red;" modifiers='{"invisible": [["specific_gravity_confirmity", "!=", "fail"]]}'/>
+                      <field name="specific_gravity_confirmity"  style="color: black;" modifiers='{"invisible": [["specific_gravity_confirmity", "!=", "not_applicable"]]}'/> -->
+
+                      <!-- <field name="nabl" style="background-color:green;color:white;"/> -->
+                      <!-- <field name="specific_gravity_nabl"  style="color: green;" modifiers='{"invisible": [["specific_gravity_nabl", "!=", "pass"]]}'/>
+                      <field name="specific_gravity_nabl"  style="color: red;" modifiers='{"invisible": [["specific_gravity_nabl", "!=", "fail"]]}'/>
+                    </group> -->
+
+
+
+                    <!-- Slag index  -->
+                    <!-- <group  modifiers='{"invisible": ["|", ["slag_activity_7_visible", "=", false], ["slag_activity_28_visible", "=", false]]}'>
+                        <h1>
+                            <field name="slag_activity_name" readonly="1" nolabel="1"/>
+                            <field name="slag_activity_7_visible" invisible="1"/>
+                            <field name="slag_activity_28_visible" invisible="1"/>
+                        </h1>
+
+                    </group> -->
+                    <!-- <group modifiers='{"invisible": ["|", ["slag_activity_7_visible", "=", false], ["slag_activity_28_visible", "=", false]]}'>
+                     <h5>Compressive Strength of the mortar cube using GGBS</h5>
+                    </group>
+                    <group modifiers='{"invisible": ["|", ["slag_activity_7_visible", "=", false], ["slag_activity_28_visible", "=", false]]}' style="white-space:nowrap; width:40%">
+
+                      <field  name="wt_of_cement_slag"  colspan="3" />
+                      <field  name="wt_of_ggbs_slag"  colspan="3" />
+                      <field  name="wt_of_standard_sand_grade1"  colspan="3" />
+                      <field  name="wt_of_standard_sand_grade2"  colspan="3" />
+                      <field  name="wt_of_standard_sand_grade3"  colspan="3" />
+                      <field  name="total_weight_sand"  colspan="3" />
+                      <field  name="quantity_of_water"  colspan="3" />
+                    </group>
+                     -->
+                    <!-- 7 days  -->
+
+                    <!-- <group invisible="not slag_activity_7_visible">
+                        <h1>
+                            <field name="casting_7_name" readonly="1" nolabel="1"/> -->
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        <!-- </h1>
+                    </group>
+                    <group invisible="not slag_activity_7_visible">
+                            <field name="status_7days"/>
+                      
+                    </group>
+                    
+                    <group invisible="not slag_activity_7_visible">
+
+
+                      <field name="casting_date_7days" style="width:100px"/>
+                      <field name="testing_date_7days"/>
+                      
+                      <field name="slag_7days_table">
+                        <tree editable="bottom">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="crosssectional_area"/>
+                          <field name="wt_of_cement_cube"/>
+                          <field name="crushing_load" />
+                          <field name="compressive_strength" />
+                        </tree>
+                      </field>
+                      <field name="average_7days_slag"/>
+                    </group> -->
+
+                    <!-- 28 days  -->
+                    <!-- <group invisible="not slag_activity_28_visible">
+                        <h1>
+                            <field name="casting_28_name" readonly="1" nolabel="1"/> -->
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        <!-- </h1> -->
+                    <!-- </group>
+                    <group invisible="not slag_activity_28_visible">
+                            <field name="status_28days"/>
+                      
+                    </group>
+                    
+                    <group invisible="not slag_activity_28_visible">
+
+
+                      <field name="casting_date_28days" style="width:100px"/>
+                      <field name="testing_date_28days"/>
+                      
+                      <field name="slag_28days_table">
+                        <tree editable="bottom">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="crosssectional_area"/>
+                          <field name="wt_of_cement_cube"/>
+                          <field name="crushing_load" />
+                          <field name="compressive_strength" />
+                        </tree>
+                      </field>
+                      <field name="average_28days_slag"/>
+                    </group> -->
+
+                    <!-- opc cube  -->
+                    <!-- <group modifiers='{"invisible": ["|", ["slag_activity_7_visible", "=", false], ["slag_activity_28_visible", "=", false]]}'>
+                      <h5>Compressive Strength of the control OPC mortar cube</h5>
+                    </group>
+                    <group modifiers='{"invisible": ["|", ["slag_activity_7_visible", "=", false], ["slag_activity_28_visible", "=", false]]}' style="white-space:nowrap; width:40%">
+                      <field  name="wt_of_cement_slag_opc"  colspan="3" />
+                      <field  name="wt_of_standard_sand_grade1_opc"  colspan="3" />
+                      <field  name="wt_of_standard_sand_grade2_opc"  colspan="3" />
+                      <field  name="wt_of_standard_sand_grade3_opc"  colspan="3" />
+                      <field  name="total_weight_sand_opc"  colspan="3" />
+                      <field  name="quantity_of_water_opc"  colspan="3" />
+
+                    </group> -->
+
+                    <!-- 7 days  -->
+
+                    <!-- <group invisible="not slag_activity_7_visible">
+                        <h1>
+                            <field name="casting_7_name_opc" readonly="1" nolabel="1"/> -->
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        <!-- </h1>
+                    </group>
+                    <group invisible="not slag_activity_7_visible">
+                            <field name="status_7days_opc"/>
+                      
+                    </group>
+                    
+                    <group invisible="not slag_activity_7_visible">
+
+
+                      <field name="casting_date_7days_opc" style="width:100px"/>
+                      <field name="testing_date_7days_opc"/>
+                      
+                      <field name="slag_7days_table_opc">
+                        <tree editable="bottom">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="crosssectional_area"/>
+                          <field name="wt_of_cement_cube"/>
+                          <field name="crushing_load" />
+                          <field name="compressive_strength" />
+                        </tree>
+                      </field>
+                      <field name="average_7days_slag_opc"/>
+                    </group> -->
+
+                    <!-- 28 days  -->
+                    <!-- <group invisible="not slag_activity_28_visible">
+                        <h1>
+                            <field name="casting_28_name_opc" readonly="1" nolabel="1"/> -->
+
+                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
+                        <!-- </h1>
+                    </group>
+                    <group invisible="not slag_activity_28_visible">
+                            <field name="status_28days_opc"/>
+                      
+                    </group>
+                    
+                    <group invisible="not slag_activity_28_visible">
+
+
+                      <field name="casting_date_28days_opc" style="width:100px"/>
+                      <field name="testing_date_28days_opc"/>
+                      
+                      <field name="slag_28days_table_opc">
+                        <tree editable="bottom">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="crosssectional_area"/>
+                          <field name="wt_of_cement_cube"/>
+                          <field name="crushing_load" />
+                          <field name="compressive_strength" />
+                        </tree>
+                      </field>
+                      <field name="average_28days_slag_opc"/>
+                    </group>
+                    <group invisible="not slag_activity_7_visible">
+                      <field name="slag_activity_index_7days"/>
+                      <field name="slag_7days_conformity"  style="color: green;" modifiers='{"invisible": [["slag_7days_conformity", "!=", "pass"]]}'/>
+                      <field name="slag_7days_conformity"  style="color: red;" modifiers='{"invisible": [["slag_7days_conformity", "!=", "fail"]]}'/>
+                      <field name="slag_7days_conformity"  style="color: black;" modifiers='{"invisible": [["slag_7days_conformity", "!=", "not_applicable"]]}'/>
+
+                      <field name="slag_7days_nabl"  style="color: green;" modifiers='{"invisible": [["slag_7days_nabl", "!=", "pass"]]}'/>
+                      <field name="slag_7days_nabl"  style="color: red;" modifiers='{"invisible": [["slag_7days_nabl", "!=", "fail"]]}'/>
+
+                    </group>
+                    <group invisible="not slag_activity_28_visible">
+                      <field name="slag_activity_index_28days"/>
+                      <field name="slag_28days_conformity"  style="color: green;" modifiers='{"invisible": [["slag_28days_conformity", "!=", "pass"]]}'/>
+                      <field name="slag_28days_conformity"  style="color: red;" modifiers='{"invisible": [["slag_28days_conformity", "!=", "fail"]]}'/>
+                      <field name="slag_28days_conformity"  style="color: black;" modifiers='{"invisible": [["slag_28days_conformity", "!=", "not_applicable"]]}'/>
+
+                      <field name="slag_28days_nabl"  style="color: green;" modifiers='{"invisible": [["slag_28days_nabl", "!=", "pass"]]}'/>
+                      <field name="slag_28days_nabl"  style="color: red;" modifiers='{"invisible": [["slag_28days_nabl", "!=", "fail"]]}'/>
+
+                    </group> -->
+
+                    <!-- Fineness  -->
+
+                    <!-- <group invisible="not fineness_visible">
+                        <h1>
+                            <field name="fineness_name" readonly="1" nolabel="1"/>
+                            <field name="fineness_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <group invisible="not fineness_visible">
+                        <label for="weight_of_mercury_before_trial1" string="Weight of mercury before placing the sample in the permeability cell  (m₁),g."/>
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="weight_of_mercury_before_trial1" string="Trial 1" />
+                            <field  name="weight_of_mercury_before_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="weight_of_mercury_before_trial2" string="Trial 2" />
+                            <field  name="weight_of_mercury_before_trial2"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group invisible="not fineness_visible">
+                        <label for="weight_of_mercury_after_trail1" string="Weight of mercury after placing the sample in the permeability cell  (m₂),g." />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="weight_of_mercury_after_trail1" string="" />
+                            <field  name="weight_of_mercury_after_trail1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="weight_of_mercury_after_trail2" string="" />
+                            <field  name="weight_of_mercury_after_trail2"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>
+                    <group invisible="not fineness_visible" style="white-space:nowrap; width:60%">
+                          <group>
+                            <field  name="density_of_mercury"  colspan="6" />
+                          </group>
+                    </group> -->
+
+
+                    <!-- <group invisible="not fineness_visible">
+                        <label for="bed_volume_trial1" string="Bed Volume (V=m₂-m₁/D),cm3." />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="bed_volume_trial1" string="" />
+                            <field  name="bed_volume_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="bed_volume_trial2" string="" />
+                            <field  name="bed_volume_trial2"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group> -->
+                    <!-- <group invisible="not fineness_visible" style="white-space:nowrap; width:50%">
+                         
+                            <field  name="average_bed_volume"  colspan="6"/> -->
+                          
+                    <!-- </group>
+                    <group attrs="{'invisible': [('fineness_visible', '=', False)]}" style="white-space:nowrap; width:50%">                         -->
+                          
+                            <!-- <field  name="difference_between_2_values"  colspan="6"/>
+                          
+                    </group> -->
+                    <!-- <group invisible="not fineness_visible">
+                      <h6>Repeat the procedure  with fresh cement beds until two values of V are obtained differing by less than 0.005 cm3.Record the mean of these two values as V</h6>
+                    </group>
+                    <group invisible="not fineness_visible">
+                      <h5>Determination of Apparatus Constant (k)</h5>
+                    </group>
+                    
+                    <group invisible="not fineness_visible" style="white-space:nowrap;">                        
+                          
+                            <field  name="mass_of_sample_taken_fineness_reference"  colspan="6"/>
+                          
+                    </group>
+                    <group invisible="not fineness_visible">
+                      <h6>Take an amount (m1),g. of standard sample so as to give the sample bed of porosity e=0.500</h6>
+                    </group>
+                     <group invisible="not fineness_visible">
+                        <label for="time_fineness_trial1" string="Time(t),sec." />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="time_fineness_trial1" string="1" />
+                            <field  name="time_fineness_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="time_fineness_trial2" string="2" />
+                            <field  name="time_fineness_trial2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="time_fineness_trial3" string="3" />
+                            <field  name="time_fineness_trial3"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group> -->
+                    <!-- <group attrs="{'invisible': [('fineness_visible', '=', False)]}">
+                        <label for="temp_fineness_trial1" string="Temp °C" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="temp_fineness_trial1" string="1" />
+                            <field  name="temp_fineness_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="temp_fineness_trial2" string="2" />
+                            <field  name="temp_fineness_trial2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="temp_fineness_trial3" string="3" />
+                            <field  name="temp_fineness_trial3"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group> -->
+                    <!-- <group invisible="not fineness_visible">                        
+                          <group >
+                            <field  name="average_time_fineness"  colspan="6"/>
+                          </group>
+                    </group> -->
+
+                    <!-- <group invisible="not fineness_visible" style="white-space:nowrap; width:50%">                        
+                          <field name="specific_surface_of_reference_sample"/>
+                          <field name="air_viscosity_of_three_temp"/>
+                          <field name="density_of_reference_sample"/>
+                          <field name="mean_of_three_measured_times"/>
+                          <field name="apparatus_constant"/>
+                    </group> -->
+                    <!-- <group invisible="not fineness_visible">
+                      <h6>Determination of fineness</h6>
+                    </group>
+                    <group invisible="not fineness_visible">
+                      <h6>*Using the sample whose fineness is to be calculated.</h6>
+                    </group> -->
+                    <!-- <group invisible="not fineness_visible" style="white-space:nowrap;">
+                          
+                            <field  name="sg_fineness_calculated"  colspan="6"/>
+                           -->
+                    <!-- </group>
+                    <group attrs="{'invisible': [('fineness_visible', '=', False)]}" >                         -->
+                         
+                            <!-- <field  name="mass_of_sample_taken_fineness_calculated"  colspan="6"/>
+                          
+                    </group>
+                    <group invisible="not fineness_visible">
+                        <label for="time_sample_trial1" string="Time(t),sec." />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="time_sample_trial1" string="1" />
+                            <field  name="time_sample_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="time_sample_trial2" string="2" />
+                            <field  name="time_sample_trial2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="time_sample_trial3" string="3" />
+                            <field  name="time_sample_trial3"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group> -->
+                    <!-- <group attrs="{'invisible': [('fineness_visible', '=', False)]}">
+                        <label for="temp_fineness_calculated_trial1" string="Temp °C" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="temp_fineness_calculated_trial1" string="1" />
+                            <field  name="temp_fineness_calculated_trial1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="temp_fineness_calculated_trial2" string="2" />
+                            <field  name="temp_fineness_calculated_trial2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1" class="oe_inline"  >
+                            <label for="temp_fineness_calculated_trial3" string="3" />
+                            <field  name="temp_fineness_calculated_trial3"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group> -->
+                    <!-- <group invisible="not  fineness_visible">                        
+                          <group >
+                            <field  name="average_sample_time"  colspan="6"/>
+                            <field  name="fineness_of_sample"  colspan="6"/>
+                            <field  name="fineness_air_permeability"  colspan="6"/>
+                          </group>
+                    </group>
+                    <group invisible="not fineness_visible">
+                      <field name="fineness_confirmity"  style="color: green;" amodifiers='{"invisible": [["fineness_confirmity", "!=", "pass"]]}'/>
+                      <field name="fineness_confirmity"  style="color: red;" modifiers='{"invisible": [["fineness_confirmity", "!=", "fail"]]}'/>
+                      <field name="fineness_confirmity"  style="color: black;" modifiers='{"invisible": [["fineness_confirmity", "!=", "not_applicable"]]}'/> -->
+
+                      <!-- <field name="nabl" style="background-color:green;color:white;"/> -->
+                      <!-- <field name="fineness_nabl"  style="color: green;" modifiers='{"invisible": [["fineness_nabl", "!=", "pass"]]}'/>
+                      <field name="fineness_nabl"  style="color: red;" modifiers='{"invisible": [["fineness_nabl", "!=", "fail"]]}'/>
+                    </group>
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            /> -->
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
