@@ -407,7 +407,7 @@ class MechanicalConcreteCubeLine(models.Model):
     load = fields.Float(string="Load (kN)")
     compressive_strength = fields.Float(string="Compressive Strength (N/mm2)",compute="_compute_strength",store=True)
 
-    avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (N/mm2)",compute="_compute_avg_strength",store=True)
+    avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (N/mm2)")
 
     # @api.depends('parent_id', 'parent_id.child_lines.compressive_strength')
     # def _compute_avg_strength(self):
