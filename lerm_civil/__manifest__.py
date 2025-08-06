@@ -28,11 +28,7 @@
     'views/product_grade_wizard.xml',
     'views/reallocation_wizard.xml',
     'views/send_mail_wizard.xml',
-<<<<<<< HEAD
-    'views/ftp_upload_wizard_views.xml',
-=======
     # 'views/ftp_upload_wizard_views.xml',
->>>>>>> 865917330f40a1a5ddec1269f1881b9d12e05807
 
     # 'views/mechanical/sieve_analysis.xml',
     'reports/eln_report_action.xml',
