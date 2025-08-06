@@ -74,7 +74,7 @@ class MechanicalConcreteCube(models.Model):
             if not rec.grade2:
                 continue
             # Convert grade2 (float) to string for comparison
-            grade2_str = str(int(rec.grade2)) if rec.grade2.is_integer() else str(rec.grade2)
+            grade2_str = rec.grade2
             # match with line.grade1 (string)
             matching_line = rec.grade_child_lines.filtered(
                 lambda l: l.grade1 and l.grade1.strip().lower() == grade2_str.strip().lower()
@@ -83,7 +83,7 @@ class MechanicalConcreteCube(models.Model):
                 line = matching_line[0]
                 rec.days_28_kmm = rec.grade2 + (1.65 * line.sd)
 
-    grade2 = fields.Float(string="Grade",compute="_compute_grade2",store=True)
+    grade2 = fields.Char(string="Grade",compute="_compute_grade2",store=True)
 
     @api.depends('grade')
     def _compute_grade2(self):
@@ -95,6 +95,7 @@ class MechanicalConcreteCube(models.Model):
 
     @api.model
     def _default_grade_child_lines(self):
+
         default_lines = [
             (0, 0, {'grade1': 10, 'sd': 3.5}),
             (0, 0, {'grade1': 15, 'sd': 3.5}),
@@ -348,7 +349,7 @@ class MechanicalConcreteCubeLine(models.Model):
 
     sr_no = fields.Integer(string="Sr.No.",readonly=True, copy=False, default=1)
   
-    id_mark = fields.Char(string="Sample Identification",compute="_compute_id_mark",store=True)
+    id_mark = fields.Char(string="Sample Identification",store=True)
     wt_sample = fields.Float(string="Weight of Cube (gms)",digits=(16,3))
 
     dt_of_casting = fields.Date(string="Date of casting",compute="_compute_dt_of_casting",store=True)

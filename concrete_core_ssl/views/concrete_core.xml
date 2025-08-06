@@ -42,89 +42,44 @@
                     </tree>
                 </field>
 
-
-
-
-
-
-                   
-
-
-                <group style="white-space: nowrap; width:100%;">
-                    <div class="custom_table_borders" style="display: grid; grid-template-columns: 1fr 1fr; gap: 100px; width: 100%;">
-                        <!-- Left Box -->
-                        <div>
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <tbody>
-                                    <tr>
-                                        <td style="border: 1px solid black; padding: 10px; text-align: left; color: black;">
-                                            Date of Casting
-                                        </td>
-                                        <td style="border: 1px solid black; padding: 10px; text-align: center;">
-                                            <field name="date_of_casting" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                   <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; color: black;">
-                                                Date of Testing
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center;">
-                                                <field name="date_of_testing" nolabel="1"/>
-                                            </td>
-                                        </tr>
-                                    <tr>
-                                        <td style="border: 1px solid black; padding: 10px; text-align: left; color: black;">
-                                            Age of Test, days
-                                        </td>
-                                        <td style="border: 1px solid black; padding: 10px; text-align: center;">
-                                            <field name="age_of_test" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Right Box -->
-                        <div>
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <tbody>
-                                    <tr>
-                                        <td style="border: 1px solid black; padding: 10px; text-align: left; color: black;">
-                                            Age of Core
-                                        </td>
-                                        <td style="border: 1px solid black; padding: 10px; text-align: center;">
-                                            <field name="age_of_days" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border: 1px solid black; padding: 10px; text-align: left; color: black;">
-                                            Area of Core mm²
-                                        </td>
-                                        <td style="border: 1px solid black; padding: 10px; text-align: center;">
-                                            <field name="area_core" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border: 1px solid black; padding: 10px; text-align: left; color: black;">
-                                            Difference
-                                        </td>
-                                        <td style="border: 1px solid black; padding: 10px; text-align: center;">
-                                            <field name="difference" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </group>
-
-
+                <div class="d-flex gap-2">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="date_of_casting">Date of Casting</label></td>
+                                <td><field name="date_of_casting"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="date_of_testing">Date of Testing</label></td>
+                                <td><field name="date_of_testing"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="age_of_test">Age of Test, days</label></td>
+                                <td><field name="age_of_test"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
                     
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="age_of_days">Age of Cubes</label></td>
+                                <td><field name="age_of_days"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="area_core">Area of Core mm²</label></td>
+                                <td><field name="area_core"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="difference">Difference</label></td>
+                                <td><field name="difference"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
 
 
-                    
-                      
                 <div>
                     <field name="child_lines"  mode="tree" nolabel="1">
                             <tree editable="bottom" class="custom_table_borders" >
