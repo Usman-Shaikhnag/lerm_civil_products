@@ -10,6 +10,7 @@
                 <button
                     type="object"
                     name="confirm_eln"
+                    class="oe_highlight"
                     string="Confirm"
                     invisible="state not in ('1-draft', '4-rejected')"/>
                 <field readonly="1" name="state" widget="statusbar" statusbar_visible="1-draft,2-confirm,3-approved"/>
@@ -70,22 +71,22 @@
                 </group>
                 <group>
                     <!-- <field name="volume"/> -->
-                    <field name="quantity"/>
+                    <field name="quantity" invisible="1"/>
                 </group>
 
                 <table class="table table-sm">
                     <thead>
                         <tr>
-                            <th>Sample Quantity</th>
                             <th>Received</th>
+                            <th>Unit</th>
                             <th>Consumed</th>
                             <th>Balance</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><field name="uom_id" readonly="1"/></td>
                             <td><field name="quantity_received" readonly="1"/></td>
+                            <td><field name="uom_id" readonly="1"/></td>
                             <td><field name="quantity_consumed"/></td>
                             <td><field name="quantity_balance" readonly="1"/></td>
                         </tr>

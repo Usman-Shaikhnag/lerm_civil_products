@@ -2,14 +2,10 @@
 <odoo>
  <template id="compresive_concrete_cube_report">
 		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
-				<!-- <div style="text-align:center;margin-top:10px">
-					<p style="font-size:15px"><b>Test Report</b></p>
-				</div> -->
-				<div class="container_eln" style="padding-top:20px;">
+				<div class="container_eln" style="padding-top:0;">
 					<div class="" t-foreach="eln" t-as="o">
-						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
+						<table style="width: 100%; border-collapse: collapse;">
 							<tbody>
 								<tr>
 									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
@@ -22,19 +18,15 @@
 										<span t-field="o.srf_id.customer.state_id"/> ,
 										<span t-field="o.srf_id.customer.country_id"/>
 									</td>
-								
 								</tr>
-								
 								<tr>
 									<td><strong>Client's Reference</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
 								</tr>
-
 								<tr>
 									<td><strong>Name of Work</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 								</tr>
-
 								<tr>
 									<td><strong>Date of Testing</strong></td>
 									<td style="padding-left: 10px;">
@@ -42,17 +34,10 @@
 										<span t-field="o.end_date" style="margin-left:10px;"/>
 									</td>
 								</tr>
-
 								<tr>
 									<td><strong>Type of Sample</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
 								</tr>
-
-								<!-- <tr>
-									<td><strong>Grade of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
-								</tr> -->
-
 								<!-- Source of Sample (only if value exists) -->
 								<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
@@ -67,10 +52,9 @@
 							</tbody>
 						</table>
 					</div>
-					
-				
-					
-					<div style="padding-top:5px">
+
+					<!--Maybe Used Later -->
+					<!-- <div style="padding-top:5px">
 						<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>: 
 						
 						
@@ -80,185 +64,63 @@
 								</t>
 							</t>
 						
-					</div>
+					</div> -->
 					
-					<table style="margin-top:2px">
-				
-							
+					<div style="margin-top:2px">
+						<table class="custom_table_borders text-center">
 							<tr>
-								<td > <strong>#Grade of Sample</strong> : <span t-field="o.grade_id.grade"/>
-								</td>
-								
-								<td> <strong>#Age Of Cubes</strong> : <span t-field="data.age_of_days"></span>
-								</td>
+								<td><strong>Grade of Sample</strong> : <span t-field="o.grade_id.grade"/></td>
+								<td><strong>Age Of Cubes</strong> : <span t-field="data.age_of_days"></span></td>
 							</tr>
-
 							<tr>
-							<td><strong>#Size of Cube</strong> : <span t-field="o.sample_id.size_id.size"/></td>
-							<td><strong>Area Of Cube  : </strong><span t-field="data.area_of_cube"/>  Sq.mm</td>
-										
+								<td><strong>Size of Cube</strong> : <span t-field="o.sample_id.size_id.size"/></td>
+								<td><strong>Area Of Cube  : </strong><span t-field="data.area_of_cube"/>  Sq.mm</td>		
+							</tr>
+						</table>
+					</div> 
+
+					<div style="">
+						<table class="custom_table_borders">
+							<thead>
+								<tr>
+									<th style="text-align: center; font-weight: bold; width: 4%;">Sr. No</th>
+									<th style="text-align: center; font-weight: bold; white-space: nowrap;">Sample Identification</th>
+									<th style="text-align: center; font-weight: bold; width: 10%;">Weight of Cube (gms)</th>
+									<th style="text-align: center; font-weight: bold; width: 9%;">Date of casting</th>
+									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th>
+									<th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th>
+									<th style="text-align: center; font-weight: bold; width: 13%;">Compressive Strength (N/mm²)</th>
+									<th style="text-align: center; font-weight: bold; width: 15%;">Avg. Compressive Strength (N/mm²)</th>
 								</tr>
-							<!-- <tr cols="12">
-								<td colspan="6">Age of Test, Days :
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.age_of_test"/>
-								</td>
-							</tr> -->
+							</thead>
+
+							<tbody>
+								<t t-set="lines" t-value="data.child_lines"/>
+								<t t-set="line_count" t-value="0"/>
+								<t t-foreach="lines" t-as="r">
+								<tr>
+									<td style="text-align: center;"><span t-esc="r.sr_no"/></td>
+									<td style="text-align: center; white-space: nowrap;"><span t-esc="r.id_mark"/></td>
+									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
+									<td style="text-align: center;"><span t-esc="r.dt_of_casting"/></td>
+									<td style="text-align: center;"><span t-esc="r.dt_of_testing1"/></td>
+									<td style="text-align: center;"><span t-esc="r.load"/></td>
+									<td style="text-align: center;">
+										<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+
+									<t t-if="line_count % 3 == 0">
+										<td style="text-align: center; vertical-align: middle;" t-att-rowspan="3">
+											<span t-esc="r.avg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+										</td>
+									</t>
+								</tr>
+								<t t-set="line_count" t-value="line_count + 1"/>
+								</t>
+							</tbody>
 						</table>
-						<table style="margin-top:5px;">
-						<thead>
-							<tr>
-								<th style="text-align: center;font-weight: bold;"> 
-									<span>
-										Sr. No
-									</span>
-								</th>
-								<th	style="text-align: center;font-weight: bold;">
-									<span>
-										#Sample Identification
-									</span>
-								</th>
+					</div> 
 
-								<th style="text-align: center;font-weight: bold;">
-									<span>
-									Weight of Cube (gms)
-									</span>
-								</th>
-								
-								<th style="text-align: center;font-weight: bold;">
-									<span>
-									#Date of casting
-									</span>
-								</th>
-
-								<!-- <th style="text-align: center;font-weight: bold;">
-									<span>
-									No.of Days
-									</span>
-								</th> -->
-								<th style="text-align: center;font-weight: bold;">
-									<span>
-									Date of Testing
-									</span>
-								</th>
-								
-								<th style="text-align: center;font-weight: bold;">
-									<span>
-										Load (kN)
-									</span>
-								</th>
-
-								<th style="text-align: center;font-weight: bold;">
-									<span>
-										Compressive Strength (N/mm2)
-									</span>
-								</th>
-							
-							</tr>
-						</thead>
-						<tbody>
-							<tr t-foreach="data.child_lines" t-as="r">
-								<td style="text-align: center;">
-									<span t-esc="r.sr_no"/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.id_mark"/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.wt_sample"/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.dt_of_casting"/>
-								</td>
-								<!-- <td style="text-align: center;">
-									<span t-esc="r.days" />
-								</td> -->
-								<td style="text-align: center;">
-									<span t-esc="r.dt_of_testing1"/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.load"/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								
-							</tr>
-						</tbody>
-					</table>
-
-						<table style="margin-top:5px" class="custom_table_borders">
-							<!-- <tr>
-								<td colspan="12">Avg. Compressive Strength N/mm2 :<![CDATA[&nbsp;]]>
-									<span t-field="data.average_strength"/>
-								</td>
-							</tr> -->
-							<!-- <div style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 100%;"> -->
-                           
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                             Avg. Compressive Strength  :
-
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <!-- <field name="area_of_cube" nolabel="1" identity="extra" /> -->
-													<span t-field="data.average_strength"/>
-                                                </div>
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                N/mm2
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                           
-						</table>
-
-					         <!-- <table style="width: 100%; border-collapse: collapse;margin-top:5px">
-                                <thead>
-                                    <tr>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                         Permissible Range
-                                        </th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                           N/mm2
-                                        </th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                           KN
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px; text-align: center">
-                                           7 Days
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-											<span t-field="data.days_7_kmm"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-										  <span t-field="data.days_7_n"/>
-                                        </td>
-                                    </tr>
-
-                                     <tr>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px; text-align: center">
-                                          28 Days
-
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-											  <span t-field="data.days_28_kmm"/>
-											
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-										   <span t-field="data.days_28_n"/>
-                                        </td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table> -->
 					<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
 						<table class="table table-bordered">
 							<tr>
@@ -307,14 +169,6 @@
 									</b>
 								</div>
 							</div>
-							<!-- <div>
-								<div t-if="stamp and stamp == '4-in_report'">
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div> -->
 							<div>
 								<div>
 									<b>
@@ -347,9 +201,7 @@
 							......End of Report......
 						</div> -->
 						<div style="margin-top: 10px; text-align: center;">
-							<p style="border-top: 1px dashed #000; padding-top: 10px;">
-								...... End Of Report......
-							</p>
+							<p style="font-weight:800;">...... End Of Report......</p>
 						</div>
 					</div>
 				<!-- </div> -->

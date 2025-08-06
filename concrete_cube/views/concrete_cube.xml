@@ -57,17 +57,14 @@
                         </div>
                     </group>
 
-
                     <field name="grade_child_lines" nolabel="1" class="custom_table_borders" invisible="1">
                         <tree editable="bottom">
                             <field name='sr_no' string="Sr. NO"/>
                             <field name='grade1' />
-                            <field name='sd' />
-                        
+                            <field name='sd' />                        
                         </tree>
                     </field> 
 
-                    
                     <div class="d-flex gap-2">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
@@ -114,15 +111,20 @@
                             <field name='dt_of_testing1' />
                             <field name="load" />
                             <field name='compressive_strength' />
+                            <field name='avg_compressive_strength' />
                         </tree>
                     </field> 
+                    
+                    <button type="object" name="action_calculate_avg_strength" class="btn btn-primary mb-2">
+                        <i class="fa fa-calculator mr-1"/> Calculate Average
+                    </button>
                         
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                         <tbody>
-                            <tr>
+                            <!-- <tr>
                                 <td><label for="average_strength">Average Compressive Strength in </label></td>
                                 <td><field name="average_strength"/><span> N/mm2</span></td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td><label for="confirmity">confirmity</label></td>
                                 <td>

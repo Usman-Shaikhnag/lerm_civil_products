@@ -115,6 +115,7 @@ class ELN(models.Model):
     def compute_quantity_balance(self):
         for rec in self:
             rec.quantity_balance = rec.quantity_received - rec.quantity_consumed
+            
 
     # report_upload = fields.Many2many(
     #     'ir.attachment',

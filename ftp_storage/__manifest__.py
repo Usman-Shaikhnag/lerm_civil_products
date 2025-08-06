@@ -1,6 +1,7 @@
 {
     'name': 'FTP Storage',
     'version': '1.0',
+    'category': 'Lerm Civil',
     'summary': 'Manage FTP storage connections',
     'description': 'Module to manage FTP storage connections and configurations',
     'author': 'Your Name',
