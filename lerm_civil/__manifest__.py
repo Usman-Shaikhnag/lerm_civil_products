@@ -28,7 +28,7 @@
     'views/product_grade_wizard.xml',
     'views/reallocation_wizard.xml',
     'views/send_mail_wizard.xml',
-    'views/ftp_upload_wizard_views.xml',
+    # 'views/ftp_upload_wizard_views.xml',
 
     # 'views/mechanical/sieve_analysis.xml',
     'reports/eln_report_action.xml',
