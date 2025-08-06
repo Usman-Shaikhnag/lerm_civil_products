@@ -391,7 +391,7 @@ class SrfForm(models.Model):
             kes_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample.kes')]).number_next_actual
            
             sample_range = "SAM/"+str(sam_next_number)+"-"+str(sam_next_number+record.sample_qty-1)
-            kes_range = "SSL/TR/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
+            kes_range = "SSL/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
             record.write({'sample_range': sample_range , 'kes_range': kes_range })
             samples = self.env['lerm.srf.sample'].search([('sample_range_id','=',record.id)])
             
@@ -744,6 +744,8 @@ class CreateSampleWizard(models.TransientModel):
     
     grade_ids = fields.Many2many('lerm.grade.line',string="Grades")
     grade_required = fields.Boolean(string="Grade Required",compute="compute_grade_required")
+    size_required = fields.Boolean(string="Size Required",compute="compute_size_required")
+
 
     sample_qty = fields.Integer(string="Sample Quantity",default=1)
     received_by_id = fields.Many2one('res.users',string="Received By",default=lambda self: self.env.user)
@@ -899,6 +901,17 @@ class CreateSampleWizard(models.TransientModel):
                 else:
                     record.grade_required = False
 
+    @api.onchange('material_id')
+    def compute_size_required(self):
+        for record in self:
+            
+            for material in record.material_id:
+                # import wdb; wdb.set_trace()
+                if len(material.size_table) > 0:
+                    record.size_required = True
+                else:
+                    record.size_required = False
+
 
     @api.onchange('material_id')
     def compute_grade(self):        
@@ -997,6 +1010,10 @@ class CreateSampleWizard(models.TransientModel):
         if self.grade_required:
             if not self.grade_id:
                 raise UserError("Grade is Required")
+
+        if self.size_required:
+            if not self.grade_id:
+                raise UserError("Size is Required")
             
 
         if not parameters:

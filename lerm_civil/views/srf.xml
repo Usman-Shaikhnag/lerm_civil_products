@@ -23,7 +23,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="confirm_srf" type="object" string="Confirm"
+                    <button name="confirm_srf" type="object" string="Confirm" class="oe_highlight"
                         groups="lerm_civil.kes_verified_by,lerm_civil.kes_confirm_srf"
                         invisible="state in ('2-confirm')"/>
 
@@ -63,7 +63,7 @@
                         </group>
 
                         <group style="width:50%">
-                            <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'"/>
+                            <field name="name_work" domain="[('id', 'in', name_works)]" options="{'no_create': True}" readonly="state == '2-confirm'"/>
                             <field name="client" readonly="state == '2-confirm'"
                                 groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
                             <field name="contractor" domain="[('id', 'in', contractor_ids)]"
@@ -244,7 +244,7 @@
                     
                     <group>
                         <!-- <field name="volume"/> -->
-                        <field name="quantity"/>
+                        <field name="quantity" invisible="1"/>
                     </group>
 
                     <table class="table table-sm">

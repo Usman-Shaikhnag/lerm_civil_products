@@ -1,7 +1,6 @@
 from odoo import api, fields, models,_
 from odoo.exceptions import UserError
 import logging
-import wdb
 
 
 class SendMailWizard(models.TransientModel):

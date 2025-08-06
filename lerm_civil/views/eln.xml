@@ -10,6 +10,7 @@
                 <button
                     type="object"
                     name="confirm_eln"
+                    class="oe_highlight"
                     string="Confirm"
                     invisible="state not in ('1-draft', '4-rejected')"/>
                 <field readonly="1" name="state" widget="statusbar" statusbar_visible="1-draft,2-confirm,3-approved"/>
@@ -70,22 +71,22 @@
                 </group>
                 <group>
                     <!-- <field name="volume"/> -->
-                    <field name="quantity"/>
+                    <field name="quantity" invisible="1"/>
                 </group>
 
                 <table class="table table-sm">
                     <thead>
                         <tr>
-                            <th>Sample Quantity</th>
                             <th>Received</th>
+                            <th>Unit</th>
                             <th>Consumed</th>
                             <th>Balance</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><field name="uom_id" readonly="1"/></td>
                             <td><field name="quantity_received" readonly="1"/></td>
+                            <td><field name="uom_id" readonly="1"/></td>
                             <td><field name="quantity_consumed"/></td>
                             <td><field name="quantity_balance" readonly="1"/></td>
                         </tr>
@@ -141,7 +142,7 @@
 
                 <field name="sop"/>
 
-                <group style="width:100%">
+                <div style="width:100%">
                     <field name="parameters_input" nolabel="1" invisible="is_product_based_calculation == True">
                         <tree editable="bottom" delete="1">
                             <field name="parameter_result"/>
@@ -152,7 +153,7 @@
                             <field name="date_time"/>
                         </tree>
                     </field>
-                </group>
+                </div>
             </sheet>
 
             <div class="oe_chatter">

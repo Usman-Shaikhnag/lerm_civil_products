@@ -8,12 +8,9 @@
         <field name="arch" type="xml">
             <form create="false">
                 <sheet>
-
-                <group >
                     <h1>
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
-                    </group>
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1"/>
@@ -21,142 +18,106 @@
                         <field name="grade" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group class="custom_table_borders">
-                      <field name="sample_parameters">
-                        <tree>
-                          <field name="parameter_name"/>
-                          <field name="test_method"/>
-                        </tree>
-                      </field>
-                    </group>
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
                     
                   <!-- Plastic Limit -->
-                <group invisible = "moisture_content_visible == False"  style="white-space: nowrap; width:70%;">
-                        <h1>
-                            <field name="moisture_content_name" readonly="1" nolabel="1"/>
-                            <field name="moisture_content_visible" invisible="1"/>
+                <div invisible = "moisture_content_visible == False">
+                    <h1 class="text-center">
+                        <field name="moisture_content_name" readonly="1" nolabel="1"/>
+                        <field name="moisture_content_visible" invisible="1"/>
+                    </h1>
+                </div>
 
-                        </h1>
-                </group>
-                <group invisible = "moisture_content_visible == False" style="white-space: nowrap; width:100%;">
+                <div invisible = "moisture_content_visible == False">
                     <field name="wood_child_lines" class="custom_table_borders" >
-                            <tree editable="bottom">
-                                <field name='sr_no'/>
-                                <field name='initial_we'/>
-                                <field name='oven_dry'/>
-                                <field name='per_moisture'/>
-                              
-                            </tree>
-                           
+                        <tree editable="bottom">
+                            <field name='sr_no'/>
+                            <field name='initial_we'/>
+                            <field name='oven_dry'/>
+                            <field name='per_moisture'/>
+                        </tree>
                     </field> 
-                </group>
-
-                  <!-- <group invisible = "moisture_content_visible == False" style="white-space: nowrap; width:70%;">
-                       <field name='average_moisture'/>
-                </group> -->
-                <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 50%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                          Average Moisture Content
-
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="average_moisture" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                 
-                 <group invisible = "moisture_content_visible == False" >
-                       
-                        <field  name="moisture_content_conformity"
+                </div>
+                
+                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not moisture_content_visible">
+                    <tbody>
+                        <tr>
+                            <td><label for="average_moisture">Average Moisture Content</label></td>
+                            <td><field name="average_moisture"/></td>
+                        </tr>
+                        <tr>
+                            <td><label for="moisture_content_conformity">Average Moisture Content</label></td>
+                            <td><field name="moisture_content_conformity" 
                                         decoration-success="moisture_content_conformity == 'pass'" 
                                         decoration-danger="moisture_content_conformity == 'fail'" 
-                                        readonly="1" />
-                        <field  name="moisture_content_nabl" />
-                         
-                    </group>
+                                        readonly="1" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="moisture_content_nabl">Average Moisture Content</label></td>
+                            <td><field name="moisture_content_nabl"
+                                        decoration-success="moisture_content_nabl == 'pass'" 
+                                        decoration-danger="moisture_content_nabl == 'fail'" 
+                                        readonly="1" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+
 
 
 
                       <!-- Specific Limit -->
-                <group invisible = "specific_gravity_visible == False"  style="white-space: nowrap; width:70%;">
-                        <h1>
-                            <field name="specific_gravity_name" readonly="1" nolabel="1"/>
-                            <field name="specific_gravity_visible" invisible="1"/>
+                <div invisible = "specific_gravity_visible == False">
+                    <h1 class="text-center">
+                        <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                        <field name="specific_gravity_visible" invisible="1"/>
+                    </h1>
+                </div>
 
-                        </h1>
-                </group>
-                <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:100%;">
+                <div invisible = "specific_gravity_visible == False">
                     <field name="specific_gravity_child_lines"  class="custom_table_borders">
-                            <tree editable="bottom">
-                                <field name='sr_no'/>
-                                <field name='length'/>
-                                <field name='width'/>
-                                <field name='thickness'/>
-                                  <field name='volume'/>
-                                <field name='oven_dry'/>
-                                <field name='specific_gravity'/>
-                              
-                            </tree>
-                           
+                        <tree editable="bottom">
+                            <field name='sr_no'/>
+                            <field name='length'/>
+                            <field name='width'/>
+                            <field name='thickness'/>
+                            <field name='volume'/>
+                            <field name='oven_dry'/>
+                            <field name='specific_gravity'/>
+                        </tree>
                     </field> 
-                </group>
+                </div>
 
-                  <!-- <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;">
-                       <field name='average_specific_gravity'/>
-                </group> -->
-                <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 50%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                             Average Specific Gravity
-
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="average_specific_gravity" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-                 
-                 <group invisible = "specific_gravity_visible == False">
-                       
-                        <field  name="specific_gravity_conformity"
+                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not specific_gravity_visible">
+                    <tbody>
+                        <tr>
+                            <td><label for="average_specific_gravity">Average Specific Gravity</label></td>
+                            <td><field name="average_specific_gravity"/></td>
+                        </tr>
+                        <tr>
+                            <td><label for="specific_gravity_conformity"></label></td>
+                            <td><field  name="specific_gravity_conformity"
                                         decoration-success="specific_gravity_conformity == 'pass'" 
                                         decoration-danger="specific_gravity_conformity == 'fail'" 
-                                        readonly="1" />
-                        <field  name="specific_gravity_nabl" />
-                         
-                    </group>
-              
+                                        readonly="1" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="specific_gravity_nabl"></label></td>
+                            <td><field name="specific_gravity_nabl"
+                                        decoration-success="specific_gravity_nabl == 'pass'" 
+                                        decoration-danger="specific_gravity_nabl == 'fail'" 
+                                        readonly="1" /></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-                  <button
-                            type="object"
-                            class="oe_highlight" 
-                            name="open_eln_page"
-                            string="Submit"
-                            />
-
+                <button type="object" class="oe_highlight" name="open_eln_page" string="Submit" />
                 </sheet>
             </form>
         </field>
