@@ -23,6 +23,25 @@ class MechanicalConcreteCube(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
 
 
+
+    def action_calculate_avg_strength(self):
+        for rec in self:
+            lines = rec.child_lines.sorted(key=lambda l: l.sr_no)  # sr_no ने sort करायचं
+            group_size = 3
+
+            for i in range(0, len(lines), group_size):
+                group = lines[i:i + group_size]
+                strengths = [l.compressive_strength for l in group if l.compressive_strength > 0]
+                avg = sum(strengths) / len(strengths) if strengths else 0.0
+
+                if group:
+                    group[0].avg_compressive_strength = avg
+
+            for line in lines:
+                if line not in [lines[i] for i in range(0, len(lines), group_size)]:
+                    line.avg_compressive_strength = 0.0
+
+
     average_strength = fields.Float(string="Average Compressive Strength in N/mm2",compute="_compute_average_strength",digits=(12,2))
 
     @api.depends('child_lines.compressive_strength')
@@ -67,22 +86,7 @@ class MechanicalConcreteCube(models.Model):
             rec.days_28_n = rec.days_28_kmm * 22.5 if rec.days_28_kmm else 0.0
 
 
-    # @api.depends('grade2', 'grade_child_lines.grade1', 'grade_child_lines.sd')
-    # def _compute_days_28_kmm(self):
-    #     for rec in self:
-    #         rec.days_28_kmm = 0.0
-    #         if not rec.grade2:
-    #             continue
-    #         # Convert grade2 (float) to string for comparison
-    #         grade2_str = str(int(rec.grade2)) if rec.grade2.is_integer() else str(rec.grade2)
-    #         # match with line.grade1 (string)
-    #         matching_line = rec.grade_child_lines.filtered(
-    #             lambda l: l.grade1 and l.grade1.strip().lower() == grade2_str.strip().lower()
-    #         )
-    #         if matching_line:
-    #             line = matching_line[0]
-    #             rec.days_28_kmm = rec.grade2 + (1.65 * line.sd)
-
+  
     @api.depends('grade.grade', 'grade_child_lines.grade1', 'grade_child_lines.sd')
     def _compute_days_28_kmm(self):
         for rec in self:
@@ -402,6 +406,18 @@ class MechanicalConcreteCubeLine(models.Model):
 
     load = fields.Float(string="Load (kN)")
     compressive_strength = fields.Float(string="Compressive Strength (N/mm2)",compute="_compute_strength",store=True)
+
+    avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (N/mm2)",compute="_compute_avg_strength",store=True)
+
+    # @api.depends('parent_id', 'parent_id.child_lines.compressive_strength')
+    # def _compute_avg_strength(self):
+    #     for rec in self:
+    #         if rec.parent_id and rec.parent_id.child_lines:
+    #             strengths = rec.parent_id.child_lines.mapped('compressive_strength')
+    #             values = [s for s in strengths if s > 0]
+    #             rec.avg_compressive_strength = sum(values) / len(values) if values else 0.0
+    #         else:
+    #             rec.avg_compressive_strength = 0.0
 
     @api.depends('load', 'parent_id.area_of_cube')
     def _compute_strength(self):

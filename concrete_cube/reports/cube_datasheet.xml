@@ -133,11 +133,23 @@
 										Compressive Strength (N/mm2)
 									</span>
 								</th>
+
+								<th style="text-align: center;">
+									<span>
+										Avg. Compressive Strength (N/mm2)
+									</span>
+								</th>
 							
 							</tr>
 						</thead>
 						<tbody>
-							<tr t-foreach="data.child_lines" t-as="r">
+							<!-- <tr t-foreach="data.child_lines" t-as="r"> -->
+							  <t t-set="lines" t-value="data.child_lines"/>
+								<t t-set="line_count" t-value="0"/>
+								<t t-foreach="lines" t-as="r">
+
+							<tr >
+
 								<td style="text-align: center;">
 									<span t-esc="r.sr_no"/>
 								</td>
@@ -162,18 +174,27 @@
 								<td style="text-align: center;">
 									<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
+
+
+								  <t t-if="line_count % 3 == 0">
+									<td style="text-align: center; vertical-align: middle;" t-att-rowspan="3">
+										<span t-esc="r.avg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									</t>
 								
 							</tr>
+							 <t t-set="line_count" t-value="line_count + 1"/>
+							</t>
 						</tbody>
 					</table>
 
-						<table style="margin-top:10px">
+						<!-- <table style="margin-top:10px">
 							<tr>
 								<td colspan="12">Avg. Compressive Strength N/mm2 :<![CDATA[&nbsp;]]>
 									<span t-field="data.average_strength"/>
 								</td>
 							</tr>
-						</table>
+						</table> -->
 
 					         <table style="width: 100%; border-collapse: collapse;margin-top:10px">
                                 <thead>

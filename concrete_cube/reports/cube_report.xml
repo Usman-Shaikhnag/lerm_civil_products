@@ -153,11 +153,23 @@
 										Compressive Strength (N/mm2)
 									</span>
 								</th>
+
+								<th style="text-align: center;font-weight: bold;">
+									<span>
+									Avg. Compressive Strength (N/mm2)
+									</span>
+								</th>
 							
 							</tr>
 						</thead>
 						<tbody>
-							<tr t-foreach="data.child_lines" t-as="r">
+							<!-- <tr t-foreach="data.child_lines" t-as="r"> -->
+							  <t t-set="lines" t-value="data.child_lines"/>
+								<t t-set="line_count" t-value="0"/>
+								<t t-foreach="lines" t-as="r">
+
+							<tr >
+
 								<td style="text-align: center;">
 									<span t-esc="r.sr_no"/>
 								</td>
@@ -170,9 +182,7 @@
 								<td style="text-align: center;">
 									<span t-esc="r.dt_of_casting"/>
 								</td>
-								<!-- <td style="text-align: center;">
-									<span t-esc="r.days" />
-								</td> -->
+								
 								<td style="text-align: center;">
 									<span t-esc="r.dt_of_testing1"/>
 								</td>
@@ -182,20 +192,22 @@
 								<td style="text-align: center;">
 									<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
+
+
+								  <t t-if="line_count % 3 == 0">
+									<td style="text-align: center; vertical-align: middle;" t-att-rowspan="3">
+										<span t-esc="r.avg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									</t>
 								
 							</tr>
+							 <t t-set="line_count" t-value="line_count + 1"/>
+							</t>
 						</tbody>
 					</table>
 
-						<table style="margin-top:5px" class="custom_table_borders">
-							<!-- <tr>
-								<td colspan="12">Avg. Compressive Strength N/mm2 :<![CDATA[&nbsp;]]>
-									<span t-field="data.average_strength"/>
-								</td>
-							</tr> -->
-							<!-- <div style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 100%;"> -->
-                           
+						<!-- <table style="margin-top:5px" class="custom_table_borders">
+							
                                     <tbody>
                                         <tr>
                                             <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
@@ -204,7 +216,6 @@
                                             </td>
                                             <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
                                                 <div style="display: inline-block; min-width: 80px;">
-                                                    <!-- <field name="area_of_cube" nolabel="1" identity="extra" /> -->
 													<span t-field="data.average_strength"/>
                                                 </div>
                                             </td>
@@ -214,7 +225,7 @@
                                         </tr>
                                     </tbody>
                            
-						</table>
+						</table> -->
 
 					         <!-- <table style="width: 100%; border-collapse: collapse;margin-top:5px">
                                 <thead>
