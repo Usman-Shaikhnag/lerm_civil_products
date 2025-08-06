@@ -105,8 +105,6 @@ class ELN(models.Model):
     
     active = fields.Boolean(string="Active",default=True)
     
-<<<<<<< HEAD
-=======
     
     def open_attachment_path_upload(self):
         action = self.env.ref('lerm_civil.view_ftp_upload_wizard_form')
@@ -169,7 +167,6 @@ class ELN(models.Model):
             'url': f"/web/binary/download_ftp?url={ftp_url}",
             'target': 'self',
         }
->>>>>>> 6f3bccd8eaaf84aefd2d1090f1a763240a77cd9e
 
 
     # report_upload = fields.Many2many(
