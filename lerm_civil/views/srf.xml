@@ -65,15 +65,16 @@
                         <group style="width:50%">
                             <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'"/>
                             <field name="client" readonly="state == '2-confirm'"
-                                groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                                   groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
                             <field name="contractor" domain="[('id', 'in', contractor_ids)]"
-                                groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                                   groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
                             <field name="contractor_ids" invisible='1'/>
                             <field name="contact_other_ids" invisible='1'/>
                             <field name="billing_customer" readonly="state == '2-confirm'"
                                 groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
                             <field name="name_works" invisible='1'/>
                             <field name="consultant_name1"/>
+
                             <!-- <field name="attachment_path" readonly="1"/>
                             <button name="open_file_upload" type="object" string="Upload Attachment" />
                             <button name="download_attachment" type="object" string="Download Attachment"/> -->
