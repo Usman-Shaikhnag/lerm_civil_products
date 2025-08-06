@@ -105,7 +105,6 @@ class ELN(models.Model):
     
     active = fields.Boolean(string="Active",default=True)
     
-<<<<<<< HEAD
     
     def open_attachment_path_upload(self):
         action = self.env.ref('lerm_civil.view_ftp_upload_wizard_form')
@@ -123,8 +122,6 @@ class ELN(models.Model):
                 }
             }
 
-=======
->>>>>>> 865917330f40a1a5ddec1269f1881b9d12e05807
     quantity = fields.Integer(string="Quantity")
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")
@@ -136,7 +133,6 @@ class ELN(models.Model):
         for rec in self:
             rec.quantity_balance = rec.quantity_received - rec.quantity_consumed
             
-<<<<<<< HEAD
     def download_attachment(self):
         host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
         ftp_url = f"https://{host}/files/{self.attachment_path}"
@@ -172,8 +168,6 @@ class ELN(models.Model):
             'target': 'self',
         }
 
-=======
->>>>>>> 865917330f40a1a5ddec1269f1881b9d12e05807
 
     # report_upload = fields.Many2many(
     #     'ir.attachment',
