@@ -66,22 +66,20 @@
 					</div>
 					
 					
-					<div>
 						
-                    	<div style="text-align:center;font-size:18px;margin-top:2px">
-						<!-- Concrete Cube -->
-							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_name"/>
-							<span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
+					<div style="text-align:center;font-size:18px;margin-top:2px">
+					<!-- Concrete Cube -->
+						<span t-field="env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_name"/>
+						<span>
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
 								</t>
-							</span>
-							 - <span t-field="data.type_of_sample"></span>
-						</div>
+							</t>
+						</span>
+						- <span t-field="data.type_of_sample"></span>
 					</div>
-           
+					<div style="text-align:center;font-size:18px;margin-top:2px">
 						<table style="margin-top:2px">				
 							<tr>
 								<td colspan="6">Dia of core:  </td>
@@ -100,112 +98,67 @@
 							</tr>
 						
 						</table>
-						<table style="margin-top:2px;">
-						<thead>
-							<tr>
-								<th style="text-align: center; font-weight: bold;"> 
-									<span>
-										Sr. No
-									</span>
-								</th>
-								<th	style="text-align: center; font-weight: bold;">
-									<span>
-									Location
-									</span>
-								</th>
-								<th style="text-align: center; font-weight: bold;">
-									<span>
-									Depth after Trimming in mm
-									</span>
-								</th>
+						<table style="margin-top:2px; width: 100%;">
+							<thead>
+								<tr>
+									<th style="text-align: center; font-weight: bold; width: 5%;">Sr. No</th>
+									<th style="text-align: center; font-weight: bold; width: 20%;">Location</th>
 
-								<th style="text-align: center; font-weight: bold;">
-									<span>
-									Load kN
-									</span>
-								</th>
-								<th style="text-align: center; font-weight: bold;">
-									<span>
-									 L /D RATIO  
-									</span>
-								</th>
-								<th style="text-align: center; font-weight: bold;"><span>Core Comp. strength(N/ mm2)</span></th>
-								<th colspan="1" style="text-align: center; font-weight: bold;"><span>Correction Factor</span></th>
-								<th style="text-align: center; font-weight: bold;"><span>Corrected Cyl.Comp.Strength  (N/ mm2)</span></th>
-								<th style="text-align: center; font-weight: bold;"><span>Equivalent Cube.Comp Strength (N/ mm2)</span></th>
-							</tr>
-							<tr>
-                              	<th colspan="1" style="text-align: center; font-weight: bold;">
-									<span>L/D</span>
-								</th>
-                            </tr>
-						</thead>
-						<tbody>
-							<tr t-foreach="data.child_lines" t-as="r">
-								<td colspan="1" style="text-align: center;">
-									<span t-esc="r.serial_no"/>
-								</td>
-								<td colspan="1" style="text-align: center;">
-									<span t-esc="r.location"/>
-								</td>
-								<td colspan="1" style="text-align: center;">
-									<span t-esc="r.depth"/>
-								</td>
-								<td colspan="1" style="text-align: center;">
-									<span t-esc="r.load" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td colspan="1" style="text-align: center;">
-									<span t-esc="r.ld_ratio" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td colspan="1" style="text-align: center;">
-									<span t-esc="r.core_comp" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td colspan="1" style="text-align: center;">
-									<span t-esc="r.correction_factor_ld" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-                                <td colspan="1" style="text-align: center;">
-									<span t-esc="r.correct_comp" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-                                <td colspan="1" style="text-align: center;">
-									<span t-esc="r.equivalent_cube" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+									<t t-if="any(r.actual_depth for r in data.child_lines)">
+										<th style="text-align: center; font-weight: bold; width: 10%;">
+											Actual Depth of Core in mm
+										</th>
+									</t>
 
-					<div style="margin-top:3px">
-					<!-- <h6 style="margin-top:3px"> -->
-					 <!-- Acceptable Criteria: - As per IS 456:2000 Clause 17.4.3 -->
-			       <div style="margin-top:2px;">
-						<b>Acceptable Criteria: -</b><span t-esc="o.material.test_parameter"/>
+									<th style="text-align: center; font-weight: bold; width: 10%;">Depth after Trimming in mm</th>
+									<th style="text-align: center; font-weight: bold; width: 8%;">Load kN</th>
+									<th style="text-align: center; font-weight: bold; width: 8%;">L /D RATIO</th>
+									<th style="text-align: center; font-weight: bold; width: 8%;">Core Comp. strength (N/mm²)</th>
+									<th style="text-align: center; font-weight: bold; width: 8%;">Correction Factor<br/>L/D</th>
+									<th style="text-align: center; font-weight: bold; width: 8%;">Corrected Cyl. Comp. Strength (N/mm²)</th>
+									<th style="text-align: center; font-weight: bold; width: 8%;">Equivalent Cube Comp. Strength (N/mm²)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="data.child_lines" t-as="r">
+									<td style="text-align: center;"><span t-esc="r.serial_no"/></td>
+									<td style="text-align: center;"><span t-esc="r.location"/></td>
+
+									<t t-if="r.actual_depth">
+										<td style="text-align: center;"><span t-esc="r.actual_depth"/></td>
+									</t>
+
+									<td style="text-align: center;"><span t-esc="r.depth"/></td>
+									<td style="text-align: center;"><span t-esc="r.load" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="text-align: center;"><span t-esc="r.ld_ratio" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="text-align: center;"><span t-esc="r.core_comp" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="text-align: center;"><span t-esc="r.correction_factor_ld" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="text-align: center;"><span t-esc="r.correct_comp" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="text-align: center;"><span t-esc="r.equivalent_cube" t-options='{"widget": "float", "precision": 2}'/></td>
+								</tr>
+							</tbody>
+						</table>
 
 					</div>
-					 <!-- </h6> -->
+					<div style="margin-top:3px">
+						<div style="margin-top:2px;">
+							<b>Acceptable Criteria: -</b><span t-esc="o.material.test_parameter"/>
+						</div>
 						<table style="margin-top:2px">
 							<tr>
 								<td colspan="12">The Average Equivalent Cube strength of core is equal to atleast 85 % of  Cube strength of the grade of concrete specified :</td>
-								<![CDATA[&nbsp;]]>
-								<td>
-									<span t-field="data.area_equvalent_cube"/>
-								</td>
-								<td>
-								N/mm² 
-								</td>
+								<td><span t-field="data.area_equvalent_cube"/></td>
+								<td>N/mm²</td>
 							</tr>
                             <tr>
 								<td colspan="12">Any individual Cube strength computed not less than 75% of the grade of Concrete specified  N/mm² :</td>
-								<![CDATA[&nbsp;]]>
-								<td>
-									<span t-field="data.any_individual_cube"/>
-								</td>
-								<td>
-								N/mm² 
-								</td>
+								<td><span t-field="data.any_individual_cube"/></td>
+								<td>N/mm²</td>
 							</tr>
 						</table>
 					</div>
 					
-					<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
+					<div style="margin-top:5px; page-break-inside: avoid;" class="noteContainer">
 							<table class="table table-bordered">
 							<tr>
 								<td style="padding: 5px; font-style: italic; font-size: 12px;">
@@ -233,7 +186,7 @@
 										Checked By
 									</b>
 								</div>
-								<div style="height:15px">
+								<div style="height:30px">
 
 								</div>
 								<div>
@@ -248,15 +201,6 @@
 								</div>
 							</div>
 
-							<!-- <div>
-								<div>
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div>
-							 -->
 							<div>
 								<div>
 									<b>
@@ -264,7 +208,7 @@
 									</b>
 									
 								</div>
-								<div style="height:15px">
+								<div style="height:30px">
 
 								</div>
 								<div>

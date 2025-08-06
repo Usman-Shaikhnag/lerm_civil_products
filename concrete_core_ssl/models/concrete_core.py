@@ -289,6 +289,7 @@ class ConcreteCoreLine(models.Model):
     location = fields.Char(string="Location")
     grade_con = fields.Date(string="Grade of  Concrite")
     depth = fields.Float(string="Depth after Trimming in mm")
+    actual_depth = fields.Float(string="Actual Depth of Core in mm")
     load = fields.Float(string="Load kN")
     ld_ratio = fields.Float(string=" L /D RATIO  ",compute="_compute_ld_ratio")
     load_n = fields.Float(string="Load in N ",compute="_compute_load_n")
