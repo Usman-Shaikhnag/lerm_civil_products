@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="lerm_civil.lerm_civil_sample_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_number']" position="after">
-                <field name="datasheet_path"  />
+                <field name="datasheet_path"  readonly="1"/>
                 <button name="open_file_upload_datasheet" type="object" string="Upload" class="btn-primary" />
                 <button name="download_attachment_datasheet" type="object" string="Download" class="btn-primary" />
 
