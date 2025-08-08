@@ -223,7 +223,26 @@
 					</div> -->
 					
 					<div>
-						<table class="table table-bordered" style="width:100%; text-align:center;">
+
+					    <table class="table o_form_table custom_table_borders">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th style="text-align: center;">Length (mm)</th>
+                                <th style="text-align: center;">Breadth (mm)</th>
+                                <th style="text-align: center;">Height (mm)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dimensions</td>
+                                <td style="text-align: center;" t-esc="brick.length_in_mm"/>
+                               <td style="text-align: center;" t-esc="brick.width_in_mm"/>
+                                <td style="text-align: center;" t-esc="brick.height_in_mm"/>
+                            </tr>
+                        </tbody>
+                    </table>
+						<!-- <table class="table table-bordered" style="width:100%; text-align:center;">
 							<thead>
 								<tr>
 									<th>Description</th>
@@ -250,9 +269,9 @@
 									<td>1400±40mm</td>
 								</tr>
 							</tbody>
-						</table>
+						</table> -->
 						<!-- 1 Compressive strength  -->
-						<table class="table table-bordered" style="width: 100%; text-align: center; border: 1px solid black; border-collapse: collapse;">
+						<!-- <table class="table table-bordered" style="width: 100%; text-align: center; border: 1px solid black; border-collapse: collapse;">
 							<thead>
 								<tr>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle;">S.No</th>
@@ -324,7 +343,48 @@
 									<td t-esc="brick.visual_observation_5" style="border: 1px solid black; text-align: center;"/>
 								</tr>
 							</tbody>
+						</table> -->
+
+
+			            	
+						<table style="width:100%; border-collapse: collapse; font-size:13px;" border="1">
+							<thead>
+								<tr>
+									<th rowspan="2" style="text-align:center;">Sample No</th>
+									<th colspan="3" style="text-align:center;">Dimensions (mm) <br/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','125478bvf3-8d5d-4f45-8afb-b911f9cafe41')]).test_method.test_method"/>
+									</th>
+									<th rowspan="2" style="text-align:center;">Compressive Strength 
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).unit.name"/><br/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).test_method.test_method"/>
+									</th>
+									<th rowspan="2" style="text-align:center;">Water Absorption 
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).unit.name"/><br/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).test_method.test_method"/>
+									</th>
+									<th rowspan="2" style="text-align:center;">Efflorescence Observation <br/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).test_method.test_method"/>
+									</th>
+								</tr>
+								<tr>
+									<th style="text-align:center;">Length</th>
+									<th style="text-align:center;">Width</th>
+									<th style="text-align:center;">Height</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="brick.get_combined_lines()" t-as="line">
+									<td style="text-align:center;"><t t-esc="line['serial_no']"/></td>
+									<td style="text-align:center;"><t t-esc="line['length']"/></td>
+									<td style="text-align:center;"><t t-esc="line['width']"/></td>
+									<td style="text-align:center;"><t t-esc="line['height']"/></td>
+									<td style="text-align:center;"><t t-esc="line['comp_strength_1']" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="text-align:center;"><t t-esc="line['water_absorption']" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="text-align:center;"><t t-esc="line['visual_observation']"/></td>
+								</tr>
+							</tbody>
 						</table>
+
 					</div>
 					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
 						<table class="table table-bordered">

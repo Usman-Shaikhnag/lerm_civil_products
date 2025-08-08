@@ -17,12 +17,7 @@ This module contains all the common features of Sales Management and eCommerce.
                  'reports/brick_datasheet.xml',
                  'reports/brick_report.xml'
     ],
-    'assets': {
-        'web.assets_backend': [
-            'brick/static/src/css/custom_style.css',
-        ],
-    },
-  
+   
     'installable': True,
     'auto_install': False,
    

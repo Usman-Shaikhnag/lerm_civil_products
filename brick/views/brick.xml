@@ -55,7 +55,7 @@
                     </div>
                     
                      <!-- <group invisible="compressive_strength_visible == False"> -->
-                    <div invisible="compressive_strength_visible == False" class="mb-3">
+                    <!-- <div invisible="compressive_strength_visible == False" class="mb-3">
                         <table class="table custom_table_borders o_form_table">
                             <thead>
                                 <tr>
@@ -118,6 +118,21 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div> -->
+
+                    <div invisible = "compressive_strength_visible == False"  >
+                    <field name="compressive_strength_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name='length'/>
+                                <field name='width' />
+                                <field name='height' />
+                                <field name='area' />
+                                <field name='load' />
+                                <field name='comp_strength_1' />
+                                
+                            </tree>
+                    </field>
                     </div>
 
                     <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not compressive_strength_visible">
@@ -149,31 +164,7 @@
                         </tbody>
                     </table>
 
-                    <!-- visual_observation -->
-                    <!-- <div invisible="efflorescence_visible == False" style="text-align:center">
-                        <h1>
-                            <field name="visual_observation_name_efflorescence" readonly="1" nolabel="1"/>
-                            <field name="efflorescence_visible" invisible='1'/>
-                        </h1>
-                    </div>
-
-                    <div invisible="efflorescence_visible == False" class="mb-3">
-                        <table class="table custom_table_borders o_form_table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Observation 1</th>
-                                    <th>Observation 2</th>
-                                    <th>Observation 3</th>
-                                    <th>Observation 4</th>
-                                    <th>Observation 5</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
-                    </div> -->
+                   
 
                     <!--Dimension -->
 
@@ -218,7 +209,7 @@
                         </h1>
                     </div>
                                     
-                    <div invisible="water_absorbtion_visible == False" class="mb-3">
+                    <!-- <div invisible="water_absorbtion_visible == False" class="mb-3">
                       <table class="table custom_table_borders o_form_table">
                           <thead>
                               <tr>
@@ -265,6 +256,18 @@
                                 </tr>
                           </tbody>
                       </table>
+                    </div> -->
+
+                     <div invisible = "water_absorbtion_visible == False"  >
+                    <field name="water_absorption_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name='initial_wt'/>
+                                <field name='final_wt' />
+                                <field name='water_absorption' />
+                              
+                            </tree>
+                    </field>
                     </div>
 
                     
@@ -297,6 +300,41 @@
                             </tr>
                         </tbody>
                     </table>
+
+                     <!-- visual_observation -->
+                    <div invisible="efflorescence_visible == False" style="text-align:center">
+                        <h1>
+                            <field name="visual_observation_name_efflorescence" readonly="1" nolabel="1"/>
+                            <field name="efflorescence_visible" invisible='1'/>
+                        </h1>
+                    </div>
+
+                    <div invisible="efflorescence_visible == False" class="mb-3">
+                        <table class="table custom_table_borders o_form_table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Observation 1</th>
+                                    <th>Observation 2</th>
+                                    <th>Observation 3</th>
+                                    <th>Observation 4</th>
+                                    <th>Observation 5</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            
+                             <tr>
+                                    <td><strong>Observation</strong></td>
+                                    <td><field name="visual_observation_1" nolabel="1"/></td>
+                                    <td><field name="visual_observation_2" nolabel="1"/></td>
+                                    <td><field name="visual_observation_3" nolabel="1"/></td>
+                                    <td><field name="visual_observation_4" nolabel="1"/></td>
+                                    <td><field name="visual_observation_5" nolabel="1"/></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
 
                   <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>
