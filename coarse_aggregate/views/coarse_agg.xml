@@ -60,6 +60,7 @@
                                 <field name='percent_retained' readonly="1"/>
                                 <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1"/>
                                 <field name='passing_percent' readonly="1"/>
+                                <field name='specific_limits' readonly="1"/>
                             </tree>
                         </field>
                     </div>
@@ -226,7 +227,7 @@
 
                     <div invisible="not elongation_visible or not flakiness_visible" class="custom_table_borders">
                         <field name="elongation_table" nolabel="1">
-                            <tree>
+                            <tree editable="bottom">
                                 <field name="sieve_size"  />
                                 <field name="wt_retained" />
                                 <field name="elongated_retained" />
