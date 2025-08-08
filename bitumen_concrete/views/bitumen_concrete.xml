@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+    <record id="mechanical_bitumen_concrete_ssl" model="ir.ui.view">
+        <field name="name">mechanical.bitumen.concrete.form</field>
+        <field name="model">mechanical.bitumen.concrete</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                   <group style="white-space: nowrap; width:70%;"  >
+                        <h1>
+                            <field name="name_bitumen1" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group >
+                       <field name="grade"/>
+                       <field name="size_id"/>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                     <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                          Location:
+                                            </td>
+                                          
+
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: block; width: 100%;">
+                                                    <field name="location" nolabel="1" style="width: 100%;" class="o_input"/>
+                                                </div>
+                                            </td>
+                                          
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <group invisible="1">
+                         <field name="location_heding" />
+                        </group>
+
+
+                    <group invisible = "bitumen_content_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
+                        <h1 style=" text-align:center; ">
+                            <field name="bitumen_content_name" readonly="1" nolabel="1"/>
+                            <field name="bitumen_content_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+
+                        <div class="custom_table_borders" style="width:100%;" invisible = "bitumen_content_visible == False">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                     <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           S.No
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           Description
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                            <field name="location_heding" nolabel="1" style="width: 100%;" class="o_input"/>
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                            Unit
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                            1
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="wt_of_samplew1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_samplew1" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                           grams
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                            2
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="wt_of_intial"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_intial" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                           grams
+                                        </td>
+                                    </tr>
+                                      <tr>
+                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                            3
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="wt_of_aggregate"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_aggregate" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                           grams
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                            4
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="wt_of_extraction"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_extraction" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                           grams
+                                        </td>
+                                    </tr>
+                                     <tr>
+                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                            5
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <!-- <label for="wt_of_filter"/> -->
+                                            Increased weight of filter W3 = (F2-F1)
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_filter" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                           grams
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <group style="white-space: nowrap; width:100%;"  invisible = "bitumen_content_visible == False" string="Result">
+                            <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                        Binder content 
+                                            </td>
+                                          
+                                          
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="binder_content" nolabel="1"/>
+                                                </div>
+                                            </td>
+
+                                              <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                              %
+                                            </td>
+                                          
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </group>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
+                         
+                            <tr>
+                                <td><label for="binder_content_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="binder_content_conformity"
+                                           decoration-success="binder_content_conformity == 'pass'" 
+                                           decoration-danger="binder_content_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="binder_content_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="binder_content_nabl"
+                                         decoration-success="binder_content_nabl == 'pass'" 
+                                           decoration-danger="binder_content_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                  
+
+                         <!-- <group  invisible = "bitumen_content_visible == False">
+                          <group>
+                            <field  name="binder_content_conformity"
+                                           decoration-success="binder_content_conformity == 'pass'" 
+                                           decoration-danger="binder_content_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="binder_content_nabl"
+                                         decoration-success="binder_content_nabl == 'pass'" 
+                                           decoration-danger="binder_content_nabl == 'fail'" 
+                                           readonly="1"/>
+                          </group>
+                    </group> -->
+
+
+                      <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
+                        <h1 style=" text-align:center; ">
+                            <field name="specific_gravity_name1" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+
+                       <div invisible = "specific_gravity_visible == False"  >
+                    <field name="specific_gravity_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name='wt_of_sp_stoper'/>
+                                <field name='wt_of_sp_bottle' />
+                                <field name='wt_of_sp_material' />
+                                <field name='wt_of_sp_water' />
+                                <field name='sp_bitumen' />
+                                
+                            </tree>
+                    </field>
+                    </div>
+
+                      <group style="white-space: nowrap; width:100%;"  invisible = "specific_gravity_visible == False" string="Result">
+                            <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                            Avg Specific Gravity
+                                            </td>
+                                          
+                                          
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="avg_sp_bitumen" nolabel="1"/>
+                                                </div>
+                                            </td>
+
+                                              <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                              %
+                                            </td> -->
+                                          
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </group>
+
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "specific_gravity_visible == False">
+                        <tbody>
+                         
+                            <tr>
+                                <td><label for="binder_content_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="binder_content_conformity"
+                                           decoration-success="binder_content_conformity == 'pass'" 
+                                           decoration-danger="binder_content_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="binder_content_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="binder_content_nabl"
+                                         decoration-success="binder_content_nabl == 'pass'" 
+                                           decoration-danger="binder_content_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                         <!-- <div class="custom_table_borders" style="width:100%;" invisible = "specific_gravity_visible == False">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                     <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           S.No
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           Description
+                                        </th>
+                                       
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                            Unit
+                                        </th>
+                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           sample 1
+                                        </th>
+                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           sample 2
+                                        </th>
+
+                                          <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;" rowspan="5">
+                                         Avg
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                           A
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                             weight the specific gravity bottle alongwith the stopper (Weight 'A')
+                                        </td>
+                                       
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                          gm
+                                        </td>
+
+                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_sp_stoper" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_sp_stoper1" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;" rowspan="5">
+                                            <field name="avg_sp_bitumen" nolabel="1"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                           B
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                              weight specific gravity bottle + distilled water
+                                        </td>
+                                       
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                          gm
+                                        </td>
+
+                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_sp_bottle" nolabel="1"/>
+                                        </td>
+                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_sp_bottle1" nolabel="1"/>
+                                        </td>
+                                    </tr>
+                                       <tr>
+                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                           C
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                               Weight  the specific gravity bottle + half-filled with the material
+                                        </td>
+                                       
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                          gm
+                                        </td>
+
+                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_sp_material" nolabel="1"/>
+                                        </td>
+                                          <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_sp_material1" nolabel="1"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                      
+                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                           D
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                             Weight the specific gravity bottle + half-filled with the material + half with distilled water
+                                        </td>
+                                       
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                          gm
+                                        </td>
+
+                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_sp_water" nolabel="1"/>
+                                        </td>
+                                          <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_sp_water1" nolabel="1"/>
+                                        </td>
+                                    </tr>
+                                      <tr>
+                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                        
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            Specific gravity of bitumen =(C-A)/(B-A)-(D-C)
+                                        </td>
+                                       
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                      
+                                        </td>
+
+                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="sp_bitumen" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="sp_bitumen1" nolabel="1"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> -->
+
+
+                        <group invisible = "flash_and_fire_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
+                        <h1 style=" text-align:center; ">
+                            <field name="flash_and_fire_name" readonly="1" nolabel="1"/>
+                            <field name="flash_and_fire_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+
+                    <div invisible = "flash_and_fire_visible == False"  >
+                    <field name="flash_and_fire_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name='flash_point'/>
+                                <field name='fire_point' />
+                               
+                            </tree>
+                    </field>
+                    </div>
+
+               <!-- <group>
+                     <group style="white-space: nowrap; width:100%;"  invisible = "flash_and_fire_visible == False" string="Result">
+                            <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                          Mean Value  Flash
+                                            </td>
+                                          
+                                          
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="mean_flash" nolabel="1"/>
+                                                </div>
+                                            </td>
+
+                                             
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </group>
+
+
+                         <group style="white-space: nowrap; width:100%;"  invisible = "flash_and_fire_visible == False" >
+                            <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                          Mean Value Fire
+                                            </td>
+                                          
+                                          
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="mean_fire" nolabel="1"/>
+                                                </div>
+                                            </td>
+
+                                           
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </group>
+                  </group> -->
+
+                     <div class="d-flex gap-2" invisible = "flash_and_fire_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td>Mean Value  Flash</td>
+                                    <td><field name="mean_flash"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td>Mean Value Fire</td>
+                                    <td><field name="mean_fire"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible = "flash_and_fire_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                         
+                            <tr>
+                                <td><label for="mean_flash_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="mean_flash_conformity"
+                                           decoration-success="mean_flash_conformity == 'pass'" 
+                                           decoration-danger="mean_flash_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="mean_flash_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="mean_flash_nabl"
+                                         decoration-success="mean_flash_nabl == 'pass'" 
+                                           decoration-danger="mean_flash_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                         
+                            <tr>
+                                <td><label for="mean_fire_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="mean_fire_conformity"
+                                           decoration-success="mean_fire_conformity == 'pass'" 
+                                           decoration-danger="mean_fire_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="mean_fire_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="mean_fire_nabl"
+                                         decoration-success="mean_fire_nabl == 'pass'" 
+                                           decoration-danger="mean_fire_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+
+
+
+
+
+                     <group invisible = "softining_point_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
+                        <h1 style=" text-align:center; ">
+                            <field name="softining_point_name" readonly="1" nolabel="1"/>
+                            <field name="softining_point_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+
+                    <div invisible = "softining_point_visible == False"  >
+                    <field name="softining_point_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name='softining_point'/>
+                               
+                            </tree>
+                    </field>
+                    </div>
+
+
+                     <group style="white-space: nowrap; width:100%;"  invisible = "softining_point_visible == False" string="Result">
+                            <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                         Avg Temp
+                                            </td>
+                                          
+                                          
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="avg_temp" nolabel="1"/>
+                                                </div>
+                                            </td>
+
+                                             
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </group>
+
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "softining_point_visible == False">
+                        <tbody>
+                         
+                            <tr>
+                                <td><label for="avg_temp_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="avg_temp_conformity"
+                                           decoration-success="avg_temp_conformity == 'pass'" 
+                                           decoration-danger="avg_temp_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="avg_temp_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="avg_temp_nabl"
+                                         decoration-success="avg_temp_nabl == 'pass'" 
+                                           decoration-danger="avg_temp_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+                     <group invisible = "penetration_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
+                        <h1 style=" text-align:center; ">
+                            <field name="penetration_name" readonly="1" nolabel="1"/>
+                            <field name="penetration_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+
+                    <div invisible = "penetration_visible == False"  >
+                    <field name="penetration_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name='penetration_c'/>
+                                <field name='penetration_sec'/>
+                                <field name='penetration_initial'/>
+                                <field name='penetration_final'/>
+                                <field name='penetration'/>
+                               
+                            </tree>
+                    </field>
+                    </div>
+
+
+                     <group style="white-space: nowrap; width:100%;"  invisible = "penetration_visible == False" string="Result">
+                            <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                      Avg Penetration
+
+                                            </td>
+                                          
+                                          
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="avg_penetration" nolabel="1"/>
+                                                </div>
+                                            </td>
+
+                                             
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </group>
+
+
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "penetration_visible == False">
+                        <tbody>
+                         
+                            <tr>
+                                <td><label for="avg_penetration_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="avg_penetration_conformity"
+                                           decoration-success="avg_penetration_conformity == 'pass'" 
+                                           decoration-danger="avg_penetration_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="avg_penetration_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="avg_penetration_nabl"
+                                         decoration-success="avg_penetration_nabl == 'pass'" 
+                                           decoration-danger="avg_penetration_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                    
+                  
+               
+                    <group invisible = "sieve_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
+                        <h1>
+                            <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
+                            <field name="sieve_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+                   
+                    <group style="white-space: nowrap; width:70%;"  invisible = "sieve_visible == False">
+                    
+                     <group >
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                            Weight of Sample
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="wt_of_sample" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                              gms
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
+
+                  
+            </group>
+                    <div invisible = "sieve_visible == False"  >
+                    <field name="sieve_analysis_child_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" string="Sr.No"/>
+                                <field name='sieve_size' string="IS Sieve Size"/>
+                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='percent_retained' string="% Retained"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
+                                <field name='passing_percent' string="Passing %" readonly="1"/>
+                                  <field name='specific_limt' string="Specified Limits" class="oe_center"/>
+                                
+                            </tree>
+                    </field>
+                    </div>
+
+                    <group >
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                           Total
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="total_sieve_analysis" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                         <div invisible="sieve_visible == False">
+                            <button string="Calculate"
+                                    type="object"
+                                    name="calculate_sieve"
+                                    class="oe_highlight">
+                                <i class="fa fa-calculator"/> Calculate
+                            </button>
+                        </div>
+                    </group>
+
+                  
+
+                  
+                        
+
+
+                  
+                  
+                  
+                 
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+
+
+              
+              
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
