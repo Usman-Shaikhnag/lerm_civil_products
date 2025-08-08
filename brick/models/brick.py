@@ -510,6 +510,7 @@ class CompressiveLine(models.Model):
     parent_id = fields.Many2one('mechanical.bricks',string="Parent Id")
 
     serial_no = fields.Integer(string="sample", readonly=True, copy=False, default=1)
+    identification_mark = fields.Char(string="Identification Mark")
     length = fields.Float(string="Length mm")
     width = fields.Float(string="Width mm")
     height = fields.Float(string="Height mm")
@@ -558,6 +559,7 @@ class WaterAbsorptionLine(models.Model):
     parent_id = fields.Many2one('mechanical.bricks',string="Parent Id")
 
     serial_no = fields.Integer(string="sample", readonly=True, copy=False, default=1)
+    identification_mark = fields.Char(string="Identification Mark")
     initial_wt = fields.Float(string="Dry wt (W1)")
     final_wt = fields.Float(string="Wet wt (W2)")
     water_absorption = fields.Float(string="Water Absorption %", compute="_compute_water_absorption")

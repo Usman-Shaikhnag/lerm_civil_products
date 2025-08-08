@@ -60,6 +60,8 @@
                             <tr cols="12">
                                 <td colspan="2" style="text-align: center;font-weight: bold">Sample
                                 </td>
+                                  <td colspan="2" style="text-align: center;font-weight: bold">Identification Mark
+                                </td>
                                 <td colspan="2" style="text-align: center;font-weight: bold"> Length, mm 
                                 </td>
                                 <td colspan="2" style="text-align: center;font-weight: bold"> Width, mm
@@ -84,8 +86,12 @@
                                     </div>
                                 </td>
                                 <td colspan="2" style="text-align: center">
+                                    <span t-esc="r['identification_mark']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center">
                                     <span t-esc="r['length']"/>
                                 </td>
+                                
                               
                                 <td colspan="2" style="text-align: center">
                                     <span t-esc="r['width']"/>
@@ -309,6 +315,8 @@
                             <tr cols="12">
                                 <td colspan="2" style="text-align: center;font-weight: bold">Sample
                                 </td>
+                                  <td colspan="2" style="text-align: center;font-weight: bold">Identification Mark
+                                </td>
                                 <td colspan="2" style="text-align: center;font-weight: bold"> Initial wt ater 24 hr emersion water (W1)
                                 </td>
                                 <td colspan="2" style="text-align: center;font-weight: bold"> Final wt after 24 hr oven (W2)
@@ -326,6 +334,9 @@
                                         <span t-esc="k + 1" />
                                         <t t-set="k" t-value="k+1"/>
                                     </div>
+                                </td>
+                                 <td colspan="2" style="text-align: center">
+                                    <span t-esc="r['identification_mark']"/>
                                 </td>
                                 <td colspan="2" style="text-align: center">
                                     <span t-esc="r['initial_wt']"/>
