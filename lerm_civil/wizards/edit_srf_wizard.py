@@ -10,7 +10,7 @@ class SRFEditWizard(models.TransientModel):
     
     
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")
-    kes_number = fields.Char(string="SSL NO")
+    kes_number = fields.Char(string="SMT NO")
     # job_no = fields.Char(string="Job NO.")
     srf_date = fields.Date(string="SRF Date",default=lambda self: self._get_default_date())
     job_date = fields.Date(string="JOB Date")

@@ -391,7 +391,7 @@ class SrfForm(models.Model):
             kes_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample.kes')]).number_next_actual
            
             sample_range = "SAM/"+str(sam_next_number)+"-"+str(sam_next_number+record.sample_qty-1)
-            kes_range = "SSL/TR/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
+            kes_range = "SMT/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
             record.write({'sample_range': sample_range , 'kes_range': kes_range })
             samples = self.env['lerm.srf.sample'].search([('sample_range_id','=',record.id)])
             
@@ -405,7 +405,7 @@ class SrfForm(models.Model):
                 day = str(self.srf_date.day).zfill(2)
                 count = count + 1
 
-                kes_no = "SSL/TR/"+ year+month+day + str(count).zfill(3) or "New"
+                kes_no = "SMT/"+ year+month+day + str(count).zfill(3) or "New"
 
                 kes_no_daywise = self.env['ir.sequence'].next_by_code('lerm.sample.daywise.seq') 
                 # kes_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample.kes') + kes_no_daywise or 'New'
@@ -477,7 +477,7 @@ class SrfForm(models.Model):
 
       
         modified_srf_id = f"SRF/"+year+month+day+srffirstnumber_str.zfill(3)+"-"+year+month+day+srf_last_number.zfill(3)
-        modified_kes_number = f"SSL/TR/DUS"
+        modified_kes_number = f"SMT/DUS"
         self.write({'srf_id': modified_srf_id})
         self.write({'kes_number': modified_kes_number})
         self.write({'state': '2-confirm'})

@@ -12,17 +12,17 @@
                         <field name="srf_id" readonly="1"/>
                         <field name="kes_number" invisible="1"/>
                         <field name="srf_date" readonly="1"/>
-                        <field name="contact_person" domain="[('id', 'in', contact_site_ids)]"/>
+                        <field name="contact_person" options="{'no_create': True}" domain="[('id', 'in', contact_site_ids)]"/>
                         <field name="site_address"/>
                         <field name="client_refrence"/>
                     </group>
                     <group style="width:50%">
-                        <field name="customer" />
+                        <field name="customer" options="{'no_create': True}"/>
                         <field name="client" />
-                        <field name="contractor" domain="[('id', 'in', contractor_ids)]" groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                        <field name="contractor" options="{'no_create': True}" domain="[('id', 'in', contractor_ids)]" groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
                         <field name="contractor_ids" invisible="1"/>
                         <field name="contact_other_ids" invisible="1"/>
-                        <field name="billing_customer"/>
+                        <field name="billing_customer" options="{'no_create': True}"/>
                         <!-- <field name="name_work"/> -->
                         <!-- <field name="name_works" invisible="1"/> -->
                         <field name="attachment" filename="attachment_name"/>

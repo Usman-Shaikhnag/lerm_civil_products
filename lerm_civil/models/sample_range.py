@@ -67,7 +67,7 @@ class SampleRangeLine(models.Model):
     product_alias = fields.Many2one('product.product',string="Product Alias")
     parameters = fields.Many2many('lerm.parameter.master',string="Parameter")
     # parameters_ids = fields.Many2many('lerm.datasheet.line',string="Parameter" , compute="compute_param_ids")
-    kes_range = fields.Char("SSl Range",required=True,readonly=True, default=lambda self: 'New')
+    kes_range = fields.Char("SMT Range",required=True,readonly=True, default=lambda self: 'New')
     casting_date = fields.Date(string="No. of days of test")
     days_casting = fields.Selection([
         ('3', '3 Days'),
