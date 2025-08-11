@@ -421,8 +421,8 @@ class CementPSC(models.Model):
         ]
         return default_lines
 
-    initial_setting_time = fields.Float(string="Initial Setting Time",compute="_compute_setting_times")
-    final_setting_time = fields.Float(string="Final Setting Time ",compute="_compute_setting_times")
+    initial_setting_time = fields.Float(string="Initial Setting Time",compute="_compute_setting_times",store=True)
+    final_setting_time = fields.Float(string="Final Setting Time ",compute="_compute_setting_times",store=True)
 
     initial_setting_time_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -529,17 +529,17 @@ class CementPSC(models.Model):
     @api.depends('setting_time_lines.duration1')
     def _compute_setting_times(self):
         for rec in self:
-            lines = rec.setting_time_lines.filtered(lambda l: l.create_date).sorted(key=lambda l: l.create_date)
+            # Convert to list so index() works even for NewId
+            lines_list = list(rec.setting_time_lines)
 
-            if len(lines) > 0:
-                rec.initial_setting_time = lines[0].duration1
+            # If sequence exists in model, use it, else fallback to current order in list
+            if lines_list and hasattr(lines_list[0], 'sequence'):
+                lines = sorted(lines_list, key=lambda l: l.sequence or 0)
             else:
-                rec.initial_setting_time = 0.0
+                lines = lines_list  # Keep order as in the form view
 
-            if len(lines) > 1:
-                rec.final_setting_time = lines[1].duration1
-            else:
-                rec.final_setting_time = 0.0
+            rec.initial_setting_time = lines[0].duration1 if len(lines) > 0 else 0.0
+            rec.final_setting_time = lines[1].duration1 if len(lines) > 1 else 0.0
 
 
                 ## Cement Compressive Strength
