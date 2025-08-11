@@ -212,7 +212,7 @@
                     </div>
 
 
-                    <div invisible = "soundness_cement_visible == False">
+                    <div invisible="soundness_cement_visible == False">
                         <field name="soundness_cement_lines">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no"/>
@@ -254,7 +254,7 @@
 
 
 
-                    <div invisible = "consistency_cement_visible == False">
+                    <div invisible="consistency_cement_visible == False">
                         <h1 class="text-center">
                             <field name="consistency_cement_name" readonly="1" nolabel="1"/>
                             <field name="consistency_cement_visible" invisible="1"/>
@@ -262,15 +262,15 @@
                     </div>
 
 
-                    <div invisible = "consistency_cement_visible == False" style="white-space: nowrap; width:100%;">
-                        <field name="consistency_cement_lines">
-                            <tree editable="bottom" class="custom_table_borders">
+                    <div invisible="consistency_cement_visible == False">
+                        <field name="consistency_cement_lines" class="custom_table_borders">
+                            <tree editable="bottom">
                                 <field name="serial_no"/>
-                                <field name="wt_of_cement1" style="text-align: center; width: 120px;"/>
-                                <field name="wt_of_water" style="text-align: center; width: 120px;"/>
-                                <field name="water_mix" style="text-align: center; width: 120px;"/>
-                                <field name="needle_penitration" style="text-align: center; width: 120px;"/>
-                                <field name="duration" style="text-align: center; width: 120px;" widget="char"/>
+                                <field name="wt_of_cement1"  widget="char"/>
+                                <field name="wt_of_water"  widget="char"/>
+                                <field name="water_mix" widget="char"/>
+                                <field name="needle_penitration" widget="char"/>
+                                <field name="duration"/>
                             </tree>
                         </field>
                     </div>

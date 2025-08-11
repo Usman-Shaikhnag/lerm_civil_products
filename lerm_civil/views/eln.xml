@@ -368,51 +368,5 @@
 
     </record>
 
-       <record id="view_eln_dashboard_kanban" model="ir.ui.view">
-            <field name="name">lerm.eln.dashboard.kanban</field>
-            <field name="model">lerm.eln.dashboard</field>
-            <field name="arch" type="xml">
-                <kanban>
-                    <field name="draft_count"/>
-                    <field name="confirm_count"/>
-                    <field name="approved_count"/>
-                    <field name="rejected_count"/>
-                    <field name="cancelled_count"/>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="o_kanban_card_header">
-                                <div class="o_kanban_card_header_title">
-                                    <div class="o_primary">ELN Status Dashboard</div>
-                                </div>
-                            </div>
-                            <div class="o_kanban_card_content">
-                                <div class="o_kanban_card_upper_content">
-                                    <button type="object" name="action_open_eln" class="btn btn-outline-primary">
-                                        <t t-esc="record.draft_count.raw_value"/> In-Test
-                                    </button>
-                                    <button type="object" name="action_open_eln" class="btn btn-outline-info">
-                                        <t t-esc="record.confirm_count.raw_value"/> In-Check
-                                    </button>
-                                    <button type="object" name="action_open_eln" class="btn btn-outline-success">
-                                        <t t-esc="record.approved_count.raw_value"/> Approved
-                                    </button>
-                                    <button type="object" name="action_open_eln" class="btn btn-outline-danger">
-                                        <t t-esc="record.rejected_count.raw_value"/> Rejected
-                                    </button>
-                                    <button type="object" name="action_open_eln" class="btn btn-outline-secondary">
-                                        <t t-esc="record.cancelled_count.raw_value"/> Cancelled
-                                    </button>
-                                </div>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
-
-
-
-
-
     </data>
 </odoo>

@@ -1155,28 +1155,3 @@ class UpdateResultChild(models.TransientModel):
     wizard_id = fields.Many2one('eln.update.result.wizard')
     parameter = fields.Many2one('eln.parameters',string="Parameter")
     result = fields.Float(string="Result")
-
-
-class LermElnDashboard(models.TransientModel):  # or models.Model if you want it persisted
-    _name = 'lerm.eln.dashboard'
-    _description = 'ELN Dashboard'
-
-    draft_count = fields.Integer(string="In-Test", compute="_compute_counts")
-    confirm_count = fields.Integer(string="In-Check", compute="_compute_counts")
-    approved_count = fields.Integer(string="Approved", compute="_compute_counts")
-    rejected_count = fields.Integer(string="Rejected", compute="_compute_counts")
-    cancelled_count = fields.Integer(string="Cancelled", compute="_compute_counts")
-
-    def _compute_counts(self):
-        states = self.env['lerm.eln'].read_group(
-            domain=[], fields=['state'], groupby=['state'], lazy=False
-        )
-        count_map = {state['state']: state['state_count'] for state in states}
-        for rec in self:
-            rec.draft_count = count_map.get('1-draft', 0)
-            rec.confirm_count = count_map.get('2-confirm', 0)
-            rec.approved_count = count_map.get('3-approved', 0)
-            rec.rejected_count = count_map.get('4-rejected', 0)
-            rec.cancelled_count = count_map.get('5-cancelled', 0)
-
-
