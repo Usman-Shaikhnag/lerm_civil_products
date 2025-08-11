@@ -173,8 +173,15 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">ELN</p>
         </field>
-
     </record>
+
+    <record id="action_eln_dashboard" model="ir.actions.act_window">
+        <field name="name">ELN Dashboard</field>
+        <field name="res_model">lerm.eln.dashboard</field>
+        <field name="view_mode">kanban</field>
+        <field name="target">current</field>
+    </record>
+
     <record id="lerm_product_action" model="ir.actions.act_window">
             <field name="name">Product</field>
             <field name="type">ir.actions.act_window</field>

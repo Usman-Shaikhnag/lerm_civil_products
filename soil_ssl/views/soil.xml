@@ -42,8 +42,8 @@
                         </h1>
                     </div>
                     
-                    <field name="child_lines">
-                            <tree editable="bottom" class="custom_table_borders">
+                    <field name="child_lines" invisible = "sieve_visible == False">
+                        <tree editable="bottom" class="custom_table_borders">
                             <field name="serial_no"/>
                             <field name="sieve_size"/>
                             <field name="particle_size"/>
@@ -51,7 +51,7 @@
                             <field name="percent_retained"/>
                             <field name="cumulative_retained"/>
                             <field name="passing_percent"/>
-                            </tree>
+                        </tree>
                     </field>
                   
                     <div invisible="sieve_visible == False">

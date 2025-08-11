@@ -70,13 +70,13 @@
 					<div style="text-align:center;font-size:18px;margin-top:2px">
 					<!-- Concrete Cube -->
 						<span t-field="env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_name"/>
-						<span>
+						<!-- <span> -->
 							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_table" t-as="parameter">
 								<t t-if="parameter.grade.id == eln.grade_id.id">
 									<span t-field="parameter.specification"/>
 								</t>
 							</t>
-						</span>
+						<!-- </span> -->
 						- <span t-field="data.type_of_sample"></span>
 					</div>
 					<div style="text-align:center;font-size:18px;margin-top:2px">
