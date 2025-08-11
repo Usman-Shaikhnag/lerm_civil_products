@@ -8,7 +8,6 @@
         <field name="arch" type="xml">
             <form string="Your Form View" create="false">
                 <sheet>
-               <!-- attrs="{'edit': [('eln_ref.status', '!=', 1-draft)]}" -->
                 <group >
                     <h1>
                         <field name="name" readonly="1" nolabel="1"/>
@@ -21,14 +20,12 @@
                         <field name="grade" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group>
-                      <field name="sample_parameters">
-                        <tree class="table-bordered o_list_view">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree class="custom_table_borders">
                           <field name="parameter_name"/>
                           <field name="test_method"/>
                         </tree>
                       </field>
-                    </group>
                     
                     <!-- Dry Gradation -->
 
@@ -38,11 +35,10 @@
                             <field name="dry_gradation_visible" invisible="1"/>
                         </h1>
                     </div>
-                    <group/>
 
                     <group invisible="not dry_gradation_visible">
                         <field name="dry_gradation_table" nolabel="1" colspan="2">
-                        <tree editable="bottom" class="table-bordered o_list_view">
+                        <tree editable="bottom" class="custom_table_borders">
                           <field name="sieve_size"  />
                           <field name="wt_retained"/>
                           <field name="percent_retained"/>
@@ -51,23 +47,46 @@
                         </tree>
                         </field>
                     </group>
-                    <group/>
-                    <div invisible="not dry_gradation_visible">
-                        <button string="Calculate" type="object" name="calculate_sieve" class="oe_highlight"/>
-                    </div>
-                    <group/>
+                    
 
-                    <div>
-                          <table style="width: 20%; ">
+                     <div   invisible="not dry_gradation_visible">
+                            <button string="Calculate"
+                                    type="object"
+                                    name="calculate_sieve"
+                                    class="oe_highlight">
+                                <i class="fa fa-calculator"/>  Calculate 
+                            </button>
+                        </div>
+
+                          <!-- <table style="width: 20%; ">
                           <tr>
                             <td style="padding: 5px;font-weight: bold;"><span>Total</span></td>
                             <td style="padding: 5px;"><field name="total_sieve_analysis" class="oe_center" /></td>
                            </tr>
-                           </table>
-                    </div>
-                    <group/>
-                    <group/>
-                    
+                           </table> -->
+
+                            <!-- <table style="width: 20%; margin-top:10px;" invisible="not dry_gradation_visible">
+                             <tr>
+                                <td style="padding: 5px;font-weight: bold;"><span>Total</span></td>
+                                <td style="padding: 5px;"><field name="total_sieve_analysis" class="oe_center" /></td>
+                              </tr>
+                     
+                          </table> -->
+
+
+
+                     <table  style="margin-top:10px;" class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "dry_gradation_visible == False">
+                        <tbody>
+
+                         <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>  Total</span></td>
+                            <td style="padding: 5px;"><field name='total_sieve_analysis' class="oe_center" /></td>
+                           </tr>
+                         
+                           
+                        </tbody>
+                    </table>
+                   
                     <!-- <group invisible="not dry_gradation_visible">
                         <group style="width:33%">
                             <field name="total_sieve_analysis"/>
@@ -85,7 +104,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not water_absorbtion_visible">
                     <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
                       <tr>
                         <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of saturated surface dry (SSD) sample in air in gms, A</span></td>
@@ -101,10 +120,9 @@
                       </tr>
                     </table>
                     </div>
-                    <group/>
-                    <group/>
+                  
 
-                    <div>
+                    <div invisible="not water_absorbtion_visible">
                           <table style="width: 20%; margin-top:10px;">
                            <tr>
                              <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
@@ -120,7 +138,6 @@
                      
                           </table>
                       </div>
-                      <group/>
 
 
 
@@ -142,7 +159,7 @@
 
 
                     <!-- Elongation and Flakiness  -->
-                    <div modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}'>
+                    <div  invisible="not elongation_visible">
                         <h1>
                             <field name="elongation_name" readonly="1" nolabel="1"/>
                             <field name="elongation_visible" invisible="1"/>
@@ -153,9 +170,9 @@
                     </div>
                     <group/>
 
-                    <group modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}'>
+                    <group invisible="not elongation_visible">
                         <field name="elongation_table" nolabel="1" colspan="2">
-                        <tree editable="bottom" class="table-bordered o_list_view">
+                        <tree editable="bottom" class="custom_table_borders">
                           <field name="sieve_size"/>
                           <field name="wt_retained"/>
                           <field name="elongated_retained"/>
@@ -163,10 +180,9 @@
                         </tree>
                         </field>
                     </group>
-                    <group/>
-                    <group/>
+                   
 
-                    <div style="display:flex;">
+                    <div style="display:flex;" invisible="not elongation_visible">
                       <div style="width: 50%;">
                           <table style="width: 100%; margin-top:10px;">
                           <tr>
@@ -197,7 +213,7 @@
                           </table>
                       </div>
 
-                      <div style="width: 50%;">
+                      <div style="width: 50%;" invisible="not elongation_visible">
                              <table style="width: 100%; margin-top:10px;">
                           <tr>
                             <td style="padding: 5px;font-weight: bold;"><span>Aggregate Elongation Value in %</span></td>
@@ -234,45 +250,6 @@
 
 
                     
-<!--                     
-                    <group modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}' style="white-space:nowrap;"> -->
-
-                        <!-- <group>
-                            <field name="total_wt_retained_fl_el"/> -->
-                        <!-- </group>
-                        <group style="width:33%" attrs="{'invisible': ['|', ('elongation_visible', '=', False), ('flakiness_visible', '=', False)]}"> -->
-                            <!-- <field name="total_elongated_retained"/> -->
-                         <!-- </group> -->
-                        <!-- <group style="width:33%" attrs="{'invisible': ['|', ('elongation_visible', '=', False), ('flakiness_visible', '=', False)]}"> -->
-                            <!-- <field name="total_flakiness_retained"/>
-
-                            <field  name="aggregate_flakiness_conformity"
-                                        decoration-success="aggregate_flakiness_conformity == 'pass'" 
-                                        decoration-danger="aggregate_flakiness_conformity == 'fail'" 
-                                        readonly="1" string="Flakiness Conformity"/>
-                            <field  name="aggregate_flakiness_nabl" />
-                        </group> -->
-                        
-                   
-                     
-                    <!-- <group style="width:100%"> -->
-                        
-                        <!-- <group>
-                            <field name="aggregate_elongation"/> -->
-                        <!-- </group>
-                        <group style="width:33%" attrs="{'invisible': ['|', ('elongation_visible', '=', False), ('flakiness_visible', '=', False)]}"> -->
-                            <!-- <field name="aggregate_flakiness"/> -->
-                        <!-- </group>
-                        <group style="width:33%" attrs="{'invisible': ['|', ('elongation_visible', '=', False), ('flakiness_visible', '=', False)]}"> -->
-                            <!-- <field name="aggregate_combine"/>
-
-                             <field  name="aggregate_elongation_conformity"
-                                        decoration-success="aggregate_elongation_conformity == 'pass'" 
-                                        decoration-danger="aggregate_elongation_conformity == 'fail'" 
-                                        readonly="1" string="Elongation Conformity" />
-                            <field  name="aggregate_elongation_nabl" />
-                        </group>
-                    </group> -->
 
                     <!-- Impact Value  -->
                     <div invisible="not impact_visible">
@@ -282,11 +259,9 @@
 
                         </h1>
                     </div>
-                    <group/>
 
-                    <group invisible="not impact_visible">
-                    <field name="impact_value_child_lines" nolabel="1" colspan="2">
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                    <field name="impact_value_child_lines" nolabel="1"  invisible="not impact_visible">
+                            <tree editable="bottom" class="custom_table_borders">
                                 <field name='sample_no'/>
                                 <field name='wt_of_cylinder'/>
                                 <field name='total_wt_of_dried'/>
@@ -297,47 +272,40 @@
                             </tree>
                            
                     </field> 
-                    </group>
 
-                    <div>
-                        <table style="width: 20%; margin-top:10px;">
-                          <tr>
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "impact_visible == False">
+                        <tbody>
+
+                         <tr>
                             <td style="padding: 5px;font-weight: bold;"><span>Average Impact Value</span></td>
                             <td style="padding: 5px;"><field name='average_impact_value' class="oe_center" /></td>
                            </tr>
-                           <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field  name="average_impact_value_conformity"
-                                        decoration-success="average_impact_value_conformity == 'pass'" 
-                                        decoration-danger="average_impact_value_conformity == 'fail'" 
-                                        readonly="1" />
-                            </td>
-                           </tr>
-                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field  name="average_impact_value_nabl" /></td>
-                           </tr>
-                     
-                          </table>
-                      </div>
-                      <group/>
-
-
-
-
-                    <!-- <group invisible="not impact_visible">
-                        <field name='average_impact_value'/>
-                    </group>
-                     <group invisible="not impact_visible">
-                       
-                        <field  name="average_impact_value_conformity"
-                                        decoration-success="average_impact_value_conformity == 'pass'" 
-                                        decoration-danger="average_impact_value_conformity == 'fail'" 
-                                        readonly="1" />
-                        <field  name="average_impact_value_nabl" />
                          
-                    </group> -->
-                     
+                            <tr>
+                                <td><label for="average_impact_value_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="average_impact_value_conformity"
+                                           decoration-success="average_impact_value_conformity == 'pass'" 
+                                           decoration-danger="average_impact_value_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="average_impact_value_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="average_impact_value_nabl"
+                                         decoration-success="average_impact_value_nabl == 'pass'" 
+                                           decoration-danger="average_impact_value_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                      
+
+
+
 
                 <!-- Abrasion Value  -->
                 <div invisible="not abrasion_visible">
@@ -347,9 +315,8 @@
 
                         </h1>
                 </div>
-                <group/>
 
-                <div>
+                <div invisible="not abrasion_visible">
                     <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
                     <tr>
                         <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Total weight of Sample in gms</span></td>
@@ -369,11 +336,9 @@
                       </tr>
                     </table>
                     </div>
-                    <group/>
-                    <group/>
+                   
 
-
-                <div>
+                <div invisible="not abrasion_visible">
                         <table style="width: 20%; margin-top:10px;">
                            <tr>
                              <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
@@ -390,25 +355,9 @@
                      
                           </table>
                       </div>
-                      <group/>
 
 
-                <!-- <group invisible="not abrasion_visible" style="white-space:nowrap; width:50%">
-                    <field name="total_weight_sample_abrasion"/>
-                    <field name="weight_passing_sample_abrasion"/>
-                    <field name="weight_retain_sample_abrasion"/>
-                    <field name="abrasion_value_percentage"/>
-                </group>
-                 <group invisible="not abrasion_visible">
-                       
-                        <field  name="abrasion_value_percentage_conformity"
-                                        decoration-success="abrasion_value_percentage_conformity == 'pass'" 
-                                        decoration-danger="abrasion_value_percentage_conformity == 'fail'" 
-                                        readonly="1" />
-                        <field  name="abrasion_value_percentage_nabl" />
-                         
-                    </group> -->
-
+              
                 <!-- Liquid Limit -->
                 <div invisible="not liquid_limit_visible">
                         <h1>
@@ -417,11 +366,10 @@
 
                         </h1>
                 </div>
-                <group/>
 
                 <group invisible="not liquid_limit_visible">
                     <field name="liquid_limit_table" nolabel="1" colspan="2">
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom" class="custom_table_borders">
                                 <field name='container_no'/>
                                 <field name='blows'/>
                                 <field name='mass_wet_sample_container'/>
@@ -435,56 +383,68 @@
                            
                     </field> 
                 </group>
-                <group/>
 
-                 <div>
-                        <table style="width: 20%; margin-top:10px;">
-                           <tr>
-                           <td style="padding: 5px;font-weight: bold;"><span>Liquid Limit</span></td>
-                            <td style="padding: 5px;"><field name="liquid_limit" /></td>
+              
+
+            
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "liquid_limit_visible == False">
+                        <tbody>
+
+                         <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span> Liquid Limit</span></td>
+                            <td style="padding: 5px;"><field name='liquid_limit' class="oe_center" /></td>
                            </tr>
-                     
-                          </table>
-                </div>
-                <group/>
+                         
+                           
+                        </tbody>
+                    </table>
 
 
-                <group invisible="not liquid_limit_visible" style="width:50%;white-space:nowrap;">
-                        <field name="are_child_lines_filled" invisible="1"/>
-                        <button string="Calculate Liquid Limit" name="liquid_calculation" type="object" class="oe_highlight" 
-                                modifiers='{"invisible": [["are_child_lines_filled", "=", false]]}'/>
-                </group>
+                        
+                        
 
-                <div>
-                        <table style="width: 20%; margin-top:10px;">
-                           <tr>
-                           <td style="padding: 5px;font-weight: bold;"><span>Remarks</span></td>
-                            <td style="padding: 5px;"><field name="remarks_liquid_limit"/></td>
+                          <div   invisible="not liquid_limit_visible">
+                          <field name="are_child_lines_filled" invisible="1"/>
+                            <button string="Calculate Liquid Limit"
+                                    type="object"
+                                    name="liquid_calculation"
+                                    class="oe_highlight">
+                                <i class="fa fa-calculator"/>  Calculate Liquid Limit
+                            </button>
+                        </div>
+
+              
+              
+
+                        <table  style="margin-top:10px;" class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "liquid_limit_visible == False">
+                        <tbody>
+
+                         <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Remarks</span></td>
+                            <td style="padding: 5px;"><field name='remarks_liquid_limit' class="oe_center" /></td>
                            </tr>
-                     
-                          </table>
-                </div>
-                <group/>
-
-
-                <div>
-                        <table style="width: 20%; margin-top:10px;">
-                           <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field  name="liquid_limit_conformity"
-                                        decoration-success="liquid_limit_conformity == 'pass'" 
-                                        decoration-danger="liquid_limit_conformity == 'fail'" 
-                                        readonly="1" />
-                            </td>
-                           </tr>
-                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field  name="liquid_limit_nabl" /></td>
-                           </tr>
-                     
-                          </table>
-                      </div>
-                      <group/>
+                         
+                            <tr>
+                                <td><label for="liquid_limit_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="liquid_limit_conformity"
+                                           decoration-success="liquid_limit_conformity == 'pass'" 
+                                           decoration-danger="liquid_limit_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="liquid_limit_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="liquid_limit_nabl"
+                                         decoration-success="liquid_limit_nabl == 'pass'" 
+                                           decoration-danger="liquid_limit_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
                     <!-- <group invisible="not liquid_limit_visible">
@@ -503,14 +463,14 @@
                         <h1>
                             <field name="plastic_name" readonly="1" nolabel="1"/>
                             <field name="plastic_visible" invisible="1"/>
+                            <field name="plasticity_index_visible" invisible="1"/>
 
                         </h1>
                 </div>
-                <group/>
 
                 <group invisible="not plastic_visible">
                     <field name="plastic_table" nolabel="1" colspan="2">
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom" class="custom_table_borders">
                                 <field name='container_no'/>
                                 <field name='mass_wet_sample_container'/>
                                 <field name='mass_dry_sample_container'/>
@@ -521,110 +481,102 @@
                             </tree>
                     </field> 
                 </group>
-                <group/>
 
-                <div>
-                        <table style="width: 20%; margin-top:10px;border:1px solid black;">
-                           <tr>
-                             <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Average</span></td>
-                              <td style="padding: 8px;border:1px solid black;"><field name="average_plastic_moisture"/>
-                            </td>
-                           </tr>
-                           <tr>
-                            <td style="padding: 5px;font-weight: bold;border:1px solid black;"><span>Remarks</span></td>
-                            <td style="padding: 5px;border:1px solid black;"><field name="remarks_plastic" /></td>
-                           </tr>
-                          </table>
-                      </div>
-                      <group/>
+                <table  style="margin-top:10px;" class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "plastic_visible == False">
+                        <tbody>
 
-                      <div>
-                        <table style="width: 20%; margin-top:10px;">
-                           <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field  name="average_plastic_moisture_conformity"
-                                        decoration-success="average_plastic_moisture_conformity == 'pass'" 
-                                        decoration-danger="average_plastic_moisture_conformity == 'fail'" 
-                                        readonly="1" />
-                            </td>
+                         <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span> Average</span></td>
+                            <td style="padding: 5px;"><field name='average_plastic_moisture' class="oe_center" /></td>
                            </tr>
-                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field  name="average_plastic_moisture_nabl" /></td>
+
+                             <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span> Remarks</span></td>
+                            <td style="padding: 5px;"><field name='remarks_plastic' class="oe_center" /></td>
                            </tr>
-                          </table>
-                      </div>
-                      <group/>
+                         
+                           
+                        </tbody>
+                    </table>
+
+                  <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "plastic_visible == False">
+                        <tbody>
+
+                   
+                            <tr>
+                                <td><label for="average_plastic_moisture_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="average_plastic_moisture_conformity"
+                                           decoration-success="average_plastic_moisture_conformity == 'pass'" 
+                                           decoration-danger="average_plastic_moisture_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="average_plastic_moisture_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="average_plastic_moisture_nabl"
+                                         decoration-success="average_plastic_moisture_nabl == 'pass'" 
+                                           decoration-danger="average_plastic_moisture_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  
+
+
+                 
+                <!-- Plasticity index  -->
+
+                       
+
+                          <table  style="margin-top:10px;" class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "plasticity_index_visible == False">
+                        <tbody>
+
+                         <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span> Plasticity Index</span></td>
+                            <td style="padding: 5px;"><field name='plasticity_index' class="oe_center" /></td>
+                           </tr>
+
+                             <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span> Remarks</span></td>
+                            <td style="padding: 5px;"><field name='remarks_plasticity_index' class="oe_center" /></td>
+                           </tr>
+                         
+                           
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "plasticity_index_visible == False">
+                        <tbody>
+
+                   
+                            <tr>
+                                <td><label for="plasticity_index_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="plasticity_index_conformity"
+                                           decoration-success="plasticity_index_conformity == 'pass'" 
+                                           decoration-danger="plasticity_index_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="plasticity_index_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="plasticity_index_nabl"
+                                         decoration-success="plasticity_index_nabl == 'pass'" 
+                                           decoration-danger="plasticity_index_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                       
 
 
-                    <!-- <group invisible="not plastic_visible">
-                        <field name="average_plastic_moisture"  style="width:50%"/>
-                        <field name="remarks_plastic"  style="width:50%"/>
-                    </group> -->
-                 <!-- <group invisible="not plastic_visible">
-                       
-                        <field  name="average_plastic_moisture_conformity"
-                                        decoration-success="average_plastic_moisture_conformity == 'pass'" 
-                                        decoration-danger="average_plastic_moisture_conformity == 'fail'" 
-                                        readonly="1" />
-                        <field  name="average_plastic_moisture_nabl" />
-                         
-                    </group> -->
-
-                <!-- Plasticity index  -->
-
-                <div>
-                        <table style="width: 20%; margin-top:10px;border:1px solid black;">
-                           <tr>
-                             <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Plasticity Index</span></td>
-                              <td style="padding: 8px;border:1px solid black;"><field name="plasticity_index" />
-                            </td>
-                           </tr>
-                           <tr>
-                            <td style="padding: 5px;font-weight: bold;border:1px solid black;"><span>Remarks</span></td>
-                            <td style="padding: 5px;border:1px solid black;"><field name="remarks_plasticity_index" /></td>
-                            
-                           </tr>
-                          </table>
-                      </div>
-                      <group/>
-
-                      <div>
-                        <table style="width: 20%; margin-top:10px;">
-                           <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field  name="plasticity_index_conformity"
-                                        decoration-success="plasticity_index_conformity == 'pass'" 
-                                        decoration-danger="plasticity_index_conformity == 'fail'" 
-                                        readonly="1" />
-                            </td>
-                           </tr>
-                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field  name="plasticity_index_nabl" /></td>
-                           </tr>
-                          </table>
-                      </div>
-                      <group/>
-
-
-                <!-- <group invisible="not plasticity_index_visible">
-                    <field name="plasticity_index"  style="width:50%"/>
-                    <field name="remarks_plasticity_index"  style="width:50%"/>
-                    <field name="plasticity_index_visible" invisible="1"/>
-                </group> -->
-                 <!-- <group invisible="not plasticity_index_visible">
-                       
-                        <field  name="plasticity_index_conformity"
-                                        decoration-success="plasticity_index_conformity == 'pass'" 
-                                        decoration-danger="plasticity_index_conformity == 'fail'" 
-                                        readonly="1" />
-                        <field  name="plasticity_index_nabl" />
-                         
-                    </group> -->
-
+             
                 <!-- Density Relation Heavy Compaction  -->
                 <div invisible="not density_relation_visible">
                         <h1>
@@ -633,22 +585,31 @@
 
                         </h1>
                 </div>
-                <group/>
 
-                <div>
-                        <table style="width: 20%; margin-top:10px;border:1px solid black;">
-                           <tr>
-                             <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Weight of Mould in gm</span></td>
-                              <td style="padding: 8px;border:1px solid black;"><field name="wt_of_modul" />
-                            </td>
-                           </tr>
-                           <tr>
-                            <td style="padding: 5px;font-weight: bold;border:1px solid black;"><span>Volume of Mould in cc</span></td>
-                            <td style="padding: 5px;border:1px solid black;"><field name="vl_of_modul" /></td>
-                           </tr>
-                          </table>
-                      </div>
-                      <group/>
+
+
+                       <div class="d-flex gap-2" invisible="not density_relation_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="wt_of_modul">Weight of Mould in gm</label></td>
+                                    <td><field name="wt_of_modul"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="vl_of_modul">Volume of Mould in cc</label></td>
+                                    <td><field name="vl_of_modul"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
 
                 <!-- <group invisible="not density_relation_visible" style="width:50%">
                     <field name="wt_of_modul" />
@@ -658,7 +619,7 @@
 
                 <group invisible="not density_relation_visible">
                     <field name="density_relation_table" nolabel="1" colspan="2" >
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom" class="custom_table_borders">
                                 <field name='determination_no'/>
                                 <field name='wt_of_modul_compact'/>
                                 <field name='wt_of_compact'/>
@@ -673,31 +634,185 @@
                                 <field name='dry_density'/>
                             </tree>
                     </field> 
-                    <group/>
+                    </group>
                     <!-- <group invisible="not density_relation_visible">
                     <field name="chart_image_density" widget="image" readonly="1" />
                     </group> -->
-                </group>
-                <group invisible="not density_relation_visible">
-                    <field name="chart_image_density" widget="image" readonly="1" />
+               
+
+                   <group invisible = "density_relation_visible == False" class="custom_table_borders">
+                      <field name="graph_image_density" widget="image" readonly="1"/>
                     </group>
 
-                <group/>
 
-                <div>
-                        <table style="width: 20%; margin-top:10px;border:1px solid black;">
-                           <tr>
-                             <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>MMD gm/cc</span></td>
-                              <td style="padding: 8px;border:1px solid black;"><field name='mmd'/>
-                            </td>
-                           </tr>
-                           <tr>
-                            <td style="padding: 5px;font-weight: bold;border:1px solid black;"><span>OMC %</span></td>
-                            <td style="padding: 5px;border:1px solid black;"><field name='omc'/></td>
-                           </tr>
-                          </table>
-                      </div>
-                      <group/>
+                
+
+                      <div class="d-flex gap-2" invisible="not density_relation_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="max_dry_density">MMD gm/cc</label></td>
+                                    <td><field name="max_dry_density"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="omc">OMC %</label></td>
+                                    <td><field name="omc"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "density_relation_visible == False">
+                        <tbody>
+
+                   
+                            <tr>
+                                <td><label for="density_relation_table_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="density_relation_table_conformity"
+                                           decoration-success="density_relation_table_conformity == 'pass'" 
+                                           decoration-danger="density_relation_table_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="density_relation_table_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="density_relation_table_nabl"
+                                         decoration-success="density_relation_table_nabl == 'pass'" 
+                                           decoration-danger="density_relation_table_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                                  <!-- Light Compaction OMC -->
+                     <group invisible = "omc_visible == False" style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="omc_name" readonly="1" nolabel="1"/>
+                            <field name="omc_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+
+                     <div class="d-flex gap-2" invisible="not density_relation_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="wt_of_modul1">Weight of Mould in gm</label></td>
+                                    <td><field name="wt_of_modul1"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="vl_of_modul1">Volume of Mould in cc</label></td>
+                                    <td><field name="vl_of_modul1"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                   
+                 
+                    <group invisible = "omc_visible == False">
+                  
+                      <field name="omc_table"  nolabel="1" colspan="2">
+                        <tree editable="bottom" class="custom_table_borders">
+                           <field name='determination_no'/>
+                                <field name='wt_of_modul_compact'/>
+                                <field name='wt_of_compact'/>
+                                <field name='bulk_density'/>
+                                <field name='container_no'/>
+                                <field name='wt_of_container'/>
+                                <field name='wt_of_container_wet'/>
+                                <field name='wt_of_container_dry'/>
+                                <field name='wt_of_dry_sample'/>
+                                <field name='wt_of_moisture'/>
+                                <field name='moisture'/>
+                                <field name='dry_density1'/>
+                        </tree>
+                      </field>
+                  
+                    </group>
+
+                     
+
+
+
+
+                     <group invisible = "omc_visible == False" class="custom_table_borders">
+                      <field name="graph_image_density1" widget="image" readonly="1"/>
+                    </group>
+
+                    <div class="d-flex gap-2" invisible="not omc_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="max_dry_density1"> Max Dry Density  gm/cc</label></td>
+                                    <td><field name="max_dry_density1"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="omc1">Optimum Moisture Content  %</label></td>
+                                    <td><field name="omc1"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                  
+
+                  
+
+
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "omc_visible == False">
+                        <tbody>
+
+                   
+                            <tr>
+                                <td><label for="omc_table_conformity">Confirmity</label></td>
+                                <td>
+                                    <field  name="omc_table_conformity"
+                                           decoration-success="omc_table_conformity == 'pass'" 
+                                           decoration-danger="omc_table_conformity == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="omc_table_nabl">Nabl</label></td>
+                                <td>
+                                  <field  name="omc_table_nabl"
+                                         decoration-success="omc_table_nabl == 'pass'" 
+                                           decoration-danger="omc_table_nabl == 'fail'" 
+                                           readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  
 
 
 
@@ -710,7 +825,6 @@
 
 
                 <!-- CBR -->
-                <group/>
                 <div invisible="not cbr_visible">
                         <h1>
                             <field name="cbr_name" readonly="1" nolabel="1"/>
@@ -722,7 +836,7 @@
 
                 <group invisible="not cbr_visible">
                     <field name="cbr_table" nolabel="1" colspan="2" >
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom" class="custom_table_borders">
                                 <field name='penetration'/>
                                 <field name='proving_reading'/>
                                 <field name='load'/>
@@ -730,9 +844,53 @@
                     </field> 
                 </group>
 
-                <group invisible="not cbr_visible">
-                    <field name="chart_image_cbr" widget="image" readonly="1"/>
-                </group>
+               
+                 <group invisible = "cbr_visible == False" class="custom_table_borders">
+                      <field name="chart_image_cbr" widget="image" readonly="1"/>
+                    </group>
+
+
+                 <div class="d-flex gap-2" invisible="not cbr_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                   <tr>
+                                    <td><label for="ps_2mm">PS for 2.5mm</label></td>
+                                    <td><field name="ps_2mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="pt_2mm">PT at 2.5mm</label></td>
+                                    <td><field name="pt_2mm"/></td>
+                                </tr>
+                                   <tr>
+                                    <td><label for="cbr_2mm">CBR at 2.5mm</label></td>
+                                    <td><field name="cbr_2mm"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="ps_5mm">PS for 5mm</label></td>
+                                    <td><field name="ps_5mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="pt_5mm">PT at 5mm</label></td>
+                                    <td><field name="pt_5mm"/></td>
+                                </tr>
+                                   <tr>
+                                    <td><label for="cbr_5mm">CBR at 5mm</label></td>
+                                    <td><field name="cbr_5mm"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                
+
                  <button
                             type="object"
                             class="oe_highlight" 
