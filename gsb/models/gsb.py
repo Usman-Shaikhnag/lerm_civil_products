@@ -28,17 +28,7 @@ class GsbMechanical(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     
-    def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-
-        return {
-                'view_mode': 'form',
-                'res_model': "lerm.eln",
-                'type': 'ir.actions.act_window',
-                'target': 'current',
-                'res_id': self.eln_ref.id,
-                
-            }
+    
 
     @api.model
     def create(self, vals):
@@ -125,6 +115,62 @@ class GsbMechanical(models.Model):
                     record.cbr_visible = True
                 if sample.internal_id == '987456hhjyt-b27e-48c6-81b8-90052144677j':
                     record.omc_visible = True
+
+
+    def open_eln_page(self):
+        # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '21457gtr4-a55f-47ac-aee6-9f37d733ccca':
+                result.result_char = round(self.average_impact_value,2)
+                if self.average_impact_value_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '14527gthy-f86e-4a5f-bd15-a5b0c173b5ed':
+                result.result_char = round(self.average_plastic_moisture,2)
+                if self.average_plastic_moisture_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '12547ftd4-3ed1-4021-90a2-47651f0ed81d':
+                result.result_char = round(self.liquid_limit,2)
+                if self.liquid_limit_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '24584fgrt-1611-4790-9410-ef5db6233932':
+                result.result_char = round(self.plasticity_index,2)
+                if self.plasticity_index_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'm21547tyu-0579-4221-8a82-bbfadcd3131f':
+                result.result_char = round(self.max_dry_density,2)
+                if self.density_relation_table_nabl1 == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '987456hhjyt-b27e-48c6-81b8-90052144677j':
+                result.result_char = round(self.omc1,2)
+                if self.omc_table_nabl1 == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+           
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
                 
 
     # Dry Gradation
@@ -907,15 +953,15 @@ class GsbMechanical(models.Model):
                     else:
                         record.density_relation_table_conformity = 'fail'
 
-    density_relation_table_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_density_relation_table_nabl", store=True)
+    density_relation_table_nabl1 = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_density_relation_table_nabl", store=True)
 
     @api.depends('max_dry_density','eln_ref','grade')
     def _compute_density_relation_table_nabl(self):
         
         for record in self:
-            record.density_relation_table_nabl = 'fail'
+            record.density_relation_table_nabl1 = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','m21547tyu-0579-4221-8a82-bbfadcd3131f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','m21547tyu-0579-4221-8a82-bbfadcd3131f')]).parameter_table
             # for material in materials:
@@ -927,10 +973,10 @@ class GsbMechanical(models.Model):
             lower = record.max_dry_density - record.max_dry_density*mu_value
             upper = record.max_dry_density + record.max_dry_density*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.density_relation_table_nabl = 'pass'
+                record.density_relation_table_nabl1 = 'pass'
                 break
             else:
-                record.density_relation_table_nabl = 'fail'
+                record.density_relation_table_nabl1 = 'fail'
 
     
     graph_image_density = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light", store=True)
@@ -1064,15 +1110,15 @@ class GsbMechanical(models.Model):
                     else:
                         record.omc_table_conformity = 'fail'
 
-    omc_table_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_omc_table_nabl", store=True)
+    omc_table_nabl1 = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_omc_table_nabl", store=True)
 
     @api.depends('omc1','eln_ref','grade')
     def _compute_omc_table_nabl(self):
         
         for record in self:
-            record.omc_table_nabl = 'fail'
+            record.omc_table_nabl1 = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','987456hhjyt-b27e-48c6-81b8-90052144677j')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','987456hhjyt-b27e-48c6-81b8-90052144677j')]).parameter_table
             # for material in materials:
@@ -1084,10 +1130,10 @@ class GsbMechanical(models.Model):
             lower = record.omc1 - record.omc1*mu_value
             upper = record.omc1 + record.omc1*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.omc_table_nabl = 'pass'
+                record.omc_table_nabl1 = 'pass'
                 break
             else:
-                record.omc_table_nabl = 'fail'
+                record.omc_table_nabl1 = 'fail'
 
     
     graph_image_density1 = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light1", store=True)
