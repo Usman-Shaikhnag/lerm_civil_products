@@ -822,4 +822,25 @@
         </record>
 
 
+        <record id="bitumen_mix_report_sm_action" model="ir.actions.report">
+            <field name="name">Bitumen Mix Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bitumen_mix.bitumen_mix_report_sm</field>
+            <field name="report_file">bitumen_mix.bitumen_mix_report_sm</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <field name="binding_type">report</field>
+        </record>
+
+         <record id="bitumen_mix_datasheet_sm_action" model="ir.actions.report">
+            <field name="name">Bitumen Mix Datasheet</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bitumen_mix.bitumen_mix_datasheet_sm</field>
+            <field name="report_file">bitumen_mix.bitumen_mix_datasheet_sm</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <field name="binding_type">report</field>
+        </record>
+
+
 </odoo>
