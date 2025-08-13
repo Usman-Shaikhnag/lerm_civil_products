@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <record id="mechanical_concrete_cube_view" model="ir.ui.view">
+                <record id="mechanical_concrete_cube_view" model="ir.ui.view">
             <field name="name">mechanical.concrete.cube.form</field>
             <field name="model">mechanical.concrete.cube</field>
             <field name="arch" type="xml">
@@ -14,87 +14,186 @@
                             <field name="parameter_id" invisible="1"/>
                             <field name="eln_ref" readonly="1"/>
                             <field name="grade" exception="grade"  string="Grade" identity="extra"/>   
+                             <field name="size_id" readonly="1"/>
                         </group>
-                        <group>
+
+                        <div class="custom_table_borders" style="margin-top: 15px;">
+                            <field name="sample_parameters" nolabel="1">
+                                <tree>
+                                    <field name="parameter_name"/>
+                                    <field name="test_method"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                        <group style="white-space: nowrap; width:80%;">
                             <h1>
                                 <field name="name" readonly="1" nolabel="1"/>
                             </h1>
                         </group>
-                        <group>
-                            <group>
-                                <field name="date_of_casting"  string="Date of Casting" identity="extra"/>
-                            </group>
-                            <group>
-                                <field name="date_of_testing"  string="Date of Testing" identity="extra"/>
-                            </group>
-                            <group>
-                                <field name="age_of_days"/>
-                            </group>
-                            <group>
-                                <field name="age_of_test"/>
-                            </group>
-                            <group>
-                                <field name="difference"/>
-                            </group>
-                            
-                        </group>
-                        
-                        <field name="child_lines" nolabel="1">
-                            <tree>
-                                <field name='sr_no' string="Sr. NO"/>
-                                <field name='id_mark' string="ID Mark/Location" />
-                                <field name='length' string="Length (mm)"/>
-                                <field name='width' string="Width (mm)"/>
-                                <field name='area' string="Area (mm²)"/>
-                                <field name='wt_sample' string="Weight of Sample in kg"/>
-                                <field name="crushing_load" string="Crushing Load in kN"/>
-                                <field name='compressive_strength' string="Compressive Strength N/mm²"/>
-                            </tree>
-                            
-                        </field> 
-                    
-                        <group>
-                            <field name='average_strength' string="Average Compressive Strength in N/mm2" identity="result"/>
-                            <!-- <field name="confirmity" /> -->
-                            <field name="confirmity"  style="color: green;" invisible="confirmity != 'pass'"/>
-                            <field name="confirmity"  style="color: red;" invisible="confirmity != 'fail'"/>
-                            <field name="confirmity"  style="color: black;" invisible="confirmity != 'not_applicable'"/>
 
-                            <!-- <field name="nabl" style="background-color:green;color:white;"/> -->
-                            <field name="nabl"  style="color: green;" invisible="nabl != 'pass'"/>
-                            <field name="nabl"  style="color: red;" invisible="nabl != 'fail'"/>
-                        </group>
+                        <group style="white-space: nowrap; width:80%;" >
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;" invisible="1">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                              grade
+
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="grade2" nolabel="1" identity="extra" />
+                                                </div>
+                                            </td>
+                                            <!-- <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                mm
+                                            </td> -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
+                    <field name="grade_child_lines" nolabel="1" class="custom_table_borders" invisible="1">
+                        <tree editable="bottom">
+                            <field name='sr_no' string="Sr. NO"/>
+                            <field name='grade1' />
+                            <field name='sd' />                        
+                        </tree>
+                    </field> 
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="date_of_casting">Date of Casting</label></td>
+                                    <td><field name="date_of_casting"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="date_of_testing">Date of Testing</label></td>
+                                    <td><field name="date_of_testing"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="age_of_test">Age of Test, days</label></td>
+                                    <td><field name="age_of_test"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="age_of_days">Age of Cubes</label></td>
+                                    <td><field name="age_of_days"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="area_of_cube">Area of Cube</label></td>
+                                    <td><field name="area_of_cube"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="difference">Difference</label></td>
+                                    <td><field name="difference"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <field name="child_lines" nolabel="1" class="custom_table_borders">
+                        <tree editable="bottom">
+                            <field name='sr_no' string="Sr. NO"/>
+                            <field name='id_mark' />
+                            <field name='wt_sample'  widget="char"/>
+                            <field name='dt_of_casting' widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/>
+                            <field name='days'/>
+                            <field name='dt_of_testing1'  widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/>
+                            <field name="load"  widget="char"/>
+                            <field name='compressive_strength'/>
+                            <field name='avg_compressive_strength'/>
+                        </tree>
+                    </field> 
+                    
+                    <button type="object" name="action_calculate_avg_strength" class="btn btn-primary mb-2">
+                        <i class="fa fa-calculator mr-1"/> Calculate Average
+                    </button>
+                        
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
+                            <!-- <tr>
+                                <td><label for="average_strength">Average Compressive Strength in </label></td>
+                                <td><field name="average_strength"/><span> N/mm2</span></td>
+                            </tr> -->
+                            <tr>
+                                <td><label for="confirmity">confirmity</label></td>
+                                <td>
+                                    <field name="confirmity"  style="color: green;" invisible="confirmity != 'pass'"/>
+                                    <field name="confirmity"  style="color: red;" invisible="confirmity != 'fail'"/>
+                                    <field name="confirmity"  style="color: black;" invisible="confirmity != 'not_applicable'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="nabl">nabl</label></td>
+                                <td>
+                                    <field name="nabl"  style="color: green;" invisible="nabl != 'pass'"/>
+                                    <field name="nabl"  style="color: red;" invisible="nabl != 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                        <div class="custom_table_borders" style="width:100%;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                         Permissible Range
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           N/mm2
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           kN
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="days_7_kmm"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="days_7_kmm" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                          <field name="days_7_n" nolabel="1"/>
+                                        </td>
+                                    </tr>
+
+                                     <tr>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="days_28_kmm"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="days_28_kmm" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                          <field name="days_28_n" nolabel="1"/>
+                                        </td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <group style="margin-top: 20px;">
 
                         <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                        </group>
                     </sheet>
                 </form>
             </field>
         </record>
-  
-    <record id="mechanical_concrete_cube_line1_view" model="ir.ui.view">
-        <field name="name">mechanical.concrete.cube.line.form</field>
-        <field name="model">mechanical.concrete.cube.line</field>
-        <field name="arch" type="xml">
-            <form>
-                <group>
-                    <group>
-                        <field name='sr_no' string="Sr. NO"/>
-                        <field name='id_mark' string="ID Mark/Location"/>
-                        <field name='length' string="Length (mm)"/>
-                        <field name='width' string="Width (mm)"/>
-                        <field name='area' string="Area (mm²)"/>
-                    </group>
-                    
-                    <group>
-                        <field name='wt_sample' string="Weight of Sample in kg"/>
-                        <field name="crushing_load" string="Crushing Load in kN"/>
-                        <field name='compressive_strength' string="Compressive Strength N/mm²"/>
-                        <field name="parent_id" invisible="1"/>
-                    </group>
-                </group>
-            </form>
-        </field>
-    </record>
-
     </data>
 </odoo>
