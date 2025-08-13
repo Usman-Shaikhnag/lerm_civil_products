@@ -339,19 +339,19 @@ class CoarseAggregateMechanical(models.Model):
             record.impact_value_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2')]).parameter_table
-            for material in materials:
+            # for material in materials:
                 # if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_impact_value - record.average_impact_value*mu_value
-                    upper = record.average_impact_value + record.average_impact_value*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.impact_value_nabl = 'pass'
-                        break
-                    else:
-                        record.impact_value_nabl = 'fail'
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_impact_value - record.average_impact_value*mu_value
+            upper = record.average_impact_value + record.average_impact_value*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.impact_value_nabl = 'pass'
+                break
+            else:
+                record.impact_value_nabl = 'fail'
 
 
     @api.depends('impact_value_child_lines.impact_value')
@@ -435,19 +435,19 @@ class CoarseAggregateMechanical(models.Model):
             record.load_10percent_fine_values_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5f506c08-4369-491d-93a6-030514c29661')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5f506c08-4369-491d-93a6-030514c29661')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.load_10percent_fine_values - record.load_10percent_fine_values*mu_value
-                    upper = record.load_10percent_fine_values + record.load_10percent_fine_values*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.load_10percent_fine_values_nabl = 'pass'
-                        break
-                    else:
-                        record.load_10percent_fine_values_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.load_10percent_fine_values - record.load_10percent_fine_values*mu_value
+            upper = record.load_10percent_fine_values + record.load_10percent_fine_values*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.load_10percent_fine_values_nabl = 'pass'
+                break
+            else:
+                record.load_10percent_fine_values_nabl = 'fail'
 
     
     
@@ -554,19 +554,19 @@ class CoarseAggregateMechanical(models.Model):
             record.soundness_na2so4_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.soundness_na2so4 - record.soundness_na2so4*mu_value
-                    upper = record.soundness_na2so4 + record.soundness_na2so4*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.soundness_na2so4_nabl = 'pass'
-                        break
-                    else:
-                        record.soundness_na2so4_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.soundness_na2so4 - record.soundness_na2so4*mu_value
+            upper = record.soundness_na2so4 + record.soundness_na2so4*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.soundness_na2so4_nabl = 'pass'
+                break
+            else:
+                record.soundness_na2so4_nabl = 'fail'
 
 
     # Soundness MgSO4
@@ -869,19 +869,19 @@ class CoarseAggregateMechanical(models.Model):
             record.aggregate_combine_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
-            for material in materials:
+            # for material in materials:
                 # if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.aggregate_combine - record.aggregate_combine*mu_value
-                    upper = record.aggregate_combine + record.aggregate_combine*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.aggregate_combine_nabl = 'pass'
-                        break
-                    else:
-                        record.aggregate_combine_nabl = 'fail'
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.aggregate_combine - record.aggregate_combine*mu_value
+            upper = record.aggregate_combine + record.aggregate_combine*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.aggregate_combine_nabl = 'pass'
+                break
+            else:
+                record.aggregate_combine_nabl = 'fail'
 
 
     @api.depends('elongation_table.wt_retained')
@@ -987,19 +987,19 @@ class CoarseAggregateMechanical(models.Model):
             record.material_finer75_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.material_finer75 - record.material_finer75*mu_value
-                    upper = record.material_finer75 + record.material_finer75*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.material_finer75_nabl = 'pass'
-                        break
-                    else:
-                        record.material_finer75_nabl = 'fail'
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.material_finer75 - record.material_finer75*mu_value
+            upper = record.material_finer75 + record.material_finer75*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.material_finer75_nabl = 'pass'
+                break
+            else:
+                record.material_finer75_nabl = 'fail'
 
     @api.depends('wt_sample_finer75','wt_dry_sample_finer75')
     def _compute_finer75(self):

@@ -2,7 +2,7 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import math
 from datetime import datetime , timedelta
-
+import re
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -57,10 +57,20 @@ class MechanicalConcreteCube(models.Model):
 
     area_of_cube = fields.Float(string="Area of Cube",compute="_compute_area_cube",store=True)
 
-    @api.depends('size_id')  # हे फक्त तेव्हाच वापरा जेव्हा तुम्ही size_id वरून गणना करत असाल
+    @api.depends('size_id.size')
     def _compute_area_cube(self):
-        for rec in self:
-            rec.area_of_cube = 150 * 150
+        import re
+        for record in self:
+            size_str = record.size_id.size
+            if size_str:
+                match = re.search(r'\d+', str(size_str))
+                if match:
+                    side = int(match.group())
+                    record.area_of_cube = side * side  # or whatever formula
+                else:
+                    record.area_of_cube = 0
+            else:
+                record.area_of_cube = 0
 
 
 
