@@ -16,12 +16,7 @@ This module contains all the common features of Sales Management and eCommerce.
                 'views/psc.xml',
                 'reports/psc_ds_report.xml'
     ],
-    'assets': {
-        'web.assets_backend': [
-            'cement_psc/static/src/css/custom_style.css',
-        ],
-    },
-  
+    
     'installable': True,
     'auto_install': False,
    
