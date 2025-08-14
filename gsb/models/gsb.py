@@ -1,11 +1,18 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
-from datetime import datetime , timedelta
+from datetime import timedelta
 import math
-from decimal import Decimal
 import matplotlib.pyplot as plt
 import io
 import base64
+import matplotlib.ticker as ticker
+import numpy as np
+import math
+from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
+from scipy.optimize import minimize_scalar
+from io import BytesIO
+from scipy.interpolate import make_interp_spline
+from matplotlib.ticker import LogLocator, MultipleLocator
 
 class GsbMechanical(models.Model):
     _name = "mechanical.gsb"
@@ -21,17 +28,7 @@ class GsbMechanical(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     
-    def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-
-        return {
-                'view_mode': 'form',
-                'res_model': "lerm.eln",
-                'type': 'ir.actions.act_window',
-                'target': 'current',
-                'res_id': self.eln_ref.id,
-                
-            }
+    
 
     @api.model
     def create(self, vals):
@@ -85,6 +82,8 @@ class GsbMechanical(models.Model):
             record.plasticity_index_visible = False
             record.density_relation_visible = False
             record.cbr_visible = False
+            record.omc_visible = False
+            
 
 
             for sample in record.sample_parameters:
@@ -114,6 +113,64 @@ class GsbMechanical(models.Model):
                     record.density_relation_visible = True
                 if sample.internal_id == 'rt14752hyt-b27e-48c6-81b8-900521446761':
                     record.cbr_visible = True
+                if sample.internal_id == '987456hhjyt-b27e-48c6-81b8-90052144677j':
+                    record.omc_visible = True
+
+
+    def open_eln_page(self):
+        # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '21457gtr4-a55f-47ac-aee6-9f37d733ccca':
+                result.result_char = round(self.average_impact_value,2)
+                if self.average_impact_value_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '14527gthy-f86e-4a5f-bd15-a5b0c173b5ed':
+                result.result_char = round(self.average_plastic_moisture,2)
+                if self.average_plastic_moisture_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '12547ftd4-3ed1-4021-90a2-47651f0ed81d':
+                result.result_char = round(self.liquid_limit,2)
+                if self.liquid_limit_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '24584fgrt-1611-4790-9410-ef5db6233932':
+                result.result_char = round(self.plasticity_index,2)
+                if self.plasticity_index_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'm21547tyu-0579-4221-8a82-bbfadcd3131f':
+                result.result_char = round(self.max_dry_density,2)
+                if self.density_relation_table_nabl1 == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '987456hhjyt-b27e-48c6-81b8-90052144677j':
+                result.result_char = round(self.omc1,2)
+                if self.omc_table_nabl1 == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+           
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
                 
 
     # Dry Gradation
@@ -175,11 +232,11 @@ class GsbMechanical(models.Model):
 
         default_dry_sieve_sizes = []
         default_elongated_sieve_sizes = []
-        dry_sieve_sizes = ['75.0 mm','53.0 mm','26.5 mm', '9.50 mm', '4.75 mm','2.36 mm','425 mic','75 mic']
-        elongation_sieve_sizes = ['63 mm', '50 mm', '40 mm', '31.5 mm', '25 mm','20 mm','16 mm','12.5 mm','10 mm','6.3 mm']
+        dry_sieve_sizes = ['75.0 mm','53.0 mm','26.5 mm', '9.50 mm', '4.75 mm','2.36 mm','425 mic','75 mic','Pan']
+        elongation_sieve_sizes = ['63 mm', '50 mm', '40 mm', '31.5 mm', '25 mm','20 mm','16 mm','12.5 mm','10 mm','6.3 mm','Pan']
 
 
-        for i in range(8):  # You can change the number of default lines as needed
+        for i in range(9):  # You can change the number of default lines as needed
             size = {
                 'sieve_size': dry_sieve_sizes[i] # Set the default product
                 # Set the default quantity
@@ -839,67 +896,315 @@ class GsbMechanical(models.Model):
                         record.plasticity_index_nabl = 'fail'
 
     # Density Relation Heavy Compaction
-    density_relation_name = fields.Char("Name",default="Density Relation Using Heavy Compaction")
+    density_relation_name = fields.Char("Name",default="Maximum Dry Density (Heavy Compaction)")
     density_relation_visible = fields.Boolean("Density Relation Visible",compute="_compute_visible")
 
     density_relation_table = fields.One2many('mech.gsb.density.relation.line','parent_id',string="Density Relation")
     wt_of_modul = fields.Float('Weight of Mould in gm')
     vl_of_modul = fields.Float('Volume of Mould in cc')
-    chart_image_density = fields.Binary("Line Chart", compute="_compute_chart_image_density", store=True)
 
-    mmd = fields.Float(string="MMD gm/cc", compute="_compute_max_dry_density_heavy", store=True)
-    omc = fields.Float(string="OMC %", compute="_compute_max_omc_heavy", store=True)
+    max_dry_density = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_dry_density", store=True)
+
+    omc = fields.Float(string="Optimum Moisture Content (OMC%)", compute="_compute_max_density_and_omc", store=True)
+
+    @api.depends('density_relation_table.dry_density', 'density_relation_table.moisture')
+    def _compute_max_density_and_omc(self):
+        for rec in self:
+            max_density = 0.0
+            omc_value = 0.0
+            for line in rec.density_relation_table:
+                if line.dry_density > max_density:
+                    max_density = line.dry_density
+                    omc_value = line.moisture
+            rec.max_dry_density = max_density
+            rec.omc = omc_value
 
     @api.depends('density_relation_table.dry_density')
-    def _compute_max_dry_density_heavy(self):
+    def _compute_max_dry_density(self):
+        for rec in self:
+            densities = rec.density_relation_table.mapped('dry_density')
+            rec.max_dry_density = max(densities) if densities else 0.0
+ 
+   
+
+
+    density_relation_table_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_density_relation_table_conformity", store=True)
+
+    @api.depends('max_dry_density','eln_ref','grade')
+    def _compute_density_relation_table_conformity(self):
+        
         for record in self:
-            max_dry_density_heavy = max(record.density_relation_table.mapped('dry_density'), default=0.0)
-            record.mmd = max_dry_density_heavy
+            record.density_relation_table_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','m21547tyu-0579-4221-8a82-bbfadcd3131f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','m21547tyu-0579-4221-8a82-bbfadcd3131f')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.max_dry_density - record.max_dry_density*mu_value
+                    upper = record.max_dry_density + record.max_dry_density*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.density_relation_table_conformity = 'pass'
+                        break
+                    else:
+                        record.density_relation_table_conformity = 'fail'
 
-    @api.depends('density_relation_table.dry_density', 'density_relation_table.moisture', 'mmd')
-    def _compute_max_omc_heavy(self):
+    density_relation_table_nabl1 = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_density_relation_table_nabl", store=True)
+
+    @api.depends('max_dry_density','eln_ref','grade')
+    def _compute_density_relation_table_nabl(self):
+        
         for record in self:
-            max_dry_density_light_omc = record.mmd
-            corresponding_moisture_heavy = next((line.moisture for line in record.density_relation_table if line.dry_density == max_dry_density_light_omc), 0.0)
-            record.omc = corresponding_moisture_heavy
+            record.density_relation_table_nabl1 = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','m21547tyu-0579-4221-8a82-bbfadcd3131f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','m21547tyu-0579-4221-8a82-bbfadcd3131f')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.max_dry_density - record.max_dry_density*mu_value
+            upper = record.max_dry_density + record.max_dry_density*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.density_relation_table_nabl1 = 'pass'
+                break
+            else:
+                record.density_relation_table_nabl1 = 'fail'
+
+    
+    graph_image_density = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light", store=True)
 
 
+   
 
-    def generate_line_chart_density(self):
-        # Prepare data for the chart
-        x_values = []
-        y_values = []
+    def generate_line_chart_light_omc(self):
+    # Prepare data
+        x_value = []
+        y_value = []
         for line in self.density_relation_table:
-            x_values.append(line.moisture)
-            y_values.append(line.dry_density)
-        
-        # Create the line chart
-        plt.plot(x_values, y_values, marker='o')
-        plt.xlabel('% Moisture')
-        plt.ylabel('Dry Density')
-        plt.title('Density Relation Using Heavy Compaction')
+            x_value.append(line.moisture)
+            y_value.append(line.dry_density)
 
+        if not x_value or not y_value:
+            return False
 
-        plt.ylim(bottom=0, top=max(y_values) + 10)
-        
+        plt.figure(figsize=(10, 5))
+
+        # ✅ Blue curve with red points
+        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+
+        # ✅ Axis labels and title
+        plt.xlabel('Moisture (%)', fontsize=12)
+        plt.ylabel('Dry Density (g/cc)', fontsize=12)
+        plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
+
+        # ✅ Axis range
+        plt.xlim(left=0, right=max(x_value) + 2)
+        plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
+
+        # ✅ Minor ticks for fine grid
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+        ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+        # ✅ Fine grid
+        plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+        # ✅ Highlight max dry density
+        max_index = y_value.index(max(y_value))
+        max_x = x_value[max_index]
+        max_y = y_value[max_index]
+
+        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
+        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
+        plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
+        plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
+
+        # ✅ Save image
         buffer = io.BytesIO()
+        plt.tight_layout()
+        plt.legend()
         plt.savefig(buffer, format='png')
-        plt.close()  # Close the figure to free up resources
+        plt.close()
         buffer.seek(0)
+
+        return base64.b64encode(buffer.read()).decode('utf-8')
+            
+       
     
-        # Convert the chart image to base64
-        chart_image = base64.b64encode(buffer.read()).decode('utf-8')  
-        return chart_image
-    
+
     @api.depends('density_relation_table')
-    def _compute_chart_image_density(self):
+    def _compute_graph_image_density_omc_light(self):
         try:
             for record in self:
-                chart_image = record.generate_line_chart_density()
-                record.chart_image_density = chart_image
+                chart_image_light_omc = record.generate_line_chart_light_omc()
+                record.graph_image_density = chart_image_light_omc
         except:
             pass 
 
+
+
+     # Light Compaction-MDD
+    omc_name = fields.Char("Name",default="Maximum Dry Density (Light Compaction)")
+    omc_visible = fields.Boolean("omc Compaction-MDD Visible",compute="_compute_visible")
+    omc_table = fields.One2many('mechanical.omc.compaction.sm.line','parent_id',string="OMC Compaction")
+
+    wt_of_modul1 = fields.Float('Weight of Mould in gm')
+    vl_of_modul1 = fields.Float('Volume of Mould in cc')
+
+    max_dry_density1 = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_dry_density1", store=True)
+
+    omc1 = fields.Float(string="Optimum Moisture Content (OMC%)", compute="_compute_max_density_and_omc1", store=True)
+
+    @api.depends('omc_table.dry_density1', 'omc_table.moisture')
+    def _compute_max_density_and_omc1(self):
+        for rec in self:
+            max_density1 = 0.0
+            omc_value1 = 0.0
+            for line in rec.omc_table:
+                if line.dry_density1 > max_density1:
+                    max_density1 = line.dry_density1
+                    omc_value1 = line.moisture
+            rec.max_dry_density1 = max_density1
+            rec.omc1 = omc_value1
+
+    @api.depends('omc_table.dry_density1')
+    def _compute_max_dry_density1(self):
+        for rec in self:
+            densities = rec.omc_table.mapped('dry_density1')
+            rec.max_dry_density1 = max(densities) if densities else 0.0
+ 
+   
+
+
+    omc_table_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_omc_table_conformity", store=True)
+
+    @api.depends('omc1','eln_ref','grade')
+    def _compute_omc_table_conformity(self):
+        
+        for record in self:
+            record.omc_table_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','987456hhjyt-b27e-48c6-81b8-90052144677j')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','987456hhjyt-b27e-48c6-81b8-90052144677j')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.omc1 - record.omc1*mu_value
+                    upper = record.omc1 + record.omc1*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.omc_table_conformity = 'pass'
+                        break
+                    else:
+                        record.omc_table_conformity = 'fail'
+
+    omc_table_nabl1 = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_omc_table_nabl", store=True)
+
+    @api.depends('omc1','eln_ref','grade')
+    def _compute_omc_table_nabl(self):
+        
+        for record in self:
+            record.omc_table_nabl1 = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','987456hhjyt-b27e-48c6-81b8-90052144677j')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','987456hhjyt-b27e-48c6-81b8-90052144677j')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.omc1 - record.omc1*mu_value
+            upper = record.omc1 + record.omc1*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.omc_table_nabl1 = 'pass'
+                break
+            else:
+                record.omc_table_nabl1 = 'fail'
+
+    
+    graph_image_density1 = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light1", store=True)
+
+   
+    def generate_line_chart_light_omc1(self):
+    # Prepare data
+        x_value = []
+        y_value = []
+        for line in self.omc_table:
+            x_value.append(line.moisture)
+            y_value.append(line.dry_density1)
+
+        if not x_value or not y_value:
+            return False
+
+        plt.figure(figsize=(10, 5))
+
+        # ✅ Blue curve with red points
+        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+
+        # ✅ Axis labels and title
+        plt.xlabel('Moisture (%)', fontsize=12)
+        plt.ylabel('Dry Density (g/cc)', fontsize=12)
+        plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
+
+        # ✅ Axis range
+        plt.xlim(left=0, right=max(x_value) + 2)
+        plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
+
+        # ✅ Minor ticks for fine grid
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+        ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+        # ✅ Fine grid (major + minor)
+        plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+        # ✅ Highlight max dry density
+        max_index = y_value.index(max(y_value))
+        max_x = x_value[max_index]
+        max_y = y_value[max_index]
+
+        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
+        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
+        plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
+        plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
+
+        # ✅ Save image
+        buffer = io.BytesIO()
+        plt.tight_layout()
+        plt.legend()
+        plt.savefig(buffer, format='png')
+        plt.close()
+        buffer.seek(0)
+
+        return base64.b64encode(buffer.read()).decode('utf-8')
+        
+       
+    
+
+    @api.depends('omc_table')
+    def _compute_graph_image_density_omc_light1(self):
+        try:
+            for record in self:
+                chart_image_light_omc1 = record.generate_line_chart_light_omc1()
+                record.graph_image_density1 = chart_image_light_omc1
+        except:
+            pass 
+   
 
 
     # CBR
@@ -907,35 +1212,110 @@ class GsbMechanical(models.Model):
     cbr_visible = fields.Boolean("CBR Visible",compute="_compute_visible")
 
     cbr_table = fields.One2many('mechanical.gsb.cbr.line','parent_id',string="CBR")
-    chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
+    # chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
 
+    ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
+    pt_2mm = fields.Float("PT at 2.5mm",default=1370)
+    cbr_2mm = fields.Float("CBR at 2.5mm",compute="_compute_cbr_2mm")
+
+    ps_5mm = fields.Float("PS for 5mm",compute="_compute_ps_5mm")
+    pt_5mm = fields.Float("PT at 5mm",default=2055)
+    cbr_5mm = fields.Float("CBR at 5mm",compute="_compute_cbr_5mm")
+
+    cbr_result = fields.Float("CBR",compute="_compute_final_cbr")
+
+    @api.depends('cbr_table')
+    def _compute_ps_2mm(self):
+        for record in self:
+            if record.cbr_table and len(record.cbr_table) >= 6:
+                fifth_row = record.cbr_table[5] 
+                record.ps_2mm = fifth_row.load
+            else:
+                record.ps_2mm = 0
+
+
+    @api.depends('cbr_table')
+    def _compute_ps_5mm(self):
+        for record in self:
+            if record.cbr_table and len(record.cbr_table) >= 9:
+                fifth_row = record.cbr_table[8] 
+                record.ps_5mm = fifth_row.load
+            else:
+                record.ps_5mm = 0
+
+    @api.depends('pt_2mm','ps_2mm')
+    def _compute_cbr_2mm(self):
+        for record in self:
+            if record.pt_2mm != 0:
+                record.cbr_2mm = round((record.ps_2mm/record.pt_2mm)*100,2)
+            else:
+                record.cbr_2mm = 0
+
+    @api.depends('pt_5mm','ps_5mm')
+    def _compute_cbr_5mm(self):
+        for record in self:
+            if record.pt_5mm != 0:
+                record.cbr_5mm = round((record.ps_5mm/record.pt_5mm)*100,2)
+            else:
+                record.cbr_5mm = 0
+
+    @api.depends('cbr_5mm','cbr_2mm')
+    def _compute_final_cbr(self):
+        for record in self:
+            if record.cbr_5mm > record.cbr_2mm:
+                record.cbr_result = record.cbr_5mm
+            else:
+                record.cbr_result = record.cbr_2mm
+
+    chart_image_cbr = fields.Binary(
+    "Line Chart",
+    compute="_compute_chart_image_cbr",
+    store=True
+      )
 
     def generate_line_chart_cbr(self):
-        # Prepare data for the chart
+        # Prepare data
         x_values = []
         y_values = []
         for line in self.cbr_table:
             x_values.append(line.penetration)
             y_values.append(line.load)
-        
-        # Create the line chart
-        plt.plot(x_values, y_values, marker='o')
-        plt.xlabel('Penetration')
-        plt.ylabel('Load')
-        plt.title('CBR')
 
+        if not x_values or not y_values:
+            return False
 
-        plt.ylim(bottom=0, top=max(y_values) + 10)
-        
+        plt.figure(figsize=(10, 5))
+
+        # ✅ Blue curve with red points
+        plt.plot(x_values, y_values, color='blue', linestyle='-', linewidth=2, label='Curve')
+        plt.scatter(x_values, y_values, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+
+        # ✅ Axis labels and title
+        plt.xlabel('Penetration (mm)', fontsize=12)
+        plt.ylabel('Load (kg)', fontsize=12)
+        plt.title('CBR (California Bearing Ratio)', fontsize=14)
+
+        # ✅ Axis range
+        plt.xlim(left=0, right=max(x_values) + 2)
+        plt.ylim(bottom=0, top=max(y_values) + (max(y_values) * 0.1))
+
+        # ✅ Grid (major + minor)
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+        ax.yaxis.set_minor_locator(MultipleLocator(5))
+        plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+        # ✅ Save image
         buffer = io.BytesIO()
+        plt.tight_layout()
+        plt.legend()
         plt.savefig(buffer, format='png')
-        plt.close()  # Close the figure to free up resources
+        plt.close()
         buffer.seek(0)
-    
-        # Convert the chart image to base64
-        chart_image = base64.b64encode(buffer.read()).decode('utf-8')  
-        return chart_image
-    
+
+        return base64.b64encode(buffer.read()).decode('utf-8')
+
+
     @api.depends('cbr_table')
     def _compute_chart_image_cbr(self):
         try:
@@ -943,7 +1323,46 @@ class GsbMechanical(models.Model):
                 chart_image = record.generate_line_chart_cbr()
                 record.chart_image_cbr = chart_image
         except:
-            pass 
+            pass
+
+
+
+    # def generate_line_chart_cbr(self):
+    #     # Prepare data for the chart
+    #     x_values = []
+    #     y_values = []
+    #     for line in self.cbr_table:
+    #         x_values.append(line.penetration)
+    #         y_values.append(line.load)
+        
+    #     # Create the line chart
+    #     plt.plot(x_values, y_values, marker='o')
+    #     plt.xlabel('Penetration')
+    #     plt.ylabel('Load')
+    #     plt.title('CBR')
+
+
+    #     plt.ylim(bottom=0, top=max(y_values) + 10)
+        
+    #     buffer = io.BytesIO()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()  # Close the figure to free up resources
+    #     buffer.seek(0)
+    
+    #     # Convert the chart image to base64
+    #     chart_image = base64.b64encode(buffer.read()).decode('utf-8')  
+    #     return chart_image
+
+    
+    
+    # @api.depends('cbr_table')
+    # def _compute_chart_image_cbr(self):
+    #     try:
+    #         for record in self:
+    #             chart_image = record.generate_line_chart_cbr()
+    #             record.chart_image_cbr = chart_image
+    #     except:
+    #         pass 
 
 
 
@@ -1217,3 +1636,66 @@ class GsbImpactValueLine(models.Model):
                 rec.impact_value = (rec.wt_of_aggregate_passing / rec.total_wt_aggregate) * 100
             else:
                 rec.impact_value = 0.0
+
+
+
+class LIGHTCOMPACTIONLINE(models.Model):
+    _name = "mechanical.omc.compaction.sm.line"
+    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+
+    determination_no = fields.Float(string="Determination No")
+    wt_of_modul_compact = fields.Integer(string="Weight of Mould + Compacted sample in gm")
+    wt_of_compact = fields.Integer(string="Weight of compacted sample in gm", compute="_compute_wt_of_compact")
+    bulk_density = fields.Float(string="Bulk Density of sample in gm/cc", compute="_compute_bulk_density")
+    container_no = fields.Integer(string="Container No")
+    wt_of_container = fields.Float(string="Weight of Container in gm")
+    wt_of_container_wet = fields.Float(string="Weight of Container + wet sample in gm")
+    wt_of_container_dry = fields.Float(string="Weight of Container + dry sample in gm")
+    wt_of_dry_sample = fields.Float(string="Weight of dry sample in gm", compute="_compute_wt_of_dry_sample1")
+    wt_of_moisture = fields.Float(string="Weight of moisture in gm", compute="_compute_wt_of_moisture1")
+    moisture = fields.Float(string="% Moisture", compute="_compute_moisture1")
+    dry_density1 = fields.Float(string="Dry density in gm/cc", compute="_compute_dry_density1")
+
+
+    @api.depends('wt_of_modul_compact', 'parent_id.wt_of_modul1')
+    def _compute_wt_of_compact(self):
+        for line in self:
+            line.wt_of_compact = round(line.wt_of_modul_compact - line.parent_id.wt_of_modul1,2)
+
+
+
+    @api.depends('wt_of_compact', 'parent_id.vl_of_modul1')
+    def _compute_bulk_density(self):
+        for line in self:
+            if line.parent_id.vl_of_modul != 0:
+                line.bulk_density = round(line.wt_of_compact / line.parent_id.vl_of_modul1,2)
+            else:
+                line.bulk_density = 0.0
+
+
+
+    @api.depends('wt_of_container_dry', 'wt_of_container')
+    def _compute_wt_of_dry_sample1(self):
+        for line in self:
+            line.wt_of_dry_sample = round(line.wt_of_container_dry - line.wt_of_container,2)
+
+
+    @api.depends('wt_of_container_wet','wt_of_container_dry')
+    def _compute_wt_of_moisture1(self):
+        for record in self:
+            record.wt_of_moisture = round((record.wt_of_container_wet - record.wt_of_container_dry),2)
+
+
+    @api.depends('wt_of_moisture', 'wt_of_dry_sample')
+    def _compute_moisture1(self):
+        for line in self:
+            if line.wt_of_dry_sample != 0:
+                line.moisture = round(line.wt_of_moisture / line.wt_of_dry_sample * 100,2)
+            else:
+                line.moisture = 0.0
+
+
+    @api.depends('bulk_density', 'moisture')
+    def _compute_dry_density1(self):
+        for line in self:
+            line.dry_density1 = round((100 * line.bulk_density) / (100 + line.moisture),2)

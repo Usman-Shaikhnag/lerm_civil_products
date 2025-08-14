@@ -8,134 +8,64 @@
 				<!-- <div style="text-align:center;margin-top:10px">
 					<p style="font-size:15px"><b>Test Report</b></p>
 				</div> -->
-				<div class="container_eln">
-				
-					<div t-foreach="eln" t-as="o">
-						<!-- <table>
-							<tr>
-								<td colspan="3">Report no :
-								</td>
-								<td colspan="3">
-									<span t-field="o.kes_no"/>
-								</td>
-								<td colspan="3">Report Date :
-								</td>
-								<td colspan="3">
-									<span t-field="o.srf_date"/>
-								</td>
-								<td colspan="3"  t-if="nabl">ULR NO :
-								</td>
-								<td colspan="3" t-if="nabl">
-									<span t-field="o.sample_id.ulr_no"/>
-								</td>
-							</tr>
-						</table> -->
+				<div class="container_eln" style="padding-top:50px;">
+					<div class="" t-foreach="eln" t-as="o">
+						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
+							<tbody>
+								<tr>
+									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+								
+								</tr>
+								
+								<tr>
+									<td><strong>Client's Reference</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
+								</tr>
 
-						<table style="margin-top:10px;">
-							<tr>
-								<td colspan="12">Customer Party Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.customer.name"/><br/>
-									<span t-field="o.srf_id.customer.street"/>
-									<span t-field="o.srf_id.customer.street2"/>
-									<span t-field="o.srf_id.customer.city"/>
-									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
-									<span t-field="o.srf_id.customer.state_id"/>
-											,
-									<span t-field="o.srf_id.customer.country_id"/>
-								</td>
-							</tr>
-							<tr>
-								<!-- <td colspan="12">Project / Site Address :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-											,
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
-								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.name_work"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="12">Sample Description : <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_description"/>
-								</td>
-							</tr>
+								<tr>
+									<td><strong>Name of Work</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								</tr>
 
-						</table>
+								<tr>
+									<td><strong>Date of Testing</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.start_date" style="margin-right:10px;"/> to 
+										<span t-field="o.end_date" style="margin-left:10px;"/>
+									</td>
+								</tr>
 
-						<table>
-							<tr>
-								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.start_date"/>
-								</td>
-								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.end_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.client_sample_id"/>
-								</td>
-								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_received_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Size :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.size_id.size"/>
-								</td>
-								<td colspan="6">Grade :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.grade_id.grade"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Brand :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.brand"/>
-								</td>
-								<td colspan="6">Consultant Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.consultant_name1"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Client Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client"/>
-								</td>
-								<td colspan="6">Client Reference :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client_refrence"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Discipline :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.discipline.discipline"/>
-								</td>
-								<td colspan="6">Group :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.group.group"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="12">Material/Test Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.material.name"/>
-								</td>
-								<!-- <td colspan="6">Job Ref No :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.kes_no"/>
-								</td> -->
-							</tr>
+								<tr>
+									<td><strong>Type of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Grade of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
+								</tr>
+
+								<!-- Source of Sample (only if value exists) -->
+								<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<!-- Test method adopted (only if value exists) -->
+								<tr t-if="o.material.test_method_adopted">
+									<td style="font-weight: bold;">Test method adopted:</td>
+									<td><span t-field="o.material.test_method_adopted"/></td>
+								</tr>
+							</tbody>
 						</table>
 					</div>
 					<!-- <span t-field="eln.material.test_parameter" style="margin-top:5px"/> -->
@@ -200,9 +130,9 @@
 									<td colspan="2" t-if="k == 8">
 										<span>0% - 5%</span>
 									</td>
-									<!-- <td colspan="2" t-if="k == 9">
-										<span>0% - 5%</span>
-									</td> -->
+									<td colspan="2" t-if="k == 9">
+										<span>--</span>
+									</td>
 								    <td colspan="2" t-if="k == 1">
 										<span>-</span>
 									</td>
@@ -227,9 +157,9 @@
 									<td colspan="2" t-if="k == 8">
 										<span>0 - 5 %</span>
 									</td>
-									<!-- <td colspan="2" t-if="k == 9">
-										<span>0% - 5%</span>
-									</td> -->
+									<td colspan="2" t-if="k == 9">
+										<span>--</span>
+									</td>
 
 									
 							</tr>
@@ -301,9 +231,9 @@
 									<td colspan="2" t-if="k == 8">
 										<span>0% - 5%</span>
 									</td>
-									<!-- <td colspan="2" t-if="k == 9">
-										<span>0% - 5%</span>
-									</td> -->
+									<td colspan="2" t-if="k == 9">
+										<span>--</span>
+									</td>
 									<td colspan="2" t-if="k == 1">
 										<span>-</span>
 									</td>
@@ -328,12 +258,15 @@
 									<td colspan="2" t-if="k == 8">
 										<span>0 - 5 %</span>
 									</td>
+									<td colspan="2" t-if="k == 9">
+										<span>--</span>
+									</td>
 							</tr>
 						</table>
                         
 					</div>
 
-					<table style="margin-top:15px">
+					<table style="margin-top:5px">
 
 							<tr cols="12" t-if="data.water_absorbtion_visible or data.elongation_visible or data.flakiness_visible or data.abrasion_visible or data.impact_visible or data.plastic_visible or data.liquid_limit_visible or data.plasticity_index_visible" >
 							    <th style="text-align: center;">
@@ -377,78 +310,7 @@
 									</span>
 							   	</th> 
 							</tr>
-							<!-- <div t-if="data.dry_gradation_visible" style="margin-top:20px">
-								
-								<tr cols="12">
-									<td colspan="1">
-									</td>
-									<td colspan="2">IS Sieve Size (% Passing through)
-									</td>
-									<td colspan="2">
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','64fecdf5-6741-4817-95f4-5e53a0676c5f')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-												<span t-field="parameter.specification"/>
-											</t>
-										</t>
-									</td>
-									<td colspan="2">			
-									</td>
-									<td colspan="2">
-									
-									</td>
-
-								</tr>
-								<t t-set="i" t-value="0"/>
-								<t t-set="k" t-value="0"/>
-								<tr t-foreach="data.dry_gradation_table" t-as="r" t-if="'pan' not in r['sieve_size']">
-									<td colspan="1">
-										<div>
-											<span t-esc="i + 1" t-if="i == 0"/>
-											<t t-set="i" t-value="i+1" t-if="i == 0"/>
-										</div>
-									</td>
-									<td colspan="2" >
-										<t t-set="k" t-value="k+1"/>
-										<span t-esc="r['sieve_size']"/>
-									</td>
-									
-									<td colspan="2" >
-										<span>
-											
-										</span>
-									</td>
-									<td colspan="2" >
-										<span t-esc="r['passing_percent']"/>
-									</td>
-									<td colspan="2" t-if="k == 1">
-										<span>100%</span>
-									</td>
-									<td colspan="2" t-if="k == 2">
-										<span>95% - 100%</span>
-									</td>
-									<td colspan="2" t-if="k == 3">
-										<span>60% - 80%</span>
-									</td>
-									<td colspan="2" t-if="k == 4">
-										<span>40% - 60%</span>
-									</td>
-									<td colspan="2" t-if="k == 5">
-										<span>25% - 40%</span>
-									</td>
-									<td colspan="2" t-if="k == 6">
-										<span>15% - 30%</span>
-									</td>
-									<td colspan="2" t-if="k == 7">
-										<span>8% - 22%</span>
-									</td>
-									<td colspan="2" t-if="k == 8">
-										<span>0% - 5%</span>
-									</td>
-									<td colspan="2" t-if="k == 9">
-										<span>0% - 5%</span>
-									</td>
-								</tr>
-							</div> -->
+	
 							<t t-set="i" t-value="0"/>
 							<tr t-if="data.liquid_limit_visible and (data.liquid_limit_nabl == 'pass' and nabl) or (data.liquid_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
 								<td colspan="1" style="text-align: center;">
@@ -1238,7 +1100,7 @@
 
 					</table>
 					
-					<div style="page-break-inside: avoid;margin-top:20px">
+					<div style="page-break-inside: avoid;margin-top:5px">
 
 						<table t-if="data.density_relation_visible">
 							<tr >
@@ -1259,7 +1121,7 @@
 								</div>
 							</tr>
 
-							<table  t-if="data.density_relation_visible" style="margin-top:30px;">
+							<table  t-if="data.density_relation_visible" style="margin-top:10px;">
 							<thead>
 								<tr cols="12">
 									<td colspan="1">Determination No
@@ -1333,7 +1195,7 @@
 							</tbody>
 						</table>
 
-							<table  t-if="data.density_relation_visible" style="margin-top : 10px">
+							<table  t-if="data.density_relation_visible" style="margin-top : 2px">
 								<tr>
 									<td colspan="3">Weight of Mould in gm (A) :
 									</td>
@@ -1354,15 +1216,15 @@
 							<img t-att-src="'data:image/png;base64,'+str(graphHeavy)" style="max-width: 100%;"/>
 					</div>
 
-					<div  t-if="data.density_relation_visible"  style="margin-top: 10px;">
+					<div  t-if="data.density_relation_visible"  style="margin-top: 2px;">
 						From Graph 
 					</div>
 
-					<table  t-if="data.density_relation_visible" style="margin-top: 10px;">
+					<table  t-if="data.density_relation_visible" style="margin-top: 2px;">
 						<tr>
 							<td colspan="3">MDD :</td>
 							<td colspan="3">
-								<span t-esc="data.mmd" t-options='{"widget": "float", "precision": 2}'/> <![CDATA[&nbsp;]]> gm/cc
+								<span t-esc="data.max_dry_density" t-options='{"widget": "float", "precision": 2}'/> <![CDATA[&nbsp;]]> gm/cc
 							</td>
 							<td colspan="3">OMC :</td>
 							<td colspan="3">
@@ -1370,8 +1232,143 @@
 							</td>
 						</tr>
 					</table>	
+
+
+
+                   <div style="page-break-inside: avoid;margin-top:5px">
+
+					<table t-if="data.omc_visible">
+							<tr >
+								<div style="text-align:center;letter-spacing : 2px;border:1px solid black;padding:10px">
+									<div>
+										DETERMINATION OF WATER CONTENT-DRY 
+									</div>
+									<div>
+										Maximum Dry Density (Light Compaction) : Test Method 
+										<span> 
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','987456hhjyt-b27e-48c6-81b8-90052144677j')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+											</t>
+									</t>
+										</span>
+									</div>
+								</div>
+							</tr>
+
+							<table  t-if="data.omc_visible" style="margin-top:5px;">
+							<thead>
+								<tr cols="12">
+									<td colspan="1">Determination No
+									</td>
+									<td colspan="1">Weight of Mould + Compacted sample in gm (C)
+									</td>
+									<td colspan="1">Weight of compacted sample in gm (D) C-A
+									</td>
+									<td colspan="1">Bulk Density of sample in gm/cc (E) D/B
+									</td>
+									<td colspan="1">Container No
+									</td>
+									<td colspan="1">Weight of Container in gm (F)
+									</td>
+									<td colspan="1">Weight of Container + wet sample in gm (G)
+									</td>
+									<td colspan="1">Weight of Container + dry sample in gm (H)
+									</td>
+									<td colspan="1">Weight of dry sample in gm (I)
+									</td>
+									<td colspan="1">Weight of moisture in gm (J) G-H
+									</td>
+									<td colspan="1">% Moisture (K) J/I*100
+									</td>
+									<td colspan="1">Dry density in gm/cc (100*E)/(100+K)
+									</td>
+
+							
+							
+						</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="data.omc_table" t-as="r">
+									<td>
+										<span t-esc="r.determination_no"/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_modul_compact"/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_compact"/>
+									</td>
+									<td>
+										<span t-esc="r.bulk_density" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.container_no" />
+									</td>
+									<td>
+										<span t-esc="r.wt_of_container" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_container_wet" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_container_dry" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_dry_sample" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_moisture" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.moisture" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.dry_density1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+							<table  t-if="data.omc_visible" style="margin-top : 2px">
+								<tr>
+									<td colspan="3">Weight of Mould in gm (A) :
+									</td>
+									<td colspan="3">
+										<span t-field="data.wt_of_modul1"/>
+									</td>
+									<td colspan="3">Volume of Mould in cc (B) :
+									</td>
+									<td colspan="3">
+										<span t-field="data.vl_of_modul1"/>
+									</td>
+								</tr>
+							</table>
+						</table>
+					</div>
+
+					<div t-if="graphLight" style="margin-top: 5px;">
+							<img t-att-src="'data:image/png;base64,'+str(graphLight)" style="max-width: 100%;"/>
+					</div>
+
+					<div  t-if="data.omc_visible"  style="margin-top: 2px;">
+						From Graph 
+					</div>
+
+					<table  t-if="data.omc_visible" style="margin-top: 2px;">
+						<tr>
+							<td colspan="3">MDD :</td>
+							<td colspan="3">
+								<span t-esc="data.max_dry_density1" t-options='{"widget": "float", "precision": 2}'/> <![CDATA[&nbsp;]]> gm/cc
+							</td>
+							<td colspan="3">OMC :</td>
+							<td colspan="3">
+								<span t-esc="data.omc1" t-options='{"widget": "float", "precision": 2}'/> <![CDATA[&nbsp;]]> %
+							</td>
+						</tr>
+					</table>	
 					
-					<div  style="page-break-inside: avoid;margin-top:20px">
+					<div  style="page-break-inside: avoid;margin-top:5px">
 						<table  t-if="data.cbr_visible and fromEln">
 								<tr>
 									<div style="text-align:center;letter-spacing : 2px;border:1px solid black;padding:10px">
@@ -1413,7 +1410,7 @@
 								</tr>
 						</table>
 
-						<table t-if="data.cbr_visible and data.cbr_table and fromEln" style="margin-top:10px;">
+						<table t-if="data.cbr_visible and data.cbr_table and fromEln" style="margin-top:5px;">
 								<thead>
 									<tr>
 										<th>
@@ -1461,7 +1458,7 @@
 									</tr>
 								</tbody>
 						</table>
-						<table t-if="data.cbr_visible and data.cbr_table and not fromEln" style="margin-top:10px;">
+						<table t-if="data.cbr_visible and data.cbr_table and not fromEln" style="margin-top:5px;">
 								<thead>
 									<tr>
 										<th>
@@ -1511,15 +1508,15 @@
 						</table>
 					</div>
 
-					<div t-if="graphCbr" style="margin-top: 20px;">
+					<div t-if="graphCbr" style="margin-top: 5px;">
 							<img t-att-src="'data:image/png;base64,'+str(graphCbr)" style="max-width: 100%;"/>
 					</div>
 
-					<div t-if="data.cbr_visible and fromEln"  style="margin-top: 10px;">
+					<div t-if="data.cbr_visible and fromEln"  style="margin-top: 2px;">
 						CBR From Graph 
 					</div>
 
-					<div t-if="data.cbr_visible and not fromEln"  style="margin-top: 10px;">
+					<div t-if="data.cbr_visible and not fromEln"  style="margin-top: 2px;">
 						CBR From Graph 
 					</div>
 					
@@ -1588,113 +1585,98 @@
 						</div>
 					</div>
 					
-					<div t-if="data.cbr_visible and fromEln"  style="margin-top: 10px;">
+					<div t-if="data.cbr_visible and fromEln"  style="margin-top: 2px;">
 						<b>Result: CBR at 2.5 mm Penetration is maximum hence CBR is <span t-esc="round(load2 / 1370 * 100 , 2)"/></b>
 					</div>
 
-					<div t-if="data.cbr_visible and not fromEln"  style="margin-top: 10px;">
+					<div t-if="data.cbr_visible and not fromEln"  style="margin-top: 2px;">
 						<b>Result: CBR at 2.5 mm Penetration is maximum hence CBR is <span t-esc="round(load2 / 1370 * 100 , 2)"/></b>
 					</div>
 
-					<div style="page-break-inside: avoid;">
-						<div style="margin-top:20px" class="noteContainer">
-							<div>
-								<b>Note :-</b>
-							</div>
-							<div>
-								<ul>
-									<li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-									</li>
-									<li>
-										Sample(s) was/were not drawn by laboratory.
-									</li>
-									<li>
-										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-									</li>
-									<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-								</ul>
-							</div>
+					<div style="margin-top:5px" class="noteContainer">
+							<table class="table table-bordered">
+							<tr>
+								<td style="padding: 5px; font-style: italic; font-size: 12px;">
+									<b>Note:-</b>
+									&#160;&#160;(i) The results relate only to the items tested 
+									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+									&#160;&#160;(iii) Any corrections invalidate the test reports 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
+									&#160;&#160;(vi) # mark indicates Details given by Client.
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</td>
+							</tr>
+						</table>
 						</div>
-						
-						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
-									<div>
-										<div>
-											<b>
-												Checked By
-											</b>
-										</div>
-										<div style="height: 40px;">
-											<t t-if="eln.sample_id.checkby_signature_required">
-												<div t-if="eln.sample_id.check_by.employee_id.signature">
-													<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-												</div>
-												
-											</t>
-										</div>
-										<div>
-											<b>
-												<span t-esc="eln.sample_id.check_by.name"/>
-											</b>
-										</div>
-										<div>
-											<b>
-												(<span t-esc="eln.sample_id.check_by.job_title"/>)
-											</b>
-										</div>
-									</div>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height:20px">
 
-									<div>
-										<div >
-											<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-										</div>
-										<div style="padding-top:5px">
-											Format No. <span t-esc="eln.material.test_format_no"/>
-										</div>
-									</div>
-									<div>
-										<div>
-											<b>
-												Approved By 
-											</b>
-											
-										</div>
-										<div style="height: 40px;">
-											<t t-if="eln.sample_id.approveby_signature_required">
-												<div t-if="eln.sample_id.approved_by.employee_id.signature">
-													<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-												</div>
-												
-											</t>
-										</div>
-										<div>
-											<b>
-											<span t-esc="eln.sample_id.approved_by.name"/>
-											</b>
-										</div>
-										
-										<div>
-											<b>
-												(<span t-esc="eln.sample_id.approved_by.job_title"/>)
-											</b>
-										</div>
-									</div>
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.technician.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
 								</div>
 							</div>
-							<!-- <div style="text-align:center;margin-top:25px">
-								......End of Report......
+
+							<!-- <div>
+								<div>
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
 							</div> -->
-							<div style="margin-top: 20px; text-align: center;">
-								<p style="border-top: 1px dashed #000; padding-top: 10px;">
-									...... End Of Report......
-								</p>
+							
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+								<!-- <div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div> -->
 							</div>
+						</div>
+						<div style="text-align:center;margin-top:10px">
+							......End of Report......
+						</div>
 						</div>
 			</t>
 		</t>

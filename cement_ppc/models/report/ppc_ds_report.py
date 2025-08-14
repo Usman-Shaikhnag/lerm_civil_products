@@ -13,7 +13,7 @@ from scipy.optimize import minimize_scalar
 
 
 class CementReportOpc43(models.AbstractModel):
-    _name = 'report.cement_ppc.lerm_cement_report_ppc1'
+    _name = 'report.cement_ppc.lerm_cement_report_ppc'
     _description = 'Cement Report PPC 1'
     
     @api.model
@@ -55,8 +55,8 @@ class CementReportOpc43(models.AbstractModel):
 
 
 class CementDataSheet(models.AbstractModel):
-    _name = 'report.cement_ppc.cement_datasheet_ppc1'
-    _description = 'Cement DataSheet 1'
+    _name = 'report.cement_ppc.cement_datasheet_ppc'
+    _description = 'Cement DataSheet'
     
     @api.model
     def _get_report_values(self, docids, data):

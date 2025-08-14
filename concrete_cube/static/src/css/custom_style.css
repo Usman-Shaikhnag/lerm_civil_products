@@ -8,4 +8,37 @@
     font-weight: bold;
 }
 
+/* scope to our tree via the class we set on <tree> */
+.fixed_col_tree .o_list_table {
+  table-layout: fixed; /* important: makes width values respected */
+}
 
+/* Narrow the 'days' column (or 'duration' in your other example) */
+.fixed_col_tree th[data-field="days"],
+.fixed_col_tree td[data-field="days"] {
+  width: 70px;
+  max-width: 70px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Example: keep some sensible minimums for other fields */
+.fixed_col_tree th[data-field="sr_no"],
+.fixed_col_tree td[data-field="sr_no"],
+.fixed_col_tree th[data-field="wt_sample"],
+.fixed_col_tree td[data-field="wt_sample"],
+.fixed_col_tree th[data-field="id_mark"],
+.fixed_col_tree td[data-field="id_mark"] {
+  min-width: 60px;
+}
+
+/* Fallback selectors in case the class isn't on exactly the table element */
+.o_list_view th[data-field="days"],
+.o_list_view td[data-field="days"] {
+  /* only applied if not overridden by the scoped rules above */
+  max-width: 70px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

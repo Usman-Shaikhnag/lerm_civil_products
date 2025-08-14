@@ -2,9 +2,9 @@
 <odoo>
     <data>
 
-        <record id="mechanical_cement_normalconsistency_ssl" model="ir.ui.view">
-        <field name="name">cement.opc.ssl.form</field>
-        <field name="model">cement.opc.ssl</field>
+        <record id="mechanical_cement_opc" model="ir.ui.view">
+        <field name="name">cement.opc.form</field>
+        <field name="model">cement.opc</field>
         <field name="arch" type="xml">
             <form create="false">
                 <sheet>
@@ -262,15 +262,15 @@
                     </div>
 
 
-                    <div invisible = "consistency_cement_visible == False" style="white-space: nowrap; width:100%;">
-                        <field name="consistency_cement_lines">
-                            <tree editable="bottom" class="custom_table_borders">
+                    <div invisible = "consistency_cement_visible == False">
+                        <field name="consistency_cement_lines" class="custom_table_borders">
+                            <tree editable="bottom">
                                 <field name="serial_no"/>
-                                <field name="wt_of_cement1" style="text-align: center; width: 120px;"/>
-                                <field name="wt_of_water" style="text-align: center; width: 120px;"/>
-                                <field name="water_mix" style="text-align: center; width: 120px;"/>
-                                <field name="needle_penitration" style="text-align: center; width: 120px;"/>
-                                <field name="duration" style="text-align: center; width: 120px;" widget="char"/>
+                                <field name="wt_of_cement1"  widget="char"/>
+                                <field name="wt_of_water"  widget="char"/>
+                                <field name="water_mix" widget="char"/>
+                                <field name="needle_penitration" widget="char"/>
+                                <field name="duration"/>
                             </tree>
                         </field>
                     </div>
@@ -304,7 +304,7 @@
                         </tbody>
                     </table>
 
-                    <div invisible = "setting_time_visible == False">
+                    <!-- <div invisible = "setting_time_visible == False">
                         <h1 class="text-center">
                             <field name="setting_time_name" readonly="1" nolabel="1"/>
                             <field name="setting_time_visible" invisible="1"/>
@@ -371,8 +371,136 @@
                                 </td>
                             </tr>
                         </tbody>
+                    </table> -->
+
+                     <!-- Setting Time Start -->
+                    <div invisible="not initial_setting_time_visible or not final_setting_time_visible">
+                        <field name="initial_setting_time_visible" readonly="1" invisible="1" />
+                        <field name="final_setting_time_visible" readonly="1" invisible="1" />
+                        <h1 class="text-center">
+                            <field name="setting_time_name" readonly="1" nolabel="1"   invisible="not initial_setting_time_visible or not final_setting_time_visible"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2 align-items-start" style="width:100%;">
+    
+                            <!-- Initial Setting Time Table -->
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders flex-fill"
+                                invisible="initial_setting_time_visible == False">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" class="text-center">
+                                            <field name="initial_setting_time_name" readonly="1" nolabel="1"
+                                                invisible="initial_setting_time_visible == False"/>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label for="time_water_added">The Time When water is added to cement (t1)</label></td>
+                                        <td><field name="time_water_added"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="time_needle_fails">The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)</label></td>
+                                        <td><field name="time_needle_fails"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="initial_setting_time_hours">Initial Setting Time (t2-t1) (Hours)</label></td>
+                                        <td><field name="initial_setting_time_hours"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="initial_setting_time_minutes_unrounded">Initial Setting Time</label></td>
+                                        <td><field name="initial_setting_time_minutes_unrounded"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="initial_setting_time_minutes">Initial Setting Time Rounded</label></td>
+                                        <td><field name="initial_setting_time_minutes"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Final Setting Time Table -->
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders flex-fill"
+                                invisible="final_setting_time_visible == False">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" class="text-center">
+                                            <field name="final_setting_time_name" readonly="1" nolabel="1"
+                                                invisible="final_setting_time_visible == False"/>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label for="time_needle_make_impression">The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)</label></td>
+                                        <td><field name="time_needle_make_impression"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_setting_time_hours">Final Setting Time (t2-t1) (Hours)</label></td>
+                                        <td><field name="final_setting_time_hours"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_setting_time_minutes_unrounded">Final Setting Time</label></td>
+                                        <td><field name="final_setting_time_minutes_unrounded"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_setting_time_minutes">Final Setting Time Rounded</label></td>
+                                        <td><field name="final_setting_time_minutes"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    <div class="d-flex gap-2 align-items-start" style="width:100%;">
+                        <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="initial_setting_time_visible == False">
+                        <tbody>
+                           
+                            <tr>
+                                <td><label class="fw-bold" for="initial_setting_conformity">Initial Setting Time Conformity</label></td>
+                                <td>
+                                    <field name="initial_setting_conformity"
+                                        decoration-success="initial_setting_conformity == 'pass'"
+                                        decoration-danger="initial_setting_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="initial_setting_nabl">Initial Setting Time NABL</label></td>
+                                <td>
+                                    <field name="initial_setting_nabl"
+                                        decoration-success="initial_setting_nabl == 'pass'"
+                                        decoration-danger="initial_setting_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
 
+                     <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="final_setting_time_visible == False">
+                        <tbody>
+                           
+                            <tr>
+                                <td><label class="fw-bold" for="final_setting_conformity">Final Setting Time Conformity</label></td>
+                                <td>
+                                    <field name="final_setting_conformity"
+                                        decoration-success="final_setting_conformity == 'pass'"
+                                        decoration-danger="final_setting_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="final_setting_nabl">Final Setting Time NABL</label></td>
+                                <td>
+                                    <field name="final_setting_nabl"
+                                        decoration-success="final_setting_nabl == 'pass'"
+                                        decoration-danger="final_setting_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
 
                     <div invisible = "compressive_visible == False" >
                         <h1 class="text-center">
@@ -397,7 +525,7 @@
                         </field>
                     </div>
 
-                    <table invisible="setting_time_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                    <table invisible="compressive_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <thead>
                             <tr>
                                 <th style="text-align:center;">Result (3 Days)</th>
@@ -432,7 +560,7 @@
                         </tbody>
                     </table>
 
-                    <table invisible="setting_time_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                    <table invisible="compressive_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <thead>
                             <tr>
                                 <th style="text-align:center;">Result (7 Days)</th>
@@ -467,7 +595,7 @@
                         </tbody>
                     </table>
 
-                    <table invisible="setting_time_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                    <table invisible="compressive_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <thead>
                             <tr>
                                 <th style="text-align:center;">Result (28 Days)</th>

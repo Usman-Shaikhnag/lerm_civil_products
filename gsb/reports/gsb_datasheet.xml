@@ -3,9 +3,9 @@
 <template id="gsb_mech_datasheet">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
-			<t t-call="lerm_civil.data_sheet_header_generaltemplate">
+			<t t-call="lerm_civil.mechanical_data_sheet_header">
                 <div style="text-align:center;font-size:18px">
-                    GSB
+                    GSB Datasheet
                 </div>
 				
                 <div class="container_eln" style="margin-top:5px">
@@ -642,7 +642,8 @@
 
                 <div t-if="data.density_relation_visible" style="margin-top:20px">
 					<div style="text-align:center;font-size:18px">
-						Density Relation Using Heavy Compaction
+						Maximum Dry Density (Heavy Compaction)
+
 					</div>
 
                     <table style="margin-top:20px">
@@ -740,9 +741,122 @@
 							
 						</tr>
 					</table>
-					<div t-if="data.chart_image_density" style="margin-top: 20px;">
-                        <img t-att-src="'data:image/png;base64,' + data.chart_image_density.decode('utf-8')" style="max-width: 100%;"/>
-                    </div>
+					
+
+						<div t-if="data.graph_image_density" style="margin-top: 20px;">
+								<img t-att-src="'data:image/png;base64,' + data.graph_image_density.decode('utf-8')" style="max-width: 100%;"/>
+							</div>
+
+				</div>
+
+
+				 <div t-if="data.omc_visible" style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+						Maximum Dry Density (Light Compaction)
+
+
+					</div>
+
+                    <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Weight of Mould in gm (A) :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.wt_of_modul"/>
+							</td>
+							
+						</tr>
+                        <tr cols="12">
+							<td colspan="6">Volume of Mould in cc (B) :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.vl_of_modul"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+					
+
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="1">Determination No
+							</td>
+							<td colspan="1">Weight of Mould + Compacted sample in gm (C)
+							</td>
+                            <td colspan="1">Weight of compacted sample in gm (D) C-A
+							</td>
+							<td colspan="1">Bulk Density of sample in gm/cc (E) D/B
+							</td>
+							<td colspan="1">Container No
+							</td>
+                            <td colspan="1">Weight of Container in gm (F)
+							</td>
+                            <td colspan="1">Weight of Container + wet sample in gm (G)
+							</td>
+                            <td colspan="1">Weight of Container + dry sample in gm (H)
+							</td>
+							<td colspan="1">Weight of dry sample in  (I)
+							</td>
+							<td colspan="1">Weight of moisture in gm (J) G-H
+							</td>
+                            <td colspan="1">% Moisture (K) J/I*100
+							</td>
+                            <td colspan="1">Dry density in gm/cc (100*E)/(100+K)
+							</td>
+
+							
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.omc_table" t-as="r">
+							<td colspan="1">
+								<span t-esc="r['determination_no']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_modul_compact']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_compact']"/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['bulk_density']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['container_no']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_container']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_container_wet']"/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['wt_of_container_dry']"/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['wt_of_dry_sample']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_moisture']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['moisture']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['dry_density1']"/>
+							</td>
+							
+						</tr>
+					</table>
+					
+
+						<div t-if="data.graph_image_density1" style="margin-top: 20px;">
+								<img t-att-src="'data:image/png;base64,' + data.graph_image_density1.decode('utf-8')" style="max-width: 100%;"/>
+							</div>
 
 				</div>
 
@@ -786,9 +900,11 @@
 							
 						</tr>
 					</table>
+				
+
 					<div t-if="data.chart_image_cbr" style="margin-top: 20px;">
-                        <img t-att-src="'data:image/png;base64,' + data.chart_image_cbr.decode('utf-8')" style="max-width: 100%;"/>
-                    </div>
+								<img t-att-src="'data:image/png;base64,' + data.chart_image_cbr.decode('utf-8')" style="max-width: 100%;"/>
+							</div>
 
 				</div>
 				</div>
