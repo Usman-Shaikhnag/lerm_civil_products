@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="cement_datasheet1">
+<template id="cement_datasheet">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
-			 <t t-call="lerm_civil.data_sheet_header_generaltemplate">
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
                 <div style="text-align:center;font-size:18px">
-                    Cement
+                    Cement  
                 </div>
 				<div class="container_eln" style="margin-top:5px">
 
@@ -333,85 +333,75 @@
 
                          <!-- Setting Time -->
 
-					<div t-if="data.setting_time_visible" style="margin-top:10px">
-						<div style="text-align:center;font-size:18px">
-						Setting Time
-						</div>
-						
-						
-						<table style="margin-top:10px">
-
-							<tr cols="12">
-								<td colspan="3">Trial No
-								</td>
-								<td colspan="3">Wt of cement in gms
-								</td>
-								<td colspan="3">wt of water in ml
-								</td>
-								<td colspan="3">% of water mix
-								</td>
-								<td colspan="3">Needle penetration in mm
-								</td>
-								<td colspan="3">Duration of time in minutes
-								</td>
-							</tr>
-
-							<t t-set="i" t-value="0"/>
-							<tr t-foreach="data.setting_time_lines" t-as="r">
-
-							  <td colspan="3">
-									<span t-esc="r['serial_no']"/>
-								</td>
-								
-								<td colspan="3">
-									<span t-esc="r['wt_of_cements1']"/>
-								</td>
-								<td colspan="3">
-									<span t-esc="r['wt_of_water1']"/>
-								</td>
-								<td colspan="3">
-									<span t-esc="r['water_mix1']"/>
-								</td>
-								<td colspan="3">
-									<span t-esc="r['needle_penitration1']"/>
-								</td>
-								<td colspan="3">
-									<span t-esc="r['duration1']"/>
-								</td>
-							</tr>
-						</table>
-
-						<table style="margin-top:20px">
-							<tr cols="12">
-								<td colspan="6">Consistency of Cement  :
-									<![CDATA[&nbsp;]]>
-									</td>
-									<td>
-									<span t-field="data.consitency_of_cement" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								</tr>
-								<tr>
-
-								<td colspan="6">Initial Setting Time  :
-									<![CDATA[&nbsp;]]>
-									</td>
-									<td>
-									<span t-field="data.initial_setting_time" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								</tr>
-								<tr>
-
-								<td colspan="6">Final Setting Time  :
-									<![CDATA[&nbsp;]]>
-									</td>
-									<td>
-									<span t-field="data.final_setting_time" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
+					<div  style="margin-top:10px">
+        
 							
-							</tr>
-						</table>
-						
-					</div>
+							   <div style="text-align:center;font-size:18px" t-if="data.initial_setting_time_visible or final_setting_time_visible" >
+									Setting Time
+								</div>
+
+							<table style="width:100%; border-collapse: collapse; border:1px solid black;margin-top:10px" t-if="data.initial_setting_time_visible">
+								<thead>
+									<tr >
+										<th colspan="2" style="border:1px solid black; padding:8px; text-align:center;">
+											Initial Setting Time
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td style="border:1px solid black; padding:8px;">The Time When water is added to cement (t1)</td>
+										<td><span t-field="data.time_water_added"/></td>
+									</tr>
+									<tr>
+										<td style="border:1px solid black; padding:8px;">The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)</td>
+										<td><span t-field="data.time_needle_fails"/></td>
+									</tr>
+									<tr>
+										<td style="border:1px solid black; padding:8px;">Initial Setting Time (t2 - t1) (Hours)</td>
+										<td><span t-field="data.initial_setting_time_hours"/></td>
+									</tr>
+									<tr>
+										<td style="border:1px solid black; padding:8px;">Initial Setting Time</td>
+										<td><span t-field="data.initial_setting_time_minutes_unrounded"/></td>
+									</tr>
+									<tr>
+										<td style="border:1px solid black; padding:8px;">Initial Setting Time Rounded</td>
+										<td><span t-field="data.initial_setting_time_minutes"/></td>
+									</tr>
+								</tbody>
+							</table>
+
+							<br/>
+
+							<table style="width:100%; border-collapse: collapse; border:1px solid black;" t-if="data. final_setting_time_visible">
+								<thead>
+									<tr >
+										<th colspan="2" style="border:1px solid black; padding:8px; text-align:center;">
+											Final Setting Time
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td style="border:1px solid black; padding:8px;">The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)</td>
+									     <td><span t-field="data.time_needle_make_impression"/></td>
+									</tr>
+									<tr>
+										<td style="border:1px solid black; padding:8px;">Final Setting Time (t2 - t1) (Hours)</td>
+										<td><span t-field="data.final_setting_time_hours"/></td>
+									</tr>
+									<tr>
+										<td style="border:1px solid black; padding:8px;">Final Setting Time</td>
+										<td><span t-field="data.final_setting_time_minutes_unrounded"/></td>
+									</tr>
+									<tr>
+										<td style="border:1px solid black; padding:8px;">Final Setting Time Rounded</td>
+										<td><span t-field="data.final_setting_time_minutes"/></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 
 					
 
@@ -686,7 +676,7 @@
 									</th>
 									
 									
-									<th rowspan="1" style="text-align: center;"> Requirements
+									<th rowspan="1" style="text-align: center;"> 
 										<span t-field="eln.material.specifications"></span>
 									</th>
 
@@ -731,11 +721,7 @@
 									</td>
 									
 									
-									<td style="text-align: center;">
-										<span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).unit.name"/>
-										</span>
-									</td>
+								
 									
 									<td style="text-align: center;">
 										<span>
@@ -970,7 +956,7 @@
 								</tr>
 
 								<!-- setting_time_visible -->
-								<tr t-if="cement.setting_time_visible and (cement.initial_setting_time_nabl == 'pass' and nabl or (cement.initial_setting_time_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="cement.initial_setting_time_visible and (cement.initial_setting_nabl == 'pass' and nabl or (cement.initial_setting_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
@@ -979,13 +965,13 @@
 									<td style="text-align: center;">
 										
 										<span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','40ce7425-30fe-4043-b518-015f5c60d916')]).parameter_name"/>
 										</span>
 										
 									</td>
 									<td style="text-align: center;">
 										<span>
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','40ce7425-30fe-4043-b518-015f5c60d916')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 											</t>
@@ -995,20 +981,20 @@
 
 									<td style="text-align: center;">
 										<span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','40ce7425-30fe-4043-b518-015f5c60d916')]).unit.name"/>
 										</span>
 									</td>
 									
 									
 									<td style="text-align: center;">
 										<span>
-											<span t-field="cement.initial_setting_time" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="cement.initial_setting_time_minutes_unrounded" />
 										</span>									
 									</td>
 									
 									<td style="text-align: center;">
 										<span>
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','012457896lku-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','40ce7425-30fe-4043-b518-015f5c60d916')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 											</t>
@@ -1018,11 +1004,11 @@
 									
 									
 									<td t-if="eln.conformity" style="text-align: center;">
-										<span t-field="cement.initial_setting_time_conformity"/>
+										<span t-field="cement.initial_setting_conformity"/>
 									</td>
 								</tr>
 
-								<tr t-if="cement.setting_time_visible and (cement.final_setting_time_nabl == 'pass' and nabl or (cement.final_setting_time_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="cement.final_setting_time_visible and (cement.final_setting_nabl == 'pass' and nabl or (cement.final_setting_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
@@ -1031,13 +1017,13 @@
 									<td style="text-align: center;">
 										
 										<span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','d339933c-5e9c-4335-9ea2-2d87624c3061')]).parameter_name"/>
 										</span>
 										
 									</td>
 									<td style="text-align: center;">
 										<span>
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','d339933c-5e9c-4335-9ea2-2d87624c3061')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 											</t>
@@ -1047,20 +1033,20 @@
 
 										<td style="text-align: center;">
 										<span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','d339933c-5e9c-4335-9ea2-2d87624c3061')]).unit.name"/>
 										</span>
 									</td>
 									
 									
 									<td style="text-align: center;">
 										<span>
-											<span t-field="cement.final_setting_time" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="cement.final_setting_time_minutes_unrounded" />
 										</span>									
 									</td>
 									
 									<td style="text-align: center;">
 										<span>
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','301245789liy-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','d339933c-5e9c-4335-9ea2-2d87624c3061')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 											</t>
@@ -1070,7 +1056,7 @@
 								
 									
 									<td t-if="eln.conformity" style="text-align: center;">
-										<span t-field="cement.final_setting_time_conformity"/>
+										<span t-field="cement.final_setting_conformity"/>
 									</td>
 								</tr>
 
