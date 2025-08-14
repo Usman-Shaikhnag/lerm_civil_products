@@ -54,8 +54,6 @@ class ELN(models.Model):
    
 
 
-    # _stage_field = 'eln_state_id'
-    # eln_state_id = fields.Many2one('eln.stage',string="State",ondelete='set null',index=True)
     size_id = fields.Many2one('lerm.size.line',string="Size")
     size_ids = fields.Many2many('lerm.size.line',string="Size", compute="compute_size")
     grade_id = fields.Many2one('lerm.grade.line',string="Grade")

@@ -8,11 +8,9 @@
         <field name="arch" type="xml">
             <form create="false">
                 <sheet>
-                   <group style="white-space: nowrap; width:70%;"  >
-                        <h1>
-                            <field name="name_aggregate" readonly="1" nolabel="1"/>
-                        </h1>
-                    </group>
+                    <h1>
+                        <field name="name_aggregate" readonly="1" nolabel="1"/>
+                    </h1>
                     <group >
                        <field name="grade"/>
                     </group>
@@ -285,7 +283,7 @@
                         <field name="avg_loss_c" readonly="1"/>
                   
                     </group> -->
-               <table invisible="bulking_sand_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                <table invisible="bulking_sand_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                     <tbody>
                         <tr>
                             <td><label class="fw-bold" for="avg_height_sand_a">Height of Sand in Cylinder (A)</label></td>
@@ -408,7 +406,7 @@
                         </field>
                     </div>
 
-                    <table invisible="moisture_content_visible == False or loose_bulk_visible == False" class="table table-sm table-bordered w-75 mt-2 custom_table_borders">
+                    <table invisible="moisture_content_visible == False or loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="wet_dry">Weight of Wet Sand Sample (W1)</label></td>
