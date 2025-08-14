@@ -740,6 +740,12 @@ class CementPPC(models.Model):
 
     compressive_lines = fields.One2many('compressive.ppc.line','parent_id',string="Compressive")
 
+    @api.onchange('start_date', 'compressive_lines')
+    def _onchange_start_date_or_lines(self):
+        for line in self.compressive_lines:
+            if not line.dt_of_casting:  
+                line.dt_of_casting = self.start_date
+
     avg_3_days = fields.Float(string="Avg Strength (3 Days)", compute="_compute_avg_strengths", store=True)
 
     avg_3_days_conformity = fields.Selection([
@@ -1340,10 +1346,11 @@ class CompressiveCementLine(models.Model):
     load = fields.Float(string="Load in KN")
     strenght = fields.Float(string="Strength N/mm2",compute="_compute_strength")
 
-    @api.onchange('parent_id')
-    def _onchange_set_dt_of_casting(self):
-        if self.parent_id and self.parent_id.start_date:
-            self.dt_of_casting = self.parent_id.start_date
+    # @api.onchange('parent_id')
+    # def _onchange_set_dt_of_casting(self):
+    #     if self.parent_id and self.parent_id.start_date:
+    #         self.dt_of_casting = self.parent_id.start_date
+
 
     @api.onchange('days')
     def _onchange_days_set_testing_date(self):
