@@ -5,12 +5,12 @@
 {
     'name': 'GSB',
     'version': '1.2',
-    'category': 'Sales/Sales',
-    'summary': 'Sales internal machinery',
+    'category': 'LERM CIVIL',
+    'summary': 'GSB',
     'description': """
-This module contains all the common features of Sales Management and eCommerce.
+This module contains all the common features of GSB.
     """,
-    'depends': ['base','sale','lerm_civil'],
+    'depends': ['base','lerm_civil'],
     'data': [
                  'security/ir.model.access.csv',
                  'views/gsb.xml',

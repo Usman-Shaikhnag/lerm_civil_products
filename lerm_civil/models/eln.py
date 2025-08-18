@@ -383,7 +383,7 @@ class ELN(models.Model):
         # import wdb;wdb.set_trace()
        
         if not self.end_date:
-            self.end_date = start_date + timedelta(days=1)
+            self.end_date = start_date 
         else:
             # If end_date is provided, check if it's before start_date
             if self.end_date < start_date:

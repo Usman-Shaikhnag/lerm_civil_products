@@ -1,0 +1,2313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+
+<template id="design_mix_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                 DESIGN MIX DATASHEET
+                </div>
+				
+            <div class="container_eln" style="margin-top:5px">
+				
+
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="1">Sr no 
+							</td>
+							<td colspan="3">Abstract
+							</td>
+							<td colspan="2">Cement
+							</td>
+							<td colspan="2">Slag
+							</td>
+							<td colspan="2">Miro silica
+
+							</td>
+							<td colspan="2">W/(C+F)
+
+							</td>
+
+                            <td colspan="2">(C+F)
+
+							</td>
+                            <td colspan="2">R/SAND
+
+							</td>
+                            <td colspan="2">C/SAND
+
+							</td>
+                            <td colspan="2">10MM
+
+							</td>
+
+                             <td colspan="2">20MM
+
+							</td>
+                             <td colspan="2">ADM
+
+							</td>
+                         
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_concrete_design" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="3">
+								<span t-esc="r['abstract']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['cement_display']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['slag']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['miro_silica']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['w_c_f']" />
+							</td>
+
+
+                            <td colspan="2">
+								<span t-esc="r['c_f']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['r_Sand']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['c_Sand']" />
+							</td>
+                            <td colspan="2">
+								<span t-esc="r['mm10']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['mm20']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['adm']" />
+							</td>
+
+							
+						</tr>
+					</table>
+
+					<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Total Kg/M3 :
+									<![CDATA[&nbsp;]]>
+								</td>
+                                <td colspan="6">
+									<span t-field="data.total_kg_per_m3"/>
+								</td>
+								
+							</tr>
+                            <tr cols="12">
+								<td colspan="6"> Sp Gr :
+									<![CDATA[&nbsp;]]>
+								</td>
+                                <td colspan="6">
+									<span t-field="data.sp_gr"/>
+								</td>
+								
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Mix Grade :
+									<![CDATA[&nbsp;]]>
+								</td>
+                                <td colspan="6">
+									<span t-field="data.mix_grade"/>
+								</td>
+								
+							</tr>
+						</table>
+
+                      <!-- DESIGN STIPULATIONS. -->
+
+					<div style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							A. DESIGN STIPULATIONS.
+
+						</div>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">CHARACTERISTIC COMPRESSIVE STRENGTH AT 28 DAYS :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_com" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">MAXIMUM SIZE OF AGGREGATE :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_max_size" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">WORKABILITY (SLUMP) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_work" />
+								</td>
+							</tr>
+
+
+							 <tr cols="12">
+								<td colspan="6">TYPE OF EXPOSURE  :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_exposure" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">MINIMUM CEMENT CONTENT  :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_cement" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">MAXIMUM WATER - CEMENT RATIO :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_water" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">TOLERANCE FACTOR (t) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_tolerance" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">CHEMICAL ADMIXTURE TYPE  :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_admicture" />
+								</td>
+							</tr>
+                            
+                            
+						</table>
+					</div>
+
+<!-- B. TEST DATA FOR CONCRETE INGREDIENTS. -->
+
+					<div style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							B. TEST DATA FOR CONCRETE INGREDIENTS.
+
+
+						</div>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">SPECIFIC  GRAVITY OF CEMENT :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.test_data_gravity_cement" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">SPECIFIC  GRAVITY OF FLYASH  :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.test_data_gravity_flyash" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">CHEMICAL ADMIXTURE  :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.test_data_admixture" />
+								</td>
+							</tr>
+
+
+							 <tr cols="12">
+								<td colspan="6">FLYASH CONTENT PERCENTAGE :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.test_data_flyash" />
+								</td>
+							</tr>
+							
+                            
+						</table>
+					</div>
+
+                	<!-- SPECIFIC GRAVITY & WATER ABSORPTION OF COARSE & FINE AGGREGATE (SSD) -->
+					<div style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							SPECIFIC GRAVITY &amp; WATER ABSORPTION OF COARSE &amp; FINE AGGREGATE (SSD)
+
+
+						</div>
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="1">Sr no 
+							</td>
+							<td colspan="3">Material
+							</td>
+							<td colspan="2">Specific Gravity
+							</td>
+							<td colspan="2">Water Absorption (%)
+							</td>
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_concrete_design_material" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="3">
+								<span t-esc="r['material']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['specific_gravity']" t-options='{"widget": "float", "precision": 3}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 3}'/>
+							</td>
+							
+						</tr>
+					</table>
+					</div>
+
+                 <!-- C. SIEVE ANALYSIS OF COARSE & FINE  AGGREGATE -->
+
+
+				<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+					 C. SIEVE ANALYSIS OF COARSE &amp; FINE  AGGREGATE
+
+					</div>
+					
+                    <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Aggregate Size :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.size_20mm"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+					<table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+							<td rowspan="2">IS SIEVE (mm)
+							</td>
+							<td rowspan="2">Wt.Retained on each Is Sieve (gm)
+							</td>
+							<td rowspan="2">% Retained
+							</td>
+							<td rowspan="2">% Cumulative retained
+							</td>
+							<td rowspan="2">% Passing
+
+							</td>
+
+							<td colspan="2">Limits as per IS 383
+
+							</td>
+						</tr>
+						<tr>
+
+							<td >LL
+
+							</td>
+							<td >UP
+
+							</td>
+							
+						</tr>
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.sieve_analysis_child_lines_20mm" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td >
+								<span t-esc="r['wt_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['ll']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['up']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+						</tbody>
+					</table>
+
+					<div t-if="data.graph_image_20mm" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_20mm.decode('utf-8')" style="max-width: 100%;"/>
+                    </div>
+					
+				</div>
+
+
+
+					<div style="margin-top:20px">
+					<!-- <div style="text-align:center;font-size:18px">
+					 C. SIEVE ANALYSIS OF COARSE &amp; FINE  AGGREGATE
+
+					</div> -->
+					
+                    <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Aggregate Size :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.size_10mm"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+					<table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+							<td rowspan="2">IS SIEVE (mm)
+							</td>
+							<td rowspan="2">Wt.Retained on each Is Sieve (gm)
+							</td>
+							<td rowspan="2">% Retained
+							</td>
+							<td rowspan="2">% Cumulative retained
+							</td>
+							<td rowspan="2">% Passing
+
+							</td>
+
+							<td colspan="2">Limits as per IS 383
+
+							</td>
+						</tr>
+						<tr>
+
+							<td >LL
+
+							</td>
+							<td >UP
+
+							</td>
+							
+						</tr>
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.sieve_analysis_child_lines" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td >
+								<span t-esc="r['wt_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['ll']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['up']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+						  </tbody>
+					</table>
+
+					<div t-if="data.graph_image_10mm" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_10mm.decode('utf-8')" style="max-width: 100%;"/>
+                    </div>
+					
+				</div>
+
+
+
+				<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+					Crushed Sand
+
+					</div>
+					
+                    <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Aggregate :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.Aggregate_name"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+					<table style="margin-top:20px">
+					   <thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+							<td rowspan="2">IS SIEVE (mm)
+							</td>
+							<td rowspan="2">Wt.Retained on each Is Sieve (gm)
+							</td>
+							<td rowspan="2">% Retained
+							</td>
+							<td rowspan="2">% Cumulative retained
+							</td>
+							<td rowspan="2">% Passing
+
+							</td>
+
+							<td colspan="2">Limits as per IS 383
+
+							</td>
+						</tr>
+						<tr>
+
+							<td >LL
+
+							</td>
+							<td >UP
+
+							</td>
+							
+						</tr>
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td >
+								<span t-esc="r['wt_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['cs_ll']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['cs_up']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+						  </tbody>
+					</table>
+
+					<div t-if="data.graph_image_crush_sand" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_crush_sand.decode('utf-8')" style="max-width: 100%;"/>
+                    </div>
+					
+				</div>
+
+
+             	<!-- D.  COMBINATION AND ANALYSIS OF COARSE AGGREGATE FRACTIONS: -->
+              <div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	D.  COMBINATION AND ANALYSIS OF COARSE AGGREGATE FRACTIONS:
+
+				</div>
+				<table style="margin-top:20px">
+                <thead style="background-color: #d3d3d3;">
+                 
+                    <tr >
+						<td rowspan="2">Sr No 
+						</td>
+						<td rowspan="2">IS SIEVE (mm)
+						</td>
+						
+					<td  colspan="2">% Passing Individual</td>
+					<td  colspan="3">% Passing combined Grading</td>
+					<td  colspan="2">Limits as per  IS 383</td>
+				
+                    </tr>
+                    <tr >
+                        <td >20 MM</td>
+                        <td >10 MM</td>
+
+						<td >38</td>
+                        <td >62</td>
+						<td >Combined Grading</td>
+
+						<td >LL</td>
+                        <td >UP</td>
+                        
+                       
+                       
+                    </tr>
+                   
+                </thead>
+                <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.combination10and20mm_child_lines" t-as="r">
+							<td >
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['passing_20mm']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['passing_10mm']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['passing_combined38']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['passing_combined62']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['combine_grading']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['combine_grading_ll']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['combine_grading_up']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+                 
+                </tbody>
+            </table>
+
+				<div t-if="data.graph_image_combination10and20mm" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_combination10and20mm.decode('utf-8')" style="max-width: 100%;"/>
+                    </div>
+			</div>
+
+
+
+                   <!-- COMBINED GRADING : -->
+
+			<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	E.  COMBINED GRADING :
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">20 MM :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.mix_proporation_20mm"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">10 MM :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.mix_proporation_10mm"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">C/Sand :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.mix_proporation_csand"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">R/Sand :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.mix_proporation_rsand"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+				<table style="margin-top:20px">
+                <thead style="background-color: #d3d3d3;">
+                 
+                    <tr >
+						<td rowspan="2">Sr No 
+						</td>
+						<td rowspan="2">IS SIEVE (mm)
+						</td>
+						
+					<td  colspan="4">% Passing</td>
+					<td  rowspan="2">Combined Grading</td>
+					<td  colspan="2">Limit as per IS 383</td>
+				
+                    </tr>
+                    <tr >
+                        <td >20 MM</td>
+                        <td >10 MM</td>
+						<td >C/Sand</td>
+                        <td >R/Sand</td>
+
+						<td >LL</td>
+                        <td >UP</td>
+                        
+                       
+                       
+                    </tr>
+                   
+                </thead>
+                <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.combine_granding_child_lines" t-as="r">
+							<td >
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['combine_grading_20mm']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['combine_grading_10mm']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['combine_grading_csand']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['combine_grading_nsand']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td>
+								<span t-esc="r['combine_grading_all']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['combine_grading_ll_all']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['combine_grading_up_all']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+                 
+                </tbody>
+            </table>
+
+				<!-- <div t-if="data.graph_image_combination10and20mm" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_combination10and20mm.decode('utf-8')" style="max-width: 100%;"/>
+                    </div> -->
+			</div>
+
+           <!-- TARGET MEAN STRENGTH -->
+
+			<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	F.  TARGET MEAN STRENGTH :
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">f'ek = target mean compressive strength at 28 days in N/mm2 :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.target_mean_strength_com"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">f'ck = characteristic comprssive strength at 28 days in N/mm2 :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.target_mean_strength_chara"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">s= standard deviation N/mm2 :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.target_mean_strength_sd"/>
+							</td>
+						</tr>
+						
+						
+					</table>
+					</div>
+
+
+					 <!-- SELECTION OF WATER - CEMENT RATIO -->
+
+			<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	G.  SELECTION OF WATER - CEMENT RATIO
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">From table 5 of IS 456, Maximum Water - Cement Ratio  
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.selection_maximum_water_cement"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">Based on experience , adopt water - cement ratio as =
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.selection_adopt_water_cement"/>
+							</td>
+						</tr>
+					
+						
+						
+					</table>
+					</div>
+
+
+<!-- SELECTION OF WATER CONTENT -->
+
+					<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	H.  SELECTION OF WATER CONTENT
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">From table 2,maximum water - cement content for 20 mm aggregate 
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.selection_water_content_maximum"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">we are used superplasticizer &amp; based on trial mix water adopted 
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.selection_water_content_superplasticizer"/>
+							</td>
+						</tr>
+					
+						
+						
+					</table>
+					</div>
+
+
+             <!-- CALCULATION OF CEMENT CONTENT -->
+
+				<div style="margin-top:20px">
+				<div style="text-align:center;font-size:18px">
+			        	I.  CALCULATION OF CEMENT CONTENT
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Water - cement ratio 
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.calculation_cement_content_wc"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">Cement  content 
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.calculation_cement_content" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="6">From table 5 of IS 456 Minimum cement 
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.calculation_cement_content_minimum"/>
+							</td>
+						</tr>
+					
+						
+						
+					</table>
+					</div>
+
+
+
+				<div style="margin-top:20px">
+				<div style="text-align:center;font-size:18px">
+			        	BLENDING PROPORTION OF COARSE &amp; FINE AGGREGATE
+
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">20MM
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.blending_proportion_20mm"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">10MM
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.blending_proportion10mm"/>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="6">R/SAND
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.blending_proportion_rsand"/>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="6">C/SAND
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.blending_proportion_csand"/>
+							</td>
+						</tr>
+					
+						
+						
+					</table>
+					</div>
+
+
+
+					
+
+			</div>
+
+				<div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height:40px">
+
+                            </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+						<div style="margin-left:500px">
+							
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height:40px">
+
+							</div>
+							<!-- <div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div> -->
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+			</t>
+		</t>
+	</template>
+
+
+
+
+    <template id="design_mix_header_footer">
+        <div t-attf-class="header article" t-att-style="report_header_style">
+			
+		
+
+			
+			<div style="width:100%;text-align:center;">
+				<span style="font-size:1rem"><b>Test Report ABC Labs</b></span>
+			</div>
+			<div class="container_eln" style="margin-right:4px;margin-left:4px;">
+			
+
+			
+					<table style="background-color: #d3d3d3;">
+						<tr>
+							<td colspan="3">Report no :
+							</td>
+							<td  colspan="3">
+								ABC
+							</td>
+							
+							<td colspan="3">Report Date :
+							</td>
+							<td colspan="3">
+								<span t-field="o.end_date"/>
+							</td>
+							<td colspan="3"  t-if="nabl">ULR NO :
+							</td>
+							<td colspan="3" t-if="nabl">
+									ABC
+							</td>
+						
+						</tr>
+					</table>
+			</div>
+        </div>
+	
+        <div t-attf-class="article" t-att-style="report_header_style">
+			
+            <t t-out="0"/>
+        </div>
+		<div t-attf-class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+               
+                <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+				
+					
+            </div>	
+        </div>
+	</template>
+
+	<template id="design_mix_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+			<div class="container_eln" style="padding-top:20px;">
+					
+					<div t-foreach="eln" t-as="o">
+						<!-- <table>
+							<tr>
+								<td colspan="3">Report no :
+								</td>
+								<td colspan="3">
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="3">Report Date :
+								<span t-field="o.end_date"/>
+								</td>
+								<td colspan="3">
+									<span t-field="o.srf_date"/>
+								</td>
+								<td colspan="3" t-if="nabl">ULR NO :
+								</td>
+								<td colspan="3" t-if="nabl">
+									<span t-field="o.sample_id.ulr_no"/>
+								</td>
+							</tr>
+						</table> -->
+						<table style="margin-top:10px; border:none">
+							<tr>
+								<td colspan="2" style=" font-weight: bold;">Client Details:</td>
+								<td colspan="10">
+									<span t-field="o.srf_id.customer.name"/><br />
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+									,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<!-- <td colspan="12">Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td> -->
+								<td colspan="2" style=" font-weight: bold;">Client Reference:</td>
+								<td colspan="10"><span t-field="o.srf_id.client_refrence"/></td>
+							</tr>
+
+							<tr>
+								<td colspan="2" style=" font-weight: bold;">Name of Work:</td>
+								<td colspan="10"><span t-field="o.srf_id.name_work"/></td>
+							</tr>
+						<!-- </table>
+
+						<table class="table" style="width:100%; font-size: 13px;"> -->
+							<tr>
+								<td colspan="2" style=" font-weight: bold;">Date of Testing:</td>
+								<td colspan="10">
+									<span t-field="o.start_date"/> to <span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" style="font-weight: bold;">Size:</td>
+								<td colspan="10">
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" style="font-weight: bold;">Grade:</td>
+								<td colspan="10">
+									<span t-field="o.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" style="font-weight: bold;">Material/Test Name:</td>
+								<td colspan="10">
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+
+							<!-- Source of Sample (only if value exists) -->
+							<tr t-if="o.material.source_sample">
+								<td colspan="2" style="font-weight: bold;">Source of Sample</td>
+								<td colspan="10">
+									<span t-field="o.material.source_sample"/>
+								</td>
+							</tr>
+
+							<!-- Test method adopted (only if value exists) -->
+							<tr t-if="o.material.test_method_adopted">
+								<td colspan="2" style="font-weight: bold;">Test method adopted:</td>
+								<td colspan="10">
+									<span t-field="o.material.test_method_adopted"/>
+								</td>
+							</tr>
+
+						</table>
+
+					</div>
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="1">Sr no 
+							</td>
+							<td colspan="3">Abstract
+							</td>
+							<td colspan="2">Cement
+							</td>
+							<td colspan="2">Slag
+							</td>
+							<td colspan="2">Miro silica
+
+							</td>
+							<td colspan="2">W/(C+F)
+
+							</td>
+
+                            <td colspan="2">(C+F)
+
+							</td>
+                            <td colspan="2">R/SAND
+
+							</td>
+                            <td colspan="2">C/SAND
+
+							</td>
+                            <td colspan="2">10MM
+
+							</td>
+
+                             <td colspan="2">20MM
+
+							</td>
+                             <td colspan="2">ADM
+
+							</td>
+                         
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_concrete_design" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="3">
+								<span t-esc="r['abstract']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['cement_display']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['slag']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['miro_silica']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['w_c_f']" />
+							</td>
+
+
+                            <td colspan="2">
+								<span t-esc="r['c_f']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['r_Sand']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['c_Sand']" />
+							</td>
+                            <td colspan="2">
+								<span t-esc="r['mm10']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['mm20']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['adm']" />
+							</td>
+
+							
+						</tr>
+					</table>
+
+					<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Total Kg/M3 :
+									<![CDATA[&nbsp;]]>
+								</td>
+                                <td colspan="6">
+									<span t-field="data.total_kg_per_m3"/>
+								</td>
+								
+							</tr>
+                            <tr cols="12">
+								<td colspan="6"> Sp Gr :
+									<![CDATA[&nbsp;]]>
+								</td>
+                                <td colspan="6">
+									<span t-field="data.sp_gr"/>
+								</td>
+								
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Mix Grade :
+									<![CDATA[&nbsp;]]>
+								</td>
+                                <td colspan="6">
+									<span t-field="data.mix_grade"/>
+								</td>
+								
+							</tr>
+						</table>
+
+                      <!-- DESIGN STIPULATIONS. -->
+
+					<div style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							A. DESIGN STIPULATIONS.
+
+						</div>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">CHARACTERISTIC COMPRESSIVE STRENGTH AT 28 DAYS :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_com" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">MAXIMUM SIZE OF AGGREGATE :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_max_size" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">WORKABILITY (SLUMP) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_work" />
+								</td>
+							</tr>
+
+
+							 <tr cols="12">
+								<td colspan="6">TYPE OF EXPOSURE  :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_exposure" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">MINIMUM CEMENT CONTENT  :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_cement" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">MAXIMUM WATER - CEMENT RATIO :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_water" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">TOLERANCE FACTOR (t) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_tolerance" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">CHEMICAL ADMIXTURE TYPE  :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_stipulations_admicture" />
+								</td>
+							</tr>
+                            
+                            
+						</table>
+					</div>
+
+<!-- B. TEST DATA FOR CONCRETE INGREDIENTS. -->
+
+					<div style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							B. TEST DATA FOR CONCRETE INGREDIENTS.
+
+
+						</div>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">SPECIFIC  GRAVITY OF CEMENT :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.test_data_gravity_cement" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">SPECIFIC  GRAVITY OF FLYASH  :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.test_data_gravity_flyash" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">CHEMICAL ADMIXTURE  :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.test_data_admixture" />
+								</td>
+							</tr>
+
+
+							 <tr cols="12">
+								<td colspan="6">FLYASH CONTENT PERCENTAGE :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.test_data_flyash" />
+								</td>
+							</tr>
+							
+                            
+						</table>
+					</div>
+
+                	<!-- SPECIFIC GRAVITY & WATER ABSORPTION OF COARSE & FINE AGGREGATE (SSD) -->
+					<div style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							SPECIFIC GRAVITY &amp; WATER ABSORPTION OF COARSE &amp; FINE AGGREGATE (SSD)
+
+
+						</div>
+					<table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="1">Sr no 
+							</td>
+							<td colspan="3">Material
+							</td>
+							<td colspan="2">Specific Gravity
+							</td>
+							<td colspan="2">Water Absorption (%)
+							</td>
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_concrete_design_material" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td colspan="3">
+								<span t-esc="r['material']" />
+							</td>
+							<td colspan="2">
+								<span t-esc="r['specific_gravity']" t-options='{"widget": "float", "precision": 3}'/>
+							</td>
+							<td colspan="2">
+								<span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 3}'/>
+							</td>
+							
+						</tr>
+					</table>
+					</div>
+
+                 <!-- C. SIEVE ANALYSIS OF COARSE & FINE  AGGREGATE -->
+
+
+				<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+					 C. SIEVE ANALYSIS OF COARSE &amp; FINE  AGGREGATE
+
+					</div>
+					
+                    <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Aggregate Size :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.size_20mm"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+					<table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+							<td rowspan="2">IS SIEVE (mm)
+							</td>
+							<td rowspan="2">Wt.Retained on each Is Sieve (gm)
+							</td>
+							<td rowspan="2">% Retained
+							</td>
+							<td rowspan="2">% Cumulative retained
+							</td>
+							<td rowspan="2">% Passing
+
+							</td>
+
+							<td colspan="2">Limits as per IS 383
+
+							</td>
+						</tr>
+						<tr>
+
+							<td >LL
+
+							</td>
+							<td >UP
+
+							</td>
+							
+						</tr>
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.sieve_analysis_child_lines_20mm" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td >
+								<span t-esc="r['wt_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['ll']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['up']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+						</tbody>
+					</table>
+
+					<div t-if="data.graph_image_20mm" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_20mm.decode('utf-8')" style="max-width: 100%;"/>
+                    </div>
+					
+				</div>
+
+
+
+					<div style="margin-top:20px">
+					<!-- <div style="text-align:center;font-size:18px">
+					 C. SIEVE ANALYSIS OF COARSE &amp; FINE  AGGREGATE
+
+					</div> -->
+					
+                    <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Aggregate Size :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.size_10mm"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+					<table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+							<td rowspan="2">IS SIEVE (mm)
+							</td>
+							<td rowspan="2">Wt.Retained on each Is Sieve (gm)
+							</td>
+							<td rowspan="2">% Retained
+							</td>
+							<td rowspan="2">% Cumulative retained
+							</td>
+							<td rowspan="2">% Passing
+
+							</td>
+
+							<td colspan="2">Limits as per IS 383
+
+							</td>
+						</tr>
+						<tr>
+
+							<td >LL
+
+							</td>
+							<td >UP
+
+							</td>
+							
+						</tr>
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.sieve_analysis_child_lines" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td >
+								<span t-esc="r['wt_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['ll']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['up']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+						  </tbody>
+					</table>
+
+					<div t-if="data.graph_image_10mm" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_10mm.decode('utf-8')" style="max-width: 100%;"/>
+                    </div>
+					
+				</div>
+
+
+
+				<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+					Crushed Sand
+
+					</div>
+					
+                    <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Aggregate :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.Aggregate_name"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+					<table style="margin-top:20px">
+					   <thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+							<td rowspan="2">IS SIEVE (mm)
+							</td>
+							<td rowspan="2">Wt.Retained on each Is Sieve (gm)
+							</td>
+							<td rowspan="2">% Retained
+							</td>
+							<td rowspan="2">% Cumulative retained
+							</td>
+							<td rowspan="2">% Passing
+
+							</td>
+
+							<td colspan="2">Limits as per IS 383
+
+							</td>
+						</tr>
+						<tr>
+
+							<td >LL
+
+							</td>
+							<td >UP
+
+							</td>
+							
+						</tr>
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td >
+								<span t-esc="r['wt_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td >
+								<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['cs_ll']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['cs_up']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+						  </tbody>
+					</table>
+
+					<div t-if="data.graph_image_crush_sand" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_crush_sand.decode('utf-8')" style="max-width: 100%;"/>
+                    </div>
+					
+				</div>
+
+
+             	<!-- D.  COMBINATION AND ANALYSIS OF COARSE AGGREGATE FRACTIONS: -->
+              <div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	D.  COMBINATION AND ANALYSIS OF COARSE AGGREGATE FRACTIONS:
+
+				</div>
+				<table style="margin-top:20px">
+                <thead style="background-color: #d3d3d3;">
+                 
+                    <tr >
+						<td rowspan="2">Sr No 
+						</td>
+						<td rowspan="2">IS SIEVE (mm)
+						</td>
+						
+					<td  colspan="2">% Passing Individual</td>
+					<td  colspan="3">% Passing combined Grading</td>
+					<td  colspan="2">Limits as per  IS 383</td>
+				
+                    </tr>
+                    <tr >
+                        <td >20 MM</td>
+                        <td >10 MM</td>
+
+						<td >38</td>
+                        <td >62</td>
+						<td >Combined Grading</td>
+
+						<td >LL</td>
+                        <td >UP</td>
+                        
+                       
+                       
+                    </tr>
+                   
+                </thead>
+                <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.combination10and20mm_child_lines" t-as="r">
+							<td >
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['passing_20mm']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['passing_10mm']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['passing_combined38']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['passing_combined62']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['combine_grading']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['combine_grading_ll']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['combine_grading_up']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+                 
+                </tbody>
+            </table>
+
+				<div t-if="data.graph_image_combination10and20mm" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_combination10and20mm.decode('utf-8')" style="max-width: 100%;"/>
+                    </div>
+			</div>
+
+
+
+                   <!-- COMBINED GRADING : -->
+
+			<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	E.  COMBINED GRADING :
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">20 MM :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.mix_proporation_20mm"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">10 MM :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.mix_proporation_10mm"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">C/Sand :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.mix_proporation_csand"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">R/Sand :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.mix_proporation_rsand"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+				<table style="margin-top:20px">
+                <thead style="background-color: #d3d3d3;">
+                 
+                    <tr >
+						<td rowspan="2">Sr No 
+						</td>
+						<td rowspan="2">IS SIEVE (mm)
+						</td>
+						
+					<td  colspan="4">% Passing</td>
+					<td  rowspan="2">Combined Grading</td>
+					<td  colspan="2">Limit as per IS 383</td>
+				
+                    </tr>
+                    <tr >
+                        <td >20 MM</td>
+                        <td >10 MM</td>
+						<td >C/Sand</td>
+                        <td >R/Sand</td>
+
+						<td >LL</td>
+                        <td >UP</td>
+                        
+                       
+                       
+                    </tr>
+                   
+                </thead>
+                <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.combine_granding_child_lines" t-as="r">
+							<td >
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['sieve_size']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['combine_grading_20mm']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['combine_grading_10mm']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['combine_grading_csand']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['combine_grading_nsand']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td>
+								<span t-esc="r['combine_grading_all']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['combine_grading_ll_all']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['combine_grading_up_all']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+                 
+                </tbody>
+            </table>
+
+				<!-- <div t-if="data.graph_image_combination10and20mm" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_combination10and20mm.decode('utf-8')" style="max-width: 100%;"/>
+                    </div> -->
+			</div>
+
+           <!-- TARGET MEAN STRENGTH -->
+
+			<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	F.  TARGET MEAN STRENGTH :
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">f'ek = target mean compressive strength at 28 days in N/mm2 :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.target_mean_strength_com"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">f'ck = characteristic comprssive strength at 28 days in N/mm2 :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.target_mean_strength_chara"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">s= standard deviation N/mm2 :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.target_mean_strength_sd"/>
+							</td>
+						</tr>
+						
+						
+					</table>
+					</div>
+
+
+					 <!-- SELECTION OF WATER - CEMENT RATIO -->
+
+			<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	G.  SELECTION OF WATER - CEMENT RATIO
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">From table 5 of IS 456, Maximum Water - Cement Ratio  
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.selection_maximum_water_cement"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">Based on experience , adopt water - cement ratio as =
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.selection_adopt_water_cement"/>
+							</td>
+						</tr>
+					
+						
+						
+					</table>
+					</div>
+
+
+<!-- SELECTION OF WATER CONTENT -->
+
+					<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	H.  SELECTION OF WATER CONTENT
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">From table 2,maximum water - cement content for 20 mm aggregate 
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.selection_water_content_maximum"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">we are used superplasticizer &amp; based on trial mix water adopted 
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.selection_water_content_superplasticizer"/>
+							</td>
+						</tr>
+					
+						
+						
+					</table>
+					</div>
+
+
+             <!-- CALCULATION OF CEMENT CONTENT -->
+
+				<div style="margin-top:20px">
+				<div style="text-align:center;font-size:18px">
+			        	I.  CALCULATION OF CEMENT CONTENT
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">Water - cement ratio 
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.calculation_cement_content_wc"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">Cement  content 
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.calculation_cement_content" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="6">From table 5 of IS 456 Minimum cement 
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.calculation_cement_content_minimum"/>
+							</td>
+						</tr>
+					
+						
+						
+					</table>
+					</div>
+
+
+
+				<div style="margin-top:20px">
+				<div style="text-align:center;font-size:18px">
+			        	BLENDING PROPORTION OF COARSE &amp; FINE AGGREGATE
+
+
+				</div>
+
+				 <table style="margin-top:20px">
+						<tr cols="12">
+							<td colspan="6">20MM
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.blending_proportion_20mm"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">10MM
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.blending_proportion10mm"/>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="6">R/SAND
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.blending_proportion_rsand"/>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="6">C/SAND
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.blending_proportion_csand"/>
+							</td>
+						</tr>
+					
+						
+						
+					</table>
+					</div>
+
+					
+					
+
+
+					
+			
+
+						<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+						<table class="table table-bordered">
+							<tr>
+								<td style="padding: 5px; font-style: italic; font-size: 12px;">
+									<b>Note:-</b>
+									&#160;&#160;(i) The results relate only to the items tested 
+									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+									&#160;&#160;(iii) Any corrections invalidate the test reports 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
+									&#160;&#160;(vi) # mark indicates Details given by Client.
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+		<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+						<div>
+							<div>
+								<b>
+								Checked By
+								</b>
+							</div>
+							<div style="height:40px">
+
+							</div>
+
+							<div>
+								<b>
+									<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+						<div>
+							<div>
+								<b>
+									Approved By
+								</b>
+							</div>
+							<div style="height:40px">
+
+							</div>
+							<div>
+								<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+								</b>
+							</div>
+
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+								</b>
+							</div>
+							<!-- <div>
+								<b>
+									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+								</b>
+							</div> -->
+						</div>
+					</div>
+					
+				<!-- </div> -->
+			</div>
+
+			<div style="margin-top: 10px; text-align: center;">
+				<p style="padding-top: 10px;">
+						...... End Of Report......
+				</p>
+			</div>
+			</t>
+		</t>
+	</template>
+</odoo>

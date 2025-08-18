@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+    <record id="mechanical_bitumen_macadam_ssl" model="ir.ui.view">
+        <field name="name">bituminous.macadam.form</field>
+        <field name="model">bituminous.macadam</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                   <group style="white-space: nowrap; width:70%;"  >
+                        <h1>
+                            <field name="name_bitumen" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group >
+                       <field name="grade"/>
+                       <field name="size_id"/>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                     <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                     <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                          Location:
+                                            </td>
+                                          
+
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: block; width: 100%;">
+                                                    <field name="location" nolabel="1" style="width: 100%;" class="o_input"/>
+                                                </div>
+                                            </td>
+                                          
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <group invisible="1">
+                         <field name="location_heding" />
+                        </group>
+
+
+                    <group invisible = "bitumen_content_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
+                        <h1 style="text-align: center;">
+                            <field name="bitumen_content_name" readonly="1" nolabel="1"/>
+                            <field name="bitumen_content_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+
+                        <div class="custom_table_borders" style="width:100%;" invisible = "bitumen_content_visible == False">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                     <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           S.No
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                           Description
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                            <field name="location_heding" nolabel="1" style="width: 100%;" class="o_input"/>
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                            Unit
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                            1
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="wt_of_samplew1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_samplew1" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                           grams
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                            2
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="wt_of_intial"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_intial" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                           grams
+                                        </td>
+                                    </tr>
+                                      <tr>
+                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                            3
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="wt_of_aggregate"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_aggregate" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                           grams
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                            4
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <label for="wt_of_extraction"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_extraction" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                           grams
+                                        </td>
+                                    </tr>
+                                     <tr>
+                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
+                                            5
+                                        </td>
+                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                            <!-- <label for="wt_of_filter"/> -->
+                                            Increased weight of filter W3 = (F2-F1)
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                            <field name="wt_of_filter" nolabel="1"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                           grams
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <group style="white-space: nowrap; width:100%;"  invisible = "bitumen_content_visible == False" string="Result">
+                            <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                        Binder content 
+                                            </td>
+                                          
+                                          
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="binder_content" nolabel="1"/>
+                                                </div>
+                                            </td>
+
+                                              <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                              %
+                                            </td>
+                                          
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </group>
+
+                         <group  invisible = "bitumen_content_visible == False">
+                          <group>
+                            <field  name="binder_content_conformity"
+                                           decoration-success="binder_content_conformity == 'pass'" 
+                                           decoration-danger="binder_content_conformity == 'fail'" 
+                                           readonly="1"/>
+                            <field  name="binder_content_nabl"
+                                         decoration-success="binder_content_nabl == 'pass'" 
+                                           decoration-danger="binder_content_nabl == 'fail'" 
+                                           readonly="1"/>
+                          </group>
+                    </group>
+                  
+               
+                    <!-- <group invisible = "sieve_visible == False"  >
+                        <h1 style="text-align: center;">
+                            <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
+                            <field name="sieve_visible" invisible="1"/>
+
+                        </h1>
+                    </group> -->
+                    <group invisible="sieve_visible == False">
+                        <div style="text-align: center; width: 100%;">
+                            <h1>
+                                <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
+                            </h1>
+                            <field name="sieve_visible" invisible="1"/>
+                        </div>
+                    </group>
+
+                   
+                    <group style="white-space: nowrap; width:70%;"  invisible = "sieve_visible == False">
+                    
+                     <group >
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                            Weight of Sample
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="wt_of_sample" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                              gms
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </group>
+
+
+                  
+            </group>
+                    <div invisible = "sieve_visible == False"  >
+                    <field name="sieve_analysis_child_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" string="Sr.No"/>
+                                <field name='sieve_size' string="IS Sieve Size"/>
+                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='percent_retained' string="% Retained"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
+                                <field name='passing_percent' string="Passing %" readonly="1"/>
+                                  <field name='specific_limt' string="Specified Limits" class="oe_center"/>
+                                
+                            </tree>
+                    </field>
+                    </div>
+
+                    <group >
+                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
+                            <div style="width: 100%;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                           Total
+                                            </td>
+                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-block; min-width: 80px;">
+                                                    <field name="total_sieve_analysis" nolabel="1"/>
+                                                </div>
+                                            </td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                         <div invisible="sieve_visible == False">
+                            <button string="Calculate"
+                                    type="object"
+                                    name="calculate_sieve"
+                                    class="oe_highlight">
+                                <i class="fa fa-calculator"/> Calculate
+                            </button>
+                        </div>
+                    </group>
+
+                  
+
+                  
+                        
+
+
+                  
+                  
+                  
+                 
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+
+
+              
+              
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

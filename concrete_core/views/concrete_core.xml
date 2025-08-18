@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="concrete_core_view" model="ir.ui.view">
+        <field name="name">mechanical.concrete.core.form</field>
+        <field name="model">mechanical.concrete.core</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade"/>
+                          <field name="thickness2"  string="Diameter of Core"/>
+
+                    </group>
+                    <!-- <group class="custom_table_borders"> -->
+                      <field name="sample_parameters" nolabel="1" class="custom_table_borders">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    <!-- </group> -->
+
+              
+
+
+                  
+                   <field name="dia_lines" mode="tree" invisible="1">
+                    <tree editable="bottom" class="custom_table_borders" >
+                        <field name="serial_no" />
+                        <field name="dia_core" />
+                        <field name="correction_dia" />
+                    </tree>
+                </field>
+
+                <div class="d-flex gap-2">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="date_of_casting">Date of Casting</label></td>
+                                <td><field name="date_of_casting"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="date_of_testing">Date of Testing</label></td>
+                                <td><field name="date_of_testing"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="age_of_test">Age of Test, days</label></td>
+                                <td><field name="age_of_test"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="age_of_days">Age of Cubes</label></td>
+                                <td><field name="age_of_days"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="area_core">Area of Core mm²</label></td>
+                                <td><field name="area_core"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="difference">Difference</label></td>
+                                <td><field name="difference"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+                <div>
+                    <field name="child_lines"  mode="tree" nolabel="1">
+                            <tree editable="bottom" class="custom_table_borders" >
+                                <field name="serial_no"  />
+                                <field name="location" />
+                                <!-- <field name="grade_con" /> -->
+                                <field name="actual_depth"  />
+                                <field name="depth"  />
+                                <field name="load" />
+                                <field name="ld_ratio" />
+                                <field name="load_n" />
+                                <field name="core_comp" />
+                                <field name="correction_factor_ld" />
+                                <!-- <field name="correction_factor_dia"/> -->
+                                <field name="correct_comp" />
+                                <field name="equivalent_cube"/>
+                            </tree>
+                    </field>
+
+                    </div>
+
+
+                    <!-- <table class="table table-sm o_form_table table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="dia_core" class="text-bold">Diameter of Core</label></td>
+                                <td><field name="dia_core" class="text-bold"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="area_core" class="text-bold">Area</label></td>
+                                <td><field name="area_core" class="text-bold"/><span> mm²</span></td>
+                            </tr>
+                        </tbody>
+                    </table> -->
+                      
+                  
+
+                    <table class="custom_table_borders"  style="white-space: nowrap; width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Parameter Name</th>
+                                <th>Result</th>
+                                <th>Unit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><label for="area_equvalent_cube" class="text-bold">Diameter of Core</label></td>
+                                <td><field name="area_equvalent_cube" class="text-bold"/></td>
+                                <td> N/mm²</td>
+                            </tr>
+                            <tr>
+                                <td><label for="any_individual_cube" class="text-bold">Area</label></td>
+                                <td><field name="any_individual_cube" class="text-bold"/></td>
+                                   <td> N/mm²</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+
+                    <div style="margin-top:10px;">
+
+                    <button type="object" class="oe_highlight" name="open_eln_page" string="Submit" />
+                    </div>
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

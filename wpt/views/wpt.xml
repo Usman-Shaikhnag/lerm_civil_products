@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_wpt_form" model="ir.ui.view">
+        <field name="name">mechanical.wpt.form</field>
+        <field name="model">mechanical.wpt</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+                    <div>
+                        <h1>
+                        <field name="name" readonly="1" string="Water Permeability Test"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="grade"/>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id"  readonly="1"/>
+                        <field name="eln_ref"  readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters" >
+                        <tree class="table-bordered o_list_view">
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+
+
+                    <group/>
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 70%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Temperature °c</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="temp_wpt"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Humidity %</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="humidity_percent_wpt"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 50%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Quantity</span></td>
+                              <td style="border: 1px solid black; padding: 8px;width:200px;"><field name="quantity"  exception="quantity" identity="extra"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Specimen Size (mm)</span></td>
+                            <td style="border: 1px solid black; padding: 8px;width:200px;"><field name="size" exception="size" identity="extra"/></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    <group/>
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 50%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Date of Casting</span></td>
+                              <td style="border: 1px solid black; padding: 8px;width:200px;"><field name="date_of_casting" identity="extra"/></td>
+                            </tr>                                 
+                         </tbody>
+                      </table>
+                    </div>
+                    <group/>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 50%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span> Date of Testing</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="date_of_testing"  identity="extra"/></td>
+                            </tr>                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    <div>
+                      <table class="table table-bordered sm-table" style="width: 30%;font-size: 15px; margin:0px;">
+                         <tbody>
+                         <tr>
+                             <td><span>Age</span></td>
+                             <td><field name="age_of_days" identity="extra"/></td>
+                           </tr>
+                           <tr>
+                             <td><span>Age of Test, days</span></td>
+                             <td><field name="age_of_test" identity="extra"/></td>
+                           </tr>
+                           <tr>
+                             <td><span>Difference</span></td>
+                             <td><field name="difference" identity="extra"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+                    <group/>
+
+
+
+
+
+
+
+                    <!-- <group>
+                        <group >
+                            <field name="temp_wpt" string="Temperature °C"/>
+                            <field name="humidity_percent_wpt" string="Humidity %"/>
+                        </group>
+                         <group>
+                            <field name="quantity"  exception="quantity" string="Quantity" identity="extra"/>
+                            <field name="size" exception="size" string="Specimen Size (mm)" identity="extra"/>
+                        </group> -->
+
+                        <!-- <group>
+                            <field name="start_date_wpt" string="Start Date"/>
+                            <field name="end_date_wpt" string="End Date"/>
+                        </group> -->
+                    <!-- </group> -->
+                  
+
+              
+                    <!-- <group >
+                        <group >
+                            <field name="date_of_casting"  string="Date of Casting" identity="extra"/>
+                        </group>
+                        <group >
+                            <field name="date_of_testing"  string="Date of Testing" identity="extra"/>
+                            
+                        </group> -->
+                        <!-- <group >
+                            <field name="age_of_days" identity="extra"/>
+                        </group>
+                        <group >
+                            <field name="age_of_test" identity="extra"/>
+                        </group>
+                        <group >
+                            <field name="difference" identity="extra"/>
+                        </group> -->
+                         <!-- <group>
+                         <field name='sample_condition'/>
+                        </group> -->
+                    <!-- </group> -->
+                   
+
+                       
+                   
+                    <group/>
+                    <group>
+                      <h4 style="white-space: nowrap;">Parameter</h4><br/>
+                        <field name="child_lines" colspan="2" nolabel="1">
+                        <tree editable="bottom" class="table-bordered o_list_view">
+                            <field name="sample" string="Sample"/>
+                            <field name="depth1" string="1"/>
+                            <field name="depth2" string="2"/>
+                            <field name="depth3" string="3"/>
+                            <field name="average" string="Average"/>
+                        </tree>
+                        </field>
+                    </group>
+
+                     <div>
+                          <table style="border: 1px solid black; width: 20%; margin-top:10px;">
+                           <tr>
+                             <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average of WPT</span></td>
+                              <td style="padding: 8px;"><field name="average_of_wpt" identity="extra"/></td>
+                           </tr>                     
+                          </table>
+                        </div>
+                    <group/>
+
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
+                              <td style="padding: 8px;"><field name="wpt_conformity"
+                               decoration-success="wpt_conformity == 'pass'" 
+                               decoration-danger="wpt_conformity == 'fail'" 
+                               readonly="1"
+                               identity="extra"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name="wpt_nabl"
+                               decoration-success="wpt_nabl == 'pass'" 
+                                decoration-danger="wpt_nabl == 'fail'" 
+                               readonly="1"
+                               identity="extra"/></td>
+                           </tr>
+                          </table>
+                        </div>
+
+
+                    <!-- <group>
+                       <field name="average_of_wpt" identity="extra"/>
+                    </group>
+                    <group>
+                       <field name="wpt_conformity"
+                               decoration-success="wpt_conformity == 'pass'" 
+                               decoration-danger="wpt_conformity == 'fail'" 
+                               readonly="1"
+                               identity="extra"/>
+                    </group>
+                    <group>
+                       <field name="wpt_nabl"
+                               decoration-success="wpt_nabl == 'pass'" 
+                                decoration-danger="wpt_nabl == 'fail'" 
+                               readonly="1"
+                               identity="extra"/>
+                    </group> -->
+                    <group/>
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ <template id="compresive_concrete_cube_report">
+		<t t-call="web.html_container">
+			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				<div class="container_eln" style="padding-top:0;">
+					<div class="" t-foreach="eln" t-as="o">
+						<table style="width: 100%; border-collapse: collapse;">
+							<tbody>
+								<tr>
+									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+								</tr>
+								<tr>
+									<td><strong>Client's Reference</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
+								</tr>
+								<tr>
+									<td><strong>Name of Work</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								</tr>
+								<tr>
+									<td><strong>Date of Testing</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.start_date" style="margin-right:10px;"/> to 
+										<span t-field="o.end_date" style="margin-left:10px;"/>
+									</td>
+								</tr>
+								<tr>
+									<td><strong>Type of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								</tr>
+								<!-- Source of Sample (only if value exists) -->
+								<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<!-- Test method adopted (only if value exists) -->
+								<tr t-if="o.material.test_method_adopted">
+									<td style="font-weight: bold;">Test method adopted:</td>
+									<td><span t-field="o.material.test_method_adopted"/></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!--Maybe Used Later -->
+					<!-- <div style="padding-top:5px">
+						<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>: 
+						
+						
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23545tur-17c1-48ac-8462-9671e4d3d09f')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						
+					</div> -->
+					
+					<div style="margin-top:2px">
+						<table class="custom_table_borders text-center">
+							<tr>
+								<td><strong>Grade of Sample</strong> : <span t-field="o.grade_id.grade"/></td>
+								<td><strong>Age Of Cubes</strong> : <span t-field="data.age_of_days"></span></td>
+							</tr>
+							<tr>
+								<td><strong>Size of Cube</strong> : <span t-field="o.sample_id.size_id.size"/></td>
+								<td><strong>Area Of Cube  : </strong><span t-field="data.area_of_cube"/>  Sq.mm</td>		
+							</tr>
+						</table>
+					</div> 
+
+					<div style="">
+						<table class="custom_table_borders">
+							<thead>
+								<tr>
+									<th style="text-align: center; font-weight: bold; width: 4%;">Sr. No</th>
+									<th style="text-align: center; font-weight: bold; white-space: nowrap;">Sample Identification</th>
+									<th style="text-align: center; font-weight: bold; width: 10%;">Weight of Cube (gms)</th>
+									<th style="text-align: center; font-weight: bold; width: 9%;">Date of casting</th>
+									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th>
+									<th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th>
+									<th style="text-align: center; font-weight: bold; width: 13%;">Compressive Strength (N/mm²)</th>
+									<th style="text-align: center; font-weight: bold; width: 15%;">Avg. Compressive Strength (N/mm²)</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<t t-set="lines" t-value="data.child_lines"/>
+								<t t-set="line_count" t-value="0"/>
+								<t t-foreach="lines" t-as="r">
+								<tr>
+									<td style="text-align: center;"><span t-esc="r.sr_no"/></td>
+									<td style="text-align: center; white-space: nowrap;"><span t-esc="r.id_mark"/></td>
+									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
+									<t t-if="r.dt_of_casting">
+										<td style="text-align: center;">
+											<span t-esc="r.dt_of_casting.strftime('%d-%m-%y')"/>
+										</td>
+									</t>
+									<t t-else="">
+										<td style="text-align: center;"><span t-esc="r.dt_of_casting"/></td>
+									</t>
+									<t t-if="r.dt_of_testing1">
+										<td style="text-align: center;">
+											<span t-esc="r.dt_of_testing1.strftime('%d-%m-%y')"/>
+										</td>
+									</t>
+									<t t-else="">
+										<td style="text-align: center;"><span t-esc="r.dt_of_testing1"/></td>
+									</t>
+									<td style="text-align: center;"><span t-esc="r.load"/></td>
+									<td style="text-align: center;">
+										<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+
+									<t t-if="line_count % 3 == 0">
+										<td style="text-align: center; vertical-align: middle;" t-att-rowspan="3">
+											<span t-esc="r.avg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+										</td>
+									</t>
+								</tr>
+								<t t-set="line_count" t-value="line_count + 1"/>
+								</t>
+							</tbody>
+						</table>
+					</div> 
+
+					<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
+						<table class="table table-bordered">
+							<tr>
+								<td style="padding: 5px; font-style: italic; font-size: 12px;">
+									<b>Note:-</b>
+									&#160;&#160;(i) The results relate only to the items tested 
+									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+									&#160;&#160;(iii) Any corrections invalidate the test reports 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
+									&#160;&#160;(vi) # mark indicates Details given by Client.
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</td>
+							</tr>
+						</table>
+						</div>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height: 50px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+
+								<div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height: 50px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+						</div>
+						<!-- <div style="text-align:center;margin-top:25px">
+							......End of Report......
+						</div> -->
+						<div style="margin-top: 10px; text-align: center;">
+							<p style="font-weight:800;">...... End Of Report......</p>
+						</div>
+					</div>
+				<!-- </div> -->
+			</t>
+		</t>
+	</template>
+    </odoo>

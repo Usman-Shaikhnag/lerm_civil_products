@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_concrete_mix_design_view" model="ir.ui.view">
+        <field name="name">mechanical.concrete.design.form</field>
+        <field name="model">mechanical.concrete.design</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                     <group style="white-space: nowrap; width:80%;" >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade" exception="grade"  string="Grade" identity="extra"/>   
+                    </group>
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                      <field name="sample_parameters"  nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+                     
+
+                    
+                   
+                      <field name="child_lines_concrete_design" nolabel="1" class="custom_table_borders" >
+                            <tree editable="bottom">
+                                <!-- <field name='serial_no'  /> -->
+                                <field name='abstract'  />
+                                <!-- <field name='cement' /> -->
+                                 <field name='cement_display' />
+                                <field name='slag' />
+                                <field name='miro_silica' />
+                                <field name='w_c_f' />
+                                <field name='c_f' />
+                                <field name='r_Sand' />
+                                <field name='c_Sand' />
+                                <field name='mm10' />
+                                <field name='mm20' />
+                                <field name='adm' />
+                            </tree>
+                    </field>
+
+
+                         
+                    
+                   
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="total_kg_per_m3">Total Kg/M3</label></td>
+                                    <td><field name="total_kg_per_m3"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="sp_gr">Sp Gr</label></td>
+                                    <td><field name="sp_gr"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="mix_grade">Mix Grade</label></td>
+                                    <td><field name="mix_grade"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+
+                      <group style="white-space: nowrap; width:80%;">
+                        <h1>
+                            <field name="design_stipulations_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+
+                   
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="design_stipulations_com">CHARACTERISTIC COMPRESSIVE STRENGTH AT 28 DAYS</label></td>
+                                    <td><field name="design_stipulations_com"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="design_stipulations_max_size">MAXIMUM SIZE OF AGGREGATE</label></td>
+                                    <td><field name="design_stipulations_max_size"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="design_stipulations_work">WORKABILITY (SLUMP)</label></td>
+                                    <td><field name="design_stipulations_work"/></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="design_stipulations_exposure">TYPE OF EXPOSURE</label></td>
+                                    <td><field name="design_stipulations_exposure"/></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="design_stipulations_cement">MINIMUM CEMENT CONTENT</label></td>
+                                    <td><field name="design_stipulations_cement"/></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="design_stipulations_water">MAXIMUM WATER - CEMENT RATIO</label></td>
+                                    <td><field name="design_stipulations_water"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="design_stipulations_tolerance">TOLERANCE FACTOR (t)</label></td>
+                                    <td><field name="design_stipulations_tolerance"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="design_stipulations_admicture">CHEMICAL ADMIXTURE TYPE</label></td>
+                                    <td><field name="design_stipulations_admicture"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                     
+                      <group style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="test_data_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                   
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="test_data_gravity_cement">SPECIFIC GRAVITY OF CEMENT</label></td>
+                                    <td><field name="test_data_gravity_cement"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="test_data_gravity_flyash">SPECIFIC GRAVITY OF FLYASH</label></td>
+                                    <td><field name="test_data_gravity_flyash"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="test_data_admixture">CHEMICAL ADMIXTURE</label></td>
+                                    <td><field name="test_data_admixture"/></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="test_data_flyash">FLYASH CONTENT PERCENTAGE</label></td>
+                                    <td><field name="test_data_flyash"/></td>
+                                </tr>
+                                 
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
+                        <!-- SPECIFIC GRAVITY & WATER ABSORPTION OF COARSE & FINE AGGREGATE (SSD) -->
+
+                       <group style="white-space: nowrap; width:80%;" >
+                        <h1>
+                            <field name="material_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                 
+                
+                         <field name="child_lines_concrete_design_material" nolabel="1"  class="custom_table_borders">
+                            <tree editable="bottom">
+                                <field name='material'  />
+                                 <field name='specific_gravity' />
+                                <field name='water_absorption' />
+                            
+                            </tree>
+                    </field>
+                          
+                 
+
+
+                    <group style="white-space: nowrap; width:80%;"  invisible="sieve_visible20mm == False">
+                        <h1>
+                            <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
+                            
+                            <field name="sieve_visible20mm" invisible="1"/>
+
+                        </h1>
+                    </group>
+
+                 
+                      <div class="d-flex gap-2" invisible="sieve_visible20mm == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="size_20mm">Aggregate Size</label></td>
+                                    <td><field name="size_20mm"/></td>
+                                </tr>
+                              
+                                 
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                    <!-- <div  invisible="sieve_visible20mm == False">
+                        <button string="Calculate" type="object" name="calculate20mm" class="oe_highlight"/>
+                    </div> -->
+
+                    <field name="sieve_analysis_child_lines_20mm" nolabel="1"   invisible="sieve_visible20mm == False" class="custom_table_borders">
+                            <tree editable="bottom">
+                                <field name='sieve_size' string="IS Sieve Size" />
+                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='percent_retained' string="% Retained"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1" string="Cum. Retained %"/>
+                                <field name='passing_percent' string="Passing %" readonly="1"/>
+                                <field name='ll' />
+                                <field name='up' />
+                            </tree>
+                    </field>
+
+                     <div invisible="sieve_visible20mm == False">
+                        <button string="Calculate" type="object" name="calculate20mm" class="oe_highlight">
+                            <i class="fa fa-calculator"/> Calculate
+                        </button>
+                    </div>
+
+                     <group invisible="sieve_visible20mm == False">
+                          <field name="graph_image_20mm" widget="image" readonly="1"/>
+                    </group>
+                
+
+
+
+                    <group invisible="sieve_visible10mm == False" style="white-space: nowrap; width:80%;">
+                      <field name="sieve_visible10mm" invisible="1"/>
+                     <!-- <field name="size_10mm" string="Aggregate Size"/> -->
+                     </group>
+
+                        <div class="d-flex gap-2" invisible="sieve_visible10mm == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="size_10mm">Aggregate Size</label></td>
+                                    <td><field name="size_10mm"/></td>
+                                </tr>
+                              
+                                 
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
+
+
+                    <!-- <div invisible="sieve_visible10mm == False">
+                        <button string="Calculate" type="object" name="calculate_sieve" class="oe_highlight"/>
+                    </div> -->
+                    <field name="sieve_analysis_child_lines" nolabel="1"   invisible="sieve_visible10mm == False" class="custom_table_borders">
+                            <tree editable="bottom">
+                                <field name='sieve_size' string="IS Sieve Size" />
+                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='percent_retained' string="% Retained"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1" string="Cum. Retained %"/>
+                                <field name='passing_percent' string="Passing %" readonly="1"/>
+                                <field name='ll' />
+                                <field name='up' />
+                            </tree>
+                    </field>
+                    <!-- <group >
+                        <field name="total_sieve_analysis"/>
+                    </group> -->
+
+                     <div invisible="sieve_visible10mm == False">
+                        <button string="Calculate" type="object" name="calculate_sieve" class="oe_highlight">
+                            <i class="fa fa-calculator"/> Calculate
+                        </button>
+                    </div>
+
+
+                    <group invisible="sieve_visible10mm == False">
+                          <field name="graph_image_10mm" widget="image" readonly="1"/>
+                    </group>
+
+
+
+                     <group invisible="aggregate_visible == False" style="white-space: nowrap; width:80%;">
+                        <h1>
+                            <field name="sieve_name1" readonly="1" nolabel="1"/>
+                            <field name="aggregate_visible" invisible="1"/>
+
+                        </h1>
+                    </group>
+
+                    <!-- <group invisible="aggregate_visible == False" style="white-space: nowrap; width:80%;">
+                   
+                     <field name="Aggregate_name" />
+                     </group> -->
+
+                      <div class="d-flex gap-2" invisible="aggregate_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="Aggregate_name">Aggregate</label></td>
+                                    <td><field name="Aggregate_name"/></td>
+                                </tr>
+                              
+                                 
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
+                    <!-- <div invisible="aggregate_visible == False">
+                        <button string="Calculate" type="object" name="calculate" class="oe_highlight"/>
+                    </div> -->
+                    <field name="child_lines" nolabel="1"  invisible="aggregate_visible == False" class="custom_table_borders">
+                            <tree editable="bottom">
+                                <!-- <field name="serial_no" string="Sr.No"/> -->
+                                <field name='sieve_size' string="IS Sieve Size"/>
+                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='percent_retained' string="% Retained"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
+                                <field name='passing_percent' string="Passing %" readonly="1"/>
+                                  <field name='cs_ll' />
+                                <field name='cs_up' />
+                                
+                            </tree>
+                    </field>
+
+                    <div invisible="aggregate_visible == False">
+                        <button string="Calculate" type="object" name="calculate" class="oe_highlight">
+                            <i class="fa fa-calculator"/> Calculate
+                        </button>
+                    </div>
+
+                     <group invisible="aggregate_visible == False">
+                          <field name="graph_image_crush_sand" widget="image" readonly="1"/>
+                    </group>
+
+           <!--  D. COMBINATION AND ANALYSIS OF COARSE AGGREGATE FRACTIONS: -->
+                      <group invisible="sieve_visible20mm == False or sieve_visible10mm == False" style="white-space: nowrap; width:80%;">
+                        <h1>
+                            <field name="combination10and20mm" readonly="1" nolabel="1"/>
+
+                        </h1>
+                      </group>
+                      <!-- <div >
+                      <button name="action_calculate_combination" 
+                            string="Calculate" 
+                            type="object" 
+                            class="btn-primary"/>
+                        </div> -->
+                    <field name="combination10and20mm_child_lines" nolabel="1"  class="custom_table_borders"  invisible="sieve_visible20mm == False or sieve_visible10mm == False">
+                            <tree editable="bottom">
+                                <field name='sieve_size' />
+                                <field name='passing_20mm' />
+                                <field name='passing_10mm' />
+                                <field name='passing_combined38' />
+                                <field name='passing_combined62' />
+                                <field name='combine_grading' />
+                                <field name='combine_grading_ll' />
+                                <field name='combine_grading_up' />
+                                
+                                
+                            </tree>
+                    </field>
+
+
+                    <group invisible="sieve_visible20mm == False or sieve_visible10mm == False">
+                          <field name="graph_image_combination10and20mm" widget="image" readonly="1"/>
+                    </group>
+
+
+                     <!--  E. COMBINED GRADING : -->
+                      <group style="white-space: nowrap; width:80%;" >
+                        <h1>
+                            <field name="combine_granding" readonly="1" nolabel="1"/>
+
+                        </h1>
+                      </group>
+
+                       <group  style="white-space: nowrap; width:80%;">
+                        <h4>
+                            <field name="mix_proporation_name" readonly="1" nolabel="1"/>
+
+                        </h4>
+                      </group>
+                     
+
+                      <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="mix_proporation_20mm">20MM</label></td>
+                                    <td><field name="mix_proporation_20mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="mix_proporation_10mm">10MM</label></td>
+                                    <td><field name="mix_proporation_10mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="mix_proporation_rsand">R/SAND</label></td>
+                                    <td><field name="mix_proporation_rsand"/></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="mix_proporation_csand">C/SAND</label></td>
+                                    <td><field name="mix_proporation_csand"/></td>
+                                </tr>
+                                 
+                              
+                            </tbody>
+                        </table>
+                        </div>
+                      
+                    <field name="combine_granding_child_lines" nolabel="1"  class="custom_table_borders" >
+                            <tree editable="bottom">
+                                <field name='sieve_size' />
+                                <field name='combine_grading_20mm' />
+                                <field name='combine_grading_10mm' />
+                                <field name='combine_grading_csand' />
+                                <field name='combine_grading_nsand' />
+
+                                <field name='combine_grading_all' />
+                                <field name='combine_grading_ll_all' />
+                                <field name='combine_grading_up_all' />
+                               
+                            </tree>
+                    </field>
+
+
+                     <group style="white-space: nowrap; width:80%;">
+                        <h1>
+                            <field name="target_mean_strength_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                   
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="target_mean_strength_com">fek = target mean compressive strength at 28 days in N/mm2</label></td>
+                                    <td><field name="target_mean_strength_com"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="target_mean_strength_chara">fck = characteristic comprssive strength at 28 days in N/mm2</label></td>
+                                    <td><field name="target_mean_strength_chara"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="target_mean_strength_sd">s= standard deviation N/mm2</label></td>
+                                    <td><field name="target_mean_strength_sd"/></td>
+                                </tr>
+                                 
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
+
+
+                      <group style="white-space: nowrap; width:80%;">
+                        <h1>
+                            <field name="selection_water_cement_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                    
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selection_maximum_water_cement">From table 5 of IS 456, Maximum Water - Cement Ratio</label></td>
+                                    <td><field name="selection_maximum_water_cement"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="selection_adopt_water_cement">Based on experience , adopt water - cement ratio as </label></td>
+                                    <td><field name="selection_adopt_water_cement"/></td>
+                                </tr>
+                             
+                                 
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
+
+
+                       <group style="white-space: nowrap; width:80%;">
+                        <h1>
+                            <field name="selection_water_content_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                     
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selection_water_content_maximum">From table 2,maximum water - cement content for 20 mm aggregate</label></td>
+                                    <td><field name="selection_water_content_maximum"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="selection_water_content_superplasticizer">we are used superplasticizer  based on trial mix water adopted  </label></td>
+                                    <td><field name="selection_water_content_superplasticizer"/></td>
+                                </tr>
+                             
+                                 
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                        <group style="white-space: nowrap; width:80%;">
+                        <h1>
+                            <field name="calculation_cement_content_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                   
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="calculation_cement_content_wc">Water - cement ratio</label></td>
+                                    <td><field name="calculation_cement_content_wc"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="calculation_cement_content">Cement content </label></td>
+                                    <td><field name="calculation_cement_content"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="calculation_cement_content_minimum">From table 5 of IS 456 Minimum cement</label></td>
+                                    <td><field name="calculation_cement_content_minimum"/></td>
+                                </tr>
+                             
+                                 
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
+
+
+
+                       <group style="white-space: nowrap; width:80%;">
+                        <h1>
+                            <field name="blending_proportion_name" readonly="1" nolabel="1"/>
+
+                        </h1>
+                    </group>
+                   
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="blending_proportion_20mm">20MM</label></td>
+                                    <td><field name="blending_proportion_20mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="blending_proportion10mm">10MM</label></td>
+                                    <td><field name="blending_proportion10mm"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="blending_proportion_rsand">R/SAND</label></td>
+                                    <td><field name="blending_proportion_rsand"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="blending_proportion_csand">C/SAND</label></td>
+                                    <td><field name="blending_proportion_csand"/></td>
+                                </tr>
+                             
+                                 
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
+                         <group style="margin-top: 20px;">
+
+                        <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                        </group>
+                    
+
+                          
+                </sheet>
+            </form>
+        </field>
+    </record>
+    </data>
+</odoo>

@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="bitumen_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    Bitumen
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+					<!-- Bitumen Content Section -->
+					<div t-if="data.bitumen_content_visible" style="margin-top: 20px">
+						<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">1. Bitumen Content</div>
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0; text-align: center;">
+									<th style="border: 1px solid #ccc; padding: 6px;">S.No</th>
+									<th style="border: 1px solid #ccc; padding: 6px;">Description</th>
+									<th style="border: 1px solid #ccc; padding: 6px;">At <t t-esc="data.bitumen_content_name"/></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td style="border: 1px solid #ccc; padding: 6px; text-align:center;">1</td>
+									<td style="border: 1px solid #ccc; padding: 6px;">Weight of the sample (W1) grams</td>
+									<td style="border: 1px solid #ccc; padding: 6px; text-align:center;"><span t-field="data.wt_of_sample"/></td>
+								</tr>
+								<tr>
+									<td>2</td>
+									<td>Initial weight of the filter paper (F1) grams</td>
+									<td><span t-field="data.init_wt_filter_paper"/></td>
+								</tr>
+								<tr>
+									<td>3</td>
+									<td>Weight of aggregate after extraction (W2) grams</td>
+									<td><span t-field="data.wt_agg_extraction"/></td>
+								</tr>
+								<tr>
+									<td>4</td>
+									<td>Weight of filter paper after extraction with fine materials (F2) grams</td>
+									<td><span t-field="data.wt_filter_paper_after_extraction"/></td>
+								</tr>
+								<tr>
+									<td>5</td>
+									<td>Increased weight of filter = (F2 - F1) grams</td>
+									<td><span t-field="data.increase_in_wt_filter_paper"/></td>
+								</tr>
+								<tr>
+									<td colspan="2" style="text-align:right; font-weight:bold">% Binder Content = (W1 - (W2 + W3)) / W1 * 100</td>
+									<td><span t-field="data.binder_content" t-options='{"widget": "float", "precision": 2}'/></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- Combined Gradation Section -->
+					<div t-if="data.combined_gradation_visible" style="margin-top: 40px">
+						<div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">2. Gradation</div>
+						<div><b>Location:</b> <t t-esc="data.bitumen_content_name"/></div>
+						<div style="margin-top: 5px"><b>Weight of Sample:</b> <span t-field="data.weight_of_sample"/> gms</div>
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px;">
+							<thead style="background-color: #f0f0f0;">
+								<tr>
+									<th style="border: 1px solid #ccc; padding: 6px;">IS Sieve</th>
+									<th style="border: 1px solid #ccc; padding: 6px;">Weight Retained (gms)</th>
+									<th style="border: 1px solid #ccc; padding: 6px;">% of Weight Retained</th>
+									<th style="border: 1px solid #ccc; padding: 6px;">% of Cumulative Wt. Retained</th>
+									<th style="border: 1px solid #ccc; padding: 6px;">% of Wt. Passing</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr t-foreach="data.combined_gradation_child_lines" t-as="line">
+									<td style="border: 1px solid #ccc; padding: 6px;"><span t-esc="line.sieve_size"/></td>
+									<td style="border: 1px solid #ccc; padding: 6px;"><span t-field="line.wt_retained"/></td>
+									<td style="border: 1px solid #ccc; padding: 6px;"><span t-field="line.percent_retained" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="border: 1px solid #ccc; padding: 6px;"><span t-field="line.cumulative_retained" t-options='{"widget": "float", "precision": 2}'/></td>
+									<td style="border: 1px solid #ccc; padding: 6px;"><span t-field="line.passing_percent" t-options='{"widget": "float", "precision": 2}'/></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div style="margin-top: 10px; font-weight: bold;">
+							Total: <span t-field="data.total_combined_gradation" t-options='{"widget": "float", "precision": 2}'/>
+						</div>
+					</div>
+
+					<div class="signatureContainer girdgird">
+						<div>
+							<div>
+								<b>
+									Tested By
+								</b>
+							</div>
+							<div style="height:20px">
+
+							</div>
+							<div>
+								<b>
+									<span t-esc="eln.sample_id.filled_by.name"/>
+								</b>
+							</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.filled_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+						
+						<div>
+							<div>
+								<b>
+									Checked By 
+								</b>
+								
+							</div>
+							<div style="height:20px">
+
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+
+							
+						</div>
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
+
+
+
+
+
+
+    <template id="bituminous_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+						<!-- <table>
+							<tr>
+								<td colspan="3">Report no :
+								</td>
+								<td colspan="3">
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="3">Report Date :
+								</td>
+								<td colspan="3">
+									<span t-field="o.srf_date"/>
+								</td>
+								<td colspan="3"  t-if="nabl">ULR NO :
+								</td>
+								<td colspan="3" t-if="nabl">
+									<span t-field="o.sample_id.ulr_no"/>
+								</td>
+							</tr>
+						</table> -->
+						<table style="margin-top:10px;">
+							<tbody>
+								<tr>
+									<td colspan="12">
+										Client Details:
+										<![CDATA[&nbsp;]]>
+										<span t-field="o.srf_id.customer.name"/><br/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+										<span t-field="o.srf_id.customer.state_id"/>,
+										<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="12">
+										Client's Reference:
+										<![CDATA[&nbsp;]]>
+										<span t-field="o.srf_id.client_refrence"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="12">
+										Name of Work:
+										<![CDATA[&nbsp;]]>
+										<span t-field="o.srf_id.name_work"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table>
+							<tbody>
+								<tr>
+									<td colspan="6">
+										Test Start Date:
+										<![CDATA[&nbsp;]]>
+										<span t-field="o.start_date"/>
+									</td>
+									<td colspan="6">
+										Test End Date:
+										<![CDATA[&nbsp;]]>
+										<span t-field="o.end_date"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="12">
+										Type of Sample:
+										<![CDATA[&nbsp;]]>
+										<span t-field="o.sample_id.sample_description"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="12">
+										Location of Sample:
+										<![CDATA[&nbsp;]]>
+										<!-- Assuming a field for location exists -->
+										<span t-field="o.sample_id.location"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="12">
+										Source of Sample:
+										<![CDATA[&nbsp;]]>
+										<!-- Assuming a field for source exists -->
+										<span t-field="o.material.source_sample"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="12">
+										Test Method Adopted:
+										<![CDATA[&nbsp;]]>
+										<!-- Assuming a field for test method exists -->
+										<span t-field="o.material.test_method_adopted"/>
+									</td>
+								</tr>
+
+								<!--
+								<tr>
+									<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
+										<span t-field="o.sample_id.client_sample_id"/>
+									</td>
+									<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
+										<span t-field="o.sample_id.sample_received_date"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="6">Size :<![CDATA[&nbsp;]]>
+										<span t-field="o.sample_id.size_id.size"/>
+									</td>
+									<td colspan="6">Grade :<![CDATA[&nbsp;]]>
+										<span t-field="o.grade_id.grade"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="6">Brand :<![CDATA[&nbsp;]]>
+										<span t-field="o.sample_id.brand"/>
+									</td>
+									<td colspan="6">Consultant Name :<![CDATA[&nbsp;]]>
+										<span t-field="o.srf_id.consultant_name1"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="6">Client Name :<![CDATA[&nbsp;]]>
+										<span t-field="o.srf_id.client"/>
+									</td>
+									<td colspan="6">Client Reference :<![CDATA[&nbsp;]]>
+										<span t-field="o.srf_id.client_refrence"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="6">Discipline :<![CDATA[&nbsp;]]>
+										<span t-field="o.discipline.discipline"/>
+									</td>
+									<td colspan="6">Group :<![CDATA[&nbsp;]]>
+										<span t-field="o.group.group"/>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="12">Material/Test Name :<![CDATA[&nbsp;]]>
+										<span t-field="o.material.name"/>
+									</td>
+								</tr>
+								-->
+							</tbody>
+						</table>
+
+					</div>
+
+					<t t-if="data.bitumen_content_visible">
+						<h4><t t-esc="data.bitumen_content_name"/></h4>
+
+						<table class="table table-sm table-bordered">
+							<thead>
+							<tr>
+								<th style="text-align: center;">S.N0.</th>
+								<th style="text-align: center;">Location of Sample</th>
+								<th style="text-align: center;">Test Result</th>
+								<th style="text-align: center;">Requirement as per MORTH (5th Revision) Table 500 - 7</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td style="text-align: center;">1</td>
+								<td style="text-align: center;">Location</td> <!-- adjust if field name differs -->
+								<td style="text-align: center;"><t t-esc="data.binder_content"/></td>
+								<td style="text-align: center;">Min. 3.4</td>
+							</tr>
+							</tbody>
+						</table>
+					</t>
+
+					<t t-if="data.combined_gradation_visible">
+						<h4><t t-esc="data.combined_gradation_name"/></h4>
+
+						<!-- <p><strong>Weight of Sample:</strong> <t t-esc="data.weight_of_sample"/></p> -->
+
+						<table class="table table-sm table-bordered" style="text-align: center;">
+							<thead>
+								<tr>
+									<th style="text-align: center;">IS Sieve</th>
+									<th style="text-align: center;">Wt. Retained in gms</th>
+									<th style="text-align: center;">% Retained</th>
+									<th style="text-align: center;">Cum. Retained %</th>
+									<th style="text-align: center;">Passing %</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-foreach="data.combined_gradation_child_lines" t-as="line">
+									<tr>
+										<td style="text-align: center;"><t t-esc="line.sieve_size"/></td>
+										<td style="text-align: center;"><t t-esc="line.wt_retained"/></td>
+										<td style="text-align: center;"><t t-esc="line.percent_retained" t-options='{"widget": "float", "precision": 2}'/></td>
+										<td style="text-align: center;"><t t-esc="line.cumulative_retained" t-options='{"widget": "float", "precision": 2}'/></td>
+										<td style="text-align: center;"><t t-esc="line.passing_percent"/></td>
+									</tr>
+								</t>
+							</tbody>
+						</table>
+
+						<!-- <p><strong>Total:</strong> <t t-esc="data.total_combined_gradation"/></p> -->
+					</t>
+					
+					<div style="page-break-inside: avoid;">
+                        <div style="margin-top:10px" class="noteContainer">
+                            <div>
+                                <b>Note :-</b>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li>
+										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
+                                    </li>
+                                    <li>
+										Sample(s) was/were not drawn by laboratory.
+                                    </li>
+                                    <li>
+										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
+                                    </li>
+                                   <li t-if="eln.has_witness">
+										Test witnessed by : <span t-esc="eln.witness_name"/>
+										
+									</li>
+									<li t-if="eln.remarks">
+										<span t-esc="eln.remarks"/>
+									</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
+
+                            <div>
+                                <div>
+                                    <b>
+								Checked By
+                                    </b>
+                                </div>
+                                <div style="height:30px">
+
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="eln.sample_id.check_by.name"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+								        (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                                    </b>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+                                </div>
+                                <div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <b>
+								Approved By 
+                                    </b>
+
+                                </div>
+                                <div style="height:30px">
+
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="eln.sample_id.approved_by.name"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                    </b>
+                                </div>
+                                
+                            </div>
+                        </div>
+						<!-- <div style="text-align:center;margin-top:25px">
+							......End of Report......
+                        </div> -->
+                    </div>
+                        
+                    </div>
+				<!-- </div> -->
+				
+			</t>
+		</t>
+	</template>
+</odoo>

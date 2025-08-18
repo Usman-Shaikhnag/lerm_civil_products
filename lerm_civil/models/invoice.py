@@ -70,21 +70,21 @@ class AccountMoveLineInherited(models.Model):
     report_no = fields.Char(string="Report No")
     pricelist_id = fields.Many2one("product.pricelist",string="Pricelist",compute='_compute_pricelist')
     product_id = fields.Many2one('product.product', string='Product', ondelete='restrict')
-    report_no1 = fields.Many2many("lerm.srf.sample", string="Report No",domain="['&',('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced'),'|',('srf_id.customer', '=', partner_id),('srf_id.billing_customer', '=', partner_id)]")
+    report_no1 = fields.Many2many("lerm.srf.sample", string="Report No",domain="[('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced'),('srf_id.customer', '=', partner_id)]")
     
-    @api.onchange('partner_id', 'product_id')
-    def _onchange_partner_or_product(self):
-        for rec in self:
-            domain = [
-                '&',
-                '|',
-                ('srf_id.customer', '=', rec.partner_id.id),
-                ('srf_id.billing_customer', '=', rec.partner_id.id),
-                ('state', '=', '4-in_report'),
-                ('invoice_status', '!=', '2-invoiced'),
-                ('material_id', '=', rec.product_id.id)
-            ]
-            return {'domain': {'report_no1': domain}}
+    # @api.onchange('partner_id', 'product_id')
+    # def _onchange_partner_or_product(self):
+    #     for rec in self:
+    #         domain = [
+    #             '&',
+    #             '|',
+    #             ('srf_id.customer', '=', rec.partner_id.id),
+    #             ('srf_id.billing_customer', '=', rec.partner_id.id),
+    #             ('state', '=', '4-in_report'),
+    #             ('invoice_status', '!=', '2-invoiced'),
+    #             ('material_id', '=', rec.product_id.id)
+    #         ]
+    #         return {'domain': {'report_no1': domain}}
 
     @api.onchange("pricelist_id")
     def onchange_pricelist_id(self):

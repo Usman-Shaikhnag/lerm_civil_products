@@ -626,7 +626,7 @@ class GsbMechanical(models.Model):
               # Only one point, no interpolation possible
               result = container[0]
               print('Only one data point, result:', result)
-            elif len(container) >= 3:
+            elif len(container) >= 3 and len(blows) >= 3:
               # Use your interpolation formula (adjust indexes as needed)
               result = (container[1]*100 - ((container[1] - container[2]) * 100 * (25 - blows[1])) / (blows[2] - blows[1])) / 100
               print('Interpolated result:', result)
