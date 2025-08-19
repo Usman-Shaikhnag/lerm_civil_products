@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="lerm_civil_dashboard.MainDashboard">
+        <div class="container-fluid py-4">
+
+            <!-- KPI Boxes -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0 rounded-3 h-100 text-center">
+                        <div class="card-body">
+                            <h6 class="text-muted">Total Samples</h6>
+                            <h2 class="fw-bold text-primary" t-esc="this.dashboard_state.projects_count"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0 rounded-3 h-100 text-center">
+                        <div class="card-body">
+                            <h6 class="text-muted">Total States</h6>
+                            <h2 class="fw-bold text-success" t-esc="this.dashboard_state.total_states"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date Filters -->
+            <div class="row mb-4 justify-content-center">
+                <div class="col-md-8 text-center">
+                    <div class="btn-group mb-3">
+                        <button class="btn btn-outline-primary" t-on-click="_onDateFilter" data-days="30">Last 30 Days</button>
+                        <button class="btn btn-outline-primary" t-on-click="_onDateFilter" data-days="180">Last 180 Days</button>
+                        <button class="btn btn-outline-primary" t-on-click="_onDateFilter" data-days="365">Last 365 Days</button>
+                    </div>
+                    <div>
+                        <input type="date" class="form-control d-inline-block w-auto me-2" t-ref="start_date"/>
+                        <input type="date" class="form-control d-inline-block w-auto me-2" t-ref="end_date"/>
+                        <button class="btn btn-success" t-on-click="_onCustomDate">Apply</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Side by Side -->
+            <div class="row g-4">
+                <!-- Samples Over Time -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0 rounded-3 h-100">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Samples Over Time</h6>
+                            <div>
+                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchTimeChart('line')">Line</button>
+                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchTimeChart('bar')">Bar</button>
+                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchTimeChart('pie')">Pie</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas t-ref="chartCanvas" style="min-height:300px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Samples by State -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0 rounded-3 h-100">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Samples by State</h6>
+                            <div>
+                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchStateChart('line')">Line</button>
+                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchStateChart('bar')">Bar</button>
+                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchStateChart('pie')">Pie</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas t-ref="stateChartCanvas" style="min-height:300px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </t>
+</templates>
