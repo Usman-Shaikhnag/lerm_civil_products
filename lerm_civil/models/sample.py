@@ -167,6 +167,9 @@ class LermSampleForm(models.Model):
     resampled = fields.Boolean("Resampled")
     report_issued_date = fields.Date("Report Issued Date")
 
+    display_report_portal = fields.Boolean("Display on Portal")
+    customer_portal_sample = fields.Many2one('customer.sample.line',string="Customer Portal Sample", readonly=True)
+
     @api.depends('quantity_received', 'quantity_consumed','quantity_discarded')
     def compute_quantity_balance(self):
         for rec in self:
