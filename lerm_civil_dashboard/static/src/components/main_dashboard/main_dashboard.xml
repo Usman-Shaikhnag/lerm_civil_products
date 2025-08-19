@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="lerm_civil_dashboard.MainDashboard">
+        <div>
+            <center>
+                <h1 style="margin:20px;">Main Dashboard</h1>
+            </center>
+        </div>
+
+        <!-- Date Filter -->
+        <div class="o_control_panel mb-3">
+            <div class="btn-group" role="group">
+                <button class="btn btn-primary" t-on-click="_onDateFilter" data-days="30">Last 30 Days</button>
+                <button class="btn btn-primary" t-on-click="_onDateFilter" data-days="180">Last 180 Days</button>
+                <button class="btn btn-primary" t-on-click="_onDateFilter" data-days="365">Last 365 Days</button>
+            </div>
+            <div class="mt-2">
+                <input type="date" t-ref="start_date"/>
+                <input type="date" t-ref="end_date"/>
+                <button class="btn btn-success" t-on-click="_onCustomDate">Apply</button>
+            </div>
+        </div>
+
+        <!-- Chart Type Switcher -->
+        <div class="mb-3">
+            <button class="btn btn-outline-secondary" t-on-click="() => this.switchChart('line')">Line</button>
+            <button class="btn btn-outline-secondary" t-on-click="() => this.switchChart('bar')">Bar</button>
+            <button class="btn btn-outline-secondary" t-on-click="() => this.switchChart('pie')">Pie</button>
+        </div>
+
+        <!-- Chart -->
+        <div style="width: 100%; max-width: 800px; margin: auto;">
+            <canvas t-ref="chartCanvas"></canvas>
+        </div>
+    </t>
+</templates>
