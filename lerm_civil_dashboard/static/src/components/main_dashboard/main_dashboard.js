@@ -88,7 +88,7 @@ class MainDashboard extends Component {
     // Add colors only if bar
     const stateDataset = {
       label: "Samples No",
-      data: this.dashboard_state.counts,
+      data: this.dashboard_state.state_counts,
       borderWidth: 2,
       fill: true,
     };
