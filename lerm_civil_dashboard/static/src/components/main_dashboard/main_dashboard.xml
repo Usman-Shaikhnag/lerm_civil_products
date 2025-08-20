@@ -52,8 +52,9 @@
                                 <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchTimeChart('pie')">Pie</button>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <canvas t-ref="chartCanvas" style="min-height:300px;"></canvas>
+                        <!-- <div class="card-body"> -->
+                        <div class="card-body text-center" style="height:350px;">
+                            <canvas t-ref="chartCanvas"></canvas>
                         </div>
                     </div>
                 </div>
@@ -69,9 +70,10 @@
                                 <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchStateChart('pie')">Pie</button>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <canvas t-ref="stateChartCanvas" style="min-height:300px;"></canvas>
+                        <div class="card-body text-center" style="height:350px;">
+                            <canvas t-ref="stateChartCanvas"></canvas>
                         </div>
+
                     </div>
                 </div>
             </div>

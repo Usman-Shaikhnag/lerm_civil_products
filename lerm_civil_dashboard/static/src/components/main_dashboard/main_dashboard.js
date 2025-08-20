@@ -24,8 +24,8 @@ class MainDashboard extends Component {
     this.chartInstance = null;
     this.stateChartInstance = null;
 
-    this.timeChartType = "line"; 
-    this.stateChartType = "bar"; 
+    this.timeChartType = "line";
+    this.stateChartType = "bar";
 
     this.start_date = this._getDateXDaysAgo(30);
     this.end_date = this._today();
@@ -73,7 +73,11 @@ class MainDashboard extends Component {
           },
         ],
       },
-      options: { responsive: true, plugins: { legend: { display: true } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false, // 👈 allow custom height
+        plugins: { legend: { display: true } },
+      },
     });
   }
 
@@ -114,7 +118,11 @@ class MainDashboard extends Component {
         labels: this.dashboard_state.state_labels,
         datasets: [stateDataset],
       },
-      options: { responsive: true, plugins: { legend: { display: true } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false, // 👈 allow custom height
+        plugins: { legend: { display: true } },
+      },
     });
   }
 
