@@ -20,6 +20,7 @@
                         <field name="sample_id" readonly="1" />
                         <field name="eln_ref" readonly="1"/>
                         <field name="size_id"/>
+                        <field name="start_date" invisible="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
 
@@ -512,7 +513,7 @@
 
 
                     <div invisible = "compressive_visible == False">
-                        <field name="compressive_lines">
+                        <field name="compressive_lines" >
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no"/>
                                 <field name="dt_of_casting" />
