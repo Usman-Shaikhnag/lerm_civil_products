@@ -245,6 +245,26 @@
             <p class="o_view_nocontent_smiling_face">Sample Register</p>
         </field>
     </record>
+
+    <record id="customer_sample_request_action" model="ir.actions.act_window">
+        <field name="name">Customer Sample Requests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">customer.sample.requests</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Customer Sample Requests</p>
+        </field>
+    </record>
+
+    <record id="lerm_portal_master_action" model="ir.actions.act_window">
+        <field name="name">Portal User Master</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">portal.user.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Portal User Master</p>
+        </field>
+    </record>
     
     <menuitem id="lerm_root"
         name="LERM CIVIL"
@@ -315,6 +335,12 @@
         action="lab_master_action"
         sequence="14" />
 
+    <menuitem id="lerm_portal_user_master"
+        parent="lerm_menu"
+        name="Portal User Master"
+        action="lerm_portal_master_action"
+        sequence="15" />
+
     <menuitem id="lerm_test_method"
         name="Test Method"
         parent="lerm_menu"
@@ -348,7 +374,15 @@
         parent="lerm_transaction_data"
         action="test_eln_action"
         sequence="16" />
-    
+
+
+    <menuitem id="customer_sample_request"
+        name="Customer Sample Request"
+        parent="lerm_transaction_data"
+        action="customer_sample_request_action"
+        sequence="20" />
+
+
     <menuitem id="sample_status"
         name="Operational Status"
         parent="lerm_root"

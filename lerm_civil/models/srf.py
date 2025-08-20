@@ -169,6 +169,8 @@ class SrfForm(models.Model):
     active = fields.Boolean(string="Active",default=True)
     
     attachment_path = fields.Char("Attachment")
+    customer_portal_request = fields.Many2one('customer.sample.line',string="Customer Portal Request", readonly=True)
+
     
     def download_attachment(self):
         host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host

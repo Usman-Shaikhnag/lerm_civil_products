@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="lerm_customer_sample_request_form" model="ir.ui.view">
+            <field name="name">customer.sample.request.form</field>
+            <field name="model">customer.sample.requests</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+
+                        <button
+                            type="object"
+                            name="confirm_sample_request"
+                            invisible="state in ('confirmed')"
+                            string="Confirm"
+                            />
+                        
+                        <button
+                            type="object"
+                            name="confirm_sample_request"
+                            invisible="state in ('draft')"
+                            string="Reset to Draft"
+                            />
+                        <field   readonly="1" name="state" widget="statusbar"/>
+
+                    </header>
+                    <sheet>
+                        <group style="width:100%">
+                            <field name="partner_id"/>
+                            <field name="project"/>
+                            <field name="date"/>
+                            <field name="billing_customer"/>
+                            <field name="attachment" filename="attachment_name"/>
+                            <field name="attachment_name" invisible="1"/>
+                            <field name="samples">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="product_description"/>
+                                    <field name="grade_id"/>
+                                    <field name="size_id"/>
+                                    <field name="parameters" widget="many2many_tags"/>
+                                </tree>
+                            </field>
+                            
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="lerm_customer_sample_request_tree" model="ir.ui.view">
+            <field name="name">customer.sample.requests.tree</field>
+            <field name="model">customer.sample.requests</field>
+            <field name="arch" type="xml">
+                <tree default_order='create_date desc' >
+                    <field name="partner_id"/>
+                    <field name="date"/>
+                    <field name="project" optional="show"/>
+                    <field name="state" decoration-success= "state == 'confirmed'" decoration-danger= "state == 'draft'" widget="badge"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="lerm_user_master_tree" model="ir.ui.view">
+            <field name="name">portal.user.master.tree</field>
+            <field name="model">portal.user.master</field>
+            <field name="arch" type="xml">
+                <tree default_order='create_date desc' >
+                    <field name="customer"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="lerm_user_master_form" model="ir.ui.view">
+            <field name="name">portal.user.master.form</field>
+            <field name="model">portal.user.master</field>
+            <field name="arch" type="xml">
+                <form>
+                    
+                    <sheet>
+                        <group style="width:100%">
+                            <field name="customer"/>
+                            <field name="child_users">
+                                <tree editable="bottom">
+                                    <field name="partner_id"/>
+                                   
+                                </tree>
+                            </field>
+                            
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
