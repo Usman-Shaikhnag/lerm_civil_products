@@ -2254,22 +2254,14 @@ class CrushingValueLine(models.Model):
     # wt_of_cylinder = fields.Integer(string="Weight of the empty cylinder in gms")
     # total_wt_of_dried = fields.Integer(string="Total weight of oven dried ( 4.0 hrs ) aggregate sample filling the cylindrical measure in gms")
     total_wt_aggregate = fields.Float(string="Wt of Aggregate Passing I.S Sieve 12.5 mm but retained in I.S. Sieve 10 mm Gms (W1)")
-    wt_of_aggregate_retained = fields.Float(string="Wt of Aggregate Retained on  I.S Sieve 2.36  mm after the test Gms (W2)", compute="_compute_wt_of_aggregate_retained")
-    wt_of_aggregate_passing = fields.Float(string="Wt of Stone Pieces Passing I.S Sieve 2.36 mm after the test ( W3)")
+    wt_of_aggregate_retained = fields.Float(string="Wt of Aggregate Retained on  I.S Sieve 2.36  mm after the test Gms (W2)")
+    wt_of_aggregate_passing = fields.Float(string="Wt of Stone Pieces Passing I.S Sieve 2.36 mm after the test ( W3)", compute="_compute_wt_of_aggregate_retained")
     crushing_value = fields.Float(string="Aggregate Crushing value", compute="_compute_crushing_value")
 
-
-
-    # @api.depends('total_wt_of_dried', 'wt_of_cylinder')
-    # def _compute_total_wt_aggregate(self):
-    #     for rec in self:
-    #         rec.total_wt_aggregate = rec.total_wt_of_dried - rec.wt_of_cylinder
-
-
-    @api.depends('total_wt_aggregate', 'wt_of_aggregate_passing')
+    @api.depends('total_wt_aggregate', 'wt_of_aggregate_retained')
     def _compute_wt_of_aggregate_retained(self):
         for rec in self:
-            rec.wt_of_aggregate_retained = rec.total_wt_aggregate - rec.wt_of_aggregate_passing
+            rec.wt_of_aggregate_passing = rec.total_wt_aggregate - rec.wt_of_aggregate_retained
 
 
     @api.depends('wt_of_aggregate_passing', 'total_wt_aggregate')
@@ -2281,16 +2273,16 @@ class CrushingValueLine(models.Model):
                 rec.crushing_value = 0.0
 
 
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('sample_no'))
-    #             vals['sample_no'] = max_serial_no + 1
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sample_no'))
+                vals['sample_no'] = max_serial_no + 1
 
-    #     return super(CrushingValueLine, self).create(vals)
+        return super(CrushingValueLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
