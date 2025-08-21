@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="rcpt_datasheet1">
+        <t t-call="web.html_container">
+            <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px;font-weight: bold">
+                    Concrete-RCPT
+                </div>
+
+                <div class="container_eln" style="margin-top:5px">
+                    <table style="margin-top:20px">
+                        <tr cols="12">
+                            
+                            <td colspan="6">Job No :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.kes_no"></span>
+                            </td>
+                            <td colspan="6">Test Start Date: 
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.start_date"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            </td>
+                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                            </td>
+                        </tr>
+                         <tr style="height:50px" cols="12">
+                            <td colspan="4">Performed By :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.technician.name"/>
+                            </td>
+                            <td colspan="4">Witness Name :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.witness_name"/>
+                            </td>
+                            <td colspan="4">Witness Signature :
+                                <![CDATA[&nbsp;]]>
+                                <span style='padding:20px'></span>
+                            </td>
+                        </tr>
+                        
+                    </table>
+                    <div style="margin-top:20px">
+                        
+                        
+                            <table>
+                               
+                               
+                                <tr>
+                                    <td><b>Temp.of Concrete Surface(°C) :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.temp_conc_surface"/></td>  
+                                </tr>
+                                <tr>
+                                    <td ><b>Temp.around the Specimen(°C) :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.temp_around_specimen"/></td>
+                                </tr>
+                                <tr>
+                                    <td ><b>Date Of Conditiong :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.date_conditioning"/></td>
+                                </tr>
+                                <tr>
+                                    <td ><b>Current Applied :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.current_apply"/></td>
+                                </tr>
+                                <tr>
+                                    <td ><b>Initial Temp of NaOH(°C) :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.int_temp_naoh"/></td>
+                                </tr>
+                                <tr>
+                                    <td ><b>Initial Temp of Nacl(°C) :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.int_temp_nacl"/></td>
+                                </tr>
+
+
+                                <tr>
+                                    <td ><b>Date and time Specimen Prepared :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.date_specimen_prepared"/></td>
+                                </tr>
+                                <tr>
+                                    <td ><b>Date and time Conditioning Started :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.date_conditioning_started"/></td>
+                                </tr>
+                                <tr>
+                                    <td ><b>Date and time Vaccum Started :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.date_vaccum_started"/></td>
+                                </tr>
+                                <tr>
+                                    <td ><b>Date and time Water Added :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.date_water_added"/></td>
+                                </tr>
+                                <tr>
+                                    <td ><b>Date and time Vaccum Turn Off :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.date_vaccum_turn_of"/></td>
+                                </tr>
+                                <tr>
+                                    <td ><b>Date and time Soaking Started :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.date_soaking_started"/></td>
+                                </tr>
+                                <tr>
+                                    <td ><b>Date and time Soaking Completed :</b></td>
+                                    <td style="text-align: center;"><span t-field="data.date_soaking_completed"/></td>
+                                </tr>
+                                
+                                
+                                
+                               
+                            </table>
+
+                                        
+                    </div>
+                    
+                    <!-- Core sample and its dimension  -->
+                    
+                    <div style="margin-top:20px">
+                        <div style="text-align:center;font-size:18px">
+                            <b> Concrete-RCPT</b>
+                        </div>
+                        <table>
+                            <tr cols="12">
+                                <td colspan="3" style="text-align: center;"><b>Sample No</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Height</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Dia Of Core</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Identification Mark</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I0</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I30</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I60</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I90</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I120</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I150</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I180</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I210</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I240</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I270</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I300</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I330</b></td>
+                                <td colspan="3" style="text-align: center;"><b>I360</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Qx</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Qs</b></td>
+                               
+                            </tr>
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="data.child_lines" t-as="r">
+                                <td colspan="3" style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['height']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['dia_core']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['identification_mark']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['io']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i30']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i60']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i90']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i120']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i150']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i180']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i210']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i240']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i270']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i300']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i330']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['i360']"/>
+                                </td>
+                                 <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['qx']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['qs']"/>
+                                </td>
+                                
+                            </tr>
+                        </table>
+
+                        
+                    </div>
+
+                    
+                   	
+                   
+                    
+                    <!-- authorizeRowDataSheet -->
+                    <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height:40px">
+
+                            </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+						<div style="margin-left:500px">
+							
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 40px;">
+                                <t t-if="eln.sample_id.checkby_signature_required">
+                                    <div t-if="eln.sample_id.check_by.employee_id.signature">
+                                        <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                    </div>
+                                    
+                                </t>
+                            </div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+            </div>
+
+            </t>
+        </t>
+    </template>
+
+</odoo>
