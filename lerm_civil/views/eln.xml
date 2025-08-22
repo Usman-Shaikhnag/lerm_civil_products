@@ -141,10 +141,10 @@
 
                 <field name="sop"/>
 
-                <group style="width:100%">
+                <group style="width:100%" invisible="1">
                     <field name="parameters_input" nolabel="1" invisible="is_product_based_calculation == True">
                         <tree editable="bottom" delete="1">
-                            <field name="parameter_result"/>
+                            <field name="parameter_result" />
                             <field name="is_parameter_dependent"/>
                             <field name="identifier" invisible="1"/>
                             <field name="inputs"/>
@@ -155,7 +155,7 @@
                 </group>
             </sheet>
 
-            <div class="oe_chatter">
+            <div class="oe_chatter" >
                 <field name="message_follower_ids" widget="mail_followers"/>
                 <field name="message_ids" widget="mail_thread"/>
                 <field name="activity_ids" widget="mail_activity"/>
@@ -330,7 +330,7 @@
                         <tree editable="bottom">
                             <field name="wizard_id" invisible="1"/>
                             <field name="inputs_id" invisible="1"/>
-                            <field name="parameter_result"/>
+                            <field name="parameter_result" />
                             <field name="is_parameter_dependent"/>
                             <field name="identifier"/>
                             <field name="inputs"/>
