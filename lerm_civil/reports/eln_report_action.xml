@@ -700,5 +700,45 @@
         <field name="binding_type">report</field>
     </record>
 
+    <record id="rcmt_datasheet_action" model="ir.actions.report">
+        <field name="name">RCMT DataSheet </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rcmt.rcmt_datasheet</field>
+        <field name="report_file">rcmt.rcmt_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="rcmt_mec_report_action" model="ir.actions.report">
+        <field name="name">RCMT Report </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rcmt.rcmt_mec_report</field>
+        <field name="report_file">rcmt.rcmt_mec_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="rcpt_datasheet1_action" model="ir.actions.report">
+        <field name="name">RCPT DataSheet </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rcpt.rcpt_datasheet1</field>
+        <field name="report_file">rcpt.rcpt_datasheet1</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="rcpt_mec_report1_action" model="ir.actions.report">
+        <field name="name">RCPT Report </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rcpt.rcpt_mec_report1</field>
+        <field name="report_file">rcpt.rcpt_mec_report1</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
 
 </odoo>
