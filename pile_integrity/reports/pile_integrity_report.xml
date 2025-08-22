@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="pile_integrity_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+
+
+			<div class="page" style="page-break-before: always;margin-top: 60px;" t-foreach="eln" t-as="o">
+			   <div style="width: 100%;" >
+					<div style="display: flex; justify-content: space-between; align-items: center;">
+						<p style="margin: 0;">To,</p>
+						<p style="margin: 0; text-align: right;">Date: <t t-esc="o.start_date"/></p>
+					</div>
+					<div style="text-align: left; margin-top: 10px;">
+					<b><span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+								
+									<span t-field="o.srf_id.customer.country_id"/></b>
+									<br></br>
+
+									
+
+									<b>Ref : 1. <span t-field="o.srf_id.client_refrence"/></b>
+					</div>
+				</div>
+                <p style="margin-top: 20px;">Dear Sir,</p>
+                <p>With respect to the above subject, please check the following annexure attached herewith:</p>
+
+                <table style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 10px;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid black;">
+                            <th style="padding: 5px; border: 1px solid black;">Sr. No.</th>
+                            <th style="padding: 5px; border: 1px solid black;">Annexure</th>
+                            <th style="padding: 5px; border: 1px solid black;">Content Page Nos.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 5px; border: 1px solid black;">1</td>
+                            <td style="padding: 5px; border: 1px solid black;">I - Test Description</td>
+                              <td style="padding: 5px; border: 1px solid black;">2-5</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px; border: 1px solid black;">2</td>
+                            <td style="padding: 5px; border: 1px solid black;">II - Pile Integrity Report</td>
+                            <td style="padding: 5px; border: 1px solid black;"><span class="page"/> / <span class="topage"/></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px; border: 1px solid black;">3</td>
+                            <td style="padding: 5px; border: 1px solid black;">III - Pile Integrity Graphs</td>
+                            <td style="padding: 5px; border: 1px solid black;">9-12</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px; border: 1px solid black;">4</td>
+                            <td style="padding: 5px; border: 1px solid black;">IV - Discussion Of Test Report</td>
+                            <td style="padding: 5px; border: 1px solid black;">13-13</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p style="margin-top: 10px;">Feel free to call us in case of any doubts.</p>
+            </div>
+
+				<div class="page" style="page-break-before: always;">
+				  <div style="text-align:center;font-size:30px;margin-top: 60px;">
+				           <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+							<b >Annexure I</b><br/>
+							<b >TEST DESCRIPTIONS</b>
+				</div>
+						
+			</div>
+			
+			  <div class="page" style="page-break-before: always;margin-top: 60px;">
+					<div style="text-align:center;font-size:18px">
+					   TEST DESCRIPTIONS
+
+			     	</div>
+					<div style="text-align:center;font-size:18px; margin-top:20px">
+					 1. PILE INTEGRITY TEST
+			     	</div>
+				
+			        <table style="margin-top:20px">
+					<div >
+						 <b>Code of Reference :  </b><span t-field="data.code_ref" />
+					</div>
+						 <br></br>
+						<div style="margin-top:20px">
+						  <b>Principle :  <br></br></b><span t-field="data.principle_details" style="margin-left: 20px;"/>
+						</div>
+						<div style="display: flex; justify-content: center; align-items: center; height: 100vh; margin-top: 20px; margin-left: 250px;">
+							<img t-attf-src="data:image/png;base64,{{data.instrument_image}}" alt="Image" id="photo" class="img img-responsive" style="width: 400px; height: 400px;" />
+						</div>
+
+                     <div style="margin-top:20px">
+						  <b>Procedure :  </b> 
+					
+						<!-- <t t-set="i" t-value="0"/> -->
+						<!-- <tr t-foreach="data.procedure_id" t-as="r"> -->
+							<div>
+								<!-- <span t-esc="i + 1"/>
+								<t t-set="i" t-value="i + 1"/> 
+								<span t-esc="r['name']" style="margin-left: 20px;"/> -->
+								<!-- <p>
+									<t t-raw="data.procedure.replace('\n', '&lt;br/&gt;')"/>
+
+								</p> -->
+								<t t-if="data.procedure">
+										<t t-raw="data.procedure.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<!-- If no procedure data is available, display a message -->
+									<t t-else="">
+										No procedure data available.
+									</t>
+
+							</div>
+					
+						<!-- </tr> -->
+					  </div>
+					  <div style="margin-top:20px">
+						  <b>Influences Of Test Result :  <br></br></b>
+						  <!-- <p style="line-height: 0.8; margin: 0;">
+									<t t-raw="data.influences_result.replace('\n', '&lt;br/&gt;')"/>
+
+								</p> -->
+								<t t-if="data.influences_result">
+										<t t-raw="data.influences_result.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<!-- If no influences_result data is available, display a message -->
+									<t t-else="">
+										No influences result data available.
+									</t>
+						</div>
+
+						 <div style="margin-top:20px">
+						  <b>Interpretation Of Test Result :  <br></br></b> 
+						  <!-- <p style="line-height: 0.8; margin: 0;">
+									<t t-raw="data.interpretation_result.replace('\n', '&lt;br/&gt;')"/>
+
+								</p> -->
+								<t t-if="data.interpretation_result">
+										<t t-raw="data.interpretation_result.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<!-- If no influences_result data is available, display a message -->
+									<t t-else="">
+										No influences result data available.
+									</t>
+						</div>
+
+					
+							
+
+					</table>
+				</div>
+                <div class="container_eln" >
+					<div style="display: flex; justify-content: center; align-items: center; height: 100vh; margin-top: 20px; margin-left: 100px;">
+							<img t-attf-src="data:image/png;base64,{{data.instrument_description_image}}" alt="Image" id="photo" class="img img-responsive" style="width: 800px; height: 800px;" />
+						</div>
+					</div>
+
+                  <!-- Footer -->
+					<div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
+					Page: <span class="page"/> / <span class="topage"/>
+					</div>
+				<div class="page" style="page-break-before: always;">
+				  <div style="text-align:center;font-size:30px;margin-top: 60px;">
+				   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+							<b >Annexure II</b><br/>
+							<b >PIT Report</b>
+				</div>
+				</div>
+			
+				<div class="container_eln" style="page-break-before: always;">
+
+				 
+					<div t-foreach="eln" t-as="o">
+						
+						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
+							<tbody>
+								<tr>
+									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+								
+								</tr>
+								
+								<tr>
+									<td><strong>Client's Reference</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Name of Work</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Date of Testing</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.start_date" style="margin-right:10px;"/> to 
+										<span t-field="o.end_date" style="margin-left:10px;"/>
+									</td>
+								</tr>
+
+								<tr>
+									<td><strong>Type of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Grade of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
+								</tr>
+
+								<!-- Source of Sample (only if value exists) -->
+								<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<!-- Test method adopted (only if value exists) -->
+								<tr t-if="o.material.test_method_adopted">
+									<td style="font-weight: bold;">Test method adopted:</td>
+									<td><span t-field="o.material.test_method_adopted"/></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			           <!-- <span t-field="data.pile_integrity_test_name" /> -->
+					   A. PILE INTEGRITY TEST REPORT
+
+			     	</div>
+				
+			        <table style="margin-top:20px">
+					<thead style="background-color: #d3d3d3;">
+						<tr cols="12">
+							<td rowspan="2">Sr no 
+							</td>
+							<td rowspan="2">Pile ID
+							</td>
+							<td rowspan="2">DOC
+							</td>
+							<td rowspan="2">Dia (MM)
+							</td>
+							<td rowspan="2">Cut Off Length (M)
+							</td>
+							<td rowspan="2">Shaft Cross-Section &amp; Soil Changes
+
+							</td>
+
+						
+						</tr>
+						
+						</thead>
+						  <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.pile_integrity_test_table" t-as="r">
+							<td colspan="1">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['pile_id']" />
+							</td>
+							<td >
+								<span t-esc="r['doc']" />
+							</td>
+							<td >
+								<span t-esc="r['pile_dia']" />
+							</td>
+							<td >
+								<span t-esc="r['cut_off']" />
+							</td>
+							<td >
+								<span t-esc="r['shaft_cross']" />
+							</td>
+
+						
+							
+						</tr>
+						</tbody>
+					</table>
+					</div>
+
+					<div class="page" style="page-break-before: always;">
+					<div style="text-align:center;font-size:30px;margin-top: 60px;">
+					     <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+						   <br></br>
+								<b >Annexure III</b><br/>
+								<b >PIT Graphs</b>
+					</div>
+					</div>
+
+				
+							<!-- <div class="container_eln" style="page-break-before: always;"> -->
+							
+
+							<!-- Display Uploaded Images -->
+							<!-- <h2 style="text-align: center;">Uploaded Images</h2> -->
+							<t t-foreach="data.pile_report_upload" t-as="attachment">
+							<t t-if="attachment.mimetype.startswith('image/')">
+								<div class="container_eln" style="page-break-before: always;">
+									<div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+										<img t-att-src="'data:image/png;base64,' + attachment.datas.decode('utf-8')" 
+											alt="Report Image" class="img img-responsive"
+											style="width: 800px; height: auto; border: 1px solid #ddd; padding: 5px;" />
+									</div>
+								</div>
+							</t>
+						</t>
+						<!-- </div> -->
+
+
+						<div class="page" style="page-break-before: always;">
+						<div style="text-align:center;font-size:30px;margin-top: 60px;">
+						              <br></br>
+								<br></br>
+								<br></br>
+								<br></br>
+								<br></br>
+								<br></br>
+								<br></br>
+								<br></br>
+								<br></br>
+								<br></br>
+									<b >Annexure IV</b><br/>
+									<b >Discussion Of Test Results.</b>
+						</div>
+						</div>
+
+
+						  <div class="container_eln" style="page-break-before: always;">
+						       <b>TEST RESULT:- <br></br></b> 
+						  <!-- <p style="line-height: 0.8; margin: 0;">
+									<t t-raw="data.interpretation_result.replace('\n', '&lt;br/&gt;')"/>
+
+								</p> -->
+								<t t-if="data.test_result">
+										<t t-raw="data.test_result.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<!-- If no influences_result data is available, display a message -->
+									<t t-else="">
+										No itest result data available.
+									</t>
+							
+							</div>
+					
+						<div style="margin-top:20px" class="noteContainer">
+							<table class="table table-bordered">
+							<tr>
+								<td style="padding: 5px; font-style: italic; font-size: 12px;">
+									<b>Note:-</b>
+									&#160;&#160;(i) The results relate only to the items tested 
+									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+									&#160;&#160;(iii) Any corrections invalidate the test reports 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
+									&#160;&#160;(vi) # mark indicates Details given by Client.
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</td>
+							</tr>
+						</table>
+						</div>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.technician.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+
+							<div>
+								<div>
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
+							
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+								<!-- <div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div> -->
+							</div>
+						</div>
+						<div style="text-align:center;margin-top:25px">
+							......End of Report......
+						</div>
+
+
+					 
+					<!-- <div class="container_eln" style="page-break-before: always;">
+						 <img t-if="graph" t-att-src="'data:image/png;base64,' + graph" style="width:800px;height:2000px;"/>
+					</div> -->
+			
+
+				</div>
+			</t>
+		</t>
+	</template>
+
+
+</odoo>
