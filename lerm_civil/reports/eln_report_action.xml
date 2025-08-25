@@ -193,6 +193,26 @@
     <field name="binding_type">report</field>
 </record>
 
+<record id="soil_resistivity_datasheet_action" model="ir.actions.report">
+    <field name="name">soil_resistivity_datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil_resistivity.soil_resistivity_datasheet</field>
+    <field name="report_file">soil_resistivity.soil_resistivity_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="soil_resistivity_report_action" model="ir.actions.report">
+    <field name="name">soil_resistivity_report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil_resistivity.soil_resistivity_report</field>
+    <field name="report_file">soil_resistivity.soil_resistivity_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
 <record id="opc_report_action" model="ir.actions.report">
     <field name="name">Opc Cement Report</field>
     <field name="model">lerm.eln</field>
