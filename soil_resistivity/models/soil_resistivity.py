@@ -23,8 +23,8 @@ class SoilResistivity(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
-    graph_images = fields.One2many('soil.resistivity.line', 'test_id',string="Graphs")
-    line_ids = fields.One2many("soil.resistivity.line", "test_id", string="Resistivity Table")
+    graph_images = fields.One2many('soil.resistivity.line', 'parent_id',string="Graphs")
+    line_ids = fields.One2many("soil.resistivity.line", "parent_id", string="Resistivity Table")
    
     def action_generate_graph(self):
         for rec in self:
@@ -44,7 +44,7 @@ class SoilResistivityLine(models.Model):
     _name = "soil.resistivity.line"
     _description = "Soil Resistivity Line"
 
-    test_id = fields.Many2one("soil.resistivity", string="Test Point")
+    parent_id = fields.Many2one("soil.resistivity", string="Test Point")
     spacing = fields.Float("Pin Spacing (m)")
     resistivity_n  = fields.Float("North (0°)")
     resistivity_ne = fields.Float("North-East (45°)")
