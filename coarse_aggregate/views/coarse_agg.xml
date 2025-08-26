@@ -93,38 +93,42 @@
                     </div>
                     
                     <!-- Main Table: Specific Gravity Measurements -->
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not specific_gravity_visible" style="white-space:nowrap;">
+                    <table class="table table-sm table-bordered custom_table_borders" invisible="not specific_gravity_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Parameters</th>
+                                <th>Trial 1</th>
+                                <th>Trial 2</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-                                <td><label class="fw-bold" for="wt_sample_inwater">Weight of Sample in Water</label></td>
+                                <td><span class="fw-bold">Weight of Sample in Water (A)</span></td>
                                 <td><field name="wt_sample_inwater"/></td>
+                                <td><field name="wt_sample_inwater_2"/></td>
+                                <td><field name="result_wt_sample_inwater"/></td>
                             </tr>
                             <tr>
-                                <td><label class="fw-bold" for="wt_surface_dry">Weight of Surface Dry Sample</label></td>
+                                <td><span class="fw-bold">Weight of Surface Dry Sample (B)</span></td>
                                 <td><field name="wt_surface_dry"/></td>
+                                <td><field name="wt_surface_dry_2"/></td>
+                                <td><field name="result_wt_surface_dry"/></td>
                             </tr>
                             <tr>
-                                <td><label class="fw-bold" for="oven_dried_wt">Oven Dried Weight</label></td>
+                                <td><span class="fw-bold">Oven Dried Weight (C)</span></td>
                                 <td><field name="oven_dried_wt"/></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="specific_gravity">Specific Gravity</label></td>
-                                <td><field name="specific_gravity"/></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="water_absorption">Water Absorption</label></td>
-                                <td><field name="water_absorption"/></td>
+                                <td><field name="oven_dried_wt_2"/></td>
+                                <td><field name="result_oven_dried_wt"/></td>
                             </tr>
                         </tbody>
                     </table>
 
-
-                    <!-- Spacer (for visual gap) -->
-                    <div style="height: 10px;" invisible="not specific_gravity_visible"></div>
-                    <!-- Table: Conformity & NABL -->
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not specific_gravity_visible">
+                    <table class="table table-sm table-bordered custom_table_borders" invisible="not specific_gravity_visible">
                         <tbody>
                             <tr>
+                                <td><span class="fw-bold">Specific Gravity</span></td>
+                                <td><field name="specific_gravity"/></td>
                                 <td>
                                     <label class="fw-bold" for="specific_gravity_conformity">Specific Gravity Conformity</label>
                                 </td>
@@ -136,6 +140,8 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td><span class="fw-bold">Water Absorption</span></td>
+                                <td><field name="water_absorption"/></td>
                                 <td>
                                     <label class="fw-bold" for="specific_gravity_nabl">Specific Gravity NABL</label>
                                 </td>
@@ -149,74 +155,7 @@
                         </tbody>
                     </table>
 
-
-
-
-                     <!-- <group attrs="{'invisible': [('flakiness_visible', '=', False)]}">
-                        <h1>
-                            <field name="flakiness_name" readonly="1" nolabel="1"/>
-                            <field name="flakiness_visible" invisible="1"/>
-
-                        </h1>
-                    </group>
-                    <group attrs="{'invisible': [('flakiness_visible', '=', False)]}">
-                    <field name="flakiness_child_lines" nolabel="1" >
-                            <tree editable="bottom">
-                                <field name='sr_no'/>
-                                <field name='sieve_size'/>
-                                <field name='wt_retained'/>
-                                <field name='flaky_passing'/>
-                            </tree>
-                           
-                    </field> 
-                    </group>
-                    <group attrs="{'invisible': [('flakiness_visible', '=', False)]}">
-                            <group style="width:30%">
-                               <field name='wt_retained_total_flakiness'/>
-                            </group>
-                            <group style="width:30%">
-                               <field name='flaky_passing_total'/>
-                            </group>
-                            <group style="width:30%">
-                               <field name='aggregate_flakiness'/>
-                            </group>
-                    </group>
-                               
-                        <group style="width:30%" attrs="{'invisible': [('flakiness_visible', '=', False)]}"> 
-                            <field name='combine_elongation_flakiness'/>
-                        </group>
-
-
-                    <group attrs="{'invisible': [('elongation_visible', '=', False)]}">
-                        <h1>
-                            <field name="elongation_name" readonly="1" nolabel="1"/>
-                            <field name="elongation_visible" invisible="1"/>
-
-                        </h1>
-                    </group>
-                    <group attrs="{'invisible': [('elongation_visible', '=', False)]}">
-                    <field name="elongation_child_lines" nolabel="1" >
-                            <tree editable="bottom">
-                                <field name='sr_no'/>
-                                <field name='sieve_size'/>
-                                <field name='wt_retained'/>
-                                <field name='elongated_retain'/>
-                            </tree>
-                    </field> 
-                    </group>    
-                    <group attrs="{'invisible': [('elongation_visible', '=', False)]}">
-                        <group style="width:30%">
-                               <field name='wt_retained_total_elongation'/>
-                            </group>
-                            <group style="width:30%">
-                               <field name='elongated_retain_total'/>
-                            </group>
-                            <group style="width:30%">
-                               <field name='aggregate_elongation'/>
-                            </group>
-                    </group> -->
-
-                     <!-- Elongation and Flakiness  -->
+                    <!-- Elongation and Flakiness  -->
                     <div class="text-center" invisible="not elongation_visible or not flakiness_visible">
                         <h1>
                             <field name="elongation_name" readonly="1" nolabel="1"/>
@@ -317,51 +256,22 @@
 
 
 
-                     <!-- Bulk Density  -->
-                    <div class="text-center" invisible= "loose_bulk_visible == False">
+                    <!-- Bulk Density  -->
+                    <div class="text-center" invisible= "not loose_bulk_visible and not rodded_bulk_visible">
                         <h1>
                             <field name="loose_bulk_density_name" readonly="1" nolabel="1"/>
                             <field name="loose_bulk_visible" invisible="1"/>
-
+                            <field name="rodded_bulk_visible" invisible="1"/>
                         </h1>
                     </div>
 
                 <!-- Loose Bulk Density Table -->
-                <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not loose_bulk_visible" style="white-space:nowrap;">
+                <table class="table table-sm table-bordered custom_table_borders" invisible="not loose_bulk_visible and not rodded_bulk_visible" style="white-space:nowrap;">
                     <tbody>
                         <tr>
                             <td><label class="fw-bold" for="volume_of_bucket_loose">Volume of Bucket</label></td>
                             <td><field name="volume_of_bucket_loose"/></td>
-                        </tr>
-                        <tr>
-                            <td><label class="fw-bold" for="weight_empty_bucket_loose">Weight of Empty Bucket</label></td>
-                            <td><field name="weight_empty_bucket_loose"/></td>
-                        </tr>
-                        <tr>
-                            <td><label class="fw-bold" for="sample_plus_bucket_loose">Sample + Bucket Weight</label></td>
-                            <td><field name="sample_plus_bucket_loose"/></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- Loose Bulk Density Result -->
-                <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="not loose_bulk_visible" style="white-space:nowrap;">
-                    <tbody>
-                        <tr>
-                            <td><label class="fw-bold" for="loose_bulk_density">Loose Bulk Density</label></td>
-                            <td>
-                                <field name="loose_bulk_density" nolabel="1"/>
-                                <span>kg/cu.m</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- Loose Bulk Density Conformity Table -->
-                <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="not loose_bulk_visible" style="white-space:nowrap;">
-                    <tbody>
-                        <tr>
-                            <td><label class="fw-bold" for="loose_bulk_density_conformity">Conformity</label></td>
+                            <td><span class="fw-bold">Loose Bulk Density Conformity</span></td>
                             <td>
                                 <field name="loose_bulk_density_conformity"
                                     decoration-success="loose_bulk_density_conformity == 'pass'" 
@@ -370,78 +280,56 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><label class="fw-bold" for="loose_bulk_density_nabl">NABL Status</label></td>
+                            <td><label class="fw-bold" for="weight_empty_bucket_loose">Weight of Empty Bucket</label></td>
+                            <td><field name="weight_empty_bucket_loose"/></td>
+                            <td><span class="fw-bold">Loose Bulk Density NABL Status</span></td>
                             <td>
                                 <field name="loose_bulk_density_nabl"
                                     decoration-success="loose_bulk_density_nabl == 'pass'" 
                                     decoration-danger="loose_bulk_density_nabl == 'fail'"/>
                             </td>
                         </tr>
+                        <tr>
+                            <td><label class="fw-bold" for="sample_plus_bucket_rodded">Bucket + Compacted Aggregate</label></td>
+                            <td><field name="sample_plus_bucket_rodded"/></td>
+                            <td><span class="fw-bold">Rodded Bulk Density Conformity</span></td>
+                            <td>
+                                <field name="rodded_bulk_density_conformity"
+                                    decoration-success="rodded_bulk_density_conformity == 'pass'" 
+                                    decoration-danger="rodded_bulk_density_conformity == 'fail'" 
+                                    readonly="1"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label class="fw-bold" for="sample_plus_bucket_loose">Bucket + Loose Aggregate</label></td>
+                            <td><field name="sample_plus_bucket_loose"/></td>
+                            <td><span class="fw-bold">Rodded Bulk Density NABL Status</span></td>
+                            <td>
+                                <field name="rodded_bulk_density_nabl"
+                                    decoration-success="rodded_bulk_density_nabl == 'pass'" 
+                                    decoration-danger="rodded_bulk_density_nabl == 'fail'"/>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 
-
-
-                    <div invisible="rodded_bulk_visible == False">
-                        <h1>
-                            <field name="rodded_bulk_density_name" readonly="1" nolabel="1"/>
-                            <field name="rodded_bulk_visible" invisible="1"/>
-
-                        </h1>
-                    </div>
-                    <!-- Rodded Bulk Density Table -->
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not rodded_bulk_visible" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="volume_of_bucket_rodded">Volume of Bucket</label></td>
-                                <td><field name="volume_of_bucket_rodded"/></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="weight_empty_bucket_rodded">Weight of Empty Bucket</label></td>
-                                <td><field name="weight_empty_bucket_rodded"/></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="sample_plus_bucket_rodded">Sample + Bucket Weight</label></td>
-                                <td><field name="sample_plus_bucket_rodded"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- Rodded Bulk Density Result -->
-                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="not rodded_bulk_visible" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="rodded_bulk_density">Rodded Bulk Density</label></td>
-                                <td>
-                                    <field name="rodded_bulk_density" nolabel="1"/>
-                                    <span>kg/cu.m</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- Rodded Bulk Density Conformity Table -->
-                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="not rodded_bulk_visible" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="rodded_bulk_density_conformity">Conformity</label></td>
-                                <td>
-                                    <field name="rodded_bulk_density_conformity"
-                                        decoration-success="rodded_bulk_density_conformity == 'pass'" 
-                                        decoration-danger="rodded_bulk_density_conformity == 'fail'" 
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="rodded_bulk_density_nabl">NABL Status</label></td>
-                                <td>
-                                    <field name="rodded_bulk_density_nabl"
-                                        decoration-success="rodded_bulk_density_nabl == 'pass'" 
-                                        decoration-danger="rodded_bulk_density_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- Loose Bulk Density Result -->
+                <table class="table table-sm table-bordered mt-2 custom_table_borders" invisible="not loose_bulk_visible and not rodded_bulk_visible" style="white-space:nowrap;">
+                    <tbody>
+                        <tr>
+                            <td><label class="fw-bold" for="loose_bulk_density">Loose Bulk Density</label></td>
+                            <td>
+                                <field name="loose_bulk_density" nolabel="1"/>
+                                <span>kg/cu.m</span>
+                            </td>
+                            <td><label class="fw-bold" for="rodded_bulk_density">Rodded Bulk Density</label></td>
+                            <td>
+                                <field name="rodded_bulk_density" nolabel="1"/>
+                                <span>kg/cu.m</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
 
                       <!-- Impact Value  -->
@@ -455,10 +343,8 @@
 
                     <div invisible = "impact_visible == False" class="custom_table_borders">
                         <field name="impact_value_child_lines" nolabel="1">
-                            <tree>
+                            <tree editable="bottom">
                                 <field name='sample_no'/>
-                                <!-- <field name='wt_of_cylinder' /> -->
-                                <!-- <field name='total_wt_of_dried'  /> -->
                                 <field name='total_wt_aggregate' style="white-space: wrap;" />
                                 <field name='wt_of_aggregate_retained' style="white-space: wrap;"/>
                                 <field name='wt_of_aggregate_passing' style="white-space: wrap;"/>
@@ -512,13 +398,11 @@
 
                     <div invisible= "crushing_visible == False" class="custom_table_borders">
                         <field name="crushing_value_child_lines" nolabel="1">
-                                <tree>
+                                <tree editable="bottom">
                                     <field name='sample_no'/>
-                                    <!-- <field name='wt_of_cylinder'/>
-                                    <field name='total_wt_of_dried'/> -->
                                     <field name='total_wt_aggregate'/>
-                                    <field name='wt_of_aggregate_passing'/>
                                     <field name='wt_of_aggregate_retained'/>
+                                    <field name='wt_of_aggregate_passing'/>
                                     <field name='crushing_value'/>
                                 </tree>
                         </field> 
