@@ -4,7 +4,7 @@
     <t t-call="web.html_container">
 	<t t-call="lerm_civil.mechanical_data_sheet_header">
 		<div style="text-align:center;font-size:18px;font-weight: bold">
-			Brick Fly Ash
+			Clay Bricks
 		</div>
 		<div class="container_eln" style="margin-top:5px">
             <table style="margin-top:20px">
@@ -115,12 +115,12 @@
 
                         <table style="margin-top:10px">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight: bold">Average Compressive Strength.N/mm²  :
+                                <td colspan="6" style="font-weight: bold">Average Compressive Strength  :
                               <![CDATA[&nbsp;]]>
                                 </td>
                                 <td colspan="6" style="text-align: center">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.avrg_compressive_strength"/>
+                                    <span t-field="data.avrg_compressive_strength"/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 
@@ -356,12 +356,12 @@
 
                         <table style="margin-top:10px">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight: bold">Average Water Absorption, %  :
+                                <td colspan="6" style="font-weight: bold">Average Water Absorption :
                               <![CDATA[&nbsp;]]>
                                 </td>
-                                <td colspan="6" style="text-align: center">
+                                  <td colspan="6" style="text-align: center">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.avrg_water_absorption"/>
+                                    <span t-field="data.avrg_water_absorption"/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 

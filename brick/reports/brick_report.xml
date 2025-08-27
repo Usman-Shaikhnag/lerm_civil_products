@@ -434,19 +434,45 @@
 								</tr>
 							</tbody>
 
-							<!-- ✅ Footer row (exactly under Strength & Water Absorption columns) -->
-							<tfoot>
+					
+						<tfoot>
 								<tr>
 									<td colspan="4"></td> <!-- skip first 4 cols -->
-									<td style="text-align:center; font-weight:bold;">
-									Avg. -	: <t t-esc="brick.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+
+									<!-- Average Compressive Strength -->
+									<td style="padding:0;">
+										<div style="display:table; width:100%; border-collapse:collapse;">
+											<div style="display:table-cell; width:50%; text-align:center; border-right:1px solid black;">
+												Average
+											</div>
+											<div style="display:table-cell; width:50%; text-align:center;">
+												<t t-esc="brick.avrg_compressive_strength" 
+												t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).unit.name"/>
+											</div>
+										</div>
 									</td>
-									<td style="text-align:center; font-weight:bold;">
-										Avg. -  : <t t-esc="brick.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+
+									<!-- Average Water Absorption -->
+									<td style="padding:0;">
+										<div style="display:table; width:100%; border-collapse:collapse;">
+											<div style="display:table-cell; width:50%; text-align:center; border-right:1px solid black;">
+												Average
+											</div>
+											<div style="display:table-cell; width:50%; text-align:center;">
+												<t t-esc="brick.avrg_water_absorption" 
+												t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).unit.name"/>
+											</div>
+										</div>
 									</td>
+
 									<td></td> <!-- observation col blank -->
 								</tr>
 							</tfoot>
+
+
+
+
+
 						</table>
 
 
