@@ -193,8 +193,8 @@ class MainDashboard extends Component {
       "5-pending_approval": "Pending Approval",
     };
     const domain = [
-      ["create_date", ">=", this.start_date],
-      ["create_date", "<=", this.end_date],
+      ["sample_received_date", ">=", this.start_date],
+      ["sample_received_date", "<=", this.end_date],
       ["state", "=", stateName],
     ];
 

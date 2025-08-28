@@ -18,8 +18,8 @@ class LermCivilDashboard(http.Controller):
             return {"error": "Invalid date format"}
 
         domain = [
-            ('create_date', '>=', start_dt),
-            ('create_date', '<=', end_dt),
+            ('sample_received_date', '>=', start_dt),
+            ('sample_received_date', '<=', end_dt),
         ]
         samples = request.env['lerm.srf.sample'].sudo().search(domain)
 
