@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="ht_strand_view" model="ir.ui.view">
+        <field name="name">ht.strand.form</field>
+        <field name="model">ht.strand</field>
+        <field name="arch" type="xml">
+            <form create="false">
+
+                <sheet>
+                   <group>
+                       
+                       
+                         <field name='eln_ref' readonly="1"/>
+                          <field name='name' readonly="1"/>
+                    </group>
+                         
+                            <group>
+                                
+                                <group>
+                                    <field name='grade'/>
+                                </group>
+                                <!-- <group>
+                                    <field name='size'/>
+                                </group> -->
+                                
+                            </group>
+
+                           
+                           <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="sample_parameters" nolabel="1">
+                                    <tree>
+                                        <field name="parameter_name"/>
+                                        <field name="test_method"/>
+                                    </tree>
+                                </field>
+                            </div>
+
+                                <field name="ht_strand_lines" nolabel="1" >
+                                    <tree editable="bottom" class="custom_table_borders">
+                                        <field name='sr_no'/>
+                                        <field name='individual_dia1'/>
+                                        <field name='individual_area'/>
+
+                                        
+                                    </tree>
+                                
+                                </field> 
+                           
+                       
+                          
+                            <!-- <group style="white-space: nowrap; width:65%;"> 
+                                <field name='diameter'/>
+                            </group> -->
+
+                            <div class="d-flex gap-2"  style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:30%;"><label for="diameter">Outer Strand Dia</label></td>
+                                    <td style="width:30%;"><field name="diameter"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                           
+
+
+                      
+
+                        <div class="d-flex gap-4" invisible="crossectional_area_visible == False" style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="crossectional_area">Nominal Area of Strand (mm2)</label></td>
+                                    <td style="width:50%;"><field name="crossectional_area"/></td>
+                                    <field name="crossectional_area_visible" invisible="1"/>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="requirement_crossectional_area">Requirement</label></td>
+                                    <td style="width:50%;"><field name="requirement_crossectional_area"/></td>
+                                </tr>
+                              
+                            
+                            </tbody>
+                        </table>
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="crossectional_area_nabl">NABL</label></td>
+                                <td><field name="crossectional_area_nabl"
+                                            decoration-success="crossectional_area_nabl == 'pass'"
+                                            decoration-danger="crossectional_area_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                           <tr>
+                                <td><label class="fw-bold" for="crossectional_area_conformity">Conformity</label></td>
+                                <td><field name="crossectional_area_conformity"
+                                            decoration-success="crossectional_area_conformity == 'pass'"
+                                            decoration-danger="crossectional_area_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+
+
+                          
+
+
+                             <div class="d-flex gap-4" invisible="per_diff_dia_visible == False" style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="per_diff_dia">Percentage Diff in Diameter</label></td>
+                                    <td style="width:50%;"><field name="per_diff_dia"/></td>
+                                    <field name="per_diff_dia_visible" invisible="1"/>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="requirement_per_diff_dia">Requirement</label></td>
+                                    <td style="width:50%;"><field name="requirement_per_diff_dia"/></td>
+                                </tr>
+                              
+                            
+                            </tbody>
+                        </table>
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="per_diff_dia_nabl">NABL</label></td>
+                                <td><field name="per_diff_dia_nabl"
+                                            decoration-success="per_diff_dia_nabl == 'pass'"
+                                            decoration-danger="per_diff_dia_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                           <tr>
+                                <td><label class="fw-bold" for="per_diff_dia_conformity">Conformity</label></td>
+                                <td><field name="per_diff_dia_conformity"
+                                            decoration-success="per_diff_dia_conformity == 'pass'"
+                                            decoration-danger="per_diff_dia_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+
+
+
+
+                            
+
+                     <div class="d-flex gap-2"  style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:30%;"><label for="weight">Weight, gm</label></td>
+                                    <td style="width:30%;"><field name="weight"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                          
+                    <div class="d-flex gap-2"  style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:30%;"><label for="lenght">Length, mm</label></td>
+                                    <td style="width:30%;"><field name="lenght"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                           
+                          
+                          
+
+                    <div class="d-flex gap-4" invisible="weight_per_meter_visible == False" style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="weight_per_meter">Weight per Meter, g/m</label></td>
+                                    <td style="width:50%;"><field name="weight_per_meter"/></td>
+                                    <field name="weight_per_meter_visible" invisible="1"/>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="requirement_weight_per_meter">Requirement</label></td>
+                                    <td style="width:50%;"><field name="requirement_weight_per_meter"/></td>
+                                </tr>
+                              
+                            
+                            </tbody>
+                        </table>
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="weight_per_meter_nabl">NABL</label></td>
+                                <td><field name="weight_per_meter_nabl"
+                                            decoration-success="weight_per_meter_nabl == 'pass'"
+                                            decoration-danger="weight_per_meter_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                           <tr>
+                                <td><label class="fw-bold" for="weight_per_meter_conformity">Conformity</label></td>
+                                <td><field name="weight_per_meter_conformity"
+                                            decoration-success="weight_per_meter_conformity == 'pass'"
+                                            decoration-danger="weight_per_meter_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+
+                           
+
+                        
+
+                            <div class="d-flex gap-4" invisible="lay_length_visible == False" style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="lay_length">Lay Length mm</label></td>
+                                    <td style="width:50%;"><field name="lay_length"/></td>
+                                    <field name="lay_length_visible" invisible="1"/>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="requirement_lay_length">Requirement</label></td>
+                                    <td style="width:50%;"><field name="requirement_lay_length"/></td>
+                                </tr>
+                              
+                            
+                            </tbody>
+                        </table>
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="lay_length_nabl">NABL</label></td>
+                                <td><field name="lay_length_nabl"
+                                            decoration-success="lay_length_nabl == 'pass'"
+                                            decoration-danger="lay_length_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                           <tr>
+                                <td><label class="fw-bold" for="lay_length_conformity">Conformity</label></td>
+                                <td><field name="lay_length_conformity"
+                                            decoration-success="lay_length_conformity == 'pass'"
+                                            decoration-danger="lay_length_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+
+                     
+
+                    <div class="d-flex gap-2"  style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:30%;"><label for="gauge_length">Guage Length mm</label></td>
+                                    <td style="width:30%;"><field name="gauge_length"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+
+                             
+                           
+
+
+                            <div class="d-flex gap-4" invisible="proof_stress2per_visible == False" style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="proof_stress2per">0.2 % Proof Load, (kN)</label></td>
+                                    <td style="width:50%;"><field name="proof_stress2per"/></td>
+                                    <field name="proof_stress2per_visible" invisible="1"/>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="requirement_proof_stress2per">Requirement</label></td>
+                                    <td style="width:50%;"><field name="requirement_proof_stress2per"/></td>
+                                </tr>
+                              
+                            
+                            </tbody>
+                        </table>
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="proof_stress2per_nabl">NABL</label></td>
+                                <td><field name="proof_stress2per_nabl"
+                                            decoration-success="proof_stress2per_nabl == 'pass'"
+                                            decoration-danger="proof_stress2per_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                           <tr>
+                                <td><label class="fw-bold" for="proof_stress2per_conformity">Conformity</label></td>
+                                <td><field name="proof_stress2per_conformity"
+                                            decoration-success="proof_stress2per_conformity == 'pass'"
+                                            decoration-danger="proof_stress2per_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+
+                          
+
+                         
+
+                            <div class="d-flex gap-4" invisible="breaking_load_visible == False" style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="breaking_load">Breaking Load,  (kN)</label></td>
+                                    <td style="width:50%;"><field name="breaking_load"/></td>
+                                    <field name="breaking_load_visible" invisible="1"/>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="requirement_breaking_load">Requirement</label></td>
+                                    <td style="width:50%;"><field name="requirement_breaking_load"/></td>
+                                </tr>
+                              
+                            
+                            </tbody>
+                        </table>
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="breaking_load_nabl">NABL</label></td>
+                                <td><field name="breaking_load_nabl"
+                                            decoration-success="breaking_load_nabl == 'pass'"
+                                            decoration-danger="breaking_load_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                           <tr>
+                                <td><label class="fw-bold" for="breaking_load_conformity">Conformity</label></td>
+                                <td><field name="breaking_load_conformity"
+                                            decoration-success="breaking_load_conformity == 'pass'"
+                                            decoration-danger="breaking_load_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+
+                          
+
+                         
+
+                    <div class="d-flex gap-4" invisible="tensile_strength_visible == False" style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="tensile_strength">Tensile Strength Mpa</label></td>
+                                    <td style="width:50%;"><field name="tensile_strength"/></td>
+                                    <field name="tensile_strength_visible" invisible="1"/>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="requirement_tensile_strength">Requirement</label></td>
+                                    <td style="width:50%;"><field name="requirement_tensile_strength"/></td>
+                                </tr>
+                              
+                            
+                            </tbody>
+                        </table>
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="tensile_strength_nabl">NABL</label></td>
+                                <td><field name="tensile_strength_nabl"
+                                            decoration-success="tensile_strength_nabl == 'pass'"
+                                            decoration-danger="tensile_strength_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                           <tr>
+                                <td><label class="fw-bold" for="tensile_strength_conformity">Conformity</label></td>
+                                <td><field name="tensile_strength_conformity"
+                                            decoration-success="tensile_strength_conformity == 'pass'"
+                                            decoration-danger="tensile_strength_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+
+
+                            <div class="d-flex gap-4" invisible="elongation_visible == False" style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="elongation">Elongation %</label></td>
+                                    <td style="width:50%;"><field name="elongation"/></td>
+                                    <field name="elongation_visible" invisible="1"/>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="requirement_elongation">Requirement</label></td>
+                                    <td style="width:50%;"><field name="requirement_elongation"/></td>
+                                </tr>
+                              
+                            
+                            </tbody>
+                        </table>
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="elongation_nabl">NABL</label></td>
+                                <td><field name="elongation_nabl"
+                                            decoration-success="elongation_nabl == 'pass'"
+                                            decoration-danger="elongation_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                           <tr>
+                                <td><label class="fw-bold" for="elongation_conformity">Conformity</label></td>
+                                <td><field name="elongation_conformity"
+                                            decoration-success="elongation_conformity == 'pass'"
+                                            decoration-danger="elongation_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+
+
+
+
+
+
+                           
+                     <div class="d-flex gap-2"  style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:30%;"><label for="center_dia">Centre Diameter (mm)</label></td>
+                                    <td style="width:30%;"><field name="center_dia"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+
+                           
+
+                            <div class="d-flex gap-2"  style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:30%;"><label for="individual_dia">Individual Dia Average , mm</label></td>
+                                    <td style="width:30%;"><field name="individual_dia"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                          
+
+                        <div class="d-flex gap-2"  style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:30%;"><label for="individual_dia_seven">Individual Seven Dia Max in mm</label></td>
+                                    <td style="width:30%;"><field name="individual_dia_seven"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                        
+                     <div class="d-flex gap-2"  style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:30%;"><label for="individual_dia_six">Individual Six Dia Max in mm</label></td>
+                                    <td style="width:30%;"><field name="individual_dia_six"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                             
+
+
+
+                         <div class="d-flex gap-4" invisible="modulus_of_ela_visible == False" style="white-space: nowrap; width:100%">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="modulus_of_ela">Modulus of Elasticity (GPa)</label></td>
+                                    <td style="width:50%;"><field name="modulus_of_ela"/></td>
+                                    <field name="modulus_of_ela_visible" invisible="1"/>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="requirement_modulus_of_ela">Requirement</label></td>
+                                    <td style="width:50%;"><field name="requirement_modulus_of_ela"/></td>
+                                </tr>
+                              
+                            
+                            </tbody>
+                        </table>
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="modulus_of_ela_nabl">NABL</label></td>
+                                <td><field name="modulus_of_ela_nabl"
+                                            decoration-success="modulus_of_ela_nabl == 'pass'"
+                                            decoration-danger="modulus_of_ela_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                          
+                           <tr>
+                                <td><label class="fw-bold" for="modulus_of_ela_conformity">Conformity</label></td>
+                                <td><field name="modulus_of_ela_conformity"
+                                            decoration-success="modulus_of_ela_conformity == 'pass'"
+                                            decoration-danger="modulus_of_ela_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                           
+                            
+                        
+                         <group>
+                            <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                            </group>
+              
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+   
+
+
+    </data>
+</odoo>
