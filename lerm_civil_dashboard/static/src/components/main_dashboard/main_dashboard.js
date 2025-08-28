@@ -1,10 +1,11 @@
 /** @odoo-module **/
 import { registry } from "@web/core/registry";
 import { Component, onWillStart, useState, useRef, onMounted } from "@odoo/owl";
+import { useService } from "@web/core/utils/hooks";
 import { jsonrpc } from "@web/core/network/rpc_service";
 
 const actionRegistry = registry.category("actions");
-
+const KpiBox = registry.category("components").get("KpiBox");
 class MainDashboard extends Component {
   setup() {
     this.dashboard_state = useState({
@@ -14,12 +15,14 @@ class MainDashboard extends Component {
       state_labels: [],
       state_counts: [],
       total_states: 0,
+      state_data: [],
     });
 
     this.startDateRef = useRef("start_date");
     this.endDateRef = useRef("end_date");
     this.chartRef = useRef("chartCanvas");
     this.stateChartRef = useRef("stateChartCanvas");
+    this.action = useService("action");
 
     this.chartInstance = null;
     this.stateChartInstance = null;
@@ -47,12 +50,27 @@ class MainDashboard extends Component {
     });
 
     if (!data_result.error) {
+      const stateLabelMap = {
+        "1-allotment_pending": "Allotment Pending",
+        "2-alloted": "Alloted",
+        "3-pending_verification": "Pending Verification",
+        "4-in_report": "In Report",
+        "5-pending_approval": "Pending Approval",
+      };
+
       this.dashboard_state.labels = data_result.labels;
       this.dashboard_state.counts = data_result.counts;
       this.dashboard_state.projects_count = data_result.total_count;
-      this.dashboard_state.state_labels = data_result.state_labels;
-      this.dashboard_state.state_counts = data_result.state_counts;
-      this.dashboard_state.total_states = data_result.total_states;
+      // directly use state_data from backend
+      this.dashboard_state.state_data = data_result.state_data;
+
+      // build arrays for chart (labels + counts)
+      this.dashboard_state.state_labels = data_result.state_data.map(
+        (item) => item.state_label
+      );
+      this.dashboard_state.state_counts = data_result.state_data.map(
+        (item) => item.count
+      );
     }
   }
 
@@ -166,7 +184,33 @@ class MainDashboard extends Component {
     this.stateChartType = type;
     this.renderStateChart();
   }
+  async onKpiClick(stateName) {
+    const stateLabelMap = {
+      "1-allotment_pending": "Allotment Pending",
+      "2-alloted": "Alloted",
+      "3-pending_verification": "Pending Verification",
+      "4-in_report": "In Report",
+      "5-pending_approval": "Pending Approval",
+    };
+    const domain = [
+      ["create_date", ">=", this.start_date],
+      ["create_date", "<=", this.end_date],
+      ["state", "=", stateName],
+    ];
+
+    this.action.doAction({
+      type: "ir.actions.act_window",
+      name: stateLabelMap[stateName] || "Sample Records",
+      res_model: "lerm.srf.sample",
+      domain: domain,
+      views: [
+        [false, "list"],
+        [false, "form"],
+      ],
+    });
+  }
 }
 
 MainDashboard.template = "lerm_civil_dashboard.MainDashboard";
+MainDashboard.components = { KpiBox };
 actionRegistry.add("main_dashboard", MainDashboard);
