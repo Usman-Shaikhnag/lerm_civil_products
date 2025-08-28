@@ -1,13 +1,8 @@
 /** @odoo-module */
-
+import { Component, useRef, onWillStart, onMounted, onWillUnmount } from "@odoo/owl";
 import { registry } from "@web/core/registry";
-import { useEffect, useService } from "@web/core/utils/hooks";
+import { useService } from "@web/core/utils/hooks";
 
-// import { loadJS } from "@web/core/assets"
-import { loadJS } from "web.ajax";
-
-const { Component } = owl;
-const { useRef, onWillStart, onMounted, onWillUnmount } = owl.hooks;
 export class KpiBox extends Component {
   setup() {
     this.subjectRef = useRef("subject");
@@ -22,3 +17,6 @@ export class KpiBox extends Component {
 }
 
 KpiBox.template = "lerm_civil_dashboard.KpiBox";
+
+// 👇 Register your component so it can be imported elsewhere
+registry.category("components").add("KpiBox", KpiBox);

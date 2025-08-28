@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
-    <t t-name="lerm_civil_dashboard.MainDashboard">
-        <div class="container-fluid py-4">
-
+    <t t-name="lerm_civil_dashboard.MainDashboard" owl="1"> 
+        <div class="o_lerm_dashboard lerm-dashboard-container p-4">
             <!-- KPI Boxes -->
-            <div class="row g-4 mb-4">
-                <div class="col-md-6">
-                    <div class="card shadow-sm border-0 rounded-3 h-100 text-center">
-                        <div class="card-body">
-                            <h6 class="text-muted">Total Samples</h6>
-                            <h2 class="fw-bold text-primary" t-esc="this.dashboard_state.projects_count"/>
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <!-- Total Samples -->
+                        <div class="kpi-box p-3 border rounded-3 shadow-sm text-center"
+                            style="min-width: 150px; cursor: default;">
+                            <div class="fw-bold text-muted">Total Samples</div>
+                            <div class="fw-bold text-primary fs-4" t-esc="this.dashboard_state.projects_count"/>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card shadow-sm border-0 rounded-3 h-100 text-center">
-                        <div class="card-body">
-                            <h6 class="text-muted">Total States</h6>
-                            <h2 class="fw-bold text-success" t-esc="this.dashboard_state.total_states"/>
-                        </div>
+
+                        <!-- States (with 0 if no records) -->
+                        <t t-foreach="this.dashboard_state.state_data" t-as="item" t-key="item.state">
+                            <div class="kpi-box p-3 border rounded-3 shadow-sm text-center"
+                                style="min-width: 150px; cursor: pointer;"
+                                t-on-click="() => this.onKpiClick(item.state)">
+                                <div class="fw-bold text-dark" t-esc="item.state_label"/>
+                                <div class="fw-bold text-success fs-4" t-esc="item.count"/>
+                            </div>
+                        </t>
                     </div>
                 </div>
             </div>
+
+
 
             <!-- Date Filters -->
             <div class="row mb-4 justify-content-center">
