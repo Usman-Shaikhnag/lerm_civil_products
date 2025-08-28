@@ -904,4 +904,89 @@
     </record>
 
 
+      <record id="temprature_monitoring_report_action" model="ir.actions.report">
+        <field name="name">Temprature Monitoring Report </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">temprature_monitoring.temprature_monitoring_report</field>
+        <field name="report_file">temprature_monitoring.temprature_monitoring_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+      <record id="temprature_monitoring_datasheet_action" model="ir.actions.report">
+        <field name="name">Temprature Monitoring DataSheet </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">temprature_monitoring.temprature_monitoring_datasheet</field>
+        <field name="report_file">temprature_monitoring.temprature_monitoring_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="ht_strand_report_action" model="ir.actions.report">
+        <field name="name">Ht Strand Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ht_strand.ht_strand_report</field>
+        <field name="report_file">ht_strand.ht_strand_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+     <record id="ht_strand_datasheet_action" model="ir.actions.report">
+        <field name="name">Ht Strand DataSheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ht_strand.ht_strand_datasheet</field>
+        <field name="report_file">ht_strand.ht_strand_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+     <record id="chemical_hardend_concrete_action" model="ir.actions.report">
+        <field name="name">Hardend Concrete Chemical Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hardent_concrete_chemical.chemical_hardend_concrete</field>
+        <field name="report_file">hardent_concrete_chemical.chemical_hardend_concrete</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+      <record id="chemical_hardend_report_action" model="ir.actions.report">
+        <field name="name">Hardend Concrete Chemical Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hardent_concrete_chemical.chemical_hardend_report</field>
+        <field name="report_file">hardent_concrete_chemical.chemical_hardend_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="crushed_sand_datasheet_chemical_action" model="ir.actions.report">
+        <field name="name">Crushed Sand Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">crushed_sand_chemical.crushed_sand_datasheet</field>
+        <field name="report_file">crushed_sand_chemical.crushed_sand_datasheet</field>
+        <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+   </record>
+   
+        <record id="report_crushed_sand_chemical_action" model="ir.actions.report">
+            <field name="name">Crushed Sand Chemical Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">crushed_sand_chemical.chemical_crushed_sand_report</field>
+            <field name="report_file">crushed_sand_chemical.chemical_crushed_sand_report</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <!--  <field name="binding_model_id" eval="False"/>  -->
+            <field name="binding_type">report</field>
+        </record>
+
+
 </odoo>
