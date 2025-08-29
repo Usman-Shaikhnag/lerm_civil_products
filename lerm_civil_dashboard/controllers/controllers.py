@@ -44,18 +44,33 @@ class LermCivilDashboard(http.Controller):
             key=lambda x: datetime.strptime(x, "%d-%b") if days_range <= 30 else datetime.strptime(x, "%b %Y")
         )
         counts = [period_counter[l] for l in labels]
-
+        # full list of states with labels
+        ALL_STATES = {
+            "1-allotment_pending": "Allotment Pending",
+            "2-alloted": "Alloted",
+            "3-pending_verification": "Pending Verification",
+            "4-in_report": "In Report",
+            "5-pending_approval": "Pending Approval",
+        }
         # --- NEW: state-based grouping ---
         state_counter = Counter(samples.mapped("state"))
 
         state_labels = list(state_counter.keys())
         state_counts = list(state_counter.values())
 
+        state_data = []
+        for state, label in ALL_STATES.items():
+            state_data.append({
+                "state": state,
+                "state_label": label,
+                "count": state_counter.get(state, 0),
+            })
         return {
             "labels": labels,
             "counts": counts,
             "total_count": len(samples),
             "state_labels": state_labels,
+            "state_data":state_data,
             "state_counts": state_counts,
             "total_states": len(state_labels),
         }
