@@ -178,7 +178,7 @@ class WptMechanical(models.Model):
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '32145ght-0268-46ef-ba88-9c0453210lkit1':
                 result.result_char = round(self.average_of_wpt,2)
-                if self.nabl == 'pass':
+                if self.wpt_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'

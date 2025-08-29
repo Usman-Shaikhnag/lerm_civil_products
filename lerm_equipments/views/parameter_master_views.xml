@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_parameter_master_inherit" model="ir.ui.view">
+        <field name="name">lerm.parameter.master.equipment.inherit</field>
+        <field name="model">lerm.parameter.master</field>
+        <field name="inherit_id" ref="lerm_civil.lerm_parameter_master_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@style='width:50%']/field[@name='instrument']" position="after">
+                <field name="requires_equipment"/>
+                <field name="equipment_ids" widget="many2many_tags" domain="[('lerm_equipment', '=', True)]" invisible='requires_equipment == False'/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

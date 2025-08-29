@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Tree View -->
+    <record id="view_equipment_tree_inherit" model="ir.ui.view">
+        <field name="name">equipment.tree.inherit</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+
+                <field name="code"/>
+                <field name="lerm_equipment"/>
+
+            </xpath>
+
+             
+        </field>
+    </record>
+
+    <!-- Inherit Form View -->
+    <record id="view_equipment_form_inherit" model="ir.ui.view">
+        <field name="name">equipment.form.inherit</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <label for="code"/>
+                <h4><field name="code"/></h4>
+                <label for="lerm_equipment"/>
+                <field name="lerm_equipment"/>
+
+                
+            </xpath>
+            <xpath expr="//field[@name='employee_id']" position="after">
+                
+                <separator string="Operational Hours"/>
+                <field name="available_from" widget="float_time"/>
+                <field name="available_to" widget="float_time"/>
+                
+            </xpath>
+             <xpath expr="//page[@name='maintenance']" position="after">
+                <page string="Parameter" name="parameteres" invisible="lerm_equipment == False">
+                        <group>
+                            <field name="parameter_ids">
+                                <tree>
+                                    <field name="parameter_name"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="parameter_name"/>
+                                    </group>
+                                </form>
+                            </field>
+                        
+                        </group>
+                </page>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- Original Views (kept for reference) -->
+    <!-- <record id="view_equipment_tree" model="ir.ui.view">
+        <field name="name">equipment.tree</field>
+        <field name="model">lerm.equipment</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="available_from" widget="float_time"/>
+                <field name="available_to"  widget="float_time"/>
+            </tree>
+        </field>
+    </record> -->
+
+    <!-- <record id="view_equipment_form" model="ir.ui.view">
+        <field name="name">equipment.form</field>
+        <field name="model">lerm.equipment</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <separator string="Operational Hours"/>
+                            <field name="available_from" widget="float_time"/>
+                            <field name="available_to" widget="float_time"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Parameters">
+                            <field name="parameter_ids">
+                                <tree>
+                                    <field name="parameter_name"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="parameter_name"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record> -->
+
+    <!-- <record id="action_equipment" model="ir.actions.act_window">
+        <field name="name">Equipments</field>
+        <field name="res_model">lerm.equipment</field>
+        <field name="view_mode">tree,form</field>
+    </record> -->
+
+    <!-- <menuitem id="menu_equipment" name="Equipments"  action="action_equipment"/> -->
+
+
+
+
+
+</odoo>
