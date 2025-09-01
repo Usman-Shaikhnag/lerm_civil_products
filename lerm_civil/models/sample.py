@@ -408,9 +408,13 @@ class LermSampleForm(models.Model):
         # import wdb ; wdb.set_trace()
         
         sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.id)])
-        sample_register.sudo().write({
-            'report_issued_date':date.today()
-        })
+        try:
+            sample_register.sudo().write({
+                'report_issued_date':date.today()
+            })
+        except:
+            print('Sample Register Not Updated')
+            
         self.approved_by = self.env.user
         self.write({'state': '4-in_report'})
         

@@ -32,6 +32,37 @@
                         </field>
                     </div>
 
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temperature_site">Temperature At Site</label></td>
+                                    <td><field name="temperature_site"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="last_weather">Last 2 Days Weather</label></td>
+                                    <td><field name="last_weather"/></td>
+                                </tr>
+                            
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="voltage">Voltage</label></td>
+                                    <td><field name="voltage"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="present_weather">Present Weather</label></td>
+                                    <td><field name="present_weather"/></td>
+                                </tr>
+                             
+                            </tbody>
+                        </table>
+                    </div>
+
                     <field name="line_ids" class="custom_table_borders">
                         <tree editable="bottom">
                             <field name="spacing"/>
@@ -46,6 +77,29 @@
                             <!-- <field name="graph_image" widget="image"/> -->
                         </tree>
                     </field>
+
+                     <field name="pin_line_ids" class="custom_table_borders">
+                        <tree editable="bottom">
+                            <field name="pin_spacing"/>
+                            <field name="equivalent_radius"/>
+                            <field name="class_of_soil"/>
+                          
+                        </tree>
+                    </field>
+
+                      <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_equivalent_radius">Average ERT Resistivity</label></td>
+                                    <td><field name="avg_equivalent_radius"/></td>
+                                </tr>
+                                
+                            
+                            </tbody>
+                        </table>
+                    </div>
+
                     <button name="action_generate_graph" type="object" string="Generate Graph" class="btn-primary"/>
 
                     <field name="graph_images" class="custom_table_borders">
@@ -56,6 +110,8 @@
                     <!-- <t t-foreach="graph_images" t-as="images">
                         <t-esc="image.graph_image"/>
                     </t> -->
+
+                    
 
                   
                     <!-- <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/> -->

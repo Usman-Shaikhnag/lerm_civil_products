@@ -393,7 +393,7 @@ class SrfForm(models.Model):
             kes_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample.kes')]).number_next_actual
            
             sample_range = "SAM/"+str(sam_next_number)+"-"+str(sam_next_number+record.sample_qty-1)
-            kes_range = "SSL/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
+            kes_range = "LERM/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
             record.write({'sample_range': sample_range , 'kes_range': kes_range })
             samples = self.env['lerm.srf.sample'].search([('sample_range_id','=',record.id)])
             
@@ -407,7 +407,7 @@ class SrfForm(models.Model):
                 day = str(self.srf_date.day).zfill(2)
                 count = count + 1
 
-                kes_no = "SSL/TR/"+ year+month+day + str(count).zfill(3) or "New"
+                kes_no = "LERM/TR/"+ year+month+day + str(count).zfill(3) or "New"
 
                 kes_no_daywise = self.env['ir.sequence'].next_by_code('lerm.sample.daywise.seq') 
                 # kes_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample.kes') + kes_no_daywise or 'New'
@@ -479,7 +479,7 @@ class SrfForm(models.Model):
 
       
         modified_srf_id = f"SRF/"+year+month+day+srffirstnumber_str.zfill(3)+"-"+year+month+day+srf_last_number.zfill(3)
-        modified_kes_number = f"SSL/TR/DUS"
+        modified_kes_number = f"LERM/TR/DUS"
         self.write({'srf_id': modified_srf_id})
         self.write({'kes_number': modified_kes_number})
         self.write({'state': '2-confirm'})
@@ -615,12 +615,11 @@ class SrfForm(models.Model):
 
         action = self.env.ref('lerm_civil.srf_sample_wizard_form')
         if len(samples) > 0:
-            print(samples[0].material_id.id , 'error')
             discipline_id = samples[-1].discipline_id.id
+            group_id = samples[-1].group_id.id
+            material_id = samples[-1].material_id.id
             # lab_l_id = samples[-1].lab_l_id.id
             lab_no_value = samples[-1].lab_no_value
-            material_id = samples[-1].material_id.id
-            group_id = samples[-1].group_id.id
             department_id = samples[-1].department_id
             alias = samples[-1].alias
             brand = samples[-1].brand
@@ -634,6 +633,8 @@ class SrfForm(models.Model):
             scope = samples[-1].scope
             sample_description = samples[-1].sample_description
             sample_received_date = self.srf_date
+            # import wdb ; wdb.set_trace()
+
 
             return {
             'name': "Add Sample",
@@ -644,22 +645,21 @@ class SrfForm(models.Model):
             'view_id': action.id,
             'target': 'new',
             'context': {
-            # 'default_discipline_id' : discipline_id,
-            'default_material_id' : material_id,
-            'default_alias':alias,
-            'default_brand':brand,
-            'default_size_id':size_id,
-            'default_grade_id':grade_id,
-            'default_sample_received_date': sample_received_date,
-            'default_location':location,
-            'default_sample_condition':sample_condition,
-            'default_sample_reject_reason':sample_reject_reason,
-            'default_witness':witness,
-            # 'default_department_id':department_id,
-            'default_scope':scope,
-            'default_sample_description':sample_description,
-            'default_group_id':group_id,
-            'default_sample_received_date':sample_received_date
+                'default_discipline_id' : discipline_id,
+                'default_group_id':group_id,
+                'default_material_id' : material_id,
+                'default_alias':alias,
+                'default_brand':brand,
+                'default_size_id':size_id,
+                'default_grade_id':grade_id,
+                'default_location':location,
+                'default_sample_condition':sample_condition,
+                'default_sample_reject_reason':sample_reject_reason,
+                'default_witness':witness,
+                # 'default_department_id':department_id,
+                'default_scope':scope,
+                'default_sample_description':sample_description,
+                'default_sample_received_date':sample_received_date
             }
         }
         else:
