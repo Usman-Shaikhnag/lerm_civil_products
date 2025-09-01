@@ -25,6 +25,19 @@ class SampleRegister(models.Model):
         for rec in self:
             rec.quantity_balance = rec.quantity_received - rec.quantity_consumed - rec.quantity_discarded
 
+    def resample_rec(self):
+        # import wdb ; wdb.set_trace()
+        action = self.env.ref('lerm_civil.resample_wizard')
+        return {
+            'name': "Resample",
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'sample.register.resample',
+            'view_id': action.id,
+            'target': 'new'
+            }
+    
     def discard_sample(self):
         # import wdb ; wdb.set_trace()
         action = self.env.ref('lerm_civil.discard_sample_quantity')
@@ -71,4 +84,26 @@ class DiscardSampleRegister(models.TransientModel):
 
     
     def cancel_sample_discard(self):
+        return {'type': 'ir.actions.act_window_close'}
+
+
+
+class ReSampleRegister(models.TransientModel):
+    _name = 'sample.register.resample'
+
+    resample_date = fields.Date("Resample Date")
+    resample_quantity = fields.Float("Resample Quantity")
+    resample_quantity_unit = fields.Many2one('uom.uom',string="Unit",default=lambda self: self._get_default_unit())
+    
+
+    def _get_default_unit(self):
+        # import wdb;wdb.set_trace()
+        sample_register = self.env['lerm.sample.register'].sudo().search([('id','=',self._context['active_id'])])
+        return sample_register.uom_id.id if sample_register else False
+
+    def action_resample(self):
+        pass
+
+    
+    def cancel_resample(self):
         return {'type': 'ir.actions.act_window_close'}

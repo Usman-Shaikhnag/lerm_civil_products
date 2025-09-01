@@ -121,7 +121,6 @@ class CoarseAggregateMechanical(models.Model):
     abrasion_visible = fields.Boolean("Abrasion Visible",compute="_compute_visible")
 
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    # abrasion_value_child_lines = fields.One2many('mechanical.abrasion.value.coarse.aggregate.line','parent_id',string="Parameter")
     total_weight_sample_abrasion = fields.Float(string="Total weight of Sample in gms")
     weight_passing_sample_abrasion = fields.Float(string="Weight of Passing sample in 1.70 mm IS sieve in gms")
     weight_retain_sample_abrasion = fields.Integer(string="Weight of Retain sample in 1.70 mm IS sieve in gms",compute="_compute_weight_retain_sample_abrasion")
@@ -199,7 +198,6 @@ class CoarseAggregateMechanical(models.Model):
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
-    #  specific_gravity_child_lines = fields.One2many('mechanical.specific.gravity.and.water.absorption.line','parent_id',string="Parameter")
 
     wt_surface_dry = fields.Float(string="Wt of Saturated surface dry  Aggregate in Air:- (B)")
     wt_sample_inwater = fields.Float(string="Wt of Saturated Aggregate in Water:- (A)")
@@ -702,7 +700,6 @@ class CoarseAggregateMechanical(models.Model):
     # elongation_visible = fields.Boolean("Elongation Visible",compute="_compute_visible")
 
     # parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    # elongation_child_lines = fields.One2many('mechanical.elongation.index.line','parent_id',string="Parameter", default=lambda self: self.default_elongation_sizes())
     # wt_retained_total_elongation = fields.Float(string="Wt Retained Total",compute="_compute_wt_retained_total_elongation")
     # elongated_retain_total = fields.Float(string="Elongated Retained Total",compute="_compute_elongated_retain")
     # flaky_passing_total = fields.Float(string="Flaky Passing Total",compute="_compute_flaky_passing")
@@ -780,7 +777,6 @@ class CoarseAggregateMechanical(models.Model):
     # flakiness_visible = fields.Boolean("Flakiness Visible",compute="_compute_visible")
 
     # parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    # flakiness_child_lines = fields.One2many('mechanical.flakiness.index.line','parent_id',string="Parameter", default=lambda self: self.default_flakiness_sizes())
     # wt_retained_total_flakiness = fields.Float(string="Wt Retained Total",compute="_compute_wt_retained_total_flakiness")
     # flaky_passing_total = fields.Float(string="Flaky Passing Total",compute="_compute_flaky_passing")
     # aggregate_flakiness = fields.Float(string="Aggregate Flakiness Value in %",compute="_compute_aggregate_flakiness")
@@ -1148,7 +1144,6 @@ class CoarseAggregateMechanical(models.Model):
     loose_bulk_density_name = fields.Char("Name",default="Bulk Density")
     loose_bulk_visible = fields.Boolean("Loose Bulk Density Visible",compute="_compute_visible")
 
-    # loose_bulk_density_child_lines = fields.One2many('coarse.aggregate.loose.bulk.density.line','parent_id',string="Parameter")
     volume_of_bucket_loose = fields.Float(string="Volume of Bucket, V")
     weight_empty_bucket_loose = fields.Float(string="Weight of Empty Bucket,M1 in g")
 

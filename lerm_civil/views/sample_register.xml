@@ -8,6 +8,8 @@
                 <form>
                     <header>
                         <button type="object" class="oe_highlight" name="discard_sample" string="Discard Sample"/>
+                        <button type="object" class="oe_highlight" name="resample_rec" string="Resample"/>
+
                     </header>
                     <sheet>
                         <group>
@@ -81,6 +83,41 @@
                         <button
                                 type="object"
                                 name="cancel_sample_discard"
+                                string="Cancel"/>
+                    </footer>
+
+                </form>
+            </field>
+        </record>
+
+
+        <record id="resample_wizard" model="ir.ui.view">
+            <field name="name">sample.register.resample.form</field>
+            <field name="model">sample.register.resample</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="resample_date"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="resample_quantity"/>
+                            
+                        </group>
+                        <group>
+                            <field name="resample_quantity_unit" readonly="1"/>
+                            
+                        </group>
+                    </group>
+                    <footer>
+                        <button
+                                type="object"
+                                class="oe_highlight" 
+                                name="action_resample"
+                                string="Discard Quantity"/>
+                        <button
+                                type="object"
+                                name="cancel_resample"
                                 string="Cancel"/>
                     </footer>
 

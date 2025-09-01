@@ -16,9 +16,9 @@ class LermSampleForm(models.Model):
     _rec_name = 'kes_no'
 
     client_reference1 = fields.Char(string="Client Reference",compute="_compute_client_reference", store=True)
-    srf_id = fields.Many2one('lerm.civil.srf' , string="SRF ID" ,ondelete="cascade",tracking=True)
+    srf_id = fields.Many2one('lerm.civil.srf',ondelete="cascade", string="SRF ID" ,tracking=True)
     sample_range_id = fields.Many2one('sample.range.line',string="Sample Range")
-    eln_id = fields.Many2one('lerm.eln',string="ELN",ondelete="cascade")
+    eln_id = fields.Many2one('lerm.eln',string="ELN",ondelete="set null")
     sample_no = fields.Char(string="Sample ID." ,required=True,readonly=True, default=lambda self: 'New')
     casting = fields.Boolean(string="Casting")
     discipline_id = fields.Many2one('lerm_civil.discipline',string="Discipline")
