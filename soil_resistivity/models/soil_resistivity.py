@@ -13,7 +13,7 @@ import io, base64
 class SoilResistivity(models.Model):
     _name = "soil.resistivity"
     _inherit = "lerm.eln"
-    _description = "Soil Resistivity Test"
+    # _description = "Soil Resistivity Test"
 
     name= fields.Char("Name",default="Soil")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
@@ -25,6 +25,25 @@ class SoilResistivity(models.Model):
 
     graph_images = fields.One2many('soil.resistivity.line', 'parent_id',string="Graphs")
     line_ids = fields.One2many("soil.resistivity.line", "parent_id", string="Resistivity Table")
+
+    temperature_site = fields.Char(string="Temperature At Site :")
+    last_weather = fields.Char(string="Last 2 Days Weather :")
+    voltage = fields.Char(string="Voltage :")
+    present_weather = fields.Char(string="Present Weather :")
+
+    pin_line_ids = fields.One2many("soil.resistivity.pin.line", "parent_id", string="Resistivity Table")
+
+    avg_equivalent_radius = fields.Float(string="Average Equivalent Radius", compute="_compute_avg_equivalent_radius", store=True)
+
+    @api.depends('pin_line_ids.equivalent_radius')
+    def _compute_avg_equivalent_radius(self):
+        for rec in self:
+            if rec.pin_line_ids:
+                total = sum(line.equivalent_radius for line in rec.pin_line_ids if line.equivalent_radius)
+                count = len([line for line in rec.pin_line_ids if line.equivalent_radius])
+                rec.avg_equivalent_radius = total / count if count > 0 else 0.0
+            else:
+                rec.avg_equivalent_radius = 0.0
    
     def action_generate_graph(self):
         for rec in self:
@@ -156,3 +175,14 @@ class SoilResistivityLine(models.Model):
             plt.close(fig)
             buf.seek(0)
             rec.graph_image = base64.b64encode(buf.read()).decode("utf-8")
+
+
+
+class SoilResistivityPinLine(models.Model):
+    _name = "soil.resistivity.pin.line"
+    _description = "Soil Resistivity Line"
+
+    parent_id = fields.Many2one("soil.resistivity", string="Test Point")
+    pin_spacing = fields.Float("Pin Spacing (m)")
+    equivalent_radius = fields.Float("Equivalent Radius")
+    class_of_soil = fields.Char("Class of Soil")
