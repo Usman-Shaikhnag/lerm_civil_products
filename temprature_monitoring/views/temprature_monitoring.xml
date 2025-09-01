@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_temprature_monitoring" model="ir.ui.view">
+        <field name="name">enviroment.temprature.form</field>
+        <field name="model">enviroment.temprature</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                   <group style="white-space: nowrap; width:80%;" >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                         <field name="grade" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                            <field name="sample_parameters" nolabel="1">
+                                <tree>
+                                    <field name="parameter_name"/>
+                                    <field name="test_method"/>
+                                </tree>
+                            </field>
+                        </div>
+
+       
+
+
+                <!-- <group string="Introduction"  style="white-space: nowrap; width:100%;" class="custom_table_borders"> 
+                    <field name="introduction"/>
+                   
+                    
+                </group> -->
+                <div>
+
+                <table class="custom_table_borders" style="width:100%;" string="Introduction">
+                    <tbody>
+                        <tr>
+                            <td style="width:20%;"><label for="introduction">Introduction :</label></td>
+                            <td style="width:80%;"><field name="introduction"/></td>
+                        </tr>
+                        
+                        
+                    </tbody>
+                </table>
+                </div>
+
+                
+
+                <div class="d-flex gap-2" style="margin-top: 10px;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="raft_thickness">Raft Thickness:</label></td>
+                                    <td style="width:50%;"><field name="raft_thickness"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="date_pouring">Date of Pouring:</label></td>
+                                    <td style="width:50%;"><field name="date_pouring"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="date_termination">Date of Termination :</label></td>
+                                    <td style="width:50%;"><field name="date_termination"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="period_monitoring">Period of Monitoring: </label></td>
+                                    <td style="width:50%;"><field name="period_monitoring"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <group >
+                          <field name="tempreture_upload1" widget="many2many_binary" />
+                      </group>
+
+                 <!-- <group string="Temperature Monitoring location"  style="white-space: nowrap; width:100%;" class="custom_table_borders"> 
+                    <field name="temprerature_location"/>
+                </group> -->
+
+                <div>
+
+                <table class="custom_table_borders" style="width:100%;" >
+                    <tbody>
+                        <tr>
+                            <td style="width:20%;"><label for="temprerature_location">Temperature Monitoring location :</label></td>
+                            <td style="width:80%;"><field name="temprerature_location"/></td>
+                        </tr>
+                        
+                        
+                    </tbody>
+                </table>
+                </div>
+
+                <group style="margin-top: 10px;">
+                    <field name="tempreture_upload2" widget="many2many_binary" />
+                </group>
+
+                 <!-- <group string="Positioning of the Thermocouples"  style="white-space: nowrap; width:100%;" class="custom_table_borders"> 
+                    <field name="position_thermpcouples"/>
+                </group> -->
+
+                <div>
+
+                <table class="custom_table_borders" style="width:100%;" >
+                    <tbody>
+                        <tr>
+                            <td style="width:20%;"><label for="position_thermpcouples">Positioning of the Thermocouples :</label></td>
+                            <td style="width:80%;"><field name="position_thermpcouples"/></td>
+                        </tr>
+                        
+                        
+                    </tbody>
+                </table>
+                </div>
+
+                <!-- <group string="Result"  style="white-space: nowrap; width:100%;" > 
+                    <field name="result"/>
+                </group> -->
+
+                 <div style="margin-top: 10px;">
+
+                <table class="custom_table_borders" style="width:100%;" >
+                    <tbody>
+                        <tr>
+                            <td style="width:20%;"><label for="result">Result :</label></td>
+                            <td style="width:80%;"><field name="result"/></td>
+                        </tr>
+                        
+                        
+                    </tbody>
+                </table>
+                </div>
+
+                 <group style="margin-top: 10px;">
+                    <field name="tempreture_upload3" widget="many2many_binary" />
+                </group>
+
+                   <group string="Show Thermocouple  Lines"  style="white-space: nowrap; width:70%;"> 
+                   
+                </group>
+
+
+                <div class="d-flex gap-2" style="margin-top: 10px;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple1_bottom">Show Thermocouple -01</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple1_bottom"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple2_middle">Show Thermocouple -02</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple2_middle"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple3_top">Show Thermocouple -03</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple3_top"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple4_stand1">Show Stand By1 - 04</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple4_stand1"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple5_stand2">Show Stand By2 - 05</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple5_stand2"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple6_bottom">Show Thermocouple -06</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple6_bottom"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple7_middle">Show Thermocouple -07</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple7_middle"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple8_top">Show Thermocouple -08</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple8_top"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple9_stand1">Show Stand By1 - 09</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple9_stand1"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple10_stand2">Show Stand By2 - 10</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple10_stand2"/></td>
+                                </tr>
+
+                                   <tr>
+                                    <td style="width:50%;"><label for="show_ambient">Show Ambient</label></td>
+                                    <td style="width:50%;"><field name="show_ambient"/></td>
+                                </tr>
+
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                   <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple11_bottom">Show Thermocouple -11</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple11_bottom"/></td>
+                                </tr>
+                                   <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple12_middle">Show Thermocouple -12</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple12_middle"/></td>
+                                </tr>
+                                   <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple13_top">Show Thermocouple -13</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple13_top"/></td>
+                                </tr>
+                                   <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple14_stand1">Show Stand By1 - 14</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple14_stand1"/></td>
+                                </tr>
+                                   <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple15_stand2">Show Stand By2 - 15</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple15_stand2"/></td>
+                                </tr>
+                                   <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple16_bottom">Show Thermocouple -16</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple16_bottom"/></td>
+                                </tr>
+                                   <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple17_middle">Show Thermocouple -17</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple17_middle"/></td>
+                                </tr>
+                                   <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple18_top">Show Thermocouple -18</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple18_top"/></td>
+                                </tr>
+                                   <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple19_stand1">Show Stand By1 - 19</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple19_stand1"/></td>
+                                </tr>
+                                   <tr>
+                                    <td style="width:50%;"><label for="show_thermocouple20_stand2">Show Stand By2 - 10</label></td>
+                                    <td style="width:50%;"><field name="show_thermocouple20_stand2"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                <group string="Show Temperature Differential Lines" col="4" style="white-space: nowrap; width:70%;"> 
+                   
+                    
+                </group>
+
+                  <div class="d-flex gap-2" style="margin-top: 10px;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_temperature_differential1">Show Temperature Differential-01</label></td>
+                                    <td style="width:50%;"><field name="show_temperature_differential1"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_temperature_differential2">Show Temperature Differential-02</label></td>
+                                    <td style="width:50%;"><field name="show_temperature_differential2"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_temperature_differential3">Show Temperature Differential-03</label></td>
+                                    <td style="width:50%;"><field name="show_temperature_differential3"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="show_temperature_differential4">Show Temperature Differential-04 </label></td>
+                                    <td style="width:50%;"><field name="show_temperature_differential4"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                            <field name="temprature_line" nolabel="1"  class="custom_table_borders" >
+                                <tree editable="bottom">
+                                    <field name='sr_no'/>
+                                    <field name="days" />
+                                    <field name="date" />
+                                    <field name="time" />
+                                   <field name="thermocouple1_bottom" />
+                                    <field name='thermocouple2_middle'/>
+                                   <field name="thermocouple3_top" />
+                                    <field name='thermocouple4_stand1'/>
+                                   <field name="thermocouple5_stand2" />
+                                   <field name='thermal_gradient1'/>
+
+                                   <field name="thermocouple6_bottom" />
+                                    <field name='thermocouple7_middle'/>
+                                   <field name="thermocouple8_top" />
+                                    <field name='thermocouple9_stand1'/>
+                                   <field name="thermocouple10_stand2" />
+                                   <field name='thermal_gradient2'/>
+
+                                    <field name="thermocouple11_bottom" />
+                                    <field name='thermocouple12_middle'/>
+                                   <field name="thermocouple13_top" />
+                                    <field name='thermocouple14_stand1'/>
+                                   <field name="thermocouple15_stand2" />
+                                   <field name='thermal_gradient3'/>
+
+                                   <field name="thermocouple16_bottom" />
+                                    <field name='thermocouple17_middle'/>
+                                   <field name="thermocouple18_top" />
+                                    <field name='thermocouple19_stand1'/>
+                                   <field name="thermocouple20_stand2" />
+                                   <field name='thermal_gradient4'/>
+
+                                    <field name='ambient1'/>
+                                   
+                                
+                                </tree>
+                            
+                            </field> 
+
+                            
+                           
+
+                   
+
+                    <!-- <group >
+                        <field name="upload_file1" filename="file_name"/>
+                          <field name="file_name" />
+                        
+                     </group > -->
+
+                     <div class="d-flex gap-2" style="margin-top: 10px;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="upload_file1">Upload Excel File</label></td>
+                                    <td style="width:50%;"><field name="upload_file1" filename="file_name"/></td>
+                                </tr>
+                              
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="file_name">Filename</label></td>
+                                    <td style="width:50%;"><field name="file_name"/></td>
+                                </tr>
+                                
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                
+                <group  style="white-space: nowrap; width:80%">
+                      <button string="Import Excel Data" type="object" name="action_import_excel_data"
+                        class="btn-primary"/>
+                </group >
+
+               
+
+                        <div >
+                        <field name="graph_image_tc" widget="image" readonly="1" nolabel="1"/>
+                        </div>
+
+
+                          <div >
+                        <field name="graph_image_temp" widget="image" readonly="1" nolabel="1"/>
+                        </div>
+
+
+
+
+
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+                     
+
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

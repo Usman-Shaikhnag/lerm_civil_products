@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="chemical_fine_aggregate_form" model="ir.ui.view">
+        <field name="name">chemical.fine.aggregate.form</field>
+        <field name="model">chemical.fine.aggregate</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+                <div>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                </div>
+                <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree class="table-bordered o_list_view">
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                    <!-- ph at 1% -->
+                    <div invisible="not ph_visible">
+                        <h1>
+                            <field name="ph_name" readonly="1" nolabel="1"/>
+                            <field name="ph_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                      <table class="table table-bordered sm-table" style="width: 60%;">
+                         <tbody>
+                           <tr>
+                           <td><span>pH of 1 % Solution in water</span></td>
+                             <td>A</td>
+                             <td>B</td>
+                             <td>C</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="ph_1_percent_a"  colspan="1"  nolabel="1"/></td>
+                             <td><field  name="ph_1_percent_b"  colspan="1"  nolabel="1"/></td>
+                             <td><field  name="ph_1_percent_c"  colspan="1"  nolabel="1"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+                    <group/>
+
+                    <div>
+                      <table style="width: 20%;">
+                      <tr>
+                          <td style="padding: 8px;font-weight: bold;"><span>Average</span></td>
+                          <td style="padding: 8px;"><field name="ph_average"/></td>
+                         </tr>
+                        <tr>
+                          <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
+                          <td style="padding: 8px;"><field name='ph_average_conformity'
+                               decoration-success="ph_average_conformity == 'pass'" 
+                               decoration-danger="ph_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                         <td style="padding: 5px;"><field name='ph_average_nabl'/></td>
+                         </tr>
+                     
+                      </table>
+                    </div>
+                    <group/>
+                    
+                    <!-- <group invisible="not ph_visible">
+                        <label for="ph_1_percent_a" string="pH of 1 % Solution in water" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="ph_1_percent_a" string="A" />
+                            <field  name="ph_1_percent_a"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="ph_1_percent_b" string="B" />
+                            <field  name="ph_1_percent_b"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="ph_1_percent_c" string="C" />
+                            <field  name="ph_1_percent_c"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group> 
+                    <group invisible="not ph_visible">
+                      <field name="ph_average"/>
+                    </group>  
+                    <group invisible="not ph_visible">
+                          
+                        <field name='ph_average_conformity'
+                               decoration-success="ph_average_conformity == 'pass'" 
+                               decoration-danger="ph_average_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name='ph_average_nabl'/>
+                    </group>   -->
+
+                    <!-- Dissolved Silica  -->
+                    <div invisible="not alkali_aggregate_dissolved_visible">
+                        <h1>
+                            <field name="alkali_aggregate_reactivity_dissolved_name" readonly="1" nolabel="1"/>
+                            <field name="alkali_aggregate_dissolved_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                      <table class="table table-bordered sm-table" style="width: 60%;">
+                         <tbody>
+                           <tr>
+                           <td><span>Wt of Crucible + Blank residue after igniation (gm) (A)</span></td>
+                             <td><field name="wt_blank_crucible_after_ignition"/></td>
+                           </tr>
+                           <tr>
+                             <td><span>Wt of Cruciable +Blank residue after HF (gm) (B)</span></td>
+                             <td><field name="wt_blank_crucible_after_hf"/></td>
+                           </tr>
+                           <tr>
+                             <td><span>Diff. in Wt of silica in Blank (gm) = A - B</span></td>
+                             <td><field name="diff_in_wt_of_silica_blank"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+                    <group/>
+
+                    <!-- <group invisible="not alkali_aggregate_dissolved_visible" style="white-space:nowrap; width:50%">
+                        <field name="wt_blank_crucible_after_ignition"/>
+                        <field name="wt_blank_crucible_after_hf"/>
+                        <field name="diff_in_wt_of_silica_blank"/>
+                    </group> -->
+
+                    <div>
+                      <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Wt of Crucible + Sample residue after igniation (gm) (A)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;">A</td>
+                            <td style="border: 1px solid black; padding: 5px;">B</td>
+                            <td style="border: 1px solid black; padding: 5px;">C</td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="wt_crucible_after_ignition_a"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="wt_crucible_after_ignition_b"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="wt_crucible_after_ignition_c"  colspan="1"  nolabel="1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                      <group/>
+
+                    <!-- <group invisible="not alkali_aggregate_dissolved_visible">
+                        <label for="wt_crucible_after_ignition_a" string="Wt of Crucible + Sample residue after igniation (gm) (A)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="wt_crucible_after_ignition_a" string="A" />
+                            <field  name="wt_crucible_after_ignition_a"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="wt_crucible_after_ignition_b" string="B" />
+                            <field  name="wt_crucible_after_ignition_b"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="wt_crucible_after_ignition_c" string="C" />
+                            <field  name="wt_crucible_after_ignition_c"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group> -->
+
+                    <div>
+                      <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Wt of Cruciable +Sample residue after HF (gm) (B)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;">A</td>
+                            <td style="border: 1px solid black; padding: 5px;">B</td>
+                            <td style="border: 1px solid black; padding: 5px;">C</td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="wt_crucible_after_hf_a"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="wt_crucible_after_hf_b"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="wt_crucible_after_hf_c"  colspan="1"  nolabel="1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                      <group/>
+
+                    <!-- <group invisible="not alkali_aggregate_dissolved_visible">
+                        <label for="wt_crucible_after_hf_a" string="Wt of  Cruciable +Sample residue after HF (gm) (B)" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="wt_crucible_after_hf_a" string="A"  />
+                            <field  name="wt_crucible_after_hf_a"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="wt_crucible_after_hf_b" string="B" />
+                            <field  name="wt_crucible_after_hf_b"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="wt_crucible_after_hf_c" string="C" />
+                            <field  name="wt_crucible_after_hf_c"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>     -->
+
+
+                    <div>
+                      <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;width:300px"><span>Diff. in Wt of silica in Sample (gm) = A - B</span></td>
+                            <td style="border: 1px solid black; padding: 5px;">A</td>
+                            <td style="border: 1px solid black; padding: 5px;">B</td>
+                            <td style="border: 1px solid black; padding: 5px;">C</td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="diff_in_wt_of_silica_a"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="diff_in_wt_of_silica_b"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="diff_in_wt_of_silica_c"  colspan="1"  nolabel="1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                      <group/>
+
+                    <!-- <group invisible="not alkali_aggregate_dissolved_visible">
+                        <label for="diff_in_wt_of_silica_a" string="Diff. in Wt of silica in Sample (gm)  = A - B" />
+                        <div class="address_format " >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="diff_in_wt_of_silica_a" string="A" />
+                            <field  name="diff_in_wt_of_silica_a"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="diff_in_wt_of_silica_b" string="B" />
+                            <field  name="diff_in_wt_of_silica_b"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="diff_in_wt_of_silica_c" string="C" />
+                            <field  name="diff_in_wt_of_silica_c"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>           -->
+
+                    <div>
+                      <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;width:300px"><span>Dissolved Silica</span></td>
+                            <td style="border: 1px solid black; padding: 5px;">A</td>
+                            <td style="border: 1px solid black; padding: 5px;">B</td>
+                            <td style="border: 1px solid black; padding: 5px;">C</td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="dissolved_silica_a"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="dissolved_silica_b"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="dissolved_silica_c"  colspan="1"  nolabel="1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                      <group/>
+
+                    <!-- <group invisible="not alkali_aggregate_dissolved_visible">
+                        <label for="dissolved_silica_a" string="Dissolved Silica" />
+                        <div class="address_format " cols='12' >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="dissolved_silica_a" string="A"  />
+                            <field  name="dissolved_silica_a"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="dissolved_silica_b" string="B" />
+                            <field  name="dissolved_silica_b"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="dissolved_silica_c" string="C" />
+                            <field  name="dissolved_silica_c"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>   -->
+                    <div>
+                     <table style="border: 1px solid black; width: 25%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="average_dissolved_silica"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                       <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                             <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                              <td style="padding: 8px;"><field name='average_dissolved_silica_conformity_fine'
+                               decoration-success="average_dissolved_silica_conformity_fine == 'pass'" 
+                               decoration-danger="average_dissolved_silica_conformity_fine == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='average_dissolved_silica_nabl_fine'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+
+                    <!-- <group invisible="not alkali_aggregate_dissolved_visible">
+                      <field name="average_dissolved_silica"/>
+                    </group>
+                      <group invisible="not alkali_aggregate_dissolved_visible">
+                          
+                        <field name='average_dissolved_silica_conformity_fine'
+                               decoration-success="average_dissolved_silica_conformity_fine == 'pass'" 
+                               decoration-danger="average_dissolved_silica_conformity_fine == 'fail'" 
+                               readonly="1"/>
+                        <field name='average_dissolved_silica_nabl_fine'/>
+                    </group>        -->
+
+
+                  <!-- Reduction in Alkalinity  -->
+                    <div invisible="not alkali_aggregate_alkalinity_visible">
+                        <h1>
+                            <field name="alkali_aggregate_reactivity_alkalinity_name" readonly="1" nolabel="1"/>
+                            <field name="alkali_aggregate_alkalinity_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                      <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;width:300px"><span>Blank Reading (ml) (A)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;">A</td>
+                            <td style="border: 1px solid black; padding: 5px;">B</td>
+                            <td style="border: 1px solid black; padding: 5px;">C</td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="blank_reading1"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="blank_reading2"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="blank_reading3"  colspan="1"  nolabel="1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                      <group/>
+
+                    <!-- <group invisible="not alkali_aggregate_alkalinity_visible">
+                        <label for="blank_reading1" string="Blank Reading (ml) (A)" />
+                        <div class="address_format " cols='12' >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="blank_reading1" string="A"  />
+                            <field  name="blank_reading1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="blank_reading2" string="B" />
+                            <field  name="blank_reading2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="blank_reading3" string="C" />
+                            <field  name="blank_reading3"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>   -->
+
+                    <div>
+                      <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;width:300px"><span>Burette Reading (sample) (ml) (B)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;">A</td>
+                            <td style="border: 1px solid black; padding: 5px;">B</td>
+                            <td style="border: 1px solid black; padding: 5px;">C</td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="burette_reading1"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="burette_reading2"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="burette_reading3"  colspan="1"  nolabel="1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                      <group/>
+
+                    <!-- <group invisible="not alkali_aggregate_alkalinity_visible">
+                        <label for="burette_reading1" string="Burette Reading (sample) (ml) (B)" />
+                        <div class="address_format " cols='12' >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="burette_reading1" string="A"  />
+                            <field  name="burette_reading1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="burette_reading2" string="B" />
+                            <field  name="burette_reading2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="burette_reading3" string="C" />
+                            <field  name="burette_reading3"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>   -->
+
+                    <div>
+                      <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;width:300px"><span>Diff in Reading (ml) (A-B)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;">A</td>
+                            <td style="border: 1px solid black; padding: 5px;">B</td>
+                            <td style="border: 1px solid black; padding: 5px;">C</td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="diff_in_reading1"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="diff_in_reading2"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="diff_in_reading3"  colspan="1"  nolabel="1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                      <group/>
+
+
+                      <div>
+                      <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;width:300px"><span>Normality of 0.05N HCL</span></td>
+                            <td style="border: 1px solid black; padding: 5px;">A</td>
+                            <td style="border: 1px solid black; padding: 5px;">B</td>
+                            <td style="border: 1px solid black; padding: 5px;">C</td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="normality1"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="normality2"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="normality3"  colspan="1"  nolabel="1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                      <group/>
+
+
+                    <!-- <group invisible="not alkali_aggregate_alkalinity_visible">
+                        <label for="diff_in_reading1" string="Diff in Reading (ml) (A-B)" />
+                        <div class="address_format " cols='12' >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="diff_in_reading1" string="A"  />
+                            <field  name="diff_in_reading1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="diff_in_reading2" string="B" />
+                            <field  name="diff_in_reading2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="diff_in_reading3" string="C" />
+                            <field  name="normality3"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>  
+
+                    <group invisible="not alkali_aggregate_alkalinity_visible">
+
+                        <label for="normality1" string="Normality of 0.05N HCL" />
+                        <div class="address_format " cols='12' >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="normality1" string="A"  />
+                            <field  name="normality1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="normality2" string="B" />
+                            <field  name="normality2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="normality3" string="C" />
+                            <field  name="normality3"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>   -->
+
+                    <div>
+                      <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;width:300px"><span>Reduction in Alkalinity</span></td>
+                            <td style="border: 1px solid black; padding: 5px;">A</td>
+                            <td style="border: 1px solid black; padding: 5px;">B</td>
+                            <td style="border: 1px solid black; padding: 5px;">C</td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="reduction_in_alkalinity1"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="reduction_in_alkalinity2"  colspan="1"  nolabel="1"/></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field  name="reduction_in_alkalinity3"  colspan="1"  nolabel="1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                      <group/>
+
+                    <!-- <group invisible="not alkali_aggregate_alkalinity_visible">
+                        <label for="reduction_in_alkalinity1" string="Reduction in Alkalinity" />
+                        <div class="address_format " cols='12' >
+                          <group colspan="1"  class="oe_inline">
+                            <label for="reduction_in_alkalinity1" string="A"  />
+                            <field  name="reduction_in_alkalinity1"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="reduction_in_alkalinity2" string="B" />
+                            <field  name="reduction_in_alkalinity2"  colspan="3"  nolabel="1"/>
+                          </group>
+                          <group colspan="1"  class="oe_inline">
+                            <label for="reduction_in_alkalinity3" string="C" />
+                            <field  name="reduction_in_alkalinity3"  colspan="3"  nolabel="1"/>
+                          </group>
+                        </div>
+                    </group>   -->
+
+                    <div>
+                     <table style="border: 1px solid black; width: 25%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="average_reduction_alkalinity"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                       <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='average_reduction_alkalinity_conformity_fine' decoration-success="average_reduction_alkalinity_conformity_fine == 'pass'" 
+                            decoration-danger="average_reduction_alkalinity_conformity_fine == 'fail'" 
+                            readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='average_reduction_alkalinity_nabl_fine'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not alkali_aggregate_alkalinity_visible">
+                      <field name="average_reduction_alkalinity"/>
+                    </group>
+                      <group invisible="not alkali_aggregate_alkalinity_visible">
+                          
+                        <field name='average_reduction_alkalinity_conformity_fine'
+                               decoration-success="average_reduction_alkalinity_conformity_fine == 'pass'" 
+                               decoration-danger="average_reduction_alkalinity_conformity_fine == 'fail'" 
+                               readonly="1"/>
+                        <field name='average_reduction_alkalinity_nabl_fine'/>
+                    </group>  -->
+
+                    <!-- Chloride  -->
+
+                    <div invisible="not chloride_visible">
+                        <h1>
+                            <field name="chloride_name" readonly="1" nolabel="1"/>
+                            <field name="chloride_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Sample Wt</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="sample_wt_chloride"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume make Upto</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="volume_make_upto_chloride"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Aliqote taken</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="aliqote_taken_chloride"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume of silver nitrate added</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="volume_silver_nitrate_added"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume of ammonia thiocynate for (Blank)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="volume_ammonia_blank"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume of ammonia thiocynate for (Sample)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="volume_ammonia_sample"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume of ammonia thiocynate consumed</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="volume_ammonia_consumed"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Normality of ammonia thiocynate (0.1)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="normality_of_ammonia"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                     <table style="border: 1px solid black; width: 25%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Chloride %</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="chloride_percent"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='chloride_percent_conformity_fine'
+                               decoration-success="chloride_percent_conformity_fine == 'pass'" 
+                               decoration-danger="chloride_percent_conformity_fine == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='chloride_percent_nabl_fine'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not chloride_visible" style="white-space:nowrap; width:50%">
+                      <field name="sample_wt_chloride"/>
+                      <field name="volume_make_upto_chloride"/>
+                      <field name="aliqote_taken_chloride"/>
+                      <field name="volume_silver_nitrate_added"/>
+                      <field name="volume_ammonia_blank"/>
+                      <field name="volume_ammonia_sample"/>
+                      <field name="volume_ammonia_consumed"/>
+                      <field name="normality_of_ammonia"/>
+                      <field name="chloride_percent"/>
+
+                    </group> -->
+                      <!-- <group invisible="not chloride_visible">
+                          
+                        <field name='chloride_percent_conformity_fine'
+                               decoration-success="chloride_percent_conformity_fine == 'pass'" 
+                               decoration-danger="chloride_percent_conformity_fine == 'fail'" 
+                               readonly="1"/>
+                        <field name='chloride_percent_nabl_fine'/>
+                    </group>  -->
+
+                  <!-- Sulphate  -->
+                    <group invisible="not sulphate_visible">
+                        <h1>
+                            <field name="sulphate_name" readonly="1" nolabel="1"/>
+                            <field name="sulphate_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Sample Wt</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="sample_wt_sulphate"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume make Upto</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="volume_make_upto_sulphate"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Aliqote taken</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="aliqote_taken_sulphate"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Wt. of empty crucible+residue after ignition</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_empty_crucible_after_ignition"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of empty crucible</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_empty_crucible"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Difference in Weight</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="difference_in_wt_sulphate"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                     <table style="border: 1px solid black; width: 25%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>SO3 %</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="sulphate_percent"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='sulphate_percent_conformity_fine'
+                               decoration-success="sulphate_percent_conformity_fine == 'pass'" 
+                               decoration-danger="sulphate_percent_conformity_fine == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='sulphate_percent_nabl_fine'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not sulphate_visible" style="white-space:nowrap; width:50%">
+                      <field name="sample_wt_sulphate"/>
+                      <field name="volume_make_upto_sulphate"/>
+                      <field name="aliqote_taken_sulphate"/>
+                      <field name="wt_empty_crucible_after_ignition"/>
+                      <field name="wt_empty_crucible"/>
+                      <field name="difference_in_wt_sulphate"/>
+                      <field name="sulphate_percent"/>
+                    </group>
+                      <group invisible="not sulphate_visible">
+                          
+                        <field name='sulphate_percent_conformity_fine'
+                               decoration-success="sulphate_percent_conformity_fine == 'pass'" 
+                               decoration-danger="sulphate_percent_conformity_fine == 'fail'" 
+                               readonly="1"/>
+                        <field name='sulphate_percent_nabl_fine'/>
+                    </group>  -->
+
+                     <!--      Alkali as Na₂O Clause  4.11.4 ( By Flame Photometer)  -->
+                    <group invisible="not na2O_name_visible">
+                        <h1>
+                            <field name="na2O_name" readonly="1" nolabel="1"/>
+                            <field name="na2O_name_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A. Weight of sample taken</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="sample_wt_na2O"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. Dilution</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="dilution_na2O"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Sodium  reading</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="sidium_reading_na2O"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. Factor from graph</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="factor_graph_na2O"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>E. Dilution *Reading* factor *100/10000*wt of sample*A4</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="dilution_reading_na2O"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>F. K *1.20</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="na2O"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='na2O_conformity'
+                               decoration-success="na2O_conformity == 'pass'" 
+                               decoration-danger="na2O_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='na2O_nabl'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not na2O_name_visible" style="white-space:nowrap; width:50%">
+                      <field name="sample_wt_na2O"/>
+                      <field name="dilution_na2O"/>
+                      <field name="sidium_reading_na2O"/>
+                      <field name="factor_graph_na2O"/>
+                      <field name="dilution_reading_na2O"/>
+                      <field name="na2O"/>
+
+                    </group>
+                      <group invisible="not na2O_name_visible">
+                          
+                        <field name='na2O_conformity'
+                               decoration-success="na2O_conformity == 'pass'" 
+                               decoration-danger="na2O_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name='na2O_nabl'/>
+                    </group>  -->
+
+
+
+                      <!--       Alkali as K₂O Clause  4.11.4 ( By Flame Photometer)  -->
+                    <group invisible="not k2O_name_visible">
+                        <h1>
+                            <field name="k2O_name" readonly="1" nolabel="1"/>
+                            <field name="k2O_name_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A. Weight of sample taken</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="sample_wt_k2O"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. Dilution</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="dilution_k2O"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Potasium reading</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="sidium_reading_k2O"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. Factor from graph</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="factor_graph_k2O"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>E. Dilution *Reading* factor *100/10000*wt of sample*A4</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="dilution_reading_k2O"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>F. K *1.20</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="k2O"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='k2O_conformity'
+                               decoration-success="k2O_conformity == 'pass'" 
+                               decoration-danger="k2O_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='k2O_nabl'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not k2O_name_visible" style="white-space:nowrap; width:50%">
+                      <field name="sample_wt_k2O"/>
+                      <field name="dilution_k2O"/>
+                      <field name="sidium_reading_k2O"/>
+                      <field name="factor_graph_k2O"/>
+                      <field name="dilution_reading_k2O"/>
+                      <field name="k2O"/>
+
+                    </group>
+                      <group invisible="not k2O_name_visible">
+                          
+                        <field name='k2O_conformity'
+                               decoration-success="k2O_conformity == 'pass'" 
+                               decoration-danger="k2O_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name='k2O_nabl'/>
+                    </group>  -->
+
+
+
+                     <!--   Total Alkali as content Clause  4.11.4 ( By Flame Photometer)  -->
+                    <div invisible="not total_alkali_content_visible">
+                        <h1>
+                            <field name="total_alkali_content_name" readonly="1" nolabel="1"/>
+                            <field name="total_alkali_content_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                     <div>
+                     <table style="border: 1px solid black; width: 25%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Total Alkali Content (%)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;width:100px;"><field name="total_alkali_content"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='total_alkali_content_conformity'
+                               decoration-success="total_alkali_content_conformity == 'pass'" 
+                               decoration-danger="total_alkali_content_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td><field name='total_alkali_content_nabl'/></td>
+                           </tr>
+                          </table>
+                      </div> 
+                    <group/>
+                    
+                    <!-- <group invisible="not total_alkali_content_visible">
+                      <field name="total_alkali_content"/>
+                    </group>
+                      <group invisible="not total_alkali_content_visible">
+                          
+                        <field name='total_alkali_content_conformity'
+                               decoration-success="total_alkali_content_conformity == 'pass'" 
+                               decoration-danger="total_alkali_content_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name='total_alkali_content_nabl'/>
+                    </group>  -->
+
+                    
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>

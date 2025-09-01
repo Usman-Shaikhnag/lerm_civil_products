@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="rcpt_concrete_cube_view" model="ir.ui.view">
+        <field name="name">mechanical.rcpt.form</field>
+        <field name="model">mechanical.rcpt</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <!-- <field name="parameter_id"/> -->
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="grade" exception="grade"  string="Grade" identity="extra"/> 
+                    </group>
+
+                     <div class="custom_table_borders" style="margin-top: 15px;">
+                            <field name="sample_parameters" nolabel="1">
+                                <tree>
+                                    <field name="parameter_name"/>
+                                    <field name="test_method"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                   
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="date_of_casting">Date of Casting</label></td>
+                                    <td style="width:50%;"><field name="date_of_casting"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="date_of_testing">Date of Testing</label></td>
+                                    <td style="width:50%;"><field name="date_of_testing"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="age_of_test">Age of Test, days</label></td>
+                                    <td style="width:50%;"><field name="age_of_test"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="age_of_days">Age of Cubes</label></td>
+                                    <td style="width:50%;"><field name="age_of_days"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="difference">Area of Cube</label></td>
+                                    <td style="width:50%;"><field name="difference"/></td>
+                                </tr>
+                            
+                            </tbody>
+                        </table>
+                    </div>
+
+                   
+
+                    <group style="white-space: nowrap; width:80%;margin-top:20px;">
+                        <h1>
+                            <field name="name1" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+
+                   
+
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_conc_surface">Temp.of Concrete Surface(°C)</label></td>
+                                    <td><field name="temp_conc_surface"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="temp_around_specimen">Temp.around the Specimen(°C)</label></td>
+                                    <td><field name="temp_around_specimen"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="date_conditioning">Date Of Conditiong</label></td>
+                                    <td><field name="date_conditioning"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="current_apply">Current Applied</label></td>
+                                    <td><field name="current_apply"/></td>
+                                </tr>
+
+                                   <tr>
+                                    <td><label for="int_temp_naoh">Initial Temp of NaOH(°C)</label></td>
+                                    <td><field name="int_temp_naoh"/></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="int_temp_nacl">Initial Temp of Nacl(°C)</label></td>
+                                    <td><field name="int_temp_nacl"/></td>
+                                </tr>
+                                  <tr>
+                                    <td><label for="date_specimen_prepared">Date &amp; time Specimen Prepared</label></td>
+                                    <td><field name="date_specimen_prepared"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="date_conditioning_started">Date &amp; time Conditioning Started</label></td>
+                                    <td><field name="date_conditioning_started"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="date_vaccum_started">Date &amp; time Vaccum Started:</label></td>
+                                    <td><field name="date_vaccum_started"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="date_water_added">Date &amp; time Water Added:</label></td>
+                                    <td><field name="date_water_added"/></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="date_vaccum_turn_of">Date &amp; time Vaccum Turn Off::</label></td>
+                                    <td><field name="date_vaccum_turn_of"/></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="date_soaking_started">Date &amp; time Soaking Started:</label></td>
+                                    <td><field name="date_soaking_started"/></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="date_soaking_completed">Date &amp; time Soaking Completed:</label></td>
+                                    <td><field name="date_soaking_completed"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <field name="child_lines" class="custom_table_borders" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no' string="Sample"/>
+                                <field name="identification_mark" string="Sample ID Mark"/>
+                                <!-- <field name='undefined' string="Undefined"/> -->
+                                <field name='height' string="Height"/>
+                                <field name="dia_core" string="Dia Of Core"/>
+                                
+                                <field name="io" string="Io"/>
+                                <field name="i30" string="I30"/>
+                                <field name="i60" string="I60"/>
+                                <field name="i90" string="I90"/>
+                                <field name="i120" string="I120"/>
+                                <field name="i150" string="I150"/>
+                                <field name="i180" string="I180"/>
+                                <field name="i210" string="I210"/>
+                                <field name="i240" string="I240"/>
+                                <field name="i270" string="I270"/>
+                                <field name="i300" string="I300"/>
+                                <field name="i330" string="I330"/>
+                                <field name="i360" string="I360"/>
+                                <field name="qx" string="QX"/>
+                                <field name="qs" string="QS"/>
+                            </tree>
+                    </field>
+                    <group>
+                    
+                    </group>
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                   
+                 
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

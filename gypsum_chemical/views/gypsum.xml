@@ -1,0 +1,1476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="chemical_gyspum_form" model="ir.ui.view">
+        <field name="name">chemical.gyspum.form</field>
+        <field name="model">chemical.gyspum</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+                   <group >
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <group>
+                      <field name="sample_parameters">
+                        <tree class="table-bordered o_list_view">
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </group>
+                     <!--% Sulphur trioxide (SO3)-->
+                    <group invisible="not so3_visible">
+                        <h1>
+                            <field name="so3_name" readonly="1" nolabel="1"/>
+                            <field name="so3_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Plaster Of Paris</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="plaster1"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Anhydrous Gypsum Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="anhydrous1"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Retarded Hemihydrate Gypsum Plaster</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="retarded1" /></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Keene's Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="keenes1" /></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    <!-- <group invisible="not so3_visible">
+                        <group>
+                            <field name="plaster1"/>
+                        </group>
+                        <group>
+                            <field name="retarded1" />
+                        </group>
+                          <group>
+                            <field name="anhydrous1"/>
+                        </group>
+                        <group>
+                            <field name="keenes1" />
+                        </group>
+                    </group> -->
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A. Wt of Sample (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="wt_of_sample_so3"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. Wt of crucible +Residue after ignition (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_cr_so3"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Wt of empty crucible (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_empty_co3"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. Diff. in weight(gm)=( B - C )</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="difference_co3"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 30%; margin-top:12px;">
+                        <tbody>
+                           <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>SO3 % = D x 34.30 / A</span></td>
+                            <td style="border: 1px solid black; padding: 5px;width:150px;"><field name="so3"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+
+                    <!-- <group invisible="not so3_visible">
+                       <group>
+                            <field name="wt_of_sample_so3"/>
+                            <br></br>
+                            <field name="wt_cr_so3"/>
+                             <br></br>
+                            <field name="wt_empty_co3"/>
+                             <br></br>
+                            <field name="difference_co3"/>
+                             <br></br>
+                              <field name="so3"/>
+                             <br></br>
+                       </group> -->
+
+                       <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='so3_conformity'
+                               decoration-success="so3_conformity == 'pass'" 
+                               decoration-danger="so3_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='so3_nabl'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+                    <!-- </group>  -->
+                     <!-- <group invisible="not so3_visible">
+                          
+                        <field name='so3_conformity'
+                               decoration-success="so3_conformity == 'pass'" 
+                               decoration-danger="so3_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name='so3_nabl'/>
+                    </group>  -->
+
+                    
+                     <!--%Loss on Ignition -->
+                    <div invisible="not loi_visible">
+                        <h1>
+                            <field name="loi_name" readonly="1" nolabel="1"/>
+                            <field name="loi_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                     <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 90%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Plaster Of Paris</span></td>
+                              <td style="border: 1px solid black; padding: 8px;width:300px;"><field name="plaster2"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Anhydrous Gypsum Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="anhydrous2"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 90%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Retarded Hemihydrate Gypsum Plaster</span></td>
+                              <td style="border: 1px solid black; padding: 8px;width:300px;"><field name="retarded2" /></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Keene's Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="keenes2" /></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A. Wt of empty weighing bottle (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="wt_of_empty_loi"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. (Wt of empty weighing bottle + Sample) before ignition, gm</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_empty_cs_loi"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Wt.of sample (B-A) ( gm )</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_cs_loi"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. (Wt of empty weighing bottle + Sample) after ignition, (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_of_sample_loi"/></td>
+                          </tr>
+                          
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>E. Diff. in weight = (B - D), gm</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="loi_in_wt"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 30%; margin-top:12px;">
+                        <tbody>
+                           <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>LOI % = E x 100 / C</span></td>
+                            <td style="border: 1px solid black; padding: 5px;width:150px;"><field name="loi"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='loss_conformity'
+                               decoration-success="loss_conformity == 'pass'" 
+                               decoration-danger="loss_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='loss_nabl'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not loi_visible" style="white-space:nowrap;">
+                         <group>
+                            <field name="plaster2"/>
+                            <field name="anhydrous2"/>
+                        </group>
+                        <group>
+                            <field name="retarded2" />
+                             <field name="keenes2" />
+                        </group>
+                    </group> -->
+
+                    <!-- <group invisible="not loi_visible">
+                       <group style="white-space:nowrap; width:60%">
+                            <field name="wt_of_empty_loi"/>
+                            <field name="wt_empty_cs_loi"/>
+                            <field name="wt_cs_loi"/>
+                            <field name="wt_of_sample_loi"/>
+                            <field name="loi_in_wt"/>
+                            <field name="loi"/>
+                       </group>
+                    </group> 
+                     <group invisible="not loi_visible">
+                          
+                        <field name='loss_conformity'
+                               decoration-success="loss_conformity == 'pass'" 
+                               decoration-danger="loss_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name='loss_nabl'/>
+                    </group>  -->
+
+                       <!--cao-->
+                    <group invisible="not cao_visible">
+                        <h1>
+                            <field name="cao_name" readonly="1" nolabel="1"/>
+                            <field name="cao_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Plaster Of Paris</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="plaster3"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Anhydrous Gypsum Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="anhydrous3"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Retarded Hemihydrate Gypsum Plaster</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="retarded3" /></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Keene's Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="keenes3" /></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A Wt of Sample (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="wt_of_sample_cao1"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. Burrette reading (ml)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="burette_cao1"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Normality of 0.1N KMnO₄</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="normality_cao1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 30%; margin-top:12px;">
+                        <tbody>
+                           <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>CaO % = B x C x 11.22/ A</span></td>
+                            <td style="border: 1px solid black; padding: 5px;width:150px;"><field name="cao1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='cao1_conformity'
+                               decoration-success="cao1_conformity == 'pass'" 
+                               decoration-danger="cao1_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='cao1_nabl'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not cao_visible" >
+                         <group style="white-space:nowrap;">
+                            <field name="plaster3"/>
+                             <field name="anhydrous3"/>
+                        </group>
+                        <group style="white-space:nowrap;">
+                            <field name="retarded3" />
+                             <field name="keenes3" />
+                        </group>
+                    </group> -->
+
+
+                    <!-- <group invisible="not cao_visible">
+                       <group style="white-space:nowrap;">
+                            <field name="wt_of_sample_cao1"/>
+                            <field name="burette_cao1"/>
+                            <field name="normality_cao1"/>
+                            <field name="cao1"/>
+                       </group>
+                    </group> 
+                     <group invisible="not cao_visible">  
+                        <field name='cao1_conformity'
+                               decoration-success="cao1_conformity == 'pass'" 
+                               decoration-danger="cao1_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name='cao1_nabl'/>
+                    </group>  -->
+
+                     <!--MgO-->
+                    <group invisible="not mgo_visible">
+                        <h1>
+                            <field name="mgo_name" readonly="1" nolabel="1"/>
+                            <field name="mgo_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Plaster Of Paris</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="plaster4"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Anhydrous Gypsum Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="anhydrous4"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Retarded Hemihydrate Gypsum Plaster</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="retarded4" /></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Keene's Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="keenes4" /></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A. Wt of Sample (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="wt_of_sample_mgo1"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. Wt of crucible + Residue after ignition (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="burette_mgo1"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Wt of empty Cruible (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="normality_mgo1"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. Diff. in weight (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="dilution_mgo1"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. Dilution</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="dilution_mgo2"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 30%; margin-top:12px;">
+                        <tbody>
+                           <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>MgO % = D x 36.21/ A</span></td>
+                            <td style="border: 1px solid black; padding: 5px;width:150px;"><field name="mgo1"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='mgo_conformity1'
+                               decoration-success="mgo_conformity1 == 'pass'" 
+                               decoration-danger="mgo_conformity1 == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='mgo_nabl1'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not mgo_visible" style="white-space:nowrap;">
+                         <group>
+                            <field name="plaster4"/>
+                            <field name="anhydrous4"/>
+                        </group>
+                        <group>
+                            <field name="retarded4" />
+                             <field name="keenes4" />
+                        </group>
+                    </group> -->
+                    <!-- <group invisible="not mgo_visible" >
+                       <group style="white-space:nowrap;">
+                            <field name="wt_of_sample_mgo1"/>
+                            <field name="burette_mgo1"/>
+                            <field name="normality_mgo1"/>
+                            <field name="dilution_mgo1"/>
+                            <field name="dilution_mgo2"/>
+                            <field name="mgo1"/> 
+                       </group>
+                    </group> 
+                     <group invisible="not mgo_visible">
+                            <field name='mgo_conformity1'
+                               decoration-success="mgo_conformity1 == 'pass'" 
+                               decoration-danger="mgo_conformity1 == 'fail'" 
+                               readonly="1"/>
+                            <field name='mgo_nabl1'/>
+                    </group>  -->
+
+
+
+                       <!--cao2-->
+                    <group invisible="not cao_visible2">
+                        <h1>
+                            <field name="cao_name2" readonly="1" nolabel="1"/>
+                            <field name="cao_visible2" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Plaster Of Paris</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="plaster5"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Anhydrous Gypsum Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="anhydrous5"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Retarded Hemihydrate Gypsum Plaster</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="retarded5" /></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Keene's Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="keenes5" /></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A. Wt of Sample (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="wt_of_sample_cao2"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. BR of 0.01N EDTA</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="burette_cao2"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Normality OF EDTA</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="normality_cao2"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. Dilution</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="dilution_cao2"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>E. BR *0.05608*N*100*dilution/S.wt</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="cao2"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='cao_conformity2'
+                               decoration-success="cao_conformity2 == 'pass'" 
+                               decoration-danger="cao_conformity2 == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='cao_nabl2'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not cao_visible2" style="white-space:nowrap;">
+                         <group>
+                            <field name="plaster5"/>
+                             <field name="anhydrous5"/>
+                        </group>
+                        <group>
+                            <field name="retarded5" />
+                            <field name="keenes5" />
+                        </group>
+                    </group> -->
+
+
+                    <!-- <group invisible="not cao_visible2" style="white-space:nowrap;">
+                       <group>
+                            <field name="wt_of_sample_cao2"/>
+                            <field name="burette_cao2"/>
+                            <field name="normality_cao2"/>
+                            <field name="dilution_cao2"/>
+                            <field name="cao2"/>
+                       </group>
+                    </group> 
+                     <group invisible="not cao_visible2">
+                          
+                        <field name='cao_conformity2'
+                               decoration-success="cao_conformity2 == 'pass'" 
+                               decoration-danger="cao_conformity2 == 'fail'" 
+                               readonly="1"/>
+                        <field name='cao_nabl2'/>
+                    </group>  -->
+
+
+
+                        <!--MgO2-->
+                    <group invisible="not mgo_visible2">
+                        <h1>
+                            <field name="mgo_name2" readonly="1" nolabel="1"/>
+                            <field name="mgo_visible2" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Plaster Of Paris</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="plaster6"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Anhydrous Gypsum Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="anhydrous6"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Retarded Hemihydrate Gypsum Plaster</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="retarded6" /></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Keene's Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="keenes6" /></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A. Wt of Sample (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="wt_of_sample_mgo2"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. BR of 0.01N CaO - BR of 0.01N EDTA</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="burette_mgo2"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Normality OF EDTA</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="normality_mgo2"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. Dilution</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="dilution_mgo2"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <group/>
+
+                    <div>
+                     <table style="border: 1px solid black; width: 30%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>MgO = BR * N * 0.04032 * 25 * 100 / S.w</span></td>
+                            <td style="border: 1px solid black; padding: 5px;width:140px;"><field name="mgo2"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='mgo_conformity2'
+                               decoration-success="mgo_conformity2 == 'pass'" 
+                               decoration-danger="mgo_conformity2 == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='mgo_nabl2'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not mgo_visible2" style="white-space:nowrap">
+                         <group>
+                            <field name="plaster6"/>
+                             <field name="anhydrous6"/>
+                        </group>
+                        <group>
+                            <field name="retarded6" />
+                              <field name="keenes6" />
+                    </group>
+                    </group> -->
+
+
+                    <!-- <group invisible="not mgo_visible2">
+                       <group style="white-space:nowrap">
+                            <field name="wt_of_sample_mgo2"/>
+                            <field name="burette_mgo2"/>
+                            <field name="normality_mgo2"/>
+                            <field name="dilution_mgo2"/>
+                            <field name="mgo2"/>
+                       </group>
+                    </group> 
+                     <group invisible="not mgo_visible2">
+                        <field name='mgo_conformity2'
+                               decoration-success="mgo_conformity2 == 'pass'" 
+                               decoration-danger="mgo_conformity2 == 'fail'" 
+                               readonly="1"/>
+                        <field name='mgo_nabl2'/>
+                    </group>  -->
+
+
+
+                      <!--Free Lime-->
+                    <div invisible="not free_lime_visible">
+                        <h1>
+                            <field name="free_lime_name" readonly="1" nolabel="1"/>
+                            <field name="free_lime_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Plaster Of Paris</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="plaster7"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Anhydrous Gypsum Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="anhydrous7"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Retarded Hemihydrate Gypsum Plaster</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="retarded7" /></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Keene's Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="keenes7" /></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A. Wt of Sample (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="free_lime_wt"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. Burette reading (ml)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="free_lime_br"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Normality of 0.5N HCL</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="free_lime_nor"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <group/>
+
+                    <div>
+                     <table style="border: 1px solid black; width: 30%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Free lime % = B x C x 0.0037 x 100/ A</span></td>
+                            <td style="border: 1px solid black; padding: 5px;width:140px;"><field name="free_lime"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"> <field name='free_lime_conformity'
+                               decoration-success="free_lime_conformity == 'pass'" 
+                               decoration-danger="free_lime_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='free_lime_nabl'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+
+
+                    <!-- <group invisible="not free_lime_visible" style="white-space:nowrap">
+                         <group>
+                            <field name="plaster7"/>
+                             <field name="anhydrous7"/>
+                        </group>
+                        <group>
+                            <field name="retarded7" />
+                            <field name="keenes7" />
+                        </group>
+                    </group> -->
+
+
+                    <!-- <group invisible="not free_lime_visible">
+                       <group style="white-space:nowrap">
+                            <field name="free_lime_wt"/>
+                            <field name="free_lime_br"/>
+                            <field name="free_lime_nor"/>
+                            <field name="free_lime"/>
+                       </group>
+                    </group> 
+                     <group invisible="not free_lime_visible">
+                        <field name='free_lime_conformity'
+                               decoration-success="free_lime_conformity == 'pass'" 
+                               decoration-danger="free_lime_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name='free_lime_nabl'/>
+                    </group>  -->
+
+
+
+                       <!--Soluble sodium oxide ( By Flame photo meter )-->
+                    <div invisible="not soluble_sodium_visible">
+                        <h1>
+                            <field name="soluble_sodium_name" readonly="1" nolabel="1"/>
+                            <field name="soluble_sodium_visible" invisible="1"/>
+                        </h1>   
+                    </div>
+                    <group/>
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Plaster Of Paris</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="plaster8"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Anhydrous Gypsum Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="anhydrous8"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Retarded Hemihydrate Gypsum Plaster</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="retarded8" /></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Keene's Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"> <field name="keenes8" /></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A. Wt.of sample (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="soluble_sodium_wt"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. Reading</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="soluble_sodium_re"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Factor</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="soluble_sodium_fa"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 30%; margin-top:12px;">
+                        <tbody>
+                           <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Soluble sodium oxide % (Na2O)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;width:150px;"><field name="soluble_sodium"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='soluble_sodium_conformity'
+                               decoration-success="soluble_sodium_conformity == 'pass'" 
+                               decoration-danger="soluble_sodium_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='soluble_sodium_nabl'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+
+
+
+                    <!-- <group invisible="not soluble_sodium_visible" style="white-space:nowrap">
+                         <group>
+                            <field name="plaster8"/>
+                             <field name="anhydrous8"/>
+                        </group>
+                        <group>
+                            <field name="retarded8" />
+                             <field name="keenes8" />
+                        </group>
+                    </group> -->
+
+
+                    <!-- <group invisible="not soluble_sodium_visible">
+                       <group style="white-space:nowrap">
+                            <field name="soluble_sodium_wt"/>
+                            <field name="soluble_sodium_re"/>
+                            <field name="soluble_sodium_fa"/>
+                            <field name="soluble_sodium"/>   
+                       </group>
+                    </group> 
+                     <group invisible="not soluble_sodium_visible">
+                          
+                        <field name='soluble_sodium_conformity'
+                               decoration-success="soluble_sodium_conformity == 'pass'" 
+                               decoration-danger="soluble_sodium_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name='soluble_sodium_nabl'/>
+                    </group>  -->
+
+
+
+
+                       <!--Free Wster-->
+                    <div invisible="not free_water_visible">
+                        <h1>
+                            <field name="free_water_name" readonly="1" nolabel="1"/>
+                            <field name="free_water_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Plaster Of Paris</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"> <field name="plaster9"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Anhydrous Gypsum Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="anhydrous9"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Retarded Hemihydrate Gypsum Plaster</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"> <field name="retarded9" /></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Keene's Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"> <field name="keenes9" /></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A. Wt of empty weighing bottle (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;">  <field name="wt_of_empty_water"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. (Wt of empty weighing bottle + Sample) before ignition, gm</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="wt_empty_cs_water"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Wt.of sample (B-A) ( gm )</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_cs_water"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. (Wt of empty weighing bottle + Sample) after ignition, (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_of_sample_water"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>E. Diff. in weight = (B - D), gm</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="water_in_wt"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 30%; margin-top:12px;">
+                        <tbody>
+                           <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Free water = E x 100 / C</span></td>
+                            <td style="border: 1px solid black; padding: 5px;width:150px;"><field name="free_water"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='free_water_conformity'
+                               decoration-success="free_water_conformity == 'pass'" 
+                               decoration-danger="free_water_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='free_water_nabl'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not free_water_visible" style="white-space:nowrap">
+                         <group>
+                            <field name="plaster9"/>
+                            <field name="anhydrous9"/>
+                        </group>
+                        <group>
+                            <field name="retarded9" />
+                            <field name="keenes9" />
+                        </group>
+                    </group>
+                    <group invisible="not free_water_visible">
+                       <group style="white-space:nowrap; width:60%">
+                            <field name="wt_of_empty_water"/>
+                            <field name="wt_empty_cs_water"/>
+                            <field name="wt_cs_water"/>
+                            <field name="wt_of_sample_water"/>
+                            <field name="water_in_wt"/>
+                            <field name="free_water"/>
+                       </group>
+                    </group> 
+                     <group invisible="not free_water_visible"> 
+                        <field name='free_water_conformity'
+                               decoration-success="free_water_conformity == 'pass'" 
+                               decoration-danger="free_water_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name='free_water_nabl'/> 
+                    </group> -->
+
+
+
+                      <!--Combined Water-->
+                    <div invisible="not combined_water_visible">
+                        <h1>
+                            <field name="combined_water_name" readonly="1" nolabel="1"/>
+                            <field name="combined_water_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Plaster Of Paris</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="plaster9"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Anhydrous Gypsum Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="anhydrous9"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Retarded Hemihydrate Gypsum Plaster</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"> <field name="retarded9" /></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Keene's Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"> <field name="keenes9" /></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Mass of prepared sample</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="combined_water_wt"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Mass in gm of the material before drying</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="combined_water_br"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Mass in gm of the material after drying</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="combined_water_nor"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Diff</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="combined_water_di"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 30%; margin-top:12px;">
+                        <tbody>
+                           <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Combined Water</span></td>
+                            <td style="border: 1px solid black; padding: 5px;width:150px;"><field name="combined_water"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='free_water_conformity'
+                               decoration-success="free_water_conformity == 'pass'" 
+                               decoration-danger="free_water_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='free_water_nabl'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+                    <!-- <group invisible="not combined_water_visible" style="white-space:nowrap">
+                         <group>
+                            <field name="plaster9"/>
+                            <field name="anhydrous9"/>
+                        </group>
+                        <group>
+                            <field name="retarded9" />
+                            <field name="keenes9" />
+                        </group>
+                          
+                    </group>
+                    <group invisible="not combined_water_visible">
+                       <group style="white-space:nowrap">
+                            <field name="combined_water_wt"/>
+                            <field name="combined_water_br"/>
+                            <field name="combined_water_nor"/>
+                            <field name="combined_water_di"/>
+                            <field name="combined_water"/> 
+                       </group>
+                    </group> 
+                     <group invisible="not combined_water_visible">
+                        <field name='free_water_conformity'
+                               decoration-success="free_water_conformity == 'pass'" 
+                               decoration-danger="free_water_conformity == 'fail'" 
+                               readonly="1"/>
+                        <field name='free_water_nabl'/>
+                    </group>  -->
+
+
+
+
+                      <!--calsium oxide-->
+                    <div invisible="not calcium_oxide_visible2">
+                        <h1>
+                            <field name="calcium_oxide_name" readonly="1" nolabel="1"/>
+                            <field name="calcium_oxide_visible2" invisible="1"/>
+                        </h1> 
+                    </div>
+                    <group/>
+
+
+                     <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Plaster Of Paris</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="plaster11"/></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Anhydrous Gypsum Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="anhydrous11"/></td>
+                            </tr>
+                                 
+                         </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 80%;">
+                         <tbody>
+                            <tr>
+                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Retarded Hemihydrate Gypsum Plaster</span></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="retarded11" /></td>
+                            </tr>
+                            <tr>
+                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Keene's Plaster</span></td>
+                            <td style="border: 1px solid black; padding: 8px;"> <field name="keenes11" /></td>
+                            </tr>
+                            
+                         </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                        <tbody>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A. Wt of Sample (gm)</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_of_sample_calcium_oxide"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B. Burrette reading</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="burette_calcium_oxide"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Normality of 0.1N KMnO4</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"><field name="normality_calcium_oxide"/></td>
+                          </tr>
+                          <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. Dilution</span></td>
+                            <td style="border: 1px solid black; padding: 5px;"> <field name="dilution_calcium_oxide"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <group/>
+                    <div>
+                     <table style="border: 1px solid black; width: 30%; margin-top:12px;">
+                        <tbody>
+                           <tr>
+                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Calcium Oxide = B*C*2.8*D/A</span></td>
+                            <td style="border: 1px solid black; padding: 5px;width:150px;"><field name="calcium_oxide"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                          <table style="width: 20%; margin-top:10px;">
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
+                            <td style="padding: 8px;"><field name='calcium_oxide_conformity2'
+                               decoration-success="calcium_oxide_conformity2 == 'pass'" 
+                               decoration-danger="calcium_oxide_conformity2 == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;"><field name='calcium_oxide_nabl2'/></td>
+                           </tr>
+                     
+                          </table>
+                      </div> 
+                    <group/>
+
+
+
+                    <!-- <group invisible="not calcium_oxide_visible2" style="white-space:nowrap">
+                         <group>
+                            <field name="plaster11"/>
+                            <field name="anhydrous11"/>
+                        </group>
+                        <group>
+                            <field name="retarded11" />
+                             <field name="keenes11" />
+                        </group>
+                    </group>
+                    <group invisible="not calcium_oxide_visible2">
+                       <group style="white-space:nowrap">
+                            <field name="wt_of_sample_calcium_oxide"/>
+                            <field name="burette_calcium_oxide"/>
+                            <field name="normality_calcium_oxide"/>
+                            <field name="dilution_calcium_oxide"/>
+                            <field name="calcium_oxide"/>
+                       </group>
+                    </group> 
+                     <group invisible="not calcium_oxide_visible2">
+                        <field name='calcium_oxide_conformity2'
+                               decoration-success="calcium_oxide_conformity2 == 'pass'" 
+                               decoration-danger="calcium_oxide_conformity2 == 'fail'" 
+                               readonly="1"/>
+                        <field name='calcium_oxide_nabl2'/>
+                    </group>  -->
+
+               
+                   
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>

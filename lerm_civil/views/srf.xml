@@ -23,11 +23,11 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="confirm_srf" type="object" string="Confirm"
+                    <button name="confirm_srf" class="oe_highlight" type="object" string="Confirm"
                         groups="lerm_civil.kes_verified_by,lerm_civil.kes_confirm_srf"
                         invisible="state in ('2-confirm')"/>
 
-                    <button name="open_edit_srf_header_wizard" type="object" string="Edit SRF"
+                    <button name="open_edit_srf_header_wizard" class="oe_highlight" type="object" string="Edit SRF"
                         groups="lerm_civil.srf_sample_editable"/>
 
                     <button name="action_srf_sent_mail" type="object" string="Send Mail"/>

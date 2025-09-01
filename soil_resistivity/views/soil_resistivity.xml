@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_soil_resistivity" model="ir.ui.view">
+        <field name="name">soil.resistivity.form</field>
+        <field name="model">soil.resistivity</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    <group>
+                       <field name="grade"/>
+                    </group>
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="size_id"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <field name="line_ids" class="custom_table_borders">
+                        <tree editable="bottom">
+                            <field name="spacing"/>
+                            <field name="resistivity_n"/>
+                            <field name="resistivity_ne"/>
+                            <field name="resistivity_e"/>
+                            <field name="resistivity_se"/>
+                            <field name="resistivity_s"/>
+                            <field name="resistivity_sw"/>
+                            <field name="resistivity_w"/>
+                            <field name="resistivity_nw"/>
+                            <!-- <field name="graph_image" widget="image"/> -->
+                        </tree>
+                    </field>
+                    <button name="action_generate_graph" type="object" string="Generate Graph" class="btn-primary"/>
+
+                    <field name="graph_images" class="custom_table_borders">
+                        <tree create="false" delete="false" class="text-center"> 
+                            <field name="graph_image" widget="image"/>
+                        </tree>
+                    </field>
+                    <!-- <t t-foreach="graph_images" t-as="images">
+                        <t-esc="image.graph_image"/>
+                    </t> -->
+
+                  
+                    <!-- <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/> -->
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

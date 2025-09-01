@@ -28,6 +28,12 @@ class Soil(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+
+    @api.depends('eln_ref')
+    def _compute_size_id(self):
+        if self.eln_ref:
+            self.size_id = self.eln_ref.size_id.id
 
 
     
@@ -372,16 +378,7 @@ class Soil(models.Model):
     plastic_limit_table = fields.One2many('mechanical.plasticl.limit.line','parent_id',string="Parameter")
 
     plastic_limit = fields.Float(string="Average ",compute="_compute_plastic_limit")
-    plasticity_index = fields.Float(string="Plasticity Index", compute="_compute_plasticity_index")
-
-    @api.depends('plastic_limit', 'liquid_limit')
-    def _compute_plasticity_index(self):
-        for record in self:
-            if record.liquid_limit is not None and record.plastic_limit is not None:
-                record.plasticity_index = record.liquid_limit - record.plastic_limit
-            else:
-                record.plasticity_index = 0.0
-
+   
     @api.depends('plastic_limit_table.water_content_pastic')
     def _compute_plastic_limit(self):
         for record in self:
@@ -391,10 +388,10 @@ class Soil(models.Model):
 
     plastic_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Plastic Limit Conformity", compute="_compute_plasticity_limit_conformity", store=True)
+            ('fail', 'Fail')], string="Plastic Limit Conformity", compute="_compute_plastic_limit_conformity", store=True)
 
     @api.depends('plastic_limit','eln_ref','grade')
-    def _compute_plasticity_limit_conformity(self):
+    def _compute_plastic_limit_conformity(self):
         
         for record in self:
             record.plastic_limit_conformity = 'fail'
@@ -439,13 +436,24 @@ class Soil(models.Model):
             else:
                 record.plastic_limit_nabl = 'fail'
 
+    plasticity_index = fields.Float(string="Plasticity Index", compute="_compute_plasticity_index")
+
+    @api.depends('plastic_limit', 'liquid_limit')
+    def _compute_plasticity_index(self):
+        for record in self:
+            if record.liquid_limit is not None and record.plastic_limit is not None:
+                record.plasticity_index = record.liquid_limit - record.plastic_limit
+            else:
+                record.plasticity_index = 0.0
+
+
 
     plasticity_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Plasticity Index Conformity", compute="_compute_plasticity_limit_conformity", store=True)
+            ('fail', 'Fail')], string="Plasticity Index Conformity", compute="_compute_plasticity_index_conformity", store=True)
 
     @api.depends('plasticity_index','eln_ref','grade')
-    def _compute_plasticity_limit_conformity(self):
+    def _compute_plasticity_index_conformity(self):
         
         for record in self:
             record.plasticity_index_conformity = 'fail'
@@ -467,10 +475,10 @@ class Soil(models.Model):
 
     plasticity_index_nabl = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')], string="Plasticity Index NABL", compute="_compute_plasticity_limi_nabl", store=True)
+        ('fail', 'Fail')], string="Plasticity Index NABL", compute="_compute_plasticity_index_nabl", store=True)
 
     @api.depends('plasticity_index','eln_ref','grade')
-    def _compute_plasticity_limi_nabl(self):
+    def _compute_plasticity_index_nabl(self):
         
         for record in self:
             record.plasticity_index_nabl = 'fail'
@@ -929,7 +937,7 @@ class Soil(models.Model):
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
    
     soil_table = fields.One2many('mechanical.cbr.line','parent_id',string="CBR")
-    chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
+    # chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
 
     ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
     pt_2mm = fields.Float("PT at 2.5mm",default=1370)
@@ -987,32 +995,55 @@ class Soil(models.Model):
 
    
 
+    chart_image_cbr = fields.Binary(
+    "Line Chart",
+    compute="_compute_chart_image_cbr",
+    store=True
+      )
+
     def generate_line_chart_cbr(self):
-        # Prepare data for the chart
+        # Prepare data
         x_values = []
         y_values = []
         for line in self.soil_table:
             x_values.append(line.penetration)
             y_values.append(line.load)
-        
-        # Create the line chart
-        plt.plot(x_values, y_values, marker='o')
-        plt.xlabel('Penetration')
-        plt.ylabel('Load')
-        plt.title('CBR')
 
+        if not x_values or not y_values:
+            return False
 
-        plt.ylim(bottom=0, top=max(y_values) + 10)
-        
+        plt.figure(figsize=(10, 5))
+
+        # ✅ Blue curve with red points
+        plt.plot(x_values, y_values, color='blue', linestyle='-', linewidth=2, label='Curve')
+        plt.scatter(x_values, y_values, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+
+        # ✅ Axis labels and title
+        plt.xlabel('Penetration (mm)', fontsize=12)
+        plt.ylabel('Load (kg)', fontsize=12)
+        plt.title('CBR (California Bearing Ratio)', fontsize=14)
+
+        # ✅ Axis range
+        plt.xlim(left=0, right=max(x_values) + 2)
+        plt.ylim(bottom=0, top=max(y_values) + (max(y_values) * 0.1))
+
+        # ✅ Grid (major + minor)
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+        ax.yaxis.set_minor_locator(MultipleLocator(5))
+        plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+        # ✅ Save image
         buffer = io.BytesIO()
+        plt.tight_layout()
+        plt.legend()
         plt.savefig(buffer, format='png')
-        plt.close()  # Close the figure to free up resources
+        plt.close()
         buffer.seek(0)
-    
-        # Convert the chart image to base64
-        chart_image = base64.b64encode(buffer.read()).decode('utf-8')  
-        return chart_image
-    
+
+        return base64.b64encode(buffer.read()).decode('utf-8')
+
+
     @api.depends('soil_table')
     def _compute_chart_image_cbr(self):
         try:
@@ -1020,7 +1051,10 @@ class Soil(models.Model):
                 chart_image = record.generate_line_chart_cbr()
                 record.chart_image_cbr = chart_image
         except:
-            pass 
+            pass
+
+
+
 
 
        # FSI

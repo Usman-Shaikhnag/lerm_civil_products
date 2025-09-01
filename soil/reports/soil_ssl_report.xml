@@ -9,7 +9,7 @@
 					<p style="font-size:15px"><b>Test Report</b></p>
 				</div> -->
 
-				<div class="container_eln" style="padding-top:50px;">
+				<div class="container_eln" style="padding-top:0px;">
 					<div class="" t-foreach="eln" t-as="o">
 						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
 							<tbody>
@@ -911,6 +911,183 @@
 							</td>
 						</tr>
 					</table>	
+
+
+					 <div style="page-break-inside: avoid;margin-top:5px">
+
+					<table t-if="data.omc_visible">
+							<tr >
+								<div style="text-align:center;letter-spacing : 2px;border:1px solid black;padding:10px">
+									<div>
+										DETERMINATION OF WATER CONTENT-DRY 
+									</div>
+									<div>
+										Maximum Dry Density (Light Compaction) : Test Method 
+										<span> 
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','987456hhjyt-b27e-48c6-81b8-90052144677j')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+											</t>
+									</t>
+										</span>
+									</div>
+								</div>
+							</tr>
+
+							<table  t-if="data.omc_visible" style="margin-top:5px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th>
+										<span>
+											Amount of soil (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+											Amount of water added (%)
+										</span>
+									</th>
+									<th>
+										<span>
+										Empty weight of mould without collar, W1 (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of soil compacted + mould, W2 (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of wet soil (W2-W1) (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Volume of mould (V) (cm3)
+										</span>
+									</th>
+									<th>
+										<span>
+											 Bulk density (ρ) (g/cc)
+										</span>
+									</th>
+									<th>
+										<span>
+											Container Number
+										</span>
+									</th>
+									<th>
+										<span>
+										Empty weight of container (M1) (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of container + wet soil (M2) (gm)
+
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of container + Weight of oven dry soil (M3) (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Water Content (%)
+										</span>
+									</th>
+									<th>
+										<span>
+									Dry Density (γd ) (g/cc)   
+
+										</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.omc_table" t-as="r">
+									<td>
+										<div>
+											<span t-esc="k + 1" />
+											<t t-set="k" t-value="k+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.amount_soil1"/>
+									</td>
+									<td>
+										<span t-esc="r.amount_water1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.empty_wt_mould1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_soil1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_wet1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.volume_mould1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.bulk_density1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.con_no1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.empty_wt1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wet_con_ovenwet1"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wet_con_ovendry1"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.water_content1"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.dry_density1"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+							
+						</table>
+					</div>
+
+					<div t-if="graphLight" style="margin-top: 5px;">
+							<img t-att-src="'data:image/png;base64,'+str(graphLight)" style="max-width: 100%;"/>
+					</div>
+
+					<div  t-if="data.omc_visible"  style="margin-top: 2px;">
+						From Graph 
+					</div>
+
+					<table  t-if="data.omc_visible" style="margin-top: 2px;">
+						<tr>
+							<td colspan="3">MDD :</td>
+							<td colspan="3">
+								<span t-esc="data.max_dry_density1" t-options='{"widget": "float", "precision": 2}'/> <![CDATA[&nbsp;]]> gm/cc
+							</td>
+							<td colspan="3">OMC :</td>
+							<td colspan="3">
+								<span t-esc="data.omc1" t-options='{"widget": "float", "precision": 2}'/> <![CDATA[&nbsp;]]> %
+							</td>
+						</tr>
+					</table>	
+					
 
 
 

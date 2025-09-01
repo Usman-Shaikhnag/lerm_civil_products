@@ -2,7 +2,7 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import logging
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 # _logger = logging.getLogger(__name__)
 
@@ -405,7 +405,12 @@ class LermSampleForm(models.Model):
         
         # if not self.datasheet_path:
         #     raise ValidationError("Please attach datasheet before submitting.")
-
+        # import wdb ; wdb.set_trace()
+        
+        sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.id)])
+        sample_register.sudo().write({
+            'report_issued_date':date.today()
+        })
         self.approved_by = self.env.user
         self.write({'state': '4-in_report'})
         
