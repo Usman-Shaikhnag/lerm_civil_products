@@ -26,6 +26,30 @@ class SoilResistivity(models.Model):
     graph_images = fields.One2many('soil.resistivity.line', 'parent_id',string="Graphs")
     line_ids = fields.One2many("soil.resistivity.line", "parent_id", string="Resistivity Table")
 
+    avg_resistivity_n = fields.Float("Avg North (0°)", readonly=True)
+    avg_resistivity_ne = fields.Float("Avg North-East (45°)", readonly=True)
+    avg_resistivity_e = fields.Float("Avg East (90°)", readonly=True)
+    avg_resistivity_se = fields.Float("Avg South-East (135°)", readonly=True)
+    avg_resistivity_s = fields.Float("Avg South (180°)", readonly=True)
+    avg_resistivity_sw = fields.Float("Avg South-West (225°)", readonly=True)
+    avg_resistivity_w = fields.Float("Avg West (270°)", readonly=True)
+    avg_resistivity_nw = fields.Float("Avg North-West (315°)", readonly=True)
+
+    def action_calculate_avg(self):
+        """Calculate averages for resistivity directions"""
+        for rec in self:
+            if rec.line_ids:
+                rec.avg_resistivity_n = sum(rec.line_ids.mapped("resistivity_n")) / len(rec.line_ids)
+                rec.avg_resistivity_ne = sum(rec.line_ids.mapped("resistivity_ne")) / len(rec.line_ids)
+                rec.avg_resistivity_e = sum(rec.line_ids.mapped("resistivity_e")) / len(rec.line_ids)
+                rec.avg_resistivity_se = sum(rec.line_ids.mapped("resistivity_se")) / len(rec.line_ids)
+                rec.avg_resistivity_s = sum(rec.line_ids.mapped("resistivity_s")) / len(rec.line_ids)
+                rec.avg_resistivity_sw = sum(rec.line_ids.mapped("resistivity_sw")) / len(rec.line_ids)
+                rec.avg_resistivity_w = sum(rec.line_ids.mapped("resistivity_w")) / len(rec.line_ids)
+                rec.avg_resistivity_nw = sum(rec.line_ids.mapped("resistivity_nw")) / len(rec.line_ids)
+
+    ert_point = fields.Char(string="ERT POINT NO")
+
     temperature_site = fields.Char(string="Temperature At Site :")
     last_weather = fields.Char(string="Last 2 Days Weather :")
     voltage = fields.Char(string="Voltage :")
@@ -64,6 +88,7 @@ class SoilResistivityLine(models.Model):
     _description = "Soil Resistivity Line"
 
     parent_id = fields.Many2one("soil.resistivity", string="Test Point")
+    sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
     spacing = fields.Float("Pin Spacing (m)")
     resistivity_n  = fields.Float("North (0°)")
     resistivity_ne = fields.Float("North-East (45°)")
@@ -175,6 +200,23 @@ class SoilResistivityLine(models.Model):
             plt.close(fig)
             buf.seek(0)
             rec.graph_image = base64.b64encode(buf.read()).decode("utf-8")
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(SoilResistivityLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
 
 
 

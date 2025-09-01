@@ -30,10 +30,26 @@
                                 <field name="test_method"/>
                             </tree>
                         </field>
+                    </div> 
+
+                      <div style="text-align:center; width:100%;margin-top:15px;" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" 
+                            style="margin: 0 auto;">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center;"><label for="ert_point">ERT POINT NO</label></td>
+                                    <td style="text-align:center;">
+                                        <field name="ert_point" style="width:100px; text-align:center;"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
 
-                    <div class="d-flex gap-2">
+
+
+                    <div class="d-flex gap-2" style="margin-top:20px;">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -65,6 +81,7 @@
 
                     <field name="line_ids" class="custom_table_borders">
                         <tree editable="bottom">
+                           <field name="sr_no"/>
                             <field name="spacing"/>
                             <field name="resistivity_n"/>
                             <field name="resistivity_ne"/>
@@ -76,13 +93,38 @@
                             <field name="resistivity_nw"/>
                             <!-- <field name="graph_image" widget="image"/> -->
                         </tree>
+                       
                     </field>
 
-                     <field name="pin_line_ids" class="custom_table_borders">
+                    <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders"  
+                        style="margin-top:-1px; border-collapse: collapse;">
+                         <tbody>
+                        <tr style="font-weight:bold; text-align:center;">
+                            <td style="width:200px;">Apparent Resistivity</td>
+                            
+                            <td style="width:100px;"><field name="avg_resistivity_n" readonly="1"/></td>
+                            <td style="width:120px;"><field name="avg_resistivity_ne" readonly="1"/></td>
+                            <td style="width:100px;"><field name="avg_resistivity_e" readonly="1"/></td>
+                            <td ><field name="avg_resistivity_se" readonly="1"/></td>
+                            <td  style="width:100px;"><field name="avg_resistivity_s" readonly="1"/></td>
+                            <td ><field name="avg_resistivity_sw" readonly="1"/></td>
+                            <td style="width:100px;"><field name="avg_resistivity_w" readonly="1"/></td>
+                            <td ><field name="avg_resistivity_nw" readonly="1"/></td>
+                        </tr>
+                         </tbody>
+                    </table>
+
+                    <button name="action_calculate_avg"
+                            string="Calculate Resistivity"
+                            type="object"
+                            class="btn-primary"
+                            style="margin-top:10px;"/>
+
+                     <field name="pin_line_ids" class="custom_table_borders" style="margin-top:10px;">
                         <tree editable="bottom">
-                            <field name="pin_spacing"/>
-                            <field name="equivalent_radius"/>
-                            <field name="class_of_soil"/>
+                            <field name="pin_spacing" string="Pin Spacing" width="120"/>
+                            <field name="equivalent_radius" string="Equivalent Radius (i.e. av. Resistivity for each Spacing By polar Curve (Ω m)" width="120"/>
+                            <field name="class_of_soil" string="Class of Soil as per IS 3043:2018 Clause 13.6.1) at Page No.23" width="120"/>
                           
                         </tree>
                     </field>
