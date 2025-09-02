@@ -9,6 +9,7 @@ from matplotlib.transforms import Affine2D
 import matplotlib
 import numpy as np
 import io, base64
+from math import sqrt, pi
 
 class SoilResistivity(models.Model):
     _name = "soil.resistivity"
@@ -26,27 +27,66 @@ class SoilResistivity(models.Model):
     graph_images = fields.One2many('soil.resistivity.line', 'parent_id',string="Graphs")
     line_ids = fields.One2many("soil.resistivity.line", "parent_id", string="Resistivity Table")
 
-    avg_resistivity_n = fields.Float("Avg North (0°)", readonly=True)
-    avg_resistivity_ne = fields.Float("Avg North-East (45°)", readonly=True)
-    avg_resistivity_e = fields.Float("Avg East (90°)", readonly=True)
-    avg_resistivity_se = fields.Float("Avg South-East (135°)", readonly=True)
-    avg_resistivity_s = fields.Float("Avg South (180°)", readonly=True)
-    avg_resistivity_sw = fields.Float("Avg South-West (225°)", readonly=True)
-    avg_resistivity_w = fields.Float("Avg West (270°)", readonly=True)
-    avg_resistivity_nw = fields.Float("Avg North-West (315°)", readonly=True)
 
-    def action_calculate_avg(self):
-        """Calculate averages for resistivity directions"""
+
+
+
+
+
+    def button_add_footer(self):
         for rec in self:
-            if rec.line_ids:
-                rec.avg_resistivity_n = sum(rec.line_ids.mapped("resistivity_n")) / len(rec.line_ids)
-                rec.avg_resistivity_ne = sum(rec.line_ids.mapped("resistivity_ne")) / len(rec.line_ids)
-                rec.avg_resistivity_e = sum(rec.line_ids.mapped("resistivity_e")) / len(rec.line_ids)
-                rec.avg_resistivity_se = sum(rec.line_ids.mapped("resistivity_se")) / len(rec.line_ids)
-                rec.avg_resistivity_s = sum(rec.line_ids.mapped("resistivity_s")) / len(rec.line_ids)
-                rec.avg_resistivity_sw = sum(rec.line_ids.mapped("resistivity_sw")) / len(rec.line_ids)
-                rec.avg_resistivity_w = sum(rec.line_ids.mapped("resistivity_w")) / len(rec.line_ids)
-                rec.avg_resistivity_nw = sum(rec.line_ids.mapped("resistivity_nw")) / len(rec.line_ids)
+            # Delete previous footer
+            footer = rec.line_ids.filtered(lambda l: l.sr_no_label == "Avg. Resistivity")
+            footer.unlink()
+
+            # Data lines only
+            lines = rec.line_ids.filtered(lambda l: l.sr_no_label != "Avg. Resistivity")
+            if not lines:
+                continue
+
+            radius_vals = []
+            for i, line in enumerate(lines, start=1):
+                line.sr_no_label = str(i)
+
+                # Ensure area is defined
+                if not line.area:
+                    line.area = 0  # Or compute it here if formula exists
+
+                # Original resistivity calculations
+                line.resistivity_n  = 2 * pi * line.resistivity_n2 * line.spacing if line.resistivity_n2 and line.spacing else 0
+                line.resistivity_ne = 2 * pi * line.resistivity_ne2 * line.spacing if line.resistivity_ne2 and line.spacing else 0
+                line.resistivity_e  = 2 * pi * line.resistivity_e2 * line.spacing if line.resistivity_e2 and line.spacing else 0
+                line.resistivity_se = 2 * pi * line.resistivity_se2 * line.spacing if line.resistivity_se2 and line.spacing else 0
+                line.resistivity_s  = 2 * pi * line.resistivity_s2 * line.spacing if line.resistivity_s2 and line.spacing else 0
+                line.resistivity_sw = 2 * pi * line.resistivity_sw2 * line.spacing if line.resistivity_sw2 and line.spacing else 0
+                line.resistivity_w  = 2 * pi * line.resistivity_w2 * line.spacing if line.resistivity_w2 and line.spacing else 0
+                line.resistivity_nw = 2 * pi * line.resistivity_nw2 * line.spacing if line.resistivity_nw2 and line.spacing else 0
+
+                # Compute radius from area
+                line.radius = sqrt(line.area / pi)
+                radius_vals.append(line.radius)
+
+            # Footer average
+            avg_vals = {
+                'resistivity_n':  sum([2*pi*l.resistivity_n2*l.spacing for l in lines])/len(lines),
+                'resistivity_ne': sum([2*pi*l.resistivity_ne2*l.spacing for l in lines])/len(lines),
+                'resistivity_e':  sum([2*pi*l.resistivity_e2*l.spacing for l in lines])/len(lines),
+                'resistivity_se': sum([2*pi*l.resistivity_se2*l.spacing for l in lines])/len(lines),
+                'resistivity_s':  sum([2*pi*l.resistivity_s2*l.spacing for l in lines])/len(lines),
+                'resistivity_sw': sum([2*pi*l.resistivity_sw2*l.spacing for l in lines])/len(lines),
+                'resistivity_w':  sum([2*pi*l.resistivity_w2*l.spacing for l in lines])/len(lines),
+                'resistivity_nw': sum([2*pi*l.resistivity_nw2*l.spacing for l in lines])/len(lines),
+                'radius': sum(radius_vals)/len(radius_vals),
+            }
+
+            # Add footer line
+            self.env['soil.resistivity.line'].create({
+                'sr_no': len(lines) + 1,
+                'sr_no_label': "Avg. Resistivity",
+                'parent_id': rec.id,
+                **avg_vals
+            })
+        
 
     ert_point = fields.Char(string="ERT POINT NO")
 
@@ -90,14 +130,51 @@ class SoilResistivityLine(models.Model):
     parent_id = fields.Many2one("soil.resistivity", string="Test Point")
     sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
     spacing = fields.Float("Pin Spacing (m)")
-    resistivity_n  = fields.Float("North (0°)")
-    resistivity_ne = fields.Float("North-East (45°)")
-    resistivity_e  = fields.Float("East (90°)")
-    resistivity_se = fields.Float("South-East (135°)")
-    resistivity_s  = fields.Float("South (180°)")
-    resistivity_sw = fields.Float("South-West (225°)")
-    resistivity_w  = fields.Float("West (270°)")
-    resistivity_nw = fields.Float("North-West (315°)")
+
+    resistivity_n1  = fields.Float("North (0°) Resistance (Ω)(site reading)")
+    resistivity_n2  = fields.Float("North (0°) Correct Resistance (Ω)")
+    resistivity_n  = fields.Float("North (0°) Resistivity")
+
+
+    resistivity_ne1 = fields.Float("North-East (45°) Resistance (Ω)(site reading)")
+    resistivity_ne2 = fields.Float("North-East (45°) Correct Resistance (Ω)")
+    resistivity_ne = fields.Float("North-East (45°) Resistivity")
+
+    resistivity_e1  = fields.Float("East (90°) Resistance (Ω)(site reading)")
+    resistivity_e2  = fields.Float("East (90°) Correct Resistance (Ω)")
+    resistivity_e  = fields.Float("East (90°) Resistivity")
+
+    resistivity_se1 = fields.Float("South-East (135°) Resistance (Ω)(site reading)")
+    resistivity_se2 = fields.Float("South-East (135°) Correct Resistance (Ω)")
+    resistivity_se = fields.Float("South-East (135°) Resistivity")
+
+    resistivity_s1  = fields.Float("South (180°) Resistance (Ω)(site reading)")
+    resistivity_s2  = fields.Float("South (180°) Correct Resistance (Ω)")
+    resistivity_s  = fields.Float("South (180°) Resistivity")
+
+    resistivity_sw1 = fields.Float("South-West (225°) Resistance (Ω)(site reading)")
+    resistivity_sw2 = fields.Float("South-West (225°) Correct Resistance (Ω)")
+    resistivity_sw = fields.Float("South-West (225°) Resistivity")
+
+    resistivity_w1  = fields.Float("West (270°) Resistance (Ω)(site reading)")
+    resistivity_w2  = fields.Float("West (270°) Correct Resistance (Ω)")
+    resistivity_w  = fields.Float("West (270°) Resistivity")
+
+    resistivity_nw1 = fields.Float("North-West (315°) Resistance (Ω)(site reading)")
+    resistivity_nw2 = fields.Float("North-West (315°) Correct Resistance (Ω)")
+    resistivity_nw = fields.Float("North-West (315°) Resistivity")
+
+    area = fields.Float("Area",digits=(12,4))
+    radius = fields.Float("Radius")
+
+
+    sr_no_label = fields.Char(string="Sr No Label")
+
+
+    
+    
+
+   
 
     graph_image = fields.Binary("Graph", readonly=True)
 
