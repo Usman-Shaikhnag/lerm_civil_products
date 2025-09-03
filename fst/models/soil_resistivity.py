@@ -12,7 +12,7 @@ import io, base64
 from math import sqrt, pi
 import math
 
-class SoilResistivity(models.Model):
+class ERTSoilResistivity(models.Model):
     _name = "ert.soil.resistivity"
     # _description = "Soil Resistivity Test"
 
@@ -126,8 +126,8 @@ class SoilResistivity(models.Model):
 
 
 
-class SoilResistivityLine(models.Model):
-    _name = "soil.resistivity.line"
+class ERTSoilResistivityLine(models.Model):
+    _name = "ert.soil.resistivity.line"
     _description = "Soil Resistivity Line"
 
     parent_id = fields.Many2one("soil.resistivity", string="Test Point")
@@ -458,8 +458,8 @@ class SoilResistivityLine(models.Model):
 
 
 
-class SoilResistivityPinLine(models.Model):
-    _name = "soil.resistivity.pin.line"
+class ERTSoilResistivityPinLine(models.Model):
+    _name = "ert.soil.resistivity.pin.line"
     _description = "Soil Resistivity Line"
 
     parent_id = fields.Many2one("soil.resistivity", string="Test Point")

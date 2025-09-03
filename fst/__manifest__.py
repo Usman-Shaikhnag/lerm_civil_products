@@ -11,6 +11,7 @@
     """,
     'depends': ['base','lerm_civil','soil_resistivity'],
     'data': [
+                 'security/security.xml',
                  'views/ert.xml',
                  'views/soil_resistivity.xml',
                  'data/sequence.xml',
