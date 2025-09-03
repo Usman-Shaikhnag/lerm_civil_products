@@ -112,6 +112,16 @@
 									<span t-field="o.material.name"/>
 								</td>
 							</tr>
+							<!-- Source of Sample (only if value exists) -->
+								<tr t-if="o.material.source_sample">
+									<td colspan="12">Source of Sample: <![CDATA[&nbsp;]]><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<!-- Test method adopted (only if value exists) -->
+								<tr t-if="o.material.test_method_adopted">
+									<td colspan="12">Test method adopted: <![CDATA[&nbsp;]]>
+									<span t-field="o.material.test_method_adopted"/></td>
+								</tr>
 						</table>
 					</div>
 					
@@ -133,7 +143,7 @@
 							<!-- Test Method -->
 							</td>
                             <td rowspan="1">
-							<span t-esc="eln.material.results"/>
+							<span t-esc="eln.material.result_remarks"/>
 							 <!-- Test Result -->
 							 </td>
                             <td rowspan="1"> Limit As per

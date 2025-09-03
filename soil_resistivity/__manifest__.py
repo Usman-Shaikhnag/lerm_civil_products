@@ -17,6 +17,11 @@ This module contains all the common features of Sales Management and eCommerce.
                'reports/soil_resistivity_datasheet.xml',
                'reports/soil_resistivity_report.xml'
     ],
+    'assets': {
+    'web.assets_backend': [
+        'soil_resistivity/static/src/css/list_fix.css',
+    ],
+},
 
   
     'installable': True,
