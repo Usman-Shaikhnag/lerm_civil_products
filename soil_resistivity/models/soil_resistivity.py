@@ -267,9 +267,30 @@ class SoilResistivityLine(models.Model):
 
         # Add value labels
         # Add value labels (exact decimals)
+        # for v, a in zip(values[:-1], angles[:-1]):
+        #     x, y = v * np.cos(a), v * np.sin(a)
+        #     ax.text(x*1.05, y*1.05, str(v), ha='center', va='center', fontsize=9)
+        
         for v, a in zip(values[:-1], angles[:-1]):
             x, y = v * np.cos(a), v * np.sin(a)
-            ax.text(x*1.05, y*1.05, str(v), ha='center', va='center', fontsize=9)
+
+            # Convert angle to degrees
+            angle_deg = np.degrees(a)
+            if angle_deg < -90 or angle_deg > 90:
+                angle_deg += 180
+
+            # push labels outward (adjust factor if still overlapping)
+            offset = 0.8
+            
+            ax.text(
+                x * offset, y * offset, f"{v:.2f}",
+                ha='center', va='center',
+                fontsize=11,
+                rotation=angle_deg,
+                rotation_mode='anchor'
+            )
+
+
         
         # Category labels (place slightly beyond ymax)
         for cat, a in zip(categories, angles[:-1]):
