@@ -10,6 +10,7 @@ import matplotlib
 import numpy as np
 import io, base64
 from math import sqrt, pi
+import math
 
 class SoilResistivity(models.Model):
     _name = "soil.resistivity"
@@ -177,106 +178,225 @@ class SoilResistivityLine(models.Model):
    
 
     graph_image = fields.Binary("Graph", readonly=True)
-
+    
     def action_generate_graph(self):
-        def _radar_factory(num_vars, frame='polygon', proj_name='radar_poly'):
-            theta_vars = np.linspace(0, 2*np.pi, num_vars, endpoint=False)
+        
+        # Example data
+        categories = ['N', 'NE', 'E', 'SE', 'S','SW','W','NW']
+        values = [self.resistivity_n, self.resistivity_ne, self.resistivity_e, self.resistivity_se, self.resistivity_s, self.resistivity_sw, self.resistivity_w, self.resistivity_nw]
+        
+        # Compute min and max dynamically
+        data_min = min(values)
+        data_max = max(values)
+        
+        # def round_up_nice(x):
+        #     """Round up to a 'nice' number like 10, 20, 50, 100, 200, 500, 1000"""
+        #     if x <= 10:
+        #         return 10
+        #     order = 10 ** int(math.floor(math.log10(x)))   # base scale
+        #     if x <= 2 * order:
+        #         return 2 * order
+        #     elif x <= 5 * order:
+        #         return 5 * order
+        #     else:
+        #         return 10 * order
+        def round_up_nice(x):
+            if x <= 10:
+                return 10
+            order = 10 ** int(math.floor(math.log10(x)))
+            return math.ceil(x / order) * order
+                
+        ymin = 0
+        ymax = round_up_nice(data_max)
+        
+        N = len(categories)
+        angles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
+        angles += angles[:1]   # close loop
+        values += values[:1]   # close loop
 
-            class RadarAxes(PolarAxes):
-                name = proj_name
+        # Angles (rotate so N is at top, and go clockwise)
+        angles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
+        angles = [np.pi/2 - a for a in angles]   # start at top, then go clockwise
+        angles += angles[:1]   # close loop
 
-                def _gen_axes_patch(self):
-                    if frame == 'polygon':
-                        return RegularPolygon((0.5, 0.5), num_vars, radius=.5, edgecolor="0.5")
-                    return super()._gen_axes_patch()
 
-                def _gen_axes_spines(self):
-                    if frame == 'polygon':
-                        spine = Spine(axes=self, spine_type='circle',
-                                    path=Path.unit_regular_polygon(num_vars))
-                        spine.set_transform(Affine2D().scale(.5).translate(.5, .5) + self.transAxes)
-                        return {'polar': spine}
-                    return super()._gen_axes_spines()
 
-                def set_varlabels(self, labels):
-                    self.set_thetagrids(np.degrees(theta_vars), labels)
+        fig, ax = plt.subplots(figsize=(8, 8))
 
-            register_projection(RadarAxes)
-            return theta_vars, proj_name
+        # --- Draw polygon grid (manual Cartesian conversion) ---
+        steps = 5
+        yticks = np.linspace(ymin, ymax, steps + 1)
 
-        for rec in self:
-            labels = ["N","NE","E","SE","S","SW","W","NW"]
+        for y in yticks[1:]:  # skip center
+            xs = [y * np.cos(a) for a in angles]
+            ys = [y * np.sin(a) for a in angles]
+            ax.plot(xs, ys, color="gray", linewidth=0.8)
 
-            # Take values from this line only
-            values = [
-                rec.resistivity_n,
-                rec.resistivity_ne,
-                rec.resistivity_e,
-                rec.resistivity_se,
-                rec.resistivity_s,
-                rec.resistivity_sw,
-                rec.resistivity_w,
-                rec.resistivity_nw,
-            ]
+        # Add radial lines
+        for a in angles[:-1]:
+            ax.plot([0, ymax * np.cos(a)], [0, ymax * np.sin(a)], 
+                    color="gray", linewidth=0.8)
+        
+        # Plot actual values (convert polar to cartesian)
+        xs = [v * np.cos(a) for v, a in zip(values, angles)]
+        ys = [v * np.sin(a) for v, a in zip(values, angles)]
 
-            # Equivalent avg resistivity (exclude zeros)
-            nonzero = [v for v in values if v]
-            equivalent_resistivity = (sum(nonzero)/len(nonzero)) if nonzero else 0
+        ax.plot(xs, ys, color='blue', linewidth=2, label="Actual")
 
-            theta_vars, proj_name = _radar_factory(8, frame='polygon')
-            theta_closed = np.r_[theta_vars, theta_vars[0]]
+        # --- Compute polygon area using shoelace formula ---
+        def polygon_area(x, y):
+            return 0.5 * abs(sum(x[i] * y[i+1] - x[i+1] * y[i] for i in range(len(x)-1)))
 
-            scale = 0.50
-            values_scaled = [v * scale for v in values]
-            values_scaled_closed = values_scaled + [values_scaled[0]]
+        area = polygon_area(xs, ys)
+        print(f"Area of polygon = {area:.2f}")
 
-            fig, ax = plt.subplots(figsize=(7, 7), subplot_kw=dict(projection=proj_name))
+        # --- Equivalent radius of polygon area ---
+        radius_equiv = math.sqrt(area / math.pi)
+        print(f"Equivalent radius = {radius_equiv:.2f}")
 
-            ax.set_theta_zero_location("N")
-            ax.set_theta_direction(-1)
-            ax.set_xticks(theta_vars)
-            ax.set_xticklabels(labels, fontsize=10)
-            for t in ax.get_xticklabels():
-                t.set_rotation(0); t.set_ha("center"); t.set_va("center")
-            ax.set_rlabel_position(0)
-            ax.grid(True, linewidth=0.6, alpha=0.6)
+        # Add value labels
+        # Add value labels (exact decimals)
+        for v, a in zip(values[:-1], angles[:-1]):
+            x, y = v * np.cos(a), v * np.sin(a)
+            ax.text(x*1.05, y*1.05, str(v), ha='center', va='center', fontsize=9)
+        
+        # Category labels (place slightly beyond ymax)
+        for cat, a in zip(categories, angles[:-1]):
+            x, y = (ymax*1.1) * np.cos(a), (ymax*1.1) * np.sin(a)
+            ax.text(x, y, cat, ha='center', va='center', fontsize=10, fontweight="bold")
 
-            ax.plot(theta_closed, values_scaled_closed, color="blue", linewidth=1.5, label="Measured Resistivity")
-            ax.scatter(theta_vars, values_scaled, color="blue", s=30, zorder=5)
+        # --- Add diagonal radial labels dynamically ---
+        label_angle = np.pi / 3   # 60 degrees
+        for y in yticks[1:]:
+            x, yy = y * np.cos(label_angle), y * np.sin(label_angle)
+            ax.text(x*1, yy*1, f"{int(y)}", ha='left', va='bottom', fontsize=9, color="black")
+        
+        # Add red circle at outer radius
+        circle = plt.Circle((0, 0), radius_equiv, color='red', fill=False, linewidth=2)
+        ax.add_patch(circle)
 
-            for ang, val_s, val in zip(theta_vars, values_scaled, values):
-                if val:
-                    rotation = np.degrees(ang)
-                    if rotation > 90 and rotation < 270:
-                        rotation += 180  # flip text to stay upright
-                    elif rotation == 90:
-                        rotation = 0
-                    elif rotation == 270:
-                        rotation = 0
+        # Remove axes
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_aspect('equal')
 
-                    ax.text(
-                        ang, val_s * 0.80, f"{val:.2f}",
-                        ha="center", va="center", fontsize=8,
-                        rotation=rotation,rotation_mode="anchor",
-                        )
+        # Remove the border/spines
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+        
+        fig.text(0.05, 0.05, f"Corrosion Assessment = Moderately Corrosive", 
+         ha='left', va='bottom', fontsize=10, color="black")
 
-            circle_theta = np.linspace(0, 2*np.pi, 360)
-            circle_radius = equivalent_resistivity * scale
-            ax.plot(circle_theta, [circle_radius] * len(circle_theta),
-                    color="red", linewidth=2.5, alpha=0.9, label="Equivalent Resistivity")
+        fig.text(0.05, 0.09, f"Equivalent Radius (i.e. av. Resistivity) = {radius_equiv:.2f}", 
+                ha='left', va='bottom', fontsize=10, color="black")
 
-            ax.set_ylim(0, max(values_scaled) * 1.2 if any(values_scaled) else 1)
+        
+        buf = io.BytesIO()
+        plt.savefig(buf, format="png")
+        plt.close(fig)
+        buf.seek(0)
 
-            plt.figtext(0.10, 0.02, f"Equivalent radius (i.e., avg. Resistivity) = {equivalent_resistivity:.2f} Ωm",
-                        ha="left", fontsize=10)
-            plt.figtext(0.10, 0.00, "Corrosion assessment = Very mild corrosive",
-                        ha="left", fontsize=10)
+        self.graph_image = base64.b64encode(buf.read()).decode("utf-8")
 
-            buf = io.BytesIO()
-            plt.savefig(buf, format="png")
-            plt.close(fig)
-            buf.seek(0)
-            rec.graph_image = base64.b64encode(buf.read()).decode("utf-8")
+    # def action_generate_graph(self):
+    #     def _radar_factory(num_vars, frame='polygon', proj_name='radar_poly'):
+    #         theta_vars = np.linspace(0, 2*np.pi, num_vars, endpoint=False)
+
+    #         class RadarAxes(PolarAxes):
+    #             name = proj_name
+
+    #             def _gen_axes_patch(self):
+    #                 if frame == 'polygon':
+    #                     return RegularPolygon((0.5, 0.5), num_vars, radius=.5, edgecolor="0.5")
+    #                 return super()._gen_axes_patch()
+
+    #             def _gen_axes_spines(self):
+    #                 if frame == 'polygon':
+    #                     spine = Spine(axes=self, spine_type='circle',
+    #                                 path=Path.unit_regular_polygon(num_vars))
+    #                     spine.set_transform(Affine2D().scale(.5).translate(.5, .5) + self.transAxes)
+    #                     return {'polar': spine}
+    #                 return super()._gen_axes_spines()
+
+    #             def set_varlabels(self, labels):
+    #                 self.set_thetagrids(np.degrees(theta_vars), labels)
+
+    #         register_projection(RadarAxes)
+    #         return theta_vars, proj_name
+
+    #     for rec in self:
+    #         labels = ["N","NE","E","SE","S","SW","W","NW"]
+
+    #         # Take values from this line only
+    #         values = [
+    #             rec.resistivity_n,
+    #             rec.resistivity_ne,
+    #             rec.resistivity_e,
+    #             rec.resistivity_se,
+    #             rec.resistivity_s,
+    #             rec.resistivity_sw,
+    #             rec.resistivity_w,
+    #             rec.resistivity_nw,
+    #         ]
+
+    #         # Equivalent avg resistivity (exclude zeros)
+    #         nonzero = [v for v in values if v]
+    #         equivalent_resistivity = (sum(nonzero)/len(nonzero)) if nonzero else 0
+
+    #         theta_vars, proj_name = _radar_factory(8, frame='polygon')
+    #         theta_closed = np.r_[theta_vars, theta_vars[0]]
+
+    #         scale = 0.50
+    #         values_scaled = [v * scale for v in values]
+    #         values_scaled_closed = values_scaled + [values_scaled[0]]
+
+    #         fig, ax = plt.subplots(figsize=(7, 7), subplot_kw=dict(projection=proj_name))
+
+    #         ax.set_theta_zero_location("N")
+    #         ax.set_theta_direction(-1)
+    #         ax.set_xticks(theta_vars)
+    #         ax.set_xticklabels(labels, fontsize=10)
+    #         for t in ax.get_xticklabels():
+    #             t.set_rotation(0); t.set_ha("center"); t.set_va("center")
+    #         ax.set_rlabel_position(0)
+    #         ax.grid(True, linewidth=0.6, alpha=0.6)
+
+    #         ax.plot(theta_closed, values_scaled_closed, color="blue", linewidth=1.5, label="Measured Resistivity")
+    #         ax.scatter(theta_vars, values_scaled, color="blue", s=30, zorder=5)
+
+    #         for ang, val_s, val in zip(theta_vars, values_scaled, values):
+    #             if val:
+    #                 rotation = np.degrees(ang)
+    #                 if rotation > 90 and rotation < 270:
+    #                     rotation += 180  # flip text to stay upright
+    #                 elif rotation == 90:
+    #                     rotation = 0
+    #                 elif rotation == 270:
+    #                     rotation = 0
+
+    #                 ax.text(
+    #                     ang, val_s * 0.80, f"{val:.2f}",
+    #                     ha="center", va="center", fontsize=8,
+    #                     rotation=rotation,rotation_mode="anchor",
+    #                     )
+
+    #         circle_theta = np.linspace(0, 2*np.pi, 360)
+    #         circle_radius = equivalent_resistivity * scale
+    #         ax.plot(circle_theta, [circle_radius] * len(circle_theta),
+    #                 color="red", linewidth=2.5, alpha=0.9, label="Equivalent Resistivity")
+
+    #         ax.set_ylim(0, max(values_scaled) * 1.2 if any(values_scaled) else 1)
+
+    #         plt.figtext(0.10, 0.02, f"Equivalent radius (i.e., avg. Resistivity) = {equivalent_resistivity:.2f} Ωm",
+    #                     ha="left", fontsize=10)
+    #         plt.figtext(0.10, 0.00, "Corrosion assessment = Very mild corrosive",
+    #                     ha="left", fontsize=10)
+
+    #         buf = io.BytesIO()
+    #         plt.savefig(buf, format="png")
+    #         plt.close(fig)
+    #         buf.seek(0)
+    #         rec.graph_image = base64.b64encode(buf.read()).decode("utf-8")
 
     @api.model
     def create(self, vals):
