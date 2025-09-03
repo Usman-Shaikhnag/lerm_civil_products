@@ -297,6 +297,8 @@ class SoilResistivityLine(models.Model):
         buf.seek(0)
 
         self.graph_image = base64.b64encode(buf.read()).decode("utf-8")
+        self.area = area
+        self.radius = radius_equiv
 
     # def action_generate_graph(self):
     #     def _radar_factory(num_vars, frame='polygon', proj_name='radar_poly'):
