@@ -17,22 +17,36 @@ class ERTSoilResistivity(models.Model):
     # _description = "Soil Resistivity Test"
 
     # name= fields.Char("Name",default="Soil")
-    name = fields.Char(string="Name", required=True, copy=False, readonly=True, 
-                       default=lambda self: self.env['ir.sequence'].next_by_code('ert.soil.resistivity.seq') or 'Soil')
+    name = fields.Char(string="Name", required=True, copy=False, readonly=True, default='New')
+
     ert_parent_id = fields.Many2one('lerm.ert.parent') 
     
 
     graph_images = fields.One2many('ert.soil.resistivity.line', 'parent_id',string="Graphs")
     line_ids = fields.One2many("ert.soil.resistivity.line", "parent_id", string="Resistivity Table")
 
-
+    @api.model
+    def create(self, vals):
+        if vals.get("name", "New") == "New":
+            vals["name"] = self.env["ir.sequence"].next_by_code("ert.soil.resistivity.seq") or "New"
+            
+        record = super().create(vals)
+        if record.ert_parent_id:
+            self.env['ert.lines'].sudo().create({
+                'parent_id': record.ert_parent_id.id,
+                'soil_resistivity_id': record.id
+            })
+        return record
+        
+    
+    
     def save_ert(self):
-        ert_parent = self.env['lerm.ert.parent'].sudo().search([('id','=',self.ert_parent_id.id)])
-        # import wdb; wdb.set_trace()
-        ert_parent.ert_lines.sudo().create({
-            'parent_id':ert_parent.id,
-            'soil_resistivity_id':self.id
-        })
+        # ert_parent = self.env['lerm.ert.parent'].sudo().search([('id','=',self.ert_parent_id.id)])
+        # # import wdb; wdb.set_trace()
+        # ert_parent.ert_lines.sudo().create({
+        #     'parent_id':ert_parent.id,
+        #     'soil_resistivity_id':self.id
+        # })
         return {
             'view_mode': 'form',
             'res_model': "lerm.ert.parent",
