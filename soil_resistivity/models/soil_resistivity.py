@@ -242,6 +242,17 @@ class SoilResistivityLine(models.Model):
         ys = [v * np.sin(a) for v, a in zip(values, angles)]
 
         ax.plot(xs, ys, color='blue', linewidth=2, label="Actual")
+        
+        
+        def classify_soil(resistivity):
+            if resistivity < 25:
+                return "Severely corrosive"
+            elif 25 <= resistivity <= 50:
+                return "Moderately corrosive"
+            elif 50 < resistivity <= 100:
+                return "Mildly corrosive"
+            else:  # resistivity > 100
+                return "Very mild corrosive"
 
         # --- Compute polygon area using shoelace formula ---
         def polygon_area(x, y):
@@ -283,8 +294,13 @@ class SoilResistivityLine(models.Model):
         # Remove the border/spines
         for spine in ax.spines.values():
             spine.set_visible(False)
+            
         
-        fig.text(0.05, 0.05, f"Corrosion Assessment = Moderately Corrosive", 
+        soil_type = classify_soil(radius_equiv)
+
+        
+        
+        fig.text(0.05, 0.05, f"Corrosion Assessment = {soil_type}", 
          ha='left', va='bottom', fontsize=10, color="black")
 
         fig.text(0.05, 0.09, f"Equivalent Radius (i.e. av. Resistivity) = {radius_equiv:.2f}", 
