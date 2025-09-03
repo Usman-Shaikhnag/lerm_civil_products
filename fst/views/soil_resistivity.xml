@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_ert_soil_resistivity" model="ir.ui.view">
+        <field name="name">ert.soil.resistivity.form</field>
+        <field name="model">ert.soil.resistivity</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    <group>
+                       <field name="grade"/>
+                    </group>
+
+                    <group>
+                        <field name="size_id"/>
+                    </group>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temperature_site">Temperature At Site</label></td>
+                                    <td><field name="temperature_site"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="last_weather">Last 2 Days Weather</label></td>
+                                    <td><field name="last_weather"/></td>
+                                </tr>
+                            
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="voltage">Voltage</label></td>
+                                    <td><field name="voltage"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="present_weather">Present Weather</label></td>
+                                    <td><field name="present_weather"/></td>
+                                </tr>
+                             
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <field name="line_ids" class="custom_table_borders">
+                        <tree editable="bottom">
+                            <field name="spacing"/>
+                            <field name="resistivity_n"/>
+                            <field name="resistivity_ne"/>
+                            <field name="resistivity_e"/>
+                            <field name="resistivity_se"/>
+                            <field name="resistivity_s"/>
+                            <field name="resistivity_sw"/>
+                            <field name="resistivity_w"/>
+                            <field name="resistivity_nw"/>
+                            <!-- <field name="graph_image" widget="image"/> -->
+                        </tree>
+                    </field>
+
+                     <field name="pin_line_ids" class="custom_table_borders">
+                        <tree editable="bottom">
+                            <field name="pin_spacing"/>
+                            <field name="equivalent_radius"/>
+                            <field name="class_of_soil"/>
+                          
+                        </tree>
+                    </field>
+
+                      <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_equivalent_radius">Average ERT Resistivity</label></td>
+                                    <td><field name="avg_equivalent_radius"/></td>
+                                </tr>
+                                
+                            
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button name="action_generate_graph" type="object" string="Generate Graph" class="btn-primary"/>
+
+                    <field name="graph_images" class="custom_table_borders">
+                        <tree create="false" delete="false" class="text-center"> 
+                            <field name="graph_image" widget="image"/>
+                        </tree>
+                    </field>
+                    
+                    <button type="object" class="oe_highlight" name="save_ert" string="Save"/>
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
