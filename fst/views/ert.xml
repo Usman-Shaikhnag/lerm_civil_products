@@ -45,7 +45,18 @@
             </field>
         </record>
 
-        
+        <record id="action_ert_dashboard" model="ir.actions.act_window">
+            <field name="name">FST Dashboard</field>
+            <field name="res_model">lerm.ert.dashboard</field>
+            <field name="view_mode">kanban</field>
+            <field name="target">current</field>
+        </record>
+
+        <record id="action_lerm_ert_parent" model="ir.actions.act_window">
+            <field name="name">ERTs</field>
+            <field name="res_model">lerm.ert.parent</field>
+            <field name="view_mode">tree,form</field>
+        </record>
         
         
 
@@ -62,18 +73,7 @@
             action="lerm_ert_parent_action"
             /> 
 
-        <record id="action_ert_dashboard" model="ir.actions.act_window">
-            <field name="name">FST Dashboard</field>
-            <field name="res_model">lerm.ert.dashboard</field>
-            <field name="view_mode">kanban</field>
-            <field name="target">current</field>
-        </record>
-
-        <record id="action_lerm_ert_parent" model="ir.actions.act_window">
-            <field name="name">ERTs</field>
-            <field name="res_model">lerm.ert.parent</field>
-            <field name="view_mode">tree,form</field>
-        </record>
+        
             
         <record id="view_ert_dashboard" model="ir.ui.view">
             <field name="name">lerm.ert.dashboard.view</field>
