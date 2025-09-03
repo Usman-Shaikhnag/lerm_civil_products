@@ -22,8 +22,8 @@ class ERTSoilResistivity(models.Model):
     ert_parent_id = fields.Many2one('lerm.ert.parent') 
     
 
-    graph_images = fields.One2many('soil.resistivity.line', 'parent_id',string="Graphs")
-    line_ids = fields.One2many("soil.resistivity.line", "parent_id", string="Resistivity Table")
+    graph_images = fields.One2many('ert.soil.resistivity.line', 'parent_id',string="Graphs")
+    line_ids = fields.One2many("ert.soil.resistivity.line", "parent_id", string="Resistivity Table")
 
 
     def save_ert(self):
@@ -90,7 +90,7 @@ class ERTSoilResistivity(models.Model):
             }
 
             # Add footer line
-            self.env['soil.resistivity.line'].create({
+            self.env['ert.soil.resistivity.line'].create({
                 'sr_no': len(lines) + 1,
                 'sr_no_label': "Avg. Resistivity",
                 'parent_id': rec.id,
@@ -105,7 +105,7 @@ class ERTSoilResistivity(models.Model):
     voltage = fields.Char(string="Voltage :")
     present_weather = fields.Char(string="Present Weather :")
 
-    pin_line_ids = fields.One2many("soil.resistivity.pin.line", "parent_id", string="Resistivity Table")
+    pin_line_ids = fields.One2many("ert.soil.resistivity.pin.line", "parent_id", string="Resistivity Table")
 
     avg_equivalent_radius = fields.Float(string="Average Equivalent Radius", compute="_compute_avg_equivalent_radius", store=True)
 
@@ -130,7 +130,7 @@ class ERTSoilResistivityLine(models.Model):
     _name = "ert.soil.resistivity.line"
     _description = "Soil Resistivity Line"
 
-    parent_id = fields.Many2one("soil.resistivity", string="Test Point")
+    parent_id = fields.Many2one("ert.soil.resistivity", string="Test Point")
     sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
     spacing = fields.Float("Pin Spacing (m)")
 
@@ -462,7 +462,7 @@ class ERTSoilResistivityPinLine(models.Model):
     _name = "ert.soil.resistivity.pin.line"
     _description = "Soil Resistivity Line"
 
-    parent_id = fields.Many2one("soil.resistivity", string="Test Point")
+    parent_id = fields.Many2one("ert.soil.resistivity", string="Test Point")
     pin_spacing = fields.Float("Pin Spacing (m)")
     equivalent_radius = fields.Float("Equivalent Radius")
     class_of_soil = fields.Char("Class of Soil")

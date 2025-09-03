@@ -3,34 +3,34 @@
     <data>
 
         <record id="ert_parent_view" model="ir.ui.view">
-        <field name="name">lerm.ert.parent.form</field>
-        <field name="model">lerm.ert.parent</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <group>
-                        <field name="name" />
+            <field name="name">lerm.ert.parent.form</field>
+            <field name="model">lerm.ert.parent</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            
+                        </group>
+
                         
-                    </group>
+                        <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="create_ert"
+                            string="Create ERT"
+                            />
 
-                     
-                    <button
-                        type="object"
-                        class="oe_highlight" 
-                        name="create_ert"
-                        string="Create ERT"
-                        />
-
-                    <field name="ert_lines" readonly="1">
-                        <tree editable="bottom">
-                            <field name="soil_resistivity_id"/>
-                        </tree>
-                    </field>
-                   
-                 
-                </sheet>
-            </form>
-        </field>
+                        <field name="ert_lines" readonly="1">
+                            <tree editable="bottom">
+                                <field name="soil_resistivity_id"/>
+                            </tree>
+                        </field>
+                    
+                    
+                    </sheet>
+                </form>
+            </field>
         </record>
         
 
