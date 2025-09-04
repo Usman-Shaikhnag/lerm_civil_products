@@ -57,6 +57,70 @@ class ERTSoilResistivity(models.Model):
         }
 
 
+    # def button_add_footer(self):
+    #     for rec in self:
+    #         # Delete previous footer
+    #         footer = rec.line_ids.filtered(lambda l: l.sr_no_label == "Avg. Resistivity")
+    #         footer.unlink()
+
+    #         # Data lines only
+    #         lines = rec.line_ids.filtered(lambda l: l.sr_no_label != "Avg. Resistivity")
+    #         if not lines:
+    #             continue
+
+    #         radius_vals = []
+    #         for i, line in enumerate(lines, start=1):
+    #             line.sr_no_label = str(i)
+
+    #             # Ensure area is defined
+    #             if not line.area:
+    #                 line.area = 0  # Or compute it here if formula exists
+
+    #             # ----- Auto compute Correct Resistance (*_2) from Site Reading (*_1) -----
+    #             line.resistivity_n2 = line.resistivity_n1 * 1 if line.resistivity_n1 else 0
+    #             line.resistivity_ne2 = line.resistivity_ne1 * 1 if line.resistivity_ne1 else 0
+    #             line.resistivity_e2 = line.resistivity_e1 * 1 if line.resistivity_e1 else 0
+    #             line.resistivity_se2 = line.resistivity_se1 * 1 if line.resistivity_se1 else 0
+    #             line.resistivity_s2 = line.resistivity_s1 * 1 if line.resistivity_s1 else 0
+    #             line.resistivity_sw2 = line.resistivity_sw1 * 1 if line.resistivity_sw1 else 0
+    #             line.resistivity_w2 = line.resistivity_w1 * 1 if line.resistivity_w1 else 0
+    #             line.resistivity_nw2 = line.resistivity_nw1 * 1 if line.resistivity_nw1 else 0
+
+    #             # ----- Original resistivity calculations -----
+    #             line.resistivity_n  = 2 * pi * line.resistivity_n2 * line.spacing if line.resistivity_n2 and line.spacing else 0
+    #             line.resistivity_ne = 2 * pi * line.resistivity_ne2 * line.spacing if line.resistivity_ne2 and line.spacing else 0
+    #             line.resistivity_e  = 2 * pi * line.resistivity_e2 * line.spacing if line.resistivity_e2 and line.spacing else 0
+    #             line.resistivity_se = 2 * pi * line.resistivity_se2 * line.spacing if line.resistivity_se2 and line.spacing else 0
+    #             line.resistivity_s  = 2 * pi * line.resistivity_s2 * line.spacing if line.resistivity_s2 and line.spacing else 0
+    #             line.resistivity_sw = 2 * pi * line.resistivity_sw2 * line.spacing if line.resistivity_sw2 and line.spacing else 0
+    #             line.resistivity_w  = 2 * pi * line.resistivity_w2 * line.spacing if line.resistivity_w2 and line.spacing else 0
+    #             line.resistivity_nw = 2 * pi * line.resistivity_nw2 * line.spacing if line.resistivity_nw2 and line.spacing else 0
+
+    #             # Compute radius from area
+    #             line.radius = sqrt(line.area / pi) if line.area else 0
+    #             radius_vals.append(line.radius)
+
+    #         # Footer average
+    #         avg_vals = {
+    #             'resistivity_n':  sum([l.resistivity_n for l in lines]) / len(lines),
+    #             'resistivity_ne': sum([l.resistivity_ne for l in lines]) / len(lines),
+    #             'resistivity_e':  sum([l.resistivity_e for l in lines]) / len(lines),
+    #             'resistivity_se': sum([l.resistivity_se for l in lines]) / len(lines),
+    #             'resistivity_s':  sum([l.resistivity_s for l in lines]) / len(lines),
+    #             'resistivity_sw': sum([l.resistivity_sw for l in lines]) / len(lines),
+    #             'resistivity_w':  sum([l.resistivity_w for l in lines]) / len(lines),
+    #             'resistivity_nw': sum([l.resistivity_nw for l in lines]) / len(lines),
+    #             'radius': sum(radius_vals) / len(radius_vals),
+    #         }
+
+    #         # Add footer line
+    #         self.env['ert.soil.resistivity.line'].create({
+    #             'sr_no': len(lines) + 1,
+    #             'sr_no_label': "Avg. Resistivity",
+    #             'parent_id': rec.id,
+    #             **avg_vals
+    #         })
+
     def button_add_footer(self):
         for rec in self:
             # Delete previous footer
@@ -77,23 +141,23 @@ class ERTSoilResistivity(models.Model):
                     line.area = 0  # Or compute it here if formula exists
 
                 # ----- Auto compute Correct Resistance (*_2) from Site Reading (*_1) -----
-                line.resistivity_n2 = line.resistivity_n1 * 1 if line.resistivity_n1 else 0
-                line.resistivity_ne2 = line.resistivity_ne1 * 1 if line.resistivity_ne1 else 0
-                line.resistivity_e2 = line.resistivity_e1 * 1 if line.resistivity_e1 else 0
-                line.resistivity_se2 = line.resistivity_se1 * 1 if line.resistivity_se1 else 0
-                line.resistivity_s2 = line.resistivity_s1 * 1 if line.resistivity_s1 else 0
-                line.resistivity_sw2 = line.resistivity_sw1 * 1 if line.resistivity_sw1 else 0
-                line.resistivity_w2 = line.resistivity_w1 * 1 if line.resistivity_w1 else 0
-                line.resistivity_nw2 = line.resistivity_nw1 * 1 if line.resistivity_nw1 else 0
+                line.resistivity_n2  = line.resistivity_n1  * rec.factor_multiplied if line.resistivity_n1  else 0
+                line.resistivity_ne2 = line.resistivity_ne1 * rec.factor_multiplied if line.resistivity_ne1 else 0
+                line.resistivity_e2  = line.resistivity_e1  * rec.factor_multiplied if line.resistivity_e1  else 0
+                line.resistivity_se2 = line.resistivity_se1 * rec.factor_multiplied if line.resistivity_se1 else 0
+                line.resistivity_s2  = line.resistivity_s1  * rec.factor_multiplied if line.resistivity_s1  else 0
+                line.resistivity_sw2 = line.resistivity_sw1 * rec.factor_multiplied if line.resistivity_sw1 else 0
+                line.resistivity_w2  = line.resistivity_w1  * rec.factor_multiplied if line.resistivity_w1  else 0
+                line.resistivity_nw2 = line.resistivity_nw1 * rec.factor_multiplied if line.resistivity_nw1 else 0
 
                 # ----- Original resistivity calculations -----
-                line.resistivity_n  = 2 * pi * line.resistivity_n2 * line.spacing if line.resistivity_n2 and line.spacing else 0
+                line.resistivity_n  = 2 * pi * line.resistivity_n2  * line.spacing if line.resistivity_n2  and line.spacing else 0
                 line.resistivity_ne = 2 * pi * line.resistivity_ne2 * line.spacing if line.resistivity_ne2 and line.spacing else 0
-                line.resistivity_e  = 2 * pi * line.resistivity_e2 * line.spacing if line.resistivity_e2 and line.spacing else 0
+                line.resistivity_e  = 2 * pi * line.resistivity_e2  * line.spacing if line.resistivity_e2  and line.spacing else 0
                 line.resistivity_se = 2 * pi * line.resistivity_se2 * line.spacing if line.resistivity_se2 and line.spacing else 0
-                line.resistivity_s  = 2 * pi * line.resistivity_s2 * line.spacing if line.resistivity_s2 and line.spacing else 0
+                line.resistivity_s  = 2 * pi * line.resistivity_s2  * line.spacing if line.resistivity_s2  and line.spacing else 0
                 line.resistivity_sw = 2 * pi * line.resistivity_sw2 * line.spacing if line.resistivity_sw2 and line.spacing else 0
-                line.resistivity_w  = 2 * pi * line.resistivity_w2 * line.spacing if line.resistivity_w2 and line.spacing else 0
+                line.resistivity_w  = 2 * pi * line.resistivity_w2  * line.spacing if line.resistivity_w2  and line.spacing else 0
                 line.resistivity_nw = 2 * pi * line.resistivity_nw2 * line.spacing if line.resistivity_nw2 and line.spacing else 0
 
                 # Compute radius from area
@@ -124,6 +188,8 @@ class ERTSoilResistivity(models.Model):
         
 
     ert_point = fields.Char(string="ERT POINT NO")
+    factor_multiplied = fields.Float(
+        string="Factor Multiply"    )
 
     temperature_site = fields.Char(string="Temperature At Site :")
     last_weather = fields.Char(string="Last 2 Days Weather :")

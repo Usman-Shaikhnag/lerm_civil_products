@@ -28,6 +28,31 @@
                     </div>
 
 
+                     <div class="d-flex gap-2" style="margin-top:20px;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="ert_point">ERT POINT NO</label></td>
+                                    <td><field name="ert_point"/></td>
+                                </tr>
+                              
+                            
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="factor_multiplied">Factor Multiply</label></td>
+                                    <td><field name="factor_multiplied"/></td>
+                                </tr>
+                                
+                             
+                            </tbody>
+                        </table>
+                    </div>
+
+
 
 
                     <div class="d-flex gap-2" style="margin-top:20px;">
@@ -63,43 +88,43 @@
                     <field name="line_ids" class="custom_table_borders">
                         <tree editable="bottom" decoration-success="sr_no_label == 'Avg. Resistivity'" class="fix_resistivity_width" >
                            <!-- <field name="sr_no" /> -->
-                           <field name="sr_no_label" />
+                           <field name="sr_no_label" readonly="1" string="Sr. No"/>
                             <field name="spacing"/>
 
                              <field name="resistivity_n1" />
-                              <field name="resistivity_n2"/>
-                            <field name="resistivity_n"  />
+                            <field name="resistivity_n2" readonly="1"/>
+                            <field name="resistivity_n"  readonly="1" />
                             
                             <field name="resistivity_ne1"/>
-                            <field name="resistivity_ne2"/>
-                            <field name="resistivity_ne" />
+                            <field name="resistivity_ne2" readonly="1"/>
+                            <field name="resistivity_ne" readonly="1" />
 
                             <field name="resistivity_e1"/>
-                            <field name="resistivity_e2"/>
-                            <field name="resistivity_e" />
+                            <field name="resistivity_e2" readonly="1"/>
+                            <field name="resistivity_e"  readonly="1"/>
 
                             <field name="resistivity_se1"/>
-                             <field name="resistivity_se2"/>
-                              <field name="resistivity_se" />
+                             <field name="resistivity_se2" readonly="1"/>
+                              <field name="resistivity_se" readonly="1" />
 
                             <field name="resistivity_s1"/>
-                            <field name="resistivity_s2"/>
-                            <field name="resistivity_s" />
+                            <field name="resistivity_s2" readonly="1"/>
+                            <field name="resistivity_s"  readonly="1"/>
 
                             <field name="resistivity_sw1"/>
-                            <field name="resistivity_sw2"/>
-                            <field name="resistivity_sw" />
+                            <field name="resistivity_sw2" readonly="1"/>
+                            <field name="resistivity_sw" readonly="1" />
 
                             <field name="resistivity_w1"/>
-                            <field name="resistivity_w2"/>
-                            <field name="resistivity_w" />
+                            <field name="resistivity_w2" readonly="1"/>
+                            <field name="resistivity_w"  readonly="1"/>
 
                             <field name="resistivity_nw1"/>
-                            <field name="resistivity_nw2"/>
-                            <field name="resistivity_nw" />
+                            <field name="resistivity_nw2" readonly="1"/>
+                            <field name="resistivity_nw"  readonly="1"/>
 
-                              <field name="area" />
-                             <field name="radius" />
+                              <field name="area"  readonly="1"/>
+                             <field name="radius"  readonly="1"/>
 
                            
 
