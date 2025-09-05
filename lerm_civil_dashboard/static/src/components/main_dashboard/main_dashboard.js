@@ -212,5 +212,5 @@ class MainDashboard extends Component {
 }
 
 MainDashboard.template = "lerm_civil_dashboard.MainDashboard";
-MainDashboard.components = { KpiBox };
+// MainDashboard.components = { KpiBox };
 actionRegistry.add("main_dashboard", MainDashboard);
