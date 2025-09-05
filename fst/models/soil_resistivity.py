@@ -257,7 +257,8 @@ class ERTSoilResistivity(models.Model):
     def action_generate_graph(self):
         for rec in self:
             for line in rec.line_ids:
-                line.action_generate_graph()
+                if line.sr_no_label != "Avg. Resistivity":
+                    line.action_generate_graph()
 
 
 
@@ -420,7 +421,7 @@ class ERTSoilResistivityLine(models.Model):
             offset = 0.8
             
             ax.text(
-                x * offset, y * offset, f"{v:.2f}",
+                x * offset- 0.08 * ymax, y * offset, f"{v:.2f}",
                 ha='center', va='center',
                 fontsize=11,
                 rotation=angle_deg,
@@ -435,10 +436,10 @@ class ERTSoilResistivityLine(models.Model):
             ax.text(x, y, cat, ha='center', va='center', fontsize=10, fontweight="bold")
 
         # --- Add diagonal radial labels dynamically ---
-        label_angle = np.pi / 3   # 60 degrees
+        label_angle = np.pi / 2.05   # 90 degrees
         for y in yticks[1:]:
             x, yy = y * np.cos(label_angle), y * np.sin(label_angle)
-            ax.text(x*1, yy*1, f"{int(y)}", ha='left', va='bottom', fontsize=9, color="black")
+            ax.text(x*1.5, yy*1, f"{int(y)}", ha='left', va='bottom', fontsize=10, fontweight="bold")
         
         # Add red circle at outer radius
         circle = plt.Circle((0, 0), radius_equiv, color='red', fill=False, linewidth=2)

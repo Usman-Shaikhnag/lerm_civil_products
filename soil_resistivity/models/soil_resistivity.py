@@ -295,13 +295,22 @@ class SoilResistivityLine(models.Model):
         # Category labels (place slightly beyond ymax)
         for cat, a in zip(categories, angles[:-1]):
             x, y = (ymax*1.1) * np.cos(a), (ymax*1.1) * np.sin(a)
-            ax.text(x, y, cat, ha='center', va='center', fontsize=10, fontweight="bold")
+            ax.text(x, y, cat, ha='center', va='center', fontsize=10,color="red", fontweight="bold")
 
         # --- Add diagonal radial labels dynamically ---
-        label_angle = np.pi / 3   # 60 degrees
+        label_angle = angles[0]   # this corresponds to North
         for y in yticks[1:]:
             x, yy = y * np.cos(label_angle), y * np.sin(label_angle)
-            ax.text(x*1, yy*1, f"{int(y)}", ha='left', va='bottom', fontsize=9, color="black")
+            ax.text(
+                x, yy + (0.05 * ymax), f"{int(y)}",
+                ha='center', va='bottom',
+                fontsize=11, fontweight="bold",
+                color="blue",     # custom color works now
+                rotation=0,
+                rotation_mode='anchor'
+            )
+
+
         
         # Add red circle at outer radius
         circle = plt.Circle((0, 0), radius_equiv, color='red', fill=False, linewidth=2)
