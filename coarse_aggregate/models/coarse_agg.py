@@ -109,7 +109,7 @@ class CoarseAggregateMechanical(models.Model):
         for record in self:
             if record.crushing_value_child_lines:
                 sum_crushing_values = sum(record.crushing_value_child_lines.mapped('crushing_value'))
-                record.average_crushing_value = round((sum_crushing_values / len(record.crushing_value_child_lines)),1)
+                record.average_crushing_value = sum_crushing_values / len(record.crushing_value_child_lines)
             else:
                 record.average_crushing_value = 0.0
    
@@ -362,6 +362,8 @@ class CoarseAggregateMechanical(models.Model):
                 record.average_impact_value = ((sum_impact_value / len(record.impact_value_child_lines)))
             else:
                 record.average_impact_value = 0.0
+
+    
 
     # @api.model
     # def create(self, vals):
@@ -1315,33 +1317,33 @@ class CoarseAggregateMechanical(models.Model):
             # Define mappings
             if grade_str == 'single sized aggregate':
                 sieve_mapping = {
-                    63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
-                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-                    10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+                    63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm','2.63 mm', 'pan'],
+                    40: ['63 mm', '40 mm', '20 mm', '10 mm','2.63 mm', 'pan'],
+                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm','2.63 mm', 'pan'],
+                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm','2.63 mm', 'pan'],
+                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm','2.63 mm', 'pan'],
+                    10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm','2.63 mm', 'pan'],
                 }
                 specific_limits_mapping = {
-                    63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
-                    40: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    20: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    16: ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
-                    12: ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
-                    10: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5','0', '0'],
+                    40: ['100', '85 - 100', '0 - 20', '0 - 5','0', '0'],
+                    20: ['100', '85 - 100', '0 - 20', '0 - 5','0', '0'],
+                    16: ['100', '85 - 100', '0 - 30', '0 - 5','0', '0'],
+                    12: ['100', '85 - 100', '0 - 45', '0 - 10','0', '0'],
+                    10: ['100', '85 - 100', '0 - 20', '0 - 5', '0','0'],
                 }
             elif grade_str == 'graded aggregate':
                 sieve_mapping = {
-                    40: ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
-                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
-                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                    40: ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','2.63 mm','pan'],
+                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm','2.63 mm','pan'],
+                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm','2.63 mm', 'pan'],
+                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm','2.63 mm', 'pan'],
                 }
                 specific_limits_mapping = {
-                    40: ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
-                    20: ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
-                    16: ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
-                    12: ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+                    40: ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0','0'],
+                    20: ['100', '95 - 100', '25 - 55', '0 - 10','0', '0'],
+                    16: ['100', '90 - 100', '30 - 70', '0 - 10', '0','0'],
+                    12: ['100', '90 - 100', '40 - 85', '0 - 10','0', '0'],
                 }
             else:
                 return res
@@ -2203,8 +2205,8 @@ class ImpactValueLine(models.Model):
     # wt_of_cylinder = fields.Integer(string="Weight of cylindrical measure in gms")
     # total_wt_of_dried = fields.Integer(string="Total Wt. of Oven dried (4 hrs) aggregate sample + cylindrical measure in gms")
     total_wt_aggregate = fields.Float(string="Wt of Aggregate Passing I.S Sieve 12.5 mm but retained in I.S. Sieve 10 mm Gms (W1)")
-    wt_of_aggregate_retained = fields.Float(string="Wt of Aggregate Retained on  I.S Sieve 2.36  mm after the test Gms (W2)", compute="_compute_wt_of_aggregate_retained")
-    wt_of_aggregate_passing = fields.Float(string="Wt of Stone Pieces Passing I.S Sieve 2.36 mm after the test ( W3)")
+    wt_of_aggregate_retained = fields.Float(string="Wt of Aggregate Retained on  I.S Sieve 2.36  mm after the test Gms (W2)")
+    wt_of_aggregate_passing = fields.Float(string="Wt of Stone Pieces Passing I.S Sieve 2.36 mm after the test ( W3)", compute="_compute_wt_of_aggregate_passing")
     impact_value = fields.Float(string="Aggregate Impact value", compute="_compute_impact_value")
 
     # @api.depends('total_wt_of_dried', 'wt_of_cylinder')
@@ -2212,10 +2214,12 @@ class ImpactValueLine(models.Model):
     #     for rec in self:
     #         rec.total_wt_aggregate = rec.total_wt_of_dried - rec.wt_of_cylinder
 
-    @api.depends('total_wt_aggregate', 'wt_of_aggregate_passing')
-    def _compute_wt_of_aggregate_retained(self):
+
+
+    @api.depends('total_wt_aggregate', 'wt_of_aggregate_retained')
+    def _compute_wt_of_aggregate_passing(self):
         for rec in self:
-            rec.wt_of_aggregate_retained = rec.total_wt_aggregate - rec.wt_of_aggregate_passing
+            rec.wt_of_aggregate_passing = rec.total_wt_aggregate - rec.wt_of_aggregate_retained
 
 
 
