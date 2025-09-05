@@ -12,11 +12,6 @@ class LermErtParent(models.Model):
 
     def create_ert(self):
         
-        # import wdb; wdb.set_trace()
-        # self.ert_lines.sudo().create({
-        #     'parent_id':self.id,
-        #     # 'soil_resistivity_id':self.id
-        # })
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
@@ -36,7 +31,7 @@ class LermErtLines(models.Model):
     soil_resistivity_id = fields.Many2one('ert.soil.resistivity')
         
 
-class ERTDashboard(models.TransientModel):
+class ERTDashboard(models.Model):
     _name = "lerm.ert.dashboard"
     _description = "ERT Dashboard"
 
