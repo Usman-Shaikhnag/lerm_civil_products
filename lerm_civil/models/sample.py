@@ -2,7 +2,7 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import logging
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 # _logger = logging.getLogger(__name__)
 
@@ -16,9 +16,9 @@ class LermSampleForm(models.Model):
     _rec_name = 'kes_no'
 
     client_reference1 = fields.Char(string="Client Reference",compute="_compute_client_reference", store=True)
-    srf_id = fields.Many2one('lerm.civil.srf' , string="SRF ID" ,ondelete="cascade",tracking=True)
+    srf_id = fields.Many2one('lerm.civil.srf',ondelete="cascade", string="SRF ID" ,tracking=True)
     sample_range_id = fields.Many2one('sample.range.line',string="Sample Range")
-    eln_id = fields.Many2one('lerm.eln',string="ELN",ondelete="cascade")
+    eln_id = fields.Many2one('lerm.eln',string="ELN",ondelete="set null")
     sample_no = fields.Char(string="Sample ID." ,required=True,readonly=True, default=lambda self: 'New')
     casting = fields.Boolean(string="Casting")
     discipline_id = fields.Many2one('lerm_civil.discipline',string="Discipline")
@@ -405,7 +405,16 @@ class LermSampleForm(models.Model):
         
         # if not self.datasheet_path:
         #     raise ValidationError("Please attach datasheet before submitting.")
-
+        # import wdb ; wdb.set_trace()
+        
+        sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.id)])
+        try:
+            sample_register.sudo().write({
+                'report_issued_date':date.today()
+            })
+        except:
+            print('Sample Register Not Updated')
+            
         self.approved_by = self.env.user
         self.write({'state': '4-in_report'})
         

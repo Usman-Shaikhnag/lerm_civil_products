@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="ert_parent_view" model="ir.ui.view">
+            <field name="name">lerm.ert.parent.form</field>
+            <field name="model">lerm.ert.parent</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            
+                        </group>
+
+                        
+                        <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="create_ert"
+                            string="Create ERT"
+                            />
+
+                        <field name="ert_lines" readonly="1">
+                            <tree editable="bottom">
+                                <field name="soil_resistivity_id" widget="many2one" options="{'no_open': False}"/>
+                            </tree>
+                        </field>
+                    
+                    
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+
+       
+        <record id="lerm_ert_parent_action" model="ir.actions.act_window">
+            <field name="name">ERT</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">lerm.ert.parent</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">ERT</p>
+            </field>
+        </record>
+
+        <record id="action_ert_dashboard" model="ir.actions.act_window">
+            <field name="name">FST Dashboard</field>
+            <field name="res_model">lerm.ert.dashboard</field>
+            <field name="view_mode">kanban</field>
+            <field name="target">current</field>
+        </record>
+
+        <record id="action_lerm_ert_parent" model="ir.actions.act_window">
+            <field name="name">ERTs</field>
+            <field name="res_model">lerm.ert.parent</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        
+
+        <menuitem id="fst_root"
+            name="FST"
+            sequence="11"
+            action="action_ert_dashboard" 
+            /> 
+
+        <menuitem id="ert_menuitem"
+            name="ERT"
+            sequence="10"
+            parent="fst_root"
+            action="lerm_ert_parent_action"
+            /> 
+
+        
+            
+        <record id="view_ert_dashboard" model="ir.ui.view">
+            <field name="name">lerm.ert.dashboard.view</field>
+            <field name="model">lerm.ert.dashboard</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_dashboard" create="false" delete="false">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_card">
+                                <div class="o_kanban_card_header">
+                                    <strong>ERTs</strong>
+                                </div>
+                                <div class="o_kanban_card_content">
+                                    <a type="action"
+                                    name="%(action_lerm_ert_parent)d"
+                                    class="btn btn-primary">
+                                        Create ERT
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Ensure one record exists -->
+        <record id="lerm_ert_dashboard_record" model="lerm.ert.dashboard"/>
+        
+
+        <menuitem id="menu_ert_dashboard"
+          name="FST Dashboard"
+          parent="fst_root"
+          action="action_ert_dashboard"
+          sequence="1"/>
+    </data>
+</odoo>

@@ -22,20 +22,20 @@
                         <field name="eln_ref"  readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group>
-                      <field name="sample_parameters" >
-                        <tree class="table-bordered o_list_view">
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                      <field name="sample_parameters" nolabel="1" >
+                        <tree >
                           <field name="parameter_name"/>
                           <field name="test_method"/>
                         </tree>
                       </field>
-                    </group>
+                    </div>
 
 
                     <group/>
                     <div style="display:flex;">
                     <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 70%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 99%;">
                          <tbody>
                             <tr>
                               <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Temperature °c</span></td>
@@ -52,10 +52,10 @@
 
 
                     <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 100%;">
                          <tbody>
                             <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Quantity</span></td>
+                              <td style="border: 1px solid black; padding: 12px; font-weight: bold;"><span>Quantity</span></td>
                               <td style="border: 1px solid black; padding: 8px;width:200px;"><field name="quantity"  exception="quantity" identity="extra"/></td>
                             </tr>
                             <tr>
@@ -73,20 +73,18 @@
                     <group/>
                     <div style="display:flex;">
                     <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 99%;">
                          <tbody>
                             <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Date of Casting</span></td>
-                              <td style="border: 1px solid black; padding: 8px;width:200px;"><field name="date_of_casting" identity="extra"/></td>
+                              <td style="border: 1px solid black; padding: 12px; font-weight: bold;"><span>Date of Casting</span></td>
+                              <td style="border: 1px solid black; padding: 12px;width:200px;"><field name="date_of_casting" identity="extra"/></td>
                             </tr>                                 
                          </tbody>
                       </table>
                     </div>
-                    <group/>
-
-
+                  
                     <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 50%;">
+                      <table style="border: 2px solid black; border-collapse: collapse; width: 100%;">
                          <tbody>
                             <tr>
                               <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span> Date of Testing</span></td>
@@ -100,7 +98,7 @@
                     <group/>
 
                     <div>
-                      <table class="table table-bordered sm-table" style="width: 30%;font-size: 15px; margin:0px;">
+                      <table class="table table-bordered sm-table" style="width: 100%;font-size: 15px; margin:0px;">
                          <tbody>
                          <tr>
                              <td><span>Age</span></td>
@@ -170,9 +168,9 @@
                    
                     <group/>
                     <group>
-                      <h4 style="white-space: nowrap;">Parameter</h4><br/>
+                      
                         <field name="child_lines" colspan="2" nolabel="1">
-                        <tree editable="bottom" class="table-bordered o_list_view">
+                        <tree editable="bottom" class="custom_table_borders">
                             <field name="sample" string="Sample"/>
                             <field name="depth1" string="1"/>
                             <field name="depth2" string="2"/>
@@ -183,10 +181,10 @@
                     </group>
 
                      <div>
-                          <table style="border: 1px solid black; width: 20%; margin-top:10px;">
+                          <table style="border: 2px solid black; width: 50%; margin-top:10px;">
                            <tr>
                              <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average of WPT</span></td>
-                              <td style="padding: 8px;"><field name="average_of_wpt" identity="extra"/></td>
+                              <td style="padding: 8px; width:248px;"><field name="average_of_wpt" identity="extra"/></td>
                            </tr>                     
                           </table>
                         </div>
@@ -194,18 +192,18 @@
 
 
                     <div>
-                          <table style="width: 20%; margin-top:10px;">
+                          <table style="width: 50%; margin-top:10px;">
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field name="wpt_conformity"
+                             <td style="border: 2px solid black;padding: 8px;font-weight: bold;"><span>Conformity</span></td>
+                              <td style="border: 2px solid black;padding: 8px;"><field name="wpt_conformity"
                                decoration-success="wpt_conformity == 'pass'" 
                                decoration-danger="wpt_conformity == 'fail'" 
                                readonly="1"
                                identity="extra"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name="wpt_nabl"
+                            <td style="border: 2px solid black;padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="border: 2px solid black;padding: 5px;"><field name="wpt_nabl"
                                decoration-success="wpt_nabl == 'pass'" 
                                 decoration-danger="wpt_nabl == 'fail'" 
                                readonly="1"

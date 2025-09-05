@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="eln_parameter_result_inherite" model="ir.ui.view">
+        <field name="name">lerm.eln.equipment.form</field>
+        <field name="model">lerm.eln</field>
+        <field name="inherit_id" ref="lerm_civil.lerm_eln_forms"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='nabl_status']" position="after">
+                
+                <field name="equipment_id" readonly="1"/>                
+                <field name="start_time" readonly="1"/>                
+                <field name="end_time" readonly="1"/>
+                <field name="requires_equipment" readonly="1" column_invisible="1"/>
+                <button name="action_open_equipment_wizard" type="object" string="Schedule Equipment" invisible="requires_equipment == False"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
