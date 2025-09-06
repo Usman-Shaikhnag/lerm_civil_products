@@ -256,9 +256,33 @@ class ERTSoilResistivity(models.Model):
    
     def action_generate_graph(self):
         for rec in self:
+        # Collect all values from all lines
+            all_values = []
             for line in rec.line_ids:
                 if line.sr_no_label != "Avg. Resistivity":
-                    line.action_generate_graph()
+                    all_values.extend([
+                        line.resistivity_n, line.resistivity_ne, line.resistivity_e,
+                        line.resistivity_se, line.resistivity_s, line.resistivity_sw,
+                        line.resistivity_w, line.resistivity_nw
+                    ])
+
+            if not all_values:
+                continue
+
+            # Compute global ymax
+            data_max = max(all_values)
+
+            def round_up_nice(x):
+                if x <= 10:
+                    return 10
+                order = 10 ** int(math.floor(math.log10(x)))
+                return math.ceil(x / order) * order
+
+            ymax_global = round_up_nice(data_max)
+
+            for line in rec.line_ids:
+                if line.sr_no_label != "Avg. Resistivity":
+                    line.action_generate_graph(ymax=ymax_global)
 
 
 
@@ -317,7 +341,7 @@ class ERTSoilResistivityLine(models.Model):
 
     graph_image = fields.Binary("Graph", readonly=True)
     
-    def action_generate_graph(self):
+    def action_generate_graph(self, ymax=None):
         
         # Example data
         categories = ['N', 'NE', 'E', 'SE', 'S','SW','W','NW']
@@ -343,9 +367,10 @@ class ERTSoilResistivityLine(models.Model):
                 return 10
             order = 10 ** int(math.floor(math.log10(x)))
             return math.ceil(x / order) * order
-                
+
         ymin = 0
-        ymax = round_up_nice(data_max)
+        if ymax is None:
+            ymax = round_up_nice(data_max)
         
         N = len(categories)
         angles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
