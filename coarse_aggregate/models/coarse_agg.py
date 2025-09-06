@@ -201,38 +201,168 @@ class CoarseAggregateMechanical(models.Model):
 
     #  specific_gravity_child_lines = fields.One2many('mechanical.specific.gravity.and.water.absorption.line','parent_id',string="Parameter")
 
-    wt_surface_dry = fields.Float(string="Wt of Saturated surface dry  Aggregate in Air:- (B)")
-    wt_sample_inwater = fields.Float(string="Wt of Saturated Aggregate in Water:- (A)")
-    oven_dried_wt = fields.Float(string="Wt of Oven Dried Aggregate in Air :- ( C )")
+    wt_surface_dry = fields.Float(string=" Weight of saturated aggregate suspended in water with the basket (Weight 'W1')")
+    wt_sample_inwater = fields.Float(string="Weight of basket suspended in water W2")
+    wt_of_staturated = fields.Float(string="Weight of saturated aggregate in water  W3")
+    wt_of_saturated_air = fields.Float(string="Weight of saturated surface dry aggregate in air")
+    wet_of_saturated_dried = fields.Float(string="Weight of saturated surface dry aggregate in oven dried ")
+
+    specific_gravity = fields.Float(
+        string="Specific Gravity",
+        compute="_compute_specific_gravity",
+        store=True,
+        digits=(12, 4)
+    )
+
+    @api.depends('wet_of_saturated_dried', 'wt_of_saturated_air', 'wt_of_staturated')
+    def _compute_specific_gravity(self):
+        for rec in self:
+            denominator = rec.wt_of_saturated_air - rec.wt_of_staturated
+            if denominator != 0:
+                rec.specific_gravity = rec.wet_of_saturated_dried / denominator
+            else:
+                rec.specific_gravity = 0.0
+
+    apparent_specific_gravity = fields.Float(
+        string="Apparent Specific Gravity",
+        compute="_compute_apparent_specific_gravity",
+        store=True,
+        digits=(12, 4)
+    )
+
+
+    @api.depends('wet_of_saturated_dried', 'wt_of_staturated')
+    def _compute_apparent_specific_gravity(self):
+        for rec in self:
+            denominator = rec.wet_of_saturated_dried - rec.wt_of_staturated
+            rec.apparent_specific_gravity = rec.wet_of_saturated_dried / denominator if denominator else 0.0
+
+
+    water_absorption = fields.Float(
+        string="Water Absorption (%)",
+        compute="_compute_water_absorption",
+        store=True,
+        digits=(12, 2)   # percentage so 2 decimals enough
+    )
+
+    @api.depends('wt_of_saturated_air', 'wet_of_saturated_dried')
+    def _compute_water_absorption(self):
+        for rec in self:
+            if rec.wet_of_saturated_dried:
+                rec.water_absorption = ((rec.wt_of_saturated_air - rec.wet_of_saturated_dried) / rec.wet_of_saturated_dried) * 100
+            else:
+                rec.water_absorption = 0.0
 
     # Trial 2 (new)
-    wt_surface_dry_2 = fields.Float(string="Wt of Saturated surface dry  Aggregate in Air:- (B) [Trial 2]")
-    wt_sample_inwater_2 = fields.Float(string="Wt of Saturated Aggregate in Water:- (A) [Trial 2]")
-    oven_dried_wt_2 = fields.Float(string="Wt of Oven Dried Aggregate in Air :- (C) [Trial 2]")
+    wt_surface_dry_2 = fields.Float(string="Weight of saturated aggregate suspended in water with the basket (Weight 'W1')")
+    wt_sample_inwater_2 = fields.Float(string="Weight of basket suspended in water W2")
+    wt_of_staturated_2 = fields.Float(string="Weight of saturated aggregate in water  W3")
+    wt_of_saturated_air_2 = fields.Float(string="Weight of saturated surface dry aggregate in air")
+    wet_of_saturated_dried_2 = fields.Float(string="Weight of saturated surface dry aggregate in oven dried")
 
-    result_wt_surface_dry = fields.Float(string="Wt of Saturated surface dry  Aggregate in Air:- (B)",compute="_compute_result")
-    result_wt_sample_inwater = fields.Float(string="Wt of Saturated Aggregate in Water:- (A)",compute="_compute_result")
-    result_oven_dried_wt = fields.Float(string="Wt of Oven Dried Aggregate in Air :- (C)",compute="_compute_result")
 
-    specific_gravity = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity")
-    water_absorption = fields.Float(string="Water absorption  %",compute="_compute_water_absorption")
+    specific_gravity_2 = fields.Float(
+        string="Specific Gravity",
+        compute="_compute_specific_gravity_2",
+        store=True,
+        digits=(12, 2)
+    )
 
-    @api.depends('wt_surface_dry', 'wt_sample_inwater', 'oven_dried_wt', 'wt_surface_dry_2', 'wt_sample_inwater_2', 'oven_dried_wt_2')
-    def _compute_result(self):
-        for line in self:
-            line.result_wt_surface_dry = (line.wt_surface_dry + line.wt_surface_dry_2)/2
-            line.result_wt_sample_inwater = (line.wt_sample_inwater + line.wt_sample_inwater_2)/2
-            line.result_oven_dried_wt = (line.oven_dried_wt + line.oven_dried_wt_2)/2
+    @api.depends('wet_of_saturated_dried_2', 'wt_of_saturated_air_2', 'wt_of_staturated_2')
+    def _compute_specific_gravity_2(self):
+        for rec in self:
+            denominator_2 = rec.wt_of_saturated_air_2 - rec.wt_of_staturated_2
+            if denominator_2 != 0:
+                rec.specific_gravity_2 = rec.wet_of_saturated_dried_2 / denominator_2
+            else:
+                rec.specific_gravity_2 = 0.0
 
-    specific_gravity_conformity = fields.Selection([
+    apparent_specific_gravity_2 = fields.Float(
+        string="Apparent Specific Gravity",
+        compute="_compute_apparent_specific_gravity_2",
+        store=True,
+        digits=(12, 2)
+    )
+
+
+    @api.depends('wet_of_saturated_dried_2', 'wt_of_staturated_2')
+    def _compute_apparent_specific_gravity_2(self):
+        for rec in self:
+            denominator_2 = rec.wet_of_saturated_dried_2 - rec.wt_of_staturated_2
+            rec.apparent_specific_gravity_2 = rec.wet_of_saturated_dried_2 / denominator_2 if denominator_2 else 0.0
+
+    
+    water_absorption_2 = fields.Float(
+        string="Water Absorption (%)",
+        compute="_compute_water_absorption_2",
+        store=True,
+        digits=(12, 2)   # percentage so 2 decimals enough
+    )
+
+    @api.depends('wt_of_saturated_air_2', 'wet_of_saturated_dried_2')
+    def _compute_water_absorption_2(self):
+        for rec in self:
+            if rec.wet_of_saturated_dried_2:
+                rec.water_absorption_2 = ((rec.wt_of_saturated_air_2 - rec.wet_of_saturated_dried_2) / rec.wet_of_saturated_dried_2) * 100
+            else:
+                rec.water_absorption_2 = 0.0
+
+
+
+    avg_specific_gravity = fields.Float(string="Avg. Specific Gravity",
+        compute="_compute_avg_values",
+        store=True,
+        digits=(12, 2))
+    avg_water_absorption = fields.Float(string="Avg. Water absorption  %",
+        compute="_compute_avg_values",
+        store=True,
+        digits=(12, 2))
+    avg_apparent_specific_gravity = fields.Float(
+        string="Avg. Apparent Specific Gravity",
+        compute="_compute_avg_values",
+        store=True,
+        digits=(12, 2)
+    )
+
+
+    @api.depends(
+    "specific_gravity", "specific_gravity_2",
+    "apparent_specific_gravity", "apparent_specific_gravity_2",
+    "water_absorption", "water_absorption_2"
+    )
+    def _compute_avg_values(self):
+        for rec in self:
+            # Average of specific gravity
+            sg_vals = [v for v in [rec.specific_gravity, rec.specific_gravity_2] if v]
+            if sg_vals:
+                rec.avg_specific_gravity = sum(sg_vals) / len(sg_vals)
+            else:
+                rec.avg_specific_gravity = 0.0
+
+            # Average of apparent specific gravity
+            asg_vals = [v for v in [rec.apparent_specific_gravity, rec.apparent_specific_gravity_2] if v]
+            if asg_vals:
+                rec.avg_apparent_specific_gravity = sum(asg_vals) / len(asg_vals)
+            else:
+                rec.avg_apparent_specific_gravity = 0.0
+
+            # Average of water absorption
+            wa_vals = [v for v in [rec.water_absorption, rec.water_absorption_2] if v]
+            if wa_vals:
+                rec.avg_water_absorption = sum(wa_vals) / len(wa_vals)
+            else:
+                rec.avg_water_absorption = 0.0
+
+    
+    avg_specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
+            ('fail', 'Fail')], string="Specific Gravity Conformity", compute="_compute_avg_specific_gravity_conformity", store=True)
 
-    @api.depends('specific_gravity','eln_ref','grade')
-    def _compute_specific_gravity_conformity(self):
+    @api.depends('avg_specific_gravity','eln_ref','grade')
+    def _compute_avg_specific_gravity_conformity(self):
         
         for record in self:
-            record.specific_gravity_conformity = 'fail'
+            record.avg_specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table
             for material in materials:
@@ -241,23 +371,23 @@ class CoarseAggregateMechanical(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.specific_gravity - record.specific_gravity*mu_value
-                    upper = record.specific_gravity + record.specific_gravity*mu_value
+                    lower = record.avg_specific_gravity - record.avg_specific_gravity*mu_value
+                    upper = record.avg_specific_gravity + record.avg_specific_gravity*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.specific_gravity_conformity = 'pass'
+                        record.avg_specific_gravity_conformity = 'pass'
                         break
                     else:
-                        record.specific_gravity_conformity = 'fail'
+                        record.avg_specific_gravity_conformity = 'fail'
 
-    specific_gravity_nabl = fields.Selection([
+    avg_specific_gravity_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_specific_gravity_nabl", store=True)
+        ('fail', 'Non-NABL')], string="Specific Gravity NABL", compute="_compute_avg_specific_gravity_nabl", store=True)
 
-    @api.depends('specific_gravity','eln_ref','grade')
-    def _compute_specific_gravity_nabl(self):
+    @api.depends('avg_specific_gravity','eln_ref','grade')
+    def _compute_avg_specific_gravity_nabl(self):
         
         for record in self:
-            record.specific_gravity_nabl = 'fail'
+            record.avg_specific_gravity_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table
             for material in materials:
@@ -266,33 +396,17 @@ class CoarseAggregateMechanical(models.Model):
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = record.specific_gravity - record.specific_gravity*mu_value
-                    upper = record.specific_gravity + record.specific_gravity*mu_value
+                    lower = record.avg_specific_gravity - record.avg_specific_gravity*mu_value
+                    upper = record.avg_specific_gravity + record.avg_specific_gravity*mu_value
                     if lower >= lab_min and upper <= lab_max:
-                        record.specific_gravity_nabl = 'pass'
+                        record.avg_specific_gravity_nabl = 'pass'
                         break
                     else:
-                        record.specific_gravity_nabl = 'fail'
+                        record.avg_specific_gravity_nabl = 'fail'
 
 
 
-    @api.depends('wt_surface_dry', 'wt_sample_inwater', 'oven_dried_wt', 'wt_surface_dry_2', 'wt_sample_inwater_2', 'oven_dried_wt_2')
-    def _compute_specific_gravity(self):
-        for line in self:
-            sg1 = 0.0
-            if line.result_wt_surface_dry - line.result_wt_sample_inwater != 0:
-                sg1 = line.result_oven_dried_wt / (line.result_wt_surface_dry - line.result_wt_sample_inwater)
-            line.specific_gravity = round(sg1, 2)
-
-
-    @api.depends('wt_surface_dry', 'oven_dried_wt','wt_surface_dry_2', 'oven_dried_wt_2')
-    def _compute_water_absorption(self):
-        for line in self:
-            wa1 = 0.0
-            if line.result_oven_dried_wt != 0:
-                wa1 = ((line.result_wt_surface_dry - line.result_oven_dried_wt) / line.result_oven_dried_wt) * 100
-            line.water_absorption = round(wa1, 2)
-
+    
 
     # Impact Value 
     impact_value_name = fields.Char("Name",default="Aggregate Impact Value")
@@ -1157,17 +1271,17 @@ class CoarseAggregateMechanical(models.Model):
     loose_bulk_visible = fields.Boolean("Loose Bulk Density Visible",compute="_compute_visible")
 
     # loose_bulk_density_child_lines = fields.One2many('coarse.aggregate.loose.bulk.density.line','parent_id',string="Parameter")
-    volume_of_bucket_loose = fields.Float(string="Volume of Bucket, V")
-    weight_empty_bucket_loose = fields.Float(string="Weight of Empty Bucket,M1 in g")
+    volume_of_bucket_loose = fields.Float(string="Volume of Bucket, V (liter) ")
+    weight_empty_bucket_loose = fields.Float(string="Weight of Empty Bucket,M1 in (Kg)")
 
-    sample_weight_loose = fields.Float(string="Sample Weight in kg",compute="_compute_sample_weight_loose")
-    loose_bulk_density = fields.Float(string="Loose Bulk Density",compute="_compute_loose_bulk_density")
+    sample_weight_loose = fields.Float(string="Sample Weight in (kg",compute="_compute_sample_weight_loose")
+    loose_bulk_density = fields.Float(string="Loose Bulk Density (Kg)",compute="_compute_loose_bulk_density")
 
-    sample_plus_bucket_loose = fields.Float(string="Bucket + Loose Aggregate")
-    sample_plus_bucket_rodded = fields.Float(string="Bucket + Compacted Aggregate")
+    sample_plus_bucket_loose = fields.Float(string="Bucket + Loose Aggregate (Kg)")
+    sample_plus_bucket_rodded = fields.Float(string="Bucket + Compacted Aggregate (Kg)")
     
-    sample_weight_rodded = fields.Float(string="Sample Weight in kg",compute="_compute_sample_weight_rodded")
-    rodded_bulk_density = fields.Float(string="Compacted Bulk Density",compute="_compute_loose_bulk_density")
+    sample_weight_rodded = fields.Float(string="Sample Weight in ",compute="_compute_sample_weight_rodded")
+    rodded_bulk_density = fields.Float(string="Compacted Bulk Density ",compute="_compute_loose_bulk_density")
 
 
 
@@ -1177,12 +1291,26 @@ class CoarseAggregateMechanical(models.Model):
             record.sample_weight_loose = record.sample_plus_bucket_loose - record.weight_empty_bucket_loose
             record.sample_weight_rodded = record.sample_plus_bucket_rodded - record.weight_empty_bucket_rodded
     
-    @api.depends('volume_of_bucket_loose', 'sample_plus_bucket_loose')
+    # @api.depends('volume_of_bucket_loose', 'sample_plus_bucket_loose')
+    # def _compute_loose_bulk_density(self):
+    #     for record in self:
+    #         if record.volume_of_bucket_loose:
+    #             record.loose_bulk_density = round((record.sample_plus_bucket_loose-record.weight_empty_bucket_loose)/record.volume_of_bucket_loose,2)
+    #             record.rodded_bulk_density = round((record.sample_plus_bucket_rodded - record.weight_empty_bucket_loose)/record.volume_of_bucket_loose,2)
+    #         else:
+    #             record.loose_bulk_density = 0.0
+    #             record.rodded_bulk_density = 0.0
+
+    @api.depends('volume_of_bucket_loose', 'sample_plus_bucket_loose', 'sample_plus_bucket_rodded', 'weight_empty_bucket_loose')
     def _compute_loose_bulk_density(self):
         for record in self:
             if record.volume_of_bucket_loose:
-                record.loose_bulk_density = round((record.sample_plus_bucket_loose-record.weight_empty_bucket_loose)/record.volume_of_bucket_loose,2)
-                record.rodded_bulk_density = round((record.sample_plus_bucket_rodded - record.weight_empty_bucket_loose)/record.volume_of_bucket_loose,2)
+                record.loose_bulk_density = round(
+                    (record.sample_plus_bucket_loose - record.weight_empty_bucket_loose) / record.volume_of_bucket_loose, 2
+                )
+                record.rodded_bulk_density = round(
+                    (record.sample_plus_bucket_rodded - record.weight_empty_bucket_loose) / record.volume_of_bucket_loose, 2
+                )
             else:
                 record.loose_bulk_density = 0.0
                 record.rodded_bulk_density = 0.0
@@ -1341,7 +1469,7 @@ class CoarseAggregateMechanical(models.Model):
                 }
                 specific_limits_mapping = {
                     40: ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0','0'],
-                    20: ['100', '95 - 100', '25 - 55', '0 - 10','0', '0'],
+                    20: ['100', '85 - 100', '0 - 20', '0 - 5','0', '0'],
                     16: ['100', '90 - 100', '30 - 70', '0 - 10', '0','0'],
                     12: ['100', '90 - 100', '40 - 85', '0 - 10','0', '0'],
                 }
@@ -1698,8 +1826,8 @@ class CoarseAggregateMechanical(models.Model):
 
             # specific gravity 
             if result.parameter.internal_id == '3114db41-cfa7-49ad-9324-fcdbc9661038':
-                result.result_char = round(self.specific_gravity,2)
-                if self.specific_gravity_nabl == 'pass':
+                result.result_char = round(self.avg_specific_gravity,2)
+                if self.avg_specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -1707,8 +1835,8 @@ class CoarseAggregateMechanical(models.Model):
 
             # water absorbtion
             if result.parameter.internal_id == '22ee804f-41a3-4fd1-a301-a8d9180fba10':
-                result.result_char = round(self.water_absorption,2)
-                if self.specific_gravity_nabl == 'pass':
+                result.result_char = round(self.avg_water_absorption,2)
+                if self.avg_specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2257,10 +2385,10 @@ class CrushingValueLine(models.Model):
     sample_no = fields.Integer(string="Sample", readonly=True, copy=False, default=1)
     # wt_of_cylinder = fields.Integer(string="Weight of the empty cylinder in gms")
     # total_wt_of_dried = fields.Integer(string="Total weight of oven dried ( 4.0 hrs ) aggregate sample filling the cylindrical measure in gms")
-    total_wt_aggregate = fields.Float(string="Wt of Aggregate Passing I.S Sieve 12.5 mm but retained in I.S. Sieve 10 mm Gms (W1)")
-    wt_of_aggregate_retained = fields.Float(string="Wt of Aggregate Retained on  I.S Sieve 2.36  mm after the test Gms (W2)")
-    wt_of_aggregate_passing = fields.Float(string="Wt of Stone Pieces Passing I.S Sieve 2.36 mm after the test ( W3)", compute="_compute_wt_of_aggregate_retained")
-    crushing_value = fields.Float(string="Aggregate Crushing value", compute="_compute_crushing_value")
+    total_wt_aggregate = fields.Float(string="Weight of surface-dry sample.  (gm)")
+    wt_of_aggregate_retained = fields.Float(string="Weight of fraction passing the appropriate 2.36mm  sieve, in(gm)")
+    wt_of_aggregate_passing = fields.Float(string="The fraction retained 2.36mm sieve in(gm)", compute="_compute_wt_of_aggregate_retained")
+    crushing_value = fields.Float(string="Aggregate Crushing value", compute="_compute_crushing_value",digits=(12,3))
 
     @api.depends('total_wt_aggregate', 'wt_of_aggregate_retained')
     def _compute_wt_of_aggregate_retained(self):
@@ -2272,7 +2400,7 @@ class CrushingValueLine(models.Model):
     def _compute_crushing_value(self):
         for rec in self:
             if rec.total_wt_aggregate != 0:
-                rec.crushing_value = (rec.wt_of_aggregate_passing / rec.total_wt_aggregate) * 100
+                rec.crushing_value = (rec.wt_of_aggregate_retained / rec.total_wt_aggregate) * 100
             else:
                 rec.crushing_value = 0.0
 

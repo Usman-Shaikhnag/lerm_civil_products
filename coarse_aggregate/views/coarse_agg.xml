@@ -99,62 +99,100 @@
                                 <th>Parameters</th>
                                 <th>Trial 1</th>
                                 <th>Trial 2</th>
-                                <th>Result</th>
+                                <!-- <th>Result</th> -->
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><span class="fw-bold">Weight of Sample in Water (A)</span></td>
-                                <td><field name="wt_sample_inwater"/></td>
-                                <td><field name="wt_sample_inwater_2"/></td>
-                                <td><field name="result_wt_sample_inwater"/></td>
-                            </tr>
-                            <tr>
-                                <td><span class="fw-bold">Weight of Surface Dry Sample (B)</span></td>
+                                <td><span class="fw-bold"> Weight of saturated aggregate suspended in water with the basket (Weight 'W1') (gm)</span></td>
                                 <td><field name="wt_surface_dry"/></td>
                                 <td><field name="wt_surface_dry_2"/></td>
-                                <td><field name="result_wt_surface_dry"/></td>
                             </tr>
                             <tr>
-                                <td><span class="fw-bold">Oven Dried Weight (C)</span></td>
-                                <td><field name="oven_dried_wt"/></td>
-                                <td><field name="oven_dried_wt_2"/></td>
-                                <td><field name="result_oven_dried_wt"/></td>
+                                <td><span class="fw-bold">Weight of basket suspended in water W2 (gm)</span></td>
+                                <td><field name="wt_sample_inwater"/></td>
+                                <td><field name="wt_sample_inwater_2"/></td>
                             </tr>
-                        </tbody>
-                    </table>
+                            <tr>
+                                <td><span class="fw-bold">Weight of saturated aggregate in water  W3 (gm)</span></td>
+                                <td><field name="wt_of_staturated"/></td>
+                                <td><field name="wt_of_staturated_2"/></td>
+                            </tr>
 
-                    <table class="table table-sm table-bordered custom_table_borders" invisible="not specific_gravity_visible">
-                        <tbody>
-                            <tr>
-                                <td><span class="fw-bold">Specific Gravity</span></td>
+                             <tr>
+                                <td><span class="fw-bold">Weight of saturated surface dry aggregate in air (gm)</span></td>
+                                <td><field name="wt_of_saturated_air"/></td>
+                                <td><field name="wt_of_saturated_air_2"/></td>
+                            </tr>
+
+                              <tr>
+                                <td><span class="fw-bold">Weight of saturated surface dry aggregate in oven dried  (gm)</span></td>
+                                <td><field name="wet_of_saturated_dried"/></td>
+                                <td><field name="wet_of_saturated_dried_2"/></td>
+                            </tr>
+
+                             <tr>
+                                <td><span class="fw-bold">Specific gravity (gm)</span></td>
                                 <td><field name="specific_gravity"/></td>
-                                <td>
-                                    <label class="fw-bold" for="specific_gravity_conformity">Specific Gravity Conformity</label>
-                                </td>
-                                <td>
-                                    <field name="specific_gravity_conformity"
-                                        decoration-success="specific_gravity_conformity == 'pass'" 
-                                        decoration-danger="specific_gravity_conformity == 'fail'" 
-                                        readonly="1"/>
-                                </td>
+                                <td><field name="specific_gravity_2"/></td>
                             </tr>
-                            <tr>
-                                <td><span class="fw-bold">Water Absorption</span></td>
+
+                             <tr>
+                                <td><span class="fw-bold">Apperant Specific gravity (gm)</span></td>
+                                <td><field name="apparent_specific_gravity"/></td>
+                                <td><field name="apparent_specific_gravity_2"/></td>
+                            </tr>
+
+                             <tr>
+                                <td><span class="fw-bold">Water absorption (gm)</span></td>
                                 <td><field name="water_absorption"/></td>
-                                <td>
-                                    <label class="fw-bold" for="specific_gravity_nabl">Specific Gravity NABL</label>
-                                </td>
-                                <td>
-                                    <field name="specific_gravity_nabl"
-                                        decoration-success="specific_gravity_nabl == 'pass'" 
-                                        decoration-danger="specific_gravity_nabl == 'fail'" 
-                                        readonly="1"/>
-                                </td>
+                                <td><field name="water_absorption_2"/></td>
                             </tr>
                         </tbody>
                     </table>
 
+                     <div class="d-flex gap-2" invisible="not specific_gravity_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_specific_gravity">Avg. Specific Gravity</label></td>
+                                    <td><field name="avg_specific_gravity"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="avg_water_absorption">Avg. Water absorption  %</label></td>
+                                    <td><field name="avg_water_absorption"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="avg_apparent_specific_gravity">Avg. Apparent Specific Gravity</label></td>
+                                    <td><field name="avg_apparent_specific_gravity"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                <td><label for="avg_specific_gravity_conformity">Specific Gravity Conformity</label></td>
+                                <td>
+                                    <field name="avg_specific_gravity_conformity"
+                                        decoration-success="avg_specific_gravity_conformity == 'pass'"
+                                        decoration-danger="avg_specific_gravity_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="avg_specific_gravity_nabl">Specific Gravity NABL</label></td>
+                                <td>
+                                    <field name="avg_specific_gravity_nabl" readonly="1"
+                                        decoration-success="avg_specific_gravity_nabl == 'pass'"
+                                        decoration-danger="avg_specific_gravity_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                   
                     <!-- Elongation and Flakiness  -->
                     <div class="text-center" invisible="not elongation_visible or not flakiness_visible">
                         <h1>
@@ -269,7 +307,7 @@
                 <table class="table table-sm table-bordered custom_table_borders" invisible="not loose_bulk_visible and not rodded_bulk_visible" style="white-space:nowrap;">
                     <tbody>
                         <tr>
-                            <td><label class="fw-bold" for="volume_of_bucket_loose">Volume of Bucket</label></td>
+                            <td><label class="fw-bold" for="volume_of_bucket_loose">Volume of Bucket (liter)</label></td>
                             <td><field name="volume_of_bucket_loose"/></td>
                             <td><span class="fw-bold">Loose Bulk Density Conformity</span></td>
                             <td>
@@ -280,7 +318,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><label class="fw-bold" for="weight_empty_bucket_loose">Weight of Empty Bucket</label></td>
+                            <td><label class="fw-bold" for="weight_empty_bucket_loose">Weight of Empty Bucket (Kg)</label></td>
                             <td><field name="weight_empty_bucket_loose"/></td>
                             <td><span class="fw-bold">Loose Bulk Density NABL Status</span></td>
                             <td>
@@ -290,8 +328,9 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><label class="fw-bold" for="sample_plus_bucket_rodded">Bucket + Compacted Aggregate</label></td>
-                            <td><field name="sample_plus_bucket_rodded"/></td>
+                            <td><label class="fw-bold" for="sample_plus_bucket_loose">Bucket + Loose Aggregate (Kg)</label></td>
+                           
+                             <td><field name="sample_plus_bucket_loose"/></td>
                             <td><span class="fw-bold">Rodded Bulk Density Conformity</span></td>
                             <td>
                                 <field name="rodded_bulk_density_conformity"
@@ -301,8 +340,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><label class="fw-bold" for="sample_plus_bucket_loose">Bucket + Loose Aggregate</label></td>
-                            <td><field name="sample_plus_bucket_loose"/></td>
+                            <td><label class="fw-bold" for="sample_plus_bucket_rodded">Bucket + Compacted Aggregate (Kg)</label></td>
+                            <td><field name="sample_plus_bucket_rodded"/></td>
                             <td><span class="fw-bold">Rodded Bulk Density NABL Status</span></td>
                             <td>
                                 <field name="rodded_bulk_density_nabl"
@@ -320,12 +359,12 @@
                             <td><label class="fw-bold" for="loose_bulk_density">Loose Bulk Density</label></td>
                             <td>
                                 <field name="loose_bulk_density" nolabel="1"/>
-                                <span>kg/cu.m</span>
+                                <span>kg/liter</span>
                             </td>
                             <td><label class="fw-bold" for="rodded_bulk_density">Rodded Bulk Density</label></td>
                             <td>
                                 <field name="rodded_bulk_density" nolabel="1"/>
-                                <span>kg/cu.m</span>
+                                <span>kg/liter</span>
                             </td>
                         </tr>
                     </tbody>
@@ -346,9 +385,9 @@
                             <tree editable="bottom">
                                 <field name='sample_no'/>
                                 <field name='total_wt_aggregate' style="white-space: wrap;" />
-                                <field name='wt_of_aggregate_retained' style="white-space: wrap;"/>
-                                <field name='wt_of_aggregate_passing' style="white-space: wrap;"/>
-                                <field name='impact_value'/>
+                                <field name='wt_of_aggregate_retained' style="white-space: wrap;" string="Wt of Stone Pieces Passing I.S Sieve 2.36 mm after the test ( W3)" />
+                                <field name='wt_of_aggregate_passing' style="white-space: wrap;"  string="Wt of Aggregate Retained on  I.S Sieve 2.36  mm after the test Gms (W2)"/>
+                                <field name='impact_value' string="Aggregate Impact value"/>
                             </tree>
                         </field> 
                     </div>
