@@ -1267,69 +1267,73 @@ class CoarseAggregateMechanical(models.Model):
 
 
    # Bulk Density
-    loose_bulk_density_name = fields.Char("Name",default="Bulk Density")
+    loose_bulk_density_name1 = fields.Char("Name",default="Loose Bulk Density")
     loose_bulk_visible = fields.Boolean("Loose Bulk Density Visible",compute="_compute_visible")
 
-    # loose_bulk_density_child_lines = fields.One2many('coarse.aggregate.loose.bulk.density.line','parent_id',string="Parameter")
-    volume_of_bucket_loose = fields.Float(string="Volume of Bucket, V (liter) ")
-    weight_empty_bucket_loose = fields.Float(string="Weight of Empty Bucket,M1 in (Kg)")
+    volume_of_cylender = fields.Float(string="Volume of measuring cylinder (v) (lit)")
+    weight_empty_cylender = fields.Float(string="Wt of empty measuring cylinder (A) (Kg)")
+    loose_measuring_cylender = fields.Float(string="Wt of loose aggregrage +measuring cylinder(B) (Kg)")
 
-    sample_weight_loose = fields.Float(string="Sample Weight in (kg",compute="_compute_sample_weight_loose")
-    loose_bulk_density = fields.Float(string="Loose Bulk Density (Kg)",compute="_compute_loose_bulk_density")
+    loose_bulk_density = fields.Float(string="Loose Bulk Density (Kg)",compute="_compute_loose_bulk_density",digits=(12,3))
 
-    sample_plus_bucket_loose = fields.Float(string="Bucket + Loose Aggregate (Kg)")
-    sample_plus_bucket_rodded = fields.Float(string="Bucket + Compacted Aggregate (Kg)")
-    
-    sample_weight_rodded = fields.Float(string="Sample Weight in ",compute="_compute_sample_weight_rodded")
-    rodded_bulk_density = fields.Float(string="Compacted Bulk Density ",compute="_compute_loose_bulk_density")
-
-
-
-    @api.depends('volume_of_bucket_loose', 'weight_empty_bucket_loose')
-    def _compute_sample_weight_loose(self):
-        for record in self:
-            record.sample_weight_loose = record.sample_plus_bucket_loose - record.weight_empty_bucket_loose
-            record.sample_weight_rodded = record.sample_plus_bucket_rodded - record.weight_empty_bucket_rodded
-    
-    # @api.depends('volume_of_bucket_loose', 'sample_plus_bucket_loose')
-    # def _compute_loose_bulk_density(self):
-    #     for record in self:
-    #         if record.volume_of_bucket_loose:
-    #             record.loose_bulk_density = round((record.sample_plus_bucket_loose-record.weight_empty_bucket_loose)/record.volume_of_bucket_loose,2)
-    #             record.rodded_bulk_density = round((record.sample_plus_bucket_rodded - record.weight_empty_bucket_loose)/record.volume_of_bucket_loose,2)
-    #         else:
-    #             record.loose_bulk_density = 0.0
-    #             record.rodded_bulk_density = 0.0
-
-    @api.depends('volume_of_bucket_loose', 'sample_plus_bucket_loose', 'sample_plus_bucket_rodded', 'weight_empty_bucket_loose')
+    @api.depends('loose_measuring_cylender', 'weight_empty_cylender', 'volume_of_cylender')
     def _compute_loose_bulk_density(self):
-        for record in self:
-            if record.volume_of_bucket_loose:
-                record.loose_bulk_density = round(
-                    (record.sample_plus_bucket_loose - record.weight_empty_bucket_loose) / record.volume_of_bucket_loose, 2
-                )
-                record.rodded_bulk_density = round(
-                    (record.sample_plus_bucket_rodded - record.weight_empty_bucket_loose) / record.volume_of_bucket_loose, 2
-                )
+        for rec in self:
+            if rec.volume_of_cylender > 0:
+                rec.loose_bulk_density = (rec.loose_measuring_cylender - rec.weight_empty_cylender) / rec.volume_of_cylender
             else:
-                record.loose_bulk_density = 0.0
-                record.rodded_bulk_density = 0.0
+                rec.loose_bulk_density = 0.0
 
 
-    loose_bulk_density_conformity = fields.Selection([
+    volume_of_cylender1 = fields.Float(string="Volume of measuring cylinder (v) (lit)")
+    weight_empty_cylender1 = fields.Float(string="Wt of empty measuring cylinder (A) (Kg)")
+    loose_measuring_cylender1 = fields.Float(string="Wt of loose aggregrage +measuring cylinder(B) (Kg)")
+
+    loose_bulk_density1 = fields.Float(string="Loose Bulk Density (Kg)",compute="_compute_loose_bulk_density1",digits=(12,3))
+
+    @api.depends('loose_measuring_cylender1', 'weight_empty_cylender1', 'volume_of_cylender1')
+    def _compute_loose_bulk_density1(self):
+        for rec in self:
+            if rec.volume_of_cylender1 > 0:
+                rec.loose_bulk_density1 = (rec.loose_measuring_cylender1 - rec.weight_empty_cylender1) / rec.volume_of_cylender1
+            else:
+                rec.loose_bulk_density1 = 0.0
+
+    avg_bulk_density = fields.Float(string="Avg loose density (Kg/lit)",compute="_compute_avg_bulk_density",digits=(12,3))
+
+    # Average
+    @api.depends('loose_bulk_density', 'loose_bulk_density1')
+    def _compute_avg_bulk_density(self):
+        for rec in self:
+            if rec.loose_bulk_density and rec.loose_bulk_density1:
+                rec.avg_bulk_density = (rec.loose_bulk_density + rec.loose_bulk_density1) / 2
+            else:
+                rec.avg_bulk_density = 0.0
+
+    
+
+
+   
+
+    
+    avg_bulk_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Loose Bulk Conformity", compute="_compute_loose_bulk_density_conformity", store=True)
+            ('fail', 'Fail')], string="Loose Bulk Conformity", compute="_compute_avg_bulk_density_conformity", store=True)
+    
 
-    rodded_bulk_density_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Compacted Bulk Conformity", compute="_compute_loose_bulk_density_conformity", store=True)
+    avg_bulk_density_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="Loose Bulk NABL", compute="_compute_avg_bulk_density_nabl", store=True)
 
 
-    @api.depends('sample_plus_bucket_loose','sample_plus_bucket_rodded','eln_ref','grade')
-    def _compute_loose_bulk_density_conformity(self):
+    
+
+   
+    @api.depends('avg_bulk_density','eln_ref','grade')
+    def _compute_avg_bulk_density_conformity(self):
         
         for record in self:
-            record.loose_bulk_density_conformity = 'fail'
+            record.avg_bulk_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')]).parameter_table
             for material in materials:
@@ -1338,48 +1342,19 @@ class CoarseAggregateMechanical(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.loose_bulk_density - record.loose_bulk_density*mu_value
-                    upper = record.loose_bulk_density + record.loose_bulk_density*mu_value
+                    lower = record.avg_bulk_density - record.avg_bulk_density*mu_value
+                    upper = record.avg_bulk_density + record.avg_bulk_density*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.loose_bulk_density_conformity = 'pass'
+                        record.avg_bulk_density_conformity = 'pass'
                         break
                     else:
-                        record.loose_bulk_density_conformity = 'fail'
+                        record.avg_bulk_density_conformity = 'fail'
 
-        # for record in self:
-            record.rodded_bulk_density_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')]).parameter_table
-            for material in materials:
-                # if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.rodded_bulk_density - record.rodded_bulk_density*mu_value
-                    upper = record.rodded_bulk_density + record.rodded_bulk_density*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.rodded_bulk_density_conformity = 'pass'
-                        break
-                    else:
-                        record.rodded_bulk_density_conformity = 'fail'
-
-
-    loose_bulk_density_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Loose Bulk NABL", compute="_compute_loose_bulk_density_nabl", store=True)
-
-    rodded_bulk_density_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Compacted Bulk NABL", compute="_compute_loose_bulk_density_nabl", store=True)
-
-
-
-    @api.depends('sample_plus_bucket_loose','sample_plus_bucket_rodded','eln_ref','grade')
-    def _compute_loose_bulk_density_nabl(self):
+    @api.depends('avg_bulk_density','eln_ref','grade')
+    def _compute_avg_bulk_density_nabl(self):
         
         for record in self:
-            record.loose_bulk_density_nabl = 'fail'
+            record.avg_bulk_density_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')]).parameter_table
             # for material in materials:
@@ -1388,16 +1363,92 @@ class CoarseAggregateMechanical(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.loose_bulk_density - record.loose_bulk_density*mu_value
-            upper = record.loose_bulk_density + record.loose_bulk_density*mu_value
+            lower = record.avg_bulk_density - record.avg_bulk_density*mu_value
+            upper = record.avg_bulk_density + record.avg_bulk_density*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.loose_bulk_density_nabl = 'pass'
+                record.avg_bulk_density_nabl = 'pass'
                 break
             else:
-                record.loose_bulk_density_nabl = 'fail'
+                record.avg_bulk_density_nabl = 'fail'
 
-        # for record in self:
-            record.rodded_bulk_density_nabl = 'fail'
+
+       # Bulk Density
+    compacted_density_name1 = fields.Char("Name",default="Compacted Density ")
+    compacted_density_visible = fields.Boolean("compacted density  Visible",compute="_compute_visible")
+
+    wt_of_compact = fields.Float(string="Wt of compacted aggregrage +measuring cylinder(C) (Kg)")
+    compact_bulk = fields.Float(string="Compacted bulk density= (C-A)/V)) (Kg)",compute="_compute_compact_bulk",digits=(12,3))
+
+    @api.depends('wt_of_compact', 'weight_empty_cylender', 'volume_of_cylender')
+    def _compute_compact_bulk(self):
+        for rec in self:
+            if rec.volume_of_cylender and rec.wt_of_compact and rec.weight_empty_cylender:
+                rec.compact_bulk = (rec.wt_of_compact - rec.weight_empty_cylender) / rec.volume_of_cylender
+            else:
+                rec.compact_bulk = 0.0
+
+    
+
+    wt_of_compact1 = fields.Float(string="Wt of compacted aggregrage +measuring cylinder(C) (Kg)")
+    compact_bulk1 = fields.Float(string="Compacted bulk density= (C-A)/V)) (Kg)",compute="_compute_compact_bulk1",digits=(12,3))
+
+    @api.depends('wt_of_compact1', 'weight_empty_cylender1', 'volume_of_cylender1')
+    def _compute_compact_bulk1(self):
+        for rec in self:
+            if rec.volume_of_cylender1 and rec.wt_of_compact1 and rec.weight_empty_cylender1:
+                rec.compact_bulk1 = (rec.wt_of_compact1 - rec.weight_empty_cylender1) / rec.volume_of_cylender1
+            else:
+                rec.compact_bulk1 = 0.0
+
+    avg_compacted = fields.Float(string="Avg Compacted Density (Kg)",compute="_compute_avg_compacted",digits=(12,3))
+
+    # Average
+    @api.depends('compact_bulk', 'compact_bulk1')
+    def _compute_avg_compacted(self):
+        for rec in self:
+            if rec.compact_bulk and rec.compact_bulk1:
+                rec.avg_compacted = (rec.compact_bulk + rec.compact_bulk1) / 2
+            else:
+                rec.avg_compacted = 0.0
+
+
+       
+
+   
+    avg_compacted_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="Compacted Bulk NABL", compute="_compute_avg_compacted_nabl", store=True)
+
+    avg_compacted_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Compacted Bulk Conformity", compute="_compute_avg_compacted_conformity", store=True)
+
+    @api.depends('avg_compacted','eln_ref','grade')
+    def _compute_avg_compacted_conformity(self):
+        
+        for record in self:
+            record.avg_compacted_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_compacted - record.avg_compacted*mu_value
+                    upper = record.avg_compacted + record.avg_compacted*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_compacted_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_compacted_conformity = 'fail'
+
+    @api.depends('avg_compacted','eln_ref','grade')
+    def _compute_avg_compacted_nabl(self):
+        
+        for record in self:
+            record.avg_compacted_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')]).parameter_table
             # for material in materials:
@@ -1406,16 +1457,33 @@ class CoarseAggregateMechanical(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.rodded_bulk_density - record.rodded_bulk_density*mu_value
-            upper = record.rodded_bulk_density + record.rodded_bulk_density*mu_value
+            lower = record.avg_compacted - record.avg_compacted*mu_value
+            upper = record.avg_compacted + record.avg_compacted*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.rodded_bulk_density_nabl = 'pass'
+                record.avg_compacted_nabl = 'pass'
                 break
             else:
-                record.rodded_bulk_density_nabl = 'fail'
+                record.avg_compacted_nabl = 'fail'
 
-    rodded_bulk_density_name = fields.Char("Name",default="Rodded Bulk Density (RBD)")
-    rodded_bulk_visible = fields.Boolean("Rodded Bulk Density Visible",compute="_compute_visible")
+
+    specific_gravity1  = fields.Float(string="Specific Gravity")
+    voids_ratio = fields.Float(
+        string="Voids Ratio (%)",
+        compute="_compute_voids_ratio",
+        store=True,
+        digits=(12, 2)
+    )
+
+    @api.depends('specific_gravity1', 'avg_bulk_density')
+    def _compute_voids_ratio(self):
+        for rec in self:
+            if rec.specific_gravity1:
+                rec.voids_ratio = ((rec.specific_gravity1 - rec.avg_bulk_density) / rec.specific_gravity1) * 100
+            else:
+                rec.voids_ratio = 0.0
+      
+
+    
 
     # Sieve Analysis 
     weight_of_sample = fields.Float(string="Weight of Sample in kg")
@@ -1732,7 +1800,7 @@ class CoarseAggregateMechanical(models.Model):
             record.clay_lump_visible = False
             record.light_weight_visible = False
             record.loose_bulk_visible = False
-            record.rodded_bulk_visible = False
+            record.compacted_density_visible = False
             record.sieve_visible = False
             record.aggregate_grading_visible = False
             record.angularity_visible = False
@@ -1776,7 +1844,7 @@ class CoarseAggregateMechanical(models.Model):
                 if sample.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
                     record.loose_bulk_visible = True
                 if sample.internal_id == '357f579d-a310-4015-bc11-28a85c53ac83':
-                    record.rodded_bulk_visible = True
+                    record.compacted_density_visible = True
                 if sample.internal_id == 'c2168fff-e47c-4155-99ff-9d7dc223e768':
                     record.sieve_visible = True
                 if sample.internal_id == '6976f6b5-5756-4ef7-a680-50b0c0dbccc8':
@@ -1808,8 +1876,8 @@ class CoarseAggregateMechanical(models.Model):
 
             # Loose bulk
             if result.parameter.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
-                result.result_char = round(self.loose_bulk_density,2)
-                if self.loose_bulk_density_conformity == 'pass':
+                result.result_char = round(self.avg_bulk_density,2)
+                if self.avg_bulk_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -1817,8 +1885,8 @@ class CoarseAggregateMechanical(models.Model):
 
             # rodded bulk
             if result.parameter.internal_id == '357f579d-a310-4015-bc11-28a85c53ac83':
-                result.result_char = round(self.rodded_bulk_density,2)
-                if self.rodded_bulk_density_conformity == 'pass':
+                result.result_char = round(self.avg_compacted,2)
+                if self.avg_compacted_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2084,157 +2152,7 @@ class SieveAnalysisLine(models.Model):
        
 
 
-# class LooseBulkDensityLine(models.Model):
-#     _name = "coarse.aggregate.loose.bulk.density.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
-    # weight_empty_bucket = fields.Float(string="Weight of Empty Bucket in kg")
-    # volume_of_bucket = fields.Float(string="Volume of Bucket in cubic meter")
-    # sample_plus_bucket = fields.Float(string="[Sample Weight + Bucket  Weight] in kg")
-    # sample_weight = fields.Float(string="Sample Weight in kg",compute="_compute_sample_weight")
-    # loose_bulk_density = fields.Float(string="Loose Bulk Density in kg per cubic meter",compute="_compute_loose_bulk_density")
 
-
-    # @api.depends('sample_plus_bucket', 'weight_empty_bucket')
-    # def _compute_sample_weight(self):
-    #     for record in self:
-    #         record.sample_weight = record.sample_plus_bucket - record.weight_empty_bucket
-
-    
-
-    # @api.depends('sample_weight', 'volume_of_bucket')
-    # def _compute_loose_bulk_density(self):
-    #     for record in self:
-    #         if record.volume_of_bucket:
-    #             record.loose_bulk_density = record.sample_weight / record.volume_of_bucket
-    #         else:
-    #             record.loose_bulk_density = 0.0
-
-
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('sr_no'))
-    #             vals['sr_no'] = max_serial_no + 1
-
-    #     return super(LooseBulkDensityLine, self).create(vals)
-
-    # def _reorder_serial_numbers(self):
-    #     # Reorder the serial numbers based on the positions of the records in child_lines
-    #     records = self.sorted('id')
-    #     for index, record in enumerate(records):
-    #         record.sr_no = index + 1
-
-class RoddedBulkDensityLine(models.Model):
-    _name = "coarse.aggregate.rodded.bulk.density.line"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-    sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
-    weight_empty_bucket = fields.Float(string="Weight of Empty Bucket in kg")
-    volume_of_bucket = fields.Float(string="Volume of Bucket in cubic meter")
-    sample_plus_bucket = fields.Float(string="[Sample Weight + Bucket  Weight] in kg")
-    sample_weight = fields.Float(string="Sample Weight in kg",compute="_compute_sample_weight")
-    rodded_bulk_density = fields.Float(string="Rodded Bulk Density in kg per cubic meter",compute="_compute_roddede_bulk_density")
-
-
-    @api.depends('sample_plus_bucket', 'weight_empty_bucket')
-    def _compute_sample_weight(self):
-        for record in self:
-            record.sample_weight = record.sample_plus_bucket - record.weight_empty_bucket
-
-    
-
-    @api.depends('sample_weight', 'volume_of_bucket')
-    def _compute_roddede_bulk_density(self):
-        for record in self:
-            if record.volume_of_bucket:
-                record.rodded_bulk_density = record.sample_weight / record.volume_of_bucket
-            else:
-                record.rodded_bulk_density = 0.0
-
-
-
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('sr_no'))
-    #             vals['sr_no'] = max_serial_no + 1
-
-    #     return super(RoddedBulkDensityLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.sr_no = index + 1
-
-# class ElongationIndexLine(models.Model):
-#     _name = "mechanical.elongation.index.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Sr No", readonly=True, copy=False, default=1)
-#     sieve_size = fields.Char(string="I.S Sieve Size")
-#     wt_retained = fields.Integer(string="Wt Retained (in gms)")
-#     elongated_retain = fields.Float(string="Elongated Retained (in gms)")
-#     # flaky_passing = fields.Float(string="Flaky Passing (in gms)")
-    
-
-    
-
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('sr_no'))
-#                 vals['sr_no'] = max_serial_no + 1
-
-#         return super(ElongationIndexLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.sr_no = index + 1
-
-# class FlakinessIndexLine(models.Model):
-#     _name = "mechanical.flakiness.index.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Sr No", readonly=True, copy=False, default=1)
-#     sieve_size = fields.Char(string="I.S Sieve Size")
-#     wt_retained = fields.Integer(string="Wt Retained (in gms)")
-#     # elongated_retain = fields.Float(string="Elongated Retained (in gms)")
-#     flaky_passing = fields.Float(string="Flaky Passing (in gms)")
-    
-
-    
-
-   
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('sr_no'))
-#                 vals['sr_no'] = max_serial_no + 1
-
-#         return super(FlakinessIndexLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.sr_no = index + 1
 
 class ElongationFlacnessLine(models.Model):
     _name = "mechanical.elongation.flakiness.line"
