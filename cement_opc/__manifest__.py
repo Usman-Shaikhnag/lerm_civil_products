@@ -15,13 +15,8 @@ This module contains all the common features of Sales Management and eCommerce.
                 'security/ir.model.access.csv',
                 'views/opc.xml',
                 'reports/opc_ds_report.xml'
-    ],
-    'assets': {
-        'web.assets_backend': [
-            'cement_opc/static/src/css/custom_style.css',
-        ],
-    },
-  
+    ],  
+
     'installable': True,
     'auto_install': False,
    
