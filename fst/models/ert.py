@@ -1,7 +1,6 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import math
-from docx import Document
 
 
 class LermErtParent(models.Model):
