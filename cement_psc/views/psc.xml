@@ -379,6 +379,47 @@
                         </h1>
                     </div>
 
+                     <div class="d-flex" style="gap:10px; margin-bottom:20px; align-items:stretch;"  invisible="not initial_setting_time_visible or not final_setting_time_visible">
+
+                        <!-- Left side -->
+                       <div style="width:50%; text-align:center;" class="equal-box">
+                            <div class="o_form_label"
+                                style="font-weight:bold; background:#f0f0f0; padding:6px; margin-bottom:0; border:1px solid #ccc; border-bottom:0;">
+                                Initial Setting Time
+                            </div>
+                            <field name="intial_time_lines" class="custom_table_borders" style="margin-top:0; margin-bottom:0; width:100%;">
+                                <tree editable="bottom">
+                                    <field name="serial_no"/>
+                                    <field name="clock_time" />
+                                    <field name="penetration_intial"/>
+                                </tree>
+                            </field>
+                        </div>
+
+
+                  
+
+
+                        <!-- Right side -->
+
+                         <div style="width:50%; text-align:center;" class="equal-box">
+                            <div class="o_form_label"
+                                style="font-weight:bold; background:#f0f0f0; padding:6px; margin-bottom:0; border:1px solid #ccc; border-bottom:0;">
+                              Final Setting Time
+                            </div>
+                            <field name="final_time_lines" class="custom_table_borders" style="margin-top:0; margin-bottom:0; width:100%;">
+                                <tree editable="bottom">
+                                    <field name="serial_no"/>
+                                    <field name="clock_time1" />
+                                    <field name="impression_intial1"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                       
+
+                    </div>
+
                     <div class="d-flex gap-2 align-items-start" style="width:100%;">
     
                             <!-- Initial Setting Time Table -->
