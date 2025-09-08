@@ -17,6 +17,8 @@ This module contains all the common features of Sales Management and eCommerce.
                 'reports/opc_ds_report.xml'
     ],  
 
+
+
     'installable': True,
     'auto_install': False,
    
