@@ -2269,11 +2269,19 @@ class ImpactValueLine(models.Model):
 
 
 
+    # @api.depends('wt_of_aggregate_passing', 'total_wt_aggregate')
+    # def _compute_impact_value(self):
+    #     for rec in self:
+    #         if rec.total_wt_aggregate != 0:
+    #             rec.impact_value = (rec.wt_of_aggregate_passing / rec.total_wt_aggregate) * 100
+    #         else:
+    #             rec.impact_value = 0.0
+
     @api.depends('wt_of_aggregate_passing', 'total_wt_aggregate')
     def _compute_impact_value(self):
         for rec in self:
             if rec.total_wt_aggregate != 0:
-                rec.impact_value = (rec.wt_of_aggregate_passing / rec.total_wt_aggregate) * 100
+                rec.impact_value = (rec.wt_of_aggregate_retained / rec.total_wt_aggregate) * 100
             else:
                 rec.impact_value = 0.0
 
