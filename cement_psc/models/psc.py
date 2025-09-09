@@ -1542,7 +1542,19 @@ class InitialTimeLine(models.Model):
    
     
     clock_time = fields.Datetime(string="Date & Time")
+    time_in_minutes = fields.Char("Time In minutes",compute="_compute_time_in_minutes",store=True)
     penetration_intial = fields.Float(string="Penetration Of Needle")
+
+    @api.depends('clock_time', 'parent_id.intial_time_lines.clock_time')
+    def _compute_time_in_minutes(self):
+      
+        for rec in self:
+            rec.time_in_minutes = 0.0
+            if rec.parent_id:
+                first_line = rec.parent_id.intial_time_lines.sorted('serial_no')[:1]
+                if first_line and first_line.clock_time and rec.clock_time:
+                    diff = (rec.clock_time - first_line.clock_time).total_seconds() / 60.0
+                    rec.time_in_minutes = round(diff, 2)
 
     
 
@@ -1579,7 +1591,20 @@ class FinalTimeLine(models.Model):
    
     
     clock_time1 = fields.Datetime(string="Date & Time")
+    time_in_minutes1 = fields.Char("Time In minutes",compute="_compute_time_in_minutes1",store=True)
     impression_intial1 = fields.Float(string="Impression Of Needle")
+
+    @api.depends('clock_time1', 'parent_id.intial_time_lines.clock_time')
+    def _compute_time_in_minutes1(self):
+      
+        for rec in self:
+            rec.time_in_minutes1 = 0.0
+            if rec.parent_id:
+                init_first = rec.parent_id.intial_time_lines.sorted('serial_no')[:1]
+                if init_first and init_first.clock_time and rec.clock_time1:
+                    diff = (rec.clock_time1 - init_first.clock_time).total_seconds() / 60.0
+                    rec.time_in_minutes1 = round(diff, 2)
+
 
     
 
