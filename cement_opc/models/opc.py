@@ -413,6 +413,12 @@ class CementNormalConsistency(models.Model):
 
      ### setting Time,Final Setting Time	
 
+    setting_time_name = fields.Char("Name", default="Setting Time")
+
+    intial_time_lines = fields.One2many('initial.time.line','parent_id',string="Initial Time")
+
+    final_time_lines = fields.One2many('final.time.line','parent_id',string="Initial Time")
+
     initial_setting_time_visible = fields.Boolean("Initial Setting Time Visible",compute="_compute_visible")
     initial_setting_time_name = fields.Char("Name",default="Initial Setting Time")
 
@@ -431,12 +437,23 @@ class CementNormalConsistency(models.Model):
 
     #Initial setting Time
 
-    setting_time_name = fields.Char("Name", default="Setting Time")
-    time_water_added = fields.Datetime("The Time When water is added to cement (t1)")
-    time_needle_fails = fields.Datetime("The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)")
+    
+    time_water_added = fields.Datetime("The Time When water is added to cement (t1)",compute="_compute_initial_times",store=True)
+    time_needle_fails = fields.Datetime("The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)",compute="_compute_initial_times",store=True)
     initial_setting_time_hours = fields.Char("Initial Setting Time (t2-t1) (Hours)", compute="_compute_initial_setting_time")
     initial_setting_time_minutes = fields.Integer("Initial Setting Time Rounded", compute="_compute_initial_setting_time")
     initial_setting_time_minutes_unrounded = fields.Char("Initial Setting Time",compute="_compute_initial_setting_time")
+
+    @api.depends("intial_time_lines.clock_time", "intial_time_lines.serial_no")
+    def _compute_initial_times(self):
+        for rec in self:
+            if rec.intial_time_lines:
+                sorted_lines = rec.intial_time_lines.sorted("serial_no")
+                rec.time_water_added = sorted_lines[0].clock_time if sorted_lines else False
+                rec.time_needle_fails = sorted_lines[-1].clock_time if sorted_lines else False
+            else:
+                rec.time_water_added = False
+                rec.time_needle_fails = False
 
     initial_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -522,10 +539,20 @@ class CementNormalConsistency(models.Model):
     final_setting_time_visible = fields.Boolean("Final Setting Time Visible",compute="_compute_visible")
     final_setting_time_name = fields.Char("Name",default="Final Setting Time")
 
-    time_needle_make_impression = fields.Datetime("The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)")
-    final_setting_time_hours = fields.Char("Final Setting Time (t2-t1) (Hours)",compute="_compute_final_setting_time")
+    time_needle_make_impression = fields.Datetime("The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)",compute="_compute_final_time",store=True)
+    final_setting_time_hours = fields.Char("Final Setting Time (t3-t1) (Hours)",compute="_compute_final_setting_time")
     final_setting_time_minutes_unrounded = fields.Char("Final Setting Time",compute="_compute_final_setting_time")
     final_setting_time_minutes = fields.Char("Final Setting Time Rounded",compute="_compute_final_setting_time")
+
+    @api.depends("final_time_lines.clock_time1", "final_time_lines.serial_no")
+    def _compute_final_time(self):
+        for rec in self:
+            if rec.final_time_lines:
+                # Sort lines by serial_no
+                sorted_lines = rec.final_time_lines.sorted("serial_no")
+                rec.time_needle_make_impression = sorted_lines[-1].clock_time1
+            else:
+                rec.time_needle_make_impression = False
 
     final_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -1387,6 +1414,80 @@ class CompressiveCementLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+class InitialTimeLine(models.Model):
+    _name = "initial.time.line"
+    parent_id = fields.Many2one('cement.opc',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
+
+   
+    
+    clock_time = fields.Datetime(string="Date & Time")
+    penetration_intial = fields.Float(string="Penetration Of Needle")
+
+    
+
+
+    
+
+   
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(InitialTimeLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class FinalTimeLine(models.Model):
+    _name = "final.time.line"
+    parent_id = fields.Many2one('cement.opc',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
+
+   
+    
+    clock_time1 = fields.Datetime(string="Date & Time")
+    impression_intial1 = fields.Float(string="Impression Of Needle")
+
+    
+
+
+    
+
+   
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(FinalTimeLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+    
     
 
    
