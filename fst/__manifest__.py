@@ -15,6 +15,7 @@
                  'views/ert.xml',
                  'views/soil_resistivity.xml',
                  'data/sequence.xml',
+                 'reports/soil_resistivity_report_docx.xml',
                  'security/ir.model.access.csv',
 
     ],

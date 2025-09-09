@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Attachment for py3o template -->
+    <record id="soil_resistivity_template" model="ir.attachment">
+        <field name="name">soil_resistivity.odt</field>
+        <field name="datas" type="base64" file="fst/reports/soil_resistivity.odt"/>
+        <field name="res_model">ir.actions.report</field>
+        <field name="res_id" ref="soil_resistivity_report_py3o"/>
+        <field name="type">binary</field>
+        <field name="mimetype">application/vnd.oasis.opendocument.text</field>
+    </record>
+
+	<record id="soil_resistivity_report_py3o" model="ir.actions.report">
+        <field name="name">Soil Resistivity docx</field>
+        <field name="type">ir.actions.report</field>
+        <field name="model">ert.soil.resistivity</field>
+        <field name="report_name">soil_resistivity</field>
+        <field name="report_type">py3o</field>
+        <field name="py3o_filetype">docx</field>
+        <field name="module">fst</field>
+        <field name="py3o_template_fallback">reports/soil_resistivity.odt</field>
+        <field name="print_report_name">'soil_resistivity-demo'</field>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
