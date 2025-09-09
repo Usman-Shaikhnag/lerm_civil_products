@@ -21,7 +21,8 @@ class LermErtParent(models.Model):
                 'default_ert_parent_id':self.id
             }
         }
-    
+
+
     
 
 class LermErtLines(models.Model):

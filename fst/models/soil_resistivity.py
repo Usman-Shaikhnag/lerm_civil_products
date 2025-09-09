@@ -189,7 +189,7 @@ class ERTSoilResistivity(models.Model):
 
     ert_point = fields.Char(string="ERT POINT NO")
     factor_multiplied = fields.Float(
-        string="Factor Multiply"    )
+        string="Multiplication Factor"    )
 
     temperature_site = fields.Char(string="Temperature At Site :")
     last_weather = fields.Char(string="Last 2 Days Weather :")
