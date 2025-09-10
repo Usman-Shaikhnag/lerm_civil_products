@@ -7,8 +7,9 @@ class LermErtParent(models.Model):
     _name = "lerm.ert.parent"
     _rec_name = "name"
 
-    name = fields.Char("Name")
+    name = fields.Char("Project Name")
     ert_lines = fields.One2many('ert.lines','parent_id',"ERT Lines")
+    rec_date  = fields.Date("Date")
 
     def create_ert(self):
         
@@ -21,6 +22,9 @@ class LermErtParent(models.Model):
                 'default_ert_parent_id':self.id
             }
         }
+
+    def print_report(self):
+        pass
 
 
     

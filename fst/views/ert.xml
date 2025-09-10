@@ -11,7 +11,7 @@
                     <sheet>
                         <group>
                             <field name="name" />
-                            
+                            <field name="rec_date"/>
                         </group>
 
                         
@@ -25,12 +25,36 @@
                         <field name="ert_lines" readonly="1">
                             <tree editable="bottom">
                                 <field name="soil_resistivity_id" widget="many2one" options="{'no_open': False}"/>
+                                <field name="create_date" readonly="1"/>
                             </tree>
                         </field>
                     
                     
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record id="action_print_report" model="ir.actions.server">
+            <field name="name">Print Report</field>
+            <field name="model_id" ref="model_lerm_ert_parent"/>   <!-- your model -->
+            <field name="binding_model_id" ref="model_lerm_ert_parent"/>  <!-- bind to model -->
+            <field name="binding_view_types">list</field>   <!-- will appear in Action menu of tree view -->
+            <field name="state">code</field>
+            <field name="code">records.print_report()</field>
+        </record>
+
+        <record id="ert_parent_tree_view" model="ir.ui.view">
+            <field name="name">lerm.ert.parent.tree</field>
+            <field name="model">lerm.ert.parent</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <!-- <header>
+                        <button type="object" class="oe_highlight" name="print_report"  string="Print Report" />
+                    </header> -->
+                    <field name='name'/>
+                    <field name="rec_date" optional="show" />
+                </tree>
             </field>
         </record>
         
