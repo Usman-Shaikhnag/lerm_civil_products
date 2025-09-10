@@ -187,14 +187,15 @@ class ERTSoilResistivity(models.Model):
 
         
 
-    ert_point = fields.Char(string="ERT POINT NO")
+    ert_point = fields.Char(string="ERT")
     factor_multiplied = fields.Float(
         string="Multiplication Factor"    )
 
-    temperature_site = fields.Char(string="Temperature At Site :")
-    last_weather = fields.Char(string="Last 2 Days Weather :")
-    voltage = fields.Char(string="Voltage :")
-    present_weather = fields.Char(string="Present Weather :")
+    temperature_site = fields.Char(string="Temperature At Site")
+    last_weather = fields.Char(string="Last 2 Days Weather")
+    current = fields.Char(string="Current")
+    voltage = fields.Char(string="Voltage")
+    present_weather = fields.Char(string="Present Weather")
 
     pin_line_ids = fields.One2many("ert.soil.resistivity.pin.line", "parent_id", string="Resistivity Table")
 
