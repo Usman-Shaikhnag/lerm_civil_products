@@ -21,7 +21,7 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'static/src/css/custom_style.css',
+            'fst/static/src/css/custom_style.css',
         ],
     },
   
