@@ -24,10 +24,12 @@ class LermErtParent(models.Model):
         }
 
     def print_report(self):
-        pass
+        soil_resistivity_records = self.mapped("ert_lines.soil_resistivity_id")
+        if not soil_resistivity_records:
+            return
+        return self.env.ref("fst.soil_resistivity_report_py3o").report_action(soil_resistivity_records.ids,docids=soil_resistivity_records.ids,
+        data=None, config=False)
 
-
-    
 
 class LermErtLines(models.Model):
     _name = "ert.lines"  

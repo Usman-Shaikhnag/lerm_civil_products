@@ -19,6 +19,11 @@
                  'security/ir.model.access.csv',
 
     ],
+    'assets': {
+        'web.assets_backend': [
+            'static/src/css/custom_style.css',
+        ],
+    },
   
     'installable': True,
     'auto_install': False,
