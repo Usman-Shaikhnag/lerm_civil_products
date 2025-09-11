@@ -55,7 +55,9 @@ class ERTSoilResistivity(models.Model):
             'res_id': self.ert_parent_id.id,
             
         }
-
+    
+    def action_print_soil_resistivity_report(self):
+        return self.env.ref('fst.soil_resistivity_report_py3o').report_action(self)
 
     # def button_add_footer(self):
     #     for rec in self:
