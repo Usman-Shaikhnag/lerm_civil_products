@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 
 class PaverBlock(models.Model):
-    _name = "mechanical.paver.block.ssl"
+    _name = "mechanical.paver.block"
     _inherit = "lerm.eln"
     _rec_name = "name_paver"
 
@@ -34,12 +34,19 @@ class PaverBlock(models.Model):
     paver_name = fields.Char("Name",default=" Plan Area")
     paver_visible = fields.Boolean("Plan Area Visible",compute="_compute_visible")
 
-    thickness2 = fields.Float(string="Thickness of Paver Block:",compute="_compute_thickness2")
+    thickness2 = fields.Float(string="Thickness of Paver Block:")
 
-    @api.depends('size_id')
-    def _compute_thickness2(self):
-        for rec in self:
-            rec.thickness2 = rec.size_id.size if rec.size_id and rec.size_id.size else 0.0
+    correction_factore = fields.Float(string=" Correction Factor")
+
+    # @api.depends('size_id')
+    # def _compute_thickness2(self):
+    #     for rec in self:
+    #         rec.thickness2 = rec.size_id.size if rec.size_id and rec.size_id.size else 0.0
+
+    @api.onchange('size_id')
+    def _onchange_size_id(self):
+        if self.size_id:
+            self.thickness2 = self.size_id.size
 
     gms1 = fields.Float(string="Gms:")
     n1 = fields.Float(string="N:",digits=(12,6))
@@ -111,19 +118,19 @@ class PaverBlock(models.Model):
                     else:
                         record.area_paver_nabl = 'fail'
 
-    thickness_child_lines = fields.One2many('paver.thickness.ssl.line','parent_id',string="Thickness",default=lambda self: self._default_thickness_child_lines())
+    # thickness_child_lines = fields.One2many('paver.thickness.line','parent_id',string="Thickness",default=lambda self: self._default_thickness_child_lines())
 
 
-    @api.model
-    def _default_thickness_child_lines(self):
-        default_lines = [
-            (0, 0, {'thickness1': 50, 'Correction_factore': 1.03}),
-            (0, 0, {'thickness1': 60, 'Correction_factore': 1.06}),
-            (0, 0, {'thickness1': 80, 'Correction_factore': 1.18}),
-            (0, 0, {'thickness1': 100, 'Correction_factore': 1.24}),
-            (0, 0, {'thickness1': 120, 'Correction_factore': 1.34}),
-        ]
-        return default_lines
+    # @api.model
+    # def _default_thickness_child_lines(self):
+    #     default_lines = [
+    #         (0, 0, {'thickness1': 50, 'Correction_factore': 1.03}),
+    #         (0, 0, {'thickness1': 60, 'Correction_factore': 1.06}),
+    #         (0, 0, {'thickness1': 80, 'Correction_factore': 1.18}),
+    #         (0, 0, {'thickness1': 100, 'Correction_factore': 1.24}),
+    #         (0, 0, {'thickness1': 120, 'Correction_factore': 1.34}),
+    #     ]
+    #     return default_lines
 
     @api.depends('gms1', 'gms2')
     def _compute_mass_values(self):
@@ -147,10 +154,10 @@ class PaverBlock(models.Model):
     water_absorption_name = fields.Char("Name",default="Water Absorption ")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
 
-    water_absorption_child_lines = fields.One2many('paver.water.absorption.ssl.line','parent_id',string="Water Line")
+    water_absorption_child_lines = fields.One2many('paver.water.absorption.line','parent_id',string="Water Line")
 
     avg_water_absorption = fields.Float(
-        string="Avg. Water Absorption (%)",
+        string="Avg. Water Absorption ",
         compute="_compute_avg_water_absorption", store=True
     )
 
@@ -218,10 +225,10 @@ class PaverBlock(models.Model):
     commpressive_name = fields.Char("Name",default="Compressive Strength")
     commpressive_visible = fields.Boolean("Plan Area Visible",compute="_compute_visible")
 
-    commpressive_child_lines = fields.One2many('paver.compressive.ssl.line','parent_id',string="Compressive Line")
+    commpressive_child_lines = fields.One2many('paver.compressive.line','parent_id',string="Compressive Line")
 
     avg_commpressive = fields.Float(
-        string="Avg. Compressive Strength (N/mm2)",compute="_compute_avg_commpressive")
+        string="Avg. Compressive Strength ",compute="_compute_avg_commpressive")
 
     avg_commpressive_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -461,7 +468,7 @@ class PaverBlock(models.Model):
 
 
     def get_all_fields(self):
-        record = self.env['mechanical.paver.block.ssl'].browse(self.ids[0])
+        record = self.env['mechanical.paver.block'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -482,11 +489,11 @@ class PaverBlock(models.Model):
 
 
 class WaterLine(models.Model):
-    _name = "paver.water.absorption.ssl.line"
-    parent_id = fields.Many2one('mechanical.paver.block.ssl',string="Parent Id")
+    _name = "paver.water.absorption.line"
+    parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    sample_identification = fields.Float(string="Sample Identification")
+    sample_identification = fields.Char(string="Sample Identification")
     dry_wt_w1 = fields.Float(string="Dry wt (W1)")
     wet_w2 = fields.Float(string="Wet wt (W2)")
     water_absorption = fields.Float(string="  Water Absorption %",compute="_compute_water_absorption")
@@ -521,16 +528,22 @@ class WaterLine(models.Model):
 
 
 class CompressiveLine(models.Model):
-    _name = "paver.compressive.ssl.line"
-    parent_id = fields.Many2one('mechanical.paver.block.ssl',string="Parent Id")
+    _name = "paver.compressive.line"
+    parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    sample_identification_com = fields.Float(string="Sample Identification")
+    sample_identification = fields.Char(string="Sample Identification")
     wt_block = fields.Float(string="Weight of Block (gms)")
-    correction_factor = fields.Float(string="Correction Factor",compute="_compute_correction_factor",store=True)
+    correction_factor = fields.Float(string="Correction Factor",store=True)
     load = fields.Float(string=" Load (kN)")
     compressive_strenght = fields.Float(string=" Compressive Strength (N/mm2)",compute="_compute_compressive_strength")
     thickness = fields.Float(string=" Thickness mm")
+
+    @api.onchange('parent_id')
+    def _onchange_parent_id(self):
+        if self.parent_id:
+            self.correction_factor = self.parent_id.correction_factore
+
 
     # @api.depends('parent_id.thickness_child_lines')
     # def _compute_correction_factor(self):
@@ -550,29 +563,19 @@ class CompressiveLine(models.Model):
                 line.compressive_strenght = 0.0
 
 
+
     # @api.depends('parent_id.thickness2', 'parent_id.thickness_child_lines')
     # def _compute_correction_factor(self):
     #     for line in self:
-    #         correction = ''
+    #         correction = 0.0
     #         core_dia_value = line.parent_id.thickness2
     #         if core_dia_value and line.parent_id.thickness_child_lines:
-    #             matched_line = line.parent_id.thickness_child_lines.filtered(lambda l: float(l.thickness1) == core_dia_value)
+    #             matched_line = line.parent_id.thickness_child_lines.filtered(
+    #                 lambda l: float(l.thickness1) == float(core_dia_value)
+    #             )
     #             if matched_line:
     #                 correction = matched_line[0].Correction_factore
     #         line.correction_factor = correction
-
-    @api.depends('parent_id.thickness2', 'parent_id.thickness_child_lines')
-    def _compute_correction_factor(self):
-        for line in self:
-            correction = 0.0
-            core_dia_value = line.parent_id.thickness2
-            if core_dia_value and line.parent_id.thickness_child_lines:
-                matched_line = line.parent_id.thickness_child_lines.filtered(
-                    lambda l: float(l.thickness1) == float(core_dia_value)
-                )
-                if matched_line:
-                    correction = matched_line[0].Correction_factore
-            line.correction_factor = correction
 
     
 
@@ -601,13 +604,13 @@ class CompressiveLine(models.Model):
 
 
 
-class ThicknesscorrectionLine(models.Model):
-    _name = "paver.thickness.ssl.line"
-    parent_id = fields.Many2one('mechanical.paver.block.ssl',string="Parent Id")
+# class ThicknesscorrectionLine(models.Model):
+#     _name = "paver.thickness.line"
+#     parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
 
    
-    Correction_factore = fields.Float(string=" Correction Factor")
-    thickness1 = fields.Float(string="Thickness")
+#     Correction_factore = fields.Float(string=" Correction Factor")
+#     thickness1 = fields.Float(string="Thickness")
 
    
    

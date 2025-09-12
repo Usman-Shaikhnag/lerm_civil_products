@@ -16,12 +16,13 @@ This module contains all the common features of Sales Management and eCommerce.
                  'views/paver_block.xml',
                  'reports/paver_datasheet.xml'
     ],
-      'assets': {
-        'web.assets_backend': [
-            'paver_block/static/src/custom_style.css',
-        ],
-    },  # ✅ COMMA added here
-  
+
+    'assets': {
+    'web.assets_backend': [
+        'paver_block/static/paver.css',
+    ],
+},
+   
     'installable': True,
     'auto_install': False,
    

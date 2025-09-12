@@ -278,7 +278,7 @@ class CementPSC(models.Model):
 
     soundness_cement_lines = fields.One2many('soundness.cement.psc.line','parent_id',string="Soundness")
 
-    avg_soundness_cement = fields.Float(string="Soundness of Cement, m2/kg ",compute="_compute_avg_soundness_cement")
+    avg_soundness_cement = fields.Float(string="Soundness of Cement, mm ",compute="_compute_avg_soundness_cement")
 
     avg_soundness_cement_conformity = fields.Selection([
         ('pass', 'Pass'),
