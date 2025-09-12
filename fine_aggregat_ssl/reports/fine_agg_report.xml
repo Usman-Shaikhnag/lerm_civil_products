@@ -347,8 +347,14 @@
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
-									<td>
+									<td style="text-align: center;">
 										<span t-field="avg_compacted.parameter_name"/>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_compacted" t-options='{"widget": "float", "precision": 2}'/>
+										</span>									
 									</td>
 									<td style="text-align: center;">
 										<span>
@@ -356,11 +362,7 @@
 										</span>
 									</td>
 									
-									<td style="text-align: center;">
-										<span>
-											<span t-field="data.avg_compacted" t-options='{"widget": "float", "precision": 2}'/>
-										</span>									
-									</td>
+									
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="avg_compacted.parameter_table" t-as="parameter">
@@ -370,7 +372,7 @@
 											</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
+									<!-- <td style="text-align: center;">
 										<span>
 											<t t-foreach="avg_compacted.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -378,7 +380,7 @@
 												</t>
 											</t>
 										</span>
-									</td>
+									</td> -->
 									
 								</tr>
 
