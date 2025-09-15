@@ -23,14 +23,14 @@
                         <field name="parameter_id" invisible="1"/>
                     </group>
                     <!-- <group class="custom_table_borders"> -->
-                    <group class="custom_table_borders" style="margin-top: 15px;">
-                        <field name="sample_parameters">
+                   <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
                             <tree>
                                 <field name="parameter_name"/>
                                 <field name="test_method"/>
                             </tree>
                         </field>
-                    </group>
+                    </div>
 
                     <!-- Sieve Alanysis  -->
                     <div invisible="sieve_visible == False">
@@ -156,11 +156,11 @@
                             <tbody>
                                 <tr>
                                     <td><label for="avg_specific_gravity">Avg. Specific Gravity</label></td>
-                                    <td><field name="avg_specific_gravity"/></td>
+                                    <td><field name="avg_specific_gravity"/>  <span><field name="avg_specific_gravity_unit" readonly="1" nolabel="1"/></span></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="avg_water_absorption">Avg. Water absorption  %</label></td>
-                                    <td><field name="avg_water_absorption"/></td>
+                                    <td><label for="avg_water_absorption">Avg. Water absorption </label></td>
+                                    <td><field name="avg_water_absorption"/>  <span><field name="avg_water_absorption_unit" readonly="1" nolabel="1"/></span></td>
                                 </tr>
                                 <tr>
                                     <td><label for="avg_apparent_specific_gravity">Avg. Apparent Specific Gravity</label></td>
@@ -250,15 +250,15 @@
                             <tbody>
                                 <tr>
                                     <td><span class="fw-bold">Aggregate Elongation Index</span></td>
-                                    <td><field name="aggregate_elongation"/></td>
+                                    <td><field name="aggregate_elongation"/>  <span><field name="aggregate_elongation_unit" readonly="1" nolabel="1"/></span></td>
                                 </tr>
                                 <tr>
-                                    <td><span class="fw-bold">Aggregate Flakiness Index</span></td>
-                                    <td><field name="aggregate_flakiness"/></td>
+                                    <td><span class="fw-bold">Aggregate Flakiness Index</span>  </td>
+                                    <td><field name="aggregate_flakiness"/>   <span><field name="aggregate_flakiness_unit" readonly="1" nolabel="1"/></span></td>
                                 </tr>
                                 <tr>
                                     <td><span class="fw-bold">Combined Index</span></td>
-                                    <td><field name="aggregate_combine"/></td>
+                                    <td><field name="aggregate_combine"/>  <span><field name="aggregate_elongation_unit" readonly="1" nolabel="1"/></span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -345,8 +345,8 @@
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
-                                    <td><label for="avg_bulk_density">Avg loose density Kg/lit</label></td>
-                                    <td><field name="avg_bulk_density"/></td>
+                                    <td><label for="avg_bulk_density">Avg loose density </label></td>
+                                    <td><field name="avg_bulk_density"/>  <span><field name="avg_bulk_density_unit" readonly="1" nolabel="1"/></span></td>
                                 </tr>
                               
                             </tbody>
@@ -418,8 +418,8 @@
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
-                                    <td><label for="avg_compacted">Avg Compacted Density (Kg)</label></td>
-                                    <td><field name="avg_compacted"/></td>
+                                    <td><label for="avg_compacted">Avg Compacted Density</label></td>
+                                    <td><field name="avg_compacted"/>  <span><field name="avg_compacted_unit" readonly="1" nolabel="1"/></span></td>
                                 </tr>
                               
                             </tbody>
@@ -505,7 +505,7 @@
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="average_impact_value">Average Impact Value</label></td>
-                                <td><field name="average_impact_value"/></td>
+                                <td><field name="average_impact_value"/>  <span><field name="average_impact_value_unit" readonly="1" nolabel="1"/></span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -559,7 +559,7 @@
                         <tbody>
                             <tr>
                                 <td><span class="fw-bold">Average Crushing Value</span></td>
-                                <td><field name="average_crushing_value"/></td>
+                                <td><field name="average_crushing_value"/>  <span><field name="average_crushing_value_unit" readonly="1" nolabel="1"/></span></td>
                             </tr>
                         </tbody>
                     </table>

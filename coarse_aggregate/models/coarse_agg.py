@@ -17,24 +17,53 @@ class CoarseAggregateMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
 
-    compressive_strength_unit = fields.Char(
-    compute="_compute_units", store=False
-    )
-    water_absorption_unit = fields.Char(
-        compute="_compute_units", store=False
-    )
 
+    average_crushing_value_unit    = fields.Char("Average Aggregate Crushing Value", compute="_compute_units", store=False)
+    average_impact_value_unit = fields.Char("Average Aggregate Impact Value", compute="_compute_units", store=False)
+    avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
+    avg_bulk_density_unit   = fields.Char("Avg loose density", compute="_compute_units", store=False)
+    aggregate_elongation_unit   = fields.Char("aggregate elongation", compute="_compute_units", store=False)
+    aggregate_flakiness_unit   = fields.Char("Aggregate Flakiness Value in %", compute="_compute_units", store=False)
+    avg_specific_gravity_unit   = fields.Char("avg specific gravity", compute="_compute_units", store=False)
+    avg_water_absorption_unit   = fields.Char("Avg. Water absorption", compute="_compute_units", store=False)
+
+    # ---- helper method
+    def _get_unit(self, internal_id):
+        param = self.env['lerm.parameter.master'].search([
+            ('internal_id', '=', internal_id)
+        ], limit=1)
+        return param.unit.name if param.unit else ""
+
+    # ---- compute fields (unit बदलल्यावर update)
     def _compute_units(self):
         for rec in self:
-            comp_param = self.env['lerm.parameter.master'].search([
-                ('internal_id', '=', '31478fghht-9287-48c7-a607-bf1b64a8115d')
-            ], limit=1)
-            water_param = self.env['lerm.parameter.master'].search([
-                ('internal_id', '=', '321475gfet1-f3ab-4b19-af25-91a4671baf5f')
-            ], limit=1)
+            rec.average_crushing_value_unit = rec._get_unit("ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71")
+            rec.average_impact_value_unit = rec._get_unit("2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2")
+            rec.avg_compacted_unit     = rec._get_unit("357f579d-a310-4015-bc11-28a85c53ac83")
+            rec.avg_bulk_density_unit   = rec._get_unit("65a41d1f-d557-438e-8fd1-2c619a334d02")
+            rec.aggregate_elongation_unit   = rec._get_unit("9effe915-e5a3-45a7-aaeb-10caababd667")
+            rec.aggregate_flakiness_unit   = rec._get_unit("be7a60bc-bb2c-410d-b91a-4f8730a4ac6f")
+            rec.avg_specific_gravity_unit   = rec._get_unit("3114db41-cfa7-49ad-9324-fcdbc9661038")
+            rec.avg_water_absorption_unit   = rec._get_unit("22ee804f-41a3-4fd1-a301-a8d9180fba10")
 
-            rec.compressive_strength_unit = comp_param.unit.name if comp_param.unit else ""
-            rec.water_absorption_unit = water_param.unit.name if water_param.unit else ""
+    # ---- default values (create mode मध्ये दिसण्यासाठी)
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        res.update({
+            'average_crushing_value_unit':   self._get_unit("ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71"),
+            'average_impact_value_unit': self._get_unit("2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2"),
+            'avg_compacted_unit':     self._get_unit("357f579d-a310-4015-bc11-28a85c53ac83"),
+            'avg_bulk_density_unit':   self._get_unit("65a41d1f-d557-438e-8fd1-2c619a334d02"),
+            'aggregate_elongation_unit':   self._get_unit("9effe915-e5a3-45a7-aaeb-10caababd667"),
+            'aggregate_flakiness_unit':   self._get_unit("be7a60bc-bb2c-410d-b91a-4f8730a4ac6f"),
+            'avg_specific_gravity_unit':   self._get_unit("3114db41-cfa7-49ad-9324-fcdbc9661038"),
+            'avg_water_absorption_unit':   self._get_unit("22ee804f-41a3-4fd1-a301-a8d9180fba10"),
+        })
+        return res
+
+
+
 
 
     @api.depends("eln_ref")
@@ -333,7 +362,7 @@ class CoarseAggregateMechanical(models.Model):
         compute="_compute_avg_values",
         store=True,
         digits=(12, 2))
-    avg_water_absorption = fields.Float(string="Avg. Water absorption  %",
+    avg_water_absorption = fields.Float(string="Avg. Water absorption ",
         compute="_compute_avg_values",
         store=True,
         digits=(12, 2))
@@ -1319,7 +1348,7 @@ class CoarseAggregateMechanical(models.Model):
             else:
                 rec.loose_bulk_density1 = 0.0
 
-    avg_bulk_density = fields.Float(string="Avg loose density (Kg/lit)",compute="_compute_avg_bulk_density",digits=(12,3))
+    avg_bulk_density = fields.Float(string="Avg loose density ",compute="_compute_avg_bulk_density",digits=(12,3))
 
     # Average
     @api.depends('loose_bulk_density', 'loose_bulk_density1')
@@ -1420,7 +1449,7 @@ class CoarseAggregateMechanical(models.Model):
             else:
                 rec.compact_bulk1 = 0.0
 
-    avg_compacted = fields.Float(string="Avg Compacted Density (Kg)",compute="_compute_avg_compacted",digits=(12,3))
+    avg_compacted = fields.Float(string="Avg Compacted Density",compute="_compute_avg_compacted",digits=(12,3))
 
     # Average
     @api.depends('compact_bulk', 'compact_bulk1')

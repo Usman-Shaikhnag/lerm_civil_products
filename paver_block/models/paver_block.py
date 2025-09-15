@@ -29,54 +29,87 @@ class PaverBlock(models.Model):
 
     # tests = fields.Many2many("mechanical.pever.block.test",string="Tests")
 
-    area_paver_unit = fields.Char(
-        string="Specific Gravity Unit",
-        compute="_compute_units",
-        store=False
-        )
-    avg_water_absorption_unit = fields.Char(
-        string="Bulk Density Unit",
-        compute="_compute_units",
-        store=False
-    )
-    avg_commpressive_unit = fields.Char(
-        string="Avg Compacted Unit",
-        compute="_compute_units",
-        store=False
-    )
+    # area_paver_unit = fields.Char(
+    #     string="Specific Gravity Unit",
+    #     compute="_compute_units",
+    #     store=False
+    #     )
+    # avg_water_absorption_unit = fields.Char(
+    #     string="Bulk Density Unit",
+    #     compute="_compute_units",
+    #     store=False
+    # )
+    # avg_commpressive_unit = fields.Char(
+    #     string="Avg Compacted Unit",
+    #     compute="_compute_units",
+    #     store=False
+    # )
 
-    avg_thickness_unit = fields.Char(
-        string="Avg Compacted Unit",
-        compute="_compute_units",
-        store=False
-    )
+    # avg_thickness_unit = fields.Char(
+    #     string="Avg Compacted Unit",
+    #     compute="_compute_units",
+    #     store=False
+    # )
 
 
 
+    # def _compute_units(self):
+    #     for rec in self:
+    #         # Specific Gravity
+    #         area_paver_param = self.env['lerm.parameter.master'].search([
+    #             ('internal_id', '=', '23547trew-199c-497a-b3a7-45023c604673')
+    #         ], limit=1)
+    #         rec.area_paver_unit = area_paver_param.unit.name if area_paver_param.unit else ""
+
+    #         # Bulk Density
+    #         water_param = self.env['lerm.parameter.master'].search([
+    #             ('internal_id', '=', '2147fgrr-eba3-4f15-b33d-679b39f7372e')
+    #         ], limit=1)
+    #         rec.avg_water_absorption_unit = water_param.unit.name if water_param.unit else ""
+
+    #         compressive_param = self.env['lerm.parameter.master'].search([
+    #             ('internal_id', '=', '1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')
+    #         ], limit=1)
+    #         rec.avg_commpressive_unit = compressive_param.unit.name if compressive_param.unit else ""
+
+    #         # Avg Compacted
+    #         tickness_param = self.env['lerm.parameter.master'].search([
+    #             ('internal_id', '=', '1457fgrtt-5dc9-4a2a-8bf0-121045278hty')
+    #         ], limit=1)
+    #         rec.avg_thickness_unit = tickness_param.unit.name if tickness_param.unit else ""
+
+
+    area_paver_unit           = fields.Char("Area Paver Unit",           compute="_compute_units", store=False)
+    avg_water_absorption_unit = fields.Char("Avg Water Absorption Unit", compute="_compute_units", store=False)
+    avg_commpressive_unit     = fields.Char("Avg Compressive Unit",      compute="_compute_units", store=False)
+    avg_thickness_unit        = fields.Char("Avg Thickness Unit",        compute="_compute_units", store=False)
+
+    # ---- helper method
+    def _get_unit(self, internal_id):
+        param = self.env['lerm.parameter.master'].search([
+            ('internal_id', '=', internal_id)
+        ], limit=1)
+        return param.unit.name if param.unit else ""
+
+    # ---- compute fields (unit बदलल्यावर update)
     def _compute_units(self):
         for rec in self:
-            # Specific Gravity
-            area_paver_param = self.env['lerm.parameter.master'].search([
-                ('internal_id', '=', '23547trew-199c-497a-b3a7-45023c604673')
-            ], limit=1)
-            rec.area_paver_unit = area_paver_param.unit.name if area_paver_param.unit else ""
+            rec.area_paver_unit           = rec._get_unit("23547trew-199c-497a-b3a7-45023c604673")
+            rec.avg_water_absorption_unit = rec._get_unit("2147fgrr-eba3-4f15-b33d-679b39f7372e")
+            rec.avg_commpressive_unit     = rec._get_unit("1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11")
+            rec.avg_thickness_unit        = rec._get_unit("1457fgrtt-5dc9-4a2a-8bf0-121045278hty")
 
-            # Bulk Density
-            water_param = self.env['lerm.parameter.master'].search([
-                ('internal_id', '=', '2147fgrr-eba3-4f15-b33d-679b39f7372e')
-            ], limit=1)
-            rec.avg_water_absorption_unit = water_param.unit.name if water_param.unit else ""
-
-            compressive_param = self.env['lerm.parameter.master'].search([
-                ('internal_id', '=', '1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')
-            ], limit=1)
-            rec.avg_commpressive_unit = compressive_param.unit.name if compressive_param.unit else ""
-
-            # Avg Compacted
-            tickness_param = self.env['lerm.parameter.master'].search([
-                ('internal_id', '=', '1457fgrtt-5dc9-4a2a-8bf0-121045278hty')
-            ], limit=1)
-            rec.avg_thickness_unit = tickness_param.unit.name if tickness_param.unit else ""
+    # ---- default values (create mode मध्ये दिसण्यासाठी)
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        res.update({
+            'area_paver_unit':           self._get_unit("23547trew-199c-497a-b3a7-45023c604673"),
+            'avg_water_absorption_unit': self._get_unit("2147fgrr-eba3-4f15-b33d-679b39f7372e"),
+            'avg_commpressive_unit':     self._get_unit("1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11"),
+            'avg_thickness_unit':        self._get_unit("1457fgrtt-5dc9-4a2a-8bf0-121045278hty"),
+        })
+        return res
 
             
     
