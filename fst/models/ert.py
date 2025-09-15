@@ -1,7 +1,9 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import math
-
+import io
+import zipfile
+import base64
 
 class LermErtParent(models.Model):
     _name = "lerm.ert.parent"
@@ -24,12 +26,57 @@ class LermErtParent(models.Model):
         }
 
     def print_report(self):
-        # import wdb; wdb.set_trace()
-        soil_resistivity_records = self.mapped("ert_lines.soil_resistivity_id")
-        if not soil_resistivity_records:
-            return
-        for records in soil_resistivity_records:
-            records.action_print_soil_resistivity_report() 
+        return {
+            'name': "Download ZIP",
+            'type': 'ir.actions.act_window',
+            'res_model': 'ert.report.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_parent_id': self.id},
+        }
+      
+    # def print_report(self):
+    #     # Collect soil resistivity records
+    #     soil_resistivity_records = self.mapped("ert_lines.soil_resistivity_id")
+    #     if not soil_resistivity_records:
+    #         return
+
+    #     # If only 1 record → download directly
+    #     if len(soil_resistivity_records) == 1:
+    #         return self.env.ref(
+    #             'fst.soil_resistivity_report_py3o'
+    #         ).report_action(soil_resistivity_records)
+
+    #     # Else → generate all and zip them
+    #     zip_buffer = io.BytesIO()
+    #     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
+    #         for rec in soil_resistivity_records:
+    #             report = self.env.ref("fst.soil_resistivity_report_py3o")
+    #             file_content, _ = self.env['ir.actions.report']._render_py3o(
+    #                 "fst.soil_resistivity_report_py3o",
+    #                 [rec.id],
+    #                 data=None
+    #             )
+    #             zipf.writestr(f"{rec.name or rec.id}.docx", file_content)
+
+    #     zip_buffer.seek(0)
+
+    #     # Save as attachment
+    #     attachment = self.env["ir.attachment"].create({
+    #         "name": rec.name +".zip",
+    #         "type": "binary",
+    #         "datas": base64.b64encode(zip_buffer.getvalue()),
+    #         "res_model": self._name,
+    #         "res_id": self.id,
+    #         "mimetype": "application/zip",
+    #     })
+
+    #     # Return download action
+    #     return {
+    #         "type": "ir.actions.act_url",
+    #         "url": f"/web/content/{attachment.id}?download=true",
+    #         "target": "self",
+    #     }
 
 
 class LermErtLines(models.Model):
