@@ -135,7 +135,8 @@
                                                 <field name="area_paver" nolabel="1"/>
                                             </td>
                                             <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                                mm²
+                                                <!-- mm²     -->
+                                               <span><field name="area_paver_unit" readonly="1" nolabel="1"/></span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -235,7 +236,7 @@
                           
                              <tr>
                                 <td><label class="fw-bold" for="avg_water_absorption">Avg. Water Absorption</label></td>
-                                <td><field name="avg_water_absorption"/> <span> %</span></td>
+                                <td><field name="avg_water_absorption"/>  <span><field name="avg_water_absorption_unit" readonly="1" nolabel="1"/></span></td>
                             </tr>
                            
                         </tbody>
@@ -296,11 +297,11 @@
                           
                              <tr>
                                 <td><label class="fw-bold" for="avg_commpressive">Avg. Compressive Strength</label></td>
-                                <td><field name="avg_commpressive"/> <span> N/mm²</span></td>
+                                <td><field name="avg_commpressive"/>   <span><field name="avg_commpressive_unit" readonly="1" nolabel="1"/></span></td>
                             </tr>
                              <tr>
-                                <td><label class="fw-bold" for="avg_thickness">  Avg Thickness</label></td>
-                                <td><field name="avg_thickness"/>   mm</td>
+                                <td><label class="fw-bold" for="avg_thickness"> Avg Thickness</label></td>
+                                <td><field name="avg_thickness"/>   <span><field name="avg_thickness_unit" readonly="1" nolabel="1"/></span></td>
                             </tr>
                         </tbody>
                     </table>

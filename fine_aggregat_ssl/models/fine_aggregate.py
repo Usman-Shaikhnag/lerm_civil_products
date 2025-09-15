@@ -18,6 +18,80 @@ class FineAggregate(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+
+    
+
+    specific_gravity_unit = fields.Char(
+        string="Specific Gravity Unit",
+        compute="_compute_units",
+        store=False
+        )
+    bulk_density_unit = fields.Char(
+        string="Bulk Density Unit",
+        compute="_compute_units",
+        store=False
+    )
+    avg_compacted_unit = fields.Char(
+        string="Avg Compacted Unit",
+        compute="_compute_units",
+        store=False
+    )
+
+    avg_bulking_of_sand_unit = fields.Char(
+        string="Avg Compacted Unit",
+        compute="_compute_units",
+        store=False
+    )
+
+    silt_contect_unit = fields.Char(
+        string="Avg Compacted Unit",
+        compute="_compute_units",
+        store=False
+    )
+
+    avg_moisture_unit = fields.Char(
+        string="Avg Compacted Unit",
+        compute="_compute_units",
+        store=False
+    )
+
+
+    def _compute_units(self):
+        for rec in self:
+            # Specific Gravity
+            specific_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '45875ght-7188-4086-b132-62b50e63f1245gt')
+            ], limit=1)
+            rec.specific_gravity_unit = specific_param.unit.name if specific_param.unit else ""
+
+            # Bulk Density
+            density_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '4587tyhloos-3fa3-4b83-ae31-9d281767188c')
+            ], limit=1)
+            rec.bulk_density_unit = density_param.unit.name if density_param.unit else ""
+
+            # Avg Compacted
+            avg_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '6987456gg-a310-4015-bc11-28a85c53ac83')
+            ], limit=1)
+            rec.avg_compacted_unit = avg_param.unit.name if avg_param.unit else ""
+
+             # avg_bulking_of_sand_unit
+            bulkn_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '45789bhgt25-3fa3-4b83-ae31-9d28176718457')
+            ], limit=1)
+            rec.avg_bulking_of_sand_unit = bulkn_param.unit.name if bulkn_param.unit else ""
+
+            slite_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '2547ghty124m-3fa3-4b83-ae31-9d281457nhy14')
+            ], limit=1)
+            rec.silt_contect_unit = slite_param.unit.name if slite_param.unit else ""
+
+            moisure_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '1457htyu1245-3fa3-4b83-ae31-9d281457457hy')
+            ], limit=1)
+            rec.avg_moisture_unit = moisure_param.unit.name if moisure_param.unit else ""
+
   
 
 
@@ -331,7 +405,7 @@ class FineAggregate(models.Model):
             else:
                 rec.loose_bulk_density1 = 0.0
 
-    avg_bulk_density = fields.Float(string="Avg loose density (Kg/lit)",compute="_compute_avg_bulk_density",digits=(12,3))
+    avg_bulk_density = fields.Float(string="Avg loose density ",compute="_compute_avg_bulk_density",digits=(12,3))
 
     # Average
     @api.depends('loose_bulk_density', 'loose_bulk_density1')
@@ -429,7 +503,7 @@ class FineAggregate(models.Model):
             else:
                 rec.compact_bulk1 = 0.0
 
-    avg_compacted = fields.Float(string="Avg Compacted Density (Kg)",compute="_compute_avg_compacted",digits=(12,3))
+    avg_compacted = fields.Float(string="Avg Compacted Density ",compute="_compute_avg_compacted",digits=(12,3))
 
     # Average
     @api.depends('compact_bulk', 'compact_bulk1')
@@ -570,7 +644,7 @@ class FineAggregate(models.Model):
                 
 
     avg_bulking_of_sand = fields.Float(
-        string="Average Bulking of Sand (%)",
+        string="Average Bulking of Sand",
         compute="_compute_avg_bulking_percent",
         store=True )
     
@@ -671,7 +745,7 @@ class FineAggregate(models.Model):
 
 
     avg_bulking_of_sand1 = fields.Float(
-        string="Silt Contect % ",
+        string="Silt Contect ",
         compute="_compute_bulking_of_sand1" )
 
     @api.depends('content_slit_c', 'content_height_sand_b')
@@ -771,7 +845,7 @@ class FineAggregate(models.Model):
 
 
     avg_moisture = fields.Float(
-        string="Average Moisture Content (%)",
+        string="Average Moisture Content",
         compute="_compute_avg_moisture",
         store=True )
 
@@ -926,6 +1000,14 @@ class FineAggregate(models.Model):
             if result.parameter.internal_id == '1457htyu1245-3fa3-4b83-ae31-9d281457457hy':
                 result.result_char = round(self.avg_moisture,2)
                 if self.avg_moisture_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '6987456gg-a310-4015-bc11-28a85c53ac83':
+                result.result_char = round(self.avg_compacted,2)
+                if self.avg_compacted_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'

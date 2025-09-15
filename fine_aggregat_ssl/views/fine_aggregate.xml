@@ -136,7 +136,7 @@
                         <tbody>
                             <tr>
                                 <td><label for="specific_gravity">Avg Specific Gravity</label></td>
-                                <td><field name="specific_gravity" nolabel="1"/></td>
+                                <td><field name="specific_gravity"/>  <span><field name="specific_gravity_unit" readonly="1" nolabel="1"/></span></td>
                             </tr>
                             <tr>
                                 <td><label for="water_absorption">Water Absorption %</label></td>
@@ -226,8 +226,8 @@
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
-                                    <td><label for="avg_bulk_density">Avg loose density Kg/lit</label></td>
-                                    <td><field name="avg_bulk_density"/></td>
+                                    <td><label for="avg_bulk_density">Avg loose density Kg/lit</label> </td>
+                                    <td><field name="avg_bulk_density"/>  <span><field name="bulk_density_unit" readonly="1" nolabel="1"/></span></td>
                                 </tr>
                               
                             </tbody>
@@ -295,8 +295,8 @@
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
-                                    <td><label for="avg_compacted">Avg Compacted Density (Kg)</label></td>
-                                    <td><field name="avg_compacted"/></td>
+                                    <td><label for="avg_compacted">Avg Compacted Density </label></td>
+                                    <td><field name="avg_compacted"/>  <span><field name="avg_compacted_unit" readonly="1" nolabel="1"/></span></td>
                                 </tr>
                               
                             </tbody>
@@ -372,8 +372,8 @@
                             <td><field name="avg_loss_c"/></td>
                         </tr>
                         <tr>
-                            <td><label class="fw-bold" for="avg_bulking_of_sand">Average Bulking of Sand (%)</label></td>
-                            <td><field name="avg_bulking_of_sand"/></td>
+                            <td><label class="fw-bold" for="avg_bulking_of_sand">Average Bulking of Sand </label></td>
+                            <td><field name="avg_bulking_of_sand"/>  <span><field name="avg_bulking_of_sand_unit" readonly="1" nolabel="1"/></span></td>
                         </tr>
                         <tr>
                             <td><label class="fw-bold" for="avg_bulking_of_sand_conformity">Bulking Conformity</label></td>
@@ -415,7 +415,7 @@
                     </field>   
                 </div>
 
-                                        <table invisible="site_content_visible == False or loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                    <table invisible="site_content_visible == False or loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="content_height_sand_a">Height of Sand + Silt in the Cylinder (A)</label></td>
@@ -432,10 +432,10 @@
                             <tr>
                                 <td><label class="fw-bold" for="avg_bulking_of_sand1">Silt Content</label></td>
                                 <td>
-                                    <div class="d-flex">
-                                        <field name="avg_bulking_of_sand1" />
-                                        <span class="ms-2">%</span>
-                                    </div>
+                                    <!-- <div class="d-flex"> -->
+                                        <field name="avg_bulking_of_sand1" />   <span><field name="silt_contect_unit" readonly="1" nolabel="1"/></span>
+                                      
+                                    <!-- </div> -->
                                 </td>
                             </tr>
                             <tr>
@@ -494,10 +494,10 @@
                             <tr>
                                 <td><label class="fw-bold" for="avg_moisture">Average Moisture Content</label></td>
                                 <td>
-                                    <div class="d-flex">
-                                        <field name="avg_moisture" nolabel="1"/>
-                                        <span class="ms-2">%</span>
-                                    </div>
+                                    <!-- <div class="d-flex"> -->
+                                        <field name="avg_moisture" nolabel="1"/>    <span><field name="avg_moisture_unit" readonly="1" nolabel="1"/></span>
+                                       
+                                    <!-- </div> -->
                                 </td>
                             </tr>
                             <tr>

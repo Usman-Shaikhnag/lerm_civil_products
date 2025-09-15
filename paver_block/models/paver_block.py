@@ -29,6 +29,56 @@ class PaverBlock(models.Model):
 
     # tests = fields.Many2many("mechanical.pever.block.test",string="Tests")
 
+    area_paver_unit = fields.Char(
+        string="Specific Gravity Unit",
+        compute="_compute_units",
+        store=False
+        )
+    avg_water_absorption_unit = fields.Char(
+        string="Bulk Density Unit",
+        compute="_compute_units",
+        store=False
+    )
+    avg_commpressive_unit = fields.Char(
+        string="Avg Compacted Unit",
+        compute="_compute_units",
+        store=False
+    )
+
+    avg_thickness_unit = fields.Char(
+        string="Avg Compacted Unit",
+        compute="_compute_units",
+        store=False
+    )
+
+
+
+    def _compute_units(self):
+        for rec in self:
+            # Specific Gravity
+            area_paver_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '23547trew-199c-497a-b3a7-45023c604673')
+            ], limit=1)
+            rec.area_paver_unit = area_paver_param.unit.name if area_paver_param.unit else ""
+
+            # Bulk Density
+            water_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '2147fgrr-eba3-4f15-b33d-679b39f7372e')
+            ], limit=1)
+            rec.avg_water_absorption_unit = water_param.unit.name if water_param.unit else ""
+
+            compressive_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')
+            ], limit=1)
+            rec.avg_commpressive_unit = compressive_param.unit.name if compressive_param.unit else ""
+
+            # Avg Compacted
+            tickness_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '1457fgrtt-5dc9-4a2a-8bf0-121045278hty')
+            ], limit=1)
+            rec.avg_thickness_unit = tickness_param.unit.name if tickness_param.unit else ""
+
+            
     
 
     paver_name = fields.Char("Name",default=" Plan Area")
