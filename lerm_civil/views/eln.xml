@@ -36,8 +36,8 @@
                         <field name='remarks'/>
                         <field name='conformity' readonly="1"/>
                         <field name='has_witness'/>
-                        <field name='is_product_based_calculation'/>
-                        <field name='file_upload' widget="many2many_binary"/>
+                        <field name='is_product_based_calculation' invisible="1"/>
+                        <!--<field name='file_upload' widget="many2many_binary"/> -->
                         <field name='invisible_fetch_inputs' invisible="1"/>
                         <field name='size_ids' invisible="1"/>
                     </group>
@@ -49,12 +49,13 @@
                         <field name='witness_name'/>
                         <field name='grade_id' domain="[('id', 'in', grade_ids)]"/>
                         <field name='end_date'/>
-                        <field name="witness_photo" filename='witness_photo_name'/>
+                        <!-- <field name="witness_photo" filename='witness_photo_name'/>
                         <field name='witness_photo_name' invisible="1"/>
                         <field name='attachment' filename='attachment_name'/>
-                        <field name='attachment_name' invisible="1"/>
-                        <field name='casting_date'/>
-                        <field name='date_testing'/>
+                        <field name='attachment_name' invisible="1"/> -->
+                        <field name="casting_date" invisible="sample_id.casting == False"/>
+                        <field name="date_testing" invisible="sample_id.casting == False"/>
+                        <field name="days_casting" readonly="1" invisible="sample_id.casting == False"/>
                         <field name='instrument'/>
                         <field name='grade_ids' invisible="1"/>
                         <field name='ir_model' invisible="1"/>

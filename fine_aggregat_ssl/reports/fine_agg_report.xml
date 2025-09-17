@@ -250,7 +250,7 @@
 										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')]).parameter_name"/>
 									</span>
 								</td>
-								<td  rowspan="4" style="text-align: center; vertical-align: middle;">
+								<td  rowspan="5" style="text-align: center; vertical-align: middle;">
 									<span>
 										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -339,6 +339,52 @@
 								</td>
 
 							</tr>
+
+
+							<tr t-if="data.compacted_density_visible and (data.avg_compacted_nabl == 'pass' and nabl or (data.avg_compacted_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="avg_compacted" t-value="env['lerm.parameter.master'].search([('internal_id','=','6987456gg-a310-4015-bc11-28a85c53ac83')])"/>
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;">
+										<span t-field="avg_compacted.parameter_name"/>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_compacted" t-options='{"widget": "float", "precision": 2}'/>
+										</span>									
+									</td>
+									
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="avg_compacted.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="avg_compacted.unit.name"/>
+										</span>
+									</td>
+									<!-- <td style="text-align: center;">
+										<span>
+											<t t-foreach="avg_compacted.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td> -->
+									
+								</tr>
 
 
 							

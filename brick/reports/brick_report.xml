@@ -347,7 +347,7 @@
 
 
 			            	
-						<table style="width:100%; border-collapse: collapse; font-size:13px;" border="1">
+						<!-- <table style="width:100%; border-collapse: collapse; font-size:13px;" border="1">
 							<thead>
 								<tr>
 									<th rowspan="2" style="text-align:center;">Sample No</th>
@@ -382,9 +382,101 @@
 									<td style="text-align:center;"><t t-esc="line['water_absorption']" t-options='{"widget": "float", "precision": 2}'/></td>
 									<td style="text-align:center;"><t t-esc="line['visual_observation']"/></td>
 								</tr>
+								 <tr>
+								<td style="text-align:center; font-weight:bold;">
+									<t t-esc="brick.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="text-align:center; font-weight:bold;"><t t-esc="brick.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
+								
+							</tr>
 							</tbody>
+						</table> -->
+
+						<table style="width:100%; border-collapse: collapse; font-size:13px;" border="1">
+							<thead>
+								<tr>
+									<th rowspan="2" style="text-align:center;">Sample No</th>
+									<th colspan="3" style="text-align:center;">Dimensions (mm) <br/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','125478bvf3-8d5d-4f45-8afb-b911f9cafe41')]).test_method.test_method"/>
+									</th>
+									<th rowspan="2" style="text-align:center;">Compressive Strength 
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).unit.name"/><br/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).test_method.test_method"/>
+									</th>
+									<th rowspan="2" style="text-align:center;">Water Absorption 
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).unit.name"/><br/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).test_method.test_method"/>
+									</th>
+									<th rowspan="2" style="text-align:center;">Efflorescence Observation <br/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).test_method.test_method"/>
+									</th>
+								</tr>
+								<tr>
+									<th style="text-align:center;">Length</th>
+									<th style="text-align:center;">Width</th>
+									<th style="text-align:center;">Height</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr t-foreach="brick.get_combined_lines()" t-as="line">
+									<td style="text-align:center;"><t t-esc="line['serial_no']"/></td>
+									<td style="text-align:center;"><t t-esc="line['length']"/></td>
+									<td style="text-align:center;"><t t-esc="line['width']"/></td>
+									<td style="text-align:center;"><t t-esc="line['height']"/></td>
+									<td style="text-align:center;">
+										<t t-esc="line['comp_strength_1']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="text-align:center;">
+										<t t-esc="line['water_absorption']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="text-align:center;"><t t-esc="line['visual_observation']"/></td>
+								</tr>
+							</tbody>
+
+					
+						<tfoot>
+								<tr>
+									<td colspan="4"></td> <!-- skip first 4 cols -->
+
+									<!-- Average Compressive Strength -->
+									<td style="padding:0;">
+										<div style="display:table; width:100%; border-collapse:collapse;">
+											<div style="display:table-cell; width:50%; text-align:center; border-right:1px solid black;">
+												Average
+											</div>
+											<div style="display:table-cell; width:50%; text-align:center;">
+												<t t-esc="brick.avrg_compressive_strength" 
+												t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).unit.name"/>
+											</div>
+										</div>
+									</td>
+
+									<!-- Average Water Absorption -->
+									<td style="padding:0;">
+										<div style="display:table; width:100%; border-collapse:collapse;">
+											<div style="display:table-cell; width:50%; text-align:center; border-right:1px solid black;">
+												Average
+											</div>
+											<div style="display:table-cell; width:50%; text-align:center;">
+												<t t-esc="brick.avrg_water_absorption" 
+												t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).unit.name"/>
+											</div>
+										</div>
+									</td>
+
+									<td></td> <!-- observation col blank -->
+								</tr>
+							</tfoot>
+
+
+
+
+
 						</table>
 
+
+						 
 					</div>
 					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
 						<table class="table table-bordered">
