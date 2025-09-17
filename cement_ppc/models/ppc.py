@@ -45,7 +45,7 @@ class CementPPC(models.Model):
             rec.avg_fineness_blaine_unit        = rec._get_unit("210456321t-372f-4775-9bcb-e9dd70214578r")
             rec.avg_soundness_cement_unit       = rec._get_unit("301245vfrt77-372f-4775-9bcb-e9dd723547htui")
             rec.consitency_of_cement_unit = rec._get_unit("30124578hhh-372f-4775-9bcb-e9dd723547htui")
-            rec.avg_3_days_unit        = rec._get_unit("147frrt012-372f-4775-9bcb-e9dd723547h")
+            rec.avg_3_days_unit        = rec._get_unit("147frrt012-372f-4775-9bcb-e9dd723547htui")
             rec.avg_7_days_unit        = rec._get_unit("1236547ffv-372f-4775-9bcb-e9dd723547htui")
             rec.avg_28_days_unit        = rec._get_unit("00rrrttt887-372f-4775-9bcb-e9dd723547htui")
             rec.avg_density_unit        = rec._get_unit("30124578hy-372f-4775-9bcb-e9dd70e6e601h")
@@ -61,7 +61,7 @@ class CementPPC(models.Model):
             'avg_fineness_blaine_unit':        self._get_unit("210456321t-372f-4775-9bcb-e9dd70214578r"),
             'avg_soundness_cement_unit':       self._get_unit("301245vfrt77-372f-4775-9bcb-e9dd723547htui"),
             'consitency_of_cement_unit': self._get_unit("30124578hhh-372f-4775-9bcb-e9dd723547htui"),
-            'avg_3_days_unit':        self._get_unit("147frrt012-372f-4775-9bcb-e9dd723547h"),
+            'avg_3_days_unit':        self._get_unit("147frrt012-372f-4775-9bcb-e9dd723547htui"),
             'avg_7_days_unit':        self._get_unit("1236547ffv-372f-4775-9bcb-e9dd723547htui"),
             'avg_28_days_unit':        self._get_unit("00rrrttt887-372f-4775-9bcb-e9dd723547htui"),
             'avg_density_unit':        self._get_unit("30124578hy-372f-4775-9bcb-e9dd70e6e601h"),
@@ -328,7 +328,7 @@ class CementPPC(models.Model):
 
     soundness_cement_lines = fields.One2many('soundness.cement.ppc.line','parent_id',string="Soundness")
 
-    avg_soundness_cement = fields.Float(string="Soundness of Cement, mm ",compute="_compute_avg_soundness_cement")
+    avg_soundness_cement = fields.Float(string="Soundness of Cement ",compute="_compute_avg_soundness_cement")
 
     avg_soundness_cement_conformity = fields.Selection([
         ('pass', 'Pass'),

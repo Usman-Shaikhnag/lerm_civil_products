@@ -20,6 +20,59 @@ class CementPSC(models.Model):
 
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+
+    avg_fineness_unit    = fields.Char("Avg Fineness Cement Unit",    compute="_compute_units", store=False)
+    avg_fineness_blaine_unit        = fields.Char("avg fineness blaine Unit",        compute="_compute_units", store=False)
+    avg_soundness_cement_unit       = fields.Char("avg soundness cement Unit",       compute="_compute_units", store=False)
+    consitency_of_cement_unit = fields.Char("consitency of cement Unit", compute="_compute_units", store=False)
+    avg_3_days_unit        = fields.Char("Avg 3 days Unit",        compute="_compute_units", store=False)
+    avg_7_days_unit        = fields.Char("avg 7 days Unit",        compute="_compute_units", store=False)
+    avg_28_days_unit        = fields.Char("avg 28 days Unit",        compute="_compute_units", store=False)
+    avg_density_unit        = fields.Char("avg density Unit",        compute="_compute_units", store=False)
+    avg_specific_gravity_unit        = fields.Char("avg specific gravity Unit",        compute="_compute_units", store=False)
+    initial_time_unit        = fields.Char("Initial Setting Time Unit",        compute="_compute_units", store=False)
+    final_time_unit        = fields.Char("Final Setting Time Unit",        compute="_compute_units", store=False)
+
+    # ---- helper method
+    def _get_unit(self, internal_id):
+        param = self.env['lerm.parameter.master'].search([
+            ('internal_id', '=', internal_id)
+        ], limit=1)
+        return param.unit.name if param.unit else ""
+
+    # ---- compute + default values
+    def _compute_units(self):
+        for rec in self:
+            rec.avg_fineness_unit    = rec._get_unit("12457800-372f-4775-9bcb-e9dd70e6e6df")
+            rec.avg_fineness_blaine_unit        = rec._get_unit("3012478fffrr-372f-4775-9bcb-e9dd70214578r")
+            rec.avg_soundness_cement_unit       = rec._get_unit("21457896f-372f-4775-9bcb-e9dd723547htui")
+            rec.consitency_of_cement_unit = rec._get_unit("01247gggty-372f-4775-9bcb-e9dd723547htui")
+            rec.avg_3_days_unit        = rec._get_unit("358789gtyg-372f-4775-9bcb-e9dd723547htui")
+            rec.avg_7_days_unit        = rec._get_unit("555888ggghhjy-372f-4775-9bcb-e9dd723547htui")
+            rec.avg_28_days_unit        = rec._get_unit("5777fffrrtt11-372f-4775-9bcb-e9dd723547htui")
+            rec.avg_density_unit        = rec._get_unit("23145870-372f-4775-9bcb-e9dd70e3587g")
+            rec.avg_specific_gravity_unit        = rec._get_unit("0157yutr1034-372f-4775-9bcb-e9dd723547htui")
+            rec.initial_time_unit        = rec._get_unit("psc5478-30fe-4043-b518-015f5c60d916")
+            rec.final_time_unit        = rec._get_unit("987psc47-5e9c-4335-9ea2-2d87624c3061")
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        res.update({
+            'avg_fineness_unit':    self._get_unit("12457800-372f-4775-9bcb-e9dd70e6e6df"),
+            'avg_fineness_blaine_unit':        self._get_unit("3012478fffrr-372f-4775-9bcb-e9dd70214578r"),
+            'avg_soundness_cement_unit':       self._get_unit("21457896f-372f-4775-9bcb-e9dd723547htui"),
+            'consitency_of_cement_unit': self._get_unit("01247gggty-372f-4775-9bcb-e9dd723547htui"),
+            'avg_3_days_unit':        self._get_unit("358789gtyg-372f-4775-9bcb-e9dd723547htui"),
+            'avg_7_days_unit':        self._get_unit("555888ggghhjy-372f-4775-9bcb-e9dd723547htui"),
+            'avg_28_days_unit':        self._get_unit("5777fffrrtt11-372f-4775-9bcb-e9dd723547htui"),
+            'avg_density_unit':        self._get_unit("23145870-372f-4775-9bcb-e9dd70e3587g"),
+            'avg_specific_gravity_unit':        self._get_unit("0157yutr1034-372f-4775-9bcb-e9dd723547htui"),
+            'initial_time_unit':        self._get_unit("psc5478-30fe-4043-b518-015f5c60d916"),
+            'final_time_unit':        self._get_unit("987psc47-5e9c-4335-9ea2-2d87624c3061"),
+        })
+        return res
+
     @api.depends('eln_ref')
     def _compute_size_id(self):
         if self.eln_ref:
@@ -135,7 +188,7 @@ class CementPSC(models.Model):
 
     density_cement_lines = fields.One2many('density.cement.psc.line','parent_id',string="Fineness density")
 
-    avg_density = fields.Float(string="Density of Cement g/cm3",compute="_compute_avg_density")
+    avg_density = fields.Float(string="Density of Cement ",compute="_compute_avg_density")
 
     # specific_gravity = fields.Float(string="Specific Gravity of Cement",compute="_compute_cement_specific")
 
@@ -206,7 +259,7 @@ class CementPSC(models.Model):
 
     fineness_blaine_lines = fields.One2many('fineness.blaine.psc.line','parent_id',string="Fineness blaine")
 
-    avg_fineness_blaine = fields.Float(string="Fineness of Cement, m2/kg ",compute="_compute_avg_fineness_blaine")
+    avg_fineness_blaine = fields.Float(string="Fineness of Cement ",compute="_compute_avg_fineness_blaine")
 
     avg_fineness_blaine_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -278,7 +331,7 @@ class CementPSC(models.Model):
 
     soundness_cement_lines = fields.One2many('soundness.cement.psc.line','parent_id',string="Soundness")
 
-    avg_soundness_cement = fields.Float(string="Soundness of Cement, mm ",compute="_compute_avg_soundness_cement")
+    avg_soundness_cement = fields.Float(string="Soundness of Cement",compute="_compute_avg_soundness_cement")
 
     avg_soundness_cement_conformity = fields.Selection([
         ('pass', 'Pass'),
