@@ -19,6 +19,58 @@ class CementPPC(models.Model):
     start_date = fields.Date(string="Start Date", compute="_compute_start_date", store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    avg_fineness_unit    = fields.Char("Avg Fineness Cement Unit",    compute="_compute_units", store=False)
+    avg_fineness_blaine_unit        = fields.Char("avg fineness blaine Unit",        compute="_compute_units", store=False)
+    avg_soundness_cement_unit       = fields.Char("avg soundness cement Unit",       compute="_compute_units", store=False)
+    consitency_of_cement_unit = fields.Char("consitency of cement Unit", compute="_compute_units", store=False)
+    avg_3_days_unit        = fields.Char("Avg 3 days Unit",        compute="_compute_units", store=False)
+    avg_7_days_unit        = fields.Char("avg 7 days Unit",        compute="_compute_units", store=False)
+    avg_28_days_unit        = fields.Char("avg 28 days Unit",        compute="_compute_units", store=False)
+    avg_density_unit        = fields.Char("avg density Unit",        compute="_compute_units", store=False)
+    avg_specific_gravity_unit        = fields.Char("avg specific gravity Unit",        compute="_compute_units", store=False)
+    initial_time_unit        = fields.Char("Initial Setting Time Unit",        compute="_compute_units", store=False)
+    final_time_unit        = fields.Char("Final Setting Time Unit",        compute="_compute_units", store=False)
+
+    # ---- helper method
+    def _get_unit(self, internal_id):
+        param = self.env['lerm.parameter.master'].search([
+            ('internal_id', '=', internal_id)
+        ], limit=1)
+        return param.unit.name if param.unit else ""
+
+    # ---- compute + default values
+    def _compute_units(self):
+        for rec in self:
+            rec.avg_fineness_unit    = rec._get_unit("32145hjy14-372f-4775-9bcb-e9dd70e6e6df")
+            rec.avg_fineness_blaine_unit        = rec._get_unit("210456321t-372f-4775-9bcb-e9dd70214578r")
+            rec.avg_soundness_cement_unit       = rec._get_unit("301245vfrt77-372f-4775-9bcb-e9dd723547htui")
+            rec.consitency_of_cement_unit = rec._get_unit("30124578hhh-372f-4775-9bcb-e9dd723547htui")
+            rec.avg_3_days_unit        = rec._get_unit("147frrt012-372f-4775-9bcb-e9dd723547h")
+            rec.avg_7_days_unit        = rec._get_unit("1236547ffv-372f-4775-9bcb-e9dd723547htui")
+            rec.avg_28_days_unit        = rec._get_unit("00rrrttt887-372f-4775-9bcb-e9dd723547htui")
+            rec.avg_density_unit        = rec._get_unit("30124578hy-372f-4775-9bcb-e9dd70e6e601h")
+            rec.avg_specific_gravity_unit        = rec._get_unit("3214578ty10i-372f-4775-9bcb-e9dd723547htui")
+            rec.initial_time_unit        = rec._get_unit("6987456-30fe-4043-b518-015f5c60d916")
+            rec.final_time_unit        = rec._get_unit("3214ght-5e9c-4335-9ea2-2d87624c3061")
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        res.update({
+            'avg_fineness_unit':    self._get_unit("32145hjy14-372f-4775-9bcb-e9dd70e6e6df"),
+            'avg_fineness_blaine_unit':        self._get_unit("210456321t-372f-4775-9bcb-e9dd70214578r"),
+            'avg_soundness_cement_unit':       self._get_unit("301245vfrt77-372f-4775-9bcb-e9dd723547htui"),
+            'consitency_of_cement_unit': self._get_unit("30124578hhh-372f-4775-9bcb-e9dd723547htui"),
+            'avg_3_days_unit':        self._get_unit("147frrt012-372f-4775-9bcb-e9dd723547h"),
+            'avg_7_days_unit':        self._get_unit("1236547ffv-372f-4775-9bcb-e9dd723547htui"),
+            'avg_28_days_unit':        self._get_unit("00rrrttt887-372f-4775-9bcb-e9dd723547htui"),
+            'avg_density_unit':        self._get_unit("30124578hy-372f-4775-9bcb-e9dd70e6e601h"),
+            'avg_specific_gravity_unit':        self._get_unit("3214578ty10i-372f-4775-9bcb-e9dd723547htui"),
+            'initial_time_unit':        self._get_unit("6987456-30fe-4043-b518-015f5c60d916"),
+            'final_time_unit':        self._get_unit("3214ght-5e9c-4335-9ea2-2d87624c3061"),
+        })
+        return res
+
     @api.depends('eln_ref')
     def _compute_size_id(self):
         if self.eln_ref:

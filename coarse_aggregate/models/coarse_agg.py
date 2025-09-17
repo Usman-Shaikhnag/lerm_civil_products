@@ -64,8 +64,6 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
-
-
     @api.depends("eln_ref")
     def _compute_size_id(self):
         for record in self:
@@ -73,22 +71,22 @@ class CoarseAggregateMechanical(models.Model):
             record.size_id = record.eln_ref.size_id.id
 
 
-    @api.depends('eln_ref')
-    def _compute_sample_parameters(self):
-        for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
 
         
-    def get_all_fields(self):
-        record = self.env['mechanical.coarse.aggregate'].browse(self.ids[0])
-        field_values = {}
-        for field_name, field in record._fields.items():
-            field_value = record[field_name]
-            field_values[field_name] = field_value
+    # def get_all_fields(self):
+    #     record = self.env['mechanical.coarse.aggregate'].browse(self.ids[0])
+    #     field_values = {}
+    #     for field_name, field in record._fields.items():
+    #         field_value = record[field_name]
+    #         field_values[field_name] = field_value
 
-        return field_values
+    #     return field_values
 
 
 

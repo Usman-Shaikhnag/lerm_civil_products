@@ -334,7 +334,7 @@ class FineAggregate(models.Model):
 
    
 
-    specific_gravity = fields.Float(string="Avg Specific Gravity",compute="_compute_specific_gravity")
+    specific_gravity = fields.Float(string="Avg Specific Gravity",compute="_compute_specific_gravity",digits=(12,3))
 
     @api.depends('avg_staurated_a', 'avg_pycnometer_b', 'avg_pycnometer_c', 'avg_oven_d')
     def _compute_specific_gravity(self):
@@ -1112,10 +1112,10 @@ class SieveAnalysisLine(models.Model):
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size")
-    wt_retained = fields.Float(string="Wt. Retained in gms")
-    percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained",digits=(12,2))
-    cumulative_retained = fields.Float(string="Cum. Retained %", compute="_compute_cum_retained", store=True,digits=(12,2))
-    passing_percent = fields.Float(string="Passing %",digits=(12,2))
+    wt_retained = fields.Float(string="Wt. Retained in gms",digits=(12,3))
+    percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained",digits=(12,3))
+    cumulative_retained = fields.Float(string="Cum. Retained %", compute="_compute_cum_retained", store=True,digits=(12,3))
+    passing_percent = fields.Float(string="Passing %",digits=(12,3))
     specific_limt = fields.Char(string="Specified Limits")
 
 

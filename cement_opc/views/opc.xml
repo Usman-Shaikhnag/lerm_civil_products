@@ -55,7 +55,7 @@
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="avg_cement">Avg Fineness Cement</label></td>
-                                <td><field name="avg_cement" nolabel="1"/></td>
+                                <td><field name="avg_cement" nolabel="1"/>  <span><field name="avg_fineness_unit" readonly="1" nolabel="1"/></span></td>
                             </tr>
                             <tr>
                                 <td><label class="fw-bold" for="wt_of_cement_a">Weight of the Cement Sample (a)</label></td>
@@ -113,8 +113,8 @@
                             <tr>
                                 <td><label class="fw-bold" for="avg_density">Density of Cement</label></td>
                                 <td>
-                                    <field name="avg_density" nolabel="1"/>
-                                    <span>g/cm³</span>
+                                    <field name="avg_density" nolabel="1"/>  <span><field name="avg_density_unit" readonly="1" nolabel="1"/></span>
+                                 
                                 </td>
                             </tr>
                           
@@ -176,8 +176,8 @@
                             <tr>
                                 <td><label class="fw-bold" for="avg_fineness_blaine">Fineness of Cement</label></td>
                                 <td>
-                                    <field name="avg_fineness_blaine" nolabel="1"/>
-                                    <span class="ms-2">m²/kg</span>
+                                    <field name="avg_fineness_blaine" nolabel="1"/>  <span><field name="avg_fineness_blaine_unit" readonly="1" nolabel="1"/></span>
+                                    
                                 </td>
                             </tr>
                             <tr>
@@ -225,7 +225,7 @@
                             <tr>
                                 <td><label class="fw-bold" for="avg_soundness_cement">Soundness</label></td>
                                 <td>
-                                    <field name="avg_soundness_cement" nolabel="1"/>
+                                    <field name="avg_soundness_cement" nolabel="1"/>  <span><field name="avg_soundness_cement_unit" readonly="1" nolabel="1"/></span>
                                 </td>
                             </tr>
                             <tr>
@@ -277,7 +277,7 @@
                             <tr>
                                 <td><label class="fw-bold" for="consitency_of_cement">Consistency of Cement</label></td>
                                 <td>
-                                    <field name="consitency_of_cement" nolabel="1"/>
+                                    <field name="consitency_of_cement" nolabel="1"/>  <span><field name="consitency_of_cement_unit" readonly="1" nolabel="1"/></span>
                                 </td>
                             </tr>
                             <tr>
@@ -383,11 +383,11 @@
                                     </tr>
                                     <tr>
                                         <td><label for="initial_setting_time_minutes_unrounded">Initial Setting Time</label></td>
-                                        <td><field name="initial_setting_time_minutes_unrounded"/></td>
+                                        <td><field name="initial_setting_time_minutes_unrounded"/>  </td>
                                     </tr>
                                     <tr>
                                         <td><label for="initial_setting_time_minutes">Initial Setting Time Rounded</label></td>
-                                        <td><field name="initial_setting_time_minutes"/></td>
+                                        <td><field name="initial_setting_time_minutes"/>  <span><field name="initial_time_unit" readonly="1" nolabel="1"/></span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -418,7 +418,7 @@
                                     </tr>
                                     <tr>
                                         <td><label for="final_setting_time_minutes">Final Setting Time Rounded</label></td>
-                                        <td><field name="final_setting_time_minutes"/></td>
+                                        <td><field name="final_setting_time_minutes"/>  <span><field name="final_time_unit" readonly="1" nolabel="1"/></span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -538,7 +538,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="avg_specific_gravity">Avg. Specific Gravity</label></td>
-                                    <td><field name="avg_specific_gravity"/></td>
+                                    <td><field name="avg_specific_gravity"/>  <span><field name="avg_specific_gravity_unit" readonly="1" nolabel="1"/></span></td>
                                 </tr>
                               
                             </tbody>
@@ -606,7 +606,7 @@
                             <tr>
                                 <td><label class="fw-bold" for="avg_3_days">Avg Strength</label></td>
                                 <td>
-                                    <field name="avg_3_days" nolabel="1"/> N/mm²
+                                    <field name="avg_3_days" nolabel="1"/>  <span><field name="avg_3_days_unit" readonly="1" nolabel="1"/></span>
                                 </td>
                             </tr>
                             <tr>
@@ -641,7 +641,7 @@
                             <tr>
                                 <td><label class="fw-bold" for="avg_7_days">Avg Strength</label></td>
                                 <td>
-                                    <field name="avg_7_days" nolabel="1"/> N/mm²
+                                    <field name="avg_7_days" nolabel="1"/>  <span><field name="avg_7_days_unit" readonly="1" nolabel="1"/></span>
                                 </td>
                             </tr>
                             <tr>
@@ -676,7 +676,7 @@
                             <tr>
                                 <td><label class="fw-bold" for="avg_28_days">Avg Strength</label></td>
                                 <td>
-                                    <field name="avg_28_days" nolabel="1"/> N/mm²
+                                    <field name="avg_28_days" nolabel="1"/>  <span><field name="avg_28_days_unit" readonly="1" nolabel="1"/></span>
                                 </td>
                             </tr>
                             <tr>
