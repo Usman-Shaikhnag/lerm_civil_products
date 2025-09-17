@@ -663,6 +663,8 @@ class GypsumPlastereport(models.AbstractModel):
         qr_code = qr_image_base64
         model_id = eln.model_id
         # differnt location for product based
+
+        
         model_name = eln.material.product_based_calculation[0].ir_model.name 
         if model_name:
             general_data = self.env[model_name].sudo().browse(model_id)

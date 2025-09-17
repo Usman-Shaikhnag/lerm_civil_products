@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_aac_block_form" model="ir.ui.view">
+        <field name="name">mechanical.aac.block.form</field>
+        <field name="model">mechanical.aac.block</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+
+                <div>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                </div>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade"/>
+
+                    </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+                    <group/>
+                    
+                    <!-- Dimension -->
+
+                    <group invisible="not dimension_visible">
+                        <h1>
+                            <field name="dimension_name" readonly="1" nolabel="1"/>
+                            <field name="dimension_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                    <div class="custom_table_borders" invisible="not dimension_visible">
+                        <field name="dimension_table" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="length"/>
+                          <field name="width"/>
+                          <field name="height"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                    
+                    <div style="display:flex;">
+                    <div style="width:33%;">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="average_length">Average Length</label></td>
+                                    <td><field name="average_length"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="width:33%;">
+                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="average_width">Average Width</label></td>
+                                    <td><field name="average_width"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="width:34%;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="average_height">Average Height</label></td>
+                                    <td><field name="average_height"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+
+
+                    <!-- <group invisible="not dimension_visible">
+                        <group style="width:33%;display:flex;">
+                            <field name="average_length"/>
+                        
+                            <field name="average_width"/>
+                        
+                            <field name="average_height"/>
+                        </group>
+                    </group> -->
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="length_grade1">Length pecification Grade - 1</label></td>
+                                    <td><field name="length_grade1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="text-bold" for="width_grade1">Width Specification Grade - 1</label></td>
+                                    <td><field name="width_grade1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="text-bold" for="height_grade1">Height Specification Grade - 1</label></td>
+                                    <td><field name="height_grade1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="width:50%;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="length_grade2">Length Specification Grade - 2</label></td>
+                                    <td><field name="length_grade2"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="text-bold" for="width_grade2">Width Specification Grade - 2</label></td>
+                                    <td><field name="width_grade2"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="text-bold" for="height_grade2">Height Specification Grade - 2</label></td>
+                                    <td><field name="height_grade2"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                    <group/>
+
+
+                    <!-- <group invisible="not dimension_visible">
+                        <group style="white-space: nowrap; width:70%;">
+                            <field name="length_grade1"/>
+                             <field name="length_grade2"/>
+                    
+                        </group>
+
+                           <group  style="white-space: nowrap; width:70%;">
+                            <field name="width_grade1"/>
+                             <field name="width_grade2"/>
+                    
+                        </group>
+
+                         <group style="white-space: nowrap; width:70%;">
+                            <field name="height_grade1"/>
+                             <field name="height_grade2"/>
+                    
+                        </group>
+                    </group> -->
+                    
+                    
+
+                    <!-- Moisture Content  -->
+
+                    <div invisible="not moisture_visible">
+                        <h1>
+                            <field name="moisture_name" readonly="1" nolabel="1"/>
+                            <field name="moisture_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not moisture_visible">
+                        <field name="moisture_content_table" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="wt_sample"/>
+                          <field name="oven_wt"/>
+                          <field name="moisture_content"/>
+                        </tree>
+                        </field>
+                    </div>
+                    
+                    <div style="width:60%">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
+                         <tbody>
+                         <tr>
+                           <td><label for="average_moisture_content" class="text-bold">Average Moisture Content %</label></td>
+                           <td><field name="average_moisture_content"/></td>
+                          </tr>
+                           <tr>
+                            <td><label for="moisture_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="moisture_confirmity"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="moisture_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="moisture_nabl"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+
+                    <!-- <group invisible="not moisture_visible">
+                        <group style="width:33%">
+                            <field name="average_moisture_content"/>
+                        
+                            <field name="moisture_confirmity"/>
+                        
+                            <field name="moisture_nabl"/>
+                        </group>
+                    </group> -->
+
+                    <div style="display:flex;">                        
+                       <div style="width:50%">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                         <tbody>
+                           <tr>
+                           <td><label for="moisture_grade1" class="text-bold">Specification Grade - 1</label></td>
+                           <td><field name="moisture_grade1"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+
+                        <div style="width:50%">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td><label for="moisture_grade2" class="text-bold">Specification Grade - 2</label></td>
+                           <td><field name="moisture_grade2"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <group/>
+
+                    <!-- <group invisible="not moisture_visible">
+                        <group style="white-space: nowrap; width:70%;">
+                            <field name="moisture_grade1"/>
+                             <field name="moisture_grade2"/>
+                        </group>
+                    </group> -->
+
+                     
+
+                    <!-- Block Density  -->
+                    <group invisible="not density_visible">
+                        <h1>
+                            <field name="density_name" readonly="1" nolabel="1"/>
+                            <field name="density_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <div style="width:60%">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
+                         <tbody>
+                         <tr>
+                           <td><label for="density_unit" class="text-bold">Unit</label></td>
+                           <td><field name="density_unit"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+
+                    <!-- <group invisible="not density_visible">
+                        <field name="density_unit"/>
+                    </group> -->
+                    
+                    <div class="custom_table_borders" invisible="not density_visible">
+                        <field name="density_table"  nolabel="1" colspan="2">
+                        <tree>
+                          <field name="length" widget="textarea" />
+                          <field name="width" style="white-space:nowrap;"/>
+                          <field name="height" style="white-space:nowrap;"/>
+                          <field name="volume" style="white-space:nowrap;" />
+                          <field name="wt_sample" style="white-space:nowrap;"/>
+                          <field name="density" style="white-space:nowrap;"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                    <div style="width:60%">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
+                         <tbody>
+                         <tr>
+                           <td><label for="average_density" class="text-bold">Average Density</label></td>
+                           <td><field name="average_density"/></td>
+                          </tr>
+                           <tr>
+                            <td><label for="density_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="density_confirmity"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="density_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="density_nabl"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+
+                        <div style="display:flex;">                        
+                       <div style="width:50%">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                         <tbody>
+                           <tr>
+                           <td><label for="density_grade1" class="text-bold">Specification Grade - 1</label></td>
+                           <td><field name="density_grade1"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+
+                        <div style="width:50%">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td><label for="density_grade2" class="text-bold">Specification Grade - 2</label></td>
+                           <td><field name="density_grade2"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+
+                    <!-- <group invisible="not density_visible">
+                        <group style="width:33%">
+                            <field name="average_density"/>
+                            <field name="density_confirmity"/>
+                            <field name="density_nabl"/>
+                        </group>
+                    </group> -->
+                    <!-- <group invisible="not moisture_visible">
+                        <group style="white-space: nowrap; width:70%;">
+                            <field name="density_grade1"/>
+                             <field name="density_grade2"/>
+                        </group>
+                    </group> -->
+                    <group/>
+
+                    <!-- Drying Shrinkage  -->
+                    <div invisible="not drying_shrinkage_visible">
+                        <h1>
+                            <field name="drying_shrinkage_name" readonly="1" nolabel="1"/>
+                            <field name="drying_shrinkage_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not drying_shrinkage_visible">
+                        <field name="drying_shrinkage_table" nolabel="1">
+                        <tree editable="bottom">
+                          <field name="length"/>
+                          <field name="initial_length"/>
+                          <field name="final_length"/>
+                          <field name="change_length"/>
+                          <field name="drying_shrinkage"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                    <div style="width:60%">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
+                         <tbody>
+                         <tr>
+                           <td><label for="average_drying_shrinkage" class="text-bold">Average Drying Shrinkage</label></td>
+                           <td><field name="average_drying_shrinkage"/></td>
+                          </tr>
+                           <tr>
+                            <td><label for="drying_shrinkage_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="drying_shrinkage_confirmity"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="drying_shrinkage_aac_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="drying_shrinkage_aac_nabl"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+
+                        <div style="display:flex;">                        
+                       <div style="width:50%">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                         <tbody>
+                           <tr>
+                           <td><label for="drying_grade1" class="text-bold">Specification Grade - 1</label></td>
+                           <td><field name="drying_grade1"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+
+                        <div style="width:50%">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td><label for="drying_grade2" class="text-bold">Specification Grade - 2</label></td>
+                           <td><field name="drying_grade2"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <group/>
+
+                    <!-- <group invisible="not drying_shrinkage_visible">
+                        <group style="width:33%">
+                            <field name="average_drying_shrinkage"/>
+                            <field name="drying_shrinkage_confirmity"/>                            <field name="drying_shrinkage_aac_nabl"/>
+                        </group>
+
+                    </group>
+
+                     <group invisible="not drying_shrinkage_visible">
+                        <group style="white-space: nowrap; width:70%;">
+                            <field name="drying_grade1"/>
+                             <field name="drying_grade2"/>
+                    
+                        </group>
+                    </group> -->
+                    
+
+                <!-- Compressive Strength -->
+
+                <div invisible="not compressive_strength_visible">
+                        <h1>
+                            <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_strength_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not compressive_strength_visible">
+                        <field name="compressive_strength_table" nolabel="1" >
+                        <tree editable="bottom">
+                          <field name="crosssectional_area"/>
+                          <field name="aac_load"/>
+                          <field name="compressive_strength"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                    <div style="width:60%">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
+                         <tbody>
+                         <tr>
+                           <td><label for="average_compressive_strength" class="text-bold">Average Compressive Strength</label></td>
+                           <td><field name="average_compressive_strength"/></td>
+                          </tr>
+                           <tr>
+                            <td><label for="compressive_strength_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="compressive_strength_confirmity"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="compressive_strength_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="compressive_strength_nabl"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+
+                        <div style="display:flex;">                        
+                       <div style="width:50%">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                         <tbody>
+                           <tr>
+                           <td><label for="compressive_grade1" class="text-bold">Specification Grade - 1</label></td>
+                           <td><field name="compressive_grade1"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+
+                        <div style="width:50%">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td><label for="compressive_grade2" class="text-bold">Specification Grade - 2</label></td>
+                           <td><field name="compressive_grade2"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+
+                    <!-- <group invisible="not compressive_strength_visible">
+                        <group style="width:33%">
+                            <field name="average_compressive_strength"/>
+                        
+                            <field name="compressive_strength_confirmity"/>
+                       
+                            <field name="compressive_strength_nabl"/>
+                           
+                        </group>
+                 
+                    </group>
+                    <group invisible="not drying_shrinkage_visible">
+                        <group style="white-space: nowrap; width:70%;">
+                            <field name="compressive_grade1"/>
+                             <field name="compressive_grade2"/>
+                    
+                        </group>
+                    </group> -->
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+
+       
+    </data>
+</odoo>
