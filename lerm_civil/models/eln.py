@@ -85,6 +85,17 @@ class ELN(models.Model):
     instrument = fields.Many2one('maintenance.equipment',string="Instrument")
     sop = fields.Html(string='SOP',compute="comput_sop")
     date_testing = fields.Date("Date of Testing",compute="_compute_date_testing")
+    days_casting = fields.Selection([
+        ('1', '1 Days'),
+        ('3', '3 Days'),
+        ('7', '7 Days'),
+        ('14', '14 Days'),
+        ('21', '21 Days'),
+        ('28', '28 Days'),
+        ('45', '45 Days'),
+        ('56', '56 Days'),
+        ('112', '112 Days'),
+    ], string='Days of casting', default='3')
     # data_sheet = fields.Binary(string="Data Sheet", attachment=True)
 
     # file_upload = fields.Many2many(
