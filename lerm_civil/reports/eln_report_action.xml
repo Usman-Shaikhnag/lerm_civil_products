@@ -988,5 +988,27 @@
             <field name="binding_type">report</field>
         </record>
 
+        <record id="datasheet_aac_block_action" model="ir.actions.report">
+            <field name="name">AAC Block Datasheet</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">aac_block.aac_block_datasheet</field>
+            <field name="report_file">aac_block.aac_block_datasheet</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <!--  <field name="binding_model_id" eval="False"/>  -->
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="report_aac_block_action" model="ir.actions.report">
+            <field name="name">AAC Block Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">aac_block.aac_block_mech_report</field>
+            <field name="report_file">aac_block.aac_block_mech_report</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <!--  <field name="binding_model_id" eval="False"/>  -->
+            <field name="binding_type">report</field>
+        </record>
+
 
 </odoo>

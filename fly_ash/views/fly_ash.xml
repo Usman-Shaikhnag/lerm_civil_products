@@ -26,14 +26,14 @@
                         <field name="parameter_id" invisible="1"/>
                     </group>
                     
-                    <group>
+                    <div class="custom_table_borders">
                       <field name="sample_parameters">
-                        <tree class="table-bordered o_list_view">
+                        <tree>
                           <field name="parameter_name"/>
                           <field name="test_method"/>
                         </tree>
                       </field>
-                    </group>
+                    </div>
                       <!-- Normal Consistency Start -->
 
                     
@@ -52,34 +52,32 @@
                     <group/>
                     <div style="display:flex;">
                     <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 70%;">
-                         <tbody>
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                      <tbody>
                             <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Temperature °c</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="temp_percent_normal"/></td>
+                              <td><label for="temp_percent_normal">Temperature °c</label></td>
+                              <td><field name="temp_percent_normal"/></td>
                             </tr>
                             <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Humidity %</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="humidity_percent_normal"/></td>
+                            <td><label for="humidity_percent_normal">Humidity %</label></td>
+                            <td><field name="humidity_percent_normal"/></td>
                             </tr>
-                                 
-                         </tbody>
+                            </tbody>
                       </table>
                     </div>
 
 
                     <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 50%;">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Start Date</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="start_date_normal"/></td>
+                              <td><label for="start_date_normal">Start Date</label></td>
+                              <td><field name="start_date_normal"/></td>
                             </tr>
                             <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>End Date</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="end_date_normal"/></td>
+                            <td><label for="end_date_normal">End Date</label></td>
+                            <td><field name="end_date_normal"/></td>
                             </tr>
-                            
                          </tbody>
                       </table>
                     </div>
@@ -102,71 +100,71 @@
 
 
                     <div>
-                      <table class="table table-bordered sm-table" style="width: 50%; height:200px;font-size: 15px; margin:0px;">
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width: 70%;">
                          <tbody>
                            <tr >
                            <td></td>
                              <td><label for="gravity_of_flyash1" string="Trial 1"/></td>
                            </tr>
                            <tr>
-                             <td><span>Specific Gravity of Flyash</span></td>
+                             <td><label for="gravity_of_flyash1">Specific Gravity of Flyash</label></td>
                              <td><field  name="gravity_of_flyash1"    colspan="1"  nolabel="1"/></td>
                            </tr>
                            <tr>
-                             <td><span>Specific Gravity of Cement</span></td>
+                             <td><label for="gravity_of_cement1">Specific Gravity of Cement</label></td>
                              <td><field  name="gravity_of_cement1"  colspan="1"  nolabel="1"/></td>
                            </tr>
                            <tr>
-                             <td><span>N</span></td>
+                             <td><label for="fly_ash_n1">N</label></td>
                              <td><field  name="fly_ash_n1"  colspan="1"  nolabel="1"/></td>
                            </tr>
                            <tr>
-                             <td><span>Wt. of  Flyash</span></td>
+                             <td><label for="wt_of_flash_1">Wt. of  Flyash</label></td>
                              <td><field  name="wt_of_flash_1"  colspan="1"  nolabel="1"/></td>
                            </tr>
                            <tr>
-                             <td><span>Wt. of  Cement (g)</span></td>
+                             <td><label for="wt_of_cement_1">Wt. of  Cement (g)</label></td>
                              <td><field  name="wt_of_cement_1"  colspan="1"  nolabel="1"/></td>
                            </tr>
                            <tr>
-                             <td><span>Total Weight of Sample(g)</span></td>
+                             <td><label for="total_wt_of_sample_fly_1">Total Weight of Sample(g)</label></td>
                              <td><field  name="total_wt_of_sample_fly_1"  colspan="1"  nolabel="1"/></td>
                            </tr>
 
                            <tr>
-                             <td><span>Wt.of water required (g)</span></td>
+                             <td><label for="wt_of_water_required_fly_1">Wt.of water required (g)</label></td>
                              <td><field  name="wt_of_water_required_fly_1"  colspan="1"  nolabel="1"/></td>
                            </tr>
 
                            <tr>
-                             <td><span>Penetraion of vicat's Plunger (mm)</span></td>
+                             <td><label for="penetration_planger_fly_1">Penetraion of vicat's Plunger (mm)</label></td>
                              <td><field  name="penetration_planger_fly_1"  colspan="1"  nolabel="1"/></td>
                            </tr>
 
                            <tr>
-                             <td><span>Normal Consistency, %</span></td>
+                             <td><label for="normal_consistency_fly_1">Normal Consistency, %</label></td>
                              <td><field  name="normal_consistency_fly_1"  colspan="1"  nolabel="1"/></td>
                            </tr>
-                          
                          </tbody>
                       </table>
                     </div>
 
 
                     <div>
-                      <table style="width: 20%; margin-top:10px;">
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
                         <tr>
-                          <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                          <td style="padding: 8px;"><field  name="normal_consistency_conformity" 
+                          <td><label for="normal_consistency_conformity">Conformity</label></td>
+                          <td><field  name="normal_consistency_conformity" 
                                            decoration-success="normal_consistency_conformity == 'pass'" 
                                            decoration-danger="normal_consistency_conformity == 'fail'" 
                                            readonly="1" /></td>
                          </tr>
                          <tr>
-                         <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                         <td style="padding: 5px;"><field  name="normal_consistency_nabl" /> </td>
+                         <td><label for="normal_consistency_nabl">NABL</label></td>
+                         <td><field  name="normal_consistency_nabl" /> </td>
                          </tr>
-                     
+                         </tbody>
                       </table>
                     </div>
 
@@ -187,146 +185,173 @@
 
                    <div style="display:flex;">
                     <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 70%;">
+                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style=" width:98%;">
                          <tbody>
                             <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Temperature °c</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="temp_percent_normal"/></td>
+                              <td><label for="temp_percent_normal">Temperature °c</label></td>
+                              <td><field name="temp_percent_normal"/></td>
                             </tr>
                             <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Humidity %</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="humidity_percent_normal"/></td>
+                            <td><label for="humidity_percent_normal">Humidity %</label></td>
+                            <td><field name="humidity_percent_normal"/></td>
+                            </tr>
+                            <!-- <tr>
+                            <td><span>Total Weight of Sample(g)</span></td>
+                            <td><field name="wt_of_fly_settingg_time" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
                             </tr>
                             <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Total Weight of Sample(g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="wt_of_fly_settingg_time" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
-                            </tr>
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Wt.of water required (g) (0.85*P%)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="wt_of_water_required_setting_time" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
-                            </tr>
+                            <td><span>Wt.of water required (g) (0.85*P%)</span></td>
+                            <td><field name="wt_of_water_required_setting_time" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
+                            </tr> -->
                          </tbody>
                       </table>
                     </div>
 
 
                     <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 50%;">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Start Date</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="start_date_normal"/></td>
+                              <td><label for="start_date_normal">Start Date</label></td>
+                              <td><field name="start_date_normal"/></td>
                             </tr>
                             <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>End Date</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="end_date_normal"/></td>
+                            <td><label for="end_date_normal">End Date</label></td>
+                            <td><field name="end_date_normal"/></td>
                             </tr>
-                            
                          </tbody>
                       </table>
                     </div>
-
                     </div>
 
+                    <div style="display:flex;">
+                      <div style="width:50%">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style=" width:98%;">
+                         <tbody>
+                          <tr>
+                            <td><label for="wt_of_fly_settingg_time">Total Weight of Sample(g)</label></td>
+                            <td><field name="wt_of_fly_settingg_time" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
+                            </tr>
+                         </tbody>
+                      </table>
+                      </div>
 
-                     <div  style="display:flex; margin-top:15px">
-                      <div>
-                       <div style="width:50%">
-                          <h3 style="white-space: nowrap; margin-bottom: 10px;">
-                            <field name="initial_setting_time_name" readonly="1" nolabel="1"  modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/>
-                          </h3>
-                        </div>
-                        <div>
-                        <table style="border: 2px solid black; border-collapse: collapse; width: 95%;">
+                      <div style="width:50%">
+                          <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>The Time When water is added to cement (t1)</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="time_water_added" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}' /></td>
+                            <td><label for="wt_of_water_required_setting_time">Wt.of water required (g) (0.85*P%)</label></td>
+                            <td><field name="wt_of_water_required_setting_time" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
                             </tr>
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="time_needle_fails" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}' /></td>
-                            </tr>
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Initial Setting Time (t2-t1) (Hours)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="initial_setting_time_hours" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
-                            </tr>
+                         </tbody>
+                      </table>
+                      </div>
+                    </div>
 
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Initial Setting Time</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="initial_setting_time_minutes_unrounded" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
-                            </tr>
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Initial Setting Time Rounded</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="initial_setting_time_minutes" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
-                            </tr>
-                            </tbody>
+                    <div class="d-flex gap-2 align-items-start" style="width:100%;">
+    
+                            <!-- Initial Setting Time Table -->
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders flex-fill" style="width:97%;"
+                                invisible="initial_setting_time_visible == False">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" class="text-center">
+                                            <field name="initial_setting_time_name" readonly="1" nolabel="1"  modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label for="time_water_added">The Time When water is added to cement (t1)</label></td>
+                                        <td><field name="time_water_added" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}' /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="time_needle_fails">The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)</label></td>
+                                        <td><field name="time_needle_fails" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}' /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="initial_setting_time_hours">Initial Setting Time (t2-t1) (Hours)</label></td>
+                                        <td><field name="initial_setting_time_hours" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="initial_setting_time_minutes_unrounded">Initial Setting Time</label></td>
+                                        <td><field name="initial_setting_time_minutes_unrounded" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="initial_setting_time_minutes">Initial Setting Time Rounded</label></td>
+                                        <td><field name="initial_setting_time_minutes" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Final Setting Time Table -->
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders flex-fill" style="margin-left:4px;"
+                                invisible="final_setting_time_visible == False">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" class="text-center">
+                                            <field name="final_setting_time_name" readonly="1" nolabel="1"   modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}'/>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label for="time_needle_make_impression">The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)</label></td>
+                                        <td><field name="time_needle_make_impression" modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_setting_time_hours">Final Setting Time (t2-t1) (Hours)</label></td>
+                                        <td><field name="final_setting_time_hours" modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_setting_time_minutes_unrounded">Final Setting Time</label></td>
+                                        <td><field name="final_setting_time_minutes_unrounded" modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_setting_time_minutes">Final Setting Time Rounded</label></td>
+                                        <td><field name="final_setting_time_minutes" modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}'/></td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
-                        <div>
-                          <table style="width: 40%; margin-top:10px;">
+
+                        <div style="display:flex;">                        
+                       <div style="width:50%">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                         <tbody>
                            <tr>
-                            <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                             <td style="padding: 8px;"><field  name="initial_setting_conformity" 
+                            <td><span>Conformity</span></td>
+                             <td><field  name="initial_setting_conformity" 
                                            decoration-success="initial_setting_conformity == 'pass'" 
                                            decoration-danger="initial_setting_conformity == 'fail'" 
                                            readonly="1" /></td>
                            </tr>
                            <tr>
-                           <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                           <td style="padding: 5px;"><field  name="initial_setting_nabl" /> </td>
+                           <td><span>NABL</span></td>
+                           <td><field  name="initial_setting_nabl" /> </td>
                           </tr>
-                     
+                          </tbody>
                           </table>
                         </div>
-                        </div>
-                        <div>
-                        <div style="width:50%">
-                          <h2 style="white-space: nowrap; margin-bottom: 10px;">
-                            <field name="final_setting_time_name" readonly="1" nolabel="1"   modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}'/>
-                          </h2>
-                        </div>
-                        <div> 
-                        <table style="border: 2px solid black; border-collapse: collapse; width: 95%;">
-                         <tbody>
-                            <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="time_needle_make_impression" modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}'/></td>
-                            </tr>
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Final Setting Time (t2-t1) (Hours)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"> <field name="final_setting_time_hours" modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}'/></td>
-                            </tr>
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Final Setting Time</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="final_setting_time_minutes_unrounded" modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}'/></td>
-                            </tr>
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Final Setting Time Rounded</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="final_setting_time_minutes" modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}'/></td>
-                            </tr>
-                         </tbody>
-                      </table>
-                        </div>
 
-                        <div style="margin-left:7px;">
-                          <table style="width: 40%; margin-top:10px;">
+                        <div style="width:50%">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
                            <tr>
-                            <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                             <td style="padding: 8px;"><field  name="final_setting_conformity" 
+                            <td><span>Conformity</span></td>
+                             <td><field  name="final_setting_conformity" 
                                            decoration-success="final_setting_conformity == 'pass'" 
                                            decoration-danger="final_setting_conformity == 'fail'" 
                                            readonly="1" /></td>
                            </tr>
                            <tr>
-                           <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                           <td style="padding: 5px;"><field  name="initial_setting_nabl" /> </td>
+                           <td><span>NABL</span></td>
+                           <td><field  name="initial_setting_nabl" /> </td>
                           </tr>
-                     
+                          </tbody>
                           </table>
                         </div>
                       </div>
-                    </div>
 
                     <!-- Particles retained on 45 micron IS sieve (wet sieving)  -->
 
@@ -339,50 +364,53 @@
 
 
 
-                    <group   modifiers="{'invisible': [['particles_retained_visible', '=', False]]}">
-                      <h4 style="white-space: nowrap;">Particles Retained</h4><br/>
+                    <div class="custom_table_borders"   modifiers="{'invisible': [['particles_retained_visible', '=', False]]}">
                       <field name="particles_retained_table" nolabel="1" colspan="2">
-                        <tree class="table-bordered o_list_view" editable="bottom">
+                        <tree editable="bottom">
                           <field name="sr_no"/>
                           <field name="sample_wt"/>
                           <field name="retained_wt"/>
                           <field name="wt_retained"/>
                         </tree>
                       </field>
-                      </group>
+                      </div>
                     <group/>
 
 
-                    <div>
-                          <table style="border: 1px solid black; width: 20%; margin-top:10px;">
+                    
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                          <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                          <tbody>
                            <tr>
-                             <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average</span></td>
-                              <td style="padding: 8px;"><field name="average_weight_retained"/></td>
+                             <td><label for="average_weight_retained">Average</label></td>
+                              <td><field name="average_weight_retained"/></td>
                            </tr>
                            <tr>
-                            <td style="border: 1px solid black; padding: 5px;font-weight: bold;"><span>% Weight RetainedBL</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="prcent_retaind"/> </td>
+                            <td><label for="prcent_retaind">% Weight Retained</label></td>
+                            <td><field name="prcent_retaind"/> </td>
                            </tr>
-                     
+                           </tbody>
                           </table>
                         </div>
-                    <group/>
-
-                        <div>
-                          <table style="width: 20%; margin-top:10px;">
+                        <div style="width:50%;">
+                          <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field  name="prcent_retaind_conformity" 
+                             <td><label for="prcent_retaind_conformity">Conformity</label></td>
+                              <td><field  name="prcent_retaind_conformity" 
                                            decoration-success="prcent_retaind_conformity == 'pass'" 
                                            decoration-danger="prcent_retaind_conformity == 'fail'" 
                                            readonly="1" /></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field  name="prcent_retaind_nabl" /> </td>
+                            <td><label for="prcent_retaind_nabl">NABL</label></td>
+                            <td><field  name="prcent_retaind_nabl" /> </td>
                            </tr>
-                     
+                          </tbody>
                           </table>
+                        </div>
                         </div>
 
 
@@ -395,74 +423,90 @@
                     </div>
 
 
-                    
-                    <div>
-                      <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                    <div style="display:flex;">
+                    <div style="width: 50%;">
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width: 98%;">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Wt. of Flyash</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_of_flyash_soundness"/></td>
+                            <td><label for="wt_of_flyash_soundness">Wt. of Flyash</label></td>
+                            <td><field name="wt_of_flyash_soundness"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Wt. of Cement (g)</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_of_cement_soundness"/></td>
+                            <td><label for="wt_of_cement_soundness">Wt. of Cement (g)</label></td>
+                            <td><field name="wt_of_cement_soundness"/></td>
+                          </tr>
+                          </tbody>
+                        </table>
+                          </div>
+
+                          <div style="width: 50%;">
+                          <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                          <tbody>
+                          <tr>
+                            <td><label for="total_wt_sample_soundness">Total Weight of Sample(g)</label></td>
+                            <td><field name="total_wt_sample_soundness"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Total Weight of Sample(g)</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="total_wt_sample_soundness"/></td>
-                          </tr>
-                          <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Wt.of water required (g)</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_of_water_req_soundness"/></td>
+                            <td><label for="wt_of_water_req_soundness">Wt.of water required (g)</label></td>
+                            <td><field name="wt_of_water_req_soundness"/></td>
                           </tr>
                         </tbody>
                       </table>
+                      </div>
+
+                      </div>
                       <group/>
 
-                      <group>
-                      <h4 style="white-space: nowrap;">Soundness</h4><br/>
+                      <div class="custom_table_borders">
                         <field name="soundness_table" nolabel="1" colspan="2">
-                         <tree class="table-bordered o_list_view" editable="bottom" >
+                         <tree editable="bottom" >
                            <field name="sr_no" style="text-align:left;"/>
                           <field name="initial_distance" style="text-align:left;"/>
                           <field name="final_distance" style="text-align:left;"/>
                           <field name="expansion" style="text-align:left;"/>
                         </tree>
                       </field>
-                      </group>
+                      </div>
+                      <group/>
 
-                      <table style="border: 1px solid black; width: 25%; margin-top:10px;">
+
+                      <div style="display:flex;">
+                      <div style="width:50%;">
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="average_soundness"/></td>
+                            <td><label for="average_soundness">Average</label></td>
+                            <td><field name="average_soundness"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Expansion(mm)</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="expansion_soundness"/></td>
+                            <td><label for="expansion_soundness">Expansion(mm)</label></td>
+                            <td><field name="expansion_soundness"/></td>
                           </tr>
-                        </tbody>
+                          </tbody>
                       </table>
+                      </div>
 
-                      <div>
-                          <table style="width: 20%; margin-top:10px;">
+                      <div style="width:50%;">
+                          <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field  name="expansion_soundness_conformity" 
+                             <td><label for="expansion_soundness_conformity">Conformity</label></td>
+                              <td><field  name="expansion_soundness_conformity" 
                                            decoration-success="expansion_soundness_conformity == 'pass'" 
                                            decoration-danger="expansion_soundness_conformity == 'fail'" 
                                            readonly="1" /></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field  name="expansion_soundness_nabl" /> </td>
+                            <td><label for="expansion_soundness_nabl">NABL</label></td>
+                            <td><field  name="expansion_soundness_nabl" /> </td>
                            </tr>
-                     
+                           </tbody>
                           </table>
+                      </div>
                       </div>
 
                       
-                    </div>
+                    
                     <group/>
 
                      <!-- Specific Gravity -->
@@ -476,60 +520,62 @@
                     <group/>
 
                     <div>
-                     <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                        <tbody>
                          <tr>
                            <td></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 1</span></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 2</span></td>
+                           <td><span>Trial 1</span></td>
+                           <td><span>Trial 2</span></td>
                          </tr>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Flyash (g)</span></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_flyash_specific2"  colspan="1"  nolabel="1"/></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_flyash_specific2"  colspan="1"  nolabel="1"/></td>
                          <tr>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Initial Volume of kerosine (ml)</span></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="intial_volume_specific1"  colspan="1"  nolabel="1"/></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="intial_volume_specific2"  colspan="1"  nolabel="1"/></td>
+                           <td><label for="wt_of_flyash_specific2">Weight of Flyash (g)</label></td>
+                           <td><field  name="wt_of_flyash_specific2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="wt_of_flyash_specific2"  colspan="1"  nolabel="1"/></td>
+                           </tr>
+                         <tr>
+                           <td><label for="intial_volume_specific1">Initial Volume of kerosine (ml)</label></td>
+                           <td><field  name="intial_volume_specific1"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="intial_volume_specific2"  colspan="1"  nolabel="1"/></td>
                          </tr>
                          <tr> 
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Final Volume of kerosine and Flyash (After immersion in constant water bath) (ml)</span></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="final_volume_specific1"  colspan="1"  nolabel="1"/></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="final_volume_specific2"  colspan="1"  nolabel="1"/></td>
+                           <td><label for="final_volume_specific1">Final Volume of kerosine and Flyash (After immersion in constant water bath) (ml)</label></td>
+                           <td><field  name="final_volume_specific1"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="final_volume_specific2"  colspan="1"  nolabel="1"/></td>
                          </tr>
                          <tr>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Displaced volume (cm³)</span></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="displaced_volume1"  colspan="1"  nolabel="1"/></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="displaced_volume2"  colspan="1"  nolabel="1"/></td>
+                           <td><label for="displaced_volume1">Displaced volume (cm³)</label></td>
+                           <td><field  name="displaced_volume1"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="displaced_volume2"  colspan="1"  nolabel="1"/></td>
                          </tr>
                          <tr>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Specific Gravity</span></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="specific_gravity1"  colspan="1"  nolabel="1"/></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="specific_gravity2"  colspan="1"  nolabel="1"/></td>
+                           <td><label for="specific_gravity1">Specific Gravity</label></td>
+                           <td><field  name="specific_gravity1"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="specific_gravity2"  colspan="1"  nolabel="1"/></td>
                          </tr>
-                                                 
                        </tbody>
                      </table>
                     </div>
 
 
                     <div>
-                          <table style="width: 20%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
-                            <td style="padding: 5px;"><field name="average_specific_gravity" nolabel="1" class="oe_center" /></td>
+                            <td><label for="average_specific_gravity">Average</label></td>
+                            <td><field name="average_specific_gravity" nolabel="1" class="oe_center" /></td>
                            </tr>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field  name="average_specific_gravity_conformity"
+                             <td><label for="average_specific_gravity_conformity">Conformity</label></td>
+                              <td><field  name="average_specific_gravity_conformity"
                                            decoration-success="average_specific_gravity_conformity == 'pass'" 
                                            decoration-danger="average_specific_gravity_conformity == 'fail'" 
                                            readonly="1" /></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field  name="average_specific_gravity_nabl" /></td>
+                            <td><label for="average_specific_gravity_nabl">NABL</label></td>
+                            <td><field  name="average_specific_gravity_nabl" /></td>
                            </tr>
-                     
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -543,73 +589,78 @@
                     </div>
                     <group/>
 
+
                     <div style="display:flex;">
                     <div style="width:55%">
-                    <h4 class="center-heading"  style="white-space: nowrap;">Compressive Strength of Test Mixture</h4>
-                      <table style="border: 1px solid black; border-collapse: collapse; width: 80%;">
+                    <h3 class="center-heading"  style="white-space: nowrap;">Compressive Strength of Test Mixture</h3>
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width: 98%;">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Specific Gravity of Flyash (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="specific_garavity_flyash"  colspan="1"/></td>
-                          </tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Specific Gravity of cement (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="specific_gravity_cement"  colspan="1" /></td>
-                          <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>N</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="n2"  colspan="1" /></td>
+                            <td><label for="specific_garavity_flyash">Specific Gravity of Flyash (g)</label></td>
+                            <td><field  name="specific_garavity_flyash"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Flyash (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="weight_of_flyash"  colspan="1"/></td>
+                            <td><label for="specific_gravity_cement">Specific Gravity of cement (g)</label></td>
+                            <td><field  name="specific_gravity_cement"  colspan="1" /></td>
+                            </tr>
+                          <tr>
+                            <td><label for="n2">N</label></td>
+                            <td><field  name="n2"  colspan="1" /></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Cement (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_cement_comp"  colspan="1"/></td>
+                            <td><label for="weight_of_flyash">Weight of Flyash (g)</label></td>
+                            <td><field  name="weight_of_flyash"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Standard Sand (g)Grade-I</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_standerd_comp1"  colspan="1"/></td>
+                            <td><label for="wt_of_cement_comp">Weight of Cement (g)</label></td>
+                            <td><field  name="wt_of_cement_comp"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Standard Sand (g)Grade-II</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_standerd_comp2"  colspan="1"/></td>
+                            <td><label for="wt_of_standerd_comp1">Weight of Standard Sand (g)Grade-I</label></td>
+                            <td><field  name="wt_of_standerd_comp1"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Standard Sand (g)Grade-III</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_standerd_comp3"  colspan="1"/></td>
+                            <td><label for="wt_of_standerd_comp2">Weight of Standard Sand (g)Grade-II</label></td>
+                            <td><field  name="wt_of_standerd_comp2"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Quantity of Water (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="quantity_water"  colspan="1"/></td>
+                            <td><label for="wt_of_standerd_comp3">Weight of Standard Sand (g)Grade-III</label></td>
+                            <td><field  name="wt_of_standerd_comp3"  colspan="1"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="quantity_water">Quantity of Water (g)</label></td>
+                            <td><field  name="quantity_water"  colspan="1"/></td>
                           </tr>
                         </tbody>
                       </table>
                       </div>
                       
-                      <div style="width:45%">
-                      <h4 class="center-heading" style="white-space: nowrap;">Calculation of Flow (Acceptable : 105 ± 5 %)</h4>
-                      <h5 class="center-heading" style="white-space: nowrap; padding:3px">Measured Values</h5>
-                      <table style="border: 1px solid black; border-collapse: collapse; width: 60%;">
+                      <div style="width:50%">
+                      <h3 class="center-heading" style="white-space: nowrap;">Calculation of Flow (Acceptable : 105 ± 5 %): Measured Values</h3>
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                      <tbody>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_value1"  colspan="1"  nolabel="1"/></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_value2"  colspan="1"  nolabel="1" /></td>
+                          <td><field  name="measured_value1"  colspan="1"  nolabel="1"/></td>
+                          <td><field  name="measured_value2"  colspan="1"  nolabel="1" /></td>
                         </tr>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_value3"  colspan="2"  nolabel="1"/></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_value4"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_value3"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_value4"  colspan="2"  nolabel="1"/></td>
                         </tr>
+                        </tbody>
                       </table>
 
-                         <table style="width: 50%; margin-top:5px">
+                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
-                            <td style="padding: 5px;"><field name="average_measured"/></td>
+                            <td><label for="average_measured">Average</label></td>
+                            <td><field name="average_measured"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>% Flow</span></td>
-                            <td style="padding: 5px;"> <field name="percent_flow"/></td>
+                            <td><label for="percent_flow">% Flow</label></td>
+                            <td><field name="percent_flow"/></td>
                            </tr>
-                     
+                           </tbody>
                           </table>
                       
                       </div>
@@ -627,26 +678,27 @@
 
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Done</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="status_28days"/></td>
+                        <td><label for="status_28days" class="text-bold">Done</label></td>
+                        <td><field name="status_28days"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Casting</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="casting_date_28days"/></td>
+                        <td><label for="casting_date_28days" class="text-bold">Date of Casting</label></td>
+                        <td><field name="casting_date_28days"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Testing</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="testing_date_28days"/></td>
+                        <td><label for="testing_date_28days" class="text-bold">Date of Testing</label></td>
+                        <td><field name="testing_date_28days"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
 
-                    <group style="margin-top:20px;">
-                    <h4 style="white-space: nowrap;">28 Days</h4><br/>
+                    <div class="custom_table_borders" style="margin-top:20px;">
                     <field name="casting_28_days_tables" nolabel="1" colspan="2">
-                        <tree class="o_list_view table-bordered" editable="bottom">
+                        <tree editable="bottom">
                           <field name="length"/>
                           <field name="width"/>
                           <field name="crosssectional_area"/>
@@ -655,13 +707,15 @@
                           <field name="compressive_strength" />
                         </tree>
                       </field>
-                    </group>
+                    </div>
 
-                         <table style="width: 20%; margin-top:6px">
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                         <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
-                            <td style="padding: 5px;"><field name="average_casting_28days"/></td>
+                            <td><label for="average_casting_28days" class="text-bold">Average</label></td>
+                            <td><field name="average_casting_28days"/></td>
                            </tr>
+                           </tbody>
                           </table>
 
 
@@ -669,62 +723,64 @@
                     <group/>
                     <group/>
                     <div style="display:flex;">
-                    <div style="width:55%">
-                    <h4 class="center-heading"  style="white-space: nowrap; padding-bottom:5px;">Compressive Strength of control Sample</h4>
-                      <table style="border: 1px solid black; border-collapse: collapse; width: 80%;">
+                    <div style="width:50%">
+                    <h3 class="center-heading"  style="white-space: nowrap; padding-bottom:5px;">Compressive Strength of control Sample</h3>
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width: 98%;">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Cement (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_cement_fly"  colspan="1"/></td>
+                            <td><label for="wt_of_cement_fly" class="text-bold">Weight of Cement (g)</label></td>
+                            <td><field  name="wt_of_cement_fly"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Standard Sand (g)Grade-I</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_standared_grade1"  colspan="1"/></td>
+                            <td><label for="wt_of_standared_grade1" class="text-bold">Weight of Standard Sand (g)Grade-I</label></td>
+                            <td><field  name="wt_of_standared_grade1"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Standard Sand (g)Grade-II</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"> <field  name="wt_of_standared_grade2"  colspan="1"/></td>
+                            <td><label for="wt_of_standared_grade2" class="text-bold">Weight of Standard Sand (g)Grade-II</label></td>
+                            <td> <field  name="wt_of_standared_grade2"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Standard Sand (g)Grade-III</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_standared_grade3"  colspan="1"/></td>
+                            <td><label for="wt_of_standared_grade3" class="text-bold">Weight of Standard Sand (g)Grade-III</label></td>
+                            <td><field  name="wt_of_standared_grade3"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Total Weight (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="total_wieght"  colspan="1"/></td>
+                            <td><label for="total_wieght" class="text-bold">otal Weight (g)</label></td>
+                            <td><field  name="total_wieght"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Quantity of Water (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="quantity_water_flyash"  colspan="1"/></td>
+                            <td><label for="quantity_water_flyash" class="text-bold">Quantity of Water (g)</label></td>
+                            <td><field  name="quantity_water_flyash"  colspan="1"/></td>
                           </tr>
                         </tbody>
                       </table>
                       </div>
                       
-                      <div style="width:45%">
-                      <h4 class="center-heading" style="white-space: nowrap;">Calculation of Flow (Acceptable : 105 ± 5 %)</h4>
-                      <h5 class="center-heading" style="white-space: nowrap; padding:3px">Measured Values</h5>
-                      <table style="border: 1px solid black; border-collapse: collapse; width: 60%;">
+                      <div style="width:50%">
+                      <h3 class="center-heading" style="white-space: nowrap;">Calculation of Flow (Acceptable : 105 ± 5 %) : Measured Values</h3>
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                      <tbody>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_values1"  colspan="2"  nolabel="1"/></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_values2"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_values1"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_values2"  colspan="2"  nolabel="1"/></td>
                         </tr>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_values3"  colspan="2"  nolabel="1"/></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_values4"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_values3"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_values4"  colspan="2"  nolabel="1"/></td>
                         </tr>
+                        </tbody>
                       </table>
 
-                         <table style="width: 50%; margin-top:5px">
+                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
-                            <td style="padding: 5px;"><field name="average_measureds"/></td>
+                            <td><label for="average_measureds" class="text-bold">Average</label></td>
+                            <td><field name="average_measureds"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>% Flow</span></td>
-                            <td style="padding: 5px;"><field name="percent_flows"/></td>
+                            <td><label for="percent_flows" class="text-bold">% Flow</label></td>
+                            <td><field name="percent_flows"/></td>
                            </tr>
-                     
+                           </tbody>
                           </table>
                       
                       </div>
@@ -741,28 +797,29 @@
 
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Done</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="status_28dayss"/></td>
+                        <td><label for="status_28dayss" class="text-bold">Done</label></td>
+                        <td><field name="status_28dayss"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Casting</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="casting_dates_28days"/></td>
+                        <td><label for="casting_dates_28days" class="text-bold">Date of Casting</label></td>
+                        <td><field name="casting_dates_28days"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Testing</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="testing_dates_28days"/></td>
+                        <td><label for="testing_dates_28days" class="text-bold">Date of Testing</label></td>
+                        <td><field name="testing_dates_28days"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
                     <group/>
                     
-                    <group>
-                    <h4 style="white-space: nowrap;">28 Days</h4><br/>
+                    <div class="custom_table_borders">
                     <field name="casting_28_dayss_tables" nolabel="1" colspan="2">
-                        <tree editable="bottom" class="o_list_view table-bordered">
+                        <tree editable="bottom">
                           <field name="lengths"/>
                           <field name="widths"/>
                           <field name="crosssectional_areas"/>
@@ -771,30 +828,44 @@
                           <field name="compressive_strengths" />
                         </tree>
                       </field>
-                    </group>
+                    </div>
 
-                         <table style="width: 20%; margin-top:6px">
+
+                    <div style="display:flex;">
+                    <div style="width:50%;">
+                         <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                         <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
-                            <td style="padding: 5px;"><field name="average_casting_28dayss"/></td>
+                            <td><label for="average_casting_28dayss" class="text-bold">Average</label><span>Average</span></td>
+                            <td><field name="average_casting_28dayss"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Compressive Strength of Sample (%)</span></td>
-                            <td style="padding: 5px;"><field name="compressive_strength_of_sample"/></td>
+                            <td><label for="compressive_strength_of_sample" class="text-bold">Compressive Strength of Sample (%)</label></td>
+                            <td><field name="compressive_strength_of_sample"/></td>
                            </tr>
+                           </tbody>
+                           </table>
+                          </div>
+
+                        <div style="width:50%;">
+                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
-                            <td style="padding: 5px;"><field name="compressive_strength_of_sample_conformity"
+                            <td><label for="compressive_strength_of_sample_conformity" class="text-bold">Conformity</label></td>
+                            <td><field name="compressive_strength_of_sample_conformity"
                                            decoration-success="compressive_strength_of_sample_conformity == 'pass'" 
                                            decoration-danger="compressive_strength_of_sample_conformity == 'fail'" 
                                            readonly="1" />
                             </td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name="compressive_strength_of_sample_nabl" /></td>
+                            <td><label for="compressive_strength_of_sample_nabl" class="text-bold">NABL</label></td>
+                            <td><field name="compressive_strength_of_sample_nabl" /></td>
                            </tr>
+                           </tbody>
                           </table>
+                          </div>
+                          </div>
                           <group/>
 
 
@@ -810,73 +881,78 @@
                     <group/>
 
                     <div style="display:flex;">
-                    <div style="width:55%">
-                      <table style="border: 1px solid black; border-collapse: collapse; width: 80%;">
+                    <div style="width:50%">
+                    <h3 class="center-heading" style="white-space: nowrap;">    </h3>
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width: 98%;">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Specific Gravity of Flyash (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="specific_gravity_fly_lime"  colspan="1"/></td>
-                          </tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Specific Gravity of Lime (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="specific_gravity_of_lime"  colspan="1"/></td>
-                          <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>M</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="m"  colspan="1"/></td>
+                            <td><label for="specific_gravity_fly_lime" class="text-bold">Specific Gravity of Flyash (g)</label></td>
+                            <td><field  name="specific_gravity_fly_lime"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Hydrated Lime (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_hydrent"  colspan="1"/></td>
+                            <td><label for="specific_gravity_of_lime" class="text-bold">Specific Gravity of Lime (g)</label></td>
+                            <td><field  name="specific_gravity_of_lime"  colspan="1"/></td>
+                            </tr>
+                          <tr>
+                            <td><label for="m" class="text-bold">M</label></td>
+                            <td><field  name="m"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Flyas (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_fly_lime"  colspan="1"/></td>
+                            <td><label for="wt_of_hydrent" class="text-bold">Weight of Hydrated Lime (g)</label></td>
+                            <td><field  name="wt_of_hydrent"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Standard Sand (g) Grade-I</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_standard_grade_lime1"  colspan="1"/></td>
+                            <td><label for="wt_of_fly_lime" class="text-bold">Weight of Flyas (g)</label></td>
+                            <td><field  name="wt_of_fly_lime"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Standard Sand (g) Grade-II</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_standard_grade_lime2"  colspan="1"/></td>
+                            <td><label for="wt_of_standard_grade_lime1" class="text-bold">Weight of Standard Sand (g) Grade-I</label></td>
+                            <td><field  name="wt_of_standard_grade_lime1"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Standard Sand (g) Grade-III</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="wt_of_standard_grade_lime3"  colspan="1"/></td>
+                            <td><label for="wt_of_standard_grade_lime2" class="text-bold">Weight of Standard Sand (g) Grade-II</label></td>
+                            <td><field  name="wt_of_standard_grade_lime2"  colspan="1"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Quantity of Water (g)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field  name="quantity_water_lime"  colspan="1"/></td>
+                            <td><label for="wt_of_standard_grade_lime3" class="text-bold">Weight of Standard Sand (g) Grade-III</label></td>
+                            <td><field  name="wt_of_standard_grade_lime3"  colspan="1"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="quantity_water_lime" class="text-bold">Quantity of Water (g)</label></td>
+                            <td><field  name="quantity_water_lime"  colspan="1"/></td>
                           </tr>
                         </tbody>
                       </table>
                       </div>
 
                       
-                      <div style="width:45%">
-                      <h4 class="center-heading" style="white-space: nowrap;">Calculation of Flow (Acceptable : 70 ± 5 %)</h4>
-                      <h5 class="center-heading" style="white-space: nowrap; padding:3px">Measured Values</h5>
-                      <table style="border: 1px solid black; border-collapse: collapse; width: 60%;">
+                      <div style="width:50%">
+                      <h3 class="center-heading" style="white-space: nowrap;">Calculation of Flow (Acceptable : 70 ± 5 %): Measured Values</h3>
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                      <tbody>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_valuess1"  colspan="2"  nolabel="1"/></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_valuess2"  colspan="2"  nolabel="1" /></td>
+                          <td><field  name="measured_valuess1"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_valuess2"  colspan="2"  nolabel="1" /></td>
                         </tr>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_valuess3"  colspan="2"  nolabel="1"/></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="measured_valuess4"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_valuess3"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_valuess4"  colspan="2"  nolabel="1"/></td>
                         </tr>
+                        </tbody>
                       </table>
 
                       
-                         <table style="width: 50%; margin-top:5px">
+                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
-                            <td style="padding: 5px;"><field name="average_measuredss"/></td>
+                            <td><label for="average_measuredss" class="text-bold">Average</label></td>
+                            <td><field name="average_measuredss"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>% Flow</span></td>
-                            <td style="padding: 5px;"><field name="percent_flowss"/></td>
+                            <td><label for="percent_flowss" class="text-bold">% Flow</label></td>
+                            <td><field name="percent_flowss"/></td>
                            </tr>
-                     
+                           </tbody>
                           </table>
                       
                       </div>
@@ -893,28 +969,29 @@
                     
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Done</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="status_28daysss"/></td>
+                        <td><label for="status_28daysss" class="text-bold">Done</label></td>
+                        <td><field name="status_28daysss"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Casting</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="casting_dates_28dayss"/></td>
+                        <td><label for="casting_dates_28dayss" class="text-bold">Date of Casting</label></td>
+                        <td><field name="casting_dates_28dayss"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Date of Testing</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="testing_dates_28dayss"/></td>
+                        <td><label for="testing_dates_28dayss" class="text-bold">Date of Testing</label></td>
+                        <td><field name="testing_dates_28dayss"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
                     <group/>
 
-                    <group>
-                    <h4 style="white-space: nowrap;">28 Days</h4><br/>
+                    <div class="custom_table_borders">
                     <field name="casting_28_dayss_tabless" nolabel="1" colspan="2">
-                        <tree editable="bottom" class="o_list_view table-bordered">
+                        <tree editable="bottom">
                           <field name="lengthss"/>
                           <field name="widthss"/>
                           <field name="crosssectional_areass"/>
@@ -923,30 +1000,43 @@
                           <field name="compressive_strengthss" />
                         </tree>
                       </field>
-                    </group>
+                    </div>
 
-                        <table style="width: 20%; margin-top:6px">
+                      <div style="display:flex;">
+                        <div style="width:50%;">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                        <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
-                            <td style="padding: 5px;"><field name="average_casting_28daysss"/></td>
+                            <td><label for="average_casting_28daysss" class="text-bold">Average</label></td>
+                            <td><field name="average_casting_28daysss"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Compressive Strength of Sample (%)</span></td>
-                            <td style="padding: 5px;"><field name="compressive_strength_28_days"/></td>
+                            <td><label for="compressive_strength_28_days" class="text-bold">Compressive Strength of Sample (%)</label></td>
+                            <td><field name="compressive_strength_28_days"/></td>
                            </tr>
+                           </tbody>
+                          </table>
+                          </div>
+
+                           <div style="width:50%;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
+                        <tbody>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
-                            <td style="padding: 5px;"><field name="lime_reactivity_conformity"
+                            <td><label for="lime_reactivity_conformity" class="text-bold">Conformity</label></td>
+                            <td><field name="lime_reactivity_conformity"
                                            decoration-success="lime_reactivity_conformity == 'pass'" 
                                            decoration-danger="lime_reactivity_conformity == 'fail'" 
                                            readonly="1"/>
                             </td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name="lime_reactivity_nabl" /></td>
+                            <td><label for="lime_reactivity_nabl" class="text-bold">NABL</label></td>
+                            <td><field name="lime_reactivity_nabl" /></td>
                            </tr>
+                           </tbody>
                           </table>
+                          </div>
+                          </div>
                           <group/>
 
                           <!-- Fineness Blaine  -->
@@ -962,20 +1052,22 @@
                     
                     <group/>
                     <div>
-                     <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                        <tbody>
                          <tr>
                            <td></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 1</span></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 2</span></td>
+                           <td><span>Trial 1</span></td>
+                           <td><span>Trial 2</span></td>
                          </tr>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of mercury before placing the sample in the permeability cell (m₁),g.</span></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="weight_of_mercury_before_trial1"  colspan="1"  nolabel="1"/></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="weight_of_mercury_before_trial2"  colspan="1"  nolabel="1"/></td>
                          <tr>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of mercury after placing the sample in the permeability cell (m₂),g.</span></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="weight_of_mercury_after_trail1"  colspan="1"  nolabel="1"/></td>
-                           <td style="border: 1px solid black; padding: 8px;"><field  name="weight_of_mercury_after_trail2"  colspan="1"  nolabel="1"/></td>
+                           <td><label for="weight_of_mercury_before_trial1" class="text-bold">Weight of mercury before placing the sample in the permeability cell (m₁),g.</label></td>
+                           <td><field  name="weight_of_mercury_before_trial1"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="weight_of_mercury_before_trial2"  colspan="1"  nolabel="1"/></td>
+                           </tr>
+                         <tr>
+                           <td><label for="weight_of_mercury_after_trail1" class="text-bold">Weight of mercury after placing the sample in the permeability cell (m₂),g.</label></td>
+                           <td><field  name="weight_of_mercury_after_trail1"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="weight_of_mercury_after_trail2"  colspan="1"  nolabel="1"/></td>
                          </tr>                                                 
                        </tbody>
                      </table>
@@ -983,11 +1075,11 @@
                     <group/>
                     <group/>
 
-                    <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                       <tbody>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Density of mercury , g/cm3</span></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="density_of_mercury"  colspan="1" /></td>
+                          <td><label for="density_of_mercury" class="text-bold">Density of mercury , g/cm3</label></td>
+                          <td><field  name="density_of_mercury"  colspan="1" /></td>
                         </tr>
                       </tbody>
                     </table>
@@ -995,17 +1087,17 @@
                     <group/>
 
 
-                    <table style="border: 1px solid black; width: 50%; margin:10px 0px;">
+                    <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                     <tbody>
                       <tr>
                            <td></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 1</span></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Trial 2</span></td>
+                           <td><span>Trial 1</span></td>
+                           <td><span>Trial 2</span></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Bed Volume (V=m₂-m₁/D),cm3.</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field  name="bed_volume_trial1"  colspan="1"  nolabel="1"/></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field  name="bed_volume_trial2"  colspan="1"  nolabel="1"/></td>
+                        <td><label for="bed_volume_trial1" class="text-bold">Bed Volume (V=m₂-m₁/D),cm3.</label></td>
+                        <td><field  name="bed_volume_trial1"  colspan="1"  nolabel="1"/></td>
+                        <td><field  name="bed_volume_trial2"  colspan="1"  nolabel="1"/></td>
                        </tr>                                                 
                       </tbody>
                      </table>
@@ -1013,15 +1105,15 @@
                      <group/>
 
 
-                     <table style="border: 1px solid black; width: 30%; margin:10px 0px;">
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                       <tbody>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average Bed Volume (cm3)</span></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="average_bed_volume"  colspan="1"/></td>
+                          <td><label for="average_bed_volume" class="text-bold">Average Bed Volume (cm3)</label></td>
+                          <td><field  name="average_bed_volume"  colspan="1"/></td>
                         </tr>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Difference between the two Values</span></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field  name="difference_between_2_values"  colspan="1"/></td>
+                          <td><label for="difference_between_2_values" class="text-bold">Difference between the two Values</label></td>
+                          <td><field  name="difference_between_2_values"  colspan="1"/></td>
                         </tr>
                       </tbody>
                     </table>
@@ -1030,11 +1122,13 @@
 
                     <div>
                     <h4 style="width:60%">Repeat the procedure  with fresh cement beds until two values of V are obtained differing by less than 0.005 cm3.Record the mean of these two values as V</h4>
-                    <table style="border: 1px solid black; width: 30%; margin:10px 0px;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                      <tr>
-                       <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>mass of sample taken (g)</span></td>
-                       <td style="border: 1px solid black; padding: 8px;"><field  name="mass_of_sample_taken_fineness"  colspan="1"/></td>
+                       <td><label for="mass_of_sample_taken_fineness" class="text-bold">mass of sample taken (g)</label></td>
+                       <td><field  name="mass_of_sample_taken_fineness"  colspan="1"/></td>
                      </tr>
+                     </tbody>
                     </table>
                     </div>
                     <group/>
@@ -1043,29 +1137,33 @@
 
                     <div>
                     <h4 style="width:60%">Take an amount (m1),g. of standard sample so as to give the sample bed of porosity e=0.500</h4>
-                    <table style="border: 1px solid black; width: 30%; margin:10px 0px;">
+                    <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                    <tbody>
                     <tr>
                            <td></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> 1</span></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> 2</span></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> 3</span></td>
+                           <td><span> 1</span></td>
+                           <td><span> 2</span></td>
+                           <td><span> 3</span></td>
                     </tr>
                      <tr>
-                       <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Time(t),sec.</span></td>
-                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_finenesss_trial1"  colspan="1"  nolabel="1"/></td>
-                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_finenesss_trial1"  colspan="1"  nolabel="1"/></td>
-                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_finenesss_trial3"  colspan="1"  nolabel="1"/></td>
+                       <td><label for="time_finenesss_trial1" class="text-bold">Time(t),sec.</label></td>
+                       <td><field  name="time_finenesss_trial1"  colspan="1"  nolabel="1"/></td>
+                       <td><field  name="time_finenesss_trial1"  colspan="1"  nolabel="1"/></td>
+                       <td><field  name="time_finenesss_trial3"  colspan="1"  nolabel="1"/></td>
                      </tr>
+                     </tbody>
                     </table>
                     </div>
                     <group/>
                     <group/>
 
-                    <table style="width: 20%; margin-top:4px">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                        <tr>
-                          <td style="padding: 4px;font-weight: bold;"><span>Average Time(tₒ),Sec</span></td>
-                          <td style="padding: 5px;"><field  name="average_time_fineness"  colspan="1"/></td>
+                          <td><label for="average_time_fineness" class="text-bold">Average Time(tₒ),Sec</label></td>
+                          <td><field  name="average_time_fineness"  colspan="1"/></td>
                        </tr>
+                       </tbody>
                     </table>
                     <group/>
                     <group/>
@@ -1073,44 +1171,50 @@
 
                     <div>
                     <h4 style="width:60%">*Using the sample whose fineness is to be calculated.</h4>
-                    <table style="border: 1px solid black; width: 30%; margin:10px 0px;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                      <tr>
-                       <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Specific Gravity</span></td>
-                       <td style="border: 1px solid black; padding: 8px;"><field  name="specific_gravity_fineness"  colspan="1"/></td>
+                       <td><label for="specific_gravity_fineness" class="text-bold">Specific Gravity</label></td>
+                       <td><field  name="specific_gravity_fineness"  colspan="1"/></td>
                      </tr>
                      <tr>
-                       <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>mass of sample taken</span></td>
-                       <td style="border: 1px solid black; padding: 8px;"><field  name="mass_of_sample_fineness"  colspan="1"/></td>
+                       <td><label for="mass_of_sample_fineness" class="text-bold">mass of sample taken</label></td>
+                       <td><field  name="mass_of_sample_fineness"  colspan="1"/></td>
                      </tr>
+                     </tbody>
                     </table>
                     </div>
                     <group/>
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; width: 30%; margin:10px 0px;">
+                    <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                    <tbody>
                     <tr>
                            <td></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>1</span></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>2</span></td>
-                           <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>3</span></td>
+                           <td><span>1</span></td>
+                           <td><span>2</span></td>
+                           <td><span>3</span></td>
                     </tr>
                      <tr>
-                       <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Time(t),sec.</span></td>
-                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_sample_trial1"  colspan="1"  nolabel="1"/></td>
-                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_sample_trial2"  colspan="3"  nolabel="1"/></td>
-                       <td style="border: 1px solid black; padding: 8px;"><field  name="time_sample_trial3"  colspan="3"  nolabel="1"/></td>
+                       <td><label for="time_sample_trial1" class="text-bold">Time(t),sec.</label></td>
+                       <td><field  name="time_sample_trial1"  colspan="1"  nolabel="1"/></td>
+                       <td><field  name="time_sample_trial2"  colspan="3"  nolabel="1"/></td>
+                       <td><field  name="time_sample_trial3"  colspan="3"  nolabel="1"/></td>
                      </tr>
+                     </tbody>
                     </table>
                     </div>
                     <group/>
                     <group/>
 
-                    <table style="width: 20%; margin-top:4px">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                        <tr>
-                          <td style="padding: 4px;font-weight: bold;"><span>Average Time(tₒ),Sec</span></td>
-                          <td style="padding: 5px;"><field  name="average_sample_time"  colspan="1"/></td>
+                          <td><label for="average_sample_time" class="text-bold">Average Time(tₒ),Sec</label></td>
+                          <td><field  name="average_sample_time"  colspan="1"/></td>
                        </tr>
+                       </tbody>
                     </table>
                     <group/>
                     <group/>
@@ -1119,51 +1223,55 @@
 
 
                     <div>
-                      <table style="border: 1px solid black; width: 40%; margin:10px 0px;">
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Sₛ is the Specific surface of Standard Sample (m²/kg)</span></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field name="ss"/></td>
+                          <td><label for="ss" class="text-bold">Sₛ is the Specific surface of Standard Sample (m²/kg)</label></td>
+                          <td><field name="ss"/></td>
                         </tr>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>ρₛ is the Density of Standard sample</span></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field name="ps"/></td>
+                          <td><label for="ps" class="text-bold">ρₛ is the Density of Standard sample</label></td>
+                          <td><field name="ps"/></td>
                         </tr>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>ρ is the Density of Test sample</span></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field name="p"/></td>
+                          <td><label for="p" class="text-bold">ρ is the Density of Test sample</label></td>
+                          <td><field name="p"/></td>
                         </tr>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>√Ƭₛ is the Mean of three measured times of Standard Sample</span></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field name="ts"/></td>
+                          <td><label for="ts" class="text-bold">√Ƭₛ is the Mean of three measured times of Standard Sample</label></td>
+                          <td><field name="ts"/></td>
                         </tr>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>√Ƭ is the Mean of three measured times of Test sample</span></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field name="t"/></td>
+                          <td><label for="t" class="text-bold">√Ƭ is the Mean of three measured times of Test sample</label></td>
+                          <td><field name="t"/></td>
                         </tr>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>S is the Specific surface of Test sample (m²/kg)</span></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field name="specific_surface"/></td>
+                          <td><label for="specific_surface" class="text-bold">S is the Specific surface of Test sample (m²/kg)</label></td>
+                          <td><field name="specific_surface"/></td>
                         </tr>
                         <tr>
-                          <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Fineness By Blaine Air Permeability Method (m2/kg)</span></td>
-                          <td style="border: 1px solid black; padding: 8px;"><field name="fineness_air_permeability"/></td>
+                          <td><label for="fineness_air_permeability" class="text-bold">Fineness By Blaine Air Permeability Method (m2/kg)</label></td>
+                          <td><field name="fineness_air_permeability"/></td>
                         </tr>
+                        </tbody>
                       </table>
                     </div>
 
 
-                    <table style="width: 20%; margin-top:6px">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
-                            <td style="padding: 5px;"> <field  name="fineness_blaine_conformity"
+                        <td><label for="fineness_blaine_conformity" class="text-bold">Conformity</label></td>
+                            <td><field  name="fineness_blaine_conformity"
                             decoration-success="fineness_blaine_conformity == 'pass'" 
                            decoration-danger="fineness_blaine_conformity == 'fail'" 
                             readonly="1" />  </td>
                       </tr>
                        <tr>
-                          <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                          <td style="padding: 5px;"><field  name="fineness_blaine_nabl" /></td>
+                          <td><label for="fineness_blaine_nabl" class="text-bold">NABL</label></td>
+                          <td><field  name="fineness_blaine_nabl" /></td>
                        </tr>
+                       </tbody>
                     </table>
                     <group/>
 

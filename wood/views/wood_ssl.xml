@@ -9,11 +9,11 @@
             <form create="false">
                 <sheet>
 
-                <group >
-                    <h1>
-                        <field name="name" readonly="1" nolabel="1"/>
-                    </h1>
-                    </group>
+                    <div>
+                      <h1>
+                        <field name="name_wood" readonly="1"  string="WOOD"/>
+                      </h1>
+                    </div>
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1"/>
@@ -21,14 +21,14 @@
                         <field name="grade" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group class="custom_table_borders">
-                      <field name="sample_parameters">
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                      <field name="sample_parameters" nolabel="1">
                         <tree>
                           <field name="parameter_name"/>
                           <field name="test_method"/>
                         </tree>
                       </field>
-                    </group>
+                    </div>
                     
                   <!-- Plastic Limit -->
                 <group invisible = "moisture_content_visible == False"  style="white-space: nowrap; width:70%;">
@@ -38,36 +38,39 @@
 
                         </h1>
                 </group>
-                <group invisible = "moisture_content_visible == False" style="white-space: nowrap; width:100%;">
-                    <field name="wood_child_lines" class="custom_table_borders" >
+                <div invisible = "moisture_content_visible == False" style="white-space: nowrap; width:100%;">
+                    <field name="wood_child_lines" class="custom_table_borders" nolabel="1">
                             <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='initial_we'/>
                                 <field name='oven_dry'/>
                                 <field name='per_moisture'/>
-                              
                             </tree>
-                           
                     </field> 
-                </group>
-
+                </div>
                   <!-- <group invisible = "moisture_content_visible == False" style="white-space: nowrap; width:70%;">
                        <field name='average_moisture'/>
                 </group> -->
-                <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;">
+                <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;"/>
+                    <div>
+                     <table style="border: 2px solid black; width: 50%;">
+                           <tr>
+                             <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average Moisture Content</span></td>
+                              <td style="padding: 8px; width:350px;"><field name="average_moisture" nolabel="1"/></td>
+                           </tr>                     
+                          </table>
+                        </div>
+                    <group/>
+                <!-- <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;">
                         <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
                             <div style="width: 50%;">
-                                <table style="width: 100%; border-collapse: collapse;">
+                                <table style="width: 100%; ">
                                     <tbody>
                                         <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
+                                            <td style="border: 1px solid black; padding: 10px;">
                                           Average Moisture Content
-
                                             </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="average_moisture" nolabel="1"/>
-                                                </div>
+                                            <td style="border: 1px solid black; padding: 10px;"><field name="average_moisture" nolabel="1"/>
                                             </td>
                                             
                                         </tr>
@@ -75,9 +78,27 @@
                                 </table>
                             </div>
                         </div>
-                    </group>
+                    </group> -->
+
+                    <div>
+                          <table style="width: 50%; margin-top:10px;">
+                           <tr>
+                             <td style="border: 2px solid black;padding: 8px;font-weight: bold;"><span>Conformity</span></td>
+                              <td style="border: 2px solid black;padding: 8px;"><field  name="moisture_content_conformity"
+                                        decoration-success="moisture_content_conformity == 'pass'" 
+                                        decoration-danger="moisture_content_conformity == 'fail'" 
+                                        readonly="1" /></td>
+                           </tr>
+                           <tr>
+                            <td style="border: 2px solid black;padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="border: 2px solid black;padding: 5px;"><field  name="moisture_content_nabl" /></td>
+                           </tr>
+                          </table>
+                        </div>
+                        <group/>
+                        <group/>
                  
-                 <group invisible = "moisture_content_visible == False" >
+                 <!-- <group invisible = "moisture_content_visible == False" >
                        
                         <field  name="moisture_content_conformity"
                                         decoration-success="moisture_content_conformity == 'pass'" 
@@ -85,7 +106,7 @@
                                         readonly="1" />
                         <field  name="moisture_content_nabl" />
                          
-                    </group>
+                    </group> -->
 
 
 
@@ -98,7 +119,7 @@
                         </h1>
                 </group>
                 <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:100%;">
-                    <field name="specific_gravity_child_lines"  class="custom_table_borders">
+                    <field name="specific_gravity_child_lines"  class="custom_table_borders" nolabel="1" colspan="2">
                             <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='length'/>
@@ -107,16 +128,24 @@
                                   <field name='volume'/>
                                 <field name='oven_dry'/>
                                 <field name='specific_gravity'/>
-                              
                             </tree>
-                           
                     </field> 
                 </group>
 
                   <!-- <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;">
                        <field name='average_specific_gravity'/>
                 </group> -->
-                <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;">
+                <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;"/>
+                    <div>
+                     <table style="border: 2px solid black; width: 50%;">
+                           <tr>
+                             <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average Specific Gravity</span></td>
+                              <td style="padding: 8px; width:350px;"><field name="average_specific_gravity" nolabel="1"/></td>
+                           </tr>                     
+                          </table>
+                        </div>
+                    <group/>
+                <!-- <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;">
                         <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
                             <div style="width: 50%;">
                                 <table style="width: 100%; border-collapse: collapse;">
@@ -137,17 +166,33 @@
                                 </table>
                             </div>
                         </div>
-                    </group>
+                    </group> -->
+
+                    <div>
+                          <table style="width: 50%; margin-top:10px;">
+                           <tr>
+                             <td style="border: 2px solid black;padding: 8px;font-weight: bold;"><span>Conformity</span></td>
+                              <td style="border: 2px solid black;padding: 8px;"><field  name="specific_gravity_conformity"
+                                        decoration-success="specific_gravity_conformity == 'pass'" 
+                                        decoration-danger="specific_gravity_conformity == 'fail'" 
+                                        readonly="1" /></td>
+                           </tr>
+                           <tr>
+                            <td style="border: 2px solid black;padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="border: 2px solid black;padding: 5px;"><field  name="specific_gravity_nabl" /></td>
+                           </tr>
+                          </table>
+                        </div>
+                        <group/>
+                        <group/>
                  
-                 <group invisible = "specific_gravity_visible == False">
-                       
+                 <!-- <group invisible = "specific_gravity_visible == False">
                         <field  name="specific_gravity_conformity"
                                         decoration-success="specific_gravity_conformity == 'pass'" 
                                         decoration-danger="specific_gravity_conformity == 'fail'" 
                                         readonly="1" />
                         <field  name="specific_gravity_nabl" />
-                         
-                    </group>
+                    </group> -->
               
 
                   <button
