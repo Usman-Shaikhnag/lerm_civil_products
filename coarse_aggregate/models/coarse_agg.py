@@ -109,7 +109,7 @@ class CoarseAggregateMechanical(models.Model):
         for record in self:
             if record.crushing_value_child_lines:
                 sum_crushing_values = sum(record.crushing_value_child_lines.mapped('crushing_value'))
-                record.average_crushing_value = round((sum_crushing_values / len(record.crushing_value_child_lines)),1)
+                record.average_crushing_value = sum_crushing_values / len(record.crushing_value_child_lines)
             else:
                 record.average_crushing_value = 0.0
    

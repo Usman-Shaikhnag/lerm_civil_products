@@ -52,20 +52,13 @@ class SoilDatasheet(models.AbstractModel):
         }
 
 
-class SoilReport(models.AbstractModel):
-    _name = 'report.soil_resistivity.soil_resistivity_report'
-    _description = 'Soil Resistivity Report'
-    
+class SoilResistivityReport(models.AbstractModel):
+    _name = "report.fst.soil_resistivity"
+    _description = "Soil Resistivity Report (Py3o)"
+
     @api.model
     def _get_report_values(self, docids, data=None):
-        docs = self.env['ert.soil.resistivity'].browse(docids)
-        for obj in docs:
-            for line in obj.line_ids:
-                # Format resistivity_n to 2 decimals as string
-                line.resistivity_n_2d = "%.2f" % (line.resistivity_n or 0)
+        records = self.env["ert.soil.resistivity"].browse(docids)
         return {
-            'doc_ids': docids,
-            'doc_model': 'ert.soil.resistivity',
-            'docs': docs,
+            "objects": records,       # py3o expects this
         }
-

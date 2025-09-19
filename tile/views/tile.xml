@@ -22,14 +22,14 @@
                          <field name="product_id" invisible="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group>
-                      <field name="sample_parameters">
-                        <tree class="table-bordered o_list_view">
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
                           <field name="parameter_name"/>
                           <field name="test_method"/>
                         </tree>
                       </field>
-                    </group>
+                    </div>
                    
                    <group style="white-space: nowrap; width:70%;">
                         <field name="tile_type" />
@@ -47,23 +47,25 @@
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Length(mm)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='length' col="1"/></td>
+                        <td><span>Length(mm)</span></td>
+                        <td><field name='length' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Width(mm)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='width'  col="1"/></td>
+                        <td><span>Width(mm)</span></td>
+                        <td><field name='width'  col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Thickness(mm)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='thickness' col="1"/></td>
+                        <td><span>Thickness(mm)</span></td>
+                        <td> <field name='thickness' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Diagonal (mm)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='diagonal' col="1"/></td>
+                        <td><span>Diagonal (mm)</span></td>
+                        <td> <field name='diagonal' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -76,9 +78,9 @@
                         <field name='diagonal' col="4"/>
                     </group> -->
 
-                    <group invisible="not dimension_visible">
-                        <field name="child_lines" nolabel="1" colspan="2">
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                    <div class="custom_table_borders" invisible="not dimension_visible">
+                        <field name="child_lines" nolabel="1" colspan="2" >
+                            <tree editable="bottom" >
                                 <field name='sr_no'/>
                                 <field name='length1'/>
                                 <field name='length2'/>
@@ -98,23 +100,25 @@
                                 <field name='thickness6'/>    
                             </tree> 
                          </field>   
-                    </group>
+                    </div>
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average Length</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='average_length' col="4"/></td>
+                        <td><span>Average Length</span></td>
+                        <td><field name='average_length' col="4"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average Width</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='average_width'  col="4"/></td>
+                        <td><span>Average Width</span></td>
+                        <td> <field name='average_width'  col="4"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average Thickness</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='average_thickness' col="4"/></td>
+                        <td><span>Average Thickness</span></td>
+                        <td> <field name='average_thickness' col="4"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -127,23 +131,25 @@
                     </group> -->
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Deviation in Length %</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='deviation_length' col="1"/></td>
+                        <td><span>Deviation in Length %</span></td>
+                        <td><field name='deviation_length' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Deviation in Width %</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='deviation_width'  col="1"/></td>
+                        <td><span>Deviation in Width %</span></td>
+                        <td> <field name='deviation_width'  col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Deviation in Length And Width %</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='deviation_length_width' col="1"/></td>
+                        <td ><span>Deviation in Length And Width %</span></td>
+                        <td> <field name='deviation_length_width' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Deviation in Thickness %</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='deviation_thickness' col="1"/></td>
+                        <td><span>Deviation in Thickness %</span></td>
+                        <td><field name='deviation_thickness' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -171,15 +177,17 @@
 
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement ,Deviation in Length And Width, %</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="requirement_length_width" /></td>
+                        <td><span>Requirement ,Deviation in Length And Width, %</span></td>
+                        <td><field name="requirement_length_width" /></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement ,Deviation in Thickness,%</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name="requirement_thickness" /></td>
+                        <td><span>Requirement ,Deviation in Thickness,%</span></td>
+                        <td> <field name="requirement_thickness" /></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -198,43 +206,45 @@
 
 
                      <div>
-                          <table style="width: 30%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Deviation in Length And Width Conformity</span></td>
-                              <td style="padding: 8px;"><field name='deviation_length_width_conformity'
+                             <td><span>Deviation in Length And Width Conformity</span></td>
+                              <td><field name='deviation_length_width_conformity'
                                        decoration-success="deviation_length_width_conformity == 'pass'" 
                                        decoration-danger="deviation_length_width_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Deviation in Length And Width NABL</span></td>
-                            <td style="padding: 5px;"> <field name="deviation_length_width_nabl"
+                            <td><span>Deviation in Length And Width NABL</span></td>
+                            <td><field name="deviation_length_width_nabl"
                                        decoration-success="deviation_length_width_nabl == 'pass'" 
                                        decoration-danger="deviation_length_width_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
-                     
+                           </tbody>                     
                           </table>
                       </div>
                       <group/>
 
                       <div>
-                          <table style="width: 30%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Deviation in Thickness Conformity</span></td>
-                              <td style="padding: 8px;"><field name='deviation_thickness_conformity'
+                             <td><span>Deviation in Thickness Conformity</span></td>
+                              <td><field name='deviation_thickness_conformity'
                                        decoration-success="deviation_thickness_conformity == 'pass'" 
                                        decoration-danger="deviation_thickness_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Deviation in Thickness NABL</span></td>
-                            <td style="padding: 5px;"><field name="deviation_thickness_nabl"
+                            <td><span>Deviation in Thickness NABL</span></td>
+                            <td><field name="deviation_thickness_nabl"
                                        decoration-success="deviation_thickness_nabl == 'pass'" 
                                        decoration-danger="deviation_thickness_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
-                     
+                           </tbody>                     
                           </table>
                       </div>
                       <group/>
@@ -283,11 +293,13 @@
 
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Sample Size, mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='sample_size' col="1"/> </td>
+                        <td><span>Sample Size, mm</span></td>
+                        <td><field name='sample_size' col="1"/> </td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -296,9 +308,9 @@
                         <field name='sample_size' col="4"/> 
                     </group> -->
 
-                    <group invisible="not straightness_visible">
+                    <div class="custom_table_borders" invisible="not straightness_visible">
                       <field name="child_lines_straightness" nolabel="1" colspan="2" >
-                          <tree editable="bottom" class="table-bordered o_list_view">
+                          <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='straightness1'/>
                                 <field name='straightness2'/>
@@ -306,26 +318,28 @@
                                 <field name='straightness4'/>  
                           </tree>   
                         </field>   
-                    </group>
+                    </div>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='average_straightness' col="4"/></td>
+                        <td ><span>Average</span></td>
+                        <td><field name='average_straightness' col="4"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Maximum Straightness mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='maximum_straightness' col="4"/></td>
+                        <td><span>Maximum Straightness mm</span></td>
+                        <td> <field name='maximum_straightness' col="4"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Deviation from Straightness, %</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='deviation_straightness' col="4"/></td>
+                        <td><span>Deviation from Straightness, %</span></td>
+                        <td><field name='deviation_straightness' col="4"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement ,Deviation from Straightness, %</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='requirement_straightness' col="4"/></td>
+                        <td><span>Requirement ,Deviation from Straightness, %</span></td>
+                        <td><field name='requirement_straightness' col="4"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -343,21 +357,23 @@
                     </group> -->
 
                      <div>
-                          <table style="width: 30%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field name='deviation_straightness_conformity'
+                             <td><span>Conformity</span></td>
+                              <td><field name='deviation_straightness_conformity'
                                        decoration-success="deviation_straightness_conformity == 'pass'" 
                                        decoration-danger="deviation_straightness_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name="deviation_straightness_nabl"
+                            <td><span>NABL</span></td>
+                            <td><field name="deviation_straightness_nabl"
                                        decoration-success="deviation_straightness_nabl == 'pass'" 
                                        decoration-danger="deviation_straightness_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -390,11 +406,13 @@
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Sample Size, mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='rectangularity_sample_size' col="1"/> </td>
+                        <td><span>Sample Size, mm</span></td>
+                        <td><field name='rectangularity_sample_size' col="1"/> </td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -404,9 +422,9 @@
                     </group> -->
 
 
-                       <group invisible="not rectangularity_visible">
+                       <div class="custom_table_borders" invisible="not rectangularity_visible">
                         <field name="child_lines_rectangularity" nolabel="1" colspan="2" >
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom" >
                                 <field name='sr_no'/>
                                 <field name='rectangularity1'/>
                                 <field name='rectangularity2'/>
@@ -414,26 +432,28 @@
                                 <field name='rectangularity4'/>  
                             </tree>   
                          </field>   
-                    </group>
+                    </div>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='average_rectangularity' col="1"/></td>
+                        <td><span>Average</span></td>
+                        <td><field name='average_rectangularity' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Maximum Rectangularity mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='maximum_rectangularity' col="1"/></td>
+                        <td><span>Maximum Rectangularity mm</span></td>
+                        <td> <field name='maximum_rectangularity' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Deviation from Rectangularity, %</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='deviation_rectangularity' col="1"/></td>
+                        <td><span>Deviation from Rectangularity, %</span></td>
+                        <td><field name='deviation_rectangularity' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement ,Deviation from Rectangularity, %</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='requirement_rectangularity' col="1"/></td>
+                        <td><span>Requirement ,Deviation from Rectangularity, %</span></td>
+                        <td><field name='requirement_rectangularity' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -453,21 +473,23 @@
                     </group> -->
 
                     <div>
-                          <table style="width: 30%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field name='deviation_rectangularity_conformity'
+                             <td><span>Conformity</span></td>
+                              <td><field name='deviation_rectangularity_conformity'
                                        decoration-success="deviation_rectangularity_conformity == 'pass'" 
                                        decoration-danger="deviation_rectangularity_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name="deviation_rectangularity_nabl"
+                            <td><span>NABL</span></td>
+                            <td><field name="deviation_rectangularity_nabl"
                                        decoration-success="deviation_rectangularity_nabl == 'pass'" 
                                        decoration-danger="deviation_rectangularity_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -500,15 +522,17 @@
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Sample Size, mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='centre_curvature_sample_size' col="1"/></td>
+                        <td><span>Sample Size, mm</span></td>
+                        <td><field name='centre_curvature_sample_size' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Diagonal, mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='centre_curvature_diagonal' col="1"/></td>
+                        <td><span>Diagonal, mm</span></td>
+                        <td><field name='centre_curvature_diagonal' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -520,9 +544,9 @@
                     </group> -->
 
 
-                       <group invisible="not centre_curvature_visible">
+                       <div class="custom_table_borders" invisible="not centre_curvature_visible">
                         <field name="child_lines_centre_curvature" nolabel="1" colspan="2" >
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='centre_curvature1'/>
                                 <field name='centre_curvature2'/>
@@ -530,46 +554,50 @@
                                 <field name='centre_curvature4'/>  
                             </tree>  
                          </field> 
-                    </group>
+                    </div>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='average_centre_curvature' col="1"/></td>
+                        <td><span>Average</span></td>
+                        <td><field name='average_centre_curvature' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Maximum Centre Curvature,mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='maximum_centre_curvature' col="1"/></td>
+                        <td><span>Maximum Centre Curvature,mm</span></td>
+                        <td> <field name='maximum_centre_curvature' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Maximum Centre Curvature, mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='deviation_centre_curvature' col="1"/></td>
+                        <td><span>Maximum Centre Curvature, mm</span></td>
+                        <td> <field name='deviation_centre_curvature' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement ,Maximum Centre Curvature,%</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='requirement_centre_curvature' col="1"/></td>
+                        <td><span>Requirement ,Maximum Centre Curvature,%</span></td>
+                        <td><field name='requirement_centre_curvature' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
 
                     <div>
-                          <table style="width: 30%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field name='deviation_centre_curvature_conformity'
+                             <td><span>Conformity</span></td>
+                              <td><field name='deviation_centre_curvature_conformity'
                                        decoration-success="deviation_centre_curvature_conformity == 'pass'" 
                                        decoration-danger="deviation_centre_curvature_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name="deviation_centre_curvature_nabl"
+                            <td><span>NABL</span></td>
+                            <td><field name="deviation_centre_curvature_nabl"
                                        decoration-success="deviation_centre_curvature_nabl == 'pass'" 
                                        decoration-danger="deviation_centre_curvature_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -614,22 +642,24 @@
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Sample Size, mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='edge_curvature_sample_size' col="1"/></td>
+                        <td><span>Sample Size, mm</span></td>
+                        <td><field name='edge_curvature_sample_size' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Diagonal, mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='edge_curvature_diagonal' col="1"/></td>
+                        <td><span>Diagonal, mm</span></td>
+                        <td><field name='edge_curvature_diagonal' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
 
-                    <group invisible="not edge_curvature_visible">
+                    <div class="custom_table_borders" invisible="not edge_curvature_visible">
                         <field name="child_lines_edge_curvature" nolabel="1" colspan="2">
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='edge_curvature1'/>
                                 <field name='edge_curvature2'/>
@@ -637,7 +667,7 @@
                                 <field name='edge_curvature4'/>  
                             </tree>  
                          </field>   
-                    </group>
+                    </div>
                     
 
                     <!-- <group invisible="not edge_curvature_visible" style="white-space: nowrap; width:70%;">
@@ -658,43 +688,47 @@
                     </group> -->
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='average_edge_curvature' col="1"/></td>
+                        <td><span>Average</span></td>
+                        <td><field name='average_edge_curvature' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Maximum Edge Curvature,mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='maximum_edge_curvature' col="1"/></td>
+                        <td><span>Maximum Edge Curvature,mm</span></td>
+                        <td> <field name='maximum_edge_curvature' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Maximum Edge Curvature, mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='deviation_edge_curvature' col="1"/></td>
+                        <td><span>Maximum Edge Curvature, mm</span></td>
+                        <td> <field name='deviation_edge_curvature' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement ,Maximum Edge Curvature,%</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='requirement_edge_curvature' col="1"/></td>
+                        <td><span>Requirement ,Maximum Edge Curvature,%</span></td>
+                        <td><field name='requirement_edge_curvature' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
 
                     <div>
-                          <table style="width: 30%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field name='deviation_edge_curvature_conformity'
+                             <td><span>Conformity</span></td>
+                              <td><field name='deviation_edge_curvature_conformity'
                                        decoration-success="deviation_edge_curvature_conformity == 'pass'" 
                                        decoration-danger="deviation_edge_curvature_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name="deviation_edge_curvature_nabl"
+                            <td><span>NABL</span></td>
+                            <td><field name="deviation_edge_curvature_nabl"
                                        decoration-success="deviation_edge_curvature_nabl == 'pass'" 
                                        decoration-danger="deviation_edge_curvature_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -736,15 +770,17 @@
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Sample Size, mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='warpage_sample_size' col="1"/></td>
+                        <td><span>Sample Size, mm</span></td>
+                        <td><field name='warpage_sample_size' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Diagonal, mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='warpage_diagonal' col="1"/></td>
+                        <td><span>Diagonal, mm</span></td>
+                        <td><field name='warpage_diagonal' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -755,9 +791,9 @@
                     </group> -->
 
 
-                       <group invisible="not warpage_visible">
+                       <div class="custom_table_borders" invisible="not warpage_visible">
                         <field name="child_lines_warpage" nolabel="1" colspan="2" >
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='warpage1'/>
                                 <field name='warpage2'/>
@@ -765,46 +801,50 @@
                                 <field name='warpage4'/>   
                             </tree>
                         </field>   
-                    </group>
+                    </div>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='average_warpage' col="1"/></td>
+                        <td ><span>Average</span></td>
+                        <td><field name='average_warpage' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Maximum warpage,mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='maximum_warpage' col="1"/></td>
+                        <td><span>Maximum warpage,mm</span></td>
+                        <td> <field name='maximum_warpage' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Maximum warpage, %</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='deviation_warpage' col="1"/></td>
+                        <td><span>Maximum warpage, %</span></td>
+                        <td> <field name='deviation_warpage' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement ,Maximum warpage,%</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='requirement_warpage' col="1"/></td>
+                        <td><span>Requirement ,Maximum warpage,%</span></td>
+                        <td><field name='requirement_warpage' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
 
                     <div>
-                          <table style="width: 30%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field name='deviation_warpage_conformity'
+                             <td><span>Conformity</span></td>
+                              <td><field name='deviation_warpage_conformity'
                                        decoration-success="deviation_warpage_conformity == 'pass'" 
                                        decoration-danger="deviation_warpage_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name="deviation_warpage_nabl"
+                            <td><span>NABL</span></td>
+                            <td><field name="deviation_warpage_nabl"
                                        decoration-success="deviation_warpage_nabl == 'pass'" 
                                        decoration-danger="deviation_warpage_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -849,9 +889,9 @@
                     </div>
                     <group/>
 
-                       <group invisible="not water_bulk_visible">
+                       <div class="custom_table_borders" invisible="not water_bulk_visible">
                         <field name="child_lines_water_bulk" nolabel="1" colspan="2">
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='mass_dry'/>
                                 <field name='mass_wet'/>
@@ -862,18 +902,20 @@
                                 <field name='bulk_density'/> -->   
                             </tree>  
                          </field>    
-                    </group>
+                    </div>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Water Absorption, % (average)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='average_water_bulk' col="1"/></td>
+                        <td><span>Water Absorption, % (average)</span></td>
+                        <td><field name='average_water_bulk' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Water Absorption, % (Individual)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='individual_water_bulk' col="1"/></td>
+                        <td><span>Water Absorption, % (Individual)</span></td>
+                        <td><field name='individual_water_bulk' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -885,11 +927,13 @@
 
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Water Absorption, % (average)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='water_group' col="1"/></td>
+                        <td><span>Water Absorption, % (average)</span></td>
+                        <td><field name='water_group' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -899,15 +943,17 @@
                     </group> -->
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement, Water Absorption, % (Average)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='requirement_water' col="4"/></td>
+                        <td><span>Requirement, Water Absorption, % (Average)</span></td>
+                        <td><field name='requirement_water' col="4"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement, Water Absorption, % (Individual)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='requirement_water_individual' col="4"/></td>
+                        <td><span>Requirement, Water Absorption, % (Individual)</span></td>
+                        <td><field name='requirement_water_individual' col="4"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -918,21 +964,23 @@
                     </group> -->
 
                     <div>
-                          <table style="width: 30%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Water Absorption, % (average) Conformity</span></td>
-                              <td style="padding: 8px;"><field name='average_water_bulk_conformity'
+                             <td><span>Water Absorption, % (average) Conformity</span></td>
+                              <td><field name='average_water_bulk_conformity'
                                        decoration-success="average_water_bulk_conformity == 'pass'" 
                                        decoration-danger="average_water_bulk_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Water Absorption, % (average) NABL</span></td>
-                            <td style="padding: 5px;"><field name="average_water_bulk_nabl"
+                            <td><span>Water Absorption, % (average) NABL</span></td>
+                            <td><field name="average_water_bulk_nabl"
                                        decoration-success="average_water_bulk_nabl == 'pass'" 
                                        decoration-danger="average_water_bulk_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -953,21 +1001,23 @@
                             </group>
                     </group> -->
                     <div>
-                          <table style="width: 30%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Water Absorption, % (Individual) Conformity</span></td>
-                              <td style="padding: 8px;"><field name='individual_water_bulk_conformity'
+                             <td><span>Water Absorption, % (Individual) Conformity</span></td>
+                              <td><field name='individual_water_bulk_conformity'
                                        decoration-success="individual_water_bulk_conformity == 'pass'" 
                                        decoration-danger="individual_water_bulk_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Water Absorption, % (Individual) NABL</span></td>
-                            <td style="padding: 5px;"><field name="individual_water_bulk_nabl"
+                            <td><span>Water Absorption, % (Individual) NABL</span></td>
+                            <td><field name="individual_water_bulk_nabl"
                                        decoration-success="individual_water_bulk_nabl == 'pass'" 
                                        decoration-danger="individual_water_bulk_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -1000,9 +1050,9 @@
                     </div>
                     <group/>
 
-                       <group invisible="not bulk_visible">
+                       <div class="custom_table_borders" invisible="not bulk_visible">
                         <field name="child_lines_bulk" nolabel="1" colspan="2">
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='mass_dry1'/>
                                 <field name='mass_wet1'/>
@@ -1011,19 +1061,21 @@
                                 <field name='bulk_density'/>   
                             </tree>
                            </field>    
-                    </group>
+                    </div>
 
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Bulk Density, g/cc</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='bulk_density' col="1"/></td>
+                        <td><span>Bulk Density, g/cc</span></td>
+                        <td><field name='bulk_density' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement, Bulk Density, g/cc</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='requirement_bulk' col="1"/></td>
+                        <td><span>Requirement, Bulk Density, g/cc</span></td>
+                        <td><field name='requirement_bulk' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -1038,21 +1090,23 @@
 
 
                     <div>
-                          <table style="width: 30%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Bulk Density Conformity</span></td>
-                              <td style="padding: 8px;"><field name='bulk_density_conformity'
+                             <td><span>Bulk Density Conformity</span></td>
+                              <td><field name='bulk_density_conformity'
                                        decoration-success="bulk_density_conformity == 'pass'" 
                                        decoration-danger="bulk_density_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Bulk Density NABL</span></td>
-                            <td style="padding: 5px;"><field name="bulk_density_nabl"
+                            <td><span>Bulk Density NABL</span></td>
+                            <td><field name="bulk_density_nabl"
                                        decoration-success="bulk_density_nabl == 'pass'" 
                                        decoration-danger="bulk_density_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -1088,9 +1142,9 @@
                     </div>
                     <group/>
                     
-                    <group invisible="not modulus_visible">
+                    <div class="custom_table_borders" invisible="not modulus_visible">
                        <field name="child_lines_modulus" nolabel="1" colspan="2">
-                         <tree editable="bottom" class="table-bordered o_list_view">
+                         <tree editable="bottom">
                               <field name='sr_no'/>
                               <field name='width'/>
                               <field name='span'/>
@@ -1100,26 +1154,29 @@
                               <field name='bs'/>  
                           </tree>  
                         </field>  
-                    </group>
+                    </div>
+                    <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Modulus of Rupture, N/mm2 (Average)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='average_modulus' col="1"/></td>
+                        <td><span>Modulus of Rupture, N/mm2 (Average)</span></td>
+                        <td><field name='average_modulus' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Modulus of Rupture, N/mm2 (Individual)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='individual_modulus' col="1"/></td>
+                        <td><span>Modulus of Rupture, N/mm2 (Individual)</span></td>
+                        <td><field name='individual_modulus' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Breaking Strength, N</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='breaking_strenght' col="1"/></td>
+                        <td><span>Breaking Strength, N</span></td>
+                        <td><field name='breaking_strenght' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Thickness,mm</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='average_modulus_thickness' col="1"/></td>
+                        <td><span>Thickness,mm</span></td>
+                        <td><field name='average_modulus_thickness' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -1136,11 +1193,13 @@
                     </group> -->
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Group</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='modulus_group' col="1"/></td>
+                        <td><span>Group</span></td>
+                        <td><field name='modulus_group' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -1150,19 +1209,21 @@
                     </group> -->
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement ,Modulus of Rupture, N/mm2 (Average)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='requirement_modulus' col="1"/></td>
+                        <td><span>Requirement ,Modulus of Rupture, N/mm2 (Average)</span></td>
+                        <td><field name='requirement_modulus' col="1"/></td>
                       </tr>
                       <tr>
                         <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement ,Modulus of rupture, N/mm2 (Individual)</span></td>
                         <td style="border: 1px solid black; padding: 8px;"><field name='requirement_modulus_individual' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement ,Breaking Strength, N</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='requirement_modulus_breaking' col="1"/></td>
+                        <td><span>Requirement ,Breaking Strength, N</span></td>
+                        <td><field name='requirement_modulus_breaking' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -1174,63 +1235,69 @@
                     </group> -->
 
                     <div>
-                          <table style="width: 30%; margin-top:10px;border:1px solid black;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Modulus of Rupture, N/mm2 (Average) Conformity</span></td>
-                              <td style="padding: 8px;"><field name='average_modulus_conformity'
+                             <td><span>Modulus of Rupture, N/mm2 (Average) Conformity</span></td>
+                              <td><field name='average_modulus_conformity'
                                        decoration-success="average_modulus_conformity == 'pass'" 
                                        decoration-danger="average_modulus_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Modulus of Rupture, N/mm2 (Average) NABL</span></td>
-                            <td style="padding: 5px;"><field name="average_modulus_nabl"
+                            <td><span>Modulus of Rupture, N/mm2 (Average) NABL</span></td>
+                            <td><field name="average_modulus_nabl"
                                        decoration-success="average_modulus_nabl == 'pass'" 
                                        decoration-danger="average_modulus_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
                       <group/>
 
                       <div>
-                          <table style="width: 30%; margin-top:10px;border:1px solid black;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Modulus of Rupture, N/mm2 (Individual) Conformity</span></td>
-                              <td style="padding: 8px;"><field name='individual_modulus_conformity'
+                             <td><span>Modulus of Rupture, N/mm2 (Individual) Conformity</span></td>
+                              <td><field name='individual_modulus_conformity'
                                        decoration-success="individual_modulus_conformity == 'pass'" 
                                        decoration-danger="individual_modulus_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Modulus of Rupture, N/mm2 (Individual) NABL</span></td>
-                            <td style="padding: 5px;"><field name="individual_modulus_nabl"
+                            <td><span>Modulus of Rupture, N/mm2 (Individual) NABL</span></td>
+                            <td><field name="individual_modulus_nabl"
                                        decoration-success="individual_modulus_nabl == 'pass'" 
                                        decoration-danger="individual_modulus_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
                       <group/>
 
                       <div>
-                          <table style="width: 30%; margin-top:10px;border:1px solid black;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Breaking Strength Conformity</span></td>
-                              <td style="padding: 8px;"><field name='breaking_strenght_conformity'
+                             <td><span>Breaking Strength Conformity</span></td>
+                              <td><field name='breaking_strenght_conformity'
                                        decoration-success="breaking_strenght_conformity == 'pass'" 
                                        decoration-danger="breaking_strenght_conformity == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Breaking Strength NABL</span></td>
-                            <td style="padding: 5px;"><field name="breaking_strenght_nabl"
+                            <td><span>Breaking Strength NABL</span></td>
+                            <td><field name="breaking_strenght_nabl"
                                        decoration-success="breaking_strenght_nabl == 'pass'" 
                                        decoration-danger="breaking_strenght_nabl == 'fail'" 
                                        readonly="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -1295,15 +1362,17 @@
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 50%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Observations</span></td>
-                        <td style="border: 1px solid black; padding: 8px;width:400px;"><field name='observations' col="2"/></td>
+                        <td><span>Observations</span></td>
+                        <td><field name='observations' col="2"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement, Crazing Resistance Test</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='requirement_crazing' col="1"/></td>
+                        <td><span>Requirement, Crazing Resistance Test</span></td>
+                        <td><field name='requirement_crazing' col="1"/></td>
                       </tr>
+                     </tbody>
                     </table>
                     </div>
                     <group/>
@@ -1329,15 +1398,17 @@
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 50%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Observations</span></td>
-                        <td style="border: 1px solid black; padding: 8px;width:400px;"><field name='observations_alkalis' col="2"/></td>
+                        <td><span>Observations</span></td>
+                        <td><field name='observations_alkalis' col="2"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='requirement_alkalis' col="1"/></td>
+                        <td><span>Requirement</span></td>
+                        <td> <field name='requirement_alkalis' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -1362,15 +1433,17 @@
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 50%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Observations</span></td>
-                        <td style="border: 1px solid black; padding: 8px;width:400px;"><field name='observations_alkalis_un' col="2"/></td>
+                        <td><span>Observations</span></td>
+                        <td><field name='observations_alkalis_un' col="2"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='requirement_alkalis_un' col="1"/></td>
+                        <td><span>Requirement</span></td>
+                        <td> <field name='requirement_alkalis_un' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -1395,23 +1468,25 @@
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 50%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Observations</span></td>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>1</span></td>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>2</span></td>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>3</span></td>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>4</span></td>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>5</span></td>
+                        <td><span>Observations</span></td>
+                        <td><span>1</span></td>
+                        <td><span>2</span></td>
+                        <td><span>3</span></td>
+                        <td><span>4</span></td>
+                        <td><span>5</span></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field  name="observations1"  colspan="1"  nolabel="1"/></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field  name="observations2"  colspan="1"  nolabel="1"/></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field  name="observations3"  colspan="1"  nolabel="1"/></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field  name="observations4"  colspan="1"  nolabel="1"/></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field  name="observations5"  colspan="1"  nolabel="1"/></td>
+                        <td></td>
+                        <td><field  name="observations1"  colspan="1"  nolabel="1"/></td>
+                        <td><field  name="observations2"  colspan="1"  nolabel="1"/></td>
+                        <td><field  name="observations3"  colspan="1"  nolabel="1"/></td>
+                        <td><field  name="observations4"  colspan="1"  nolabel="1"/></td>
+                        <td> <field  name="observations5"  colspan="1"  nolabel="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -1445,15 +1520,17 @@
                     </group> -->
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 50%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Scratch hardness According to Moh's Scale</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name='scratch_hardness_avg' col="1"/></td>
+                        <td><span>Scratch hardness According to Moh's Scale</span></td>
+                        <td><field name='scratch_hardness_avg' col="1"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement ,Scratch hardness According to Moh's Scale</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='requirement_scratch_hardness' col="1"/></td>
+                        <td><span>Requirement ,Scratch hardness According to Moh's Scale</span></td>
+                        <td> <field name='requirement_scratch_hardness' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
@@ -1480,15 +1557,17 @@
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 50%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Observations</span></td>
-                        <td style="border: 1px solid black; padding: 8px;width:400px;"><field name='observations_surface_quality' col="2"/></td>
+                        <td><span>Observations</span></td>
+                        <td><field name='observations_surface_quality' col="2"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Requirement, Surface Quality</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name='requirement_surface_quality' col="1"/></td>
+                        <td><span>Requirement, Surface Quality</span></td>
+                        <td> <field name='requirement_surface_quality' col="1"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>

@@ -23,14 +23,14 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group>
-                      <field name="sample_parameters">
-                        <tree class="table-bordered o_list_view">
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree >
                           <field name="parameter_name"/>
                           <field name="test_method"/>
                         </tree>
                       </field>
-                    </group>
+                    </div>
                     
                     <!-- Dry Gradation -->
 
@@ -44,7 +44,7 @@
 
                     <group invisible="not dry_gradation_visible">
                         <field name="dry_gradation_table" colspan="2" nolabel="1">
-                        <tree editable="bottom" class="table-bordered o_list_view">
+                        <tree editable="bottom" class="custom_table_borders" style="margin-top: 15px;">
                           <field name="sieve_size" />
                           <field name="wt_retained"/>
                           <field name="percent_retained"/>
@@ -54,16 +54,20 @@
                         </field>
                     </group>
 
-                    <div invisible="not dry_gradation_visible">
+                    <button type="object" name="calculate_sieve" class="btn btn-primary mb-2">
+                        <i class="fa fa-calculator mr-1"/> Calculate
+                    </button>
+
+                    <!-- <div invisible="not dry_gradation_visible">
                         <button string="Calculate" type="object" name="calculate_sieve" class="oe_highlight"/>
-                    </div>
+                    </div> -->
                     <group/>
 
                     <div>
-                          <table style="width: 20%; ">
+                          <table style="width: 48%; ">
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Total</span></td>
-                            <td style="padding: 5px;"><field name="total_sieve_analysis"/></td>
+                            <td style="padding: 5px;font-weight: bold;border:2px solid black;"><span>Total</span></td>
+                            <td style="padding: 5px;border:2px solid black;"><field name="total_sieve_analysis"/></td>
                            </tr>
                            </table>
                     </div>
@@ -87,18 +91,18 @@
                     <group/>
 
                     <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table style="border: 1px solid black; border-collapse: collapse; width: 50%;">
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of saturated surface dry (SSD) sample in air in gms, A</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="wt_ssd_sample"/></td>
+                        <td style="border: 2px solid black; padding: 8px;font-weight: bold;"><span>Weight of saturated surface dry (SSD) sample in air in gms, A</span></td>
+                        <td style="border: 2px solid black; padding: 8px;"><field name="wt_ssd_sample"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> Oven dried weight of sample in gms, C</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name="oven_dried_wt"/></td>
+                        <td style="border: 2px solid black; padding: 8px;font-weight: bold;"><span> Oven dried weight of sample in gms, C</span></td>
+                        <td style="border: 2px solid black; padding: 8px;"> <field name="oven_dried_wt"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Water absorption %</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name="water_absorbtion"/></td>
+                        <td style="border: 2px solid black; padding: 8px;font-weight: bold;"><span>Water absorption %</span></td>
+                        <td style="border: 2px solid black; padding: 8px;"> <field name="water_absorbtion"/></td>
                       </tr>
                     </table>
                     </div>
@@ -106,21 +110,22 @@
                     <group/>
 
                     <div>
-                          <table style="width: 20%; margin-top:10px;">
+                          <table style="width: 50%; margin-top:10px;">
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field name='water_absorbtion_conformity' col="1"
+                             <td style="padding: 8px;font-weight: bold;border: 2px solid black;"><span>Conformity</span></td>
+                              <td style="padding: 8px;border: 2px solid black;"><field name='water_absorbtion_conformity' col="1"
                                            decoration-success="water_absorbtion_conformity == 'pass'" 
                                            decoration-danger="water_absorbtion_conformity == 'fail'" 
                                            readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name='water_absorbtion_nabl' col="1"/></td>
+                            <td style="padding: 5px;font-weight: bold;border: 2px solid black;"><span>NABL</span></td>
+                            <td style="padding: 5px;border: 2px solid black;"><field name='water_absorbtion_nabl' col="1"/></td>
                            </tr>
                      
                           </table>
                       </div>
+                      <group/>
                       <group/>
 
                     <!-- <group invisible="not water_absorbtion_visible">
@@ -147,66 +152,66 @@
                     </div>
                     <group/>
 
-                    <group modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}'>
+                    <div class="custom_table_borders" style="margin-top: 15px;" modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}'>
                         <field name="elongation_table" colspan="2" nolabel="1">
-                        <tree editable="bottom" class="table-bordered o_list_view">
+                        <tree editable="bottom" >
                           <field name="sieve_size"/>
                           <field name="wt_retained"/>
                           <field name="elongated_retained"/>
                           <field name="flakiness_retained"/>
                         </tree>
                         </field>
-                    </group>
+                    </div>
 
 
-                    <div style="display:flex;">
-                      <div style="width: 50%;">
-                          <table style="width: 100%; margin-top:10px;">
+                    <div class="d-flex gap-2" >
+                          <table style="width: 100%; margin-top:10px;" class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Total</span></td>
-                            <td style="padding: 5px;"><field name="total_wt_retained_fl_el"/></td>
+                            <td><span>Total</span></td>
+                            <td><field name="total_wt_retained_fl_el"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Total Elongation</span></td>
-                            <td style="padding: 5px;"><field name="total_elongated_retained"/></td>
+                            <td ><span>Total Elongation</span></td>
+                            <td><field name="total_elongated_retained"/></td>
                            </tr>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Total Flakiness</span></td>
-                            <td style="padding: 5px;"><field name="total_flakiness_retained"/></td>
+                            <td><span>Total Flakiness</span></td>
+                            <td><field name="total_flakiness_retained"/></td>
                            </tr>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>	Flakiness Conformity</span></td>
-                              <td style="padding: 8px;"><field  name="aggregate_flakiness_conformity"
+                             <td><span>	Flakiness Conformity</span></td>
+                              <td ><field  name="aggregate_flakiness_conformity"
                                         decoration-success="aggregate_flakiness_conformity == 'pass'" 
                                         decoration-danger="aggregate_flakiness_conformity == 'fail'" 
                                         readonly="1" string="Flakiness Conformity"/>
                             </td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field  name="aggregate_flakiness_nabl" /></td>
+                            <td><span>NABL</span></td>
+                            <td><field  name="aggregate_flakiness_nabl" /></td>
                            </tr>
+                           </tbody>
                      
                           </table>
-                      </div>
 
-                      <div style="width: 50%;">
-                             <table style="width: 100%; margin-top:10px;">
+                        <table style="width: 100%; margin-top:10px;" class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Aggregate Elongation Value in %</span></td>
-                            <td style="padding: 5px;"><field name="aggregate_elongation"/></td>
+                            <td><span>Aggregate Elongation Value in %</span></td>
+                            <td><field name="aggregate_elongation"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Aggregate Flakiness Value in %</span></td>
-                            <td style="padding: 5px;"><field name="aggregate_flakiness"/></td>
+                            <td><span>Aggregate Flakiness Value in %</span></td>
+                            <td><field name="aggregate_flakiness"/></td>
                            </tr>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Aggregate Elongation And Flakiness Value in %</span></td>
-                            <td style="padding: 5px;"><field name="aggregate_combine"/></td>
+                            <td><span>Aggregate Elongation And Flakiness Value in %</span></td>
+                            <td><field name="aggregate_combine"/></td>
                            </tr>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Elongation Conformity</span></td>
-                              <td style="padding: 8px;"><field  name="aggregate_elongation_conformity"
+                             <td><span>Elongation Conformity</span></td>
+                              <td><field  name="aggregate_elongation_conformity"
                                         decoration-success="aggregate_elongation_conformity == 'pass'" 
                                         decoration-danger="aggregate_elongation_conformity == 'fail'" 
                                         readonly="1" string="Elongation Conformity" />
@@ -214,12 +219,11 @@
                             </td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field  name="aggregate_elongation_nabl" /></td>
+                            <td><span>NABL</span></td>
+                            <td><field  name="aggregate_elongation_nabl" /></td>
                            </tr>
-                     
+                           </tbody>                     
                           </table>
-                      </div>
                       </div>
                       <group/>
 
@@ -272,9 +276,9 @@
                     </div>
                     <group/>
 
-                    <group invisible="not impact_visible">
+                    <div invisible="not impact_visible" class="custom_table_borders">
                     <field name="impact_value_child_lines" nolabel="1" colspan="2">
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom">
                                 <field name='sample_no'/>
                                 <field name='wt_of_cylinder'/>
                                 <field name='total_wt_of_dried'/>
@@ -283,29 +287,29 @@
                                 <field name='wt_of_aggregate_retained'/>
                                 <field name='impact_value'/>
                             </tree>
-                           
                     </field> 
-                    </group>
+                    </div>
 
                     <div>
-                        <table style="width: 20%; margin-top:10px;">
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Average Impact Value</span></td>
-                            <td style="padding: 5px;"> <field name='average_impact_value'/></td>
+                            <td ><span>Average Impact Value</span></td>
+                            <td> <field name='average_impact_value'/></td>
                            </tr>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field name='average_impact_value_conformity' col="1"
+                             <td ><span>Conformity</span></td>
+                              <td><field name='average_impact_value_conformity' col="1"
                                            decoration-success="average_impact_value_conformity == 'pass'" 
                                            decoration-danger="average_impact_value_conformity == 'fail'" 
                                            readonly="1"/>
                             </td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name='average_impact_value_nabl' col="1"/></td>
+                            <td><span>NABL</span></td>
+                            <td ><field name='average_impact_value_nabl' col="1"/></td>
                            </tr>
-                     
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -331,43 +335,46 @@
                 <group/>
 
                 <div>
-                    <table style="border: 1px solid black; border-collapse: collapse; width: 36%;">
+                    <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
                     <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Total weight of Sample in gms</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="total_weight_sample_abrasion"/></td>
+                        <td><span>Total weight of Sample in gms</span></td>
+                        <td><field name="total_weight_sample_abrasion"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of Passing sample in 1.70 mm IS sieve in gms</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="weight_passing_sample_abrasion"/></td>
+                        <td><span>Weight of Passing sample in 1.70 mm IS sieve in gms</span></td>
+                        <td><field name="weight_passing_sample_abrasion"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> Weight of Retain sample in 1.70 mm IS sieve in gms</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"><field name="weight_retain_sample_abrasion"/></td>
+                        <td><span> Weight of Retain sample in 1.70 mm IS sieve in gms</span></td>
+                        <td><field name="weight_retain_sample_abrasion"/></td>
                       </tr>
                       <tr>
-                        <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Abrasion Value (%)</span></td>
-                        <td style="border: 1px solid black; padding: 8px;"> <field name="abrasion_value_percentage"/></td>
+                        <td><span>Abrasion Value (%)</span></td>
+                        <td><field name="abrasion_value_percentage"/></td>
                       </tr>
+                      </tbody>
                     </table>
                     </div>
                     <group/>
                     <group/>
 
                     <div>
-                        <table style="width: 20%; margin-top:10px;">
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field name='abrasion_value_percentage_conformity' col="1"
+                             <td><span>Conformity</span></td>
+                              <td><field name='abrasion_value_percentage_conformity' col="1"
                                            decoration-success="abrasion_value_percentage_conformity == 'pass'" 
                                            decoration-danger="abrasion_value_percentage_conformity == 'fail'" 
                                            readonly="1"/>
                             </td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name='abrasion_value_percentage_nabl' col="1"/></td>
+                            <td><span>NABL</span></td>
+                            <td><field name='abrasion_value_percentage_nabl' col="1"/></td>
                            </tr>
-                     
+                           </tbody>                     
                           </table>
                       </div>
                       <group/>
@@ -395,9 +402,9 @@
                 </div>
                 <group/>
 
-                <group invisible="not liquid_limit_visible">
+                <group invisible="not liquid_limit_visible" class="custom_table_borders">
                     <field name="liquid_limit_table" nolabel="1" colspan="2">
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom">
                                 <field name='container_no'/>
                                 <field name='blows'/>
                                 <field name='mass_wet_sample_container'/>
@@ -415,12 +422,13 @@
                     </group> -->
 
                     <div>
-                        <table style="width: 20%; margin-top:10px;">
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
                            <tr>
                            <td style="padding: 5px;font-weight: bold;"><span>Liquid Limit</span></td>
                             <td style="padding: 5px;"><field name="liquid_limit" /></td>
                            </tr>
-                     
+                           </tbody>                    
                           </table>
                 </div>
                 <group/>
@@ -428,26 +436,31 @@
                      <group invisible="not liquid_limit_visible" style="width:50%;white-space:nowrap;">
                      <!-- <field name="liquid_limit" width="50%" /> -->
                         <field name="are_child_lines_filled" invisible="1"/>
-                        <button string="Calculate Liquid Limit" name="liquid_calculation" type="object" class="oe_highlight"  modifiers='{"invisible": [["are_child_lines_filled", "=", false]]}'
-                                />
+                        <button type="object" name="liquid_calculation" class="btn btn-primary mb-2" modifiers='{"invisible": [["are_child_lines_filled", "=", false]]}'>
+                        <i class="fa fa-calculator mr-1"/> Calculate Liquid Limit
+                    </button>
+                        <!-- <button string="Calculate Liquid Limit" name="liquid_calculation" type="object" class="oe_highlight"  modifiers='{"invisible": [["are_child_lines_filled", "=", false]]}'
+                                /> -->
                                 <!-- <field name="remarks_liquid_limit"/> -->
                      </group>
                       
 
                       <div>
-                        <table style="width: 20%; margin-top:10px;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
                            <tr>
                            <td style="padding: 5px;font-weight: bold;"><span>Remarks</span></td>
                             <td style="padding: 5px;"><field name="remarks_liquid_limit"/></td>
                            </tr>
-                     
+                           </tbody>                     
                           </table>
                 </div>
                 <group/>
 
 
                 <div>
-                        <table style="width: 20%; margin-top:10px;">
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
                            <tr>
                              <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
                               <td style="padding: 8px;"><field name='liquid_limit_conformity' col="1"
@@ -460,7 +473,7 @@
                             <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
                             <td style="padding: 5px;"><field name='liquid_limit_nabl' col="1"/></td>
                            </tr>
-                     
+                           </tbody>                     
                           </table>
                       </div>
                       <group/>
@@ -482,9 +495,9 @@
                 </div>
                 <group/>
 
-                <group invisible="not plastic_visible">
+                <div class="custom_table_borders" invisible="not plastic_visible">
                     <field name="plastic_table" nolabel="1" colspan="2">
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom">
                                 <field name='container_no'/>
                                 <field name='mass_wet_sample_container'/>
                                 <field name='mass_dry_sample_container'/>
@@ -494,19 +507,21 @@
                                 <field name='moisture_percent'/>
                             </tree>     
                     </field> 
-                </group>
+                </div>
 
                 <div>
-                        <table style="width: 20%; margin-top:10px;border:1px solid black;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Average</span></td>
-                              <td style="padding: 8px;border:1px solid black;"> <field name="average_plastic_moisture"/>
+                             <td><span>Average</span></td>
+                              <td> <field name="average_plastic_moisture"/>
                             </td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;border:1px solid black;"><span>Remarks</span></td>
-                            <td style="padding: 5px;border:1px solid black;"><field name="remarks_plastic"/></td>
+                            <td><span>Remarks</span></td>
+                            <td><field name="remarks_plastic"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -519,30 +534,34 @@
                 <!-- Plasticity index  -->
 
                 <div>
-                        <table style="width: 20%; margin-top:10px;border:1px solid black;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Plasticity Index</span></td>
-                              <td style="padding: 8px;border:1px solid black;"><field name="plasticity_index"/>
+                             <td><span>Plasticity Index</span></td>
+                              <td><field name="plasticity_index"/>
                             </td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
 
                       <div>
-                        <table style="width: 20%; margin-top:10px;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="padding: 8px;"><field name='plasticity_index_conformity' col="1"
+                             <td><span>Conformity</span></td>
+                              <td><field name='plasticity_index_conformity' col="1"
                                            decoration-success="plasticity_index_conformity == 'pass'" 
                                            decoration-danger="plasticity_index_conformity == 'fail'" 
                                            readonly="1"/>
                             </td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name='plasticity_index_nabl' col="1"/></td>
+                            <td><span>NABL</span></td>
+                            <td><field name='plasticity_index_nabl' col="1"/></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -571,16 +590,18 @@
                 <group/>
 
                 <div>
-                        <table style="width: 20%; margin-top:10px;border:1px solid black;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
                            <tr>
-                             <td style="padding: 8px;font-weight: bold;border:1px solid black;"><span>Weight of Mould in gm</span></td>
-                              <td style="padding: 8px;border:1px solid black;"><field name="wt_of_modul" />
+                             <td><span>Weight of Mould in gm</span></td>
+                              <td><field name="wt_of_modul" />
                             </td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;border:1px solid black;"><span>Volume of Mould in cc</span></td>
-                            <td style="padding: 5px;border:1px solid black;"><field name="vl_of_modul" /></td>
+                            <td><span>Volume of Mould in cc</span></td>
+                            <td><field name="vl_of_modul" /></td>
                            </tr>
+                           </tbody>
                           </table>
                       </div>
                       <group/>
@@ -590,9 +611,9 @@
                     <field name="vl_of_modul" />
                 </group> -->
 
-                <group invisible="not density_relation_visible">
+                <div class="custom_table_borders" invisible="not density_relation_visible">
                     <field name="density_relation_table" nolabel="1" colspan="2" >
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom">
                                 <field name='determination_no'/>
                                 <field name='wt_of_modul_compact'/>
                                 <field name='wt_of_compact'/>
@@ -607,7 +628,7 @@
                                 <field name='dry_density'/>
                             </tree>
                     </field> 
-                    </group>
+                    </div>
                     <group/>
 
                     <group invisible="not density_relation_visible">
@@ -627,15 +648,15 @@
                 </div>
                 <group/>
 
-                <group invisible="not cbr_visible">
+                <div class="custom_table_borders" invisible="not cbr_visible">
                     <field name="cbr_table" nolabel="1" colspan="2" >
-                            <tree editable="bottom" class="table-bordered o_list_view">
+                            <tree editable="bottom">
                                 <field name='penetration'/>
                                 <field name='proving_reading'/>
                                 <field name='load'/>
                             </tree>      
                     </field> 
-                </group>
+                </div>
                 <group invisible="not cbr_visible">
                     <field name="chart_image_cbr" widget="image" readonly="1"/>
                 </group>
