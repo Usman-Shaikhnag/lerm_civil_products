@@ -25,15 +25,15 @@ class LermErtParent(models.Model):
             }
         }
 
+    # def action_print_soil_resistivity_report(self):
+    #     report = self.env.ref('fst.soil_resistivity_report_py3o')
+    #     filename = f"{self.name or 'ERT'}"
+    #     return report.report_action(self, config={'report_name': filename})
+
     def print_report(self):
-        return {
-            'name': "Download ZIP",
-            'type': 'ir.actions.act_window',
-            'res_model': 'ert.report.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {'default_parent_id': self.id},
-        }
+        report = self.env.ref('fst.soil_resistivity_report_py3o')
+        filename = f"{self.name or 'ERT'}"
+        return report.report_action(self, config={'report_name': filename})
       
     # def print_report(self):
     #     # Collect soil resistivity records
@@ -78,13 +78,38 @@ class LermErtParent(models.Model):
     #         "target": "self",
     #     }
 
+class SoilBoreholeParent(models.Model):
+    _name = "soil.borehole.parent"
+    _rec_name = "name"
+
+    name = fields.Char("Project Name")
+    borehole_lines = fields.One2many('soil.borehole.lines','parent_id',"ERT Lines")
+    rec_date  = fields.Date("Date")
+
+    def create_ert(self):
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'soil.borehole',   # must match the target model's _name
+            'target': 'current',
+            'context': {
+                'default_parent_id':self.id
+            }
+        }
+
 
 class LermErtLines(models.Model):
     _name = "ert.lines"  
 
     parent_id = fields.Many2one('lerm.ert.parent') 
     soil_resistivity_id = fields.Many2one('ert.soil.resistivity')
-        
+
+class SoilBoreholeLines(models.Model):
+    _name = "soil.borehole.lines" 
+
+    parent_id = fields.Many2one('soil.borehole.parent') 
+    soil_borehole_id = fields.Many2one('soil.borehole')
 
 class ERTDashboard(models.Model):
     _name = "lerm.ert.dashboard"

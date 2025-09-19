@@ -42,9 +42,13 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="%(action_open_ert_report_wizard)d"
+                        <!-- <button name="%(action_open_ert_report_wizard)d"
                             string="Print ERT Reports"
                             type="action"
+                            class="btn-primary"/> -->
+                            <button name="print_report"
+                            string="Print Project Report"
+                            type="object"
                             class="btn-primary"/>
                     </header>
               
@@ -65,6 +69,38 @@
                         <field name="ert_lines" readonly="1">
                             <tree editable="bottom">
                                 <field name="soil_resistivity_id" widget="many2one" options="{'no_open': False}"/>
+                                <field name="create_date" readonly="1"/>
+                            </tree>
+                        </field>
+                    
+                    
+                    </sheet>
+                </form>
+            </field>
+        </record>
+                
+        <record id="soil_borehole_parent_view" model="ir.ui.view">
+            <field name="name">soil.borehole.parent.form</field>
+            <field name="model">soil.borehole.parent</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="rec_date"/>
+                        </group>
+
+                        
+                        <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="create_ert"
+                            string="Borehole"
+                            />
+
+                        <field name="borehole_lines" readonly="1">
+                            <tree editable="bottom">
+                                <field name="soil_borehole_id" widget="many2one" options="{'no_open': False}"/>
                                 <field name="create_date" readonly="1"/>
                             </tree>
                         </field>
@@ -123,6 +159,22 @@
             <field name="view_mode">tree,form</field>
         </record>
         
+        <record id="action_soil_borehole" model="ir.actions.act_window">
+            <field name="name">Borehole</field>
+            <field name="res_model">soil.borehole.parent</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="soil_borehole_action" model="ir.actions.act_window">
+            <field name="name">BH</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">soil.borehole</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">SOIL BH</p>
+            </field>
+        </record>
+        
         
 
         <menuitem id="fst_root"
@@ -137,8 +189,6 @@
             parent="fst_root"
             action="lerm_ert_parent_action"
             /> 
-
-        
             
         <record id="view_ert_dashboard" model="ir.ui.view">
             <field name="name">lerm.ert.dashboard.view</field>
@@ -156,6 +206,18 @@
                                     name="%(action_lerm_ert_parent)d"
                                     class="btn btn-primary">
                                         Create ERT
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_global_click o_kanban_card">
+                                <div class="o_kanban_card_header">
+                                    <strong>Soil</strong>
+                                </div>
+                                <div class="o_kanban_card_content">
+                                    <a type="action"
+                                    name="%(action_soil_borehole)d"
+                                    class="btn btn-success">
+                                        Borehole
                                     </a>
                                 </div>
                             </div>
