@@ -53,9 +53,10 @@
                         <field name='witness_photo_name' invisible="1"/>
                         <field name='attachment' filename='attachment_name'/>
                         <field name='attachment_name' invisible="1"/> -->
-                        <field name="casting_date" invisible="sample_id.casting == False"/>
-                        <field name="date_testing" invisible="sample_id.casting == False"/>
-                        <field name="days_casting" readonly="1" invisible="sample_id.casting == False"/>
+                        <field name='casting' invisible="1"/>
+                        <field name="casting_date" invisible="casting == False"/>
+                        <field name="date_testing" invisible="casting == False"/>
+                        <field name="days_casting" readonly="1" invisible="casting == False"/>
                         <field name='instrument'/>
                         <field name='grade_ids' invisible="1"/>
                         <field name='ir_model' invisible="1"/>

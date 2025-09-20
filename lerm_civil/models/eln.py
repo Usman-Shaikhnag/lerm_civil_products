@@ -80,6 +80,7 @@ class ELN(models.Model):
     temperature = fields.Float("Temperature")
     instrument = fields.Many2one('maintenance.equipment',string="Instrument")
     sop = fields.Html(string='SOP',compute="comput_sop")
+    casting = fields.Boolean(string="Casting", compute="_compute_casting")
     date_testing = fields.Date("Date of Testing",compute="_compute_date_testing")
     days_casting = fields.Selection([
         ('1', '1 Days'),
@@ -171,6 +172,15 @@ class ELN(models.Model):
     #             raise ValidationError("Start Date cannot be before SRF creation date")
     #         else:
     #             pass
+
+    @api.depends('sample_id')
+    def _compute_casting(self):
+        for record in self:
+            if record.sample_id.casting:
+                record.casting = True
+            else:
+                record.casting = False
+
     @api.depends('casting_date','sample_id')
     def _compute_casting_date(self):
         for record in self:
