@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="kes_invoice" model="ir.actions.report">
+        <field name="name">Tax Invoice with header</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">lerm_civil_inv.kes_custom_invoice</field>
+        <field name="report_file">lerm_civil_inv.kes_custom_invoice</field>
+        <field name="binding_model_id" ref="model_account_move"/>
+        <field name="binding_type">report</field>
+    </record>
+    <record id="kes_invoice_without_header" model="ir.actions.report">
+        <field name="name">Tax Invoice without Header</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">lerm_civil_inv.kes_custom_invoice_no_header</field>
+        <field name="report_file">lerm_civil_inv.kes_custom_invoice_no_header</field>
+        <field name="binding_model_id" ref="model_account_move"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_custom" model="report.paperformat">
+        <field name="name">Custom Page</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">13</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="True"/>
+        <field name="header_spacing">15</field>
+        <field name="dpi">90</field>
+    </record>
+</odoo>
