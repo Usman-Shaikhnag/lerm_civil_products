@@ -2,9 +2,13 @@
 
 import base64
 import io
+import logging
+from collections import defaultdict
 
 from odoo import models, api
-from PyPDF2 import PdfFileWriter, PdfFileReader
+from odoo.tools.pdf import OdooPdfFileReader, OdooPdfFileWriter
+
+_logger = logging.getLogger(__name__)
 
 
 class IrAttachment(models.Model):
@@ -26,13 +30,27 @@ class IrAttachment(models.Model):
         :returns: the new PDF attachments
         """
         vals_list = []
-        pdf_from_files = [PdfFileReader(open_file, strict=False) for open_file in open_files]
+        pdf_from_files = [OdooPdfFileReader(open_file, strict=False) for open_file in open_files]
+        
         for new_file in new_files:
-            output = PdfFileWriter()
+            output = OdooPdfFileWriter()
+            used_pages_by_pdf = defaultdict(set)
             for page in new_file['new_pages']:
-                input_pdf = pdf_from_files[int(page['old_file_index'])]
+                file_index = int(page['old_file_index'])
                 page_index = page['old_page_number'] - 1
+                input_pdf = pdf_from_files[file_index]
                 output.addPage(input_pdf.getPage(page_index))
+                used_pages_by_pdf[file_index].add(page_index)
+                if len(used_pages_by_pdf[file_index]) != input_pdf.getNumPages():
+                    continue
+                try:
+                    for fname, fcontent in input_pdf.getAttachments():
+                        output.addAttachment(name=fname, data=fcontent)
+                except Exception:  # noqa: BLE001
+                    _logger.warning(
+                        'Impossible to add (all) attachments from pdf at index %i',
+                        file_index, exc_info=True,
+                    )
             with io.BytesIO() as stream:
                 output.write(stream)
                 vals_list.append({
@@ -60,7 +78,7 @@ class IrAttachment(models.Model):
         res_model = vals.get('res_model')
         res_id = vals.get('res_id')
         model = self.env.get(res_model)
-        if model is not None and res_id and issubclass(type(model), self.pool['documents.mixin']):
+        if model is not None and res_id and issubclass(self.pool[res_model], self.pool['documents.mixin']):
             vals_list = [
                 model.browse(res_id)._get_document_vals(attachment)
                 for attachment in self
@@ -71,18 +89,17 @@ class IrAttachment(models.Model):
             return True
         return False
 
-    @api.model
-    def create(self, vals):
-        attachment = super(IrAttachment, self).create(vals)
-        # the context can indicate that this new attachment is created from documents, and therefore
-        # doesn't need a new document to contain it.
-        if not self._context.get('no_document') and not attachment.res_field:
-            attachment.sudo()._create_document(dict(vals, res_model=attachment.res_model, res_id=attachment.res_id))
-        return attachment
+    @api.model_create_multi
+    def create(self, vals_list):
+        attachments = super().create(vals_list)
+        for attachment, vals in zip(attachments, vals_list):
+            # the context can indicate that this new attachment is created from documents, and therefore
+            # doesn't need a new document to contain it.
+            if not self._context.get('no_document') and not attachment.res_field:
+                attachment.sudo()._create_document(dict(vals, res_model=attachment.res_model, res_id=attachment.res_id))
+        return attachments
 
     def write(self, vals):
         if not self._context.get('no_document'):
             self.filtered(lambda a: not (vals.get('res_field') or a.res_field)).sudo()._create_document(vals)
         return super(IrAttachment, self).write(vals)
-
-

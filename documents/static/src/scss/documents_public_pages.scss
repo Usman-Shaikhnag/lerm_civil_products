@@ -5,29 +5,19 @@ $o-docs-gap: 8px;
 body.o_docs_share_page {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: $gray-300;
-
-    .o_docs_btn {
-        font-weight: 500;
-        border: 1px solid transparent;
-        @include o-hover-text-color(transparentize(white, 0.1), white);
-
-        &:hover, &:focus {
-            border-color: transparentize(white, 0.5);
-        }
-
-        &.btn-lg {
-            font-size: 14px;
-        }
-    }
 
     #wrap {
         > header {
             height: $o-navbar-height;
-
             .o_company_logo img {
                 display: inline;
                 max-height: $o-navbar-height;
+            }
+            a > span {
+                display: inline-block;
+                max-width: 150px;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
 
@@ -41,7 +31,6 @@ body.o_docs_share_page {
         margin-bottom: $o-docs-gap;
         padding: $o-docs-gap $o-docs-gap+2 $o-docs-gap $o-docs-gap;
         background: transparentize(white, 0.1);
-        box-shadow: 0 0 20px transparentize(black, 0.75);
         color: $o-main-text-color;
         flex-flow: row nowrap;
 
@@ -60,7 +49,8 @@ body.o_docs_share_page {
             }
 
             .o_request_icon {
-                @include size(50px, 59px);
+                width: 50px;
+                height: 59px;
                 position: relative;
                 margin: -$o-docs-gap 0 (-$o-docs-gap) (-$o-docs-gap);
 
@@ -108,7 +98,8 @@ body.o_docs_share_page {
 
         .o_image {
             margin-top: 2px;
-            @include size(43px);
+            width: 43px;
+            height: 43px;
         }
 
         .o_image_preview {
@@ -120,8 +111,8 @@ body.o_docs_share_page {
     }
 
 
-    // All single file sharing
-    #wrap.o_share_single {
+    // single/multiple file sharing
+    #wrap.o_share_files {
         main {
             justify-content: center;
             align-items: center;
@@ -133,13 +124,14 @@ body.o_docs_share_page {
         }
 
         .o_card {
-            @include media-breakpoint-down(sm) {
+            @include media-breakpoint-down(md) {
                 justify-content: center;
                 flex-flow: row wrap;
             }
 
             .o_image {
-                @include size(55px);
+                width: 55px;
+                height: 55px;
             }
 
             .o_card_title {
@@ -148,14 +140,19 @@ body.o_docs_share_page {
 
             &.o_request_card {
                 .o_request_icon {
-                    @include size(60px, 75px);
+                    width: 60px;
+                    height: 75px;
                 }
             }
+        }
+        .shadow-lg div {
+            padding: 4px;
+            width: 240px;
         }
     }
 
     // Single file sharing with Preview
-    #wrap.o_share_single.o_has_preview {
+    #wrap.o_share_files.o_has_preview {
         > main {
             padding: $grid-gutter-width*2 0;
         }
@@ -182,8 +179,8 @@ body.o_docs_share_page {
         }
     }
 
-    // Multiple files sharing
-    #wrap.o_share_multiple {
+    // Workspace sharing
+    #wrap.o_share_workspace {
         .o_docs_upload_wrapper {
             overflow: hidden;
 
@@ -199,21 +196,9 @@ body.o_docs_share_page {
             }
         }
 
-        .o_docs_share_multible_bar {
-            color: $component-active-color;
-            font-size: $h4-font-size;
-
-            .o_author {
-                white-space: nowrap;
-                margin-left: $o-docs-gap;
-
-                img {
-                    width: 21px;
-                    height: 21px;
-                    object-fit: cover;
-                    vertical-align: bottom;
-                }
-            }
+        .o_docs_share_multible_bar .o_author {
+            width: 21px;
+            height: 21px;
         }
     }
 }

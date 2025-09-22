@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="lerm_brick_datasheet1">
+<template id="lerm_brick_datasheet">
     <t t-call="web.html_container">
 	<t t-call="lerm_civil.data_sheet_header_generaltemplate">
 		<div style="text-align:center;font-size:18px;font-weight: bold">
@@ -321,7 +321,7 @@
                 <table style="margin-top: 20px">
 					<tr>
 						<td style="font-weight: bold;">Average Compressive Strength.N/mm²</td>
-						<td style="text-align: center;"><span t-field="data.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/></td>
+						<td style="text-align: center;"><span t-field="data.avrg_compressive_strength" t-options='{"widget": "float", "precision": 3}'/></td>
 					</tr>
 				</table>	
 			</div>
@@ -659,7 +659,7 @@
                 <table style="margin-top: 20px">
 					<tr>
 						<td style="font-weight: bold;">Average Water Absorption, %</td>
-						<td style="text-align: center;"><span t-field="data.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
+						<td style="text-align: center;"><span t-field="data.avrg_water_absorption" t-options='{"widget": "float", "precision": 3}'/></td>
 					</tr>
 				</table>	
 			</div>

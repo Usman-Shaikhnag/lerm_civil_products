@@ -5,7 +5,7 @@
 {
     'name': 'CEMENT PPC',
     'version': '1.2',
-    'category': 'Sales/Sales',
+    'category': 'Lerm Civil',
     'summary': 'Sales internal machinery',
     'description': """
 This module contains all the common features of Sales Management and eCommerce.
@@ -15,8 +15,8 @@ This module contains all the common features of Sales Management and eCommerce.
                 'security/ir.model.access.csv',
                 'views/ppc.xml',
                 'reports/ppc_ds_report.xml'
-    ],
-  
+    ],    
+
     'installable': True,
     'auto_install': False,
    

@@ -96,6 +96,6 @@ class DataSheetReport(models.AbstractModel):
         return {
             'eln': eln,
             'datasheet' : datasheet_data,
-            'datasheet_name' : 'Afzal'
+            'datasheet_name' : 'Afzal',
         }
         

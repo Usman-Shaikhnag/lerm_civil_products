@@ -1,34 +1,32 @@
-Accounting Kit
-==============
-* Full accounting kit for Odoo 15 community editions
+.. image:: https://img.shields.io/badge/license-LGPL--3-blue.svg
+    :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+    :alt: License: LGPL-3
 
-Installation
-============
-	- www.odoo.com/documentation/15.0/setup/install.html
-	- Install our custom addon
+Odoo 17 Full Accounting Kit
+===========================
+Full accounting kit for Odoo 17 community editions
+
+Configuration
+=============
+No configuration
+
+Company
+-------
+* `Cybrosys Techno Solutions <https://cybrosys.com/>`__
 
 License
 -------
 General Public License, Version 3 (LGPL v3).
-(https://www.odoo.com/documentation/user/13.0/legal/licenses/licenses.html)
-
-Company
--------
-* 'Cybrosys Techno Solutions <https://cybrosys.com/>`__
+(http://www.gnu.org/licenses/lgpl-3.0-standalone.html)
 
 Credits
 -------
-* Developer:
-(v13) Milind Mohan @ Cybrosys
-(v13) Mashhood K U @ Cybrosys
-(v13) Sreejith @ Cybrosys
-(v13) Varsha Vivek @ Cybrosys
-(v14) Risha @ Cybrosys
-(V15) Mehjabin @ Cybrosys
+Developer: (V17) Risvana A R , Contact: odoo@cybrosys.com
 
 Contacts
 --------
 * Mail Contact : odoo@cybrosys.com
+* Website : https://cybrosys.com
 
 Bug Tracker
 -----------
@@ -36,11 +34,13 @@ Bugs are tracked on GitHub Issues. In case of trouble, please check there if you
 
 Maintainer
 ==========
+.. image:: https://cybrosys.com/images/logo.png
+   :target: https://cybrosys.com
+
 This module is maintained by Cybrosys Technologies.
 
-For support and more information, please visit https://www.cybrosys.com
+For support and more information, please visit `Our Website <https://cybrosys.com/>`__
 
 Further information
 ===================
 HTML Description: `<static/description/index.html>`__
-

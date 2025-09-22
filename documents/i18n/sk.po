@@ -3,24 +3,19 @@
 # 	* documents
 # 
 # Translators:
-# sakodoo <sak@odoo.com>, 2022
-# Martin Trigaux, 2022
-# gebri <gebri@inmail.sk>, 2022
-# Matus Krnac <matus.krnac@gmail.com>, 2022
-# Jaroslav Bosansky <jaro.bosansky@ekoenergo.sk>, 2022
-# Jan Prokop, 2022
-# Damian Brencic <brencicdamian12313@gmail.com>, 2022
-# Filip Brenčič <brencicf5@gmail.com>, 2022
-# Rastislav Brencic <rastislav.brencic@azet.sk>, 2022
+# Dávid Kováč, 2023
+# Jaroslav Bosansky <jaro.bosansky@ekoenergo.sk>, 2023
+# Wil Odoo, 2025
+# Tomáš Píšek, 2025
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 15.0+e\n"
+"Project-Id-Version: Odoo Server 17.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-24 08:59+0000\n"
-"PO-Revision-Date: 2021-09-14 12:39+0000\n"
-"Last-Translator: Rastislav Brencic <rastislav.brencic@azet.sk>, 2022\n"
-"Language-Team: Slovak (https://www.transifex.com/odoo/teams/41243/sk/)\n"
+"POT-Creation-Date: 2025-02-10 10:49+0000\n"
+"PO-Revision-Date: 2023-10-26 23:10+0000\n"
+"Last-Translator: Tomáš Píšek, 2025\n"
+"Language-Team: Slovak (https://app.transifex.com/odoo/teams/41243/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -28,41 +23,53 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_controller_mixin.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.js:0
+#, python-format
+msgid " + Add a tag"
+msgstr " + Pridať štítok"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "%s (remaining pages)"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_model_mixin.js:0
 #, python-format
 msgid "%s Documents"
 msgstr "%sDokumenty"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_controller_mixin.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_model_mixin.js:0
 #, python-format
 msgid "%s Documents (%s locked)"
-msgstr ""
+msgstr "%s Dokumentov (%s zamknuté)"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_search_panel.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/search/documents_search_panel.js:0
 #, python-format
 msgid "%s file(s) not moved because they are locked by another user"
 msgstr "%s súbor(y) neboli presunuté, pretože sú uzamknuté iným používateľom"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.document_view_form
-msgid ""
-"&amp;nbsp;\n"
-"                            <i class=\"fa fa-lock oe_inline\" title=\"Locked\" attrs=\"{'invisible': [('lock_uid', '=', False)]}\"/>"
-msgstr ""
-"&amp;nbsp;\n"
-"                            <i class=\"fa fa-lock oe_inline\" title=\"Locked\" attrs=\"{'invisible': [('lock_uid', '=', False)]}\"/>"
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "%s new document(s) created"
+msgstr "vytvorený(ch) %s nový(ch) dokument(ov)"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_inspector.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
 #, python-format
-msgid "+ Add a tag "
-msgstr "+ Pridať tag "
+msgid "%s page(s) deleted"
+msgstr "%s zmazaná(é) stránka(y)"
 
 #. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.public_page_layout
@@ -70,45 +77,34 @@ msgid ", expired on"
 msgstr ", ukončí platnosť"
 
 #. module: documents
-#: model:documents.tag,name:documents.documents_finance_fiscal_year_2017
-msgid "2021"
+#: model_terms:digest.tip,tip_description:documents.digest_tip_documents_0
+msgid ""
+". Scanned files will appear automatically in your workspace. Then, process "
+"your documents in bulk with the split tool: launch user defined actions, "
+"request a signature, convert to vendor bills with AI, etc."
 msgstr ""
+". Naskenované dokumenty sa automaticky objaví vo vašom pracovnom priestore. "
+"Potom, nástrojom na rozdelenie dávkovo spracujte dokumenty: spustite "
+"užívateľom definované akcie, požiadajte o podpis, s pomocou AI zmeňte na "
+"dodávateľskú faktúru atď."
+
+#. module: documents
+#: model:documents.tag,name:documents.documents_finance_fiscal_year_2017
+msgid "2024"
+msgstr "2024"
 
 #. module: documents
 #: model:documents.tag,name:documents.documents_finance_fiscal_year_2018
-msgid "2022"
+msgid "2025"
 msgstr ""
 
 #. module: documents
 #: model_terms:digest.tip,tip_description:documents.digest_tip_documents_0
 msgid "<b class=\"tip_title\">Tip: Become a paperless company</b>"
-msgstr ""
+msgstr "<b class=\"tip_title\">Tip: Staňte sa bezpapierovou spoločnosťou</b>"
 
 #. module: documents
-#: code:addons/documents/controllers/main.py:0
-#, python-format
-msgid ""
-"<b> File uploaded by: </b> %s <br/>\n"
-"                               <b> Link created by: </b> %s <br/>\n"
-"                               <a class=\"btn btn-primary\" href=\"/web#id=%s&model=documents.share&view_type=form\" target=\"_blank\">\n"
-"                                  <b>%s</b>\n"
-"                               </a>\n"
-"                             "
-msgstr ""
-"<b> Súbor nahratý: </b> %s <br/>\n"
-"                               <b> Linka vytvorená: </b> %s <br/>\n"
-"                               <a class=\"btn btn-primary\" href=\"/web#id=%s&model=documents.share&view_type=form\" target=\"_blank\">\n"
-"                                  <b>%s</b>\n"
-"                               </a>\n"
-"                             "
-
-#. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.format_file_size
-msgid "<b>Bytes</b>"
-msgstr "<b>Bajty</b>"
-
-#. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid "<b>Deselect this page</b> as we plan to process all bills first."
@@ -117,19 +113,20 @@ msgstr ""
 " prijaté faktúry."
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.format_file_size
-msgid "<b>Gb</b>"
-msgstr "<b>Gb</b>"
+#. odoo-javascript
+#: code:addons/documents/static/src/js/tours/documents.js:0
+#, python-format
+msgid "<b>Select</b> this page to continue."
+msgstr ""
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.format_file_size
-msgid "<b>Kb</b>"
-msgstr "<b>Kb</b>"
-
-#. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.format_file_size
-msgid "<b>Mb</b>"
-msgstr "<b>Mb</b>"
+#: model_terms:ir.ui.view,arch_db:documents.share_files_page
+msgid ""
+"<br/>\n"
+"                    is sharing content with you"
+msgstr ""
+"<br/>\n"
+"                    s vami zdiela obsah"
 
 #. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.public_page_layout
@@ -138,54 +135,30 @@ msgstr "<br/>Prinášané"
 
 #. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
-msgid ""
-"<i class=\"fa fa fa-folder o_documents_folder_color mr-2\" "
-"title=\"Workspace\"/>"
-msgstr ""
+msgid "<i class=\"fa fa fa-folder text-primary me-2\" title=\"Workspace\"/>"
+msgstr "<i class=\"fa fa fa-folder text-primary me-2\" title=\"Pracovný priestor\"/>"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_single
-msgid ""
-"<i class=\"fa fa-circle-o-notch fa-spin text-white fa-3x mb8\" role=\"img\" "
-"aria-label=\"Loading\" title=\"Loading\"/>"
-msgstr ""
-"<i class=\"fa fa-circle-o-notch fa-spin text-white fa-3x mb8\" role=\"img\" "
-"aria-label=\"Loading\" title=\"Loading\"/>"
-
-#. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.document_view_kanban
-msgid "<i class=\"fa fa-circle-thin o_record_selector\" title=\"Select document\"/>"
-msgstr ""
-
-#. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_page
+#: model_terms:ir.ui.view,arch_db:documents.share_workspace_page
 msgid "<i class=\"fa fa-download fa-fw\"/>  Download All"
 msgstr "<i class=\"fa fa-download fa-fw\"/>  Stiahnuť všetko"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_single
-msgid "<i class=\"fa fa-download fa-fw\"/> Download"
-msgstr "<i class=\"fa fa-download fa-fw\"/> Stiahnuť"
-
-#. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.document_view_kanban
-msgid "<i class=\"fa fa-globe\" title=\"Document url\"/>"
-msgstr ""
-
-#. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_single
-msgid "<i class=\"fa fa-link\"/> Go to URL"
-msgstr "<i class=\"fa fa-link\"/> Prejdite na adresu URL"
+#: model_terms:ir.ui.view,arch_db:documents.document_view_form
+msgid "<i class=\"fa fa-lock oe_inline\" title=\"Locked\" invisible=\"not lock_uid\"/>"
+msgstr "<i class=\"fa fa-lock oe_inline\" title=\"Zamknuté\" invisible=\"not lock_uid\"/>"
 
 #. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
 msgid ""
-"<i class=\"fa fa-tag o_documents_tag_color ml-2\" attrs=\"{'invisible': "
-"[('tag_ids', '=', [])]}\" title=\"Tags\"/>"
+"<i class=\"fa fa-tag o_documents_tag_color ms-2\" invisible=\"not tag_ids\" "
+"title=\"Tags\"/>"
 msgstr ""
+"<i class=\"fa fa-tag o_documents_tag_color ms-2\" invisible=\"not tag_ids\" "
+"title=\"Štítky\"/>"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_page
+#: model_terms:ir.ui.view,arch_db:documents.share_workspace_page
 msgid "<i class=\"fa fa-upload\"/>  Upload"
 msgstr "<i class=\"fa fa-upload\"/>  Nahrať"
 
@@ -206,14 +179,14 @@ msgid "<span class=\"o_stat_text\">Related <br/> Record</span>"
 msgstr "<span class=\"o_stat_text\">Súvisiaci <br/> záznam</span>"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.public_page_layout
-msgid "<span style=\"color:white;\">&amp;nbsp;Documents.</span>"
-msgstr "<span style=\"color:white;\">&amp;nbsp;Dokumenty.</span>"
-
-#. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_page
+#: model_terms:ir.ui.view,arch_db:documents.share_workspace_page
 msgid "<span title=\"Requested Document\">Requested Document</span>"
 msgstr "<span title=\"Requested Document\">Požadovaný Dokument</span>"
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.public_page_layout
+msgid "<span>&amp;nbsp;Documents.</span>"
+msgstr "<span>&amp;nbsp;Dokumenty.</span>"
 
 #. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.document_view_kanban
@@ -224,6 +197,215 @@ msgstr "<span><b> Žiadosť</b></span>"
 #: model_terms:ir.ui.view,arch_db:documents.document_view_kanban
 msgid "<span><b>Requested Document</b></span>"
 msgstr "<span><b>Požadovaný Dokument</b></span>"
+
+#. module: documents
+#: model:mail.template,body_html:documents.mail_template_document_request_reminder
+msgid ""
+"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;\"><tr><td align=\"center\">\n"
+"                    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: white; color: #454748; border-collapse:separate;\">\n"
+"                    <tbody>\n"
+"                        <!-- HEADER -->\n"
+"                        <tr>\n"
+"                            <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                                    <tr><td valign=\"middle\">\n"
+"                                        <span style=\"font-size: 10px;\">\n"
+"                                            Document Request: <br>\n"
+"                                            <t t-if=\"object.create_share_id.name\">\n"
+"                                                <span style=\"font-size: 20px; font-weight: bold;\" t-out=\"object.create_share_id.name or ''\">Inbox Financial</span>\n"
+"                                            </t>\n"
+"                                        </span><br>\n"
+"                                    </td><td valign=\"middle\" align=\"right\">\n"
+"                                        <img t-attf-src=\"/logo.png?company={{ object.create_uid.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.create_uid.company_id.name\">\n"
+"                                    </td></tr>\n"
+"                                    <tr><td colspan=\"2\" style=\"text-align:center;\">\n"
+"                                      <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                                    </td></tr>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                        <!-- CONTENT -->\n"
+"                        <tr>\n"
+"                            <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                                    <tr><td valign=\"top\" style=\"font-size: 13px;\">\n"
+"                                        <div>\n"
+"                                            Hello <t t-out=\"object.create_share_id.owner_id.name or ''\">OdooBot</t>,\n"
+"                                            <br><br>\n"
+"                                            This is a friendly reminder to upload your requested document:\n"
+"                                            <br><br>\n"
+"                                            <center>\n"
+"                                                <div>\n"
+"                                                    <t t-if=\"object.create_share_id.name\">\n"
+"                                                        <b t-out=\"object.create_share_id.name or ''\">Inbox Financial</b>\n"
+"                                                    </t>\n"
+"                                                </div>\n"
+"                                                <div>\n"
+"                                                    <t t-if=\"object.create_share_id.activity_note\">\n"
+"                                                        <i t-out=\"object.create_share_id.activity_note or ''\">Example of a note.</i>\n"
+"                                                    </t>\n"
+"                                                </div>\n"
+"                                                <br>\n"
+"                                                <div style=\"margin: 16px 0px 16px 0px;\">\n"
+"                                                    <a t-att-href=\"object.create_share_id.full_url\" style=\"background-color: #875A7B; padding: 20px 30px 20px 30px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;\">\n"
+"                                                        Upload the requested document\n"
+"                                                    </a>\n"
+"                                                </div>\n"
+"                                            </center><br>\n"
+"                                            Please provide us with the missing document before the link expires (planned on <t t-out=\"object.create_share_id.date_deadline or ''\">2021-05-17</t>).\n"
+"                                            <br><br>\n"
+"                                            Thank you,\n"
+"                                            <t t-if=\"user and user.signature\">\n"
+"                                                <br>\n"
+"                                                <t t-out=\"user.signature\">--<br>Mitchell Admin</t>\n"
+"                                                <br>\n"
+"                                            </t>\n"
+"                                        </div>\n"
+"                                    </td></tr>\n"
+"                                    <tr><td style=\"text-align:center;\">\n"
+"                                      <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                                    </td></tr>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                        <!-- FOOTER -->\n"
+"                        <tr>\n"
+"                            <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                                    <tr><td valign=\"middle\" align=\"left\">\n"
+"                                        <t t-out=\"object.create_uid.company_id.name or ''\">YourCompany</t>\n"
+"                                    </td></tr>\n"
+"                                    <tr><td valign=\"middle\" align=\"left\" style=\"opacity: 0.7;\">\n"
+"                                        <t t-out=\"object.create_uid.company_id.phone or ''\">+1 650-123-4567</t>\n"
+"                                        <t t-if=\"object.create_uid.company_id.email\">\n"
+"                                            | <a t-attf-href=\"'mailto:%s' % {{ object.create_uid.company_id.email }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"object.create_uid.company_id.email\">info@yourcompany.com</a>\n"
+"                                        </t>\n"
+"                                        <t t-if=\"object.create_uid.company_id.website\">\n"
+"                                            | <a t-att-href=\"object.create_uid.company_id.website\" style=\"text-decoration:none; color: #454748;\" t-out=\"object.create_uid.company_id.website\">http://www.example.com</a>\n"
+"                                        </t>\n"
+"                                    </td></tr>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                    </tbody>\n"
+"                    </table>\n"
+"                    </td></tr>\n"
+"                    <!-- POWERED BY -->\n"
+"                    <tr><td align=\"center\" style=\"min-width: 590px;\">\n"
+"                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;\">\n"
+"                          <tr><td style=\"text-align: center; font-size: 13px;\">\n"
+"                            <t t-if=\"object.create_share_id.date_deadline\">\n"
+"                                This link expires on <b t-out=\"object.create_share_id.date_deadline\">2021-05-17</b>.<br>\n"
+"                            </t>\n"
+"                            Powered by <a target=\"_blank\" href=\"https://www.odoo.com/app/documents\" style=\"color: #875A7B;\">Odoo Documents</a>\n"
+"                          </td></tr>\n"
+"                        </table>\n"
+"                    </td></tr>\n"
+"                </table>\n"
+"            "
+msgstr ""
+"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;\"><tr><td align=\"center\">\n"
+"                    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: white; color: #454748; border-collapse:separate;\">\n"
+"                    <tbody>\n"
+"                        <!-- HEADER -->\n"
+"                        <tr>\n"
+"                            <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                                    <tr><td valign=\"middle\">\n"
+"                                        <span style=\"font-size: 10px;\">\n"
+"                                            Žiadosť o dokument: <br>\n"
+"                                            <t t-if=\"object.create_share_id.name\">\n"
+"                                                <span style=\"font-size: 20px; font-weight: bold;\" t-out=\"object.create_share_id.name or ''\">Doručené - financie</span>\n"
+"                                            </t>\n"
+"                                        </span><br>\n"
+"                                    </td><td valign=\"middle\" align=\"right\">\n"
+"                                        <img t-attf-src=\"/logo.png?company={{ object.create_uid.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.create_uid.company_id.name\">\n"
+"                                    </td></tr>\n"
+"                                    <tr><td colspan=\"2\" style=\"text-align:center;\">\n"
+"                                      <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                                    </td></tr>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                        <!-- CONTENT -->\n"
+"                        <tr>\n"
+"                            <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                                    <tr><td valign=\"top\" style=\"font-size: 13px;\">\n"
+"                                        <div>\n"
+"                                            Dobrý deň <t t-out=\"object.create_share_id.owner_id.name or ''\">OdooBot</t>,\n"
+"                                            <br><br>\n"
+"                                            Toto je priateľské upozornenie, že máte nahrať dokument:\n"
+"                                            <br><br>\n"
+"                                            <center>\n"
+"                                                <div>\n"
+"                                                    <t t-if=\"object.create_share_id.name\">\n"
+"                                                        <b t-out=\"object.create_share_id.name or ''\">Doručené - financie</b>\n"
+"                                                    </t>\n"
+"                                                </div>\n"
+"                                                <div>\n"
+"                                                    <t t-if=\"object.create_share_id.activity_note\">\n"
+"                                                        <i t-out=\"object.create_share_id.activity_note or ''\">Príklad poznámky.</i>\n"
+"                                                    </t>\n"
+"                                                </div>\n"
+"                                                <br>\n"
+"                                                <div style=\"margin: 16px 0px 16px 0px;\">\n"
+"                                                    <a t-att-href=\"object.create_share_id.full_url\" style=\"background-color: #875A7B; padding: 20px 30px 20px 30px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;\">\n"
+"                                                        Nahrajte požadovaný dokument\n"
+"                                                    </a>\n"
+"                                                </div>\n"
+"                                            </center><br>\n"
+"                                            Prosím poskytnite chýbajúci dokument pred tým, ako exspiruje odkaz  (plánované k <t t-out=\"object.create_share_id.date_deadline or ''\">17. 5. 2021</t>).\n"
+"                                            <br><br>\n"
+"                                            Ďakumeme,\n"
+"                                            <t t-if=\"user and user.signature\">\n"
+"                                                <br>\n"
+"                                                <t t-out=\"user.signature\">--<br>Mitchell Admin</t>\n"
+"                                                <br>\n"
+"                                            </t>\n"
+"                                        </div>\n"
+"                                    </td></tr>\n"
+"                                    <tr><td style=\"text-align:center;\">\n"
+"                                      <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                                    </td></tr>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                        <!-- FOOTER -->\n"
+"                        <tr>\n"
+"                            <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                                    <tr><td valign=\"middle\" align=\"left\">\n"
+"                                        <t t-out=\"object.create_uid.company_id.name or ''\">YourCompany</t>\n"
+"                                    </td></tr>\n"
+"                                    <tr><td valign=\"middle\" align=\"left\" style=\"opacity: 0.7;\">\n"
+"                                        <t t-out=\"object.create_uid.company_id.phone or ''\">+1 650-123-4567</t>\n"
+"                                        <t t-if=\"object.create_uid.company_id.email\">\n"
+"                                            | <a t-attf-href=\"'mailto:%s' % {{ object.create_uid.company_id.email }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"object.create_uid.company_id.email\">info@yourcompany.com</a>\n"
+"                                        </t>\n"
+"                                        <t t-if=\"object.create_uid.company_id.website\">\n"
+"                                            | <a t-att-href=\"object.create_uid.company_id.website\" style=\"text-decoration:none; color: #454748;\" t-out=\"object.create_uid.company_id.website\">http://www.example.com</a>\n"
+"                                        </t>\n"
+"                                    </td></tr>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                    </tbody>\n"
+"                    </table>\n"
+"                    </td></tr>\n"
+"                    <!-- POWERED BY -->\n"
+"                    <tr><td align=\"center\" style=\"min-width: 590px;\">\n"
+"                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;\">\n"
+"                          <tr><td style=\"text-align: center; font-size: 13px;\">\n"
+"                            <t t-if=\"object.create_share_id.date_deadline\">\n"
+"                                Tento odkaz exspiruje <b t-out=\"object.create_share_id.date_deadline\">17. 5. 2021</b>.<br>\n"
+"                            </t>\n"
+"                            Prinášané <a target=\"_blank\" href=\"https://www.odoo.com/app/documents\" style=\"color: #875A7B;\">Odoo Dokumentmi</a>\n"
+"                          </td></tr>\n"
+"                        </table>\n"
+"                    </td></tr>\n"
+"                </table>\n"
+"            "
 
 #. module: documents
 #: model:mail.template,body_html:documents.mail_template_document_request
@@ -237,16 +419,16 @@ msgid ""
 "                                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
 "                                    <tr><td valign=\"middle\">\n"
 "                                        <span style=\"font-size: 10px;\">\n"
-"                                            Document Request: <br/>\n"
+"                                            Document Request: <br>\n"
 "                                            <t t-if=\"object.name\">\n"
 "                                                <span style=\"font-size: 20px; font-weight: bold;\" t-out=\"object.name or ''\">Inbox Financial</span>\n"
 "                                            </t>\n"
-"                                        </span><br/>\n"
-"                                    </td><td valign=\"middle\" align=\"right\">\n"
-"                                        <img t-attf-src=\"/logo.png?company={{ object.create_uid.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.create_uid.company_id.name\"/>\n"
+"                                        </span><br>\n"
+"                                    </td><td valign=\"middle\" align=\"right\" t-if=\"not object.create_uid.company_id.uses_default_logo\">\n"
+"                                        <img t-attf-src=\"/logo.png?company={{ object.create_uid.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.create_uid.company_id.name\">\n"
 "                                    </td></tr>\n"
 "                                    <tr><td colspan=\"2\" style=\"text-align:center;\">\n"
-"                                      <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\"/>\n"
+"                                      <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
 "                                    </td></tr>\n"
 "                                </table>\n"
 "                            </td>\n"
@@ -258,9 +440,9 @@ msgid ""
 "                                    <tr><td valign=\"top\" style=\"font-size: 13px;\">\n"
 "                                        <div>\n"
 "                                            Hello <t t-out=\"object.owner_id.name or ''\">OdooBot</t>,\n"
-"                                            <br/><br/>\n"
+"                                            <br><br>\n"
 "                                            <t t-out=\"object.create_uid.name or ''\">OdooBot</t> (<t t-out=\"object.create_uid.email or ''\">odoobot@example.com</t>) asks you to provide the following document:\n"
-"                                            <br/><br/>\n"
+"                                            <br><br>\n"
 "                                            <center>\n"
 "                                                <div>\n"
 "                                                    <t t-if=\"object.name\">\n"
@@ -272,23 +454,23 @@ msgid ""
 "                                                        <i t-out=\"object.activity_note or ''\">Example of a note.</i>\n"
 "                                                    </t>\n"
 "                                                </div>\n"
-"                                                <br/>\n"
+"                                                <br>\n"
 "                                                <div style=\"margin: 16px 0px 16px 0px;\">\n"
 "                                                    <a t-att-href=\"object.full_url\" style=\"background-color: #875A7B; padding: 20px 30px 20px 30px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;\">\n"
 "                                                        Upload the requested document\n"
 "                                                    </a>\n"
 "                                                </div>\n"
-"                                            </center><br/>\n"
-"                                            Please provide us with the missing document before the link expires (planned on <t t-out=\"object.date_deadline or ''\">2021-05-17</t>).\n"
+"                                            </center><br>\n"
+"                                            Please provide us with the missing document<t t-if=\"object.date_deadline\"> before the link expires (planned on <t t-out=\"object.date_deadline\">2021-05-17</t>)</t>.\n"
 "                                            <t t-if=\"user and user.signature\">\n"
-"                                                <br/>\n"
-"                                                <t t-out=\"user.signature or ''\">--<br/>Mitchell Admin</t>\n"
-"                                                <br/>\n"
+"                                                <br>\n"
+"                                                <t t-out=\"user.signature or ''\">--<br>Mitchell Admin</t>\n"
+"                                                <br>\n"
 "                                            </t>\n"
 "                                        </div>\n"
 "                                    </td></tr>\n"
 "                                    <tr><td style=\"text-align:center;\">\n"
-"                                      <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\"/>\n"
+"                                      <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
 "                                    </td></tr>\n"
 "                                </table>\n"
 "                            </td>\n"
@@ -320,7 +502,7 @@ msgid ""
 "                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;\">\n"
 "                          <tr><td style=\"text-align: center; font-size: 13px;\">\n"
 "                            <t t-if=\"object.date_deadline\">\n"
-"                                This link expires on <b t-out=\"object.date_deadline or ''\">2021-05-17</b>.<br/>\n"
+"                                This link expires on <b t-out=\"object.date_deadline or ''\">2021-05-17</b>.<br>\n"
 "                            </t>\n"
 "                            Powered by <a target=\"_blank\" href=\"https://www.odoo.com/app/documents\" style=\"color: #875A7B;\">Odoo Documents</a>\n"
 "                          </td></tr>\n"
@@ -329,6 +511,106 @@ msgid ""
 "                </table>\n"
 "            "
 msgstr ""
+"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;\"><tr><td align=\"center\">\n"
+"                    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: white; color: #454748; border-collapse:separate;\">\n"
+"                    <tbody>\n"
+"                        <!-- HEADER -->\n"
+"                        <tr>\n"
+"                            <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                                    <tr><td valign=\"middle\">\n"
+"                                        <span style=\"font-size: 10px;\">\n"
+"                                            Žiadosť o dokument: <br>\n"
+"                                            <t t-if=\"object.name\">\n"
+"                                                <span style=\"font-size: 20px; font-weight: bold;\" t-out=\"object.name or ''\">Doručené - financie</span>\n"
+"                                            </t>\n"
+"                                        </span><br>\n"
+"                                    </td><td valign=\"middle\" align=\"right\" t-if=\"not object.create_uid.company_id.uses_default_logo\">\n"
+"                                        <img t-attf-src=\"/logo.png?company={{ object.create_uid.company_id.id }}\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" t-att-alt=\"object.create_uid.company_id.name\">\n"
+"                                    </td></tr>\n"
+"                                    <tr><td colspan=\"2\" style=\"text-align:center;\">\n"
+"                                      <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                                    </td></tr>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                        <!-- CONTENT -->\n"
+"                        <tr>\n"
+"                            <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                                    <tr><td valign=\"top\" style=\"font-size: 13px;\">\n"
+"                                        <div>\n"
+"                                            Dobrý deň<t t-out=\"object.owner_id.name or ''\">OdooBot</t>,\n"
+"                                            <br><br>\n"
+"                                            <t t-out=\"object.create_uid.name or ''\">OdooBot</t> (<t t-out=\"object.create_uid.email or ''\">odoobot@example.com</t>) vás požiadal poskytnúť nasledujúce dokumenty:\n"
+"                                            <br><br>\n"
+"                                            <center>\n"
+"                                                <div>\n"
+"                                                    <t t-if=\"object.name\">\n"
+"                                                        <b t-out=\"object.name or ''\">Doručené - fiancie</b>\n"
+"                                                    </t>\n"
+"                                                </div>\n"
+"                                                <div>\n"
+"                                                    <t t-if=\"object.activity_note\">\n"
+"                                                        <i t-out=\"object.activity_note or ''\">Príklad poznámky.</i>\n"
+"                                                    </t>\n"
+"                                                </div>\n"
+"                                                <br>\n"
+"                                                <div style=\"margin: 16px 0px 16px 0px;\">\n"
+"                                                    <a t-att-href=\"object.full_url\" style=\"background-color: #875A7B; padding: 20px 30px 20px 30px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;\">\n"
+"                                                        Nahrajte požadované dokumenty\n"
+"                                                    </a>\n"
+"                                                </div>\n"
+"                                            </center><br>\n"
+"                                            Prosím, poskytnite chýbajúce dokumenty <t t-if=\"object.date_deadline\"> pred exspiráciou odkazu  (plánované k <t t-out=\"object.date_deadline\">17. 5. 2021</t>)</t>.\n"
+"                                            <t t-if=\"user and user.signature\">\n"
+"                                                <br>\n"
+"                                                <t t-out=\"user.signature or ''\">--<br>Mitchell Admin</t>\n"
+"                                                <br>\n"
+"                                            </t>\n"
+"                                        </div>\n"
+"                                    </td></tr>\n"
+"                                    <tr><td style=\"text-align:center;\">\n"
+"                                      <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\">\n"
+"                                    </td></tr>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                        <!-- FOOTER -->\n"
+"                        <tr>\n"
+"                            <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                                    <tr><td valign=\"middle\" align=\"left\">\n"
+"                                        <t t-out=\"object.create_uid.company_id.name or ''\">YourCompany</t>\n"
+"                                    </td></tr>\n"
+"                                    <tr><td valign=\"middle\" align=\"left\" style=\"opacity: 0.7;\">\n"
+"                                        <t t-out=\"object.create_uid.company_id.phone or ''\">+1 650-123-4567</t>\n"
+"                                        <t t-if=\"object.create_uid.company_id.email\">\n"
+"                                            | <a t-attf-href=\"'mailto:%s' % {{ object.create_uid.company_id.email }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"object.create_uid.company_id.email or ''\">info@yourcompany.com</a>\n"
+"                                        </t>\n"
+"                                        <t t-if=\"object.create_uid.company_id.website\">\n"
+"                                            | <a t-attf-href=\"'%s' % {{ object.create_uid.company_id.website }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"object.create_uid.company_id.website or ''\">http://www.example.com</a>\n"
+"                                        </t>\n"
+"                                    </td></tr>\n"
+"                                </table>\n"
+"                            </td>\n"
+"                        </tr>\n"
+"                    </tbody>\n"
+"                    </table>\n"
+"                    </td></tr>\n"
+"                    <!-- POWERED BY -->\n"
+"                    <tr><td align=\"center\" style=\"min-width: 590px;\">\n"
+"                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;\">\n"
+"                          <tr><td style=\"text-align: center; font-size: 13px;\">\n"
+"                            <t t-if=\"object.date_deadline\">\n"
+"                                Odkaz exspiruje k <b t-out=\"object.date_deadline or ''\">17. 5. 2021</b>.<br>\n"
+"                            </t>\n"
+"                            Prinášané <a target=\"_blank\" href=\"https://www.odoo.com/app/documents\" style=\"color: #875A7B;\">Odoo Dokumentmi</a>\n"
+"                          </td></tr>\n"
+"                        </table>\n"
+"                    </td></tr>\n"
+"                </table>\n"
+"            "
 
 #. module: documents
 #: model:ir.model.fields,help:documents.field_documents_share__alias_defaults
@@ -349,6 +631,17 @@ msgstr ""
 "zodpovedajúce podmienkam"
 
 #. module: documents
+#. odoo-python
+#: code:addons/documents/models/documents_folder.py:0
+#, python-format
+msgid ""
+"A workspace cannot have one of his child defined as Parent Workspace in "
+"order to avoid a recursion issue."
+msgstr ""
+"Pracovný priestor nemôže mať jeden zo svojich podriadených priestorov ako "
+"nadradený priestor, aby sa predišlo rekurzii."
+
+#. module: documents
 #: model:ir.model.fields,help:documents.field_documents_folder__parent_folder_id
 msgid "A workspace will inherit the tags of its parent workspace"
 msgstr "Pracovný priestor zdedí tagy svojho nadradeného pracovného priestoru"
@@ -357,6 +650,13 @@ msgstr "Pracovný priestor zdedí tagy svojho nadradeného pracovného priestoru
 #: model_terms:ir.ui.view,arch_db:documents.document_view_form
 msgid "Access"
 msgstr "Prístup"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/search/documents_search_panel.js:0
+#, python-format
+msgid "Access Error"
+msgstr "Chyba prístupu"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__group_ids
@@ -374,9 +674,8 @@ msgid "Access Token"
 msgstr "Prístupový token"
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
-#: code:addons/documents/static/src/xml/documents_views.xml:0
 #: model:ir.model.fields,field_description:documents.field_documents_workflow_action__action
 #, python-format
 msgid "Action"
@@ -385,7 +684,7 @@ msgstr "Akcia"
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_workflow_rule__name
 msgid "Action Button Name"
-msgstr ""
+msgstr "Názov tlačidla akcie"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_folder__action_count
@@ -404,9 +703,10 @@ msgid "Action Needed"
 msgstr "Potrebná akcia"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/models/folder.py:0
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#. odoo-python
+#: code:addons/documents/models/documents_folder.py:0
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #: model:ir.ui.menu,name:documents.workflow_rules_menu
 #: model_terms:ir.ui.view,arch_db:documents.workflow_rule_form_view
 #, python-format
@@ -415,6 +715,9 @@ msgstr "Akcie"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__active
+#: model:ir.model.fields,field_description:documents.field_documents_folder__active
+#: model_terms:ir.ui.view,arch_db:documents.folder_view_form
+#: model_terms:ir.ui.view,arch_db:documents.folder_view_tree
 msgid "Active"
 msgstr "Aktívne"
 
@@ -442,6 +745,11 @@ msgid "Activity Note"
 msgstr "Poznámka o činnosti"
 
 #. module: documents
+#: model:ir.ui.menu,name:documents.mail_activity_plan_menu
+msgid "Activity Plans"
+msgstr "Plány aktivít"
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__activity_state
 msgid "Activity State"
 msgstr "Stav aktivity"
@@ -454,7 +762,13 @@ msgstr "Typ aktivity"
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__activity_type_icon
 msgid "Activity Type Icon"
-msgstr "Ikona typ aktivity"
+msgstr "Ikona typu aktivity"
+
+#. module: documents
+#: model:ir.actions.act_window,name:documents.mail_activity_type_action_document
+#: model:ir.ui.menu,name:documents.mail_activity_type_menu
+msgid "Activity Types"
+msgstr "Typy aktivít"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_request_wizard__activity_type_id
@@ -470,12 +784,11 @@ msgid "Add"
 msgstr "Pridať"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
+#. odoo-javascript
 #: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
 #, python-format
 msgid "Add File"
-msgstr ""
+msgstr "Pridať súbor"
 
 #. module: documents
 #: model:ir.actions.act_window,name:documents.action_url_form
@@ -483,21 +796,23 @@ msgid "Add Url"
 msgstr "Pridať Url"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_views.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_controller_mixin.xml:0
 #, python-format
 msgid "Add a Link"
-msgstr ""
+msgstr "Pridať odkaz"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
-#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
-#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
+#: model_terms:ir.actions.act_window,help:documents.mail_activity_plan_action_document
+msgid "Add a new plan"
+msgstr "Pridajte nový plán"
+
+#. module: documents
+#. odoo-javascript
 #: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
 #, python-format
 msgid "Add new file"
-msgstr ""
+msgstr "Pridať nový súbor"
 
 #. module: documents
 #: model:res.groups,name:documents.group_documents_manager
@@ -517,7 +832,22 @@ msgstr "Alias"
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_share__alias_contact
 msgid "Alias Contact Security"
-msgstr "Alias ​​kontaktujte bezpečnosť"
+msgstr "Alias ​​kontakt bezpečnosť"
+
+#. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_share__alias_domain_id
+msgid "Alias Domain"
+msgstr "Alias doména"
+
+#. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_share__alias_domain
+msgid "Alias Domain Name"
+msgstr "Názov alias domény"
+
+#. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_share__alias_full_name
+msgid "Alias Email"
+msgstr "Alias e-mailu"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_share__alias_name
@@ -525,9 +855,14 @@ msgid "Alias Name"
 msgstr "Alias názov"
 
 #. module: documents
-#: model:ir.model.fields,field_description:documents.field_documents_share__alias_domain
-msgid "Alias domain"
-msgstr "Doména aliasu"
+#: model:ir.model.fields,field_description:documents.field_documents_share__alias_status
+msgid "Alias Status"
+msgstr "Stav aliasu"
+
+#. module: documents
+#: model:ir.model.fields,help:documents.field_documents_share__alias_status
+msgid "Alias status assessed on the last message received."
+msgstr "Stav aliasu posúdený pri poslednej doručenej správe."
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_share__alias_model_id
@@ -535,7 +870,8 @@ msgid "Aliased Model"
 msgstr "Aliasovaný model"
 
 #. module: documents
-#: code:addons/documents/controllers/main.py:0
+#. odoo-python
+#: code:addons/documents/controllers/documents.py:0
 #, python-format
 msgid "All files uploaded"
 msgstr "Všetky súbory nahrané"
@@ -551,10 +887,20 @@ msgid "Allows you to manage your documents."
 msgstr "Umožňuje spravovať dokumenty."
 
 #. module: documents
-#: code:addons/documents/models/workflow.py:0
+#. odoo-python
+#: code:addons/documents/models/documents_workflow_rule.py:0
 #, python-format
 msgid "Already linked Documents"
+msgstr "Už previazané dokumenty"
+
+#. module: documents
+#: model_terms:digest.tip,tip_description:documents.digest_tip_documents_0
+msgid ""
+"An easy way to process incoming mails is to configure your scanner to send "
+"PDFs to"
 msgstr ""
+"Ľahký spôsob ako spracovať prijatú poštu je nakonfigurovať váš skener k "
+"posielaniu PDF dokumentov na"
 
 #. module: documents
 #: model_terms:digest.tip,tip_description:documents.digest_tip_documents_0
@@ -573,55 +919,68 @@ msgstr ""
 "dodávateľské faktúry pomocou AI atď."
 
 #. module: documents
-#: model_terms:digest.tip,tip_description:documents.digest_tip_documents_0
-msgid ""
-"An easy way to process incoming mails is to configure your scanner to send "
-"PDFs to {{ record.alias_id.display_name }}. Scanned files will appear "
-"automatically in your workspace. Then, process your documents in bulk with "
-"the split tool: launch user defined actions, request a signature, convert to"
-" vendor bills with AI, etc."
-msgstr ""
-
-#. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
-#: model_terms:ir.ui.view,arch_db:documents.document_view_form
+#. odoo-javascript
+#: code:addons/documents/static/src/views/hooks.js:0
 #, python-format
-msgid "Archive"
-msgstr "Archivovať"
+msgid "An error occured while uploading."
+msgstr "Pri nahrávaní nastala chyba."
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
 #, python-format
 msgid "Archive original file(s)"
-msgstr ""
+msgstr "Archivujte pôvodný(é) súbor(y)"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.document_view_form
-#: model_terms:ir.ui.view,arch_db:documents.document_view_search
-msgid "Archived"
-msgstr "Archivovaný"
-
-#. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_controller_mixin.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
 #, python-format
-msgid "Are you confirm deletion ?"
-msgstr ""
+msgid "Are you sure that you want to delete the focused page ?"
+msgstr "Naozaj chcete odstrániť zameranú stránku?"
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Are you sure that you want to delete the selected page(s)"
+msgstr "Naozaj chcete odstrániť všetky vybrané stránky?"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Are you sure that you want to delete this page ?"
+msgstr "Naozaj chcete odstrániť túto stránku?"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_model_mixin.js:0
+#, python-format
+msgid "Are you sure you want to permanently erase the document?"
+msgstr "Naozaj chcete dokument odstrániť natrvalo?"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_model_mixin.js:0
+#, python-format
+msgid "Are you sure you want to permanently erase the documents?"
+msgstr "Naozaj chcete dokumenty odstrániť natrvalo?"
+
+#. module: documents
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid ""
 "As this PDF contains multiple documents, let's split and process in bulk."
 msgstr ""
+"Keďže toto PDF obsahuje niekoľko dokumentov, poďme ho rozdeliť a dávkovo "
+"spracovať."
 
 #. module: documents
 #: model:documents.workflow.rule,name:documents.documents_rule_finance_afv
 msgid "Ask for Validation"
-msgstr ""
+msgstr "Požiadať o schválenie"
 
 #. module: documents
 #: model:documents.facet,name:documents.documents_marketing_assets
@@ -648,7 +1007,7 @@ msgstr "Počet príloh"
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__description
 msgid "Attachment Description"
-msgstr ""
+msgstr "Popis prílohy"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__attachment_name
@@ -658,14 +1017,7 @@ msgstr "Názov prílohy"
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__attachment_type
 msgid "Attachment Type"
-msgstr ""
-
-#. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_kanban_view.js:0
-#, python-format
-msgid "Attachments Kanban"
-msgstr ""
+msgstr "Typ prílohy"
 
 #. module: documents
 #: model_terms:documents.folder,description:documents.documents_finance_folder
@@ -706,17 +1058,35 @@ msgid "By defining a folder, the upload activities will generate a document"
 msgstr ""
 
 #. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.format_file_size
+msgid "Bytes"
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_share__can_upload
 msgid "Can Upload"
 msgstr "Môže nahrávať"
 
 #. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/hooks.js:0
+#, python-format
+msgid "Can't share documents of different workspaces."
+msgstr ""
+
+#. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.documents_link_to_record_form_view
-#: model_terms:ir.ui.view,arch_db:documents.documents_request_form_view
-#: model_terms:ir.ui.view,arch_db:documents.documents_upload_url_view
-#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
 msgid "Cancel"
 msgstr "Zrušené"
+
+#. module: documents
+#. odoo-python
+#: code:addons/documents/models/documents_folder.py:0
+#, python-format
+msgid ""
+"Cannot move folder under the given parent as this would create a recursive "
+"hierarchy"
+msgstr ""
 
 #. module: documents
 #: model_terms:documents.folder,description:documents.documents_internal_folder
@@ -739,32 +1109,60 @@ msgid "Checksum/SHA1"
 msgstr "Checksum/SHA1"
 
 #. module: documents
-#: code:addons/documents/models/workflow.py:0
+#. odoo-python
+#: code:addons/documents/models/documents_workflow_rule.py:0
 #, python-format
 msgid "Choose a record to link"
 msgstr ""
 
 #. module: documents
-#. openerp-web
+#: model_terms:ir.ui.view,arch_db:documents.share_view_form
+#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
+msgid "Choose or Configure Email Servers"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid "Click on a card to <b>select the document</b>."
 msgstr ""
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid "Click on a thumbnail to <b>preview the document</b>."
 msgstr ""
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid ""
 "Click on the <b>page separator</b>: we don't want to split these two pages "
 "as they belong to the same document."
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/js/tours/documents.js:0
+#, python-format
+msgid "Click the cross to <b>exit preview</b>."
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
+#, python-format
+msgid "Close"
+msgstr "Zatvoriť"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
+#, python-format
+msgid "Close split tools"
 msgstr ""
 
 #. module: documents
@@ -784,15 +1182,14 @@ msgid "Conditions"
 msgstr "Podmienky"
 
 #. module: documents
+#: model:ir.model,name:documents.model_res_config_settings
+msgid "Config Settings"
+msgstr "Nastavenia konfigurácie"
+
+#. module: documents
 #: model:ir.ui.menu,name:documents.Config
 msgid "Configuration"
 msgstr "Konfigurácia"
-
-#. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_view_form
-#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
-msgid "Configure Email Servers"
-msgstr ""
 
 #. module: documents
 #: model:ir.model,name:documents.model_res_partner
@@ -816,19 +1213,26 @@ msgid "Contracts"
 msgstr "Zmluvy"
 
 #. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_controller_mixin.xml:0
+#, python-format
+msgid "Control panel buttons"
+msgstr "Tlačidlá ovládacieho panela"
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_workflow_rule__create_model
 msgid "Create"
 msgstr "Vytvoriť"
 
 #. module: documents
-#: model:documents.workflow.rule,name:documents.documents_rule_internal_mark
-msgid "Create Bill"
-msgstr "Vytvoriť účtenku"
-
-#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__create_share_id
 msgid "Create Share"
 msgstr "Vytvoriť zdieľanie"
+
+#. module: documents
+#: model:documents.workflow.rule,name:documents.documents_rule_internal_mark
+msgid "Create Vendor Bill"
+msgstr ""
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_share__activity_option
@@ -885,11 +1289,6 @@ msgid "Days"
 msgstr "Dni"
 
 #. module: documents
-#: model:ir.model.fields,field_description:documents.field_mail_activity_type__default_user_id
-msgid "Default User"
-msgstr "Predvolený používateľ"
-
-#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_share__alias_defaults
 msgid "Default Values"
 msgstr "Predvolené hodnoty"
@@ -901,12 +1300,54 @@ msgid "Default values for uploaded documents"
 msgstr ""
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#: model:ir.model.fields,help:documents.field_documents_folder__deletion_delay
+#: model:ir.model.fields,help:documents.field_res_config_settings__deletion_delay
+msgid "Delay after permanent deletion of the document in the trash (days)"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_exit_dialog/pdf_exit_dialog.xml:0
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
+#: code:addons/documents/static/src/views/form/folder_form_controller.js:0
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
+#: code:addons/documents/static/src/views/list/documents_list_controller.js:0
+#: code:addons/documents/static/src/views/list/folder_list_controller.js:0
+#: model_terms:ir.ui.view,arch_db:documents.folder_view_form
 #: model_terms:ir.ui.view,arch_db:documents.share_view_tree
 #, python-format
 msgid "Delete"
 msgstr "Zmazať"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Delete focused or selected pages"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_model_mixin.js:0
+#: code:addons/documents/static/src/views/documents_model_mixin.js:0
+#, python-format
+msgid "Delete permanently"
+msgstr ""
+
+#. module: documents
+#: model:ir.model.fields,field_description:documents.field_res_config_settings__deletion_delay
+msgid "Deletion Delay"
+msgstr ""
+
+#. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_folder__deletion_delay
+msgid "Deletion delay"
+msgstr ""
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.res_config_settings_view_form
+msgid "Deletion delay (days)"
+msgstr ""
 
 #. module: documents
 #: model:documents.workflow.rule,name:documents.documents_rule_internal_deprecate
@@ -925,10 +1366,14 @@ msgid "Description"
 msgstr "Popis"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
-#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
-#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_model_mixin.js:0
+#: model_terms:ir.ui.view,arch_db:documents.documents_request_form_view
+#: model_terms:ir.ui.view,arch_db:documents.documents_upload_url_view
+#: model_terms:ir.ui.view,arch_db:documents.folder_deletion_form
+#: model_terms:ir.ui.view,arch_db:documents.folder_view_form
+#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
+#: model_terms:ir.ui.view,arch_db:documents.tag_view_form
 #, python-format
 msgid "Discard"
 msgstr "Zrušiť"
@@ -945,6 +1390,20 @@ msgstr "Zrušiť"
 #: model:ir.model.fields,field_description:documents.field_documents_workflow_rule__display_name
 msgid "Display Name"
 msgstr "Zobrazovaný názov"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.js:0
+#, python-format
+msgid "Do you really want to unlink this record?"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_exit_dialog/pdf_exit_dialog.xml:0
+#, python-format
+msgid "Do you want to exit without saving or gather pages into one document ?"
+msgstr ""
 
 #. module: documents
 #: model:ir.model,name:documents.model_documents_document
@@ -972,6 +1431,11 @@ msgid "Document Owner"
 msgstr "Vlastník dokumentu"
 
 #. module: documents
+#: model:ir.actions.act_window,name:documents.mail_activity_plan_action_document
+msgid "Document Plans"
+msgstr ""
+
+#. module: documents
 #: model:ir.model,name:documents.model_documents_request_wizard
 msgid "Document Request"
 msgstr "Vlastník dokumentu"
@@ -983,21 +1447,22 @@ msgid ""
 msgstr ""
 
 #. module: documents
-#: code:addons/documents/models/document.py:0
-#: code:addons/documents/models/document.py:0
+#. odoo-python
+#: code:addons/documents/models/documents_document.py:0
+#: code:addons/documents/models/documents_document.py:0
 #: code:addons/documents/models/mail_activity.py:0
 #, python-format
 msgid "Document Request: %s Uploaded by: %s"
 msgstr ""
 
 #. module: documents
-#: model:mail.template,name:documents.mail_template_document_request
-msgid "Document Request: Send by email"
+#: model:mail.template,name:documents.mail_template_document_request_reminder
+msgid "Document Request: Reminder"
 msgstr ""
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.document_view_kanban
-msgid "Document Thumbnail"
+#: model:ir.model.fields,field_description:documents.field_documents_folder__has_write_access
+msgid "Document User Upload Rights"
 msgstr ""
 
 #. module: documents
@@ -1011,10 +1476,21 @@ msgid "Document list"
 msgstr "Zoznam dokumentov"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/models/folder.py:0
+#: model_terms:ir.ui.view,arch_db:documents.document_view_kanban
+msgid "Document preview"
+msgstr ""
+
+#. module: documents
+#: model:mail.template,name:documents.mail_template_document_request
+msgid "Document: Document Request"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#. odoo-python
+#: code:addons/documents/models/documents_folder.py:0
 #: code:addons/documents/models/res_partner.py:0
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #: model:documents.facet,name:documents.documents_finance_documents
 #: model:ir.actions.act_window,name:documents.document_action
 #: model:ir.model.fields,field_description:documents.field_documents_folder__document_ids
@@ -1025,6 +1501,7 @@ msgstr "Zoznam dokumentov"
 #: model:ir.ui.menu,name:documents.menu_root
 #: model_terms:ir.ui.view,arch_db:documents.action_view_search
 #: model_terms:ir.ui.view,arch_db:documents.document_view_search
+#: model_terms:ir.ui.view,arch_db:documents.documents_view_activity
 #: model_terms:ir.ui.view,arch_db:documents.res_config_settings_view_form
 #, python-format
 msgid "Documents"
@@ -1065,26 +1542,23 @@ msgid "Domain"
 msgstr "Doména"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
-msgid "Done"
-msgstr "Hotové"
-
-#. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_page
-msgid "Downlaod all files"
-msgstr "Stiahnite si všetky súbory"
-
-#. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #: model:ir.model.fields.selection,name:documents.selection__documents_share__action__download
 #: model_terms:ir.ui.view,arch_db:documents.document_view_form
+#: model_terms:ir.ui.view,arch_db:documents.share_files_page
 #, python-format
 msgid "Download"
 msgstr "Stiahnuť"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_page
+#: model_terms:ir.ui.view,arch_db:documents.share_workspace_page
+msgid "Download #{document.name}"
+msgstr ""
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.share_files_page
+#: model_terms:ir.ui.view,arch_db:documents.share_workspace_page
 msgid "Download all files"
 msgstr ""
 
@@ -1094,8 +1568,13 @@ msgid "Download and Upload"
 msgstr "Stiahnite si a nahrajte"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_views.xml:0
+#: model_terms:ir.ui.view,arch_db:documents.share_files_page
+msgid "Download file"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/helper/documents_drop_zone.xml:0
 #, python-format
 msgid "Drop files here to upload"
 msgstr "Sem presuňte súbory pre ich nahratie "
@@ -1115,11 +1594,32 @@ msgid "Due type"
 msgstr "Typ splatnosti"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_controller_mixin.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/form/folder_form_controller.js:0
 #, python-format
-msgid "Edit the linked Record"
+msgid "Duplicate"
+msgstr "Duplikovať"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/search/documents_search_panel.js:0
+#: code:addons/documents/static/src/views/search/documents_search_panel.xml:0
+#, python-format
+msgid "Edit"
+msgstr "Upraviť"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.js:0
+#, python-format
+msgid "Edit the linked record"
 msgstr ""
+
+#. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_share__alias_email
+#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
+msgid "Email Alias"
+msgstr "Emailový alias"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__email_cc
@@ -1127,17 +1627,44 @@ msgid "Email cc"
 msgstr "E-mailová kópia"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_controller_mixin.js:0
-#: code:addons/documents/static/src/js/documents_document_viewer.js:0
+#: model:ir.model.fields,help:documents.field_documents_share__alias_domain
+msgid "Email domain e.g. 'example.com' in 'odoo@example.com'"
+msgstr "E-mail doména, napr. 'example.com' in 'odoo@example.com'"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#: code:addons/documents/static/src/views/hooks.js:0
+#: model:ir.model.fields.selection,name:documents.selection__documents_document__thumbnail_status__error
 #, python-format
 msgid "Error"
 msgstr "Chyba"
 
 #. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Escape Preview/Deselect/Exit"
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_workflow_rule__excluded_tag_ids
 msgid "Excluded Tags"
 msgstr "Vylúčené tagy"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_exit_dialog/pdf_exit_dialog.js:0
+#, python-format
+msgid "Exit Split Tools"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_exit_dialog/pdf_exit_dialog.xml:0
+#, python-format
+msgid "Exit without saving"
+msgstr ""
 
 #. module: documents
 #: model:documents.tag,name:documents.documents_finance_documents_expense
@@ -1148,6 +1675,14 @@ msgstr "Výdavky"
 #: model:ir.model.fields.selection,name:documents.selection__documents_share__state__expired
 msgid "Expired"
 msgstr "Ukončená platnosť"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/list/documents_list_controller.js:0
+#: code:addons/documents/static/src/views/list/folder_list_controller.js:0
+#, python-format
+msgid "Export"
+msgstr "Export"
 
 #. module: documents
 #: model:ir.model.constraint,message:documents.constraint_documents_facet_name_unique
@@ -1171,14 +1706,50 @@ msgid "File Content (base64)"
 msgstr "Obsah súboru (base64)"
 
 #. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_document__raw
+msgid "File Content (raw)"
+msgstr "Obsah súboru (nespracovaný)"
+
+#. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_document__file_extension
+#: model_terms:ir.ui.view,arch_db:documents.document_view_search
+msgid "File Extension"
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__file_size
 msgid "File Size"
 msgstr "Veľkosť súboru"
 
 #. module: documents
+#: model:ir.model,name:documents.model_ir_binary
+msgid "File streaming helper model for controllers"
+msgstr "Pomocný model streamovania súborov pre kontroléry"
+
+#. module: documents
+#. odoo-python
+#: code:addons/documents/controllers/documents.py:0
+#, python-format
+msgid "File uploaded by:"
+msgstr ""
+
+#. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.res_config_settings_view_form
 msgid "Files Centralization"
 msgstr "Centralizácia súborov"
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.folder_deletion_form
+msgid "Files will be sent to trash and deleted forever after"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/form/folder_form_controller.js:0
+#: code:addons/documents/static/src/views/list/folder_list_controller.js:0
+#, python-format
+msgid "Files will be sent to trash and deleted forever after %s days."
+msgstr ""
 
 #. module: documents
 #: model:documents.folder,name:documents.documents_finance_folder
@@ -1199,6 +1770,34 @@ msgstr "Fiškálne"
 #: model:documents.facet,name:documents.documents_finance_fiscal_year
 msgid "Fiscal years"
 msgstr "Fiškálne roky"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Focus first page of next group"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Focus first page of previous group"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Focus next page"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Focus previous page"
+msgstr ""
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_mail_activity_type__folder_id
@@ -1223,8 +1822,20 @@ msgid "Font awesome icon e.g. fa-tasks"
 msgstr "Úžasná ikona fronty napr. fa-tasks"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
-msgid "Generate URL"
+#: model_terms:ir.ui.view,arch_db:documents.document_view_search
+msgid "Future Activities"
+msgstr "Budúce aktivity"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_exit_dialog/pdf_exit_dialog.xml:0
+#, python-format
+msgid "Gather in one document"
+msgstr ""
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.format_file_size
+msgid "Gb"
 msgstr ""
 
 #. module: documents
@@ -1261,8 +1872,8 @@ msgid "Has Message"
 msgstr "Má správu"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #: model:ir.model.fields,field_description:documents.field_documents_document__previous_attachment_ids
 #, python-format
 msgid "History"
@@ -1302,9 +1913,7 @@ msgstr "Ikona indikujúca výnimočnú aktivitu."
 
 #. module: documents
 #: model:ir.model.fields,help:documents.field_documents_document__message_needaction
-#: model:ir.model.fields,help:documents.field_documents_document__message_unread
 #: model:ir.model.fields,help:documents.field_documents_share__message_needaction
-#: model:ir.model.fields,help:documents.field_documents_share__message_unread
 msgid "If checked, new messages require your attention."
 msgstr "Ak označené, potom nové správy vyžadujú vašu pozornosť."
 
@@ -1343,6 +1952,11 @@ msgid "Inbox"
 msgstr "Inbox"
 
 #. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_share__include_sub_folders
+msgid "Include Sub Folders"
+msgstr ""
+
+#. module: documents
 #: model_terms:documents.folder,description:documents.documents_internal_folder
 msgid ""
 "Incoming letters sent to <span class=\"o_folder_description_alias\">inbox "
@@ -1367,7 +1981,7 @@ msgstr ""
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__is_favorited
 msgid "Is Favorited"
-msgstr ""
+msgstr "Je obľúbený"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__message_is_follower
@@ -1376,22 +1990,38 @@ msgid "Is Follower"
 msgstr "Odberateľ"
 
 #. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_folder__is_shared
+msgid "Is Shared"
+msgstr ""
+
+#. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_document__is_multipage
+msgid "Is considered multipage"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/search/documents_search_model.js:0
+#, python-format
+msgid "Items in trash will be deleted forever after %s days."
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_model_mixin.js:0
+#, python-format
+msgid "Items moved to the trash will be deleted forever after %s days."
+msgstr ""
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.format_file_size
+msgid "Kb"
+msgstr ""
+
+#. module: documents
 #: model:documents.facet,name:documents.documents_internal_knowledge
 msgid "Knowledge"
 msgstr "Vedomosti"
-
-#. module: documents
-#: model:ir.model.fields,field_description:documents.field_documents_document____last_update
-#: model:ir.model.fields,field_description:documents.field_documents_facet____last_update
-#: model:ir.model.fields,field_description:documents.field_documents_folder____last_update
-#: model:ir.model.fields,field_description:documents.field_documents_link_to_record_wizard____last_update
-#: model:ir.model.fields,field_description:documents.field_documents_request_wizard____last_update
-#: model:ir.model.fields,field_description:documents.field_documents_share____last_update
-#: model:ir.model.fields,field_description:documents.field_documents_tag____last_update
-#: model:ir.model.fields,field_description:documents.field_documents_workflow_action____last_update
-#: model:ir.model.fields,field_description:documents.field_documents_workflow_rule____last_update
-msgid "Last Modified on"
-msgstr "Posledná úprava"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__write_uid
@@ -1420,12 +2050,17 @@ msgid "Last Updated on"
 msgstr "Naposledy upravované"
 
 #. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.document_view_search
+msgid "Late Activities"
+msgstr "Omeškané aktivity"
+
+#. module: documents
 #: model:documents.tag,name:documents.documents_internal_knowledge_legal
 msgid "Legal"
 msgstr "Legálne"
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid ""
@@ -1434,21 +2069,21 @@ msgid ""
 msgstr ""
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid "Let's process these bills: send to Finance workspace."
 msgstr "Spracujme tieto faktúry: pošlite do pracovného priestoru Finance."
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid "Let's process this document, coming from our scanner."
 msgstr ""
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid ""
@@ -1472,14 +2107,21 @@ msgid "Link"
 msgstr "Link"
 
 #. module: documents
+#. odoo-python
+#: code:addons/documents/controllers/documents.py:0
+#, python-format
+msgid "Link created by:"
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields.selection,name:documents.selection__documents_workflow_rule__create_model__link_to_record
 msgid "Link to record"
 msgstr ""
 
 #. module: documents
-#: model:ir.model.fields,help:documents.field_documents_document__email_cc
-msgid "List of cc from incoming emails."
-msgstr "Zoznam kópií z prichádzajúcich e-mailov."
+#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
+msgid "Links cannot be shared and therefore will be excluded."
+msgstr ""
 
 #. module: documents
 #: model:ir.model.fields.selection,name:documents.selection__documents_share__state__live
@@ -1487,13 +2129,13 @@ msgid "Live"
 msgstr "Naživo"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_single
-msgid "Loading"
-msgstr "Nahrávanie"
+#: model:ir.model.fields,field_description:documents.field_documents_share__alias_incoming_local
+msgid "Local-part based incoming detection"
+msgstr ""
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #: model_terms:ir.ui.view,arch_db:documents.document_view_form
 #, python-format
 msgid "Lock"
@@ -1512,7 +2154,6 @@ msgstr "Zamknuté"
 
 #. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.share_view_form
-#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
 #: model_terms:ir.ui.view,arch_db:documents.workflow_rule_form_view
 msgid "Log a note..."
 msgstr "Pridať poznámku..."
@@ -1528,19 +2169,6 @@ msgid "Logout"
 msgstr "Odhlásiť sa"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
-#, python-format
-msgid "MB"
-msgstr "MB"
-
-#. module: documents
-#: model:ir.model.fields,field_description:documents.field_documents_document__message_main_attachment_id
-#: model:ir.model.fields,field_description:documents.field_documents_share__message_main_attachment_id
-msgid "Main Attachment"
-msgstr "Hlavná príloha"
-
-#. module: documents
 #: model:documents.workflow.rule,name:documents.documents_rule_internal_mad
 msgid "Mark As Draft"
 msgstr "Označiť ako koncept"
@@ -1554,6 +2182,16 @@ msgstr "Označiť všetko ako hotové"
 #: model:documents.folder,name:documents.documents_marketing_folder
 msgid "Marketing"
 msgstr "Marketing"
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.format_file_size
+msgid "Mb"
+msgstr ""
+
+#. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_request_wizard__activity_note
+msgid "Message"
+msgstr "Správa"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__message_has_error
@@ -1601,16 +2239,63 @@ msgid "Move To Inbox"
 msgstr "Presunúť do priečinka doručenej pošty"
 
 #. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
+#, python-format
+msgid "Move this page to trash"
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_workflow_rule__folder_id
 msgid "Move to Workspace"
 msgstr "Presunúť do pracovného priestoru"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_inspector.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
+#: code:addons/documents/static/src/views/documents_model_mixin.js:0
+#: code:addons/documents/static/src/views/documents_model_mixin.js:0
+#: code:addons/documents/static/src/views/form/folder_form_controller.js:0
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
+#: code:addons/documents/static/src/views/list/folder_list_controller.js:0
+#: model_terms:ir.ui.view,arch_db:documents.document_view_form
+#: model_terms:ir.ui.view,arch_db:documents.folder_deletion_form
+#, python-format
+msgid "Move to trash"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#. odoo-python
+#: code:addons/documents/models/documents_folder.py:0
+#: code:addons/documents/static/src/views/form/folder_form_controller.js:0
+#: code:addons/documents/static/src/views/list/folder_list_controller.js:0
+#, python-format
+msgid "Move to trash?"
+msgstr ""
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.folder_view_search
+msgid "Moved To Trash"
+msgstr ""
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.document_view_form
+msgid "Moved to trash"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector_field.js:0
 #, python-format
 msgid "Multiple values"
 msgstr "Viacnásobné hodnoty"
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.document_view_search
+msgid "My Activities"
+msgstr "Moje aktivity"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__my_activity_date_deadline
@@ -1645,30 +2330,44 @@ msgid "Name of the share link"
 msgstr "Názov odkazu na zdieľanie"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_inspector.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/search/documents_search_panel.xml:0
 #, python-format
-msgid "Name or Category contains: %s"
-msgstr "Názov alebo kategória obsahuje:%s"
+msgid "New"
+msgstr "Nové"
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
 #, python-format
 msgid "New File"
 msgstr ""
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
 #, python-format
 msgid "New Group"
 msgstr ""
 
 #. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/search/documents_search_panel.js:0
+#, python-format
+msgid "New Tag"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/search/documents_search_panel.js:0
+#, python-format
+msgid "New Workspace"
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr "Ďalšia udalosť kalendára aktivít"
+msgstr "Kalendár ďalších aktivít eventu"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__activity_date_deadline
@@ -1686,10 +2385,28 @@ msgid "Next Activity Type"
 msgstr "Typ ďalšej aktivity"
 
 #. module: documents
-#. openerp-web
+#: model_terms:ir.actions.act_window,help:documents.mail_activity_type_action_document
+msgid "No activity types found. Let's create one!"
+msgstr "Nenašli sa žiadne typy aktivít. Poďme si jeden vytvoriť!"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/helper/documents_action_helper.xml:0
+#, python-format
+msgid "No alias configured"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
 #: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
 #, python-format
 msgid "No document has been selected"
+msgstr ""
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
+msgid "No limit"
 msgstr ""
 
 #. module: documents
@@ -1698,19 +2415,20 @@ msgid "No shared links"
 msgstr ""
 
 #. module: documents
-#: code:addons/documents/models/document.py:0
+#. odoo-python
+#: code:addons/documents/models/documents_document.py:0
 #, python-format
 msgid "Not a file"
 msgstr "Nie je to súbor"
 
 #. module: documents
-#: code:addons/documents/models/document.py:0
+#. odoo-python
+#: code:addons/documents/models/documents_document.py:0
 #, python-format
 msgid "Not attached"
 msgstr "Nie je pripojený"
 
 #. module: documents
-#: model:ir.model.fields,field_description:documents.field_documents_request_wizard__activity_note
 #: model:ir.model.fields,field_description:documents.field_documents_share__activity_note
 msgid "Note"
 msgstr "Poznámka"
@@ -1722,6 +2440,11 @@ msgid "Number of Actions"
 msgstr "Počet akcií"
 
 #. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_share__links_count
+msgid "Number of Links"
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__message_has_error_counter
 #: model:ir.model.fields,field_description:documents.field_documents_share__message_has_error_counter
 msgid "Number of errors"
@@ -1730,7 +2453,7 @@ msgstr "Počet chýb"
 #. module: documents
 #: model:ir.model.fields,help:documents.field_documents_document__message_needaction_counter
 #: model:ir.model.fields,help:documents.field_documents_share__message_needaction_counter
-msgid "Number of messages which requires an action"
+msgid "Number of messages requiring action"
 msgstr "Počet správ, ktoré vyžadujú akciu"
 
 #. module: documents
@@ -1738,12 +2461,6 @@ msgstr "Počet správ, ktoré vyžadujú akciu"
 #: model:ir.model.fields,help:documents.field_documents_share__message_has_error_counter
 msgid "Number of messages with delivery error"
 msgstr "Počet doručených správ s chybou"
-
-#. module: documents
-#: model:ir.model.fields,help:documents.field_documents_document__message_unread_counter
-#: model:ir.model.fields,help:documents.field_documents_share__message_unread_counter
-msgid "Number of unread messages"
-msgstr "Počet neprečítaných správ"
 
 #. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.public_page_layout
@@ -1761,8 +2478,8 @@ msgid "One record limit"
 msgstr "Limit jedneho záznamu"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "Open chatter"
 msgstr "Otvorte chatovanie"
@@ -1779,8 +2496,8 @@ msgstr ""
 "nových záznamov."
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_views.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/helper/documents_action_helper.xml:0
 #, python-format
 msgid "Or send emails to"
 msgstr ""
@@ -1810,16 +2527,15 @@ msgstr ""
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__owner_id
-#: model:ir.model.fields,field_description:documents.field_documents_request_wizard__owner_id
-#: model:ir.model.fields,field_description:documents.field_documents_share__alias_user_id
+#: model:ir.model.fields,field_description:documents.field_documents_request_wizard__requestee_id
 #: model:ir.model.fields,field_description:documents.field_documents_workflow_rule__criteria_owner_id
 #: model_terms:ir.ui.view,arch_db:documents.document_view_search
 msgid "Owner"
 msgstr "Majiteľ"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_page
-msgid "Owner: #{document.create_uid.name}"
+#: model_terms:ir.ui.view,arch_db:documents.share_workspace_page
+msgid "Owner: #{document.owner_id.name}"
 msgstr ""
 
 #. module: documents
@@ -1833,9 +2549,14 @@ msgid "Parent Model"
 msgstr "Nadradený model"
 
 #. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_folder__parent_path
+msgid "Parent Path"
+msgstr "Nadradená cesta"
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_share__alias_parent_thread_id
 msgid "Parent Record Thread ID"
-msgstr "ID vlákna rodičovského záznamu"
+msgstr "ID vlákna nadradeného záznamu"
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_folder__parent_folder_id
@@ -1855,6 +2576,18 @@ msgstr ""
 "požiadavky (model))"
 
 #. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/search/documents_search_panel.js:0
+#, python-format
+msgid "Partial transfer"
+msgstr ""
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.not_available
+msgid "Please contact the person that shared this link for more information."
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields,help:documents.field_documents_share__alias_contact
 msgid ""
 "Policy to post a message on the document using the mailgateway.\n"
@@ -1869,6 +2602,11 @@ msgstr ""
 "\n"
 
 #. module: documents
+#: model:ir.model.fields.selection,name:documents.selection__documents_document__thumbnail_status__present
+msgid "Present"
+msgstr "Prítomný"
+
+#. module: documents
 #: model:documents.tag,name:documents.documents_internal_template_presentations
 msgid "Presentations"
 msgstr "Prezentácie"
@@ -1877,6 +2615,12 @@ msgstr "Prezentácie"
 #: model:documents.tag,name:documents.documents_internal_template_project
 msgid "Project"
 msgstr "Projekt"
+
+#. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_document__rating_ids
+#: model:ir.model.fields,field_description:documents.field_documents_share__rating_ids
+msgid "Ratings"
+msgstr "Hodnotenia"
 
 #. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.folder_view_form
@@ -1904,11 +2648,25 @@ msgid "Related Workspace"
 msgstr ""
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
 #: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
 #, python-format
 msgid "Remaining Pages"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/activity/documents_activity_controller.js:0
+#, python-format
+msgid "Reminder emails have been sent."
+msgstr ""
+
+#. module: documents
+#: model:mail.template,subject:documents.mail_template_document_request_reminder
+msgid ""
+"Reminder to upload your document{{ object.name and ' : ' + object.name or ''"
+" }}"
 msgstr ""
 
 #. module: documents
@@ -1917,11 +2675,11 @@ msgid "Remove"
 msgstr "Odstrániť"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "Replace"
-msgstr "vymeniť"
+msgstr "Vymeniť"
 
 #. module: documents
 #: model:ir.model.fields.selection,name:documents.selection__documents_workflow_action__action__replace
@@ -1929,8 +2687,8 @@ msgid "Replace by"
 msgstr "Nahradiť za"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_views.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_controller_mixin.xml:0
 #: model:ir.model.fields.selection,name:documents.selection__documents_document__type__empty
 #: model_terms:ir.ui.view,arch_db:documents.documents_request_form_view
 #, python-format
@@ -1948,8 +2706,8 @@ msgid "Request To"
 msgstr ""
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/systray.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/web/activity/activity_menu_patch.xml:0
 #, python-format
 msgid "Request a Document"
 msgstr "Vyžiadajte dokument"
@@ -1961,9 +2719,15 @@ msgstr "Vyžiadajte súbor"
 
 #. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.document_view_search
-#: model_terms:ir.ui.view,arch_db:documents.share_single
 msgid "Requested"
 msgstr "Požadované"
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.document_request_page
+msgid ""
+"Requested\n"
+"                                ∙"
+msgstr ""
 
 #. module: documents
 #: model:mail.activity.type,name:documents.mail_documents_activity_data_md
@@ -2009,9 +2773,21 @@ msgid "Responsible User"
 msgstr "Zodpovedný užívateľ"
 
 #. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/form/folder_form_controller.js:0
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
+#: code:addons/documents/static/src/views/list/folder_list_controller.js:0
 #: model_terms:ir.ui.view,arch_db:documents.document_view_form
+#, python-format
 msgid "Restore"
 msgstr "Obnoviť"
+
+#. module: documents
+#. odoo-python
+#: code:addons/documents/models/documents_folder.py:0
+#, python-format
+msgid "Restricted Folder"
+msgstr ""
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__message_has_sms_error
@@ -2025,33 +2801,68 @@ msgid "Sales"
 msgstr "Predaj"
 
 #. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.folder_view_form
+#: model_terms:ir.ui.view,arch_db:documents.tag_view_form
+msgid "Save"
+msgstr "Uložiť"
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_workflow_rule__activity_option
 msgid "Schedule Activity"
 msgstr "Naplánuj aktivity"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_inspector.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/kanban/documents_kanban_renderer.js:0
+#: code:addons/documents/static/src/views/list/documents_list_renderer.js:0
 #, python-format
-msgid "Search more..."
-msgstr "Vyhľadať viac..."
-
-#. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
-#, python-format
-msgid "Select All: Shift + A"
+msgid "Select all"
 msgstr ""
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_inspector.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
 #, python-format
-msgid "Select tags"
-msgstr "Vyberte tagy"
+msgid "Select focused page"
+msgstr ""
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Select next page"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Select next pages of the group"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Select previous page"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Select previous pages of the group"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#, python-format
+msgid "Select/Deselect all pages"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid "Send this letter to the legal department, by assigning the right tags."
@@ -2060,6 +2871,11 @@ msgstr ""
 #. module: documents
 #: model:documents.workflow.rule,name:documents.documents_rule_internal_legal
 msgid "Send to Legal"
+msgstr ""
+
+#. module: documents
+#: model:mail.template,description:documents.mail_template_document_request
+msgid "Sent to partner when requesting a document from them"
 msgstr ""
 
 #. module: documents
@@ -2072,7 +2888,7 @@ msgstr "Postupnosť"
 
 #. module: documents
 #: model:documents.workflow.rule,name:documents.documents_rule_finance_2018contracts
-msgid "Set As 2022 Contracts"
+msgid "Set As 2025 Contracts"
 msgstr ""
 
 #. module: documents
@@ -2091,6 +2907,18 @@ msgid "Set Tags"
 msgstr "Nastavte tagy"
 
 #. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.res_config_settings_view_form
+msgid "Set deletion delay for documents in the Trash"
+msgstr ""
+
+#. module: documents
+#: model:mail.template,description:documents.mail_template_document_request_reminder
+msgid ""
+"Set reminders in activities to notify users who didn't upload their "
+"requested document"
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_workflow_rule__has_owner_activity
 msgid "Set the activity on the document owner"
 msgstr ""
@@ -2103,9 +2931,10 @@ msgid "Settings"
 msgstr "Nastavenia"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_views.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_controller_mixin.xml:0
 #: model_terms:ir.ui.view,arch_db:documents.document_view_form
+#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
 #, python-format
 msgid "Share"
 msgstr "Zdieľať"
@@ -2116,13 +2945,8 @@ msgid "Share Links"
 msgstr "Zdieľajte odkazy"
 
 #. module: documents
-#: code:addons/documents/models/share.py:0
-#, python-format
-msgid "Share domain"
-msgstr "Zdieľajte doménu"
-
-#. module: documents
-#: code:addons/documents/controllers/main.py:0
+#. odoo-python
+#: code:addons/documents/controllers/documents.py:0
 #, python-format
 msgid "Share link"
 msgstr "Zdieľať odkaz"
@@ -2133,21 +2957,29 @@ msgid "Share links"
 msgstr "Zdieľajte odkazy"
 
 #. module: documents
-#: code:addons/documents/models/share.py:0
+#. odoo-python
+#: code:addons/documents/models/documents_share.py:0
 #, python-format
-msgid "Share selected records"
-msgstr "Zdieľajte vybrané záznamy"
+msgid "Share selected files"
+msgstr ""
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_views.xml:0
+#. odoo-python
+#: code:addons/documents/models/documents_share.py:0
+#, python-format
+msgid "Share selected workspace"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_controller_mixin.xml:0
 #, python-format
 msgid "Share this domain"
 msgstr "Zdieľajte túto doménu"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "Share this selection"
 msgstr "Zdieľajte tento výber"
@@ -2183,11 +3015,33 @@ msgid "Shares & Emails"
 msgstr ""
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#: model_terms:ir.ui.view,arch_db:documents.document_view_search
+msgid "Show all records which has next action date is before today"
+msgstr "Zobraz všetky záznamy, ktorých následná aktivita je pred dnešným dňom"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "Size"
 msgstr "Veľkosť"
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.share_files_page
+msgid "Size:"
+msgstr "Veľkosť:"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/hooks.js:0
+#, python-format
+msgid "Some files could not be uploaded (max size: %s)."
+msgstr ""
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.not_available
+msgid "Sorry, this link is no longer valid."
+msgstr ""
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_workflow_rule__link_model
@@ -2195,21 +3049,28 @@ msgid "Specific Model Linked"
 msgstr ""
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "Split"
 msgstr "Rozdeliť"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_thread.xml:0
-#: code:addons/documents/static/src/xml/documents_thread.xml:0
-#: code:addons/documents/static/src/xml/documents_thread.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/attachments/document_file_viewer.xml:0
+#: code:addons/documents/static/src/attachments/document_file_viewer.xml:0
 #, python-format
 msgid "Split PDF"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
+#: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.xml:0
+#, python-format
+msgid "Split selected pages"
 msgstr ""
 
 #. module: documents
@@ -2231,6 +3092,13 @@ msgstr ""
 "Zmeškané: dátum už vypršal\n"
 "Dnes: dátum aktivity je dnes\n"
 "Plán: budúce aktivity"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_exit_dialog/pdf_exit_dialog.xml:0
+#, python-format
+msgid "Stay here"
+msgstr ""
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_folder__children_folder_ids
@@ -2279,8 +3147,8 @@ msgid "Tag categories defined for this workspace"
 msgstr "Kategórie značiek definované pre tento pracovný priestor"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #: model:ir.actions.act_window,name:documents.facet_action
 #: model:ir.model.fields,field_description:documents.field_documents_document__tag_ids
 #: model:ir.model.fields,field_description:documents.field_documents_request_wizard__tag_ids
@@ -2311,6 +3179,18 @@ msgstr ""
 "jej značky"
 
 #. module: documents
+#: model:ir.model.constraint,message:documents.constraint_res_config_settings_check_deletion_delay
+msgid "The deletion delay should be positive."
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/hooks.js:0
+#, python-format
+msgid "The links and requested documents are not shareable."
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields,help:documents.field_documents_share__alias_model_id
 msgid ""
 "The model (Odoo Document Kind) to which this alias corresponds. Any incoming"
@@ -2331,17 +3211,26 @@ msgstr ""
 "<praca@priklad.odoo.com>"
 
 #. module: documents
-#: model:ir.model.fields,help:documents.field_documents_share__alias_user_id
-msgid ""
-"The owner of records created upon receiving emails on this alias. If this "
-"field is not set the system will attempt to find the right owner based on "
-"the sender (From) address, or will use the Administrator account if no "
-"system user is found for that address."
+#. odoo-javascript
+#: code:addons/documents/static/src/views/hooks.js:0
+#: code:addons/documents/static/src/views/inspector/documents_inspector.js:0
+#, python-format
+msgid "The share url has been copied to your clipboard."
 msgstr ""
-"Majiteľ záznamov vytvorených pri prijímaní emailov na tento alias. Ak toto "
-"pole nie je nastavené, systém sa pokúsi nájsť správneho vlastníka na základe"
-" adresy odosielateľa (Od), alebo bude používať účet správcu, ak nie je "
-"užívateľ systému nájdený pre danú adresu."
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.js:0
+#, python-format
+msgid "The share url has been copied to your clipboard. Links were excluded."
+msgstr ""
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.folder_view_form
+msgid ""
+"The specified access rights only apply to the current workspace, not its "
+"children"
+msgstr ""
 
 #. module: documents
 #: model:ir.model.constraint,message:documents.constraint_documents_share_share_unique
@@ -2359,16 +3248,26 @@ msgid "This attachment will only be available for the selected user groups"
 msgstr "Táto príloha bude k dispozícii iba pre vybrané skupiny používateľov"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_single
+#: model_terms:ir.ui.view,arch_db:documents.document_request_page
 msgid ""
 "This document has been requested.\n"
-"                <b onclick=\"$('.o_request_upload').trigger('click')\" style=\"cursor:pointer;\">Upload it</b>."
+"                <b onclick=\"document.querySelector('.o_request_upload').click()\" style=\"cursor:pointer;\">Upload it</b>."
 msgstr ""
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.not_available
-msgid "This link has expired"
-msgstr "Táto linka ukončila platnosť"
+#. odoo-python
+#: code:addons/documents/models/documents_document.py:0
+#, python-format
+msgid "This file has been restored"
+msgstr ""
+
+#. module: documents
+#. odoo-python
+#: code:addons/documents/models/documents_document.py:0
+#, python-format
+msgid ""
+"This file has been sent to the trash and will be deleted forever on the %s"
+msgstr ""
 
 #. module: documents
 #: model:ir.model.fields,help:documents.field_documents_document__company_id
@@ -2377,13 +3276,25 @@ msgid "This workspace will only be available to the selected company"
 msgstr ""
 
 #. module: documents
+#: model_terms:ir.actions.act_window,help:documents.mail_activity_type_action_document
+msgid ""
+"Those represent the different categories of things you have to do (e.g. "
+"\"Call\" or \"Send email\")."
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__thumbnail
 msgid "Thumbnail"
 msgstr "MIniatúra"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_views.xml:0
+#: model:ir.model.fields,field_description:documents.field_documents_document__thumbnail_status
+msgid "Thumbnail Status"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/helper/documents_action_helper.xml:0
 #, python-format
 msgid "Tip: configure your scanner to send all documents to this address."
 msgstr ""
@@ -2405,11 +3316,37 @@ msgid "To validate"
 msgstr "Overiť"
 
 #. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.document_view_search
+msgid "Today Activities"
+msgstr "Dnešné aktivity"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_controller_mixin.xml:0
+#, python-format
+msgid "Toggle Dropdown"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/kanban/documents_kanban_renderer.js:0
+#, python-format
+msgid "Toggle favorite"
+msgstr ""
+
+#. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_facet__tooltip
 #: model:ir.model.fields,field_description:documents.field_documents_workflow_rule__note
 #: model_terms:ir.ui.view,arch_db:documents.facet_view_form
 msgid "Tooltip"
 msgstr "Pomôcka"
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/search/documents_search_model.js:0
+#, python-format
+msgid "Trash"
+msgstr "Smeti"
 
 #. module: documents
 #: model:ir.model.fields,help:documents.field_documents_document__is_editable_attachment
@@ -2418,6 +3355,7 @@ msgstr ""
 
 #. module: documents
 #: model:ir.model.fields,field_description:documents.field_documents_document__type
+#: model_terms:ir.ui.view,arch_db:documents.document_view_search
 msgid "Type"
 msgstr "Typ"
 
@@ -2432,17 +3370,21 @@ msgstr "Typ výnimočnej aktivity v zázname."
 #: model:ir.model.fields.selection,name:documents.selection__documents_document__type__url
 #: model_terms:ir.ui.view,arch_db:documents.document_view_search
 #: model_terms:ir.ui.view,arch_db:documents.documents_upload_url_view
-#: model_terms:ir.ui.view,arch_db:documents.share_page
-#: model_terms:ir.ui.view,arch_db:documents.share_single
-#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
 msgid "URL"
 msgstr "URL"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-python
+#: code:addons/documents/models/documents_document.py:0
 #, python-format
-msgid "Un-archive"
+msgid ""
+"URL %s does not seem complete, as it does not begin with http(s):// or "
+"ftp://"
+msgstr ""
+
+#. module: documents
+#: model:ir.model.fields,field_description:documents.field_documents_document__url_preview_image
+msgid "URL Preview Image"
 msgstr ""
 
 #. module: documents
@@ -2451,28 +3393,16 @@ msgid "Unlock"
 msgstr "Odomknúť"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_controller_mixin.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_model_mixin.js:0
 #, python-format
 msgid "Unnamed"
 msgstr "Nepomenovaný"
 
 #. module: documents
-#: model:ir.model.fields,field_description:documents.field_documents_document__message_unread
-#: model:ir.model.fields,field_description:documents.field_documents_share__message_unread
-msgid "Unread Messages"
-msgstr "Neprečítané správy"
-
-#. module: documents
-#: model:ir.model.fields,field_description:documents.field_documents_document__message_unread_counter
-#: model:ir.model.fields,field_description:documents.field_documents_share__message_unread_counter
-msgid "Unread Messages Counter"
-msgstr "Počítadlo neprečítaných správ"
-
-#. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_views.xml:0
-#: model_terms:ir.ui.view,arch_db:documents.share_page
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_controller_mixin.xml:0
+#: model_terms:ir.ui.view,arch_db:documents.share_workspace_page
 #, python-format
 msgid "Upload"
 msgstr "Nahrať"
@@ -2480,13 +3410,13 @@ msgstr "Nahrať"
 #. module: documents
 #: model_terms:ir.actions.act_window,help:documents.document_action
 msgid ""
-"Upload <span class=\"font-weight-normal\">a file or</span> drag <span "
-"class=\"font-weight-normal\">it here.</span>"
+"Upload <span class=\"fw-normal\">a file or</span> drag <span class=\"fw-"
+"normal\">it here.</span>"
 msgstr ""
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "Upload Document"
 msgstr "Nahrať dokument"
@@ -2497,12 +3427,19 @@ msgid "Upload by Email"
 msgstr "Nahrať cez e-mail"
 
 #. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
+msgid "Upload by email"
+msgstr ""
+
+#. module: documents
+#. odoo-python
 #: code:addons/documents/models/mail_activity.py:0
 #, python-format
 msgid "Upload file request"
 msgstr ""
 
 #. module: documents
+#: model:ir.model,name:documents.model_res_users
 #: model:res.groups,name:documents.group_documents_user
 msgid "User"
 msgstr "Užívateľ"
@@ -2529,12 +3466,17 @@ msgid "Validated"
 msgstr "Potvrdené"
 
 #. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.share_files_page
+msgid "Validity date:"
+msgstr ""
+
+#. module: documents
 #: model:documents.tag,name:documents.documents_marketing_assets_Videos
 msgid "Videos"
 msgstr "Videá"
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid ""
@@ -2561,6 +3503,13 @@ msgid "Weeks"
 msgstr "Týždne"
 
 #. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/owl/components/pdf_exit_dialog/pdf_exit_dialog.xml:0
+#, python-format
+msgid "What do you want to do with the remaining pages ?"
+msgstr ""
+
+#. module: documents
 #: model:ir.actions.act_window,name:documents.workflow_rule_action
 msgid "Workflow Actions"
 msgstr "Akcie pracovného postupu"
@@ -2584,11 +3533,12 @@ msgstr "Pracovný priestor"
 #. module: documents
 #: model:ir.actions.act_window,name:documents.folder_action
 #: model:ir.ui.menu,name:documents.folder_menu
+#: model_terms:ir.ui.view,arch_db:documents.folder_view_tree
 msgid "Workspaces"
 msgstr "Pracovný priestor"
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/js/tours/documents.js:0
 #, python-format
 msgid ""
@@ -2621,95 +3571,79 @@ msgstr ""
 "súboru."
 
 #. module: documents
-#: code:addons/documents/models/folder.py:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/documents_controller_mixin.xml:0
 #, python-format
-msgid "You cannot create recursive folders."
+msgid "You cannot upload content in this workspace"
 msgstr ""
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-python
+#: code:addons/documents/models/documents_document.py:0
+#, python-format
+msgid "You don't have the right to move documents to that workspace."
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/search/documents_search_panel.js:0
+#, python-format
+msgid "You don't have the rights to move documents to that workspace"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/helper/documents_drop_zone.xml:0
+#, python-format
+msgid "You must be in a specific workspace to upload files"
+msgstr ""
+
+#. module: documents
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "Youtube Video"
 msgstr "Youtube video"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_search_panel.xml:0
-#: code:addons/documents/static/src/xml/documents_search_panel.xml:0
-#, python-format
-msgid "_onDragEnter(section.id, valueId)"
+#: model_terms:ir.ui.view,arch_db:documents.folder_deletion_form
+msgid "days."
 msgstr ""
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_search_panel.xml:0
-#: code:addons/documents/static/src/xml/documents_search_panel.xml:0
-#, python-format
-msgid "_onDragLeave"
-msgstr ""
-
-#. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_search_panel.xml:0
-#: code:addons/documents/static/src/xml/documents_search_panel.xml:0
-#, python-format
-msgid "_onDrop(section.id, valueId)"
-msgstr ""
-
-#. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "delete"
 msgstr "zmazať"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "document"
 msgstr "dokument"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
+#: model_terms:ir.ui.view,arch_db:documents.share_workspace_page
 #, python-format
 msgid "documents"
 msgstr "Dokumenty"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "documents selected"
 msgstr "vybrané dokumenty"
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.share_page
-msgid "documents shared by"
-msgstr "dokumenty zdieľané používateľom"
-
-#. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_search_panel.xml:0
-#: code:addons/documents/static/src/xml/documents_search_panel.xml:0
-#, python-format
-msgid "documents.SearchPanel.Category"
-msgstr ""
-
-#. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_search_panel.xml:0
-#, python-format
-msgid "documents.SearchPanel.FiltersGroup"
-msgstr ""
-
-#. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "download"
 msgstr ""
@@ -2747,8 +3681,19 @@ msgid "e.g. Validate document"
 msgstr ""
 
 #. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.share_view_form
+#: model_terms:ir.ui.view,arch_db:documents.share_view_form_popup
+msgid "e.g. domain.com"
+msgstr "napr. domain.com"
+
+#. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.documents_upload_url_view
 msgid "e.g. https://www.youtube.com/watch?v=CP96yVnXNrY"
+msgstr ""
+
+#. module: documents
+#: model_terms:ir.ui.view,arch_db:documents.share_files_page
+msgid "files"
 msgstr ""
 
 #. module: documents
@@ -2757,15 +3702,15 @@ msgid "is_readonly_model"
 msgstr ""
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "restore"
 msgstr ""
 
 #. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/owl/components/pdf_page/pdf_page.xml:0
 #: code:addons/documents/static/src/owl/components/pdf_page/pdf_page.xml:0
 #, python-format
@@ -2773,31 +3718,27 @@ msgid "select"
 msgstr ""
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/xml/documents_inspector.xml:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/inspector/documents_inspector.xml:0
 #, python-format
 msgid "selected"
 msgstr "vybraný"
 
 #. module: documents
 #: model_terms:ir.ui.view,arch_db:documents.public_page_layout
+#: model_terms:ir.ui.view,arch_db:documents.share_workspace_page
 msgid "shared by"
 msgstr "zdieľané používateľom"
 
 #. module: documents
-#. openerp-web
-#: code:addons/documents/static/src/js/documents_controller_mixin.js:0
+#. odoo-javascript
+#: code:addons/documents/static/src/views/hooks.js:0
 #, python-format
 msgid "status code: %s, message: %s"
 msgstr ""
 
 #. module: documents
-#: model_terms:ir.ui.view,arch_db:documents.document_view_kanban
-msgid "toggle favorite"
-msgstr ""
-
-#. module: documents
-#. openerp-web
+#. odoo-javascript
 #: code:addons/documents/static/src/owl/components/pdf_manager/pdf_manager.js:0
 #, python-format
 msgid "unnamed"

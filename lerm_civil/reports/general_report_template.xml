@@ -84,7 +84,7 @@
 									
 									
 								</div>
-								<div  style="padding-left : 80px;">
+								<div  style="padding-left : 200px;">
 									<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 60px; height: 55px;"/>
 								</div>
 							</div>
@@ -111,7 +111,7 @@
 					<p style="font-size:15px"><b>Test Report</b></p>
 				</div> -->
 				
-				<div class="container_eln">
+				<div class="container_eln" style="padding-top:20px;">
 					<div t-foreach="eln" t-as="o">
 						<!-- <table>
 							<tr>
@@ -134,7 +134,7 @@
 						</table> -->
 						<table style="margin-top:20px;">
 							<tr>
-								<td colspan="12">#Customer Party Name :
+								<td colspan="12">Customer Party Name :
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.customer.name"/><br/>
 									<span t-field="o.srf_id.customer.street"/>
@@ -158,12 +158,12 @@
 											,
 									<span t-field="o.srf_id.site_address.country_id"/>
 								</td> -->
-								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.name_work"/>
+								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
+									<!-- <span t-field="o.srf_id.name_work"/> -->
 								</td>
 							</tr>
 							<tr>
-								<td colspan="12">#Sample Description : <![CDATA[&nbsp;]]>
+								<td colspan="12">Sample Description : <![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.sample_description"/>
 								</td>
 							</tr>
@@ -178,7 +178,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td colspan="6">#Sample Id Mark: <![CDATA[&nbsp;]]>
+								<td colspan="6">Sample Id Mark: <![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.client_sample_id"/>
 								</td>
 								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
@@ -186,31 +186,31 @@
 								</td>
 							</tr>
 							<tr>
-								<td colspan="6">#Size :
+								<td colspan="6">Size :
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.size_id.size"/>
 								</td>
-								<td colspan="6">#Grade :
+								<td colspan="6">Grade :
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.grade_id.grade"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="6">#Brand :
+								<td colspan="6">Brand :
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.brand"/>
 								</td>
-								<td colspan="6">#Consultant Name :
+								<td colspan="6">Consultant Name :
 									<![CDATA[&nbsp;]]>
 										<span t-field="o.srf_id.consultant_name1"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="6">#Client Name :
+								<td colspan="6">Client Name :
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.client"/>
 								</td>
-								<td colspan="6">#Client Reference :
+								<td colspan="6">Client Reference :
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.client_refrence"/>
 								</td>
@@ -248,7 +248,7 @@
 									<![CDATA[&nbsp;]]>
 									<span t-field="data.temperature"/>°C
 								</td>
-								<td colspan="3">#Structure Age :
+								<td colspan="3">Structure Age :
 									<![CDATA[&nbsp;]]>
 									<span t-field="data.structure"/>
 								</td>
@@ -515,34 +515,25 @@
 						</table>
 					<div >
 						<div style="margin-top:20px" class="noteContainer">
-							<div>
-								<b>Note :-</b>
-							</div>
-							<div>
-								<ul>
-									<li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-									</li>
-									<li>
-										Sample(s) was/were not drawn by laboratory.
-									</li>
-									<li>
-										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-									</li>
-										<li>
-										# - Information provided by the customer.
-									</li>
-									
-									<t t-foreach="data.notes" t-as="note" style="margin-bottom: 0px;margin-top: 0px;">
-										<li style="margin-bottom: 0px;margin-top: 0px;">
-											<span t-esc="note.notes"/>
-										</li>
+							<table class="table table-bordered">
+							<tr>
+								<td style="padding: 5px; font-style: italic; font-size: 12px;">
+									<b>Note:-</b>
+									&#160;&#160;(i) The results relate only to the items tested 
+									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+									&#160;&#160;(iii) Any corrections invalidate the test reports 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
+									&#160;&#160;(vi) # mark indicates Details given by Client.
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
 									</t>
-									<li style="margin-bottom: 0px;" t-if="eln.has_witness">
-										<p>Test witnessed by : <span style="margin-bottom: 0px;margin-top: 0px;" t-esc="eln.witness_name"/></p>
-									</li>
-								</ul>
-							</div>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</td>
+							</tr>
+						</table>
 						</div>
 						<div t-if="o.witness_photo or o.attachment">
 							<b>PHOTOS</b>
@@ -582,14 +573,14 @@
 								</div>
 								
 							</div>
-							<div>
+							<!-- <div>
 								<div t-if="stamp and stamp == '4-in_report'">
 									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
 								</div>
 								<div style="padding-top:5px">
 									FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.parameters_result[0].parameter.report_format_no"/>
 								</div>
-							</div>
+							</div> -->
 							<div>
 								<div>
 									<b>

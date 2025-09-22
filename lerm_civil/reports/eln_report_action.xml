@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
 
+<odoo>
 <record id="eln_report_action" model="ir.actions.report">
     <field name="name">Report One Dim</field>
     <field name="model">lerm.eln</field>
@@ -18,7 +17,7 @@
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">lerm_civil.datasheet_report_template</field>
     <field name="report_file">lerm_civil.datasheet_report_template</field>
-    <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+    <!--   <field name="binding_model_id" ref="model_lerm_eln"/>   -->
     <field name="binding_model_id" eval="False"/>
     <field name="binding_type">report</field>
     <field name="print_report_name">datasheet_name</field>
@@ -30,121 +29,719 @@
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">lerm_civil.datasheet_generaltemplate_report</field>
     <field name="report_file">lerm_civil.datasheet_generaltemplate_report</field>
+    <!--   <field name="binding_model_id" ref="model_lerm_eln"/>   -->
+    <field name="binding_model_id" eval="False"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="general_report_template_unique" model="ir.actions.report">
+    <field name="name">General template Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">lerm_civil.general_report_template</field>
+    <field name="report_file">lerm_civil.general_report_template</field>
     <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
     <field name="binding_model_id" eval="False"/>
     <field name="binding_type">report</field>
 </record>
 
- <record id="rock_datasheet1_action" model="ir.actions.report">
-        <field name="name">Rock Datasheet 1</field>
+<record id="design_mix_datasheet_action" model="ir.actions.report">
+    <field name="name"> Design Mix DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_mix_design.design_mix_datasheet</field>
+    <field name="report_file">concrete_mix_design.design_mix_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="design_mix_report_action" model="ir.actions.report">
+    <field name="name"> Design Mix Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_mix_design.design_mix_report</field>
+    <field name="report_file">concrete_mix_design.design_mix_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="stainless_steel_tmt_bar_report_action" model="ir.actions.report">
+    <field name="name"> SS TMT Bar Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">ss_tmt_bar.stainless_steel_tmt_bar_report</field>
+    <field name="report_file">ss_tmt_bar.stainless_steel_tmt_bar_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+
+    <record id="stainless_steel_tmt_bar_datasheet_action" model="ir.actions.report">
+        <field name="name"> SS TMT Bar DataSheet</field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">rock.rock_datasheet1</field>
-        <field name="report_file">rock.rock_datasheet1</field>
+        <field name="report_name">ss_tmt_bar.stainless_steel_tmt_bar_datasheet</field>
+        <field name="report_file">ss_tmt_bar.stainless_steel_tmt_bar_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <!--  <field name="binding_model_id" eval="False"/>  -->
+        <field name="binding_type">report</field>
+    </record>
+
+<record id="steel_tmt_bar_report1_action" model="ir.actions.report">
+    <field name="name"> Steel TMT Bar Report 1</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">tmt_bar.steel_tmt_bar_report1</field>
+    <field name="report_file">tmt_bar.steel_tmt_bar_report1</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="steel_tmt_bar_datasheet1_action" model="ir.actions.report">
+    <field name="name"> Steel TMT Bar DataSheet 1</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">tmt_bar.steel_tmt_bar_datasheet1</field>
+    <field name="report_file">tmt_bar.steel_tmt_bar_datasheet1</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="coarse_aggregate_datasheet_action" model="ir.actions.report">
+    <field name="name">Coarse Aggregate DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">coarse_aggregate.coarse_aggregate_datasheet</field>
+    <field name="report_file">coarse_aggregate.coarse_aggregate_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="lerm_coarse_aggregate_mech_report_action" model="ir.actions.report">
+    <field name="name">Coarse Aggregate Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">coarse_aggregate.lerm_coarse_aggregate_mech_report</field>
+    <field name="report_file">coarse_aggregate.lerm_coarse_aggregate_mech_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="action_report_bitumen_datasheet" model="ir.actions.report">
+    <field name="name">Bitumen DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">bituminous.bitumen_datasheet</field>
+    <field name="report_file">bituminous.bitumen_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="action_report_bitumen_report" model="ir.actions.report">
+    <field name="name">Bitumen Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">bituminous.bituminous_report</field>
+    <field name="report_file">bituminous.bituminous_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="fine_agg_datasheet_ssl_action" model="ir.actions.report">
+    <field name="name">Fine Aggregate Datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">fine_aggregate.fine_agg_datasheet_ssl</field>
+    <field name="report_file">fine_aggregate.fine_agg_datasheet_ssl</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--   <field name="binding_model_id" eval="False"/>   -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="fineaggregate_report_ssl_action" model="ir.actions.report">
+    <field name="name">Fine Aggregate Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">fine_aggregate.fineaggregate_report_ssl</field>
+    <field name="report_file">fine_aggregate.fineaggregate_report_ssl</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--   <field name="binding_model_id" eval="False"/>   -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="soil_datasheet_ssl_action" model="ir.actions.report">
+    <field name="name">Soil DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil.soil_datasheet_ssl</field>
+    <field name="report_file">soil.soil_datasheet_ssl</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="soil_ssl_report1_action" model="ir.actions.report">
+    <field name="name">Soil Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil.soil_ssl_report1</field>
+    <field name="report_file">soil.soil_ssl_report1</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="soil_resistivity_datasheet_action" model="ir.actions.report">
+    <field name="name">soil_resistivity_datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil_resistivity.soil_resistivity_datasheet</field>
+    <field name="report_file">soil_resistivity.soil_resistivity_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="soil_resistivity_report_action" model="ir.actions.report">
+    <field name="name">soil_resistivity_report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil_resistivity.soil_resistivity_report</field>
+    <field name="report_file">soil_resistivity.soil_resistivity_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="opc_report_action" model="ir.actions.report">
+    <field name="name">Opc Cement Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">cement_opc.opc_report</field>
+    <field name="report_file">cement_opc.opc_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="cement_datasheet1_action" model="ir.actions.report">
+    <field name="name">Opc Cement Datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">cement_opc.cement_datasheet</field>
+    <field name="report_file">cement_opc.cement_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="lerm_cement_report_ppc1_action" model="ir.actions.report">
+    <field name="name">Cement PPC Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">cement_ppc.lerm_cement_report_ppc</field>
+    <field name="report_file">cement_ppc.lerm_cement_report_ppc</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="cement_datasheet_ppc1_action" model="ir.actions.report">
+    <field name="name">Cement PPC Datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">cement_ppc.cement_datasheet_ppc</field>
+    <field name="report_file">cement_ppc.cement_datasheet_ppc</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="cement_datasheet_psc1_action" model="ir.actions.report">
+    <field name="name">Cement PSC Datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">cement_psc.cement_datasheet_psc</field>
+    <field name="report_file">cement_psc.cement_datasheet_psc</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="lerm_cement_report_psc1_action" model="ir.actions.report">
+    <field name="name">Cement PSC Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">cement_psc.lerm_cement_report_psc</field>
+    <field name="report_file">cement_psc.lerm_cement_report_psc</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="paver_block_report_ssl_action" model="ir.actions.report">
+    <field name="name">Paver Block Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">paver_block.paver_block_report_ssl</field>
+    <field name="report_file">paver_block.paver_block_report_ssl</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="lerm_paver_block_datasheet_ssl_action" model="ir.actions.report">
+    <field name="name">Paver Block DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">paver_block.lerm_paver_block_datasheet_ssl</field>
+    <field name="report_file">paver_block.lerm_paver_block_datasheet_ssl</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="wood_datasheet_ssl_action" model="ir.actions.report">
+    <field name="name">Wood DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">wood.wood_datasheet_ssl</field>
+    <field name="report_file">wood.wood_datasheet_ssl</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="wood_report_ssl_action" model="ir.actions.report">
+    <field name="name">Wood Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">wood.wood_report_ssl</field>
+    <field name="report_file">wood.wood_report_ssl</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="concrete_core_ssl_action" model="ir.actions.report">
+    <field name="name">Concrete Core Datasheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_core.concrete_core_ssl</field>
+    <field name="report_file">concrete_core.concrete_core_ssl</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="concrete_core_report_ssl_action" model="ir.actions.report">
+    <field name="name">Concrete Core Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_core.concrete_core_report_ssl</field>
+    <field name="report_file">concrete_core.concrete_core_report_ssl</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<!-- <record id="bituminous_macadam_report_action" model="ir.actions.report">
+    <field name="name">Bituminous Macadam Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">bituminous_macadam.bituminous_macadam_report</field>
+    <field name="report_file">bituminous_macadam.bituminous_macadam_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record> -->
+
+<!-- <record id="bituminous_macadam_datasheet_action" model="ir.actions.report">
+    <field name="name">Bituminous Macadam DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">bituminous_macadam.bituminous_macadam_datasheet</field>
+    <field name="report_file">bituminous_macadam.bituminous_macadam_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record> -->
+
+<record id="lerm_burnt_brick_datasheet_action" model="ir.actions.report">
+    <field name="name">Brick Burnt Clay Datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">brick_brunt_clay.lerm_brick_clay_datasheet</field>
+    <field name="report_file">brick_brunt_clay.lerm_brick_clay_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="lerm_bricks_burnt_clay_report_action" model="ir.actions.report">
+    <field name="name">Brick Burnt Clay Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">brick_brunt_clay.lerm_bricks_burnt_clay_report</field>
+    <field name="report_file">brick_brunt_clay.lerm_bricks_burnt_clay_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="bitumen_concrete_datasheet_ssl_action" model="ir.actions.report">
+    <field name="name">Bitumen Concrete Datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">bitumen_concrete.bitumen_concrete_datasheet_ssl</field>
+    <field name="report_file">bitumen_concrete.bitumen_concrete_datasheet_ssl</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="bitumen_concrete_report_ssl_action" model="ir.actions.report">
+    <field name="name">Bitumen Concrete Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">bitumen_concrete.bitumen_concrete_report_ssl</field>
+    <field name="report_file">bitumen_concrete.bitumen_concrete_report_ssl</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="bitumen_mix_report_sm_action" model="ir.actions.report">
+    <field name="name">Bitumen Mix Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">bitumen_mix.bitumen_mix_report_sm</field>
+    <field name="report_file">bitumen_mix.bitumen_mix_report_sm</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="bitumen_mix_datasheet_sm_action" model="ir.actions.report">
+    <field name="name">Bitumen Mix Datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">bitumen_mix.bitumen_mix_datasheet_sm</field>
+    <field name="report_file">bitumen_mix.bitumen_mix_datasheet_sm</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="lerm_brick_datasheet_action" model="ir.actions.report">
+    <field name="name">Brick DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">brick.lerm_brick_datasheet</field>
+    <field name="report_file">brick.lerm_brick_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="lerm_brick_report_action" model="ir.actions.report">
+    <field name="name">Brick Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">brick.lerm_brick_report</field>
+    <field name="report_file">brick.lerm_brick_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="compresive_concrete_cube_datasheet_action" model="ir.actions.report">
+    <field name="name">Compresive strength Cube DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cube.compresive_concrete_cube_datasheet</field>
+    <field name="report_file">concrete_cube.compresive_concrete_cube_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+    <record id="compresive_concrete_cube_report_action" model="ir.actions.report">
+    <field name="name">Cube Compresive Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cube.compresive_concrete_cube_report</field>
+    <field name="report_file">concrete_cube.compresive_concrete_cube_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="door_datasheet_action" model="ir.actions.report">
+    <field name="name"> Door DataSheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">door.door_datasheet</field>
+    <field name="report_file">door.door_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+<record id="door_report_action" model="ir.actions.report">
+    <field name="name"> Door Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">door.door_report</field>
+    <field name="report_file">door.door_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="drying_shrinkage_repprt_action" model="ir.actions.report">
+    <field name="name"> Drying Shrinkage Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">drying_shrinkage.drying_shrinkage_repprt</field>
+    <field name="report_file">drying_shrinkage.drying_shrinkage_repprt</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+<record id="drying_shrinkage_datasheet_action" model="ir.actions.report">
+    <field name="name"> Drying Shrinkage DataSheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">drying_shrinkage.drying_shrinkage_datasheet</field>
+    <field name="report_file">drying_shrinkage.drying_shrinkage_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="flyash_datasheet_action" model="ir.actions.report">
+    <field name="name">Fly Ash DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">fly_ash.flyash_datasheet</field>
+    <field name="report_file">fly_ash.flyash_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="lerm_fly_report_action" model="ir.actions.report">
+    <field name="name">Fly Ash Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">fly_ash.lerm_fly_report</field>
+    <field name="report_file">fly_ash.lerm_fly_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="ggbs_datasheet_action" model="ir.actions.report">
+    <field name="name">GGBS DataSheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">ggbs.ggbs_datasheet</field>
+    <field name="report_file">ggbs.ggbs_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="lerm_ggbs_report_action" model="ir.actions.report">
+    <field name="name">GGBS Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">ggbs.lerm_ggbs_report</field>
+    <field name="report_file">ggbs.lerm_ggbs_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="gsb_mech_datasheet_action" model="ir.actions.report">
+    <field name="name">GSB DataSheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">gsb.gsb_mech_datasheet</field>
+    <field name="report_file">gsb.gsb_mech_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="gsb_mec_report_action" model="ir.actions.report">
+    <field name="name">GSB Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">gsb.gsb_mec_report</field>
+    <field name="report_file">gsb.gsb_mec_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="gypsum_plaster_board_datasheet_action" model="ir.actions.report">
+    <field name="name">Gypsum Plaster Board DataSheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">gypsum_plaster_board.gypsum_plaster_board_datasheet</field>
+    <field name="report_file">gypsum_plaster_board.gypsum_plaster_board_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="gypsum_plaster_report_action" model="ir.actions.report">
+    <field name="name">Gypsum Plaster Board Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">gypsum_plaster_board.gypsum_plaster_report</field>
+    <field name="report_file">gypsum_plaster_board.gypsum_plaster_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="microsilica_datasheet_action" model="ir.actions.report">
+    <field name="name">Mechanical Microsilica DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">microsilica.microsilica_datasheet</field>
+    <field name="report_file">microsilica.microsilica_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="microsilica_report_action" model="ir.actions.report">
+    <field name="name">Mechanical Microsilica Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">microsilica.microsilica_report</field>
+    <field name="report_file">microsilica.microsilica_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="pt_grout_datasheet_action" model="ir.actions.report">
+    <field name="name">PT Grout DataSheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">pt_grout.pt_grout_datasheet</field>
+    <field name="report_file">pt_grout.pt_grout_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="lerm_ptgrout_report_action" model="ir.actions.report">
+    <field name="name">Pt Grout Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">pt_grout.lerm_ptgrout_report</field>
+    <field name="report_file">pt_grout.lerm_ptgrout_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="shuttering_plywood_datasheet_action" model="ir.actions.report">
+    <field name="name">Shuttering Plywood DataSheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">shuttering_plywood.shuttering_plywood_datasheet</field>
+    <field name="report_file">shuttering_plywood.shuttering_plywood_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="shuttering_plywood_report_action" model="ir.actions.report">
+    <field name="name">Shuttering Plywood Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">shuttering_plywood.shuttering_plywood_report</field>
+    <field name="report_file">shuttering_plywood.shuttering_plywood_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="tile_datasheet_action" model="ir.actions.report">
+    <field name="name"> Tile DataSheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">tile.tile_datasheet</field>
+    <field name="report_file">tile.tile_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="tile_report_action" model="ir.actions.report">
+    <field name="name"> Tile Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">tile.tile_report</field>
+    <field name="report_file">tile.tile_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <!--  <field name="binding_model_id" eval="False"/>  -->
+    <field name="binding_type">report</field>
+</record>
+
+<record id="wbm_mech_datasheet_action" model="ir.actions.report">
+    <field name="name">WBM DataSheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">wbm.wbm_mech_datasheet</field>
+    <field name="report_file">wbm.wbm_mech_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="wbm_mec_report_action" model="ir.actions.report">
+    <field name="name">WBM Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">wbm.wbm_mec_report</field>
+    <field name="report_file">wbm.wbm_mec_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="wpt_datasheet_action" model="ir.actions.report">
+    <field name="name">WPT Datasheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">wpt.wpt_datasheet</field>
+    <field name="report_file">wpt.wpt_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="wpt_report_action" model="ir.actions.report">
+    <field name="name">WPT Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">wpt.wpt_report</field>
+    <field name="report_file">wpt.wpt_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+<record id="cement_tile_chequred_datasheet_action" model="ir.actions.report">
+        <field name="name">Tile Cement Chequered DataSheet </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">cement_chequerd_tile.cement_tile_chequred_datasheet</field>
+        <field name="report_file">cement_chequerd_tile.cement_tile_chequred_datasheet</field>
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <field name="binding_type">report</field>
     </record>
 
-    <record id="rock_report1_action" model="ir.actions.report">
-        <field name="name">Rock Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">rock.rock_report1</field>
-        <field name="report_file">rock.rock_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <!-- <field name="binding_model_id" eval="False"/> -->
-        <field name="binding_type">report</field>
-    </record> 
 
-     <record id="gypsum_plaster_board_datasheet1_action" model="ir.actions.report">
-        <field name="name">Gypsum Plaster Board DataSheet 1</field>
+     <record id="cement_tile_chequered_report_action" model="ir.actions.report">
+        <field name="name">Tile Cement Chequered Report </field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">gypsum_plaster_board.gypsum_plaster_board_datasheet1</field>
-        <field name="report_file">gypsum_plaster_board.gypsum_plaster_board_datasheet1</field>
+        <field name="report_name">cement_chequerd_tile.cement_tile_chequered_report</field>
+        <field name="report_file">cement_chequerd_tile.cement_tile_chequered_report</field>
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <field name="binding_type">report</field>
     </record>
 
-
-    <record id="gypsum_plaster_report1_action" model="ir.actions.report">
-        <field name="name">Gypsum Plaster Board Report 1</field>
+    <record id="rcmt_datasheet_action" model="ir.actions.report">
+        <field name="name">RCMT DataSheet </field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">gypsum_plaster_board.gypsum_plaster_report1</field>
-        <field name="report_file">gypsum_plaster_board.gypsum_plaster_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <!-- <field name="binding_model_id" eval="False"/> -->
-        <field name="binding_type">report</field>
-    </record> 
-
-
-      <record id="particle_board_datasheet1_action" model="ir.actions.report">
-        <field name="name">Particle Board DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">partical_bord.particle_board_datasheet1</field>
-        <field name="report_file">partical_bord.particle_board_datasheet1</field>
+        <field name="report_name">rcmt.rcmt_datasheet</field>
+        <field name="report_file">rcmt.rcmt_datasheet</field>
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <field name="binding_type">report</field>
     </record>
 
-     <record id="particle_board_report1_action" model="ir.actions.report">
-        <field name="name">Particle Board Report 1</field>
+    <record id="rcmt_mec_report_action" model="ir.actions.report">
+        <field name="name">RCMT Report </field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">partical_bord.particle_board_report1</field>
-        <field name="report_file">partical_bord.particle_board_report1</field>
+        <field name="report_name">rcmt.rcmt_mec_report</field>
+        <field name="report_file">rcmt.rcmt_mec_report</field>
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <field name="binding_type">report</field>
     </record>
 
-
-
-      <record id="mortar_cube_datasheet1_action" model="ir.actions.report">
-        <field name="name">Mortar Cube DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">morter_cube.mortar_cube_datasheet1</field>
-        <field name="report_file">morter_cube.mortar_cube_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-     <record id="mortar_cube_report1_action" model="ir.actions.report">
-        <field name="name">Mortar Cube Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">morter_cube.mortar_cube_report1</field>
-        <field name="report_file">morter_cube.mortar_cube_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-    <record id="rcmt_datasheet1_action" model="ir.actions.report">
-        <field name="name">RCMT DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">rcmt.rcmt_datasheet1</field>
-        <field name="report_file">rcmt.rcmt_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-    <record id="rcmt_mec_report1_action" model="ir.actions.report">
-        <field name="name">RCMT Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">rcmt.rcmt_mec_report1</field>
-        <field name="report_file">rcmt.rcmt_mec_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-     <record id="rcpt_datasheet1_action" model="ir.actions.report">
-        <field name="name">RCPT DataSheet 1</field>
+    <record id="rcpt_datasheet1_action" model="ir.actions.report">
+        <field name="name">RCPT DataSheet </field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">rcpt.rcpt_datasheet1</field>
@@ -153,8 +750,8 @@
         <field name="binding_type">report</field>
     </record>
 
-     <record id="rcpt_mec_report1_action" model="ir.actions.report">
-        <field name="name">RCPT Report 1</field>
+    <record id="rcpt_mec_report1_action" model="ir.actions.report">
+        <field name="name">RCPT Report </field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">rcpt.rcpt_mec_report1</field>
@@ -163,365 +760,19 @@
         <field name="binding_type">report</field>
     </record>
 
-     <record id="shuttering_plywood_datasheet1_action" model="ir.actions.report">
-        <field name="name">Shuttering Plywood DataSheet 1</field>
+        <record id="pile_integrity_report_action" model="ir.actions.report">
+        <field name="name">Pile Integrity Report </field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">shuttering_plywood.shuttering_plywood_datasheet1</field>
-        <field name="report_file">shuttering_plywood.shuttering_plywood_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-      <record id="shuttering_plywood_report1_action" model="ir.actions.report">
-        <field name="name">Shuttering Plywood Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">shuttering_plywood.shuttering_plywood_report1</field>
-        <field name="report_file">shuttering_plywood.shuttering_plywood_report1</field>
+        <field name="report_name">pile_integrity.pile_integrity_report</field>
+        <field name="report_file">pile_integrity.pile_integrity_report</field>
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <field name="binding_type">report</field>
     </record>
 
 
-      <record id="aac_block_mech_report1_action" model="ir.actions.report">
-        <field name="name">AAC Block Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">aac_block.aac_block_mech_report1</field>
-        <field name="report_file">aac_block.aac_block_mech_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-    <record id="aac_block_datasheet1_action" model="ir.actions.report">
-        <field name="name">AAC Block DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">aac_block.aac_block_datasheet1</field>
-        <field name="report_file">aac_block.aac_block_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-
-      <record id="gsb_mech_datasheet1_action" model="ir.actions.report">
-        <field name="name">GSB DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">gsb.gsb_mech_datasheet1</field>
-        <field name="report_file">gsb.gsb_mech_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-     <record id="gsb_mec_report1_action" model="ir.actions.report">
-        <field name="name">GSB Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">gsb.gsb_mec_report1</field>
-        <field name="report_file">gsb.gsb_mec_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-
-      <record id="compresive_concrete_cube_datasheet1_action" model="ir.actions.report">
-        <field name="name">Compresive strength Cube DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">concrete_cube.compresive_concrete_cube_datasheet1</field>
-        <field name="report_file">concrete_cube.compresive_concrete_cube_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-
-     <record id="compresive_concrete_cube_report1_action" model="ir.actions.report">
-        <field name="name">Cube Compresive Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">concrete_cube.compresive_concrete_cube_report1</field>
-        <field name="report_file">concrete_cube.compresive_concrete_cube_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-     <record id="tile_chequred_datasheet1_action" model="ir.actions.report">
-        <field name="name">Tile  Chequered DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">chequerd_tile.tile_chequred_datasheet1</field>
-        <field name="report_file">chequerd_tile.tile_chequred_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-     <record id="tile_chequered_report1_action" model="ir.actions.report">
-        <field name="name">Tile Chequered Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">chequerd_tile.tile_chequered_report1</field>
-        <field name="report_file">chequerd_tile.tile_chequered_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-
-     <record id="cement_tile_chequred_datasheet1_action" model="ir.actions.report">
-        <field name="name">Tile Cement Chequered DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">cement_chequerd_tile.cement_tile_chequred_datasheet1</field>
-        <field name="report_file">cement_chequerd_tile.cement_tile_chequred_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-     <record id="cement_tile_chequered_report1_action" model="ir.actions.report">
-        <field name="name">Tile Cement Chequered Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">cement_chequerd_tile.cement_tile_chequered_report1</field>
-        <field name="report_file">cement_chequerd_tile.cement_tile_chequered_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-
-
-    <record id="lerm_brick_datasheet1_action" model="ir.actions.report">
-        <field name="name">Brick DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">brick.lerm_brick_datasheet1</field>
-        <field name="report_file">brick.lerm_brick_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-    <record id="lerm_brick_report1_action" model="ir.actions.report">
-        <field name="name">Brick Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">brick.lerm_brick_report1</field>
-        <field name="report_file">brick.lerm_brick_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-
-     <record id="wbm_mech_datasheet1_action" model="ir.actions.report">
-        <field name="name">WBM DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">wbm.wbm_mech_datasheet1</field>
-        <field name="report_file">wbm.wbm_mech_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-     <record id="wbm_mec_report1_action" model="ir.actions.report">
-        <field name="name">WBM Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">wbm.wbm_mec_report1</field>
-        <field name="report_file">wbm.wbm_mec_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-
-     <record id="pt_grout_datasheet1_action" model="ir.actions.report">
-        <field name="name">PT Grout DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">pt_grout.pt_grout_datasheet1</field>
-        <field name="report_file">pt_grout.pt_grout_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-     <record id="lerm_ptgrout_report1_action" model="ir.actions.report">
-        <field name="name">Pt Grout Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">pt_grout.lerm_ptgrout_report1</field>
-        <field name="report_file">pt_grout.lerm_ptgrout_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-     <record id="lerm_paver_block_datasheet1_action" model="ir.actions.report">
-        <field name="name">Paver Block DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">paver_block.lerm_paver_block_datasheet1</field>
-        <field name="report_file">paver_block.lerm_paver_block_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-     <record id="paver_block_report1_action" model="ir.actions.report">
-        <field name="name">Paver Block Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">paver_block.paver_block_report1</field>
-        <field name="report_file">paver_block.paver_block_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-
-     <record id="wmm_mech_datasheet1_action" model="ir.actions.report">
-        <field name="name">WMM DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">wmm.wmm_mech_datasheet1</field>
-        <field name="report_file">wmm.wmm_mech_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-    <record id="wmm_mec_report1_action" model="ir.actions.report">
-        <field name="name">WMM Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">wmm.wmm_mec_report1</field>
-        <field name="report_file">wmm.wmm_mec_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-    <record id="wpt_datasheet1_action" model="ir.actions.report">
-        <field name="name">WPT Datasheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">wpt.wpt_datasheet1</field>
-        <field name="report_file">wpt.wpt_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-    <record id="wpt_report1_action" model="ir.actions.report">
-        <field name="name">WPT Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">wpt.wpt_report1</field>
-        <field name="report_file">wpt.wpt_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-     <record id="ggbs_datasheet1_action" model="ir.actions.report">
-        <field name="name">GGBS DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">ggbs.ggbs_datasheet1</field>
-        <field name="report_file">ggbs.ggbs_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-         <record id="lerm_ggbs_report1_action" model="ir.actions.report">
-        <field name="name">GGBS Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">ggbs.lerm_ggbs_report1</field>
-        <field name="report_file">ggbs.lerm_ggbs_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-     <record id="soil_datasheet1_action" model="ir.actions.report">
-        <field name="name">Soil DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">soil.soil_datasheet1</field>
-        <field name="report_file">soil.soil_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-     <record id="soil_report1_action" model="ir.actions.report">
-        <field name="name">Soil Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">soil.soil_report1</field>
-        <field name="report_file">soil.soil_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-      <record id="flyash_datasheet1_action" model="ir.actions.report">
-        <field name="name">Fly Ash DataSheet 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">fly_ash.flyash_datasheet1</field>
-        <field name="report_file">fly_ash.flyash_datasheet1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-     <record id="lerm_fly_report1_action" model="ir.actions.report">
-        <field name="name">Fly Ash Report 1</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">fly_ash.lerm_fly_report1</field>
-        <field name="report_file">fly_ash.lerm_fly_report1</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-
-    <record id="crushed_sand_datasheet_chemical_action" model="ir.actions.report">
-        <field name="name">Crushed Sand Datasheet</field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">crushed_sand_chemical.crushed_sand_datasheet</field>
-        <field name="report_file">crushed_sand_chemical.crushed_sand_datasheet</field>
-        <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
-        <field name="binding_model_id" eval="False"/>
-        <field name="binding_type">report</field>
-   </record>
-        <record id="report_crushed_sand_chemical_action" model="ir.actions.report">
-            <field name="name">Crushed Sand Chemical Report</field>
-            <field name="model">lerm.eln</field>
-            <field name="report_type">qweb-pdf</field>
-            <field name="report_name">crushed_sand_chemical.chemical_crushed_sand_report</field>
-            <field name="report_file">crushed_sand_chemical.chemical_crushed_sand_report</field>
-            <field name="binding_model_id" ref="model_lerm_eln"/>
-            <!--  <field name="binding_model_id" eval="False"/>  -->
-            <field name="binding_type">report</field>
-        </record>
-
-
-        <record id="datasheet_fine_aggregate_chemical_action" model="ir.actions.report">
-            <field name="name">Coarse Aggregate/Fine Aggregate Datasheet</field>
+    <record id="datasheet_fine_aggregate_chemical_action" model="ir.actions.report">
+            <field name="name">Fine Aggregate Chemical Datasheet</field>
             <field name="model">lerm.eln</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">fine_aggrigate_chemical.chemical_fine_aggregate</field>
@@ -532,7 +783,7 @@
         </record>
 
         <record id="report_fine_aggregate_chemical_action" model="ir.actions.report">
-            <field name="name">Coarse Aggregate/Fine Aggregate Report</field>
+            <field name="name">Fine Aggregate Chemical Report</field>
             <field name="model">lerm.eln</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">fine_aggrigate_chemical.fine_aggregate_chemical_report</field>
@@ -587,27 +838,177 @@
             <field name="binding_type">report</field>
         </record>
 
-
-        <record id="datasheet_hardend_concrete_chemical_action" model="ir.actions.report">
-            <field name="name">Hardend Concrete Chemical Datasheet</field>
+        <record id="isat_mech_report_action" model="ir.actions.report">
+            <field name="name"> ISAT Report</field>
             <field name="model">lerm.eln</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">hardent_concrete_chemical.chemical_hardend_concrete</field>
-            <field name="report_file">hardent_concrete_chemical.chemical_hardend_concrete</field>
+            <field name="report_name">isat.isat_mech_report</field>
+            <field name="report_file">isat.isat_mech_report</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <!-- <field name="binding_model_id" eval="False"/> -->
+           <field name="binding_type">report</field>
+          </record>
+
+
+          <record id="isat_datasheet_action" model="ir.actions.report">
+            <field name="name"> ISAT DataSheet </field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">isat.isat_datasheet</field>
+            <field name="report_file">isat.isat_datasheet</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <!-- <field name="binding_model_id" eval="False"/> -->
+           <field name="binding_type">report</field>
+          </record>
+
+          <record id="wmm_mech_datasheet_action" model="ir.actions.report">
+        <field name="name">WMM DataSheet </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">wmm.wmm_mech_datasheet</field>
+        <field name="report_file">wmm.wmm_mech_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="wmm_mec_report_action" model="ir.actions.report">
+        <field name="name">WMM Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">wmm.wmm_mec_report</field>
+        <field name="report_file">wmm.wmm_mec_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="tile_chequred_datasheet_action" model="ir.actions.report">
+        <field name="name">Tile  Chequered DataSheet </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">chequerd_tile.tile_chequred_datasheet</field>
+        <field name="report_file">chequerd_tile.tile_chequred_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+     <record id="tile_chequered_report_action" model="ir.actions.report">
+        <field name="name">Tile Chequered Report </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">chequerd_tile.tile_chequered_report</field>
+        <field name="report_file">chequerd_tile.tile_chequered_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+      <record id="temprature_monitoring_report_action" model="ir.actions.report">
+        <field name="name">Temprature Monitoring Report </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">temprature_monitoring.temprature_monitoring_report</field>
+        <field name="report_file">temprature_monitoring.temprature_monitoring_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+      <record id="temprature_monitoring_datasheet_action" model="ir.actions.report">
+        <field name="name">Temprature Monitoring DataSheet </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">temprature_monitoring.temprature_monitoring_datasheet</field>
+        <field name="report_file">temprature_monitoring.temprature_monitoring_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="ht_strand_report_action" model="ir.actions.report">
+        <field name="name">Ht Strand Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ht_strand.ht_strand_report</field>
+        <field name="report_file">ht_strand.ht_strand_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+     <record id="ht_strand_datasheet_action" model="ir.actions.report">
+        <field name="name">Ht Strand DataSheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ht_strand.ht_strand_datasheet</field>
+        <field name="report_file">ht_strand.ht_strand_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+     <record id="chemical_hardend_concrete_action" model="ir.actions.report">
+        <field name="name">Hardend Concrete Chemical Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hardent_concrete_chemical.chemical_hardend_concrete</field>
+        <field name="report_file">hardent_concrete_chemical.chemical_hardend_concrete</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+      <record id="chemical_hardend_report_action" model="ir.actions.report">
+        <field name="name">Hardend Concrete Chemical Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hardent_concrete_chemical.chemical_hardend_report</field>
+        <field name="report_file">hardent_concrete_chemical.chemical_hardend_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="crushed_sand_datasheet_chemical_action" model="ir.actions.report">
+        <field name="name">Crushed Sand Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">crushed_sand_chemical.crushed_sand_datasheet</field>
+        <field name="report_file">crushed_sand_chemical.crushed_sand_datasheet</field>
+        <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+   </record>
+   
+        <record id="report_crushed_sand_chemical_action" model="ir.actions.report">
+            <field name="name">Crushed Sand Chemical Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">crushed_sand_chemical.chemical_crushed_sand_report</field>
+            <field name="report_file">crushed_sand_chemical.chemical_crushed_sand_report</field>
             <field name="binding_model_id" ref="model_lerm_eln"/>
             <!--  <field name="binding_model_id" eval="False"/>  -->
             <field name="binding_type">report</field>
         </record>
 
-        <record id="report_hardend_concrete_chemical_action" model="ir.actions.report">
-            <field name="name">Hardend Concrete Chemical Report</field>
+        <record id="datasheet_aac_block_action" model="ir.actions.report">
+            <field name="name">AAC Block Datasheet</field>
             <field name="model">lerm.eln</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">hardent_concrete_chemical.chemical_hardend_report</field>
-            <field name="report_file">hardent_concrete_chemical.chemical_hardend_report</field>
+            <field name="report_name">aac_block.aac_block_datasheet</field>
+            <field name="report_file">aac_block.aac_block_datasheet</field>
             <field name="binding_model_id" ref="model_lerm_eln"/>
             <!--  <field name="binding_model_id" eval="False"/>  -->
             <field name="binding_type">report</field>
         </record>
+
+        <record id="report_aac_block_action" model="ir.actions.report">
+            <field name="name">AAC Block Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">aac_block.aac_block_mech_report</field>
+            <field name="report_file">aac_block.aac_block_mech_report</field>
+            <field name="binding_model_id" ref="model_lerm_eln"/>
+            <!--  <field name="binding_model_id" eval="False"/>  -->
+            <field name="binding_type">report</field>
+        </record>
+
 
 </odoo>

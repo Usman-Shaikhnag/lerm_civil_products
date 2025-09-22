@@ -11,36 +11,30 @@ class ParameterMaster(models.Model):
     report_format_no = fields.Char(string="Report Format No")
     lab_min_value = fields.Float(string="Lab min Value" ,digits=(16, 4))
     lab_max_value = fields.Float(string="Lab max Value" ,digits=(16, 4))
-    nabl_min_value = fields.Float(string="Nabl min value")
-    nabl_max_value = fields.Float(string="Nabl max value")
     main_report_template = fields.Many2one('ir.actions.report',string="Main Report Template")
     datasheet_report_template = fields.Many2one('ir.actions.report',string="DataSheet Report Template")
     decimal = fields.Integer("Decimal")
-    client_min_value = fields.Float(string="Client min Value")
-    client_max_value = fields.Float(string="Client max Value")
     time_based = fields.Boolean("Time Based")
     mu_value = fields.Float(string="Mu Value")
     unit = fields.Many2one('uom.uom',string="Unit")
     calculated = fields.Boolean("Pseudo Parameter")
     calculation_type = fields.Selection([('parameter_based', 'Parameter Based'), ('form_based', 'Form Based')],default='parameter_based',string='Calculation Type')
     ir_model = fields.Many2one('ir.model',string="Model")
-    test_method = fields.Many2one('lerm_civil.test_method',string="Parameter Test Method")
+    test_method = fields.Many2one('lerm_civil.test_method',domain="[('product', '=', material)]",string="Parameter Test Method")
     discipline = fields.Many2one('lerm_civil.discipline',string="Discipline")
     nabl_select = fields.Selection([('nabl', 'NABL'), ('non_nabl', 'Non NABL')], string='NABL')
-    spreadsheet_template = fields.Many2one("spreadsheet.template",string="Spreadsheet Template")
-    sheets = fields.Char("Sheet Name")
-    cell = fields.Char("Result Cell")
     group = fields.Many2one('lerm_civil.group',string="Group")
     parameter_table = fields.One2many('lerm.parameter.master.table','parameter_id',string="Material Table")
     dependent_inputs = fields.One2many("lerm.dependent.inputs","parameter_id",string="Inputs")
     formula = fields.Text("Formula")
     material = fields.Many2one('product.template',string="Material")
 
-    fetch_by_grade = fields.Boolean("Fetch by Grade",default="True")
-    fetch_by_size = fields.Boolean("Fetch by Size",default="True")
-    
     fetch_by_grade = fields.Boolean("Fetch by Grade", default=True)
     fetch_by_size = fields.Boolean("Fetch by Size", default=True)
+
+    instrument = fields.Many2one('maintenance.equipment',string="Instrument")
+
+
 
 
     def name_get(self):

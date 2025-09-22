@@ -8,9 +8,9 @@ import math
 
 
 class FlyaschNormalConsistency(models.Model):
-    _name = "mechanical.flyasch.normalconsistency1"
+    _name = "mechanical.flyasch.normalconsistency"
     _inherit = "lerm.eln"
-    _description = 'mechanical.flyasch.normalconsistency1'
+    _description = 'mechanical.flyasch.normalconsistency'
     _rec_name = "name_fly"
 
 
@@ -489,7 +489,7 @@ class FlyaschNormalConsistency(models.Model):
     end_date_retained = fields.Date("End Date")
 
 
-    particles_retained_table = fields.One2many('particles.retained.line1','parent_id',string="Particles Retained")
+    particles_retained_table = fields.One2many('particles.retained.line','parent_id',string="Particles Retained")
     average_weight_retained = fields.Float("Average", compute="_compute_average_weight_retained")
 
     prcent_retaind = fields.Float(string="% Weight Retained",compute="_compute_prcent_retained",digits=(12,1))
@@ -608,7 +608,7 @@ class FlyaschNormalConsistency(models.Model):
         else:
             record.wt_of_water_req_soundness = 0.0
 
-    soundness_table = fields.One2many('flyash.soundness.line1','parent_id',string="Soundness")
+    soundness_table = fields.One2many('flyash.soundness.line','parent_id',string="Soundness")
     average_soundness = fields.Float("Average",compute="_compute_average_soundness")
     expansion_soundness = fields.Float("Expansion(mm)",compute="_compute_expansion_soundness" ,digits=(16,1))
 
@@ -905,7 +905,7 @@ class FlyaschNormalConsistency(models.Model):
 
     casting_date_28days = fields.Date(string="Date of Casting")
     testing_date_28days = fields.Date(string="Date of Testing",compute="_compute_testing_date_28days")
-    casting_28_days_tables = fields.One2many('flyash.casting.28days.line1','parent_id',string="28 Days")
+    casting_28_days_tables = fields.One2many('flyash.casting.28days.line','parent_id',string="28 Days")
     average_casting_28days = fields.Float("Average",compute="_compute_average_28days")
     status_28days = fields.Boolean("Done")
 
@@ -982,7 +982,7 @@ class FlyaschNormalConsistency(models.Model):
 
     casting_dates_28days = fields.Date(string="Date of Casting")
     testing_dates_28days = fields.Date(string="Date of Testing",compute="_compute_testing_date_28dayss")
-    casting_28_dayss_tables = fields.One2many('flyash.casting.28days.lines1','parent_id',string="28 Days")
+    casting_28_dayss_tables = fields.One2many('flyash.casting.28days.lines','parent_id',string="28 Days")
     average_casting_28dayss = fields.Float("Average",compute="_compute_average_28dayss")
     status_28dayss = fields.Boolean("Done")
 
@@ -1157,7 +1157,7 @@ class FlyaschNormalConsistency(models.Model):
 
     casting_dates_28dayss = fields.Date(string="Date of Casting")
     testing_dates_28dayss = fields.Date(string="Date of Testing",compute="_compute_testing_date_28daysss")
-    casting_28_dayss_tabless = fields.One2many('flyash.casting.28days.liness1','parent_id',string="28 Days")
+    casting_28_dayss_tabless = fields.One2many('flyash.casting.28days.liness','parent_id',string="28 Days")
     average_casting_28daysss = fields.Float("Average",compute="_compute_average_28daysss")
     compressive_strength_28_days = fields.Integer("Compressive Strength",compute="_compute_compressive_strength_28dayss")
     status_28daysss = fields.Boolean("Done")
@@ -1563,6 +1563,8 @@ class FlyaschNormalConsistency(models.Model):
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
+                # import wdb;wdb.set_trace()
+
                 # Normal consistency
                 if sample.internal_id == '124fgrt3-1b3c-43ae-9c20-5421b6d6edf9':
                     record.normal_consistency_visible = True
@@ -1639,7 +1641,7 @@ class FlyaschNormalConsistency(models.Model):
 
 
     def get_all_fields(self):
-        record = self.env['mechanical.flyasch.normalconsistency1'].browse(self.ids[0])
+        record = self.env['mechanical.flyasch.normalconsistency'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -1657,9 +1659,9 @@ class FlyaschNormalConsistency(models.Model):
 
 
 class ParticlesRetainedLine(models.Model):
-    _name= "particles.retained.line1"
+    _name= "particles.retained.line"
 
-    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency1')
+    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency')
 
     sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
     sample_wt = fields.Float("Sample Weight (g)",default=100)
@@ -1692,9 +1694,9 @@ class ParticlesRetainedLine(models.Model):
             record.sr_no = index + 1
 
 class SoundnessflyashLine(models.Model):
-    _name= "flyash.soundness.line1"
+    _name= "flyash.soundness.line"
 
-    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency1')
+    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency')
     sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
     initial_distance = fields.Float("Intial distance separating the indicator points (L1).mm")
     final_distance = fields.Float("Final distance separating the indicator points (L2).mm")
@@ -1725,9 +1727,9 @@ class SoundnessflyashLine(models.Model):
 
 
 class Casting28DaysLine(models.Model):
-    _name = "flyash.casting.28days.line1"
+    _name = "flyash.casting.28days.line"
 
-    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency1')
+    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency')
 
     length = fields.Float("Length in mm")
     width = fields.Float("Width in mm")
@@ -1750,9 +1752,9 @@ class Casting28DaysLine(models.Model):
                 record.compressive_strength = 0.0
                 
 class Casting28DaysLines(models.Model):
-    _name = "flyash.casting.28days.lines1"
+    _name = "flyash.casting.28days.lines"
 
-    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency1')
+    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency')
 
     lengths = fields.Float("Length in mm")
     widths = fields.Float("Width in mm")
@@ -1776,9 +1778,9 @@ class Casting28DaysLines(models.Model):
 
 
 class Casting28DaysLiness(models.Model):
-    _name = "flyash.casting.28days.liness1"
+    _name = "flyash.casting.28days.liness"
 
-    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency1')
+    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency')
 
     lengthss = fields.Float("Length in mm")
     widthss = fields.Float("Width in mm")

@@ -3,135 +3,166 @@
   <data>
     
     
-    <record id="product_template_form_inherited" model ="ir.ui.view">
-      <field name="name">product.template.form</field>
-      <field name="model">product.template</field>
-      <field name="inherit_id" ref="product.product_template_form_view" />
-      <field name="arch" type="xml">
-        <xpath expr="//div[@name='options']" position="inside">
-          <span class="d-inline-block">
-            <field name="is_sample"/>
-            <label for="is_sample"/>
-          </span>
-          <span class="d-inline-block">
-            <field name="casting_required"/>
-            <label for="casting_required"/>
-          </span>
-          <span class="d-inline-block">
-            <field name="is_product_based_calculation"/>
-            <label for="is_product_based_calculation"/>
-          </span>
-        </xpath>
-        <xpath expr="//field[@name='name']" position="attributes">
-          <attribute name="placeholder">e.g. Fly Ash</attribute>
-        </xpath>
-        <xpath expr="//div[@name='options']" position="after">
-          <group style="width:50%">
-            <field name="lab_name"/>
-          </group>
-        </xpath>
-        <xpath expr="//page[@name='general_information']" position="after">
-          <page string="LERM" attrs="{'invisible': [('is_sample','=',False)]}">
-            
-            <group style="width:50%">
-              <field name="discipline"/>
-              <field name="test_format_no"/>
-              <field name="volume"/>
-            </group>
-            <group style="width:50%">
-              <field name="group" domain="[('id', 'in', group_ids)]"/>
-              <field name="department_ids"/>
-              <field name="group_ids" invisible='1'/>
-              <field name="parameter_master_ids" invisible='1'/>
-              <field name="data_sheet_format_no"/>
-            </group>
-            <field name='parameter_table1' options="{'no_create': True}" domain="[('id', 'in', parameter_master_ids)]" />
-            
-            <!-- <field name="parameter_table" context="{'default_discipline':discipline}" nolabel="1">
-                 <tree>
-                 <field name="parameter" />
-                 <field name="discipline" />
-                 </tree>
-                 
-                 </field> -->
-             </page>
-          <page string="Report Column Title" attrs="{'invisible': [('is_sample','=',False)]}">
-            <group>
-              <group style="width:33%">
-                <field name="test_parameter"/>
-                <field name="results"/>
-              </group>
-              <group style="width:33%">
-                <field name="method_reference"/>
-                <field name="result_remark"/>
-              </group>
-              <group style="width:33%">
-                <field name="specifications"/>
-                <field name="unit"/>
-              </group>
-             
-            </group>
-          </page>
-          <page string="Product Based" attrs="{'invisible': [('is_product_based_calculation','=',False)]}">
+
+  <record id="product_template_form_inherited" model="ir.ui.view">
+    <field name="name">product.template.form</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_only_form_view" />
+    <field name="arch" type="xml">
+      
+      <!-- Inline Fields in Options -->
+      <xpath expr="//div[@name='options']" position="inside">
+        <span class="d-inline-block">
+          <field name="is_sample"/>
+          <label for="is_sample"/>
           
-          <button name="action_open_product_grade_wizard" string="Add Grade Line" type="object" class="oe_highlight"/>
-            
-            <field name='product_based_calculation'  options="{'no_create': True}">
-              <tree>
-                <field name="grade_ids" invisible="1" />
-                <field name="grade"/>
-                <field name="ir_model"/>
-                <field name="main_report_template"/>
-                <field name="datasheet_report_template"/>
-              </tree>
-            </field>
-          </page>
-          <page name="grade_page" string="Grade" attrs="{'invisible': [('is_sample','=',False)]}">
-            <field name="grade_table">
-              <tree editable="bottom">
-                <field name="grade"/>
-              </tree>
-            </field>
-          </page>
-          <page name="size_page" string="Size" attrs="{'invisible': [('is_sample','=',False)]}">
-            <field name="size_table">
-              <tree editable="bottom">
-                <field name="size"/>
-              </tree>
-            </field>
-          </page>
-          <page name="sop_page" string="SOP" attrs="{'invisible': [('is_sample','=',False)]}">
-              <field name="sop" widget="html"/>
-          </page>
-          <!-- <page name="qty_page" string="Qty" attrs="{'invisible': [('is_sample','=',False)]}">
-               <field name="qty_table">
-               <tree editable="bottom">
-               <field name="qty"/>
-               </tree>
-               </field>
-               </page> -->
-          <page string="Alias" attrs="{'invisible': [('is_sample','=',False)]}">
-               <field name='alias_table'>
-                  <tree editable="bottom">
-                    <field name="customer"/>
-                    <field name="product_alias"/>
-                  </tree>
-               </field>
-          </page>
-          <page string="Datasheet" attrs="{'invisible': [('is_sample','=',False)]}">
-            <field name='datasheet_table'>
-              <tree edidable="bottom">
-                <field name="datasheet"/>
-              </tree>
-              <form>
-                <group>
-                  <field name="datasheet"/>
-                </group>
-              </form>
-            </field>
-          </page>
-        </xpath>
-      </field>
+        </span>
+        <span class="d-inline-block">
+          <field name="casting_required"/>
+          <label for="casting_required"/>
+        </span>
+        <span class="d-inline-block">
+          <field name="is_product_based_calculation"/>
+          <label for="is_product_based_calculation"/>
+        </span>
+      </xpath>
+
+      <!-- Placeholder on Name Field -->
+      <xpath expr="//field[@name='name']" position="attributes">
+        <attribute name="placeholder">e.g. Fly Ash</attribute>
+      </xpath>
+
+      <!-- Lab Name Field -->
+      <xpath expr="//div[@name='options']" position="after">
+        <group style="width:50%">
+          <field name="lab_name"/>
+        </group>
+      </xpath>
+
+      <!-- LERM Tabs -->
+      <xpath expr="//page[@name='general_information']" position="after">
+
+        <field name="show_lerm_tabs" invisible="1"/>
+        <field name="show_product_based_tab" invisible="1"/>
+
+        <!-- LERM Page -->
+        <page string="LERM"
+              invisible="show_lerm_tabs == False">
+            <group style="width:100%">
+              <group style="width:50%">
+                <field name="discipline"/>
+                <field name="test_format_no"/>
+                <field name="volume"/>
+              </group>
+              
+              <group style="width:50%">
+                <field name="group" widget="many2many_tags" domain="[('id', 'in', group_ids)]"/>
+                <field name="department_ids"/>
+                <field name="group_ids" invisible="1"/>
+                <field name="parameter_master_ids" invisible="1"/>
+                <field name="data_sheet_format_no"/>
+              </group>
+            </group>
+          <field name="parameter_table1"
+                 options="{'no_create': True}"
+                 domain="[('id', 'in', parameter_master_ids)]"/>
+        </page>
+
+        <!-- Report Column Title -->
+        <page string="Report Column Title"
+              invisible="show_lerm_tabs == False">
+          <group>
+            <group style="width:33%">
+              <field name="source_sample"/>
+              <field name="test_parameter"/>
+              <field name="results"/>
+            </group>
+            <group style="width:33%">
+              <field name="test_method_adopted"/>
+              <field name="method_reference"/>
+              <field name="result_remark"/>
+            </group>
+            <group style="width:33%">
+              <field name="specifications"/>
+              <field name="unit"/>
+            </group>
+          </group>
+        </page>
+
+        <!-- Product Based -->
+        <page string="Product Based"
+              invisible="show_product_based_tab == False">
+          <button name="action_open_product_grade_wizard"
+                  string="Add Grade Line"
+                  type="object"
+                  class="oe_highlight"/>
+          <field name="product_based_calculation" options="{'no_create': True}">
+            <tree>
+              <field name="grade_ids" invisible="1"/>
+              <field name="grade"/>
+              <field name="ir_model"/>
+              <field name="main_report_template"/>
+              <field name="datasheet_report_template"/>
+            </tree>
+          </field>
+        </page>
+
+        <!-- Grade -->
+        <page name="grade_page" string="Grade"
+              invisible="show_lerm_tabs == False">
+          <field name="grade_table">
+            <tree editable="bottom">
+              <field name="grade"/>
+            </tree>
+          </field>
+        </page>
+
+        <!-- Size -->
+        <page name="size_page" string="Size"
+              invisible="show_lerm_tabs == False">
+          <field name="size_table">
+            <tree editable="bottom">
+              <field name="size"/>
+            </tree>
+          </field>
+        </page>
+
+        <!-- SOP -->
+        <page name="sop_page" string="SOP"
+              invisible="show_lerm_tabs == False">
+          <field name="sop" widget="html"/>
+        </page>
+
+        <!-- Alias -->
+        <page string="Alias"
+              invisible="show_lerm_tabs == False">
+          <field name="alias_table">
+            <tree editable="bottom">
+              <field name="customer"/>
+              <field name="product_alias"/>
+            </tree>
+          </field>
+        </page>
+
+        
+
+      </xpath>
+    </field>
+  </record>
+
+
+  <record id="product_template_tree_inherited" model="ir.ui.view">
+    <field name="name">product.template.lerm.tree.inherit</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_tree_view"/>
+    <field name="arch" type="xml">
+      <xpath expr="//tree/field[@name='name']" position="after">
+        <field name="lab_name" optional="show"/>
+        <field name="discipline" optional="show"/>
+        <field name="group" widget="many2many_tags" optional="show"/>
+      </xpath>
+        
+    </field>
     </record>
 
   <record id="lerm_product_template_tree_inherited" model="ir.ui.view">
@@ -206,15 +237,15 @@
                
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="after">
                     <field name="pricelist_id" invisible="1"/>
-                    <field name="report_no1" widget="many2many_tags" options="{'no_create': True}"   />
+                    <field name="report_no1"  widget="many2many_tags" options="{'no_create': True}"   />
                
                 </xpath>
                 
               
                 
             </field>
-        </record>
-     -->
+        </record> -->
+    
     
   </data>
   

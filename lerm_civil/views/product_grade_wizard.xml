@@ -7,8 +7,8 @@
             <field name="arch" type="xml">
                 <form string="Add Grade Line">
                     <group>
-                        <field name="product_id"  attrs="{'invisible': [('product_template_visible', '=', False)]}"/>
-                        <field name="product_product"  attrs="{'invisible': [('product_product_visible', '=', False)]}"/>
+                        <field name="product_id"  invisible="product_template_visible == False"/>
+                        <field name="product_product"  invisible="product_product_visible == False"/>
 
                         <field name="grade" domain="[('id', 'in', grade_ids)]"/>
                         <field name="grade_ids" invisible="1"/>

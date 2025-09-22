@@ -3,7 +3,7 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2019-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Copyright (C) 2023-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
 #    Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
 #
 #    You can modify it under the terms of the GNU LESSER
@@ -19,9 +19,7 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-
 import time
-
 from odoo import api, models, _
 from odoo.exceptions import UserError
 
@@ -41,7 +39,12 @@ class ReportPartnerLedger(models.AbstractModel):
                   tuple(data['computed']['account_ids'])] + \
                  query_get_data[2]
         query = """
-            SELECT "account_move_line".id, "account_move_line".date, j.code, acc.code as a_code, acc.name as a_name, "account_move_line".ref, m.name as move_name, "account_move_line".name, "account_move_line".debit, "account_move_line".credit, "account_move_line".amount_currency,"account_move_line".currency_id, c.symbol AS currency_code
+            SELECT "account_move_line".id, "account_move_line".date, j.code,
+             acc.code as a_code, acc.name as a_name, "account_move_line".ref, 
+             m.name as move_name, "account_move_line".name, 
+             "account_move_line".debit, "account_move_line".credit, 
+             "account_move_line".amount_currency,
+             "account_move_line".currency_id, c.symbol AS currency_code
             FROM """ + query_get_data[0] + """
             LEFT JOIN account_journal j ON ("account_move_line".journal_id = j.id)
             LEFT JOIN account_account acc ON ("account_move_line".account_id = acc.id)
@@ -79,7 +82,6 @@ class ReportPartnerLedger(models.AbstractModel):
             data['form'].get('used_context', {}))._query_get()
         reconcile_clause = "" if data['form'][
             'reconciled'] else ' AND "account_move_line".full_reconcile_id IS NULL '
-
         params = [partner.id, tuple(data['computed']['move_state']),
                   tuple(data['computed']['account_ids'])] + \
                  query_get_data[2]
@@ -102,9 +104,7 @@ class ReportPartnerLedger(models.AbstractModel):
         if not data.get('form'):
             raise UserError(
                 _("Form content is missing, this report cannot be printed."))
-
         data['computed'] = {}
-
         obj_partner = self.env['res.partner']
         query_get_data = self.env['account.move.line'].with_context(
             data['form'].get('used_context', {}))._query_get()
@@ -113,16 +113,15 @@ class ReportPartnerLedger(models.AbstractModel):
             data['computed']['move_state'] = ['posted']
         result_selection = data['form'].get('result_selection', 'customer')
         if result_selection == 'supplier':
-            data['computed']['ACCOUNT_TYPE'] = ['payable']
+            data['computed']['ACCOUNT_TYPE'] = ['liability_payable']
         elif result_selection == 'customer':
-            data['computed']['ACCOUNT_TYPE'] = ['receivable']
+            data['computed']['ACCOUNT_TYPE'] = ['asset_receivable']
         else:
-            data['computed']['ACCOUNT_TYPE'] = ['payable', 'receivable']
-
+            data['computed']['ACCOUNT_TYPE'] = ['liability_payable', 'asset_receivable']
         self.env.cr.execute("""
             SELECT a.id
             FROM account_account a
-            WHERE a.internal_type IN %s
+            WHERE a.account_type IN %s
             AND NOT a.deprecated""",
                             (tuple(data['computed']['ACCOUNT_TYPE']),))
         data['computed']['account_ids'] = [a for (a,) in

@@ -14,8 +14,8 @@ from scipy.optimize import minimize_scalar
 
 
 class GgbsDataSheet(models.AbstractModel):
-    _name = 'report.ggbs.ggbs_datasheet1'
-    _description = 'GGBS DataSheet 1'
+    _name = 'report.ggbs.ggbs_datasheet'
+    _description = 'GGBS DataSheet '
     
     @api.model
     def _get_report_values(self, docids, data):
@@ -46,8 +46,8 @@ class GgbsDataSheet(models.AbstractModel):
 
 
 class GgbsReport(models.AbstractModel):
-    _name = 'report.ggbs.lerm_ggbs_report1'
-    _description = 'GGBS Report 1'
+    _name = 'report.ggbs.lerm_ggbs_report'
+    _description = 'GGBS Report '
     
     
     @api.model

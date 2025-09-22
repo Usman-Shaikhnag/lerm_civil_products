@@ -3,15 +3,19 @@
     <data>
 
         <record id="mechanical_pever_block1" model="ir.ui.view">
-        <field name="name">mechanical.paver.block1.form</field>
-        <field name="model">mechanical.paver.block1</field>
+        <field name="name">mechanical.paver.block.form</field>
+        <field name="model">mechanical.paver.block</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false">
                 <sheet>
-                   <group >
+                   <group style="white-space: nowrap; width:70%;">
                         <h1>
                             <field name="name_paver" readonly="1" nolabel="1"/>
                         </h1>
+                    </group>
+                    <group >
+                       <field name="grade"/>
+                       <field name="size_id" invisible="1"/>
                     </group>
                     <group>
                         <field name="srf_id" invisible="1"/>
@@ -19,553 +23,334 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group>
-                      <field name="sample_parameters">
-                        <tree>
-                          <field name="parameter_name"/>
-                          <field name="test_method"/>
-                        </tree>
-                      </field>
-                    </group>
-                   
-                    
-                    <!-- <group >
-                            
-                            <field name="tests" widget="many2many_tags"/>
-                    </group> -->
-                    <group attrs="{'invisible': [('paver_visible', '=', False)]}">
+                   <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                     <group invisible = "paver_visible == False"  style="white-space: nowrap; width:70%;text-align: center">
                         <h1>
                             <field name="paver_name" readonly="1" nolabel="1"/>
                             <field name="paver_visible" invisible="1"/>
                         </h1>
                     </group>
+
+                     <group invisible = "paver_visible == False" >
+                    <field name="thickness_child_lines" mode="tree"  invisible="1">
+                            <tree editable="bottom" class="custom_table_borders">
+                              
+                                <field name="thickness1"/>
+                                  <field name="Correction_factore"/>
+                               
+                               
+                            </tree>
+                    </field>
                    
-                     <group attrs="{'invisible': [('paver_visible', '=', False)]}">
-                        <label for="mean_of_lenght1" string="Mean of failure Length in mm (l)" />
-                        <div class="address_format " >
-                          <group colspan="18"  class="oe_inline">
-                            <label for="mean_of_lenght1" string="Sample 1" />
-                            <field  name="mean_of_lenght1"  colspan="12"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="mean_of_lenght2" string="Sample 2" />
-                            <field  name="mean_of_lenght2"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_of_lenght3" string="Sample 3" />
-                            <field  name="mean_of_lenght3"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_of_lenght4" string="Sample 4" />
-                            <field  name="mean_of_lenght4"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_of_lenght5" string="Sample 5" />
-                            <field  name="mean_of_lenght5"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_of_lenght6" string="Sample 6" />
-                            <field  name="mean_of_lenght6"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_of_lenght7" string="Sample 7" />
-                            <field  name="mean_of_lenght7"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_of_lenght8" string="Sample 8" />
-                            <field  name="mean_of_lenght8"  colspan="12"  nolabel="1"/>
-                          </group>
-
-                        </div>
                     </group>
-                     <group attrs="{'invisible': [('paver_visible', '=', False)]}">
-                        <label for="mean_thickness1" string="Mean of failure Thickness in mm (t)" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="mean_thickness1" string=" Sample 1" />
-                            <field  name="mean_thickness1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="mean_thickness2" string="Sample 2" />
-                            <field  name="mean_thickness2"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_thickness3" string=" Sample 3" />
-                            <field  name="mean_thickness3"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_thickness4" string="Sample 4" />
-                            <field  name="mean_thickness4"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_thickness5" string="Sample 5" />
-                            <field  name="mean_thickness5"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_thickness6" string="Sample 6" />
-                            <field  name="mean_thickness6"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_thickness7" string="Sample 7" />
-                            <field  name="mean_thickness7"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="mean_thickness8" string="Sample 8" />
-                            <field  name="mean_thickness8"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                     <group attrs="{'invisible': [('paver_visible', '=', False)]}">
-                        <label for="area1" string="Area of Failure = l x t in mm2" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="area1" string="Sample 1" />
-                            <field  name="area1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="area2" string="Sample 2" />
-                            <field  name="area2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="area3" string="Sample 3" />
-                            <field  name="area3"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="area4" string="Sample 4" />
-                            <field  name="area4"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="area5" string="Sample 5" />
-                            <field  name="area5"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="area6" string="Sample 6" />
-                            <field  name="area6"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="area7" string="Sample 7" />
-                            <field  name="area7"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="area8" string="Sample 8" />
-                            <field  name="area8"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-
-                     <group attrs="{'invisible': [('paver_visible', '=', False)]}">
-                        <label for="failure_load1" string="Failure Load in N" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="failure_load1" string="Sample 1" />
-                            <field  name="failure_load1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="failure_load2" string="Sample 2" />
-                            <field  name="failure_load2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="failure_load3" string="Sample 3" />
-                            <field  name="failure_load3"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="failure_load4" string="Sample 4" />
-                            <field  name="failure_load4"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="failure_load5" string="Sample 5" />
-                            <field  name="failure_load5"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="failure_load6" string="Sample 6" />
-                            <field  name="failure_load6"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="failure_load7" string="Sample 7" />
-                            <field  name="failure_load7"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="failure_load8" string="Sample 8" />
-                            <field  name="failure_load8"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                    <group attrs="{'invisible': [('paver_visible', '=', False)]}">
-                        <label for="st_correction_factor1" string="Correction Factor" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="st_correction_factor1" string="Sample 1" />
-                            <field  name="st_correction_factor1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="st_correction_factor2" string="Sample 2" />
-                            <field  name="st_correction_factor2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="st_correction_factor3" string="Sample 3" />
-                            <field  name="st_correction_factor3"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="st_correction_factor4" string="Sample 4" />
-                            <field  name="st_correction_factor4"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="st_correction_factor5" string="Sample 5" />
-                            <field  name="st_correction_factor5"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="st_correction_factor6" string="Sample 6" />
-                            <field  name="st_correction_factor6"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="st_correction_factor7" string="Sample 7" />
-                            <field  name="st_correction_factor7"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="st_correction_factor8" string="Sample 8" />
-                            <field  name="st_correction_factor8"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                     <group attrs="{'invisible': [('paver_visible', '=', False)]}">
-                        <label for="split_tensile1" string="Tensile Splitting Strength in N/mm2" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="split_tensile1" string="Sample 1" />
-                            <field  name="split_tensile1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="split_tensile2" string="Sample 2" />
-                            <field  name="split_tensile2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="split_tensile3" string="Sample 3" />
-                            <field  name="split_tensile3"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="split_tensile4" string="Sample 4" />
-                            <field  name="split_tensile4"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="split_tensile5" string="Sample 5" />
-                            <field  name="split_tensile5"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="split_tensile6" string="Sample 6" />
-                            <field  name="split_tensile6"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="split_tensile7" string="Sample 7" />
-                            <field  name="split_tensile7"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="split_tensile8" string="Sample 8" />
-                            <field  name="split_tensile8"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-
-                    <group attrs="{'invisible': [('paver_visible', '=', False)]}">
-                     <field name="average"/>
-                    </group>
+                   
+                   
                     
 
-                     <group attrs="{'invisible': [('commpressive_visible', '=', False)]}">
-                        <h1>
-                            <field name="commpressive_name" readonly="1" nolabel="1"/>
-                            <field name="commpressive_visible" invisible="1"/>
-                        </h1>
-                    </group>
+
+
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "paver_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="thickness2">   Thickness of Paver Block:</label></td>
+                                <td><field name="thickness2"/> <span> mm</span></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+
+
+                
+
                    
-                     <group attrs="{'invisible': [('commpressive_visible', '=', False)]}">
-                        <label for="areas1" string="Area of Paver Block, mm2" />
-                        <div class="address_format " >
-                          <group colspan="18"  class="oe_inline">
-                            <label for="areas1" string="Sample 1" />
-                            <field  name="areas1"  colspan="12"  nolabel="1"/>
-                          </group>
-                          <group colspan="18" class="oe_inline"  >
-                            <label for="areas2" string="Sample 2" />
-                            <field  name="areas2"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="18" class="oe_inline"  >
-                            <label for="areas3" string="Sample 3" />
-                            <field  name="areas3"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="18" class="oe_inline"  >
-                            <label for="areas4" string="Sample 4" />
-                            <field  name="areas4"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="18" class="oe_inline"  >
-                            <label for="areas5" string="Sample 5" />
-                            <field  name="areas5"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="18" class="oe_inline"  >
-                            <label for="areas6" string="Sample 6" />
-                            <field  name="areas6"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="18" class="oe_inline"  >
-                            <label for="areas7" string="Sample 7" />
-                            <field  name="areas7"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="18" class="oe_inline"  >
-                            <label for="areas8" string="Sample 8" />
-                            <field  name="areas8"  colspan="12"  nolabel="1"/>
-                          </group>
 
-                        </div>
-                    </group>
-                     <group attrs="{'invisible': [('commpressive_visible', '=', False)]}">
-                        <label for="crushing_load1" string="Crushing Load, KN" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="crushing_load1" string=" Sample 1" />
-                            <field  name="crushing_load1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="crushing_load2" string="Sample 2" />
-                            <field  name="crushing_load2"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="crushing_load3" string=" Sample 3" />
-                            <field  name="crushing_load3"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="crushing_load4" string="Sample 4" />
-                            <field  name="crushing_load4"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="crushing_load5" string="Sample 5" />
-                            <field  name="crushing_load5"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="crushing_load6" string="Sample 6" />
-                            <field  name="crushing_load6"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="crushing_load7" string="Sample 7" />
-                            <field  name="crushing_load7"  colspan="3"  nolabel="1"/>
-                          </group>
-                           <group colspan="1" class="oe_inline"  >
-                            <label for="crushing_load8" string="Sample 8" />
-                            <field  name="crushing_load8"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                     <group attrs="{'invisible': [('commpressive_visible', '=', False)]}">
-                        <label for="compressive1" string="Compressive Strength, N/mm²" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="compressive1" string="Sample 1" />
-                            <field  name="compressive1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="compressive2" string="Sample 2" />
-                            <field  name="compressive2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="compressive3" string="Sample 3" />
-                            <field  name="compressive3"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="compressive4" string="Sample 4" />
-                            <field  name="compressive4"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="compressive5" string="Sample 5" />
-                            <field  name="compressive5"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="compressive6" string="Sample 6" />
-                            <field  name="compressive6"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="compressive7" string="Sample 7" />
-                            <field  name="compressive7"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="compressive8" string="Sample 8" />
-                            <field  name="compressive8"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
+                    
+                        <!-- Left Table -->
+                        <div class="d-flex gap-2">
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <thead>
+                                        <tr>
+                                            <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                                Parameter Name
+                                            </th>
+                                            <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                                Result
+                                            </th>
+                                            <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
+                                                Unit
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                                <label for="mass_specimen"/>
+                                            </td>
+                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                                <field name="mass_specimen" nolabel="1"/>
+                                            </td>
+                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                                N
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                                <label for="mass_size"/>
+                                            </td>
+                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                                <field name="mass_size" nolabel="1"/>
+                                            </td>
+                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                                N
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; color: black; padding: 8px 10px;">
+                                                <label for="area_paver"/>
+                                            </td>
+                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                                <field name="area_paver" nolabel="1"/>
+                                            </td>
+                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
+                                                mm²
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                       
 
-                     <group attrs="{'invisible': [('commpressive_visible', '=', False)]}">
-                        <label for="correction_factor1" string="Correction Factor" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="correction_factor1" string="Sample 1" />
-                            <field  name="correction_factor1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correction_factor2" string="Sample 2" />
-                            <field  name="correction_factor2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correction_factor3" string="Sample 3" />
-                            <field  name="correction_factor3"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correction_factor4" string="Sample 4" />
-                            <field  name="correction_factor4"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correction_factor5" string="Sample 5" />
-                            <field  name="correction_factor5"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correction_factor6" string="Sample 6" />
-                            <field  name="correction_factor6"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correction_factor7" string="Sample 7" />
-                            <field  name="correction_factor7"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correction_factor8" string="Sample 8" />
-                            <field  name="correction_factor8"  colspan="3"  nolabel="1"/>
-                          </group>
+                        <!-- Right Table -->
+                            <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  style="width: 100%; border-collapse: collapse;" invisible="paver_visible == False">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center; border: 1px solid black;">Gms</th>
+                                        <th style="text-align: center; border: 1px solid black;">N</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align: center; border: 1px solid black;">
+                                            <field name="gms1" nolabel="1"/>
+                                        </td>
+                                        <td style="text-align: center; border: 1px solid black;">
+                                            <field name="n1" nolabel="1"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; border: 1px solid black;">
+                                            <field name="gms2" nolabel="1"/>
+                                        </td>
+                                        <td style="text-align: center; border: 1px solid black;">
+                                            <field name="n2" nolabel="1"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    </group>
-                     <group attrs="{'invisible': [('commpressive_visible', '=', False)]}">
-                        <label for="correct_compressive1" string="Corrected Compressive Strength,  N/mm²" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="correct_compressive1" string="Sample 1" />
-                            <field  name="correct_compressive1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correct_compressive2" string="Sample 2" />
-                            <field  name="correct_compressive2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correct_compressive3" string="Sample 3" />
-                            <field  name="correct_compressive3"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correct_compressive4" string="Sample 4" />
-                            <field  name="correct_compressive4"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correct_compressive5" string="Sample 5" />
-                            <field  name="correct_compressive5"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correct_compressive6" string="Sample 6" />
-                            <field  name="correct_compressive6"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correct_compressive7" string="Sample 7" />
-                            <field  name="correct_compressive7"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="correct_compressive8" string="Sample 8" />
-                            <field  name="correct_compressive8"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
 
-                    <group attrs="{'invisible': [('commpressive_visible', '=', False)]}">
-                     <field name="average1"/>
-                    </group>
 
-                      <group attrs="{'invisible': [('water_absorption_visible', '=', False)]}">
+                    
+
+
+
+                    
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "paver_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="area_paver_conformity">NABL</label></td>
+                                <td><field name="area_paver_conformity"
+                                            decoration-success="area_paver_conformity == 'pass'"
+                                            decoration-danger="area_paver_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="area_paver_nabl">NABL</label></td>
+                                <td><field name="area_paver_nabl"
+                                            decoration-success="area_paver_nabl == 'pass'"
+                                            decoration-danger="area_paver_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <group invisible = "water_absorption_visible == False"  style="white-space: nowrap; width:70%;">
                         <h1>
                             <field name="water_absorption_name" readonly="1" nolabel="1"/>
                             <field name="water_absorption_visible" invisible="1"/>
                         </h1>
                     </group>
+
+
+                  
+
+
+                            <div class="custom_table_borders" style="width: 100%;"  invisible="water_absorption_visible == False">
+                                <field name="water_absorption_child_lines" mode="tree" nolabel="1">
+                                    <tree editable="bottom" class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
+                                        <field name="serial_no" />
+                                        <field name="sample_identification"/>
+                                        <field name="dry_wt_w1" />
+                                        <field name="wet_w2" />
+                                        <field name="water_absorption"/>
+                                    </tree>
+                                </field>
+                            </div>
+
+                     <!-- <group invisible = "water_absorption_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
+                     
+                        <field name="avg_water_absorption" readonly="1"/>
+                        
+                  
+                    </group> -->
+
+                    
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_water_absorption">Avg. Water Absorption</label></td>
+                                <td><field name="avg_water_absorption"/> <span> %</span></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
                    
-                     <group attrs="{'invisible': [('water_absorption_visible', '=', False)]}">
-                        <label for="initial_wt1" string="Initial Weight (wt. after 24 hour emersion in water)" />
-                        <div class="address_format " >
-                          <group colspan="18"  class="oe_inline">
-                            <label for="initial_wt1" string="Sample 1" />
-                            <field  name="initial_wt1"  colspan="12"  nolabel="1"/>
-                          </group>
-                          <group colspan="18" class="oe_inline"  >
-                            <label for="initial_wt2" string="Sample 2" />
-                            <field  name="initial_wt2"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="18" class="oe_inline"  >
-                            <label for="initial_wt3" string="Sample 3" />
-                            <field  name="initial_wt3"  colspan="12"  nolabel="1"/>
-                          </group>
-                           
-                        </div>
-                    </group>
-
-                    <group attrs="{'invisible': [('water_absorption_visible', '=', False)]}">
-                        <label for="dry_wt1" string="Dry Weight (after 24 hour in oven)" />
-                        <div class="address_format " >
-                          <group colspan="18"  class="oe_inline">
-                            <label for="dry_wt1" string="" />
-                            <field  name="dry_wt1"  colspan="12"  nolabel="1"/>
-                          </group>
-                          <group colspan="18" class="oe_inline"  >
-                            <label for="dry_wt2" string="" />
-                            <field  name="dry_wt2"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="18" class="oe_inline"  >
-                            <label for="dry_wt3" string="" />
-                            <field  name="dry_wt3"  colspan="12"  nolabel="1"/>
-                          </group>
-                           
-                        </div>
-                    </group>
-
-                     <group attrs="{'invisible': [('water_absorption_visible', '=', False)]}">
-                        <label for="water_absorption1" string="Water Absorption %" />
-                        <div class="address_format " >
-                          <group colspan="18"  class="oe_inline">
-                            <label for="water_absorption1" string="" />
-                            <field  name="water_absorption1"  colspan="12"  nolabel="1"/>
-                          </group>
-                          <group colspan="18" class="oe_inline"  >
-                            <label for="water_absorption2" string="" />
-                            <field  name="water_absorption2"  colspan="12"  nolabel="1"/>
-                          </group>
-                           <group colspan="18" class="oe_inline"  >
-                            <label for="water_absorption3" string="" />
-                            <field  name="water_absorption3"  colspan="12"  nolabel="1"/>
-                          </group>
-                           
-                        </div>
-                    </group>
-
-                    <group attrs="{'invisible': [('water_absorption_visible', '=', False)]}">
-                       <field name="average_water"/>
-                    </group>
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_water_absorption_conformity">NABL</label></td>
+                                <td><field name="avg_water_absorption_conformity"
+                                            decoration-success="avg_water_absorption_conformity == 'pass'"
+                                            decoration-danger="avg_water_absorption_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_water_absorption_nabl">NABL</label></td>
+                                <td><field name="avg_water_absorption_nabl"
+                                            decoration-success="avg_water_absorption_nabl == 'pass'"
+                                            decoration-danger="avg_water_absorption_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
-                    <group attrs="{'invisible': [('dimension_visible', '=', False)]}">
+                    <group invisible = "commpressive_visible == False"  style="white-space: nowrap; width:70%;">
                         <h1>
-                            <field name="dimension_name1" readonly="1" nolabel="1"/>
-                            <field name="dimension_visible" invisible="1"/>
+                            <field name="commpressive_name" readonly="1" nolabel="1"/>
+                            <field name="commpressive_visible" invisible="1"/>
                         </h1>
                     </group>
 
-                    <group attrs="{'invisible': [('dimension_visible', '=', False)]}">
-                        <field name="child_lines" nolabel="1" >
-                            <tree editable="bottom">
-                                <field name='sr_no'/>
-                                <field name='length'/>
-                                <field name='width'/>
-                                <field name='hight'/>
-                                
-                            </tree>
-                           
-                         </field> 
-                           
-                       
-                    </group>
 
-                    <group attrs="{'invisible': [('dimension_visible', '=', False)]}">
-                        <field name='average_length' col="4"/>
-                        <field name='average_width'  col="4"/> 
-                        <field name='average_hight' col="4"/>
-                        <field name='plan_area' col="4"/>
-                    </group>
+                    <div invisible = "commpressive_visible == False"   style="width: 100%;">
+                    <field name="commpressive_child_lines"   mode="tree" nolabel="1" >
+                            <tree editable="bottom" class="custom_table_borders" style="width: 100%;">
+                                <field name="serial_no"/>
+                                <field name="sample_identification_com"/>
+                                <field name="wt_block" />
+                                <field name="correction_factor"/>
+                                <field name="load"/>
+                                <field name="compressive_strenght"/>
+                                <field name="thickness"/>
+                               
+                            </tree>
+                    </field>
+                   
+                    </div>
+                  
+                       
+
+
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "commpressive_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_commpressive">Avg. Compressive Strength</label></td>
+                                <td><field name="avg_commpressive"/> <span> N/mm²</span></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_thickness">  Avg Thickness</label></td>
+                                <td><field name="avg_thickness"/>   mm</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+                        
+
+                      
+
+
+                  
+                   
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "commpressive_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_commpressive_conformity">NABL</label></td>
+                                <td><field name="avg_commpressive_conformity"
+                                            decoration-success="avg_commpressive_conformity == 'pass'"
+                                            decoration-danger="avg_commpressive_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_commpressive_nabl">NABL</label></td>
+                                <td><field name="avg_commpressive_nabl"
+                                            decoration-success="avg_commpressive_nabl == 'pass'"
+                                            decoration-danger="avg_commpressive_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "commpressive_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_thickness_conformity">NABL</label></td>
+                                <td><field name="avg_thickness_conformity"
+                                            decoration-success="avg_thickness_conformity == 'pass'"
+                                            decoration-danger="avg_thickness_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_thickness_nabl">NABL</label></td>
+                                <td><field name="avg_thickness_nabl"
+                                            decoration-success="avg_thickness_nabl == 'pass'"
+                                            decoration-danger="avg_thickness_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+
+
+
                      <button
                             type="object"
                             class="oe_highlight" 

@@ -5,7 +5,7 @@
 {
     'name': 'Paver Block',
     'version': '1.2',
-    'category': 'Sales/Sales',
+    'category': 'Lerm Civil',
     'summary': 'Sales internal machinery',
     'description': """
 This module contains all the common features of Sales Management and eCommerce.
@@ -16,7 +16,7 @@ This module contains all the common features of Sales Management and eCommerce.
                  'views/paver_block.xml',
                  'reports/paver_datasheet.xml'
     ],
-  
+   
     'installable': True,
     'auto_install': False,
    

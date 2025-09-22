@@ -14,8 +14,8 @@ from scipy.optimize import minimize_scalar
 
 
 class ConcreteCubeCompresiveDatasheet1(models.AbstractModel):
-    _name = 'report.concrete_cube.compresive_concrete_cube_datasheet1'
-    _description = 'Compresive strength Cube DataSheet 1'
+    _name = 'report.concrete_cube.compresive_concrete_cube_datasheet'
+    _description = 'Compresive strength Cube DataSheet'
     
     @api.model
     def _get_report_values(self, docids, data):
@@ -47,8 +47,8 @@ class ConcreteCubeCompresiveDatasheet1(models.AbstractModel):
 
 
 class ConcreteCubeCompresiveReport(models.AbstractModel):
-    _name = 'report.concrete_cube.compresive_concrete_cube_report1'
-    _description = 'Cube Compresive Report 1'
+    _name = 'report.concrete_cube.compresive_concrete_cube_report'
+    _description = 'Cube Compresive Report'
     
     @api.model
     def _get_report_values(self, docids, data):

@@ -18,4 +18,6 @@ class ElnReport(models.AbstractModel):
         return {
             'report_data': report_data
         }
+        
+
 

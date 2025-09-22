@@ -73,7 +73,7 @@
     </record>
 
     <record id="test_method_action" model="ir.actions.act_window">
-        <field name="name">TestMethod</field>
+        <field name="name">Test Method</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">lerm_civil.test_method</field>
         <field name="view_mode">tree,kanban,form</field>
@@ -178,7 +178,7 @@
     <record id="lerm_product_action" model="ir.actions.act_window">
             <field name="name">Product</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">product.product</field>
+            <field name="res_model">product.template</field>
             <field name="view_mode">tree,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">Product</p>
@@ -207,37 +207,81 @@
 
     </record>
 
-     <!-- <record id="lerm_sample_reports_action" model="ir.actions.act_window">
+     <record id="lerm_sample_reports_action" model="ir.actions.act_window">
             <field name="name">Sample Reports</field>
             <field name="type">ir.actions.act_window</field>    
             <field name="res_model">sample.reports.wizard</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="sample_reports_wizard"/>
+            <!-- <field name="view_id" ref="sample_reports_wizard"/> -->
             <field name="target">new</field>
 
             
-    </record> -->
+    </record>
 
-    <!-- <record id="lerm_ulr_reports_action" model="ir.actions.act_window">
+    <record id="lerm_ulr_reports_action" model="ir.actions.act_window">
             <field name="name">ULR Reports</field>
             <field name="type">ir.actions.act_window</field>    
             <field name="res_model">ulr.reports.wizard</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="ulr_reports_wizard"/>
+            <!-- <field name="view_id" ref="ulr_reports_wizard"/> -->
             <field name="target">new</field>
-    </record> -->
+    </record>
 
-    <!-- <record id="lerm_sample_print_reports_action" model="ir.actions.act_window">
+    <record id="lerm_sample_print_reports_action" model="ir.actions.act_window">
             <field name="name">Sample Print Reports</field>
             <field name="type">ir.actions.act_window</field>    
             <field name="res_model">print.reports.wizard</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="print_reports_wizard"/>
+            <!-- <field name="view_id" ref="print_reports_wizard"/> -->
             <field name="target">new</field>
-    </record> -->
+    </record>
+
+    <record id="action_sample_register" model="ir.actions.act_window">
+        <field name="name">Sample Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.sample.register</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Sample Register</p>
+        </field>
+    </record>
+
+    <record id="customer_sample_request_action" model="ir.actions.act_window">
+        <field name="name">Customer Sample Requests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">customer.sample.requests</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Customer Sample Requests</p>
+        </field>
+    </record>
+
+    <record id="lerm_portal_master_action" model="ir.actions.act_window">
+        <field name="name">Portal User Master</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">portal.user.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Portal User Master</p>
+        </field>
+    </record>
+
+    <record id="action_partner_document" model="ir.actions.act_window">
+      <field name="name">Share Documents</field>
+      <field name="res_model">partner.document</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    
+    
+
+    <!-- <menuitem id="menu_partner_document_root"
+            name="Share Documents"
+            parent="documents.menu_root"
+            sequence="20"
+            action="action_partner_document"/> -->
+    
     
     <menuitem id="lerm_root"
-        groups="lerm_civil.lerm_master,lerm_civil.kes_hod_access_group,lerm_civil.kes_technician_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_access_srf,lerm_civil.kes_verified_by,lerm_civil.kes_checked_by,lerm_civil.kes_report"
         name="LERM CIVIL"
         sequence="10" 
         web_icon="lerm_civil,static/description/icon.png"/>
@@ -247,60 +291,42 @@
         sequence="10" 
         web_icon="lerm_civil,static/description/icon.png"/> -->
 
+    <menuitem id="register_menu"
+        name="Register"
+        parent="lerm_root"
+        sequence="50"  />
   
 
     <menuitem id="enviroment_register_menu"
         name="Environment Register"
-        parent="lerm_root"
-        groups="kes_admin_access_group"
+        parent="register_menu"
         action="action_enviroment_register_tree"
-        sequence="20"  />
+        sequence="10"  />
+    
+    <menuitem id="sample_register_menu"
+        name="Sample Register"
+        parent="register_menu"
+        action="action_sample_register"
+        sequence="11"  />
 
     
 
 
     <menuitem id="lerm_menu"
         name="Master Data"
-        groups="kes_admin_access_group,lerm_civil.lerm_master"
         parent="lerm_root"
         sequence="20"  />
 
     <menuitem id="reporting_menu"
         name="Reports"
         parent="lerm_root" 
-        groups="lerm_civil.kes_admin_access_group,lerm_civil.kes_report"
         sequence="25"  />
 
      
 
-    <!-- <menuitem id="lerm_sample_reporting"
-        name="Customer Reports"
-        parent="reporting_menu"
-        action="lerm_sample_reports_action"
-        groups="lerm_civil.kes_admin_access_group,lerm_civil.kes_report"
-        sequence="10" /> -->
-
-
-    <!-- <menuitem id="lerm_ulr_reporting"
-        name="ULR"
-        parent="reporting_menu"
-        action="lerm_ulr_reports_action"
-        groups="lerm_civil.kes_admin_access_group,lerm_civil.kes_report"
-        sequence="10" /> -->
-
-    <!-- <menuitem id="lerm_print_reports_reporting"
-        name="Sample"
-        parent="reporting_menu"
-        action="lerm_sample_print_reports_action"
-        groups="lerm_civil.kes_admin_access_group"
-        sequence="11" /> -->
-
-    <!-- <menuitem id="menu_sample_graph" name="Sample Graph" parent="lerm_transaction_data" action="action_lerm_srf_sample_graph" sequence="10"/> -->
-
-
+    
     <menuitem id="lerm_product_item_param_master"
         parent="lerm_menu"
-        groups="lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.lerm_master"
         name="Product Master"
         action="lerm_product_action"
         sequence="11" />
@@ -310,33 +336,34 @@
         name="Discipline Master"
         parent="lerm_menu"
         action="lerm_discipline_action"
-        groups="kes_admin_access_group,lerm_civil.lerm_master"
         sequence="12" />
 
     <menuitem id="size_master"
         name="Size Master"
         parent="lerm_menu"
         action="size_master_action"
-        groups="kes_admin_access_group,lerm_civil.lerm_master"
         sequence="13" />
 
     <menuitem id="lab_master"
         name="Lab Master"
         parent="lerm_menu"
         action="lab_master_action"
-        groups="kes_admin_access_group"
         sequence="14" />
+
+    <menuitem id="lerm_portal_user_master"
+        parent="lerm_menu"
+        name="Portal User Master"
+        action="lerm_portal_master_action"
+        sequence="15" />
 
     <menuitem id="lerm_test_method"
         name="Test Method"
         parent="lerm_menu"
-        groups="kes_admin_access_group,lerm_civil.lerm_master"
         action="test_method_action"
         sequence="14" />
 
     <menuitem id="lerm_transaction_data"
         name="Lab Operations"
-        groups="lerm_civil.kes_technician_access_group,lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_access_srf,lerm_civil.kes_verified_by,lerm_civil.kes_checked_by"
         parent="lerm_root"
         sequence="10" />
 
@@ -347,54 +374,54 @@
 
     <menuitem id="lerm_sample"
         name="Sample"
-        groups="lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_hod_access_group,lerm_civil.kes_quality_manager"
         parent="lerm_transaction_data"
         action="test_sample_action"
         sequence="15" />
 
     <menuitem id="lerm_rejected_sample"
         name="Rejected Sample"
-        groups="lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_quality_manager"
         parent="lerm_transaction_data"
         action="rejected_sample_action"
         sequence="17" />
 
     <menuitem id="lerm_eln"
-        name="Laboratory Notebook"
-        groups="lerm_civil.kes_technician_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_hod_access_group,lerm_civil.kes_checked_by,lerm_civil.kes_quality_manager"
+        name="Lab Notebook"
         parent="lerm_transaction_data"
         action="test_eln_action"
         sequence="16" />
-    
+
+
+    <menuitem id="customer_sample_request"
+        name="Customer Sample Request"
+        parent="lerm_transaction_data"
+        action="customer_sample_request_action"
+        sequence="20" />
+
+
     <menuitem id="sample_status"
-        groups="lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_checked_by,lerm_civil.kes_quality_manager"
         name="Operational Status"
         parent="lerm_root"
         sequence="15" />
     
     <menuitem id="sample_status_pending_allotment"
         name="Allotment Pending"
-        groups="kes_admin_access_group,kes_checked_by,kes_quality_manager"
         parent="sample_status"
         action="test_sample_pending_allotment_action"
         sequence="20" />
     
     <menuitem id="sample_status_allotted"
-        groups="lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_quality_manager"
         name="Alloted"
         parent="sample_status"
         action="test_sample_pending_allotted_action"
         sequence="21" />
 
     <menuitem id="sample_status_pending_verification"
-        groups="lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_checked_by,lerm_civil.kes_quality_manager"
         name="Pending Verification"
         parent="sample_status"
         action="sample_pending_verification_action"
         sequence="22" />
     
     <menuitem id="sample_status_pending_approval"
-        groups="lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_verified_by,lerm_civil.kes_quality_manager"
         name="Pending Approval"
         parent="sample_status"
         action="sample_pending_approval_action"
@@ -402,7 +429,6 @@
 
 
     <menuitem id="sample_status_in_report"
-        groups="lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_verified_by,lerm_civil.kes_quality_manager"
         name="In-Report"
         parent="sample_status"
         action="test_sample_pending_in_report_action"
@@ -410,7 +436,35 @@
 
    
 
-    
+    <menuitem id="reporting_menu"
+        name="Reports"
+        parent="lerm_root" 
+        groups="lerm_civil.kes_admin_access_group,lerm_civil.kes_report"
+        sequence="25"  />
+
+     
+
+    <menuitem id="lerm_sample_reporting"
+        name="Customer Reports"
+        parent="reporting_menu"
+        action="lerm_sample_reports_action"
+        groups="lerm_civil.kes_admin_access_group,lerm_civil.kes_report"
+        sequence="10" />
+
+
+    <menuitem id="lerm_ulr_reporting"
+        name="ULR"
+        parent="reporting_menu"
+        action="lerm_ulr_reports_action"
+        groups="lerm_civil.kes_admin_access_group,lerm_civil.kes_report"
+        sequence="10" />
+
+    <menuitem id="lerm_print_reports_reporting"
+        name="Sample"
+        parent="reporting_menu"
+        action="lerm_sample_print_reports_action"
+        groups="lerm_civil.kes_admin_access_group"
+        sequence="11" />
     
 
    

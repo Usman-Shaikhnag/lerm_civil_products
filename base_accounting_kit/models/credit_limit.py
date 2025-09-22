@@ -3,7 +3,7 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2019-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Copyright (C) 2023-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
 #    Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
 #
 #    You can modify it under the terms of the GNU LESSER
@@ -19,13 +19,14 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-
-from odoo import models, fields, api
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools.translate import _
 
 
 class ResPartner(models.Model):
+    """The Class inherits the res.partner model for adding the new
+    fields and functions"""
     _inherit = 'res.partner'
 
     warning_stage = fields.Float(string='Warning Amount',
@@ -46,6 +47,8 @@ class ResPartner(models.Model):
                                          compute="_compute_enable_credit_limit")
 
     def compute_due_amount(self):
+        """Compute function to compute the due amount with the
+         credit and debit amount"""
         for rec in self:
             if not rec.id:
                 continue
@@ -61,6 +64,8 @@ class ResPartner(models.Model):
 
     @api.constrains('warning_stage', 'blocking_stage')
     def constrains_warning_stage(self):
+        """Constrains functionality used to indicate or raise an
+        UserError"""
         if self.active_limit and self.enable_credit_limit:
             if self.warning_stage >= self.blocking_stage:
                 if self.blocking_stage > 0:
@@ -69,11 +74,14 @@ class ResPartner(models.Model):
 
 
 class SaleOrder(models.Model):
+    """The Class inherits the sale.order model for adding the new
+        fields and functions"""
     _inherit = 'sale.order'
 
-    has_due = fields.Boolean()
-    is_warning = fields.Boolean()
-    due_amount = fields.Float(related='partner_id.due_amount')
+    has_due = fields.Boolean(string='Has due')
+    is_warning = fields.Boolean(string='Is warning')
+    due_amount = fields.Float(string='Due Amount',
+                              related='partner_id.due_amount')
 
     def _action_confirm(self):
         """To check the selected customers due amount is exceed than
@@ -108,11 +116,14 @@ class SaleOrder(models.Model):
 
 
 class AccountMove(models.Model):
+    """The Class inherits the account.move model for adding the new
+            fields and functions"""
     _inherit = 'account.move'
 
-    has_due = fields.Boolean()
-    is_warning = fields.Boolean()
-    due_amount = fields.Float(related='partner_id.due_amount')
+    has_due = fields.Boolean(string='Has due')
+    is_warning = fields.Boolean(string='Is warning')
+    due_amount = fields.Float(string="Due Amount",
+                              related='partner_id.due_amount')
 
     def action_post(self):
         """To check the selected customers due amount is exceed than

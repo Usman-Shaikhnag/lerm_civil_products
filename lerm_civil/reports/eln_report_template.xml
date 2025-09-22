@@ -24,14 +24,12 @@
 				</t>
 				
 			</div>
-			<div class="row backgroundimage" style="opacity:0.2; font-size:100px; width:85%; text-align:center;top:500px; right:100px; position: fixed; z-index:-99;">
-				
-				<img src="/lerm_civil/static/src/img/watermark.png" style="max-height:370px;"/>
+			<div style="position: fixed;top: 450px;left:250px ;transform: translate(-50%, -50%);z-index: -99;opacity: 0.1;pointer-events: none;">
+				<!-- <img src="/lerm_civil/static/src/img/watermark.png" style="max-height:370px;"/> -->
+				<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="max-width: 400px;" />
 			</div>
-			<!-- <div class="container_eln row" style="position: fixed; z-index:99;margin-bottom:20px;">
-				
 			
-					<table style="border:none;">
+					<!-- <table style="border:none;">
 						<tr cols="12" style="border:none;">
 							<td colspan="1" style="border:none;"><span></span>
 							</td>
@@ -48,23 +46,19 @@
 							<td colspan="1" style="border:none;"><span><b>Test Report</b></span>
 							</td>
 						</tr>
-					</table>
-			</div> -->
-			<div style="width:100%;text-align:center;">
+					</table> -->
+			
+			<!-- <div style="height: 110px;"></div> -->
+			<div style="width:100%;text-align:center; margin-bottom:10px; padding-top: 10px;">
 				<div style="font-size:1rem"><b>Test Report</b></div>
 			</div>
-			<div class="container_eln row" style="margin-right:4px;margin-left:4px;">
+			<div class="container_eln row p-0" style="margin-right:4px;margin-left:4px;">
 
 					<table>
 						<tr>
 							<td colspan="3">Test Report no :
 							</td>
-							<!-- <td t-if="(o.sample_id.scope = 'non_nabl'" colspan="3">
-								<span t-field="o.kes_no"/><span>N</span>
-							</td>
-							<td t-if="(nabl)" colspan="3">
-								<span t-field="o.kes_no"/>
-							</td> -->
+							
 							<t t-if="fromEln">
 								<td t-if="(eln.sample_id.scope == 'non_nabl')" colspan="3">
 									<span t-field="o.kes_no"/><span>N</span>
@@ -81,12 +75,7 @@
 									<span t-field="o.kes_no"/>
 								</td>
 							</t>
-							<!-- <td t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" colspan="3">
-								<span t-field="o.kes_no"/><span>N</span>
-							</td>
-							<td t-if="(eln.sample_id.scope == 'nabl' or nabl) and not fromEln" colspan="3">
-								<span t-field="o.kes_no"/>
-							</td> -->
+							
 							<td colspan="3">Report Issue Date :
 							</td>
 							<td colspan="3">
@@ -100,15 +89,6 @@
 						</tr>
 					</table>
 			</div>
-			<!-- <t t-call="lerm_civil.custom_watermark"/>  -->
-
-			<!-- <div class="first-page">
-				<t t-call="lerm_civil.custom_watermark"/> 
-			</div>
-			<div class="not-first-page">
-				<t t-call="lerm_civil.custom_watermark"/> 
-			</div> -->
-
 			
         </div>
 		
@@ -119,48 +99,20 @@
         </div>
 		
 		<div t-attf-class="footer o_standard_footer">
-            <div class="text-center" style="border-top: 1px solid black;">
-                <ul class="list-inline mb4 footerQR">
-					<!-- <div style="border-top: 1px solid black;">
-						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 50px; height: 50px;"/>
-					</div> -->
-					<div>
-						<div class="footertext">
-							<t t-if="eln.sample_id.lab_location">
-								<t t-esc="eln.sample_id.lab_location.street"/><t t-esc="eln.sample_id.lab_location.street2"/>
-							</t>
-							<t t-else="">
-								316, The Great Eastern Galleria, Plot-20, Sector-4 Nerul, Navimumbai-400703
-							</t>
-						</div>
-						<div>
-							<!-- <div>
-								<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 70px; height: 70px;"/>
-							</div> -->
-							<div class="footerQR">
-								<div style="padding-right : 20px">
-									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
-								</div>
-								
-								<div style="margin-left:90px">
-									<div class="footertext">
-										<span>
-											Email : henry.dsa@esehat.org <span style="padding-left:10px">Website :  www.lerm.in</span> 
-										</span>
-									</div>
-									<div class="footertext">
-										CIN No.: U45209MH2017PTC291168
-									</div>
-									
-									
-								</div>
-								<div  style="padding-left : 80px;">
-									<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 60px; height: 55px;"/>
-								</div>
-							</div>
-						</div>
+            <div class="text-center" style="padding-top:45px; border-top: 1px solid black">					
+				<div class="footerQR" style="">
+					<div style="">
+						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
 					</div>
-                </ul>
+					
+					<div style="">
+						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="height: 65px;" />
+					</div>
+					<div style="">
+						<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 65px; height: 60px"/>
+					</div>
+
+				</div>
                 <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
                     Page: <span class="page"/> / <span class="topage"/>
                 </div>
@@ -174,16 +126,7 @@
         <div t-attf-class="header article" t-att-style="report_header_style">
 			<div class="row">
 				<div class="col-12"  style="display: flex; justify-content: space-between;">
-					<!-- <div style="text-align:left;">	
-						FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.material.data_sheet_format_no.name"/>
-					</div>
-					<div style="text-align:middle; margin-top:6px">	
-						Job No. <![CDATA[&nbsp;]]> <span t-esc="eln.kes_no"/>
-					</div>
-					<div style="text-align:right; margin-top:6px;">	
-						End Date. <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
-					</div> -->
-				
+					
 					<span style="text-align:left; display: flex; justify-content: space-between; margin-right: 3rem;" >
 						FORMAT No. <span t-esc="eln.material.data_sheet_format_no.name"/>
 					</span>
@@ -197,7 +140,7 @@
 					</span>
 				
 					<div style="text-align:center;margin-top:12px">	
-						Esehat Meditech Ltd.
+						SRI SAINATH LABORATORY.
 					</div>
 					<div style="text-align:center;">
 						TEST DATA SHEET
@@ -239,19 +182,14 @@
 
 	<template id="eln_report_template">
 		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 
-			 	<!-- <t t-call="lerm_civil.custom_watermark"/> -->
-
-				<!-- <div style="text-align:center;margin-top:10px">
-					<p style="font-size:15px"><b>Test Report</b></p>
-				</div> -->
-				<div class="container_eln">
+			 	
+				<div class="container_eln" style="padding-top:70px;">
 
 					<div t-foreach="eln" t-as="o">
 					
-						<table style="margin-top:20px;">
+						<!-- <table style="margin-top:20px;">
 							<tr>
 								<td colspan="12">#Customer Party Name :
 									<![CDATA[&nbsp;]]>
@@ -266,17 +204,7 @@
 								</td>
 							</tr>
 							<tr>
-								<!-- <td colspan="12">Project / Site Address :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-											,
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
+								
 								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.name_work"/>
 								</td>
@@ -352,6 +280,63 @@
 									<span t-field="o.material.lab_name"/>
 								</td>
 							</tr>
+						</table> -->
+						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
+							<tbody>
+								<tr>
+									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+								
+								</tr>
+								
+								<tr>
+									<td><strong>Client's Reference</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Name of Work</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Date of Testing</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.start_date" style="margin-right:10px;"/> to 
+										<span t-field="o.end_date" style="margin-left:10px;"/>
+									</td>
+								</tr>
+
+								<tr>
+									<td><strong>Type of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Grade of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
+								</tr>
+
+								<!-- Source of Sample (only if value exists) -->
+								<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<!-- Test method adopted (only if value exists) -->
+								<tr t-if="o.material.test_method_adopted">
+									<td style="font-weight: bold;">Test method adopted:</td>
+									<td><span t-field="o.material.test_method_adopted"/></td>
+								</tr>
+							</tbody>
 						</table>
 					</div>
 					
@@ -563,14 +548,14 @@
 							</table>
 							<div style="margin-top:10px; page-break-inside: avoid; text-align: center;">
 								<div class="signatureContainer girdgird" style="display: inline-block;">
-									<div>
+									<!-- <div>
 										<div t-if="stamp and stamp == '4-in_report'">
 											<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
 										</div>
 										<div style="padding-top:5px">
 											Format No. <span t-esc="eln.material.test_format_no"/>
 										</div>
-									</div>
+									</div> -->
 								</div>
 							</div>
 							<div style="page-break-before: always;"></div>
@@ -853,14 +838,14 @@
 							</table>
 							<div style="margin-top:10px; page-break-inside: avoid; text-align: center;">
 								<div class="signatureContainer girdgird" style="display: inline-block;">
-									<div>
+									<!-- <div>
 										<div t-if="stamp and stamp == '4-in_report'">
 											<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
 										</div>
 										<div style="padding-top:5px">
 											Format No. <span t-esc="eln.material.test_format_no"/>
 										</div>
-									</div>
+									</div> -->
 								</div>
 							</div>
 							<div style="page-break-before: always;"></div>
@@ -969,7 +954,7 @@
 
 
 					<div style="page-break-inside: avoid;">
-						<div style="margin-top:10px" class="noteContainer">
+						<!-- <div style="margin-top:10px" class="noteContainer">
 							<div>
 								<b>Note :-</b>
 							</div>
@@ -994,7 +979,27 @@
 										<span t-esc="eln.remarks"/>
 									</li>
 								</ul>
-							</div>
+							</div> -->
+							<div>
+							<table class="table table-bordered">
+							<tr>
+								<td style="padding: 5px; font-style: italic; font-size: 12px;">
+									<b>Note:-</b>
+									&#160;&#160;(i) The results relate only to the items tested 
+									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+									&#160;&#160;(iii) Any corrections invalidate the test reports 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+								
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</td>
+							</tr>
+						</table>
+
 						</div>
 						
 						<div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
@@ -1024,14 +1029,14 @@
 									</b>
 								</div>
 							</div>
-							<div>
+							<!-- <div>
 								<div t-if="stamp and stamp == '4-in_report'">
 									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
 								</div>
 								<div style="padding-top:5px">
 									Format No. <span t-esc="eln.material.test_format_no"/>
 								</div>
-							</div>
+							</div> -->
 							<div>
 								<div>
 									<b>

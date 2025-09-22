@@ -10,7 +10,7 @@ class SRFEditWizard(models.TransientModel):
     
     
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")
-    kes_number = fields.Char(string="KES No")
+    kes_number = fields.Char(string="SSL NO")
     # job_no = fields.Char(string="Job NO.")
     srf_date = fields.Date(string="SRF Date",default=lambda self: self._get_default_date())
     job_date = fields.Date(string="JOB Date")
@@ -20,8 +20,8 @@ class SRFEditWizard(models.TransientModel):
     client = fields.Char("Client")
     # site_address = fields.Many2one('res.partner',string="Site Address")
     site_address = fields.Char(string="Site Address",compute="_compute_site_address")
-    name_work = fields.Many2one('res.partner.project',string="Name of Work")
-    name_works = fields.Many2many('res.partner.project',string="Name of Work",compute="_compute_name_work")
+    # name_work = fields.Many2one('res.partner.project',string="Name of Work")
+    # name_works = fields.Many2many('res.partner.project',string="Name of Work",compute="_compute_name_work")
 
     client_refrence = fields.Char(string="Client Reference Letter")
     samples = fields.One2many('lerm.srf.sample' , 'srf_id' , string="Samples",tracking=True)
@@ -45,7 +45,7 @@ class SRFEditWizard(models.TransientModel):
             'contractor': self.contractor.id,
             'billing_customer': self.billing_customer.id,
             'client_refrence': self.client_refrence,
-            'name_work': self.name_work.id,
+            # 'name_work': self.name_work.id,
             'attachment':self.attachment,
             'attachment_name':self.attachment_name
         })
@@ -81,21 +81,21 @@ class SRFEditWizard(models.TransientModel):
                 record.site_address = ''
     
     
-    @api.depends('customer')
-    def _compute_name_work(self):
-        for record in self:
-            # customer = record.customer
-            if(record.customer):
-                child_ids = record.env['res.partner'].sudo().search([('child_ids', 'in',record.customer.id)])
-                if child_ids:
-                    partner_record = record.env['res.partner'].browse(child_ids.id)
-                else:
-                    partner_record = record.env['res.partner'].browse(record.customer.id)
-                name_work = partner_record.projects
-                print("Name Work", name_work)
-                record.name_works = name_work
-            else:
-                record.name_works = None
+    # @api.depends('customer')
+    # def _compute_name_work(self):
+    #     for record in self:
+    #         # customer = record.customer
+    #         if(record.customer):
+    #             child_ids = record.env['res.partner'].sudo().search([('child_ids', 'in',record.customer.id)])
+    #             if child_ids:
+    #                 partner_record = record.env['res.partner'].browse(child_ids.id)
+    #             else:
+    #                 partner_record = record.env['res.partner'].browse(record.customer.id)
+    #             name_work = partner_record.projects
+    #             print("Name Work", name_work)
+    #             record.name_works = name_work
+    #         else:
+    #             record.name_works = None
 
     # @api.depends('customer')
     # def _compute_name_work(self):

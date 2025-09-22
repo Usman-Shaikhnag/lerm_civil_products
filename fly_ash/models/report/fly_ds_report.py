@@ -15,8 +15,8 @@ from scipy.optimize import minimize_scalar
 
 
 class FlyashDatasheet(models.AbstractModel):
-    _name = 'report.fly_ash.flyash_datasheet1'
-    _description = 'Fly Ash DataSheet 1'
+    _name = 'report.fly_ash.flyash_datasheet'
+    _description = 'Fly Ash DataSheet'
     
     @api.model
     def _get_report_values(self, docids, data):
@@ -25,6 +25,8 @@ class FlyashDatasheet(models.AbstractModel):
         # else:
         #     eln = self.env['lerm.eln'].sudo().browse(docids) 
         # model_id = eln.model_id
+
+    
         if data['fromsample'] == True:
             if 'active_id' in data['context']:
                 eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
@@ -35,6 +37,8 @@ class FlyashDatasheet(models.AbstractModel):
                 eln = self.env['lerm.eln'].sudo().search([('id','=',data['eln'])])
             else:
                 eln = self.env['lerm.eln'].sudo().browse(data['eln_id'])
+
+                
         # differnt location for product based
         # model_name = eln.material.product_based_calculation[0].ir_model.name 
         model_id = eln.model_id
@@ -52,8 +56,8 @@ class FlyashDatasheet(models.AbstractModel):
 
 
 class FlyashReport(models.AbstractModel):
-    _name = 'report.fly_ash.lerm_fly_report1'
-    _description = 'Fly Ash Report 1'
+    _name = 'report.fly_ash.lerm_fly_report'
+    _description = 'Fly Ash Report'
     
     @api.model
     def _get_report_values(self, docids, data):
@@ -80,6 +84,9 @@ class FlyashReport(models.AbstractModel):
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
         # qr.add_data(eln.kes_no)
         url = self.env['ir.config_parameter'].sudo().search([('key','=','web.base.url')]).value
+        nabl = data.get('nabl')
+        # import wdb;wdb.set_trace()
+
         if nabl:
             url = url +'/download_report/nabl/'+ str(eln.id)
         else:
@@ -107,5 +114,6 @@ class FlyashReport(models.AbstractModel):
             'eln': eln,
             'flyash': flyash_data,
             'qrcode': qr_code,
-            'fromEln':fromEln
+            'fromEln':fromEln,
+            'nabl':nabl
         }

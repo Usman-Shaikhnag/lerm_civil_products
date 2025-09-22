@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="flyash_datasheet1">
+<template id="flyash_datasheet">
 		<t t-call="web.html_container">
 			<t t-call="lerm_civil.mechanical_data_sheet_header">
-				<div style="text-align:center;font-size:18px">
+				<div style="text-align:center;font-size:20px">
 					Fly Ash
 				</div>
-				<div class="container_eln" style="margin-top:5px">
+				<div class="container_eln" style="margin-top:7px">
 				  <table style="margin-top:20px">
                         <tr cols="12">
 				        <td colspan="6">Job No :
@@ -1027,7 +1027,7 @@
 					</div>
 					
 						<!-- Fineness By Blaine Air Permeability Method -->
-						<div t-if="data.fineness_blaine_visible" style="margin-top:20px">
+						<div style="margin-top:20px">
 							<div style="text-align:center;font-size:18px">
 								Fineness By Blaine Air Permeability Method (m²/kg)
 							</div>
@@ -1341,7 +1341,7 @@
 
 
 
-    <template id="lerm_fly_report1">
+    <template id="lerm_fly_report">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
 
@@ -1471,6 +1471,16 @@
 									<span t-field="o.material.name"/>
 								</td>
 							</tr>
+							<!-- Source of Sample (only if value exists) -->
+								<tr t-if="o.material.source_sample">
+									<td colspan="12">Source of Sample: <![CDATA[&nbsp;]]><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<!-- Test method adopted (only if value exists) -->
+								<tr t-if="o.material.test_method_adopted">
+									<td colspan="12">Test method adopted: <![CDATA[&nbsp;]]>
+									<span t-field="o.material.test_method_adopted"/></td>
+								</tr>
 							
 						</table>
 					</div>
@@ -1489,20 +1499,23 @@
 
 
 								<th style="text-align: center;">
-									<span style="font-weight: bold;">
+								<span t-esc="eln.material.test_parameter"/>
+									<!-- <span style="font-weight: bold;">
 										Name of Parameter
-									</span>
+									</span> -->
 								</th>
 
 								<th style="text-align: center;">
-									<span style="font-weight: bold;">
+								<span t-esc="eln.material.result_remark"/>
+									<!-- <span style="font-weight: bold;">
 										Test Result
-									</span>
+									</span> -->
 								</th>
 								<th style="text-align: center;">
-									<span style="font-weight: bold;">
+								<span t-esc="eln.material.unit"/>
+									<!-- <span style="font-weight: bold;">
 										Unit
-									</span>
+									</span> -->
 								</th>
 
 								<th style="max-width: 250px;text-align: center;">
@@ -2774,13 +2787,13 @@
 								</div>
 							</div>
 							<div>
-								<div >
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-								Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
 							<div>
 								<div>
 									<b>

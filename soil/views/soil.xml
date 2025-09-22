@@ -2,593 +2,617 @@
 <odoo>
     <data>
 
-        <record id="mechanical_flyasch_soil_normalconsistency1" model="ir.ui.view">
-        <field name="name">mechanical.soil1.form</field>
-        <field name="model">mechanical.soil1</field>
+        <record id="mechanical_soil_ssl" model="ir.ui.view">
+        <field name="name">mechanical.soil.form</field>
+        <field name="model">mechanical.soil</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false">
                 <sheet>
-                   <group >
-                        <h1>
-                            <field name="name_soil" readonly="1" nolabel="1"/>
-                        </h1>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    <group>
+                       <field name="grade"/>
                     </group>
-                     <group>
-                        <field name='grade'/>
-                    </group>
+
                     <group>
                         <field name="srf_id" invisible="1"/>
-                        <field name="sample_id" readonly="1"/>
+                        <field name="sample_id" readonly="1" />
                         <field name="eln_ref" readonly="1"/>
+                        <field name="size_id"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group>
-                      <field name="sample_parameters">
-                        <tree>
-                          <field name="parameter_name"/>
-                          <field name="test_method"/>
-                        </tree>
-                      </field>
-                    </group>
 
-                     <group >
-                            
-                            <!-- <field name="tests" widget="many2many_tags"/> -->
-                    </group>
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
 
+                    
 
                     <!-- Sieve Analysis -->
-                    <group attrs="{'invisible': [('sieve_visible', '=', False)]}">
-                        <h1>
+                    <div invisible = "sieve_visible == False">
+                        <h1 class="text-center">
                             <field name="sieve_name" readonly="1" nolabel="1"/>
                             <field name="sieve_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
                     
-                    <!-- <group attrs="{'invisible': [('sieve_visible', '=', False)]}"> -->
-                    <!-- <group>
-                      <field name="job_no_sieve"/>
-                      <field name="material_sieve"/>
-                    </group>
-                    <group>
-                      <field name="start_date_sieve"/>
-                      <field name="end_date_sieve"/>
-                    </group>
-                    </group> -->
-                   
-                    <group attrs="{'invisible': [('sieve_visible', '=', False)]}">
-                  
-                      <field name="child_lines">
-                        <tree editable="bottom">
-                          <field name="serial_no"/>
-                          <field name="sieve_size"/>
-                           <field name="wt_retained"/>
-                          <field name="percent_retained"/>
-                          <field name="cumulative_retained"/>
-                          <field name="passing_percent"/>
+                    <field name="child_lines" invisible = "sieve_visible == False">
+                        <tree editable="bottom" class="custom_table_borders">
+                            <field name="serial_no"/>
+                            <field name="sieve_size"/>
+                            <field name="particle_size"/>
+                            <field name="wt_retained"/>
+                            <field name="percent_retained"/>
+                            <field name="cumulative_retained"/>
+                            <field name="passing_percent"/>
                         </tree>
-                      </field>
-                      <field name="total1"/>
-                      <group attrs="{'invisible': [('sieve_visible', '=', False)]}">
-                        <button string="Calculate Sieve Analysis" type="object" name="calculate" class="oe_highlight"/>
-                    </group>
-                      <!-- <! <field name="cumulative"/>> -->
-                      
-                    </group>
+                    </field>
+                  
+                    <div invisible="sieve_visible == False">
+                        <button type="object" name="calculate" class="btn btn-primary">
+                            <i class="fa fa-calculator mr-1"/> Calculate
+                        </button>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="total1">Total Weight</label></td>
+                                <td><field name="total1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="gravel">Gravel</label></td>
+                                <td><field name="gravel"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="sand">Sand</label></td>
+                                <td><field name="sand"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="silt_clay">Silt + Clay</label></td>
+                                <td><field name="silt_clay"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="total">Total</label></td>
+                                <td><field name="total"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    
+                    <div invisible = "sieve_visible == False" class="custom_table_borders text-center">
+                        <field name="graph_image_slive" widget="image" readonly="1"/>
+                    </div>
 
 
-                    <!-- Liquid Limit-->
-                     <group attrs="{'invisible': [('liquid_limit_visible', '=', False)]}">
-                        <h1>
+                     <!-- Liquid Limit-->
+                    <div invisible = "liquid_limit_visible == False">
+                        <h1 class="text-center">
                             <field name="liquid_limit_name" readonly="1" nolabel="1"/>
                             <field name="liquid_limit_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
                     
-                    <!-- <group attrs="{'invisible': [('liquid_limit_visible', '=', False)]}"> -->
-                    <!-- <group>
-                      <field name="job_no_liquid_limit"/>
-                      <field name="material_liquid_limit"/>
-                    </group>
-                    <group>
-                      <field name="start_date_liquid_limit"/>
-                      <field name="end_date_liquid_limit"/>
-                    </group>
-                    </group> -->
-                   
-                    <group attrs="{'invisible': [('liquid_limit_visible', '=', False)]}" >
-                  
-                      <field name="child_liness" style="width:77%">
-                       <tree editable="bottom" nolabel="1">
-                                <field name='container_no' string="Container No"/>
-                                <field name="blwo_no" string="No.of Blows"/>
-                                <field name='mass_of_wet' string="Mass of wet sample+container (M1) in gms"/>
-                                <field name='mass_of_dry' string="Mass of dry sample+container (M2) in gms"/>
-                                <field name='mass_of_container' string="Mass of container (M3) in gms"/>
-                                <field name='mass_of_moisture' string="Mass of Moisture (M1-M2) in gms"/>
-                                <field name='mass_of_dry_sample' string="Mass of dry sample (M2-M3) in gms"/>
-                                <field name='moisture' string="% Moisture"/>
-                                
+                 
+                    <div invisible = "liquid_limit_visible == False" >
+                        <field name="child_liness">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no' />
+                                <field name='sample_of_wet' />
+                                <field name='blwo_no1' />
+                                <field name="container_no1" />
+                                <field name='wt_of_con' />
+                                <field name='wet_sample_con' />
+                                <field name='dry_sample_con' />
+                                <field name='wt_water' />
+                                <field name='oven_dry_wt' />
+                                <field name='water_content' />                                
                             </tree>
-                      </field>
-                      <!-- <field name="total"/> -->
-                      <!-- <! <field name="cumulative"/>> -->
-                      
-                    </group>
+                        </field>
+                    </div>
 
-                    
-                    <group attrs="{'invisible': [('liquid_limit_visible', '=', False)]}">
-                     <field name="liquid_limit" style="width:50%"/>
-                      <field name="remarks_liquid_limit" style="width:50%"/>
-                     <field name="are_child_lines_filled" invisible="1"/>
-                        <button string="Calculate Liquid Limit" name="liquid_calculation" type="object" class="oe_highlight" 
-                                attrs="{'invisible': [('are_child_lines_filled', '=', False)]}" />
-                     <field name='liquid_limit_conformity' col="4"
-                                           decoration-success="liquid_limit_conformity == 'pass'" 
-                                           decoration-danger="liquid_limit_conformity == 'fail'" 
-                                           readonly="1"/>
-                     <field name='liquid_limit_nabl' col="4"/>
-                    </group>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not liquid_limit_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="liquid_limit">Liquid Limit</label></td>
+                                <td><field name="liquid_limit"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="liquid_limit_conformity"></label></td>
+                                <td><field  name="liquid_limit_conformity"
+                                            decoration-success="liquid_limit_conformity == 'pass'" 
+                                            decoration-danger="liquid_limit_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="liquid_limit_nabl"></label></td>
+                                <td><field name="liquid_limit_nabl"
+                                            decoration-success="liquid_limit_nabl == 'pass'" 
+                                            decoration-danger="liquid_limit_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div invisible = "liquid_limit_visible == False" class="custom_table_borders text-center">
+                        <field name="graph_image_liquid" widget="image" readonly="1"/>
+                    </div>
+
+
                     <!-- Plastic Limit -->
-                     <group attrs="{'invisible': [('plastic_limit_visible', '=', False)]}">
-                        <h1>
+                    <div invisible = "plastic_limit_visible == False">
+                        <h1 class="text-center">
                             <field name="plastic_limit_name" readonly="1" nolabel="1"/>
                             <field name="plastic_limit_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
                     
-                    <!-- <group attrs="{'invisible': [('plastic_limit_visible', '=', False)]}">
-                    <group>
-                      <field name="job_no_plastic_limit"/>
-                      <field name="material_plastic_limit"/>
-                    </group>
-                    <group>
-                      <field name="start_date_plastic_limit"/>
-                      <field name="end_date_plastic_limit"/>
-                    </group>
-                    </group> -->
-                    
-                    <group attrs="{'invisible': [('plastic_limit_visible', '=', False)]}">
-                  
-                      <field name="plastic_limit_table">
-                       <tree editable="bottom">
+
+                    <div invisible = "plastic_limit_visible == False">
+                        <field name="plastic_limit_table">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
                                 <field name='container_no'/>
-                                <field name='mass_of_wet'/>
-                                <field name='mass_of_dry'/>
-                                <field name='mass_of_container'/>
-                                <field name='mass_of_moisture'/>
-                                <field name='mass_of_dry_sample'/>
-                                <field name='moisture'/>
-                                
+                                <field name='wt_of_con'/>
+                                <field name='wt_of_con_wet'/>
+                                <field name='wt_of_con_dry'/>
+                                <field name='wt_of_water'/>
+                                <field name='wt_of_oven'/>
+                                <field name='water_content_pastic'/>
                             </tree>
-                      </field>
-                      <!-- <field name="total"/> -->
-                      <!-- <! <field name="cumulative"/>> -->
-                      
-                    </group>
-                    <group attrs="{'invisible': [('plastic_limit_visible', '=', False)]}" style="white-space: nowrap;">
-                     <field name="plastic_limit" style="width:50%" />
-                     <field name="plasticity_index" style="width:50%"/>
-                     <field name="remarks_plastic" style="width:50%"/>
-                     <field name='plasticity_index_conformity' col="4"
-                                           decoration-success="plasticity_index_conformity == 'pass'" 
-                                           decoration-danger="plasticity_index_conformity == 'fail'" 
-                                           readonly="1"/>
-                     <field name='plasticity_index_nabl' col="4"/>
-                    </group>
+                        </field>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not plastic_limit_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="plastic_limit">Average Plastic Limit</label></td>
+                                    <td><field name="plastic_limit"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="plastic_limit_conformity"></label></td>
+                                    <td><field  name="plastic_limit_conformity"
+                                                decoration-success="plastic_limit_conformity == 'pass'" 
+                                                decoration-danger="plastic_limit_conformity == 'fail'" 
+                                                readonly="1" /></td>
 
-                      <!-- Plasticity index  -->
-                <!-- <group attrs="{'invisible': [('plasticity_index_visible', '=', False)]}">
-                    <field name="plasticity_index1"/>
-                    <field name="remarks_plasticity_index1" style="width:30%"/>
-                    <field name="plasticity_index_visible" invisible="1"/>
-                </group>
-                 <group attrs="{'invisible': [('plasticity_index_visible', '=', False)]}">
-                       
-                        <field  name="plasticity_index_conformity1"
-                                        decoration-success="plasticity_index_conformity1 == 'pass'" 
-                                        decoration-danger="plasticity_index_conformity1 == 'fail'" 
-                                        readonly="1" />
-                        <field  name="plasticity_index_nabl1" />
-                         
-                    </group> -->
-                    <!-- FSI -->
-                    <group attrs="{'invisible': [('fsi_visible', '=', False)]}">
-                        <h1>
-                            <field name="fsi_name" readonly="1" nolabel="1"/>
-                            <field name="fsi_visible" invisible="1"/>
-                        </h1>
-                    </group>
-                    
-                    <!-- <group attrs="{'invisible': [('fsi_visible', '=', False)]}"> -->
-                    <!-- <group>
-                      <field name="job_no_fsi"/>
-                      <field name="material_fsi"/>
-                    </group>
-                    <group>
-                      <field name="start_date_fsi"/>
-                      <field name="end_date_fsi"/>
-                    </group>
-                    </group> -->
-                    <group attrs="{'invisible': [('fsi_visible', '=', False)]}">
-                      <field name="fsi_table">
-                        <tree editable="bottom">
-                          <field name="wt_sample"/>
-                          <field name="dry_sample"/>
-                          <field name="v_sample_kerosin"/>
-                          <field name="v_sample_water"/>
-                          <field name="increase_volume"/>
-                          <field name="fsi"/>
-                        </tree>
-                      </field>
-                      
-                    </group>
-                    <group attrs="{'invisible': [('fsi_visible', '=', False)]}">
-                     <field name="max_fsi"/>
-                     <field name='max_fsi_conformity' col="4"
-                                           decoration-success="max_fsi_conformity == 'pass'" 
-                                           decoration-danger="max_fsi_conformity == 'fail'" 
-                                           readonly="1"/>
-                     <field name='max_fsi_nabl' col="4"/>
-                    </group>
-                     <!-- Light Compaction OMC -->
-                     <group attrs="{'invisible': [('light_omc_visible', '=', False)]}">
-                        <h1>
-                            <field name="light_omc_name1" readonly="1" nolabel="1"/>
-                            <field name="light_omc_visible" invisible="1"/>
-                        </h1>
-                    </group>
-                    
-                 
-                    <group attrs="{'invisible': [('light_omc_visible', '=', False)]}" style="white-space: nowrap;">
-                     <field name="wt_of_modul_light_omc"/>
-                     <field name="vl_of_modul_light_omc"/>
-                    </group>
-                    <group attrs="{'invisible': [('light_omc_visible', '=', False)]}">
-                  
-                      <field name="light_omc_table" style="width:80%">
-                        <tree editable="bottom">
-                          <field name="determination_no"/>
-                          <field name="wt_of_modul_compact"/>
-                           <field name="wt_of_compact"/>
-                          <field name="bulk_density"/>
-                          <field name="container_no"/>
-                          <field name="wt_of_container"/>
-                          <field name="wt_of_container_wet"/>
-                          <field name="wt_of_container_dry"/>
-                           <field name="wt_of_dry_sample"/>
-                          <field name="wt_of_moisture"/>
-                          <field name="moisture"/>
-                          <field name="dry_density"/>
-                        </tree>
-                      </field>
-                      <!-- <field name="total"/> -->
-                      <!-- <! <field name="cumulative"/>> -->
-                      
-                    </group>
+                                </tr>
+                                <tr>
+                                    <td><label for="plastic_limit_nabl"></label></td>
+                                    <td><field name="plastic_limit_nabl"
+                                                decoration-success="plastic_limit_nabl == 'pass'" 
+                                                decoration-danger="plastic_limit_nabl == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                     <group attrs="{'invisible': [('light_omc_visible', '=', False)]}">
-                      <field name="graph_image_light_omc" widget="image" readonly="1"/>
-                    </group>
-
-                     <group attrs="{'invisible': [('light_omc_visible', '=', False)]}">
-                     <field name='mmd_light_omc'/>
-                     <field name='omc_light_omc'/>
-                     <field name='light_omc_table_conformity' col="4"
-                                           decoration-success="light_omc_table_conformity == 'pass'" 
-                                           decoration-danger="light_omc_table_conformity == 'fail'" 
-                                           readonly="1"/>
-                     <field name='light_omc_table_nabl' col="4"/>
-                    </group>
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not plastic_limit_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="plasticity_index">Plasticity Index</label></td>
+                                    <td><field name="plasticity_index"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="plasticity_index_conformity"></label></td>
+                                    <td><field  name="plasticity_index_conformity"
+                                                decoration-success="plasticity_index_conformity == 'pass'" 
+                                                decoration-danger="plasticity_index_conformity == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="plasticity_index_nabl"></label></td>
+                                    <td><field name="plasticity_index_nabl"
+                                                decoration-success="plasticity_index_nabl == 'pass'" 
+                                                decoration-danger="plasticity_index_nabl == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
                      <!-- Heavy Compaction MDD -->
-                     <group attrs="{'invisible': [('heavy_visible', '=', False)]}">
-                        <h1>
+                    <div invisible = "heavy_visible == False">
+                        <h1 class="text-center">
                             <field name="heavy_name" readonly="1" nolabel="1"/>
                             <field name="heavy_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
                     
                    
-                    <group attrs="{'invisible': [('heavy_visible', '=', False)]}" style="white-space: nowrap;">
-                     <field name="wt_of_modul"/>
-                     <field name="vl_of_modul"/>
-                    </group>
-                    <group attrs="{'invisible': [('heavy_visible', '=', False)]}">
-                  
-                      <field name="heavy_table" style="width:80%">
-                        <tree editable="bottom">
-                          <field name="determination_no"/>
-                          <field name="wt_of_modul_compact"/>
-                           <field name="wt_of_compact"/>
-                          <field name="bulk_density"/>
-                          <field name="container_no"/>
-                          <field name="wt_of_container"/>
-                          <field name="wt_of_container_wet"/>
-                          <field name="wt_of_container_dry"/>
-                           <field name="wt_of_dry_sample"/>
-                          <field name="wt_of_moisture"/>
-                          <field name="moisture"/>
-                          <field name="dry_density"/>
-                        </tree>
-                      </field>
-                      <!-- <field name="total"/> -->
-                      <!-- <! <field name="cumulative"/>> -->
-                   
-                      
-                    </group>
-                    <group attrs="{'invisible': [('heavy_visible', '=', False)]}">
+                 
+                    <div invisible = "heavy_visible == False">
+                        <field name="heavy_table">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name="serial_no"/>
+                                <field name="amount_soil"/>
+                                <field name="amount_water"/>
+                                <field name="empty_wt_mould"/>
+                                <field name="wt_soil"/>
+                                <field name="wt_of_wet"/>
+                                <field name="volume_mould"/>
+                                <field name="bulk_density"/>
+                                <field name="con_no"/>
+                                <field name="empty_wt"/>
+                                <field name="wet_con_ovenwet"/>
+                                <field name="wet_con_ovendry"/>
+                                <field name="water_content"/>
+                                <field name="dry_density"/>
+                            </tree>
+                        </field>
+                    </div>
+
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not heavy_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="max_dry_density">Max Dry Density </label></td>
+                                <td><field name="max_dry_density"/><span> g/cc</span></td>
+                                <td><label for="omc">Optimum Moisture Content </label></td>
+                                <td><field name="omc"/><span> g/cc</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div invisible = "heavy_visible == False" class="custom_table_borders text-center">
                       <field name="graph_image_density" widget="image" readonly="1"/>
-                    </group>
+                    </div>
+                  
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not heavy_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="heavy_table_conformity"></label></td>
+                                <td><field  name="heavy_table_conformity"
+                                            decoration-success="heavy_table_conformity == 'pass'" 
+                                            decoration-danger="heavy_table_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="heavy_table_nabl"></label></td>
+                                <td><field name="heavy_table_nabl"
+                                            decoration-success="heavy_table_nabl == 'pass'" 
+                                            decoration-danger="heavy_table_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                     <group attrs="{'invisible': [('heavy_visible', '=', False)]}">
-                     <field name='mmd'/>
-                     <field name='omc'/>
-                     <field name='heavy_table_conformity' col="4"
-                                           decoration-success="heavy_table_conformity == 'pass'" 
-                                           decoration-danger="heavy_table_conformity == 'fail'" 
-                                           readonly="1"/>
-                     <field name='heavy_table_nabl' col="4"/>
-                    </group>
+                      <!-- Light Compaction OMC -->
+                    <div invisible = "omc_visible == False">
+                        <h1 class="text-center">
+                            <field name="omc_name" readonly="1" nolabel="1"/>
+                            <field name="omc_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+                   
+                 
+                    <div invisible = "omc_visible == False">
+                        <field name="omc_table" style="width:100%">
+                                <tree editable="bottom" class="custom_table_borders">
+                                    <field name="serial_no"/>
+                                    <field name="amount_soil1"/>
+                                    <field name="amount_water1"/>
+                                    <field name="empty_wt_mould1"/>
+                                    <field name="wt_soil1"/>
+                                    <field name="wt_of_wet1"/>
+                                    <field name="volume_mould1"/>
+                                    <field name="bulk_density1"/>
+                                    <field name="con_no1"/>
+                                    <field name="empty_wt1"/>
+                                    <field name="wet_con_ovenwet1"/>
+                                    <field name="wet_con_ovendry1"/>
+                                    <field name="water_content1"/>
+                                    <field name="dry_density1"/>
+                                </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not omc_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="max_dry_density1">Max Dry Density </label></td>
+                                <td><field name="max_dry_density1"/><span> g/cc</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not heavy_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="omc1">Optimum Moisture Content </label></td>
+                                <td><field name="omc1"/><span> g/cc</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
-                     
+
+                    <div invisible="omc_visible == False" class="custom_table_borders text-center">
+                        <field name="graph_image_density1" widget="image" readonly="1"/>
+                    </div>
+                  
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not omc_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="omc_table_conformity"></label></td>
+                                <td><field  name="omc_table_conformity"
+                                            decoration-success="omc_table_conformity == 'pass'" 
+                                            decoration-danger="omc_table_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="omc_table_nabl"></label></td>
+                                <td><field name="omc_table_nabl"
+                                            decoration-success="omc_table_nabl == 'pass'" 
+                                            decoration-danger="omc_table_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- TRIAXIAL SHEAR TEST (By LVDT Reading ) -->
+                    <div invisible = "triaxial_visible == False">
+                        <h1 class="text-center">
+                            <field name="triaxial_name" readonly="1" nolabel="1"/>
+                            <field name="triaxial_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not triaxial_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="observations"></label></td>
+                                <td><field name="observations"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="diameter_triaxial"></label></td>
+                                <td><field name="diameter_triaxial"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="length_triaxial"></label></td>
+                                <td><field name="length_triaxial"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="area_triaxial"></label></td>
+                                <td><field name="area_triaxial"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div invisible = "triaxial_visible == False">
+                        <field name="triaxial_table" style="width:100%">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name="serial_no"/>
+                                <field name="lvdt_triaxial"/>
+                                <field name="load_triaxial31"/>
+                                <field name="load_triaxial32"/>
+                                <field name="al_l"/>
+                                <field name="ac"/>
+                                <field name="deviatore_triaxial31"/>
+                                <field name="deviatore_triaxial32"/>
+                            </tree>
+                        </field>
+                    </div>
 
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not triaxial_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="area_triaxial_conformity"></label></td>
+                                <td><field  name="area_triaxial_conformity"
+                                            decoration-success="area_triaxial_conformity == 'pass'" 
+                                            decoration-danger="area_triaxial_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="area_triaxial_nabl"></label></td>
+                                <td><field name="area_triaxial_nabl"
+                                            decoration-success="area_triaxial_nabl == 'pass'" 
+                                            decoration-danger="area_triaxial_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- CALCULATIONS OF COHESION AND ANGLE OF INTERNAL FRICTION-->
+                    <div invisible = "internal_fraction_visible == False">
+                        <h1 class="text-center">
+                            <field name="internal_fraction_name" readonly="1" nolabel="1"/>
+                            <field name="internal_fraction_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible = "internal_fraction_visible == False">
+                        <field name="internal_fraction_table" style="width:100%">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name="serial_no"/>
+                                <field name="normal_lbs"/>
+                                <field name="normal_kgs"/>
+                                <field name="load_5"/>
+                                <field name="shear_division"/>
+                                <field name="shear_lc"/>
+                                <field name="noraml_stress"/>
+                                <field name="shear_stress"/>
+                            </tree>
+                        </field>
+                    </div>
 
                     <!-- CBR -->
-                     <group attrs="{'invisible': [('soil_visible', '=', False)]}">
-                        <h1>
+                    <div invisible="soil_visible == False">
+                        <h1 class="text-center">
                             <field name="soil_name" readonly="1" nolabel="1"/>
                             <field name="soil_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
                     
-                    <!-- <group attrs="{'invisible': [('soil_visible', '=', False)]}"> -->
-                    <!-- <group>
-                      <field name="job_no_soil"/>
-                      <field name="material_soil"/>
-                    </group>
-                    <group>
-                      <field name="start_date_soil"/>
-                      <field name="end_date_soil"/>
-                    </group>
-                    </group> -->
-                    <group attrs="{'invisible': [('soil_visible', '=', False)]}">
-                      <field name="soil_table">
-                        <tree editable="bottom">
-                          <field name="penetration"/>
-                          <field name="proving_reading"/>
-                          <field name="load"/>
-                          <!-- <field name="wt_retained"/> -->
-                        </tree>
-                      </field>
-                      
-                    </group>
-                    <group attrs="{'invisible': [('soil_visible', '=', False)]}">
-                      <field name="chart_image_cbr" widget="image" readonly="1"/>
-                    </group>
-                    
-                    
-                   
-                   
-                 
-
-
-                     
-                       
-
-
-
-                   <!-- Dry Density by Sand Replacement method -->
-                     <group attrs="{'invisible': [('dry_density_visible', '=', False)]}">
-                        <h1>
-                            <field name="dry_density_name" readonly="1" nolabel="1"/>
-                            <field name="dry_density_visible" invisible="1"/>
-                        </h1>
-                    </group>
-                    
-                    <!-- <group attrs="{'invisible': [('dry_density_visible', '=', False)]}">
-                    <group>
-                      <field name="job_no_dry_density"/>
-                      <field name="material_dry_density"/>
-                    </group>
-                    <group>
-                      <field name="start_date_dry_density"/>
-                      <field name="end_date_dry_density"/>
-                    </group>
-                    </group> -->
-                      <!-- <group attrs="{'invisible': [('dry_density_visible', '=', False)]}">
-                       <group>
-                       
-                       </group>
-                       <group>
-                       
-                       </group>
-                      </group> -->
-                   
-                    
-                    <group attrs="{'invisible': [('dry_density_visible', '=', False)]}">
-                  
-                    
-                                 <group style="white-space: nowrap;">
-                                         <field name='mmd_drydencity'/>
-                                </group>
-                                <group style="white-space: nowrap;">
-                                        <field name='omc_drydencity'/>
-                                        
-                                </group>
-
-                                  <field name="dry_density_table">
-                                      <tree editable="bottom">
-                                        <field name='determination_no'/>
-                                        <field name='wt_of_sample'/>
-                                        <field name='water_of_sample'/>
-                                        <field name='wt_of_before_cylinder'/>
-                                        <field name='wt_of_after_cylinder'/>
-                                        <field name='wt_of_sand_cone'/>
-                                        <field name='wt_of_sand_hole'/>
-                                        <field name='density_of_sand'/>
-                                        <field name='volume_of_hole'/>
-                                        <field name='bulk_density_of_sample'/>
-                                         <field name='dry_density_of_sample'/>
-                                          <field name='degree_of_compaction'/>
-
-
-                                        <!-- <field name="wt_retained"/> -->
-                                      </tree>
-                                  </field>
-
-                               
-                     
-                    </group>
-                    <group attrs="{'invisible': [('dry_density_visible', '=', False)]}">
-                      <field name="avg_degree_of_compaction"/>
-                      <field name='degree_of_compaction_conformity' col="4"
-                              decoration-success="degree_of_compaction_conformity == 'pass'" 
-                              decoration-danger="degree_of_compaction_conformity == 'fail'" 
-                              readonly="1"/>
-                      <field name='degree_of_compaction_nabl' col="4"/>
-                    </group>
-
-
-
-
-
-
-
-                    <!-- added -->
-                    <!-- Field Density by Sand Replacement method -->
-                    <group attrs="{'invisible': [('field_density_visible', '=', False)]}">
-                        <h1>
-                            <field name="field_density_name" readonly="1" nolabel="1"/>
-                            <field name="field_density_visible" invisible="1"/>
-                        </h1>
-                    </group>
-                    
-                    <!-- <group attrs="{'invisible': [('dry_density_visible', '=', False)]}">
-                    <group>
-                      <field name="job_no_dry_density"/>
-                      <field name="material_dry_density"/>
-                    </group>
-                    <group>
-                      <field name="start_date_dry_density"/>
-                      <field name="end_date_dry_density"/>
-                    </group>
-                    </group> -->
-                      <!-- <group attrs="{'invisible': [('dry_density_visible', '=', False)]}">
-                       <group>
-                       
-                       </group>
-                       <group>
-                       
-                       </group>
-                      </group> -->
-                   
-                    
-                    <group attrs="{'invisible': [('field_density_visible', '=', False)]}">
-                  
-                    
-                                 <group style="white-space: nowrap;">
-                                         <field name='mmd_fielddencity'/>
-                                </group>
-                                <group style="white-space: nowrap;">
-                                        <field name='omc_fielddencity'/>
-                                        
-                                </group>
-
-                                  <field name="field_density_table">
-                                      <tree editable="bottom">
-                                        <field name='determination_no'/>
-                                        <field name='wt_of_sample'/>
-                                        <field name='water_of_sample'/>
-                                        <field name='wt_of_before_cylinder'/>
-                                        <field name='wt_of_after_cylinder'/>
-                                        <field name='wt_of_sand_cone'/>
-                                        <field name='wt_of_sand_hole'/>
-                                        <field name='density_of_sand'/>
-                                        <field name='volume_of_hole'/>
-                                        <field name='bulk_density_of_sample'/>
-                                         <field name='dry_density_of_sample'/>
-                                          <field name='degree_of_compaction'/>
-
-
-                                        <!-- <field name="wt_retained"/> -->
-                                      </tree>
-                                  </field>
-
-                               
-                     
-                    </group>
-                    <group attrs="{'invisible': [('field_density_visible', '=', False)]}">
-                      <field name="avg_degree_of_compaction"/>
-                      <field name='degree_of_compaction_conformity' col="4"
-                              decoration-success="degree_of_compaction_conformity == 'pass'" 
-                              decoration-danger="degree_of_compaction_conformity == 'fail'" 
-                              readonly="1"/>
-                      <field name='degree_of_compaction_nabl' col="4"/>
-                    </group>
-
-                    <!-- uptill -->
-
-
-                    
-                    
-                    
-                    <!-- Moisture Content -->
-                     <group attrs="{'invisible': [('moisture_content_visible', '=', False)]}">
-                        <h1>
-                            <field name="moisture_content_name" readonly="1" nolabel="1"/>
-                            <field name="moisture_content_visible" invisible="1"/>
-                        </h1>
-                    </group>
-                    
-                    <!-- <group attrs="{'invisible': [('moisture_content_visible', '=', False)]}">
-                    <group>
-                      <field name="job_no_moisture_content"/>
-                      <field name="material_moisture_content"/>
-                    </group>
-                    <group>
-                      <field name="start_date_moisture_content"/>
-                      <field name="end_date_moisture_content"/>
-                    </group>
-                    </group>
-                     -->
-                    <group attrs="{'invisible': [('moisture_content_visible', '=', False)]}">
-                  
-                      <field name="moisture_content_table">
-                       <tree editable="bottom">
-                                <field name='sr_no'/>
-                                <field name='wt_of_sample'/>
-                                <field name='oven_dry_wt'/>
-                                <field name='moisture_content'/>
-                                <!-- <field name='average_tensile'/> -->
+                    <div invisible = "soil_visible == False">
+                        <field name="soil_table" class="custom_table_borders">
+                            <tree editable="bottom" >
+                                <field name="penetration"/>
+                                <field name="proving_reading"/>
+                                <field name="load"/>
                             </tree>
-                           
-                      </field>
-                      
-                    </group>
-                    <group attrs="{'invisible': [('moisture_content_visible', '=', False)]}">
-                        <field name='average_block'/>
-                        <field name='moisture_content_conformity' col="4"
-                               decoration-success="moisture_content_conformity == 'pass'" 
-                               decoration-danger="moisture_content_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='moisture_content_nabl' col="4"/>
-                     </group>
-                       <button
-                            type="object"
-                            class="oe_highlight" 
-                            name="open_eln_page"
-                            string="Submit"
-                            />
+                        </field>                      
+                    </div>
+
+                    <div invisible = "soil_visible == False" class="text-center">
+                      <field name="chart_image_cbr" widget="image" readonly="1"/>
+                    </div>
 
 
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="ps_2mm"></label></td>
+                                    <td><field name="ps_2mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="pt_2mm"></label></td>
+                                    <td><field name="pt_2mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="cbr_2mm"></label></td>
+                                    <td><field name="cbr_2mm"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="ps_5mm"></label></td>
+                                    <td><field name="ps_5mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="pt_5mm"></label></td>
+                                    <td><field name="pt_5mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="cbr_5mm"></label></td>
+                                    <td><field name="cbr_5mm"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
 
+                   <!--  FSI -->
+                    <div invisible="fsi_visible == False">
+                        <h1 class="text-center">
+                            <field name="fsi_name" readonly="1" nolabel="1"/>
+                            <field name="fsi_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not fsi_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="wt_sample"></label></td>
+                                    <td><field name="wt_sample"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="valume_water"></label></td>
+                                    <td><field name="valume_water"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="valime_kerosen"></label></td>
+                                    <td><field name="valime_kerosen"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not fsi_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="fsi"></label></td>
+                                    <td><field name="fsi"/></td>
+                                </tr>
+                                <tr>
+                                <td><label for="fsi_conformity"></label></td>
+                                <td><field name="fsi_conformity"
+                                            decoration-success="fsi_conformity == 'pass'" 
+                                            decoration-danger="fsi_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="fsi_nabl"></label></td>
+                                <td><field name="fsi_nabl"
+                                            decoration-success="fsi_nabl == 'pass'" 
+                                            decoration-danger="fsi_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
+                    <!-- DETERMINATION OF 'K'-->
+                    <div invisible = "determination_visible == False">
+                        <h1 class="text-center">
+                            <field name="determination_name" readonly="1" nolabel="1"/>
+                            <field name="determination_visible" invisible="1"/>
+                        </h1>
+                    </div>
 
-
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not determination_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="dia_burette">Plasticity Index</label></td>
+                                <td><field name="dia_burette"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="dia_specimen">Plasticity Index</label></td>
+                                <td><field name="dia_specimen"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="area_burrette">Plasticity Index</label></td>
+                                <td><field name="area_burrette"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="area_specimen">Plasticity Index</label></td>
+                                <td><field name="area_specimen"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="lenght_specimen">Plasticity Index</label></td>
+                                <td><field name="lenght_specimen"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="initial_height">Plasticity Index</label></td>
+                                <td><field name="initial_height"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="final_height">Plasticity Index</label></td>
+                                <td><field name="final_height"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="permeability">Plasticity Index</label></td>
+                                <td><field name="permeability"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="permeability_conformity"></label></td>
+                                <td><field  name="permeability_conformity"
+                                            decoration-success="permeability_conformity == 'pass'" 
+                                            decoration-danger="permeability_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="permeability_nabl"></label></td>
+                                <td><field name="permeability_nabl"
+                                            decoration-success="permeability_nabl == 'pass'" 
+                                            decoration-danger="permeability_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  
+                    <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>
             </form>
         </field>

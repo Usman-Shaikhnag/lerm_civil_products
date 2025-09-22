@@ -7,8 +7,8 @@ from lxml import etree
 
 
 class BrickDatasheet1(models.AbstractModel):
-    _name = 'report.brick.lerm_brick_datasheet1'
-    _description = 'Brick DataSheet 1'
+    _name = 'report.brick.lerm_brick_datasheet'
+    _description = 'Brick DataSheet'
     
     @api.model
     def _get_report_values(self, docids, data):
@@ -40,8 +40,8 @@ class BrickDatasheet1(models.AbstractModel):
 
 
 class BrickReport1(models.AbstractModel):
-    _name = 'report.brick.lerm_brick_report1'
-    _description = 'Brick Report 1'
+    _name = 'report.brick.lerm_brick_report'
+    _description = 'Brick Report'
     
     @api.model
     def _get_report_values(self, docids, data):
@@ -73,6 +73,7 @@ class BrickReport1(models.AbstractModel):
         }
         model = eln.get_product_base_calc_line(data).ir_model.model
         brick_data = self.env[model].search([("id","=",eln.model_id)])
+        
         return {
             'eln': eln,
             'brick': brick_data,

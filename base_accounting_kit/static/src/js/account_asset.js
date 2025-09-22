@@ -3,10 +3,10 @@ odoo.define('base_accounting_kit.account_asset', function(require) {
 
 /**
  * The purpose of this widget is to shows a toggle button on depreciation and
- * installment lines for posted/unposted line. When clicked, it calls the method
+ * installment lines for posted/un-posted line. When clicked, it calls the method
  * create_move on the object account.asset.depreciation.line.
  * Note that this widget can only work on the account.asset.depreciation.line
- * model as some of its fields are harcoded.
+ * model as some of its fields are hardcoded.
  */
 
 var AbstractField = require('web.AbstractField');

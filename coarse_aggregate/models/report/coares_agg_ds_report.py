@@ -9,8 +9,8 @@ from lxml import etree
 
 
 class CoarseAggregateReport(models.AbstractModel):
-    _name = 'report.coarse_aggregate.lerm_coarse_aggregate_mech_report1'
-    _description = 'Coarse Aggregate Report 1'
+    _name = 'report.coarse_aggregate.lerm_coarse_aggregate_mech_report'
+    _description = 'Coarse Aggregate Report'
     
     @api.model
     def _get_report_values(self, docids, data):
@@ -54,6 +54,7 @@ class CoarseAggregateReport(models.AbstractModel):
         }
         model = eln.get_product_base_calc_line(data).ir_model.model
         coarse_data = self.env[model].search([("id","=",eln.model_id)])
+        # import wdb; wdb.set_trace()
         return {
             'eln': eln,
             'data': coarse_data,
@@ -63,8 +64,8 @@ class CoarseAggregateReport(models.AbstractModel):
 
 
 class CoarseAggregateDataSheet(models.AbstractModel):
-    _name = 'report.coarse_aggregate.coarse_aggregate_datasheet1'
-    _description = 'Coarse Aggregate DataSheet 1'
+    _name = 'report.coarse_aggregate.coarse_aggregate_datasheet'
+    _description = 'Coarse Aggregate DataSheet'
     
     @api.model
     def _get_report_values(self, docids, data):
@@ -86,6 +87,8 @@ class CoarseAggregateDataSheet(models.AbstractModel):
             general_data = self.env[model_name].sudo().browse(model_id)
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
+        
+
         return {
             'eln': eln,
             'data' : general_data

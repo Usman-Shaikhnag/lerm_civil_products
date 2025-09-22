@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="lerm_partner_document_form" model="ir.ui.view">
+            <field name="name">partner.document.form</field>
+            <field name="model">partner.document</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_id" />
+                            <field name="document" filename="document_name"/>
+                            <field name="document_name" invisible="1"/>
+
+
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="lerm_partner_document_tree" model="ir.ui.view">
+            <field name="name">partner.document.tree</field>
+            <field name="model">partner.document</field>
+            <field name="arch" type="xml">
+                <tree default_order='create_date desc' >
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="document" optional="show"/>
+
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

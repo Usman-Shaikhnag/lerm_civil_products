@@ -1,43 +1,79 @@
-odoo.define('documents.test_utils', function (require) {
-"use strict";
+/** @odoo-module **/
 
-const AbstractStorageService = require('web.AbstractStorageService');
-const RamStorage = require('web.RamStorage');
+import { registry } from "@web/core/registry";
+import { makeView } from "@web/../tests/views/helpers";
+import { start } from "@mail/../tests/helpers/test_utils";
 
-const { start } = require('@mail/utils/test_utils');
+// Services
+import { busParametersService } from "@bus/bus_parameters_service";
+import { multiTabService } from "@bus/multi_tab_service";
+import { busService } from "@bus/services/bus_service";
+import { documentService } from "@documents/core/document_service";
+import { attachmentService } from "@mail/core/common/attachment_service";
+import { storeService } from "@mail/core/common/store_service";
+import { voiceMessageService } from "@mail/discuss/voice_message/common/voice_message_service";
+import { fileUploadService } from "@web/core/file_upload/file_upload_service";
 
-async function createDocumentsView(params) {
-    params.archs = params.archs || {};
-    var searchArch = params.archs[`${params.model},false,search`] || '<search></search>';
+export function getEnrichedSearchArch(searchArch='<search></search>') {
     var searchPanelArch = `
-        <searchpanel>
+        <searchpanel class="o_documents_search_panel">
             <field name="folder_id" string="Workspace" enable_counters="1"/>
             <field name="tag_ids" select="multi" groupby="facet_id" enable_counters="1"/>
             <field name="res_model" select="multi" string="Attached To" enable_counters="1"/>
         </searchpanel>
     `;
-    searchArch = searchArch.split('</search>')[0] + searchPanelArch + '</search>';
-    params.archs[`${params.model},false,search`] = searchArch;
-    if (!params.services || !params.services.local_storage) {
-        // the searchPanel uses the localStorage to store/retrieve default
-        // active category value
-        params.services = params.services || {};
-        const RamStorageService = AbstractStorageService.extend({
-            storage: new RamStorage(),
-        });
-        params.services.local_storage = RamStorageService;
-    }
-
-    const { widget } = await start(
-        Object.assign({}, params, {
-            hasView: true,
-        })
-    );
-    return widget;
+    return searchArch.split('</search>')[0] + searchPanelArch + '</search>';
 }
 
-return {
-    createDocumentsView,
-};
+export async function createDocumentsView(params) {
+    params.searchViewArch = getEnrichedSearchArch(params.searchViewArch);
+    return makeView(params);
+}
 
-});
+export async function createFolderView(params) {
+    params.searchViewArch = '<search></search>';
+    return makeView(params);
+}
+
+export async function createDocumentsViewWithMessaging(params) {
+    const serverData = params.serverData || {};
+    serverData.views = serverData.views || {};
+    const searchArchs = {};
+    for (const viewKey in serverData.views) {
+        const [modelName] = viewKey.split(',');
+        searchArchs[`${modelName},false,search`] = getEnrichedSearchArch(serverData.views[`${modelName},false,search`]);
+    };
+    Object.assign(serverData.views, searchArchs);
+    return start(params);
+}
+
+/**
+ * Load the services needed to test the documents views.
+ */
+export function loadServices(extraServices = {}) {
+    const REQUIRED_SERVICES = {
+        documents_pdf_thumbnail: {
+            start() {
+                return {
+                    enqueueRecords: () => {},
+                };
+            },
+        },
+        "bus.parameters": busParametersService,
+        "document.document": documentService,
+        "discuss.voice_message": voiceMessageService,
+        "mail.attachment": attachmentService,
+        "mail.store": storeService,
+        bus_service: busService,
+        file_upload: fileUploadService,
+        multi_tab: multiTabService,
+        ...extraServices,
+    };
+
+    const serviceRegistry = registry.category("services");
+    for (const [serviceName, service] of Object.entries(REQUIRED_SERVICES)) {
+        if (!serviceRegistry.contains(serviceName)) {
+            serviceRegistry.add(serviceName, service);
+        }
+    }
+}

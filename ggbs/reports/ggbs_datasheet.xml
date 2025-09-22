@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="ggbs_datasheet1">
+    <template id="ggbs_datasheet">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
 			 <t t-call="lerm_civil.mechanical_data_sheet_header">
@@ -50,7 +50,11 @@
 							Normal Consistency of GGBS
 						</div> -->
 						<div style="text-align:center;font-size:18px">
-							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','21457801hg-b44a-48cc-9d41-198f55346af0')]).parameter_name"/>
+						   <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','21457801hg-b44a-48cc-9d41-198f55346af0')])" t-as="param">
+                         <span t-esc="param.parameter_name"/>
+                        </t>
+
+							<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','21457801hg-b44a-48cc-9d41-198f55346af0')]).parameter_name"/> -->
 						</div>
 				
 						<table style="margin-top:20px">

@@ -2,14 +2,15 @@
  'summary': "LERM_CIVIL",
  'author': "Usman Shaikhnag", 
  'website': "http://www.esehat.org", 
- 'category': 'Uncategorized', 
+ 'category': 'Lerm Civil', 
  'version': '13.0.1', 
- 'depends':['base' , 'contacts','stock','product' , 'mail','documents','documents_spreadsheet','lerm_civil_inv','attachment_indexation','maintenance','portal'],
+ 'depends':['base' , 'contacts','product' ,'hr','lerm_civil_inv', 'mail','attachment_indexation','maintenance','portal'],
  'data': [
-    'security/ir.model.access.csv',
     'security/security.xml',
     'data/sequence.xml',
+    # 'data/module_category_data.xml',
     'views/enviroment_register.xml',
+    'views/sample_register.xml',
     'views/lerm.xml',
     'views/groups.xml',
     'views/res_company.xml',
@@ -24,12 +25,20 @@
     'views/contractor.xml',
     'views/lab_master.xml',
     'views/employee.xml',
+    'views/product_grade_wizard.xml',
+    'views/reallocation_wizard.xml',
+    'views/portal/lerm_portal.xml',
+    'views/customer_sample_requests.xml',
+    'views/partner_document.xml',
+    # 'views/ftp_upload_wizard_views.xml',
+    # 'views/ftp_upload_wizard_views.xml',
     # 'views/mechanical/sieve_analysis.xml',
     'reports/eln_report_action.xml',
     'reports/eln_report_template.xml',
     'reports/general_report_template.xml',
     'reports/general_template.xml',
-    'reports/mechanical_general_template.xml'
+    'reports/mechanical_general_template.xml',
+    'security/ir.model.access.csv'
    
 
 
@@ -47,7 +56,7 @@
     ],
     'assets': {
     'web.assets_backend':[
-        '/lerm_civil/static/src/js/spreadsheet.js'
+        'lerm_civil/static/src/css/custom_styles.css',
     ],
     'web.report_assets_common': [
             '/lerm_civil/static/src/css/eln_report.scss',
@@ -55,7 +64,6 @@
 
         ],
     'web.assets_qweb': [
-        '/lerm_civil/static/src/xml/spreadsheet.xml'
     ],
         }
 }

@@ -3,7 +3,7 @@
 #
 #    Cybrosys Technologies Pvt. Ltd.
 #
-#    Copyright (C) 2019-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Copyright (C) 2023-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
 #    Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
 #
 #    You can modify it under the terms of the GNU LESSER
@@ -19,14 +19,21 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
     customer_credit_limit = fields.Boolean(string="Customer Credit Limit")
+    sale_header_name = fields.Char(string="Sale Header Name")
+    sale_header = fields.Binary(string='Sale Header')
+    sale_footer_name = fields.Char(string="Sale Footer Name")
+    sale_footer = fields.Binary(string='Sale Footer')
+
+    use_anglo_saxon_accounting = fields.Boolean(
+        string="Use Anglo-Saxon accounting", readonly=False,
+        related='company_id.anglo_saxon_accounting')
 
     @api.model
     def get_values(self):

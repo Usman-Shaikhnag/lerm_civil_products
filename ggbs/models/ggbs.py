@@ -6,9 +6,9 @@ import math
 
 
 class GgbsMechanical(models.Model):
-    _name = "mechanical.ggbs1"
+    _name = "mechanical.ggbs"
     _inherit = "lerm.eln"
-    _description = 'mechanical.ggbs1'
+    _description = 'mechanical.ggbs'
     _rec_name = "name"
 
 
@@ -17,7 +17,7 @@ class GgbsMechanical(models.Model):
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
-    tests = fields.Many2many("mechanical.ggbs.test1",string="Tests")
+    tests = fields.Many2many("mechanical.ggbs.test",string="Tests")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
 
@@ -251,8 +251,8 @@ class GgbsMechanical(models.Model):
     wt_of_standard_sand_grade3 = fields.Float("Weight of Standard Sand (g) Grade-III",default=200)
     total_weight_sand = fields.Float("Total Weight",compute="compute_total_weight_sand")
     quantity_of_water = fields.Float("Quantity of Water",compute="_compute_quantity_of_water")
-    slag_7days_table = fields.One2many("ggbs.slag.7days.line1",'parent_id',string="7 days")
-    slag_28days_table = fields.One2many("ggbs.slag.28days.line1",'parent_id',string="28 days")
+    slag_7days_table = fields.One2many("ggbs.slag.7days.line",'parent_id',string="7 days")
+    slag_28days_table = fields.One2many("ggbs.slag.28days.line",'parent_id',string="28 days")
     
     average_7days_slag = fields.Float("Average",compute="_compute_average_7days",store=True)
     average_28days_slag = fields.Float("Average",compute="_compute_average_28days",store=True)
@@ -331,8 +331,8 @@ class GgbsMechanical(models.Model):
     total_weight_sand_opc = fields.Float("Total Weight",compute="compute_total_weight_sand_opc")
     quantity_of_water_opc = fields.Float("Quantity of Water",compute="_compute_quantity_of_water_opc")
 
-    slag_7days_table_opc = fields.One2many("ggbs.slag.opc.7days.line1",'parent_id',string="7 days")
-    slag_28days_table_opc = fields.One2many("ggbs.slag.opc.28days.line1",'parent_id',string="28 days")
+    slag_7days_table_opc = fields.One2many("ggbs.slag.opc.7days.line",'parent_id',string="7 days")
+    slag_28days_table_opc = fields.One2many("ggbs.slag.opc.28days.line",'parent_id',string="28 days")
     
     average_7days_slag_opc = fields.Float("Average",compute="_compute_average_7days_opc",store=True)
 
@@ -799,7 +799,7 @@ class GgbsMechanical(models.Model):
 
         
     def get_all_fields(self):
-        record = self.env['mechanical.ggbs1'].browse(self.ids[0])
+        record = self.env['mechanical.ggbs'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -808,15 +808,15 @@ class GgbsMechanical(models.Model):
         return field_values
 
 class GgbsTest(models.Model):
-    _name = "mechanical.ggbs.test1"
+    _name = "mechanical.ggbs.test"
     _rec_name = "name"
     name = fields.Char("Name")
 
 
 class GgbsSlag7DaysLine(models.Model):
-    _name = "ggbs.slag.7days.line1"
+    _name = "ggbs.slag.7days.line"
 
-    parent_id = fields.Many2one('mechanical.ggbs1')
+    parent_id = fields.Many2one('mechanical.ggbs')
 
     length = fields.Float("Length in mm")
     width = fields.Float("Width in mm")
@@ -841,9 +841,9 @@ class GgbsSlag7DaysLine(models.Model):
 
 
 class GgbsSlag28DaysLine(models.Model):
-    _name = "ggbs.slag.28days.line1"
+    _name = "ggbs.slag.28days.line"
 
-    parent_id = fields.Many2one('mechanical.ggbs1')
+    parent_id = fields.Many2one('mechanical.ggbs')
 
     length = fields.Float("Length in mm")
     width = fields.Float("Width in mm")
@@ -868,9 +868,9 @@ class GgbsSlag28DaysLine(models.Model):
 
 
 class GgbsSlagOpc7DaysLine(models.Model):
-    _name = "ggbs.slag.opc.7days.line1"
+    _name = "ggbs.slag.opc.7days.line"
 
-    parent_id = fields.Many2one('mechanical.ggbs1')
+    parent_id = fields.Many2one('mechanical.ggbs')
 
     length = fields.Float("Length in mm")
     width = fields.Float("Width in mm")
@@ -895,9 +895,9 @@ class GgbsSlagOpc7DaysLine(models.Model):
 
 
 class GgbsSlagOpc28DaysLine(models.Model):
-    _name = "ggbs.slag.opc.28days.line1"
+    _name = "ggbs.slag.opc.28days.line"
 
-    parent_id = fields.Many2one('mechanical.ggbs1')
+    parent_id = fields.Many2one('mechanical.ggbs')
 
     length = fields.Float("Length in mm")
     width = fields.Float("Width in mm")

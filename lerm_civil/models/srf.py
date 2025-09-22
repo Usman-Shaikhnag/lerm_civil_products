@@ -2,8 +2,12 @@ from odoo import api, fields, models,_
 from odoo.exceptions import UserError ,ValidationError
 import logging
 from datetime import datetime
-
-
+import paramiko
+import time
+from io import BytesIO
+import os
+import base64
+import re
 # _logger = logging.getLogger(__name__)
 
 class Discipline(models.Model):
@@ -93,6 +97,9 @@ class TestMethod(models.Model):
     _rec_name = 'test_method'
 
     test_method = fields.Char(string="Test Method", required=True)
+    product = fields.Many2one('product.template',"Product")
+    parameter = fields.Many2many('lerm.parameter.master',domain="[('material', '=', product)]", string="Parameter")
+
 
 
 
@@ -103,33 +110,21 @@ class SrfForm(models.Model):
     _rec_name = 'srf_id'
 
 
-    # group_id = fields.Many2one('lerm_civil.group', string='Group')
-    # discipline_id = fields.Many2one('lerm_civil.discipline', string='Discipline', related='group_id.discipline')
-    # lab_no = fields.Integer(string="Lab Location", compute='_compute_lab_no', store=True)
-
-    # @api.depends('group_id.discipline.lab_no')
-    # def _compute_lab_no(self):
-    #     for record in self:
-    #         lab_no = record.group_id.discipline.lab_no
-    #         record.lab_no = lab_no
-    #         print(f"Computed lab_no: {lab_no}")
-
-
-  
 
     srf_id = fields.Char(string="SRF ID",tracking=True)
-    kes_number = fields.Char(string="KES No",tracking=True)
+    kes_number = fields.Char(string="UID",tracking=True)
     # job_no = fields.Char(string="Job NO.")
     srf_date = fields.Date(string="SRF Date",default=lambda self: self._get_default_date(),tracking=True)
     job_date = fields.Date(string="JOB Date")
     customer = fields.Many2one('res.partner',string="Customer",tracking=True)
     billing_customer = fields.Many2one('res.partner',string="Billing Customer")
     contact_person = fields.Many2one('res.partner',string="Contact Person")
-    client = fields.Char("Client",compute="_compute_name_client1")
+    client = fields.Char("Client")
     # site_address = fields.Many2one('res.partner',string="Site Address")
     site_address = fields.Char(string="Site Address",compute="_compute_site_address")
     name_work = fields.Many2one('res.partner.project',string="Name of Work")
-    consultant_name1 = fields.Char(string="Consultant Name",compute="_compute_consultant_name1")
+
+    consultant_name1 = fields.Char(string="Consultant Name")
     # department_id = fields.Many2one('hr.department', string='Department')
 
     department_id = fields.Char(string='Department')
@@ -167,13 +162,49 @@ class SrfForm(models.Model):
         ('112', '112 Days'),
     ], string='Days of casting', default='3')
     
+
+    
     date_casting = fields.Date(string="Date of Casting")
     date_editable = fields.Boolean(string="SRF Date editable",default=False,compute="_compute_date_editable")
     active = fields.Boolean(string="Active",default=True)
+    
+    attachment_path = fields.Char("Attachment")
+    customer_portal_request = fields.Many2one('customer.sample.line',string="Customer Portal Request", readonly=True)
+
+    
+    def download_attachment(self):
+        host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
+        ftp_url = f"https://{host}/files/{self.attachment_path}"
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f"/web/binary/download_ftp?url={ftp_url}",
+            'target': 'self',
+        }
+
+
+    
+    def open_file_upload(self):
+        action = self.env.ref('lerm_civil.view_ftp_upload_wizard_form')
+        return {
+            'name': "Upload File Wizard",
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'file.upload.wizard',
+            'view_id': action.id,
+            'target': 'new',
+            'context': {
+                'default_form_name': 'lerm.civil.srf',
+                'default_field_name':'attachment_path'
+                }
+            }
 
 
     def _compute_date_editable(self):
         for record in self:
+            # print("COMPUTE SRF DATE")
+            # import wdb;wdb.set_trace()
+
             backdate_group_id = record.env.ref('lerm_civil.kes_srf_backdate_creation_group').id
 
             if backdate_group_id in self.env.user.groups_id.ids:
@@ -186,17 +217,6 @@ class SrfForm(models.Model):
         self._compute_date_editable()
         
         return super(SrfForm, self).read(fields=fields, load=load)
-
-
-
-
-    # @api.depends('department_id')
-    # def _compute_department(self):
-    #     for record in self:
-    #         record.department = record.department_id.name if record.department_id else False
-
-
-   
 
 
     @api.depends('contact_person')
@@ -217,17 +237,6 @@ class SrfForm(models.Model):
     
 
 
-    # @api.depends('customer')
-    # def _compute_name_work(self):
-    #     for record in self:
-    #         customer = record.customer
-    #         if(customer):
-    #             name_work = record.env['res.partner'].search([("id","=",record.customer.id)]).projects
-    #             print("Name Work",name_work)
-    #             record.name_works = name_work
-
-    #         else:
-    #             record.name_works = None
     @api.depends('customer')
     def _compute_name_work(self):
         for record in self:
@@ -243,21 +252,6 @@ class SrfForm(models.Model):
                 record.name_works = name_work
             else:
                 record.name_works = None
-    # @api.depends('customer')
-    # def _compute_name_work(self):
-    #     for record in self:
-    #         if record.customer:
-    #             import wdb; wdb.set_trace() 
-    #             child_ids = record.env['res.partner'].sudo().search([('child_ids', 'in',record.customer.id)])
-    #             if child_ids:
-    #                 partner_record = record.env['res.partner'].browse(child_ids.id)
-    #             else:
-    #                 partner_record = record.env['res.partner'].browse(record.customer.id)
-    #             name_work = partner_record.projects
-    #             print("Name Work", name_work)
-    #             record.name_works = name_work
-    #         else:
-    #             record.name_works = None
 
     @api.onchange('name_work')
     def _onchange_name_work(self):
@@ -290,6 +284,7 @@ class SrfForm(models.Model):
                 record.client = record.name_work.client_name
             else:
                 record.client = False
+
 
     @api.model
     def create(self, vals):
@@ -396,18 +391,12 @@ class SrfForm(models.Model):
         for record in self.sample_range_table:
             sam_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample')]).number_next_actual
             kes_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample.kes')]).number_next_actual
-            
-
-
-
+           
             sample_range = "SAM/"+str(sam_next_number)+"-"+str(sam_next_number+record.sample_qty-1)
-            kes_range = "KES/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
+            kes_range = "LERM/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
             record.write({'sample_range': sample_range , 'kes_range': kes_range })
             samples = self.env['lerm.srf.sample'].search([('sample_range_id','=',record.id)])
             
-
-
-
             
             for sample in samples:
                 # import wdb; wdb.set_trace()
@@ -418,35 +407,51 @@ class SrfForm(models.Model):
                 day = str(self.srf_date.day).zfill(2)
                 count = count + 1
 
-                kes_no = "KES"+ year+month+day + str(count).zfill(3) or "New"
+                kes_no = "LERM/TR/"+ year+month+day + str(count).zfill(3) or "New"
 
-                # kes_no = "KES"+ str(record.srf_date) + self.env['ir.sequence'].next_by_code('lerm.srf.sample.kes') or 'New'
                 kes_no_daywise = self.env['ir.sequence'].next_by_code('lerm.sample.daywise.seq') 
                 # kes_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample.kes') + kes_no_daywise or 'New'
                 # lab_l_id =  self.env['lab.location'].search([('id','=',self.env.context['allowed_company_ids'][0])])
                 company =  self.env['res.company'].search([('id','=',self.env.context['allowed_company_ids'][0])])
-                # lab_location =  self.env.context['discipline_id']
-                # print('<<<<<<<<<<<<<<<<<<<<',lab_location)
-                # lab_cert_no = str(sample.lab_certificate_no)
-                # import wdb; wdb.set_trace()
-
-                # try: 
-                #     sample.received_by_id = self.env.user
-                # except:
-                #     pass
-
-                
-
                 
                 if sample.scope == 'nabl':
 
                     if sample.lab_location:
                         code = sample.lab_location.ulr_sequence.code
-                        ulr_no = self.env['ir.sequence'].next_by_code(code) or 'New'
-                        lab_loc = sample.location_name.location_code
-                        lab_cert_no = sample.lab_location.lab_certificate_no
-                        ulr_no = ulr_no.replace('(lab_certificate_no)', lab_cert_no)                
-                        ulr_no = ulr_no.replace('(lab_no_value)', lab_loc)
+                        seqq = self.env['ir.sequence'].sudo().search([('code', '=', code)], limit=1)
+
+                        matched_record = None
+                        for date_range in seqq.date_range_ids:
+                            if date_range.date_from <= self.srf_date <= date_range.date_to:
+                                matched_record = date_range
+                                break
+
+                        lab_loc = sample.location_name.location_code or ''
+                        lab_cert_no = sample.lab_location.lab_certificate_no or ''
+                        padding = int(seqq.padding or 5)
+                        suffix = seqq.suffix or ''
+
+                        if matched_record:
+                            next_actual = str(matched_record.number_next_actual)
+                            ulr_no = lab_cert_no + year + lab_loc + next_actual.zfill(padding) + suffix
+
+                            # Increment and save the updated next number
+                            matched_record.sudo().write({
+                                'number_next_actual': matched_record.number_next_actual + 1
+                            })
+                        else:
+                            # Fall back to next_by_code
+                            ulr_no = self.env['ir.sequence'].next_by_code(code) or 'New'
+
+
+
+
+                        # code = sample.lab_location.ulr_sequence.code
+                        # ulr_no = self.env['ir.sequence'].next_by_code(code) or 'New'
+                        # lab_loc = sample.location_name.location_code
+                        # lab_cert_no = sample.lab_location.lab_certificate_no
+                        # ulr_no = ulr_no.replace('(lab_certificate_no)', lab_cert_no)                
+                        # ulr_no = ulr_no.replace('(lab_no_value)', lab_loc)
                         
 
 
@@ -461,162 +466,10 @@ class SrfForm(models.Model):
                     ulr_no = ''
                 # import wdb ; wdb.set_trace()
               
-             
-        
-
-              
-                
                 sample.write({'sample_no':sample_id,'kes_no':kes_no,'status':'2-confirmed','ulr_no':ulr_no})
                 self.env.cr.commit()
         
-   
-
-   
-    # def confirm_srf(self):
-    #     srf_ids=[]
-        
-    #     # import wdb; wdb.set_trace()
-        
-    #     count = self.env['lerm.srf.sample'].search_count([('srf_id.srf_date','=',self.srf_date),('kes_no','!=','New'),('status','=','2-confirmed')]) 
-
-    #     for record in self.sample_range_table:
-    #         sam_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample')]).number_next_actual
-    #         kes_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample.kes')]).number_next_actual
-            
-
-
-
-    #         sample_range = "SAM/"+str(sam_next_number)+"-"+str(sam_next_number+record.sample_qty-1)
-    #         kes_range = "KES/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
-    #         record.write({'sample_range': sample_range , 'kes_range': kes_range })
-    #         samples = self.env['lerm.srf.sample'].search([('sample_range_id','=',record.id)])
-            
-
-
-
-            
-    #         for sample in samples:
-    #             # import wdb; wdb.set_trace()
-    #             sample_id = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
-
-    #             year = str(self.srf_date.year)[-2:]
-    #             month = str(self.srf_date.month).zfill(2)
-    #             day = str(self.srf_date.day).zfill(2)
-    #             count = count + 1
-
-    #             kes_no = "KES"+ year+month+day + str(count).zfill(3) or "New"
-
-    #             # kes_no = "KES"+ str(record.srf_date) + self.env['ir.sequence'].next_by_code('lerm.srf.sample.kes') or 'New'
-    #             kes_no_daywise = self.env['ir.sequence'].next_by_code('lerm.sample.daywise.seq') 
-    #             # kes_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample.kes') + kes_no_daywise or 'New'
-    #             # lab_l_id =  self.env['lab.location'].search([('id','=',self.env.context['allowed_company_ids'][0])])
-    #             company =  self.env['res.company'].search([('id','=',self.env.context['allowed_company_ids'][0])])
-    #             # lab_location =  self.env.context['discipline_id']
-    #             # print('<<<<<<<<<<<<<<<<<<<<',lab_location)
-    #             # lab_cert_no = str(sample.lab_certificate_no)
-    #             # import wdb; wdb.set_trace()
-
-    #             # try: 
-    #             #     sample.received_by_id = self.env.user
-    #             # except:
-    #             #     pass
-
-                
-
-                
-    #             if sample.scope == 'nabl':
-
-    #                 if sample.lab_location:
-    #                     code = sample.lab_location.ulr_sequence.code
-    #                     ulr_no = self.env['ir.sequence'].next_by_code(code) or 'New'
-    #                     lab_loc = sample.location_name.location_code
-    #                     lab_cert_no = sample.lab_location.lab_certificate_no
-    #                     ulr_no = ulr_no.replace('(lab_certificate_no)', lab_cert_no)                
-    #                     ulr_no = ulr_no.replace('(lab_no_value)', lab_loc)
-                        
-
-
-    #                 else:
-    #                     srf_date = sample.srf_id.srf_date
-    #                     next_number = ''
-    #                     ulr = self.env['ir.sequence'].sudo().search([('code', '=', 'sample.ulr.seq')])
-
-    #                     # Instead of using `next_by_code`, rely on `ulr.date_range_ids`
-    #                     for dt in ulr.date_range_ids:
-    #                         from_date = dt.date_from
-    #                         to_date = dt.date_to
-    #                         if from_date <= srf_date <= to_date:
-    #                             next_number = dt.number_next_actual
-    #                             prefix = ulr.prefix or ''
-    #                             suffix = ulr.suffix or ''
-                                
-    #                             lab_location = str(sample.lab_no_value)
-    #                             lab_certificate_no = str(company.lab_certificate_no)
-
-    #                             # Replace placeholders in prefix
-    #                             prefix = prefix.replace('(lab_certificate_no)', lab_certificate_no)
-    #                             prefix = prefix.replace('(lab_no_value)', lab_location)
-    #                             prefix = prefix.replace('%(y)s', str(srf_date.year)[-2:])
-                                
-    #                             # Construct the final sequence number
-    #                             ulr_no = f"{prefix}{str(next_number).zfill(8)}{suffix}"
-
-    #                             # Increment and update the `number_next_actual`
-    #                             dt.write({'number_next_actual': next_number + 1})
-    #                             break
-
-
-                                
-
-
-
-
-
-    #                     # lab_loc = str(sample.lab_no_value)
-    #                     # lab_cert_no = str(company.lab_certificate_no)
-    #                     # # lab_loc = company.lab_seq_no
-    #                     # ulr_no = self.env['ir.sequence'].next_by_code('sample.ulr.seq') or 'New'
-    #                     # ulr_no = ulr_no.replace('(lab_certificate_no)', lab_cert_no)                
-    #                     # ulr_no = ulr_no.replace('(lab_no_value)', lab_loc)
-    #             else:
-    #                 ulr_no = ''
-    #             # import wdb ; wdb.set_trace()
-              
-             
-        
-
-              
-                
-    #             sample.write({'sample_no':sample_id,'kes_no':kes_no,'status':'2-confirmed','ulr_no':ulr_no})
-    #             self.env.cr.commit()
-        
-   
-                
-
-                    
-        
-
-        # for record in self.samples:
-        #     # if vals.get('sample_no', 'New') == 'New' and vals.get('kes_no', 'New') == 'New':
-        #     sample_id = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
-        #     kes_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample.kes') or 'New'
-        #     # res = super(LermSampleForm, self).create(vals)
-        #     #     return res
-        #     record.write({'status':'2-confirmed','sample_no':sample_id,'kes_no':kes_no})
-        #     srf_ids.append(sample_id)
-        #     if len(srf_ids) == 1:
-        #         srfidstring = srf_ids[0]
-        #     else:
-        #         srfidstring = str(srf_ids[0])+'/'+str(srf_ids[-1])
-            
-        # Extracting the numbers from the original string
-        # numbers = srfidstring.split("/")
-
-        # # Formatting the numbers in the desired format
-        # formatted_numbers = "-".join([f"{int(num):05d}" for num in numbers])
-
-        # Creating the modified string
-        # import wdb; wdb.set_trace()
+    
         first_sample_range = self.sample_range_table[0].kes_range
         last_sample_range = self.sample_range_table[-1].kes_range  
         first_samplerange_slash_index = first_sample_range.find("/")
@@ -626,10 +479,74 @@ class SrfForm(models.Model):
 
       
         modified_srf_id = f"SRF/"+year+month+day+srffirstnumber_str.zfill(3)+"-"+year+month+day+srf_last_number.zfill(3)
-        modified_kes_number = f"KES/DUS"
+        modified_kes_number = f"LERM/TR/DUS"
         self.write({'srf_id': modified_srf_id})
         self.write({'kes_number': modified_kes_number})
         self.write({'state': '2-confirm'})
+        
+        
+        attachment_path = self.attachment_path
+        pattern = r'(?<=/)\d+(?=/)'
+
+        if attachment_path:
+            if re.search(pattern, attachment_path):
+                # Replace the number with your desired value (e.g., 'XX')
+                old_path = re.sub(pattern, str(self.id) , attachment_path)
+                # import wdb;wdb.set_trace()
+                file_name = old_path.rsplit('/', 1)[1]
+                
+                old_path = old_path.rsplit('/', 1)[0]
+                
+                
+                new_path = re.sub(pattern, self.srf_id.replace("/", "").replace("-", ""), attachment_path)
+                # import wdb;wdb.set_trace()
+                
+                new_path = new_path.rsplit('/', 1)[0]
+
+                
+                
+                ftp_storage = self.env["ftp.storage"].search([("active","=",True)])
+                
+                transport = paramiko.Transport((ftp_storage.host, ftp_storage.port or 22))
+                transport.banner_timeout = 60
+                transport.connect(
+                    username=ftp_storage.username,
+                    password=ftp_storage.password
+                )
+                sftp = paramiko.SFTPClient.from_transport(transport)
+                
+                # sftp.rename("/home/"+old_path,"/home/"+new_path)
+                
+
+                try:
+                    print(f"Source file attributes: {sftp.stat('/home/' + old_path)}")
+                except FileNotFoundError:
+                    print("ERROR: Source file doesn't exist!")
+                    # List directory contents to see what's actually there
+                    dir_path = os.path.dirname('/home/' + old_path)
+                    print(f"Contents of {dir_path}: {sftp.listdir(dir_path)}")
+                
+                # Perform the rename
+                # import wdb;wdb.set_trace()
+                
+                try:
+                    sftp.rename("/home/"+old_path, "/home/"+new_path)
+                    self.write({'attachment_path': new_path+"/"+file_name})
+                except Exception as e:
+                    print(f"Rename failed: {str(e)}")
+                    raise
+
+
+
+                sftp.close()
+                
+                
+                
+            else:
+                print("No number found in the middle")
+            
+        
+        
         # for record in self:
 
     # name_of_work = fields.Many2one('res.partner.project',string='Name of Work')
@@ -657,9 +574,12 @@ class SrfForm(models.Model):
     @api.depends('customer')
     def compute_site_ids(self):
         for record in self:
-            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.customer.id),('type','=','delivery')])
+            contact_ids = self.env['res.partner'].search([('parent_id', '=', record.customer.id)])
             record.contact_site_ids = contact_ids
     
+
+            
+
     def open_edit_srf_header_wizard(self):
         action = self.env.ref('lerm_civil.edit_srf_wizard_form')
         
@@ -695,12 +615,11 @@ class SrfForm(models.Model):
 
         action = self.env.ref('lerm_civil.srf_sample_wizard_form')
         if len(samples) > 0:
-            print(samples[0].material_id.id , 'error')
             discipline_id = samples[-1].discipline_id.id
+            group_id = samples[-1].group_id.id
+            material_id = samples[-1].material_id.id
             # lab_l_id = samples[-1].lab_l_id.id
             lab_no_value = samples[-1].lab_no_value
-            material_id = samples[-1].material_id.id
-            group_id = samples[-1].group_id.id
             department_id = samples[-1].department_id
             alias = samples[-1].alias
             brand = samples[-1].brand
@@ -714,6 +633,8 @@ class SrfForm(models.Model):
             scope = samples[-1].scope
             sample_description = samples[-1].sample_description
             sample_received_date = self.srf_date
+            # import wdb ; wdb.set_trace()
+
 
             return {
             'name': "Add Sample",
@@ -724,22 +645,21 @@ class SrfForm(models.Model):
             'view_id': action.id,
             'target': 'new',
             'context': {
-            # 'default_discipline_id' : discipline_id,
-            'default_material_id' : material_id,
-            'default_alias':alias,
-            'default_brand':brand,
-            'default_size_id':size_id,
-            'default_grade_id':grade_id,
-            'default_sample_received_date': sample_received_date,
-            'default_location':location,
-            'default_sample_condition':sample_condition,
-            'default_sample_reject_reason':sample_reject_reason,
-            'default_witness':witness,
-            # 'default_department_id':department_id,
-            'default_scope':scope,
-            'default_sample_description':sample_description,
-            'default_group_id':group_id,
-            'default_sample_received_date':sample_received_date
+                'default_discipline_id' : discipline_id,
+                'default_group_id':group_id,
+                'default_material_id' : material_id,
+                'default_alias':alias,
+                'default_brand':brand,
+                'default_size_id':size_id,
+                'default_grade_id':grade_id,
+                'default_location':location,
+                'default_sample_condition':sample_condition,
+                'default_sample_reject_reason':sample_reject_reason,
+                'default_witness':witness,
+                # 'default_department_id':department_id,
+                'default_scope':scope,
+                'default_sample_description':sample_description,
+                'default_sample_received_date':sample_received_date
             }
         }
         else:
@@ -783,31 +703,7 @@ class SrfForm(models.Model):
 
 class CreateSampleWizard(models.TransientModel):
     _name = 'create.srf.sample.wizard'
-    # _rec_name = 'lab_l_id'
-
-    # lab_l_id = fields.Many2one('lab.location', string="Lab Locations",domain="[('parent_id', '=', discipline_id)]")
-    # lab_l_id = fields.Integer(string="Lab Locations",domain="[('parent_id', '=', discipline_id)]")
-
-   
-    # @api.onchange('discipline_id')
-    # def onchange_discipline_id(self):
-    #     if self.discipline_id:
-    #         domain = [('parent_id', '=', self.discipline_id.id)]
-    #         return {'domain': {'lab_l_id': domain}}
-    #     else:
-    #         return {'domain': {'lab_l_id': []}}
-  
-  
-
-
-
-
-    # def name_get(self):
-    #     result = []
-    #     for record in self:
-    #         name = f"Lab Locations: {', '.join(str(lab.lab_no) for lab in record.lab_l_id)}"
-    #         result.append((record.id, name))
-    #     return result
+    
     lab_no_value = fields.Char(string="Value")
     @api.depends('discipline_id.lab_no')
     def _compute_lab_no(self):
@@ -870,9 +766,7 @@ class CreateSampleWizard(models.TransientModel):
     group_ids = fields.Many2many('lerm_civil.group',string="Group Ids")
     material_ids = fields.Many2many('product.template',string="Material Ids")
     client_sample_id = fields.Char(string="Client Sample Id")
-    # size_ids = fields.Many2many('lerm.size.line',string="Size Ids")
-    # grade_ids = fields.Many2many('lerm.grade.line',string="Grade Ids")
-    # qty_ids = fields.Many2many('lerm.qty.line',string="Qty Ids")
+    
     days_casting = fields.Selection([
         ('1', '1 Days'),
         ('3', '3 Days'),
@@ -885,7 +779,7 @@ class CreateSampleWizard(models.TransientModel):
         ('112', '112 Days'),
     ], string='Days of Testing', default='3')
     date_casting = fields.Date(string="Date of Casting")
-    customer_id = fields.Many2one('res.partner' , string="Customer")
+    customer_id = fields.Many2one('res.partner' , string="Customer",compute="_compute_customer_id")
     product_aliases = fields.Many2many('product.product',string="Product Aliases")
     product_alias = fields.Many2one('product.product',string="Product Alias")
     parameters = fields.Many2many('lerm.parameter.master',string="Parameter")
@@ -900,8 +794,78 @@ class CreateSampleWizard(models.TransientModel):
     is_update = fields.Boolean('Is Update')
 
     department_id = fields.Char(string='Department')
-    lab_location = fields.Many2one('lerm.lab.master',string="Lab Location")
+    lab_location = fields.Many2one('lerm.lab.master',string="Lab Location",default=lambda self: self._get_oldest_lab())
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
+    customer = fields.Many2one('res.partner', string="Customer")
+
+    show_reject_reason = fields.Boolean(compute='_compute_show_reject_reason')
+    show_witness = fields.Boolean(compute='_compute_show_witness')
+    show_days_casting = fields.Boolean(compute='_compute_show_casting')
+    is_readonly_qty = fields.Boolean(compute='_compute_is_readonly_qty')
+    
+    available_parameter_ids = fields.Many2many(
+        'lerm.parameter.master',
+        compute='_compute_available_parameters',
+        string='Available Parameters'
+    )
+
+    @api.model
+    def _get_oldest_lab(self):
+        oldest_lab = self.env['lerm.lab.master'].search([], order="create_date asc", limit=1)
+        return oldest_lab.id if oldest_lab else False
+
+    @api.onchange('lab_location')
+    def _default_location_name(self):
+        for record in self:
+            if record.lab_location and len(record.lab_location.lab_location_line) > 0:
+                record.location_name = record.lab_location.lab_location_line[0]
+
+
+    @api.depends('material_id')
+    def _compute_available_parameters(self):
+        for rec in self:
+            if rec.material_id:
+                rec.available_parameter_ids = rec.material_id.parameter_table1
+            else:
+                rec.available_parameter_ids = [(5, 0, 0)]  # clear
+
+
+    quantity = fields.Integer(string="Quantity")
+    # sample_quantity = fields.Integer(string="Sample Quantity")
+    uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
+    quantity_received = fields.Integer(string="Quantiyty Received")
+    quantity_consumed = fields.Integer(string="Quantity Consumed")
+    quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
+
+    @api.depends('quantity_received', 'quantity_consumed')
+    def compute_quantity_balance(self):
+        for rec in self:
+            rec.quantity_balance = rec.quantity_received - rec.quantity_consumed
+    @api.depends('sample_condition')
+    def _compute_show_reject_reason(self):
+        for rec in self:
+            rec.show_reject_reason = rec.sample_condition == 'non_satisfactory'
+
+    @api.depends('has_witness')
+    def _compute_show_witness(self):
+        for rec in self:
+            rec.show_witness = rec.has_witness
+
+    @api.depends('casting')
+    def _compute_show_casting(self):
+        for rec in self:
+            rec.show_days_casting = rec.casting
+
+    @api.depends('is_update')
+    def _compute_is_readonly_qty(self):
+        for rec in self:
+            rec.is_readonly_qty = rec.is_update
+
+
+    @api.depends('customer')
+    def _compute_customer_id(self):
+        for rec in self:
+            rec.customer_id = rec.customer if rec.customer else False
 
     @api.onchange('discipline_id', 'group_id', 'material_id')
     def onchange_discipline_group_material(self):
@@ -913,23 +877,6 @@ class CreateSampleWizard(models.TransientModel):
                 ('group', '=', self.group_id.id)], limit=1)
             if material:
                 self.department_id = material.department_ids.name
-
-    # @api.depends('discipline_id', 'group_id')
-    # def compute_discipline_id(self):
-    #     for record in self:
-    #         material = self.env['product.template'].search([('discipline', '=', record.discipline_id.id), ('group', '=', record.group_id.id)], limit=1)
-    #         if material:
-    #             record.department_id = material.department_id.id
-
-
-   
-   
-
-    # @api.depends('discipline_id')
-    # def compute_grade_required(self):
-    #     for wizard in self:
-    #         wizard.grade_required = wizard.discipline_id and wizard.discipline_id.lab_l_ids
-
 
     @api.depends('product_name')
     def compute_main_name(self):
@@ -978,17 +925,20 @@ class CreateSampleWizard(models.TransientModel):
 
     @api.onchange('material_id')
     def compute_parameters(self):
+
+        # import wdb; wdb.set_trace()
         for record in self:
             if record.material_id:
                 parameters_ids = []
                 print("MATERIAL__IDD",self.env['product.template'].search([('id','=', record.material_id.id)]))
                 product_records = self.env['product.template'].search([('id','=', record.material_id.id)]).parameter_table1
                 record.product_name = self.pricelist.item_ids.search([('pricelist_id','=',self.pricelist.id),('product_tmpl_id.lab_name','=',self.material_id.lab_name)]).product_tmpl_id.id
-                # import wdb; wdb.set_trace()
                 for rec in product_records:
                     parameters_ids.append(rec.id)
-                domain = {'parameters': [('id', 'in', parameters_ids)]}
-                return {'domain': domain}
+                # domain = {'parameters': [('id', 'in', parameters_ids)]}
+                # return {'domain': domain}
+                # import wdb; wdb.set_trace()
+                return {'domain': {'parameters': [('id', 'in', parameters_ids)]}}
             else:
                 domain = {'parameters': [('id', 'in', [])]}
                 return {'domain': domain}
@@ -1105,26 +1055,6 @@ class CreateSampleWizard(models.TransientModel):
         return {'type': 'ir.actions.act_window_close'}
 
 
-           
-
-    # @api.onchange('material_id' ,'customer_id', 'material_id')
-    # def onchange_material_id(self):
-    #     for record in self:
-    #         result = self.env['lerm.alias.line'].search([('customer', '=', record.customer_id.id),('product_id', '=', record.material_id.id)])
-    #         print(result)
-            
-    #         record.product_alias = result.product_alias.id
-
-    # @api.onchange('discipline_id', 'lab_l_id')
-    # def onchange_discipline_id(self):
-    #     if self.discipline_id and self.lab_l_id:
-    #         # Assuming you are interested in the first selected location
-    #         self.lab_l_id = self.lab_l_id[0]
-    #     else:
-    #         self.lab_l_id = False
-       
-   
-
     def add_sample(self,data=False):
 
         # import wdb; wdb.set_trace()
@@ -1188,9 +1118,7 @@ class CreateSampleWizard(models.TransientModel):
         
         
         else:
-            # print("From else")
-          
-
+           
             group_id =  self.group_id.id
             # alias = self.alias
             material_id = self.material_id.id
@@ -1220,6 +1148,7 @@ class CreateSampleWizard(models.TransientModel):
             product_name = self.product_name
             lab_location  = self.lab_location.id
             location_name = self.location_name.id
+            
 
 
 
@@ -1238,10 +1167,7 @@ class CreateSampleWizard(models.TransientModel):
             
 
             srf_ids = []
-            #     for i in range(1, self.qty_id + 1):
-            #         srf_number = str(i).zfill(4)  # Pad the number with leading zeros
-            #         srf_id = f"SRF/{srf_number}-{str(self.qty_id).zfill(4)}"
-            #         srf_ids.append(srf_id)
+            
 
             if self.sample_qty > 0:
 
@@ -1280,7 +1206,8 @@ class CreateSampleWizard(models.TransientModel):
 
                 })
                 for i in range(self.sample_qty):
-                    self.env["lerm.srf.sample"].create({
+                    
+                    sample = self.env["lerm.srf.sample"].create({
                         'srf_id': self.env.context.get('active_id'),
                         'group_id':group_id,
                        
@@ -1318,6 +1245,20 @@ class CreateSampleWizard(models.TransientModel):
                         'product_alias':self.product_alias.id,
                         'lab_location':lab_location,
                         'location_name':location_name,
+                        'quantity':self.quantity,
+                        'uom_id':self.uom_id.id,
+                        'quantity_received':self.quantity_received,
+                        'quantity_consumed':self.quantity_consumed,
+                        'quantity_balance':self.quantity_balance
+
+                    })
+                    self.env['lerm.sample.register'].sudo().create({
+                        'sample':sample.id,
+                        'quantity':self.quantity,
+                        'uom_id':self.uom_id.id,
+                        'quantity_received':self.quantity_received,
+                        'quantity_consumed':self.quantity_consumed,
+                        'quantity_balance':self.quantity_balance
 
                     })
 
@@ -1360,9 +1301,8 @@ class CreateSampleWizard(models.TransientModel):
                 sample = self.env['lerm.srf.sample'].sudo().search([('id','=',id)])
                 if sample.state == '1-allotment_pending':
                     for parameter in sample.parameters:
-                        parameters.append((0,0,{'parameter':parameter.id ,'spreadsheet_template':parameter.spreadsheet_template.id}))
                         parameters_result.append((0,0,{'parameter':parameter.id,'unit': parameter.unit.id,'test_method':parameter.test_method.id}))
-                    
+                    # import wdb; wdb.set_trace()
                     eln_id = self.env['lerm.eln'].sudo().create({
                         'srf_id': sample.srf_id.id,
                         'srf_date':sample.srf_id.srf_date,
@@ -1384,6 +1324,12 @@ class CreateSampleWizard(models.TransientModel):
                         'grade_id':sample.grade_id.id,
                         'department_id':sample.department_id,
                         'casting_date':sample.casting_date,
+                        'quantity':sample.quantity,
+                        'uom_id':sample.uom_id.id,
+                        'quantity_received':sample.quantity_received,
+                        'quantity_consumed':sample.quantity_consumed,
+                        'quantity_balance':sample.quantity_balance
+
 
                     })
                     # import wdb;wdb.set_trace()
