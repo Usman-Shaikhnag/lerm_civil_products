@@ -31,7 +31,7 @@ class FineAggregate(models.Model):
     # cumulative = fields.Float(string="Cumulative",compute="_compute_cumulative")
     wt_of_sample = fields.Float(string="Weight of Sample, gms")
     lenght = fields.Float(string="Lenght")
-    lenght2 = fields.Float(string="Lenght")
+    
     zone_type = fields.Selection(
     selection=[
         ('zone_i', 'Zone I'),
@@ -47,6 +47,7 @@ class FineAggregate(models.Model):
 
     fineness_modulus = fields.Float(string="Fineness Modulus", compute="_compute_fineness_modulus")
     grading = fields.Char(string="Grading",compute="_compute_zone_display_name")
+    lenght2 = fields.Float(string="Lenght")
 
     @api.depends('zone_type')
     def _compute_zone_display_name(self):
