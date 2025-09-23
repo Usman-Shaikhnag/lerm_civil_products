@@ -31,6 +31,7 @@ class FineAggregate(models.Model):
     # cumulative = fields.Float(string="Cumulative",compute="_compute_cumulative")
     wt_of_sample = fields.Float(string="Weight of Sample, gms")
     lenght = fields.Float(string="Lenght")
+    lenght2 = fields.Float(string="Lenght")
     zone_type = fields.Selection(
     selection=[
         ('zone_i', 'Zone I'),
