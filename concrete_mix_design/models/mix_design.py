@@ -769,7 +769,7 @@ class ConcreteDesign(models.Model):
         # Set labels and title
         ax.set_xlabel('Size (mm)')
         ax.set_ylabel('% Passing')
-        ax.set_title('Combined Granding Of  Coarse Agg')
+        ax.set_title('Combined Grading Of  Coarse Aggregate')
 
     
         ax.set_xlim(max(sieve_sizes_combine) , min(sieve_sizes_combine) )  # Set x-axis from min to max sieve sizes
@@ -846,6 +846,98 @@ class ConcreteDesign(models.Model):
            
         ]
         return default_lines
+
+
+    graph_image_combine_granding = fields.Binary("Line Chart", compute="_compute_chart_image_combine_granding", store=True)
+
+
+
+    def generate_line_chart_combine_granding(self):
+        # Sample data - Replace these lists with actual data from your model
+        sieve_sizes_cg = []
+        up_values_cg = []
+        ll_values_cg = []
+        cg_values = []
+
+        for line in self.combine_granding_child_lines:
+            sieve_sizes_cg.append(line.sieve_size)
+            up_values_cg.append(line.combine_grading_up_all)
+            ll_values_cg.append(line.combine_grading_ll_all)
+            cg_values.append(line.combine_grading_all)
+
+        # Ensure all lists have data and are of equal length
+        if not (len(sieve_sizes_cg) == len(up_values_cg) == len(ll_values_cg) == len(cg_values)):
+            print("Data lists have mismatched lengths or are empty")
+            return None
+
+        # Create the plot
+        fig, ax = plt.subplots(figsize=(12, 6))
+
+        ax.plot(sieve_sizes_cg, up_values_cg, marker='o', label='UP', color='blue')
+        ax.plot(sieve_sizes_cg, ll_values_cg, marker='o', label='LL', color='orange')
+        ax.plot(sieve_sizes_cg, cg_values, marker='o', label='Combined Grading', color='green')
+
+        # Set labels and title
+        ax.set_xlabel('Size (mm)')
+        ax.set_ylabel('% Passing')
+        ax.set_title('Combined Grading Of  Coarse Aggregate')
+
+    
+        ax.set_xlim(max(sieve_sizes_cg) , min(sieve_sizes_cg) )  # Set x-axis from min to max sieve sizes
+        ax.set_ylim(0, 100)  # % Passing ranges from 0 to 100
+
+        ax.grid(True)
+
+        # Add legend
+        ax.legend()
+
+        ax.set_xticks(sieve_sizes_cg)
+
+        # Create the table below the plot
+        table_data = [
+            ["UP"] + list(up_values_cg),
+            ["LL"] + list(ll_values_cg),
+            ["Combined Grading"] + list(cg_values)
+        ]
+        column_labels = ["Size (mm)"] + list(sieve_sizes_cg)
+
+        table = ax.table(cellText=table_data, colLabels=column_labels, cellLoc='center', loc='bottom', bbox=[0, -0.4, 1, 0.2])
+
+        table.auto_set_font_size(False)  # Disable automatic font size adjustment
+        table.set_fontsize(8)  # Set a smaller font size for better readability
+
+        # Adjust cell height and width if necessary
+        for (i, j), cell in table.get_celld().items():
+            if i == 0:  # Set the header row
+                cell.set_text_props(weight='bold')
+                cell.set_fontsize(9)
+            else:
+                cell.set_fontsize(8)
+            cell.set_height(0.04)  # Adjust the height of the rows
+            cell.set_width(0.1)  # Adjust the width of the columns
+
+        # Adjust layout to make space for the table without overlapping the plot
+        plt.subplots_adjust(bottom=0.35)  # Adjust the bottom space for the table
+
+
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png')
+        plt.close()  # Close the plot to free up resources
+        buffer.seek(0)
+
+        # Convert the chart image to base64
+        chart_image_combine_granding = base64.b64encode(buffer.read()).decode('utf-8')
+        buffer.close()  # Close the buffer to free up memory
+        return chart_image_combine_granding
+
+    @api.depends('combine_granding_child_lines')
+    def _compute_chart_image_combine_granding(self):
+        try:
+            for record in self:
+                chart_image_combine_granding = record.generate_line_chart_combine_granding()
+                record.graph_image_combine_granding = chart_image_combine_granding
+        except:
+            pass 
 
 
     mix_proporation_name = fields.Char(default="Mix Proporation")
@@ -1996,48 +2088,25 @@ class CombinedGrandingLine(models.Model):
 
 
 
-    # @api.depends('parent_id.combine_granding_child_lines')
-    # def _compute_combined_granding(self):
-    #     for record in self:
-    #         if record.parent_id and record.parent_id.combine_granding_child_lines:
-    #             combination_lines = record.parent_id.combine_granding_child_lines
-
-    #             if record == combination_lines[0 ] or record == combination_lines[1] or record == combination_lines[2 ] or record == combination_lines[3] or record == combination_lines[4]:
-    #                 # Remove '%' and convert to float
-    #                 mix_20mm = float(record.parent_id.mix_proporation_20mm.replace('%', '').strip() or 0)
-    #                 mix_10mm = float(record.parent_id.mix_proporation_10mm.replace('%', '').strip() or 0)
-    #                 mix_csand = float(record.parent_id.mix_proporation_csand.replace('%', '').strip() or 0)
-    #                 mix_rsand = float(record.parent_id.mix_proporation_rsand.replace('%', '').strip() or 0)
-
-    #                 record.combine_grading_all = (
-    #                     record.combine_grading_20mm * mix_20mm +
-    #                     record.combine_grading_10mm * mix_10mm +
-    #                     record.combine_grading_csand * mix_csand +
-    #                     record.combine_grading_nsand * mix_rsand
-    #                 )
-    #             else:
-    #                 record.combine_grading_all = 0.0
-    #         else:
-    #             record.combine_grading_all = 0.0
-
+   
     @api.depends('parent_id.combine_granding_child_lines')
     def _compute_combined_granding(self):
         for record in self:
             if record.parent_id and record.parent_id.combine_granding_child_lines:
                 combination_lines = record.parent_id.combine_granding_child_lines
 
-                if record in combination_lines[:5]:  # Simplified condition to check the first 5 records
-                    # Safely handle 'None' or 'False' values
-                    mix_20mm = float((record.parent_id.mix_proporation_20mm or '').replace('%', '').strip() or 0)
-                    mix_10mm = float((record.parent_id.mix_proporation_10mm or '').replace('%', '').strip() or 0)
-                    mix_csand = float((record.parent_id.mix_proporation_csand or '').replace('%', '').strip() or 0)
-                    mix_rsand = float((record.parent_id.mix_proporation_rsand or '').replace('%', '').strip() or 0)
+                if record in combination_lines[:5]:  # check first 5 records
+                    mix_20mm = float((record.parent_id.mix_proporation_20mm or '').replace('%', '').strip() or 0) / 100
+                    mix_10mm = float((record.parent_id.mix_proporation_10mm or '').replace('%', '').strip() or 0) / 100
+                    mix_csand = float((record.parent_id.mix_proporation_csand or '').replace('%', '').strip() or 0) / 100
+                    mix_rsand = float((record.parent_id.mix_proporation_rsand or '').replace('%', '').strip() or 0) / 100
 
-                    record.combine_grading_all = (
+                    record.combine_grading_all = round(
                         record.combine_grading_20mm * mix_20mm +
                         record.combine_grading_10mm * mix_10mm +
                         record.combine_grading_csand * mix_csand +
-                        record.combine_grading_nsand * mix_rsand
+                        record.combine_grading_nsand * mix_rsand,
+                        2
                     )
                 else:
                     record.combine_grading_all = 0.0
@@ -2046,7 +2115,8 @@ class CombinedGrandingLine(models.Model):
 
 
 
-   
+
+    
 
 
 
