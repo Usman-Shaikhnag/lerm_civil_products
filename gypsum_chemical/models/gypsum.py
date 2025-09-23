@@ -129,8 +129,6 @@ class ChemicalGyspum(models.Model):
                 record.loi = 0.0
   
 
-
-
     loss_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail')], string="Conformity", compute="_compute_loss_conformity", store=True)
@@ -185,8 +183,6 @@ class ChemicalGyspum(models.Model):
 
 
      # CaO
-
-    
     cao_name = fields.Char("Name",default="CaO")
     cao_visible = fields.Boolean("CaO",compute="_compute_visible")
 
@@ -209,12 +205,10 @@ class ChemicalGyspum(models.Model):
                 record.cao1 = 0.0
 
 
-   
-
 
     cao1_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_cao1_conformity", store=True)
+           ('pass', 'Pass'),
+           ('fail', 'Fail')], string="Conformity", compute="_compute_cao1_conformity", store=True)
 
     @api.depends('cao1','eln_ref','grade')
     def _compute_cao1_conformity(self):
@@ -347,10 +341,7 @@ class ChemicalGyspum(models.Model):
                         record.mgo_nabl1 = 'fail'
 
 
-
-     # CaO2
-
-    
+    # CaO2
     cao_name2 = fields.Char("Name",default="CaO")
     cao_visible2 = fields.Boolean("CaO",compute="_compute_visible")
 
@@ -931,26 +922,6 @@ class ChemicalGyspum(models.Model):
                         break
                     else:
                         record.calcium_oxide_nabl2 = 'fail'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-          
-
-   
-
 
 
 
