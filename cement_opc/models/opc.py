@@ -43,6 +43,7 @@ class CementNormalConsistency(models.Model):
     fineness_cement_visible = fields.Boolean("Plan Area Visible",compute="_compute_visible")
 
     fneness_cement_lines = fields.One2many('fineness.cement.line','parent_id',string="Fineness Cement")
+    
 
     avg_cement = fields.Float(string="Avg Fineness Cement",compute="_compute_avg_wt_of_residue")
 

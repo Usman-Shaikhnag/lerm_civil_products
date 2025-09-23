@@ -30,6 +30,7 @@ class FineAggregate(models.Model):
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
     # cumulative = fields.Float(string="Cumulative",compute="_compute_cumulative")
     wt_of_sample = fields.Float(string="Weight of Sample, gms")
+    lenght = fields.Float(string="Lenght")
     zone_type = fields.Selection(
     selection=[
         ('zone_i', 'Zone I'),
@@ -40,6 +41,7 @@ class FineAggregate(models.Model):
     string="Zone",
     required=False  
 )
+
 
 
     fineness_modulus = fields.Float(string="Fineness Modulus", compute="_compute_fineness_modulus")
