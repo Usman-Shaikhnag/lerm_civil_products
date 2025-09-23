@@ -48,7 +48,7 @@ class FineAggregate(models.Model):
     fineness_modulus = fields.Float(string="Fineness Modulus", compute="_compute_fineness_modulus")
     grading = fields.Char(string="Grading",compute="_compute_zone_display_name")
 
-    lengh = fields.Float(string="Lenght")
+   
    
     @api.depends('zone_type')
     def _compute_zone_display_name(self):
