@@ -939,6 +939,7 @@ class ConcreteDesign(models.Model):
                 record.mix_proporation_csand = "0%"
 
 
+
   
 
 
