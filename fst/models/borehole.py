@@ -33,6 +33,51 @@ class ERTBorehole(models.Model):
     grain_size_graph = fields.Binary("Grain Size Graph")
 
 
+    # ... other fields and methods ...
+
+    def generate_corrected_spt_graph(self):
+        # This method can be called from a button or action
+        self.ensure_one()  # Ensures the method is called on a single record
+
+        if not self.spt_n_value_ids:
+            self.corrected_spt_graph = False
+            return
+
+        # Sort the records by depth to ensure the graph is plotted correctly
+        sorted_spt_values = sorted(self.spt_n_value_ids, key=lambda r: r.depth)
+
+        # Prepare data for plotting
+        depths = [r.depth for r in sorted_spt_values]
+        observed_n_values = [r.observed_n_value for r in sorted_spt_values]
+        corrected_n_values = [r.corrected_n_value for r in sorted_spt_values]
+
+        # Create the plot
+        plt.style.use('seaborn-v0_8-whitegrid')
+        fig, ax = plt.subplots(figsize=(10, 8))
+
+        # Plot the data
+        ax.plot(observed_n_values, depths, marker='D', linestyle='-', color='b', label='Observed N value')
+        ax.plot(corrected_n_values, depths, marker='s', linestyle='-', color='r', label='Corrected N value')
+
+        # Format the plot
+        ax.set_xlabel('SPT BLOWS PER 30 CM PENETRATION')
+        ax.set_ylabel('DEPTH BELOW GROUND LEVEL m.')
+        ax.set_title('SPT BLOWS PER 30 CM PENETRATION', y=1.05)
+        ax.invert_yaxis()
+        ax.set_xticks(range(0, 180, 10))
+        ax.set_xlim(0, 170)
+        ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), fancybox=True, shadow=True, ncol=2)
+        plt.tight_layout(rect=[0, 0.1, 1, 1])
+
+        # Save the plot to a BytesIO object
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png')
+        plt.close(fig)
+
+        # Store the graph as base64-encoded binary data
+        self.corrected_spt_graph = base64.b64encode(buffer.getvalue())
+        buffer.close()
+
     def generate_borehole_graph(self):
         for borehole in self:
             if not borehole.nvalue_ids:
@@ -128,8 +173,7 @@ class ERTBorehole(models.Model):
             borehole.graph_image = base64.b64encode(buf.getvalue())
 
 
-    def generate_corrected_spt_graph(self):
-        pass
+
 
     # @api.depends('direct_shear_ids.shear_stress', 'direct_shear_ids.applied_normal_stress')
     def _compute_direct_shear_graph(self):
@@ -244,11 +288,14 @@ class CorrectedSptNValue(models.Model):
     sr_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
     depth = fields.Float(string='Depth (m)')
     bulk_den = fields.Float(string='Bulk Density (T/m2)')
-    overburden_pressure = fields.Float(string='Overburden Pressure (T/m2)',compute="_compute_overburden_pressure")
-    effective_overburden_pressure = fields.Float(string='Effective Overburden Pressure (T/m2)')
-    observed_n_value = fields.Integer(string='Observed SPT N Value')
-    corrected_n_value = fields.Float(string='Corrected SPT (N\') Value')
-    
+    overburden_pressure = fields.Float(string='Overburden Pressure (T/m2)',compute="_compute_overburden_pressure", digits=(16, 3))
+    pore_water_pressure = fields.Float(string="Pore Water Pressure from layer",compute="_compute_pore_water_pressure", digits=(16, 3))
+    total_pore_water_pressure = fields.Float(string="total pore water pressure",compute="_compute_total_pore_water_pressure", digits=(16, 3))
+    effective_overburden_pressure = fields.Float(string='Effective Overburden Pressure (T/m2)', compute="_compute_effective_overburden_pressure", digits=(16, 3))
+    effective_overburden_pressure_kg = fields.Float(string='Effective Overburden Pressure (kg/cm2)', compute="_compute_effective_overburden_pressure_kg", digits=(16, 3))
+    overburden_correction_factor = fields.Float(string="OVERBURDEN CORRECTION FACTOR",compute="_compute_overburden_correction_factor", digits=(16, 3))
+    observed_n_value = fields.Integer(string='Observed SPT N Value',compute="_compute_observed_n_value")
+    corrected_n_value = fields.Integer(string='Corrected SPT (N\') Value',compute="_compute_corrected_n_value")
     
     @api.model
     def create(self, vals):
@@ -259,6 +306,48 @@ class CorrectedSptNValue(models.Model):
                 vals['sr_no'] = max_serial_no + 1
         return super().create(vals)  # ✅ must return
 
+    @api.depends('depth', 'borehole_id')
+    def _compute_pore_water_pressure(self):
+        for record in self:
+            record.pore_water_pressure = 0.0  # default
+
+            if not record.borehole_id or record.depth is None:
+                continue
+
+            # fetch all records of this borehole sorted by depth
+            borehole_records = self.search(
+                [('borehole_id', '=', record.borehole_id.id)],
+                order="depth asc"
+            )
+
+            prev_depth = 0.0
+            for rec in borehole_records:
+                if rec.id == record.id:
+                    record.pore_water_pressure = record.depth - prev_depth
+                    break
+                prev_depth = rec.depth
+
+
+    @api.depends('pore_water_pressure', 'borehole_id')
+    def _compute_total_pore_water_pressure(self):
+        for record in self:
+            record.total_pore_water_pressure = 0.0  # default
+
+            if not record.borehole_id:
+                continue
+
+            # fetch all records for this borehole sorted by depth
+            borehole_records = self.search(
+                [('borehole_id', '=', record.borehole_id.id)],
+                order="depth asc"
+            )
+
+            cumulative_pressure = 0.0
+            for rec in borehole_records:
+                cumulative_pressure += rec.pore_water_pressure or 0.0
+                if rec.id == record.id:
+                    record.total_pore_water_pressure = round(cumulative_pressure, 3)
+                    break
 
 
     @api.depends('depth', 'bulk_den', 'borehole_id')
@@ -283,9 +372,9 @@ class CorrectedSptNValue(models.Model):
             for rec in borehole_records:
                 if rec.id == record.id:
                     if prev_depth == 0:  # first record
-                        record.overburden_pressure = rec.depth * rec.bulk_den
+                        record.overburden_pressure = round(rec.depth * rec.bulk_den, 3)
                     else:  # subsequent record
-                        record.overburden_pressure = cumulative_pressure + ((rec.depth - prev_depth) * rec.bulk_den)
+                        record.overburden_pressure = round(cumulative_pressure + ((rec.depth - prev_depth) * rec.bulk_den), 3)
                     break
                 else:
                     if prev_depth == 0:
@@ -293,6 +382,41 @@ class CorrectedSptNValue(models.Model):
                     else:
                         cumulative_pressure += (rec.depth - prev_depth) * rec.bulk_den
                     prev_depth = rec.depth
+
+
+    @api.depends('overburden_pressure', 'total_pore_water_pressure')
+    def _compute_effective_overburden_pressure(self):
+        for record in self:
+            record.effective_overburden_pressure = round((record.overburden_pressure or 0.0) - (record.total_pore_water_pressure or 0.0), 3)
+
+    @api.depends('effective_overburden_pressure')
+    def _compute_effective_overburden_pressure_kg(self):
+        for record in self:
+            record.effective_overburden_pressure_kg = round(record.effective_overburden_pressure / 10, 3)
+    
+    @api.depends('borehole_id')
+    def _compute_observed_n_value(self):
+        for record in self:
+            borehole_records = self.env["soil.borehole.nvalue"].search([('borehole_id', '=', record.borehole_id.id),("top_depth","=",record.depth)],limit=1)
+            record.observed_n_value = borehole_records.n_value
+    
+    
+    @api.depends('effective_overburden_pressure_kg')
+    def _compute_overburden_correction_factor(self):
+        for record in self:
+            record.overburden_correction_factor = 0.0
+            v = record.effective_overburden_pressure_kg
+            # guard against zero/negative values
+            if not v or v <= 0:
+                continue
+            # log base 10 and round to 3 decimals
+            record.overburden_correction_factor = round(0.77 * math.log10(20.0 / v),3)
+    
+    
+    @api.depends('overburden_correction_factor','observed_n_value')
+    def _compute_corrected_n_value(self):
+        for record in self:
+            record.corrected_n_value = round(record.overburden_correction_factor * record.observed_n_value)
 
 
 
