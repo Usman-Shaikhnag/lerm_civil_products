@@ -7,7 +7,7 @@ from lxml import etree
 
 class TileChequredDatasheet1(models.AbstractModel):
         _name = 'report.chequerd_tile.tile_chequred_datasheet'
-        _description = 'Tile  Chequered DataSheet '
+        _description = 'Tile  Chequered DataSheet'
     
         @api.model
         def _get_report_values(self, docids, data):
@@ -37,7 +37,7 @@ class TileChequredDatasheet1(models.AbstractModel):
 
 class TileChequeredReport1(models.AbstractModel):
     _name = 'report.chequerd_tile.tile_chequered_report'
-    _description = 'Tile Chequered Report '
+    _description = 'Tile Chequered Report'
     
     @api.model
     def _get_report_values(self, docids, data):

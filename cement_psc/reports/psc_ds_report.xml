@@ -889,24 +889,27 @@
 									</span>
 								</th>
 								<th style="text-align: center;">
-									<span>
+									<!-- <span>
 										Test Parameter
-									</span>
+									</span> -->
+									<span t-esc="eln.material.test_parameter"/>
 								</th>
 								<th style="text-align: center;">
 									<span t-field="eln.material.method_reference"></span>
 								</th>
 
 								<th style="text-align: center;">
-									<span>
+								<span t-esc="eln.material.unit"/>
+									<!-- <span>
 										Unit
-									</span>
+									</span> -->
 								</th>
 								
 								<th style="text-align: center;">
-									<span>
+									<!-- <span>
 										Test Result
-									</span>
+									</span> -->
+									<span t-esc="eln.material.result_remark"/>
 								</th>
 								
 								
@@ -1591,15 +1594,14 @@
 								</div>
 							</div>
 
-							<!-- <div>
-								<div>
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div>
-							 -->
+							<div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
 							<div>
 								<div>
 									<b>

@@ -17,12 +17,6 @@ This module contains all the common features of Sales Management and eCommerce.
                  'reports/chequerd_tile_datasheet.xml',
                  'reports/chequerd_tile_report.xml'
     ],
-
-    'assets': {
-    'web.assets_backend': [
-        'chequerd_tile/static/src/css/custom_styles.css',
-    ],
-   },
   
     'installable': True,
     'auto_install': False,

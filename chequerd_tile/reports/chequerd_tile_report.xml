@@ -112,6 +112,16 @@
 									<span t-field="o.material.name"/>
 								</td>
 							</tr>
+							<!-- Source of Sample (only if value exists) -->
+								<tr t-if="o.material.source_sample">
+									<td colspan="12">Source of Sample: <![CDATA[&nbsp;]]><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<!-- Test method adopted (only if value exists) -->
+								<tr t-if="o.material.test_method_adopted">
+									<td colspan="12">Test method adopted: <![CDATA[&nbsp;]]>
+									<span t-field="o.material.test_method_adopted"/></td>
+								</tr>
 						</table>
 					</div>
 					
@@ -120,10 +130,22 @@
 
                         <tr style="height:20px;">
                             <td rowspan="1" >Sr.No</td>
-                            <td rowspan="1" >Test Parameters</td>
-                            <td rowspan="1" >Unit</td>
-                            <td rowspan="1" >Test Method</td>
-                            <td rowspan="1"> Test Result</td>
+                            <td rowspan="1" >
+							<span t-esc="eln.material.test_parameter"/>
+							<!-- Test Parameters -->
+							</td>
+                            <td rowspan="1" >
+							<span t-esc="eln.material.unit"/>
+							<!-- Unit -->
+							</td>
+                            <td rowspan="1" >
+							<span t-esc="eln.material.method_reference"/>
+							<!-- Test Method -->
+							</td>
+                            <td rowspan="1">
+							<span t-esc="eln.material.result_remark"/>	
+							 <!-- Test Result -->
+							 </td>
                             <td rowspan="1"> Limit As per
 								<span t-field="eln.material.specifications"></span>
 							</td>
@@ -132,9 +154,8 @@
 
 						</tr>
 					</thead>
-
-
-
+					
+                        
 						<t t-set="i" t-value="0"/>
 					<tbody>
 
@@ -435,13 +456,13 @@
 							</div>
 
 							<div>
-								<div>
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
 							
 							<div>
 								<div>
