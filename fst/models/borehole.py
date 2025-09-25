@@ -8,6 +8,7 @@ from matplotlib.spines import Spine
 from matplotlib.path import Path
 from matplotlib.transforms import Affine2D
 import matplotlib
+from scipy import stats
 import numpy as np
 import io, base64
 from math import sqrt, pi
@@ -19,34 +20,44 @@ class ERTBorehole(models.Model):
     name = fields.Char(string="Name", required=True, copy=False, readonly=True, default='New')
     parent_id = fields.Many2one('soil.borehole.parent')
 
-    line_ids = fields.One2many("soil.borehole.line", "borehole_id", string="SBC Lines")
+    # line_ids = fields.One2many("soil.borehole.line", "borehole_id", string="SBC Lines")
     nvalue_ids = fields.One2many("soil.borehole.nvalue", "borehole_id", string="N-Vlaues")
     graph_image = fields.Binary("Borehole Graph")
 
     # Add these three One2many fields
     spt_n_value_ids = fields.One2many("spt.n.value", "borehole_id", string="Corrected SPT N-Values")
-    direct_shear_ids = fields.One2many("direct.shear.test", "borehole_id", string="Direct Shear Tests")
-    grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis")
-
     corrected_spt_graph = fields.Binary("Correct SPT Graph")
-    direct_shear_graph = fields.Binary("Direct Shear Graph", compute="_compute_direct_shear_graph", store=False)
+    
+    direct_shear_ids = fields.One2many("direct.shear.test", "borehole_id", string="Direct Shear Tests")
+    direct_shear_graph = fields.Binary("Direct Shear Graph", compute="_compute_shear_parameters", store=False)
+    cohesion = fields.Float(
+        string='Cohesion (C) (Kg/cm²)', 
+        compute='_compute_shear_parameters', 
+        store=True,
+        digits=(16, 3)
+    )
+    angle_of_internal_friction = fields.Float(
+        string='Angle of Internal Friction (\u03C6) (\u00b0)', 
+        compute='_compute_shear_parameters', 
+        store=True,
+        digits=(16, 2)
+    )
+
+    grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis")
     grain_size_graph = fields.Binary("Grain Size Graph")
 
 
     # ... other fields and methods ...
 
     def generate_corrected_spt_graph(self):
-        # This method can be called from a button or action
-        self.ensure_one()  # Ensures the method is called on a single record
+        self.ensure_one()
 
         if not self.spt_n_value_ids:
             self.corrected_spt_graph = False
             return
 
-        # Sort the records by depth to ensure the graph is plotted correctly
         sorted_spt_values = sorted(self.spt_n_value_ids, key=lambda r: r.depth)
 
-        # Prepare data for plotting
         depths = [r.depth for r in sorted_spt_values]
         observed_n_values = [r.observed_n_value for r in sorted_spt_values]
         corrected_n_values = [r.corrected_n_value for r in sorted_spt_values]
@@ -64,8 +75,8 @@ class ERTBorehole(models.Model):
         ax.set_ylabel('DEPTH BELOW GROUND LEVEL m.')
         ax.set_title('SPT BLOWS PER 30 CM PENETRATION', y=1.05)
         ax.invert_yaxis()
+        ax.set_xlim(left=0)
         ax.set_xticks(range(0, 180, 10))
-        ax.set_xlim(0, 170)
         ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), fancybox=True, shadow=True, ncol=2)
         plt.tight_layout(rect=[0, 0.1, 1, 1])
 
@@ -175,25 +186,73 @@ class ERTBorehole(models.Model):
 
 
 
-    # @api.depends('direct_shear_ids.shear_stress', 'direct_shear_ids.applied_normal_stress')
-    def _compute_direct_shear_graph(self):
+    @api.depends('direct_shear_ids.applied_normal_stress', 'direct_shear_ids.shear_stress')
+    def _compute_shear_parameters(self):
         for borehole in self:
-            if not borehole.direct_shear_ids:
+            # 1. Collect Data Points
+            if not borehole.direct_shear_ids or len(borehole.direct_shear_ids) < 2:
+                # Need at least 2 points to draw a line, 3 is standard for reliability
+                borehole.cohesion = 0.0
+                borehole.angle_of_internal_friction = 0.0
                 borehole.direct_shear_graph = False
                 continue
 
-            # Data extraction
-            # normal_stress = [l.applied_normal_stress for l in borehole.direct_shear_ids]
-            # shear_stress = [l.shear_stress for l in borehole.direct_shear_ids]
+            # Assuming all direct_shear_ids records belong to a single failure envelope
+            normal_stresses = [test.applied_normal_stress for test in borehole.direct_shear_ids]
+            shear_stresses = [test.shear_stress for test in borehole.direct_shear_ids]
             
-            # # Matplotlib code for Direct Shear Graph (as previously provided)
-            # # Make sure to handle potential empty lists if there is no data
+            x = np.array(normal_stresses)
+            y = np.array(shear_stresses)
+
+            # 2. Perform Linear Regression (y = m*x + c)
+            # slope (m) = tan(phi), intercept (c) = cohesion
+            slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
             
-            # # Save to buffer and encode
-            # buf = io.BytesIO()
-            # plt.savefig(buf, format="png", bbox_inches="tight", dpi=180)
-            # plt.close(fig)
-            # borehole.direct_shear_graph = base64.b64encode(buf.getvalue())
+            # 3. Calculate Cohesion (c) and Angle of Internal Friction (phi)
+            cohesion = intercept
+            angle_phi_radians = math.atan(slope)
+            angle_phi_degrees = round(math.degrees(angle_phi_radians),2)
+            
+            # Store the calculated values
+            borehole.cohesion = cohesion
+            borehole.angle_of_internal_friction = angle_phi_degrees
+
+            # 4. Generate the Plot
+            plt.style.use('seaborn-v0_8-whitegrid')
+            fig, ax = plt.subplots(figsize=(8, 6))
+
+            # Plot the raw data points
+            ax.scatter(x, y, color='red', marker='s', label='Observed Test Points')
+
+            # Plot the best-fit line (Failure Envelope)
+            # Extend the line slightly beyond the last point
+            x_max = np.max(x)
+            x_fit = np.linspace(0, x_max + (x_max * 0.1), 10) 
+            y_fit = slope * x_fit + intercept
+            
+            ax.plot(x_fit, y_fit, color='blue', linestyle='-', 
+                    label=f'Failure Envelope: C={cohesion:.2f} $\\frac{{kg}}{{cm^2}}$, $\\phi$={angle_phi_degrees:.2f}\u00b0')
+
+            # Format the plot
+            ax.set_title(f'Direct Shear Test Results (BH-{borehole.name})', pad=20)
+            ax.set_xlabel('Normal Stress ($\u03C3$) [kg/cm\u00b2]')
+            ax.set_ylabel('Shear Stress ($\u03C4$) [kg/cm\u00b2]')
+            
+            # Set the origin to (0,0)
+            ax.set_xlim(left=0) 
+            ax.set_ylim(bottom=0)
+            
+            ax.legend()
+            ax.grid(True)
+            plt.tight_layout()
+
+            # 5. Save and Store the Graph
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            plt.close(fig)
+
+            borehole.direct_shear_graph = base64.b64encode(buffer.getvalue())
+            buffer.close()
 
     # @api.depends('grain_size_ids.percent_passing') # You'll need to define this field
     def _compute_grain_size_graph(self):
@@ -241,16 +300,16 @@ class SoilBoreholeParent(models.Model):
     borehole_ids = fields.One2many("soil.borehole", "parent_id", string="Boreholes")
 
     
-class SoilBoreholeLine(models.Model):
-    _name = "soil.borehole.line"
-    _description = "Borehole Line Data"
+# class SoilBoreholeLine(models.Model):
+#     _name = "soil.borehole.line"
+#     _description = "Borehole Line Data"
 
-    borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
-    depth = fields.Float("Depth (m)")
-    footing_size = fields.Char("Size of footing (m)")
-    shear_criteria = fields.Float("Shear criteria (T/m²)")
-    settlement_criteria = fields.Float("Settlement criteria (T/m²)")
-    recommended_sbc = fields.Float("Recommended SBC (T/m²)")
+#     borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
+#     depth = fields.Float("Depth (m)")
+#     footing_size = fields.Char("Size of footing (m)")
+#     shear_criteria = fields.Float("Shear criteria (T/m²)")
+#     settlement_criteria = fields.Float("Settlement criteria (T/m²)")
+#     recommended_sbc = fields.Float("Recommended SBC (T/m²)")
 
 
 class SoilBoreholeNValue(models.Model):
@@ -425,11 +484,35 @@ class DirectShearTest(models.Model):
     _description = 'Direct Shear Test'
 
     borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
-    applied_normal_stress = fields.Float(string='Applied Normal Stress (Kg/cm²)')
+    applied_normal_stress = fields.Integer(string='Applied Normal Stress (Kg/cm²)')
     no_of_divisions = fields.Integer(string='No. of Divisions of Proving ring dial Gauge')
-    shear_load = fields.Float(string='Shear Load (kg)')
-    corrected_area = fields.Float(string='Corrected Area (cm2)')
-    shear_stress = fields.Float(string='Shear Stress (Kg/cm²)')
+    proving_ring_correction_factor = fields.Float(string='Proving ring correction factor (kg/division)')
+    shear_load = fields.Float(string='Shear Load (kg)',compute="_compute_shear_load")
+    area_of_specimen = fields.Float(string='Area of specimen before starting the test (cm2) (A0)')
+    displacement_dial = fields.Integer(string='Displacement dial gauge reading')
+    displacement = fields.Float(string='Displacement in cm (δ)',compute="_compute_displacement", digits=(16, 3))
+    corrected_area = fields.Float(string='Corrected Area \n (A0-( δ *6)) or A0 (1- δ /6) in cm2 (A)',compute="_compute_corrected_area")
+    shear_stress = fields.Float(string='Shear Stress (Kg/cm²)',compute="_compute_shear_stress")
+
+    @api.depends('proving_ring_correction_factor','no_of_divisions')
+    def _compute_shear_load(self):
+        for record in self:
+            record.shear_load = round(record.proving_ring_correction_factor * record.no_of_divisions,2)
+
+    @api.depends('displacement_dial')
+    def _compute_displacement(self):
+        for record in self:
+            record.displacement = round(record.displacement_dial/1000,3)
+
+    @api.depends('area_of_specimen','displacement')
+    def _compute_corrected_area(self):
+        for record in self:
+            record.corrected_area = round(record.area_of_specimen*(1-record.displacement/6),2)
+
+    @api.depends('shear_load','corrected_area')
+    def _compute_shear_stress(self):
+        for record in self:
+            record.shear_stress = record.shear_load / record.corrected_area
 
 class GrainSizeAnalysis(models.Model):
     _name = 'grain.size.analysis'

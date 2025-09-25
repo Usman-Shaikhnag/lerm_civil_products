@@ -11,7 +11,7 @@
                     <h1>
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
-                     <!-- SBC Table -->
+                     <!-- SBC Table
                     <div>
                         <field name="line_ids" nolabel="1">
                             <tree editable="bottom">
@@ -22,11 +22,11 @@
                                 <field name="recommended_sbc"/>
                             </tree>
                         </field>
-                    </div>
+                    </div> -->
 
                     <!-- N-Values for Graph -->
                     <div>
-                        <field name="nvalue_ids" nolabel="1">
+                        <field name="nvalue_ids" class="custom_table_borders" nolabel="1">
                             <tree editable="bottom">
                                 <field name="top_depth"/>
                                 <field name="bottom_depth"/>
@@ -45,7 +45,7 @@
                     </div>
 
                     <div>
-                        <field name="spt_n_value_ids">
+                        <field name="spt_n_value_ids" class="custom_table_borders">
                             <tree editable="bottom">
                                 <field name="depth"/>
                                 <field name="bulk_den"/>
@@ -60,19 +60,35 @@
                             </tree>
                         </field>
                         <button name="generate_corrected_spt_graph" type="object" string="Generate Graph" class="btn-primary"/>
+                    </div>
+                    <div>
                         <field name="corrected_spt_graph" widget="image"/>
                     </div>
 
+                    <!-- <div class="custom_table_borders">
+                        <field name="cohesion"/>
+                        <field name="angle_of_internal_friction"/>
+                    </div> -->
+                    
                     <div>
-                        <field name="direct_shear_ids">
+                        <field name="direct_shear_ids" class="custom_table_borders">
                             <tree editable="bottom">
                                 <field name="applied_normal_stress"/>
+                                <field name="no_of_divisions"/>
+                                <field name="proving_ring_correction_factor"/>
+                                <field name="shear_load"/>
+                                <field name="area_of_specimen"/>
+                                <field name="displacement_dial"/>
+                                <field name="displacement"/>
+                                <field name="corrected_area"/>
                                 <field name="shear_stress"/>
-                                </tree>
+                            </tree>
                         </field>
-                        <field name="direct_shear_graph" widget="image"/>
                     </div>
-                    
+                    <div>
+                        <field name="direct_shear_graph" widget="image" nolabel="1"/>
+                    </div>
+                                            
                     <div>
                         <field name="grain_size_ids">
                             <tree editable="bottom">
