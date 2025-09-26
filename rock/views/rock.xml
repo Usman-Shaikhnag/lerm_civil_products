@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_rock" model="ir.ui.view">
+        <field name="name">mechanical.rock.form</field>
+        <field name="model">mechanical.rock</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                        <h1>
+                            <field name="name_rock"  readonly="1" nolabel="1"/>
+                        </h1>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+                    <group/>
+
+                     <!-- <group > -->
+                     <div>
+
+                     <h1 class="text-center">
+                            <field name="name"  readonly="1" nolabel="1"/>
+                    </h1>
+                    </div>
+                    <group/>
+
+
+                   <div class="custom_table_borders">
+                    <field name="child_lines" nolabel="1" colspan="2" modifiers="{'invisible': true, 'invisible_domain': ['|', ('porosity_visible', '=', False), '|', ('specific_gravity_visible', '=', False), '|', ('dry_density_visible', '=', False), ('water_absorption_visible', '=', False)]}" >
+
+                            <tree editable="bottom">
+                                <!-- <field name='sr_no'/> -->
+                                <field name='location'/>
+                                <field name='sample_no'/>
+                                <field name='depth'/>
+                                <field name='ssd_weight'/>
+                                <field name='wt_sample_water'/>
+                                <field name='oven_dry_wt'/>
+                                <field name='porosity'/>
+                                <field name='water_absorption'/>
+                                <field name='dry_density'/>
+                                <field name='saturated_spc_gravity'/>
+                            </tree>
+                          
+                    </field> 
+                    </div>
+                            <!-- <group style="white-space: nowrap; width:50%;">
+                               <field name='avg_porosity'/>
+                            </group>
+                            <group style="white-space: nowrap; width:50%;">
+                               <field name='avg_water_absorption'/>
+                            </group>  
+                            <group style="white-space: nowrap; width:50%;">
+                               <field name='avg_dry_density'/>
+                            </group>
+                            <group style="white-space: nowrap; width:50%;">
+                               <field name='avg_saturated_spc_gravity'/>
+                            </group>  -->
+
+                            <div style="display:flex;">
+                    <div style="width:50%;">
+                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%">
+                         <tbody>
+                            <tr>
+                            <td><span>Average porosity</span></td>
+                            <td><field name='avg_porosity'/></td>
+                            </tr>
+                            <tr>
+                            <td><span>Average Water Absorption</span></td>
+                            <td><field name='avg_water_absorption'/></td>
+                            </tr>
+                            </tbody>
+                      </table>
+                    </div>
+
+
+                    <div style="width:50%;">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                            <tr>
+                            <td><span>Dry Density</span></td>
+                            <td><field name='avg_dry_density'/></td>
+                            </tr>
+                            <tr>
+                            <td><span>Saturated Specific Gravity</span></td>
+                            <td><field name='avg_saturated_spc_gravity'/></td>
+                            </tr>
+                            </tbody>
+                      </table>
+                    </div>
+
+                    </div>
+                    <group/>
+                    <group/>
+
+                            <!-- <group style="white-space: nowrap; width:50%;" modifiers="{'invisible': true, 'invisible_domain': ['|', ['|', ['|', ['porosity_visible', '=', False], ['specific_gravity_visible', '=', False]], ['dry_density_visible', '=', False]], ['water_absorption_visible', '=', False]]}">
+                               <field name='avg_porosity'/>
+                               <field name='avg_water_absorption'/>
+                               <field name='avg_dry_density'/>
+                               <field name='avg_saturated_spc_gravity'/>
+                            </group>  -->
+
+
+
+                    <!-- USC -->
+                    <div invisible="not usc_visible">
+                        <h1 class="text-center">
+                            <field name="usc_name" readonly="1" nolabel="1"/>
+                            <field name="usc_visible" invisible="1"/>
+                            <field name="porosity_visible" invisible="1"/>
+                            <field name="specific_gravity_visible" invisible="1"/>
+                            <field name="dry_density_visible" invisible="1"/>
+                            <field name="water_absorption_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not usc_visible">
+                        <field name="child_lines1" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='location'/>
+                                <field name='sr_no'/>
+                                <field name='depth'/>
+                                <field name='diameter'/>
+                                <field name='length'/>
+                                <field name='ld_ratio'/>
+                                <field name='area'/>
+                                <field name='load'/>
+                                <field name='usc'/>
+                            </tree>
+                         </field> 
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                         <tbody>
+                            <tr>
+                            <td><span>Average USC</span></td>
+                            <td><field name='avg_usc' col="4"/></td>
+                            </tr>
+                            </tbody>
+                      </table>
+
+                    <!-- <group invisible="not usc_visible">
+                        <field name='avg_usc' col="4"/>
+                    </group> -->
+                      <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+                     
+                </sheet>
+            </form>
+        </field>
+    </record>
+   
+
+
+    </data>
+</odoo>
