@@ -103,14 +103,20 @@
 				<div class="footerQR" style="">
 					<div style="">
 						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+						
 					</div>
 					
 					<div style="">
 						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="height: 65px;" />
 					</div>
-					<div style="">
+					<!-- <div style="">
 						<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 65px; height: 60px"/>
+					</div> -->
+					<div>
+					<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+                         style="width:75px; height:70px;"/>
 					</div>
+					
 
 				</div>
                 <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
