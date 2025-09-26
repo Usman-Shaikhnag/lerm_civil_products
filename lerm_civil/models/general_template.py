@@ -1332,3 +1332,7 @@ class FineAggregateRep(models.AbstractModel):
             'stamp' : inreport_value,
             'nabl' : nabl
         }
+
+     
+
+
