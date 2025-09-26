@@ -8,10 +8,25 @@ from matplotlib.spines import Spine
 from matplotlib.path import Path
 from matplotlib.transforms import Affine2D
 import matplotlib
+from scipy import stats
 import numpy as np
 import io, base64
 from math import sqrt, pi
 import math
+# Helper function for Interpolation
+# def interpolate_d_value(percent_passing, sieve_size_log, target_percent):
+#     """Interpolates the particle size (D value) corresponding to a target percent passing."""
+#     try:
+#         # Interpolate in log-space for particle size
+#         log_d_value = np.interp(
+#             target_percent, 
+#             percent_passing, 
+#             sieve_size_log
+#         )
+#         # Convert back to linear size (mm)
+#         return np.exp10(log_d_value)
+#     except Exception:
+#         return 0.0
 
 class ERTBorehole(models.Model):
     _name = "soil.borehole"
@@ -19,86 +34,238 @@ class ERTBorehole(models.Model):
     name = fields.Char(string="Name", required=True, copy=False, readonly=True, default='New')
     parent_id = fields.Many2one('soil.borehole.parent')
 
-    line_ids = fields.One2many("soil.borehole.line", "borehole_id", string="SBC Lines")
+    # line_ids = fields.One2many("soil.borehole.line", "borehole_id", string="SBC Lines")
     nvalue_ids = fields.One2many("soil.borehole.nvalue", "borehole_id", string="N-Vlaues")
-    graph_image = fields.Binary("Borehole Graph", compute="_compute_graph", store=False)
+    graph_image = fields.Binary("Borehole Graph")
 
-    @api.depends('nvalue_ids.top_depth','nvalue_ids.bottom_depth','nvalue_ids.n_value','nvalue_ids.soil_pattern','nvalue_ids.classification')
-    def _compute_graph(self):
+    # Add these three One2many fields
+    spt_n_value_ids = fields.One2many("spt.n.value", "borehole_id", string="Corrected SPT N-Values")
+    corrected_spt_graph = fields.Binary("Correct SPT Graph")
+    
+    direct_shear_ids = fields.One2many("direct.shear.test", "borehole_id", string="Direct Shear Tests")
+    direct_shear_graph = fields.Binary("Direct Shear Graph", compute="_compute_shear_parameters", store=False)
+    cohesion = fields.Float(
+        string='Cohesion (C) (Kg/cm²)', 
+        compute='_compute_shear_parameters', 
+        store=True,
+        digits=(16, 3)
+    )
+    angle_of_internal_friction = fields.Float(
+        string='Angle of Internal Friction (\u03C6) (\u00b0)', 
+        compute='_compute_shear_parameters', 
+        store=True,
+        digits=(16, 2)
+    )
+
+      # One-to-many link to the tests
+    grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis Tests")
+    grain_size_graph = fields.Binary("Grain Size Graph", compute="_compute_grain_size_parameters", store=False)
+
+
+    # ... other fields and methods ...
+
+    def generate_corrected_spt_graph(self):
+        self.ensure_one()
+
+        if not self.spt_n_value_ids:
+            self.corrected_spt_graph = False
+            return
+
+        sorted_spt_values = sorted(self.spt_n_value_ids, key=lambda r: r.depth)
+
+        depths = [r.depth for r in sorted_spt_values]
+        observed_n_values = [r.observed_n_value for r in sorted_spt_values]
+        corrected_n_values = [r.corrected_n_value for r in sorted_spt_values]
+
+        # Create the plot
+        plt.style.use('seaborn-v0_8-whitegrid')
+        fig, ax = plt.subplots(figsize=(10, 8))
+
+        # Plot the data
+        ax.plot(observed_n_values, depths, marker='D', linestyle='-', color='b', label='Observed N value')
+        ax.plot(corrected_n_values, depths, marker='s', linestyle='-', color='r', label='Corrected N value')
+
+        # Format the plot
+        ax.set_xlabel('SPT BLOWS PER 30 CM PENETRATION')
+        ax.set_ylabel('DEPTH BELOW GROUND LEVEL m.')
+        ax.set_title('SPT BLOWS PER 30 CM PENETRATION', y=1.05)
+        ax.invert_yaxis()
+        ax.set_xlim(left=0)
+        ax.set_xticks(range(0, 180, 10))
+        ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), fancybox=True, shadow=True, ncol=2)
+        plt.tight_layout(rect=[0, 0.1, 1, 1])
+
+        # Save the plot to a BytesIO object
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png')
+        plt.close(fig)
+
+        # Store the graph as base64-encoded binary data
+        self.corrected_spt_graph = base64.b64encode(buffer.getvalue())
+        buffer.close()
+
+    def generate_borehole_graph(self):
         for borehole in self:
             if not borehole.nvalue_ids:
                 borehole.graph_image = False
                 continue
 
-            # Sort lines by top_depth
-            lines = sorted(borehole.nvalue_ids, key=lambda r: r.top_depth or 0)
+            fig, ax = plt.subplots(figsize=(2, 4))
+            lines = sorted(borehole.nvalue_ids, key=lambda l: l.top_depth)
+            min_depth, max_depth = 0, 6.0
 
-            # Determine max depth for plotting
-            max_depth = 0.0
-            for ln in lines:
-                if ln.bottom_depth and ln.bottom_depth > max_depth:
-                    max_depth = ln.bottom_depth
-            if max_depth == 0.0:
-                max_depth = 6.0
+            # Draw log rectangle outline with high zorder to be on top
+            ax.plot([0, 0], [min_depth, max_depth], color="black", zorder=3)
+            ax.plot([1, 1], [min_depth, max_depth], color="black", zorder=3)
+            ax.plot([0, 1], [min_depth, min_depth], color="black", zorder=3)
+            ax.plot([0, 1], [max_depth, max_depth], color="black", zorder=3)
 
-            # Create figure (depth vertical)
-            fig, ax = plt.subplots(figsize=(2.5, 7))   # tweak size as needed
-
-            # Draw each layer as a rectangle (with hatch if requested)
-            for ln in lines:
-                top = ln.top_depth or 0.0
-                bot = ln.bottom_depth or top
-                height = max(0.001, bot - top)
-
-                hatch_style = {"dots": "..", "hatch": "//", "solid": None}.get(ln.soil_pattern, None)
-                rect = patches.Rectangle((0.0, top),    # x, y
-                                        1.0,           # width
-                                        height,        # height
-                                        facecolor='none' if hatch_style else 'white',
-                                        hatch=hatch_style,
-                                        edgecolor='brown',
-                                        linewidth=0.7)
+            # Map classification to hatches
+            hatch_map = {
+                "poorly_graded": ".....",
+                "well_graded": "\\\\\\\\\\",
+            }
+            
+            # Draw a placeholder segment from 0.0 if the first data point starts later
+            if lines and lines[0].top_depth > min_depth:
+                rect = patches.Rectangle(
+                    (0, min_depth),
+                    1.0,
+                    lines[0].top_depth - min_depth,
+                    edgecolor="none",
+                    facecolor="white",
+                    linewidth=0,
+                    zorder=2
+                )
                 ax.add_patch(rect)
+                # Draw the top and bottom black lines that extend slightly
+                ax.plot([-0.05, 1.05], [min_depth, min_depth], color="black", linewidth=0.5, zorder=3)
+                ax.plot([-0.05, 1.05], [lines[0].top_depth, lines[0].top_depth], color="black", linewidth=0.5, zorder=3)
+            
+            # Soil segments and patterns
+            for line in lines:
+                hatch_style = hatch_map.get(line.classification, None)
+                
+                rect = patches.Rectangle(
+                    (0, line.top_depth),
+                    1.0,
+                    line.bottom_depth - line.top_depth,
+                    edgecolor="darkgoldenrod",  # Change this to "none" to remove full border
+                    facecolor="white" if hatch_style else "lightgrey",
+                    hatch=hatch_style,
+                    linewidth=0,
+                    zorder=2
+                )
+                ax.add_patch(rect)
+                
+                # Draw black horizontal lines at the top and bottom of each segment
+                # The lines extend from -0.05 to 1.05 on the x-axis
+                ax.plot([-0.05, 1.05], [line.top_depth, line.top_depth], color="black", linewidth=0.5, zorder=3)
+                ax.plot([-0.05, 1.05], [line.bottom_depth, line.bottom_depth], color="black", linewidth=0.5, zorder=3)
 
-                # classification text inside block (centered)
-                if ln.classification:
-                    ax.text(0.5, top + height/2.0, str(ln.classification),
-                            va='center', ha='center', fontsize=6, wrap=True)
+            for line in lines:
+                # Place N-Value labels at the top depth
+                if line.n_value:
+                    ax.text(-0.15, line.top_depth, str(line.n_value), ha="right", va="center",
+                            fontsize=9, color="brown", fontweight="bold")
+                
+                # Place UDS label at the top depth, checking for "UDS" as a substring
+                if line.sample_type and "UDS" in line.sample_type.strip().upper():
+                    ax.text(-0.15, line.top_depth, "UDS", ha="right", va="center",
+                            fontsize=9, color="black")
 
-                # N-value on left at middle of layer
-                if ln.n_value is not None and ln.n_value != '':
-                    ax.text(-0.05, top + height/2.0, str(ln.n_value),
-                            va='center', ha='right', fontsize=8)
+            # Depth labels on right
+            for d in np.arange(min_depth, max_depth + 0.5, 0.5):
+                ax.text(1.05, d, f"{d:.1f}m", fontsize=8, ha="left", va="center")
 
-                # sample type at left small
-                if ln.sample_type:
-                    ax.text(-0.4, top + height/2.0, str(ln.sample_type),
-                            va='center', ha='right', fontsize=7, color='gray')
+            # N-Value label + straight arrow
+            ax.text(-0.20, -0.4, "N-Value", color="blue", fontsize=10,
+                    ha="center", fontweight="bold")
+            ax.annotate("",
+                        xy=(-0.20, 0.1), xytext=(-0.20, -0.35),
+                        arrowprops=dict(facecolor='red', arrowstyle="->"))
 
-            # Depth labels to the right
-            step = 0.5 if max_depth <= 6 else 1
-            d = 0.0
-            while d <= max_depth + 0.0001:
-                ax.text(1.15, d, f"{d:.2f}m" if step<1 else f"{int(d)}.0m",
-                        va='center', ha='left', fontsize=7)
-                d += step
+            # Borehole name top center
+            ax.text(0.5, -0.45, borehole.name or "", color="red", fontsize=12,
+                    ha="center", va="bottom", fontweight="bold")
 
-            # Invert Y so depth increases downward
-            ax.set_ylim(max_depth, 0)
-            ax.set_xlim(-0.6, 1.4)
+            ax.set_xlim(-0.3, 1.3)
+            ax.set_ylim(max_depth, -0.5)
+            ax.axis("off")
 
-            ax.axis('off')
-            ax.set_title(borehole.name or '', color='red', fontsize=10)
-
-            # Save to buffer
             buf = io.BytesIO()
-            plt.savefig(buf, format='png', bbox_inches='tight', dpi=150)
+            plt.savefig(buf, format="png", bbox_inches="tight", dpi=180)
             plt.close(fig)
-            buf.seek(0)
-            borehole.graph_image = base64.b64encode(buf.getvalue()).decode('ascii')
+            borehole.graph_image = base64.b64encode(buf.getvalue())
 
+    @api.depends('direct_shear_ids.applied_normal_stress', 'direct_shear_ids.shear_stress')
+    def _compute_shear_parameters(self):
+        for borehole in self:
+            # 1. Collect Data Points
+            if not borehole.direct_shear_ids or len(borehole.direct_shear_ids) < 2:
+                # Need at least 2 points to draw a line, 3 is standard for reliability
+                borehole.cohesion = 0.0
+                borehole.angle_of_internal_friction = 0.0
+                borehole.direct_shear_graph = False
+                continue
 
-    
+            # Assuming all direct_shear_ids records belong to a single failure envelope
+            normal_stresses = [test.applied_normal_stress for test in borehole.direct_shear_ids]
+            shear_stresses = [test.shear_stress for test in borehole.direct_shear_ids]
+            
+            x = np.array(normal_stresses)
+            y = np.array(shear_stresses)
+
+            # 2. Perform Linear Regression (y = m*x + c)
+            # slope (m) = tan(phi), intercept (c) = cohesion
+            slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+            
+            # 3. Calculate Cohesion (c) and Angle of Internal Friction (phi)
+            cohesion = intercept
+            angle_phi_radians = math.atan(slope)
+            angle_phi_degrees = round(math.degrees(angle_phi_radians),2)
+            
+            # Store the calculated values
+            borehole.cohesion = cohesion
+            borehole.angle_of_internal_friction = angle_phi_degrees
+
+            # 4. Generate the Plot
+            plt.style.use('seaborn-v0_8-whitegrid')
+            fig, ax = plt.subplots(figsize=(8, 6))
+
+            # Plot the raw data points
+            ax.scatter(x, y, color='red', marker='s', label='Observed Test Points')
+
+            # Plot the best-fit line (Failure Envelope)
+            # Extend the line slightly beyond the last point
+            x_max = np.max(x)
+            x_fit = np.linspace(0, x_max + (x_max * 0.1), 10) 
+            y_fit = slope * x_fit + intercept
+            
+            ax.plot(x_fit, y_fit, color='blue', linestyle='-', 
+                    label=f'Failure Envelope: C={cohesion:.2f} $\\frac{{kg}}{{cm^2}}$, $\\phi$={angle_phi_degrees:.2f}\u00b0')
+
+            # Format the plot
+            ax.set_title(f'Direct Shear Test Results (BH-{borehole.name})', pad=20)
+            ax.set_xlabel('Normal Stress ($\u03C3$) [kg/cm\u00b2]')
+            ax.set_ylabel('Shear Stress ($\u03C4$) [kg/cm\u00b2]')
+            
+            # Set the origin to (0,0)
+            ax.set_xlim(left=0) 
+            ax.set_ylim(bottom=0)
+            
+            ax.legend()
+            ax.grid(True)
+            plt.tight_layout()
+
+            # 5. Save and Store the Graph
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            plt.close(fig)
+
+            borehole.direct_shear_graph = base64.b64encode(buffer.getvalue())
+            buffer.close()
+
 
     @api.model
     def create(self, vals):
@@ -128,16 +295,16 @@ class SoilBoreholeParent(models.Model):
     borehole_ids = fields.One2many("soil.borehole", "parent_id", string="Boreholes")
 
     
-class SoilBoreholeLine(models.Model):
-    _name = "soil.borehole.line"
-    _description = "Borehole Line Data"
+# class SoilBoreholeLine(models.Model):
+#     _name = "soil.borehole.line"
+#     _description = "Borehole Line Data"
 
-    borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
-    depth = fields.Float("Depth (m)")
-    footing_size = fields.Char("Size of footing (m)")
-    shear_criteria = fields.Float("Shear criteria (T/m²)")
-    settlement_criteria = fields.Float("Settlement criteria (T/m²)")
-    recommended_sbc = fields.Float("Recommended SBC (T/m²)")
+#     borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
+#     depth = fields.Float("Depth (m)")
+#     footing_size = fields.Char("Size of footing (m)")
+#     shear_criteria = fields.Float("Shear criteria (T/m²)")
+#     settlement_criteria = fields.Float("Settlement criteria (T/m²)")
+#     recommended_sbc = fields.Float("Recommended SBC (T/m²)")
 
 
 class SoilBoreholeNValue(models.Model):
@@ -145,22 +312,216 @@ class SoilBoreholeNValue(models.Model):
     _description = "Borehole N-Values"
 
     borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
-    sample_type = fields.Char("Sample Type")       # e.g., SPT-1, UDS-1, DRILLING
-    symbol = fields.Char("Symbol")                 # e.g., SP, CL, etc.
-    classification = fields.Text("Soil Classification / Description")
-    remarks = fields.Text("Remarks")
+    sample_type = fields.Char("Sample Type")
+    symbol = fields.Char("Symbol")                
+    classification = fields.Selection([
+        ('poorly_graded','Poorly Graded Sand'),
+        ('well_graded','Well Graded Sand')
+    ])
 
     top_depth = fields.Float("Top Depth (m)")
     bottom_depth = fields.Float("Bottom Depth (m)")
     n15 = fields.Integer("N @ 15 cm")
     n30 = fields.Integer("N @ 30 cm")
     n45 = fields.Integer("N @ 45 cm")
-    n_value = fields.Integer("Total N Value")
-    core_recovery = fields.Float("Core Recovery (%)")
-    rqd = fields.Float("RQD (%)")
+    # This field is now computed automatically
+    n_value = fields.Integer("Total N Value", compute="_compute_n_value", store=True)
 
-    soil_pattern = fields.Selection([
-        ("dots", "Dots"),
-        ("hatch", "Hatch"),
-        ("solid", "Solid"),
-    ], string="Soil Pattern")
+    @api.depends('n30', 'n45')
+    def _compute_n_value(self):
+        for record in self:
+            record.n_value = record.n30 + record.n45
+
+
+
+class CorrectedSptNValue(models.Model):
+    _name = 'spt.n.value'
+    _description = 'Corrected SPT (N) Value'
+
+    borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
+    sr_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
+    depth = fields.Float(string='Depth (m)')
+    bulk_den = fields.Float(string='Bulk Density (T/m2)')
+    overburden_pressure = fields.Float(string='Overburden Pressure (T/m2)',compute="_compute_overburden_pressure", digits=(16, 3))
+    pore_water_pressure = fields.Float(string="Pore Water Pressure from layer",compute="_compute_pore_water_pressure", digits=(16, 3))
+    total_pore_water_pressure = fields.Float(string="total pore water pressure",compute="_compute_total_pore_water_pressure", digits=(16, 3))
+    effective_overburden_pressure = fields.Float(string='Effective Overburden Pressure (T/m2)', compute="_compute_effective_overburden_pressure", digits=(16, 3))
+    effective_overburden_pressure_kg = fields.Float(string='Effective Overburden Pressure (kg/cm2)', compute="_compute_effective_overburden_pressure_kg", digits=(16, 3))
+    overburden_correction_factor = fields.Float(string="OVERBURDEN CORRECTION FACTOR",compute="_compute_overburden_correction_factor", digits=(16, 3))
+    observed_n_value = fields.Integer(string='Observed SPT N Value',compute="_compute_observed_n_value")
+    corrected_n_value = fields.Integer(string='Corrected SPT (N\') Value',compute="_compute_corrected_n_value")
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('borehole_id'):
+            existing_records = self.search([('borehole_id', '=', vals['borehole_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+        return super().create(vals)  # ✅ must return
+
+    @api.depends('depth', 'borehole_id')
+    def _compute_pore_water_pressure(self):
+        for record in self:
+            record.pore_water_pressure = 0.0  # default
+
+            if not record.borehole_id or record.depth is None:
+                continue
+
+            # fetch all records of this borehole sorted by depth
+            borehole_records = self.search(
+                [('borehole_id', '=', record.borehole_id.id)],
+                order="depth asc"
+            )
+
+            prev_depth = 0.0
+            for rec in borehole_records:
+                if rec.id == record.id:
+                    record.pore_water_pressure = record.depth - prev_depth
+                    break
+                prev_depth = rec.depth
+
+
+    @api.depends('pore_water_pressure', 'borehole_id')
+    def _compute_total_pore_water_pressure(self):
+        for record in self:
+            record.total_pore_water_pressure = 0.0  # default
+
+            if not record.borehole_id:
+                continue
+
+            # fetch all records for this borehole sorted by depth
+            borehole_records = self.search(
+                [('borehole_id', '=', record.borehole_id.id)],
+                order="depth asc"
+            )
+
+            cumulative_pressure = 0.0
+            for rec in borehole_records:
+                cumulative_pressure += rec.pore_water_pressure or 0.0
+                if rec.id == record.id:
+                    record.total_pore_water_pressure = round(cumulative_pressure, 3)
+                    break
+
+
+    @api.depends('depth', 'bulk_den', 'borehole_id')
+    def _compute_overburden_pressure(self):
+        for record in self:
+            # default
+            record.overburden_pressure = 0.0  
+
+            # skip if no borehole or invalid values
+            if not record.borehole_id or record.depth is None or record.bulk_den is None:
+                continue
+
+            # fetch all records of this borehole sorted by depth
+            borehole_records = self.search(
+                [('borehole_id', '=', record.borehole_id.id)],
+                order="depth asc"
+            )
+
+            cumulative_pressure = 0.0
+            prev_depth = 0.0
+
+            for rec in borehole_records:
+                if rec.id == record.id:
+                    if prev_depth == 0:  # first record
+                        record.overburden_pressure = round(rec.depth * rec.bulk_den, 3)
+                    else:  # subsequent record
+                        record.overburden_pressure = round(cumulative_pressure + ((rec.depth - prev_depth) * rec.bulk_den), 3)
+                    break
+                else:
+                    if prev_depth == 0:
+                        cumulative_pressure = rec.depth * rec.bulk_den
+                    else:
+                        cumulative_pressure += (rec.depth - prev_depth) * rec.bulk_den
+                    prev_depth = rec.depth
+
+
+    @api.depends('overburden_pressure', 'total_pore_water_pressure')
+    def _compute_effective_overburden_pressure(self):
+        for record in self:
+            record.effective_overburden_pressure = round((record.overburden_pressure or 0.0) - (record.total_pore_water_pressure or 0.0), 3)
+
+    @api.depends('effective_overburden_pressure')
+    def _compute_effective_overburden_pressure_kg(self):
+        for record in self:
+            record.effective_overburden_pressure_kg = round(record.effective_overburden_pressure / 10, 3)
+    
+    @api.depends('borehole_id')
+    def _compute_observed_n_value(self):
+        for record in self:
+            borehole_records = self.env["soil.borehole.nvalue"].search([('borehole_id', '=', record.borehole_id.id),("top_depth","=",record.depth)],limit=1)
+            record.observed_n_value = borehole_records.n_value
+    
+    
+    @api.depends('effective_overburden_pressure_kg')
+    def _compute_overburden_correction_factor(self):
+        for record in self:
+            record.overburden_correction_factor = 0.0
+            v = record.effective_overburden_pressure_kg
+            # guard against zero/negative values
+            if not v or v <= 0:
+                continue
+            # log base 10 and round to 3 decimals
+            record.overburden_correction_factor = round(0.77 * math.log10(20.0 / v),3)
+    
+    
+    @api.depends('overburden_correction_factor','observed_n_value')
+    def _compute_corrected_n_value(self):
+        for record in self:
+            record.corrected_n_value = round(record.overburden_correction_factor * record.observed_n_value)
+
+
+
+class DirectShearTest(models.Model):
+    _name = 'direct.shear.test'
+    _description = 'Direct Shear Test'
+
+    borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
+    applied_normal_stress = fields.Integer(string='Applied Normal Stress (Kg/cm²)')
+    no_of_divisions = fields.Integer(string='No. of Divisions of Proving ring dial Gauge')
+    proving_ring_correction_factor = fields.Float(string='Proving ring correction factor (kg/division)')
+    shear_load = fields.Float(string='Shear Load (kg)',compute="_compute_shear_load")
+    area_of_specimen = fields.Float(string='Area of specimen before starting the test (cm2) (A0)')
+    displacement_dial = fields.Integer(string='Displacement dial gauge reading')
+    displacement = fields.Float(string='Displacement in cm (δ)',compute="_compute_displacement", digits=(16, 3))
+    corrected_area = fields.Float(string='Corrected Area \n (A0-( δ *6)) or A0 (1- δ /6) in cm2 (A)',compute="_compute_corrected_area")
+    shear_stress = fields.Float(string='Shear Stress (Kg/cm²)',compute="_compute_shear_stress")
+
+    @api.depends('proving_ring_correction_factor','no_of_divisions')
+    def _compute_shear_load(self):
+        for record in self:
+            record.shear_load = round(record.proving_ring_correction_factor * record.no_of_divisions,2)
+
+    @api.depends('displacement_dial')
+    def _compute_displacement(self):
+        for record in self:
+            record.displacement = round(record.displacement_dial/1000,3)
+
+    @api.depends('area_of_specimen','displacement')
+    def _compute_corrected_area(self):
+        for record in self:
+            record.corrected_area = round(record.area_of_specimen*(1-record.displacement/6),2)
+
+    @api.depends('shear_load','corrected_area')
+    def _compute_shear_stress(self):
+        for record in self:
+            record.shear_stress = record.shear_load / record.corrected_area
+
+class GrainSizeAnalysisLine(models.Model):
+    _name = 'grain.size.analysis.line'
+    _description = 'Grain Size Analysis Data Point'
+
+    analysis_id = fields.Many2one('grain.size.analysis', string='Analysis', ondelete='cascade')
+    sieve_size_mm = fields.Float(string='Sieve Size (mm)', required=True)
+    percent_passing = fields.Float(string='Percent Passing (%)', required=True)
+
+
+class GrainSizeAnalysis(models.Model):
+    _name = 'grain.size.analysis'
+    _description = 'Grain Size Analysis Test'
+    
+    borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
+    sample_name = fields.Char(string='Sample ID/Depth', required=True) 
+    line_ids = fields.One2many("grain.size.analysis.line", "analysis_id", string="Sieve Analysis Data")
