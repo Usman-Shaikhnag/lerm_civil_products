@@ -88,17 +88,34 @@
                     <div>
                         <field name="direct_shear_graph" widget="image" nolabel="1"/>
                     </div>
+                    <!-- <div>
+                        <field name="d10"/>
+                        <field name="d30"/>
+                        <field name="d60"/>
+                        <field name="cu"/>
+                        <field name="cc"/>
+                    </div>
                                             
                     <div>
                         <field name="grain_size_ids">
-                            <tree editable="bottom">
-                                <field name="depth"/>
-                                <field name="gravel_percentage"/>
-                                <field name="silt_percentage"/>
-                                </tree>
+                            <tree>
+                                <field name="sample_name"/>
+                                <field name="line_ids"/> 
+                            </tree>
+                            <form>
+                                <div>
+                                    <field name="sample_name"/>
+                                    <field name="line_ids">
+                                        <tree editable="bottom">
+                                            <field name="sieve_size_mm"/>
+                                            <field name="percent_passing"/>
+                                        </tree>
+                                    </field>
+                                </div>
+                            </form>
                         </field>
                         <field name="grain_size_graph" widget="image"/>
-                    </div>
+                    </div> -->
 
                 </sheet>
             </form>

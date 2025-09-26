@@ -13,6 +13,20 @@ import numpy as np
 import io, base64
 from math import sqrt, pi
 import math
+# Helper function for Interpolation
+# def interpolate_d_value(percent_passing, sieve_size_log, target_percent):
+#     """Interpolates the particle size (D value) corresponding to a target percent passing."""
+#     try:
+#         # Interpolate in log-space for particle size
+#         log_d_value = np.interp(
+#             target_percent, 
+#             percent_passing, 
+#             sieve_size_log
+#         )
+#         # Convert back to linear size (mm)
+#         return np.exp10(log_d_value)
+#     except Exception:
+#         return 0.0
 
 class ERTBorehole(models.Model):
     _name = "soil.borehole"
@@ -43,8 +57,9 @@ class ERTBorehole(models.Model):
         digits=(16, 2)
     )
 
-    grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis")
-    grain_size_graph = fields.Binary("Grain Size Graph")
+      # One-to-many link to the tests
+    grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis Tests")
+    grain_size_graph = fields.Binary("Grain Size Graph", compute="_compute_grain_size_parameters", store=False)
 
 
     # ... other fields and methods ...
@@ -183,9 +198,6 @@ class ERTBorehole(models.Model):
             plt.close(fig)
             borehole.graph_image = base64.b64encode(buf.getvalue())
 
-
-
-
     @api.depends('direct_shear_ids.applied_normal_stress', 'direct_shear_ids.shear_stress')
     def _compute_shear_parameters(self):
         for borehole in self:
@@ -254,23 +266,6 @@ class ERTBorehole(models.Model):
             borehole.direct_shear_graph = base64.b64encode(buffer.getvalue())
             buffer.close()
 
-    # @api.depends('grain_size_ids.percent_passing') # You'll need to define this field
-    def _compute_grain_size_graph(self):
-        for borehole in self:
-            if not borehole.grain_size_ids:
-                borehole.grain_size_graph = False
-                continue
-
-            # # Data extraction
-            # # This is more complex, so you'll need to handle the data format from your model...
-            
-            # # Matplotlib code for Grain Size Analysis Graph (as previously provided)...
-
-            # # Save to buffer and encode
-            # buf = io.BytesIO()
-            # plt.savefig(buf, format="png", bbox_inches="tight", dpi=180)
-            # plt.close(fig)
-            # borehole.grain_size_graph = base64.b64encode(buf.getvalue())
 
     @api.model
     def create(self, vals):
@@ -514,17 +509,19 @@ class DirectShearTest(models.Model):
         for record in self:
             record.shear_stress = record.shear_load / record.corrected_area
 
+class GrainSizeAnalysisLine(models.Model):
+    _name = 'grain.size.analysis.line'
+    _description = 'Grain Size Analysis Data Point'
+
+    analysis_id = fields.Many2one('grain.size.analysis', string='Analysis', ondelete='cascade')
+    sieve_size_mm = fields.Float(string='Sieve Size (mm)', required=True)
+    percent_passing = fields.Float(string='Percent Passing (%)', required=True)
+
+
 class GrainSizeAnalysis(models.Model):
     _name = 'grain.size.analysis'
-    _description = 'Grain Size Analysis'
-
+    _description = 'Grain Size Analysis Test'
+    
     borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
-    depth = fields.Float(string='Depth (m)')
-    sample_type = fields.Char(string='Sample Type')
-    gravel_percentage = fields.Float(string='Gravel (%)')
-    coarse_sand_percentage = fields.Float(string='Coarse Sand (%)')
-    medium_sand_percentage = fields.Float(string='Medium Sand (%)')
-    fine_sand_percentage = fields.Float(string='Fine Sand (%)')
-    silt_percentage = fields.Float(string='Silt (%)')
-    clay_percentage = fields.Float(string='Clay (%)')
-    total_percentage = fields.Float(string='Total (%)')
+    sample_name = fields.Char(string='Sample ID/Depth', required=True) 
+    line_ids = fields.One2many("grain.size.analysis.line", "analysis_id", string="Sieve Analysis Data")
