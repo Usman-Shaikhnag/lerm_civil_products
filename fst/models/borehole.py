@@ -14,20 +14,19 @@ import io, base64
 from math import sqrt, pi
 import math
 # Helper function for Interpolation
-# def interpolate_d_value(percent_passing, sieve_size_log, target_percent):
-#     """Interpolates the particle size (D value) corresponding to a target percent passing."""
-#     try:
-#         # Interpolate in log-space for particle size
-#         log_d_value = np.interp(
-#             target_percent, 
-#             percent_passing, 
-#             sieve_size_log
-#         )
-#         # Convert back to linear size (mm)
-#         return np.exp10(log_d_value)
-#     except Exception:
-#         return 0.0
-
+def interpolate_d_value(percent_passing, sieve_size_log, target_percent):
+    """Interpolates the particle size (D value) corresponding to a target percent passing."""
+    try:
+        # np.interp performs linear interpolation on the provided arrays
+        log_d_value = np.interp(
+            target_percent, 
+            percent_passing, 
+            sieve_size_log
+        )
+        # Convert back from log scale to linear size (mm)
+        return np.exp10(log_d_value)
+    except Exception:
+        return 0.0
 class ERTBorehole(models.Model):
     _name = "soil.borehole"
 
@@ -43,26 +42,31 @@ class ERTBorehole(models.Model):
     corrected_spt_graph = fields.Binary("Correct SPT Graph")
     
     direct_shear_ids = fields.One2many("direct.shear.test", "borehole_id", string="Direct Shear Tests")
-    direct_shear_graph = fields.Binary("Direct Shear Graph", compute="_compute_shear_parameters", store=False)
+    direct_shear_graph = fields.Binary("Direct Shear Graph", store=True)
     cohesion = fields.Float(
         string='Cohesion (C) (Kg/cm²)', 
-        compute='_compute_shear_parameters', 
+        # compute='_compute_shear_parameters', 
         store=True,
         digits=(16, 3)
     )
     angle_of_internal_friction = fields.Float(
         string='Angle of Internal Friction (\u03C6) (\u00b0)', 
-        compute='_compute_shear_parameters', 
+        # compute='_compute_shear_parameters', 
         store=True,
         digits=(16, 2)
     )
 
-      # One-to-many link to the tests
+    # Link to the Grain Size Analysis test records (One2many)
     grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis Tests")
-    grain_size_graph = fields.Binary("Grain Size Graph", compute="_compute_grain_size_parameters", store=False)
 
-
-    # ... other fields and methods ...
+    # Fields to store the calculated results and the graph
+    d10 = fields.Float(string='D10 (mm)', store=True, digits=(16, 3))
+    d30 = fields.Float(string='D30 (mm)', store=True, digits=(16, 3))
+    d60 = fields.Float(string='D60 (mm)', store=True, digits=(16, 3))
+    cu = fields.Float(string='Coefficient of Uniformity (Cu)', store=True, digits=(16, 2))
+    cc = fields.Float(string='Coefficient of Curvature (Cc)', store=True, digits=(16, 2))
+    
+    grain_size_graph = fields.Binary("Grain Size Graph", store=True)
 
     def generate_corrected_spt_graph(self):
         self.ensure_one()
@@ -198,8 +202,8 @@ class ERTBorehole(models.Model):
             plt.close(fig)
             borehole.graph_image = base64.b64encode(buf.getvalue())
 
-    @api.depends('direct_shear_ids.applied_normal_stress', 'direct_shear_ids.shear_stress')
-    def _compute_shear_parameters(self):
+    # @api.depends('direct_shear_ids.applied_normal_stress', 'direct_shear_ids.shear_stress')
+    def generate_shear_parameters(self):
         for borehole in self:
             # 1. Collect Data Points
             if not borehole.direct_shear_ids or len(borehole.direct_shear_ids) < 2:
@@ -266,6 +270,163 @@ class ERTBorehole(models.Model):
             borehole.direct_shear_graph = base64.b64encode(buffer.getvalue())
             buffer.close()
 
+    # Dependency changed to rely on the final output field: passing_percent
+    # @api.depends('grain_size_ids.line_ids.passing_percent', 'grain_size_ids.line_ids.sieve_size')
+    def generate_grain_size_parameters(self):
+        for borehole in self:
+            # Reset parameters for the current borehole
+            borehole.d10 = borehole.d30 = borehole.d60 = borehole.cu = borehole.cc = 0.0
+            borehole.grain_size_graph = False
+
+            if not borehole.grain_size_ids:
+                continue
+            
+            # --- 1. D-Value and Cu/Cc Calculation (Using the FIRST valid analysis) ---
+            # Find the first valid analysis to calculate D-values and Cu/Cc
+            first_valid_analysis = None
+            for analysis_candidate in borehole.grain_size_ids:
+                # Data Collection and Validation for calculation
+                if not analysis_candidate.line_ids or len(analysis_candidate.line_ids) < 2:
+                    continue
+
+                valid_lines_calc = []
+                for line in analysis_candidate.line_ids:
+                    try:
+                        sieve_size_mm = float(line.sieve_size)
+                        if sieve_size_mm > 0:
+                            valid_lines_calc.append(line)
+                    except ValueError:
+                        continue
+
+                if len(valid_lines_calc) >= 2:
+                    first_valid_analysis = analysis_candidate
+                    break
+            
+            if not first_valid_analysis:
+                continue
+
+            valid_lines_calc.sort(key=lambda r: float(r.sieve_size), reverse=True)
+
+            sieve_sizes_calc = np.array([float(r.sieve_size) for r in valid_lines_calc])
+            percent_passing_calc = np.array([r.passing_percent for r in valid_lines_calc])
+            
+            # D-Value Calculation Setup
+            sort_indices = np.argsort(percent_passing_calc)
+            sorted_percent_passing = percent_passing_calc[sort_indices]
+            sorted_sieve_sizes = sieve_sizes_calc[sort_indices]
+            log_sorted_sieve_sizes = np.log10(sorted_sieve_sizes)
+
+            # Calculate D-values
+            d10 = interpolate_d_value(sorted_percent_passing, log_sorted_sieve_sizes, 10.0)
+            d30 = interpolate_d_value(sorted_percent_passing, log_sorted_sieve_sizes, 30.0)
+            d60 = interpolate_d_value(sorted_percent_passing, log_sorted_sieve_sizes, 60.0)
+
+            # Calculate Cu and Cc
+            cu = d60 / d10 if d10 > 0 and d60 > 0 else 0
+            cc = (d30**2) / (d60 * d10) if d60 * d10 > 0 and d30 > 0 else 0
+
+            # Store the calculated values
+            borehole.d10 = d10
+            borehole.d30 = d30
+            borehole.d60 = d60
+            borehole.cu = cu
+            borehole.cc = cc
+
+            # --- 2. Generate the Graph (Plotting ALL valid analyses) ---
+            plt.style.use('seaborn-v0_8-whitegrid')
+            fig, ax = plt.subplots(figsize=(12, 8))
+            
+            # List to store all collected data for multi-curve plotting
+            all_sieve_data = []
+
+            # Iterate through all analyses to collect and plot data
+            for analysis in borehole.grain_size_ids:
+                # Re-run data validation for each analysis
+                if not analysis.line_ids or len(analysis.line_ids) < 2:
+                    continue
+                
+                valid_lines = []
+                for line in analysis.line_ids:
+                    try:
+                        sieve_size_mm = float(line.sieve_size)
+                        if sieve_size_mm > 0:
+                            valid_lines.append(line)
+                    except ValueError:
+                        continue
+
+                if len(valid_lines) < 2: continue
+                    
+                valid_lines.sort(key=lambda r: float(r.sieve_size), reverse=True)
+
+                sieve_sizes = np.array([float(r.sieve_size) for r in valid_lines])
+                percent_passing = np.array([r.passing_percent for r in valid_lines])
+                
+                # PLOT THE CONNECTED POINTS (Line graph) FOR THE CURRENT ANALYSIS
+                ax.semilogx(sieve_sizes, percent_passing, marker='o', linestyle='-',
+                            label=f'Sample: {analysis.sample_name}')
+
+            # --- Formatting and Axis Settings ---
+            
+            # 1. Y-axis limit increased to 110 to provide padding for the 100% line
+            ax.set_ylim(0, 110) 
+            ax.set_ylabel('Percent Passing (%)')
+            
+            # X-axis (Log Scale, setting custom ticks and limits)
+            custom_xticks = np.array([0.001, 0.01, 0.1, 1.0, 10.0, 100.0])
+            ax.set_xlim(custom_xticks.min(), custom_xticks.max()) 
+            ax.set_xticks(custom_xticks)
+            
+            ax.get_xaxis().set_major_formatter(plt.ScalarFormatter()) 
+            ax.set_xlabel('Particle Size (mm) [Log Scale]')
+            
+            # 2. Grid lines increased density: set Y-axis minor ticks and enable minor grid on both axes
+            
+            # Y-axis Major Ticks (every 10%)
+            ax.set_yticks(np.arange(0, 101, 10), minor=False) 
+            # Y-axis Minor Ticks (every 5%)
+            ax.set_yticks(np.arange(0, 101, 5), minor=True) 
+
+            # Enable both major and minor grids on both axes
+            ax.grid(True, which="major", axis="both", ls="-", linewidth=0.8)
+            ax.grid(True, which="minor", axis="both", ls="--", linewidth=0.5)
+
+            # Add Legend to differentiate the curves
+            ax.legend(
+                    loc='upper center', # Use 'upper center' as the anchor point *on the legend*
+                    bbox_to_anchor=(0.5, -0.15), # Coordinates (x, y) relative to the axis (0,0 is bottom left)
+                    ncol=len(borehole.grain_size_ids), # Optional: Display legends in one row
+                    fancybox=True,
+                    shadow=True,
+                    fontsize=9
+                )
+
+            # --- Annotations (D-Values) ---
+            # Horizontal guidelines for D-values (10%, 30%, 60%)
+            ax.axhline(y=10, color='red', linestyle='--', linewidth=0.8)
+            ax.axhline(y=30, color='red', linestyle='--', linewidth=0.8)
+            ax.axhline(y=60, color='red', linestyle='--', linewidth=0.8)
+            
+            # Vertical projection lines calculated D-values (from the FIRST valid analysis)
+            if d10 > 0: ax.axvline(x=d10, color='red', linestyle=':', linewidth=0.8)
+            if d30 > 0: ax.axvline(x=d30, color='red', linestyle=':', linewidth=0.8)
+            if d60 > 0: ax.axvline(x=d60, color='red', linestyle=':', linewidth=0.8)
+
+            # Adjust text annotation position to fit in the new Y-axis range
+            ax.text(custom_xticks.min() * 1.5, 105, f'Cu: {cu:.2f}', fontsize=10, color='k')
+            ax.text(custom_xticks.min() * 1.5, 100, f'Cc: {cc:.2f}', fontsize=10, color='k')
+
+            ax.set_title(f'Grain Size Distribution Curve (BH: {borehole.name})', pad=20)
+            
+            plt.tight_layout()
+
+            # --- 3. Save and Store the Graph ---
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            plt.close(fig)
+
+            borehole.grain_size_graph = base64.b64encode(buffer.getvalue())
+            buffer.close()
+
 
     @api.model
     def create(self, vals):
@@ -293,18 +454,6 @@ class SoilBoreholeParent(models.Model):
     date_completed = fields.Date("Date Completed")
 
     borehole_ids = fields.One2many("soil.borehole", "parent_id", string="Boreholes")
-
-    
-# class SoilBoreholeLine(models.Model):
-#     _name = "soil.borehole.line"
-#     _description = "Borehole Line Data"
-
-#     borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
-#     depth = fields.Float("Depth (m)")
-#     footing_size = fields.Char("Size of footing (m)")
-#     shear_criteria = fields.Float("Shear criteria (T/m²)")
-#     settlement_criteria = fields.Float("Settlement criteria (T/m²)")
-#     recommended_sbc = fields.Float("Recommended SBC (T/m²)")
 
 
 class SoilBoreholeNValue(models.Model):
@@ -511,11 +660,67 @@ class DirectShearTest(models.Model):
 
 class GrainSizeAnalysisLine(models.Model):
     _name = 'grain.size.analysis.line'
-    _description = 'Grain Size Analysis Data Point'
-
+    
     analysis_id = fields.Many2one('grain.size.analysis', string='Analysis', ondelete='cascade')
-    sieve_size_mm = fields.Float(string='Sieve Size (mm)', required=True)
-    percent_passing = fields.Float(string='Percent Passing (%)', required=True)
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sieve_size = fields.Char(string="IS Sieve Size mm")
+    percent_retained = fields.Float(string='% of Weight Retained')
+    wt_retained = fields.Float(string="Wt. Retained in gms",compute="_compute_wt_retained")
+    cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained",compute="_compute_cumulative_retained")
+    passing_percent = fields.Float(string="% of wt passing",compute="_compute_passing_percent")
+
+    @api.model
+    def create(self, vals):
+        if vals.get('analysis_id'):
+            existing_records = self.search([('analysis_id', '=', vals['analysis_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(GrainSizeAnalysisLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+    def unlink(self):
+        # Get the parent_id before the deletion
+        parent_id = self[0].parent_id
+
+        res = super(GrainSizeAnalysisLine, self).unlink()
+
+        if parent_id:
+            parent_id.line_ids._reorder_serial_numbers()
+
+        return res
+
+    @api.depends('percent_retained')
+    def _compute_wt_retained(self):
+        for record in self:
+            record.wt_retained = (record.percent_retained*200)/100
+
+    @api.depends('percent_retained', 'analysis_id.line_ids.percent_retained')
+    def _compute_cumulative_retained(self):
+        for record in self:
+            record.cumulative_retained = 0.0  # ✅ default, ensures all records get a value
+            if not record.analysis_id:
+                continue
+
+            # Get all lines of same analysis ordered by serial_no
+            lines = record.analysis_id.line_ids.sorted('serial_no')
+            cumulative = 0.0
+            for line in lines:
+                cumulative += line.percent_retained
+                if line.id == record.id:
+                    record.cumulative_retained = cumulative
+                    break
+
+
+    @api.depends('cumulative_retained')
+    def _compute_passing_percent(self):
+        for record in self:
+            record.passing_percent = max(0.0, 100 - record.cumulative_retained)
 
 
 class GrainSizeAnalysis(models.Model):
@@ -524,4 +729,36 @@ class GrainSizeAnalysis(models.Model):
     
     borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
     sample_name = fields.Char(string='Sample ID/Depth', required=True) 
+    
     line_ids = fields.One2many("grain.size.analysis.line", "analysis_id", string="Sieve Analysis Data")
+
+
+    # 1. Define the specific Sieve Sizes (in mm)
+    STANDARD_SIEVE_SIZES = [
+        100.0, 75.0, 19.0, 4.75, 2.0, 0.425, 0.075, 0.001
+    ]
+
+    @api.onchange('sample_name')
+    def _onchange_sample_name_populate_lines(self):
+        """
+        Automatically populates line_ids with the 8 standard sieve sizes 
+        when the user starts a new record by entering the sample name.
+        """
+        # Only proceed if:
+        # 1. The record is new (self.id is False in onchange context) OR has no lines.
+        # 2. A sample_name has been provided (to use as a trigger).
+        if not self.line_ids and self.sample_name:
+            new_lines_commands = []
+            
+            # Create a command (0, 0, {values}) for each standard sieve size
+            for sieve_size in self.STANDARD_SIEVE_SIZES:
+                new_lines_commands.append(
+                    # Command (0, 0, {values}) is the Odoo instruction to "create a new record"
+                    (0, 0, {
+                        'sieve_size': sieve_size,
+                        'passing_percent': 0.0, 
+                    })
+                )
+            
+            # Assigning this list of commands makes the rows appear in the view instantly.
+            self.line_ids = new_lines_commands
