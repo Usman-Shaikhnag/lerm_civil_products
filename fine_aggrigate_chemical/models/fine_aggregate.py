@@ -517,13 +517,6 @@ class ChemicalFineAggregate(models.Model):
         for record in self:
             record.na2O = record.dilution_reading_na2O * 1.348
 
-
-
-
-    
-
-
-
     
 
     na2O_conformity = fields.Selection([
@@ -613,10 +606,6 @@ class ChemicalFineAggregate(models.Model):
 
     
 
-
-
-    
-
     k2O_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail')], string="Conformity",compute="_compute_k2O_conformity", store=True)
@@ -628,6 +617,7 @@ class ChemicalFineAggregate(models.Model):
             record.k2O_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3997903d-8a2e-49fc-baa1-531f0b805cac')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3997903d-8a2e-49fc-baa1-531f0b805cac')]).parameter_table
+            
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
