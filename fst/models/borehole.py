@@ -641,22 +641,35 @@ class DirectShearTest(models.Model):
     @api.depends('proving_ring_correction_factor','no_of_divisions')
     def _compute_shear_load(self):
         for record in self:
-            record.shear_load = round(record.proving_ring_correction_factor * record.no_of_divisions,2)
+            record.shear_load = round(
+                (record.proving_ring_correction_factor or 0.0) * (record.no_of_divisions or 0), 
+                2
+            )
 
     @api.depends('displacement_dial')
     def _compute_displacement(self):
         for record in self:
-            record.displacement = round(record.displacement_dial/1000,3)
+            record.displacement = round((record.displacement_dial or 0) / 1000, 3)
 
     @api.depends('area_of_specimen','displacement')
     def _compute_corrected_area(self):
         for record in self:
-            record.corrected_area = round(record.area_of_specimen*(1-record.displacement/6),2)
+            if record.area_of_specimen:
+                record.corrected_area = round(
+                    record.area_of_specimen * (1 - (record.displacement or 0) / 6), 
+                    2
+                )
+            else:
+                record.corrected_area = 0.0
 
-    @api.depends('shear_load','corrected_area')
+    @api.depends('shear_load', 'corrected_area')
     def _compute_shear_stress(self):
         for record in self:
-            record.shear_stress = record.shear_load / record.corrected_area
+            if record.corrected_area:  # not zero or None
+                record.shear_stress = round(record.shear_load / record.corrected_area, 3)
+            else:
+                record.shear_stress = 0.0
+
 
 class GrainSizeAnalysisLine(models.Model):
     _name = 'grain.size.analysis.line'
