@@ -377,7 +377,7 @@ class ERTBorehole(models.Model):
             ax.set_xticks(custom_xticks)
             
             ax.get_xaxis().set_major_formatter(plt.ScalarFormatter()) 
-            ax.set_xlabel('Particle Size (mm) [Log Scale]')
+            ax.set_xlabel('Sieve Size (mm) [Log Scale]')
             
             # 2. Grid lines increased density: set Y-axis minor ticks and enable minor grid on both axes
             
