@@ -3,25 +3,26 @@
     <data>
 
         <record id="mechanical_soil_ssl" model="ir.ui.view">
-        <field name="name">mechanical.soil.ssl.form</field>
-        <field name="model">mechanical.soil.ssl</field>
+        <field name="name">mechanical.soil.form</field>
+        <field name="model">mechanical.soil</field>
         <field name="arch" type="xml">
             <form create="false">
                 <sheet>
                     <h1>
-                        <field name="name_soil" readonly="1" nolabel="1"/>
+                        <field name="name" string="ROCK" readonly="1" nolabel="1"/>
                     </h1>
                     <group>
-                        <field name='grade'/>
+                       <field name="grade"/>
                     </group>
 
                     <group>
                         <field name="srf_id" invisible="1"/>
-                        <field name="sample_id" readonly="1"/>
+                        <field name="sample_id" readonly="1" />
                         <field name="eln_ref" readonly="1"/>
+                        <field name="size_id"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    
+
                     <div class="custom_table_borders" style="margin-top: 15px;">
                         <field name="sample_parameters" nolabel="1">
                             <tree>
@@ -30,7 +31,6 @@
                             </tree>
                         </field>
                     </div>
-
 
                     
 
@@ -41,9 +41,20 @@
                             <field name="sieve_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="wt_of_sample"/></td>
+                                <td  class="w-25">
+                                    <field name="wt_of_sample"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
                     
-                  
-                    <field name="child_lines" invisible = "sieve_visible == False">
+                    <field name="sieve_analysis_child_lines" invisible = "sieve_visible == False">
                         <tree editable="bottom" class="custom_table_borders">
                             <field name="serial_no"/>
                             <field name="sieve_size"/>
@@ -54,9 +65,9 @@
                             <field name="passing_percent"/>
                         </tree>
                     </field>
-                    
+                  
                     <div invisible="sieve_visible == False">
-                        <button type="object" name="calculate" class="btn btn-primary">
+                        <button type="object" name="calculate_sieve" class="btn btn-primary">
                             <i class="fa fa-calculator mr-1"/> Calculate
                         </button>
                     </div>
@@ -64,8 +75,8 @@
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
                         <tbody>
                             <tr>
-                                <td><label for="total1">Total Weight</label></td>
-                                <td><field name="total1"/></td>
+                                <td><label for="total_sieve_analysis">Total Weight</label></td>
+                                <td><field name="total_sieve_analysis"/></td>
                             </tr>
                             <tr>
                                 <td><label for="gravel">Gravel</label></td>
@@ -86,13 +97,13 @@
                         </tbody>
                     </table>
 
-
                     
                     <div invisible = "sieve_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image_slive" widget="image" readonly="1"/>
                     </div>
 
-                    <!-- Liquid Limit-->
+
+                     <!-- Liquid Limit-->
                     <div invisible = "liquid_limit_visible == False">
                         <h1 class="text-center">
                             <field name="liquid_limit_name" readonly="1" nolabel="1"/>
@@ -105,15 +116,14 @@
                         <field name="child_liness">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no' />
-                                <field name='sample_of_wet' />
+                                <field name='container_no1' />
                                 <field name='blwo_no1' />
-                                <field name="container_no1" />
-                                <field name='wt_of_con' />
-                                <field name='wet_sample_con' />
-                                <field name='dry_sample_con' />
-                                <field name='wt_water' />
-                                <field name='oven_dry_wt' />
-                                <field name='water_content' />                                
+                                <field name="wt_of_con_wet" />
+                                <field name='wt_of_con_dry' />
+                                <field name='loss_of_moisture' />
+                                <field name='wt_containner' />
+                                <field name='wt_of_dry' />
+                                <field name='moisture_content' />
                             </tree>
                         </field>
                     </div>
@@ -145,6 +155,7 @@
                         <field name="graph_image_liquid" widget="image" readonly="1"/>
                     </div>
 
+
                     <!-- Plastic Limit -->
                     <div invisible = "plastic_limit_visible == False">
                         <h1 class="text-center">
@@ -152,7 +163,7 @@
                             <field name="plastic_limit_visible" invisible="1"/>
                         </h1>
                     </div>
-                
+                    
 
                     <div invisible = "plastic_limit_visible == False">
                         <field name="plastic_limit_table">
@@ -168,7 +179,6 @@
                             </tree>
                         </field>
                     </div>
-
                     <div class="d-flex gap-2">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not plastic_limit_visible">
                             <tbody>
@@ -218,7 +228,7 @@
                         </table>
                     </div>
 
-                    <!-- Heavy Compaction MDD -->
+                     <!-- Heavy Compaction MDD -->
                     <div invisible = "heavy_visible == False">
                         <h1 class="text-center">
                             <field name="heavy_name" readonly="1" nolabel="1"/>
@@ -226,6 +236,8 @@
                         </h1>
                     </div>
                     
+                   
+                 
                     <div invisible = "heavy_visible == False">
                         <field name="heavy_table">
                             <tree editable="bottom" class="custom_table_borders">
@@ -247,13 +259,14 @@
                         </field>
                     </div>
 
+
                     <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not heavy_visible">
                         <tbody>
                             <tr>
                                 <td><label for="max_dry_density">Max Dry Density </label></td>
                                 <td><field name="max_dry_density"/><span> g/cc</span></td>
                                 <td><label for="omc">Optimum Moisture Content </label></td>
-                                <td><field name="omc"/><span> g/cc</span></td>
+                                <td><field name="omc"/><span> %</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -281,7 +294,7 @@
                         </tbody>
                     </table>
 
-                    <!-- Light Compaction OMC -->
+                      <!-- Light Compaction OMC -->
                     <div invisible = "omc_visible == False">
                         <h1 class="text-center">
                             <field name="omc_name" readonly="1" nolabel="1"/>
@@ -289,6 +302,8 @@
                         </h1>
                     </div>
                     
+                   
+                 
                     <div invisible = "omc_visible == False">
                         <field name="omc_table" style="width:100%">
                                 <tree editable="bottom" class="custom_table_borders">
@@ -310,7 +325,6 @@
                         </field>
                     </div>
 
-
                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not omc_visible">
                         <tbody>
                             <tr>
@@ -327,6 +341,8 @@
                             </tr>
                         </tbody>
                     </table>
+
+
 
                     <div invisible="omc_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image_density1" widget="image" readonly="1"/>
@@ -395,6 +411,7 @@
                         </field>
                     </div>
 
+
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not triaxial_visible">
                         <tbody>
                             <tr>
@@ -448,6 +465,7 @@
                     <div invisible = "soil_visible == False">
                         <field name="soil_table" class="custom_table_borders">
                             <tree editable="bottom" >
+                                <field name="serial_no"/>
                                 <field name="penetration"/>
                                 <field name="proving_reading"/>
                                 <field name="load"/>
@@ -458,6 +476,7 @@
                     <div invisible = "soil_visible == False" class="text-center">
                       <field name="chart_image_cbr" widget="image" readonly="1"/>
                     </div>
+
 
                     <div class="d-flex gap-2">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
@@ -496,7 +515,7 @@
                     </div>
 
 
-                    <!--  FSI -->
+                   <!--  FSI -->
                     <div invisible="fsi_visible == False">
                         <h1 class="text-center">
                             <field name="fsi_name" readonly="1" nolabel="1"/>
@@ -553,7 +572,7 @@
                             <field name="determination_visible" invisible="1"/>
                         </h1>
                     </div>
-                    
+
                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not determination_visible">
                         <tbody>
                             <tr>
@@ -605,6 +624,106 @@
                         </tbody>
                     </table>
 
+                    <div invisible = "shrinkage_limit_visible == False">
+                        <h1 class="text-center">
+                            <field name="shrinkage_limit_name" readonly="1" nolabel="1"/>
+                            <field name="shrinkage_limit_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+
+                    <div invisible = "shrinkage_limit_visible == False">
+                        <field name="shrinkage_limit_table">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='container_no'  width="100px"/>
+                                <field name='shrinkage_mass'/>
+                                <field name='shrinkage_wet'/>
+                                <field name='wt_dry'/>
+                                <field name='mass_dry'/>
+                                <field name='mass_water'/>
+                                <field name='moisture_content_shri'/>
+                                <field name='volume_wet_shri'/>
+                                <field name='volume_dry_shir'/>
+                                <field name='shrinkage_limit'/>
+                            </tree>
+                        </field>
+                    </div>
+
+                   
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not shrinkage_limit_visible">
+                            <tbody>
+                                <tr>
+                                <td><label for="shrinkage_limit1">Shrinkage limit  </label></td>
+                                <td><field name="shrinkage_limit1"/><span> %</span></td>
+                            </tr>
+                                <tr>
+                                <td><label for="shrinkage_limit1_conformity"></label></td>
+                                <td><field name="shrinkage_limit1_conformity"
+                                            decoration-success="shrinkage_limit1_conformity == 'pass'" 
+                                            decoration-danger="shrinkage_limit1_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="shrinkage_limit1_nabl"></label></td>
+                                <td><field name="shrinkage_limit1_nabl"
+                                            decoration-success="shrinkage_limit1_nabl == 'pass'" 
+                                            decoration-danger="shrinkage_limit1_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                     <!-- Plastic Limit -->
+                    <div invisible = "shrinkage_limit_visible == False">
+                        <h1 class="text-center">
+                            <field name="volume_dry_name" readonly="1" nolabel="1"/>
+                            <field name="shrinkage_limit_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+
+                    <div invisible = "shrinkage_limit_visible == False">
+                        <field name="volume_dry_table">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='container_no_dry'  width="100px"/>
+                                <field name='shrinkage_dry_before'/>
+                                <field name='shrinkage_dry_after'/>
+                                <field name='mass_mercury_dry'/>
+                                <field name='density_dry'/>
+                                <field name='volume_dry'/>
+                            </tree>
+                        </field>
+                    </div>
+
+                  
+
+
+                     <!-- Plastic Limit -->
+                    <div invisible = "shrinkage_limit_visible == False">
+                        <h1 class="text-center">
+                            <field name="volume_wet_name" readonly="1" nolabel="1"/>
+                            <field name="shrinkage_limit_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+
+                    <div invisible = "shrinkage_limit_visible == False">
+                        <field name="volume_wet_table">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='container_no_wet'  width="100px"/>
+                                <field name='shrinkage_wet_before'/>
+                                <field name='shrinkage_wet_after'/>
+                                <field name='mass_mercury_wet'/>
+                                <field name='density_wet'/>
+                                <field name='volume_wet'/>
+                            </tree>
+                        </field>
+                    </div>
+                    
                   
                     <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>

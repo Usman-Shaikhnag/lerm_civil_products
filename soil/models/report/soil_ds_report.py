@@ -16,7 +16,7 @@ from matplotlib.ticker import LogLocator, MultipleLocator
 
 
 class SoilDatasheet(models.AbstractModel):
-    _name = 'report.soil_ssl.soil_datasheet_ssl'
+    _name = 'report.soil.soil_datasheet_ssl'
     _description = 'Soil DataSheet SSL'
     
     @api.model
@@ -54,7 +54,7 @@ class SoilDatasheet(models.AbstractModel):
 
 
 class SoilReport(models.AbstractModel):
-    _name = 'report.soil_ssl.soil_ssl_report1'
+    _name = 'report.soil.soil_ssl_report1'
     _description = 'Soil Report SSL'
     
     @api.model
@@ -73,6 +73,13 @@ class SoilReport(models.AbstractModel):
         # qr.add_data(eln.kes_no)
         # qr.make(fit=True)
         # qr_image = qr.make_image()
+        # Static QR
+        qr_static = qrcode.QRCode(box_size=6, border=2)
+        qr_static.add_data("https://www.lerm.in")
+        qr_static.make(fit=True)
+        buf_static = BytesIO()
+        qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
+        qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
 
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
         # qr.add_data(eln.kes_no)
@@ -277,15 +284,109 @@ class SoilReport(models.AbstractModel):
             cbry_values = []  # Reset to empty list
             cbrx_values = []
 
+        plt.figure(figsize=(12, 6))
+        x_values = []
+        y_values = []
+        # import wdb;wdb.set_trace()
+        for line in general_data.omc_table:
+            x_values.append(line.water_content1)
+            y_values.append(line.dry_density1)
+
+
+        if general_data.omc_table:
+            try:
+                max_y = max(y_values)
+            except:
+                max_y = 100
+            try:
+                min_y = round(min(y_values),2)
+            except:
+                min_y = 0
+            try:
+                # max_x = round(max(x_values),2)
+                max_x = x_values[y_values.index(max_y)]
+            except:
+                max_x = 100
+            try:
+                min_x = round(min(x_values),2)
+            except:
+                min_x = 0 
+            
+            
+
+
+            # Format max_y and max_x to display 2 digits after the decimal point
+            max_y = round(max_y , 2)
+            max_x = round(max_x, 2)
+
+    
+
+        
+            # Perform cubic spline interpolation
+            x_smooth = np.linspace(min(x_values), max(x_values), 100)
+            # cs = CubicSpline(x_values, y_values,1)
+            # cs = interp1d(x_values, y_values,kind='cubic')
+            cs = Akima1DInterpolator(x_values, y_values)
+
+            # Create the line chart with a connected smooth line and markers
+            plt.plot(x_smooth, cs(x_smooth), color='red', label='Smooth Curve')
+            plt.scatter(x_values, y_values, marker='o', color='blue', s=30, label='Data Points')
+
+            
+            # Add a horizontal line with a label(, linestyle='--', label=f'Max Y = {max_y}', linestyle='--', label=f'Max X = {max_x}')
+            plt.axhline(y=max_y, color='green',linestyle='--')
+
+            # Add a vertical line with a label
+            plt.axvline(x=max_x, color='orange',linestyle='--')
+
+            
+            # Set the grid
+            ax = plt.gca()
+            ax.grid(which='both', linestyle='--', linewidth=0.5)
+
+            # Set the x-axis major and minor tick marks
+            ax.xaxis.set_major_locator(ticker.MultipleLocator(1))  # Major gridlines every 1 unit
+            ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))  # Minor gridlines every 0.1 unit
+
+            # Set the y-axis tick marks
+            # plt.yticks([1.60, 1.62, 1.64, 1.66, 1.68, 1.70, 1.72, 1.74, 1.76, 1.78, 1.80])
+
+            # edit range here
+            plt.yticks(np.arange(min_y , round(max_y,2) + 0.2 , (max_y - min_y) / 5))
+
+
+            if max_x != min_x:
+                plt.xticks(np.arange(min_x, round(max(x_values),2) + 1.0, (max_x - min_x) / 5))
+            
+            plt.gca().yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
+            plt.xlabel('Water Content (%) ')
+            plt.ylabel('Dry density in gm/cc')
+            plt.title('% DETERMINATION OF COMPACTION OMC / MDD')
+            plt.legend()
+
+            # Save the Matplotlib plot to a BytesIO object
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png')
+            graph_image1 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+
+            # Close the Matplotlib plot to free up resources
+            plt.close()
+        else:
+            graph_image1 = None
+            max_y = 0
+            max_x = 0
+
         return {
             'eln': eln,
             'data' : general_data,
             'qrcode': qr_code,
+            'qrcode_static': qr_static_b64,
             'stamp' : inreport_value,
             'nabl' : nabl,
             'graphHeavy' : graph_image,
             'graphSieve': graph_sieve,  # ✅ Added
             'graphliquid': graph_liquid,  # ✅ Added
+            'graphLight' : graph_image1,
             
             'mdd': max_y if cbry_values else 0,
             'omc': max_x if cbrx_values else 0,
@@ -300,7 +401,7 @@ class SoilReport(models.AbstractModel):
         x_values = []
         y_values = []
 
-        for line in data.child_lines:
+        for line in data.sieve_analysis_child_lines:
             if line.cumulative_retained and line.cumulative_retained > 0 and line.passing_percent is not None:
                 x_values.append(line.cumulative_retained)
                 y_values.append(line.passing_percent)
@@ -358,63 +459,69 @@ class SoilReport(models.AbstractModel):
         
 
 
-   
 
-    def generate_line_chart_liquid(self,general_data):
+
+    def generate_line_chart_liquid(self, general_data):
         x_value = []
         y_value = []
         for line in general_data.child_liness:
-            if line.blwo_no1 and line.water_content is not None:
+            if line.blwo_no1 and line.moisture_content is not None:
                 x_value.append(line.blwo_no1)
-                y_value.append(line.water_content)
+                y_value.append(line.moisture_content)
 
         if not x_value or not y_value:
             return False
 
         plt.figure(figsize=(10, 5))
-        ax = plt.gca()
 
-        # ✅ Blue curve with red dots
-        ax.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-        ax.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+        # ✅ Blue line with red points
+        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
 
-        # ✅ Title and axis labels
-        ax.set_title('LIQUID LIMIT', fontsize=14)
-        ax.set_xlabel('No. of Blows', fontsize=12)
-        ax.set_ylabel('Water Content (%)', fontsize=12)
+        # ✅ Labels and title
+        plt.xlabel('No. of Blows', fontsize=12)
+        plt.ylabel('Water Content (%)', fontsize=12)
+        plt.title('LIQUID LIMIT', fontsize=14)
 
-        # ✅ X & Y limits
+        # ✅ Axis limits (rounded)
         max_y = max(y_value)
         y_limit = (int(max_y / 10) + 1) * 10
-        ax.set_ylim(bottom=0, top=y_limit)
+        plt.ylim(bottom=0, top=y_limit)
 
         max_x = max(x_value)
         x_limit = (int(max_x / 10) + 1) * 10
-        ax.set_xlim(left=0, right=x_limit)
+        plt.xlim(left=0, right=x_limit)
 
-        # ✅ Minor ticks: fine spacing
+        # ✅ Minor ticks for fine grid lines
+        ax = plt.gca()
         ax.xaxis.set_minor_locator(MultipleLocator(1))
         ax.yaxis.set_minor_locator(MultipleLocator(1))
 
-        # ✅ Dense grid
-        ax.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+        # ✅ Fine grid
+        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
-        # ✅ Highlight highest water content
-        max_index = y_value.index(max_y)
-        highlight_x = x_value[max_index]
-        highlight_y = y_value[max_index]
+        # 🔹 Highlight Liquid Limit point (general_data field वापरून)
+        if general_data.liquid_limit:
+            highlight_x = 25                        # Blows (fixed at 25)
+            highlight_y = general_data.liquid_limit # Moisture content from record field
 
-        ax.axhline(y=highlight_y, color='red', linestyle='--', linewidth=1)
-        ax.axvline(x=highlight_x, color='red', linestyle='--', linewidth=1)
-        ax.plot(highlight_x, highlight_y, marker='o', color='red', markersize=8)
-        ax.text(highlight_x + 1, highlight_y + 1, f"{highlight_y:.2f}%", color='red')
+            # Dotted guide lines
+            plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
+            plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
 
-        # ✅ Save to image buffer
+            # Point mark
+            plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
+
+            # Label
+            plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
+
+        # ✅ Save to buffer
         buffer = io.BytesIO()
         plt.tight_layout()
-        ax.legend()
+        plt.legend()
         plt.savefig(buffer, format='png')
         plt.close()
         buffer.seek(0)
 
         return base64.b64encode(buffer.read()).decode('utf-8')
+
