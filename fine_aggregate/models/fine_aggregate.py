@@ -912,14 +912,6 @@ class SieveAnalysisLine(models.Model):
 
         return res
 
-# wt_of_sample
-    # @api.depends('wt_retained', 'parent_id.total_sieve_analysis')
-    # def _compute_percent_retained(self):
-    #     for record in self:
-    #         try:
-    #             record.percent_retained = record.wt_retained / self.parent_id.total_sieve_analysis * 100
-    #         except ZeroDivisionError:
-    #             record.percent_retained = 0 
 
     @api.depends('wt_retained', 'parent_id.wt_of_sample')
     def _compute_percent_retained(self):

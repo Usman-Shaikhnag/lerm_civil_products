@@ -401,7 +401,7 @@ class SoilReport(models.AbstractModel):
         x_values = []
         y_values = []
 
-        for line in data.child_lines:
+        for line in data.sieve_analysis_child_lines:
             if line.cumulative_retained and line.cumulative_retained > 0 and line.passing_percent is not None:
                 x_values.append(line.cumulative_retained)
                 y_values.append(line.passing_percent)
@@ -459,63 +459,69 @@ class SoilReport(models.AbstractModel):
         
 
 
-   
 
-    def generate_line_chart_liquid(self,general_data):
+
+    def generate_line_chart_liquid(self, general_data):
         x_value = []
         y_value = []
         for line in general_data.child_liness:
-            if line.blwo_no1 and line.water_content is not None:
+            if line.blwo_no1 and line.moisture_content is not None:
                 x_value.append(line.blwo_no1)
-                y_value.append(line.water_content)
+                y_value.append(line.moisture_content)
 
         if not x_value or not y_value:
             return False
 
         plt.figure(figsize=(10, 5))
-        ax = plt.gca()
 
-        # ✅ Blue curve with red dots
-        ax.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-        ax.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+        # ✅ Blue line with red points
+        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
 
-        # ✅ Title and axis labels
-        ax.set_title('LIQUID LIMIT', fontsize=14)
-        ax.set_xlabel('No. of Blows', fontsize=12)
-        ax.set_ylabel('Water Content (%)', fontsize=12)
+        # ✅ Labels and title
+        plt.xlabel('No. of Blows', fontsize=12)
+        plt.ylabel('Water Content (%)', fontsize=12)
+        plt.title('LIQUID LIMIT', fontsize=14)
 
-        # ✅ X & Y limits
+        # ✅ Axis limits (rounded)
         max_y = max(y_value)
         y_limit = (int(max_y / 10) + 1) * 10
-        ax.set_ylim(bottom=0, top=y_limit)
+        plt.ylim(bottom=0, top=y_limit)
 
         max_x = max(x_value)
         x_limit = (int(max_x / 10) + 1) * 10
-        ax.set_xlim(left=0, right=x_limit)
+        plt.xlim(left=0, right=x_limit)
 
-        # ✅ Minor ticks: fine spacing
+        # ✅ Minor ticks for fine grid lines
+        ax = plt.gca()
         ax.xaxis.set_minor_locator(MultipleLocator(1))
         ax.yaxis.set_minor_locator(MultipleLocator(1))
 
-        # ✅ Dense grid
-        ax.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+        # ✅ Fine grid
+        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
-        # ✅ Highlight highest water content
-        max_index = y_value.index(max_y)
-        highlight_x = x_value[max_index]
-        highlight_y = y_value[max_index]
+        # 🔹 Highlight Liquid Limit point (general_data field वापरून)
+        if general_data.liquid_limit:
+            highlight_x = 25                        # Blows (fixed at 25)
+            highlight_y = general_data.liquid_limit # Moisture content from record field
 
-        ax.axhline(y=highlight_y, color='red', linestyle='--', linewidth=1)
-        ax.axvline(x=highlight_x, color='red', linestyle='--', linewidth=1)
-        ax.plot(highlight_x, highlight_y, marker='o', color='red', markersize=8)
-        ax.text(highlight_x + 1, highlight_y + 1, f"{highlight_y:.2f}%", color='red')
+            # Dotted guide lines
+            plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
+            plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
 
-        # ✅ Save to image buffer
+            # Point mark
+            plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
+
+            # Label
+            plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
+
+        # ✅ Save to buffer
         buffer = io.BytesIO()
         plt.tight_layout()
-        ax.legend()
+        plt.legend()
         plt.savefig(buffer, format='png')
         plt.close()
         buffer.seek(0)
 
         return base64.b64encode(buffer.read()).decode('utf-8')
+
