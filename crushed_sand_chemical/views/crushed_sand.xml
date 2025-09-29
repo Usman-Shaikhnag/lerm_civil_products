@@ -21,14 +21,14 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
-                    <group>
-                      <field name="sample_parameters">
-                        <tree class="o_list_view table-bordered">
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
                           <field name="parameter_name"/>
                           <field name="test_method"/>
                         </tree>
                       </field>
-                    </group>
+                    </div>
                     <!-- ph at 1% -->
                     <div invisible="not ph_visible">
                         <h1>
@@ -38,24 +38,22 @@
                     </div>
                     
    
-  
-
 
                     <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>pH of 1 % Solution in water</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C</span></td>
+                            <td><span>pH of 1 % Solution in water</span></td>
+                            <td><span>A</span></td>
+                            <td><span>B</span></td>
+                            <td><span>C</span></td>
                             
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> </span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field  name="ph_1_percent_a"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field  name="ph_1_percent_b"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="ph_1_percent_c"  colspan="3"  nolabel="1"/></td>
+                            <td><span> </span></td>
+                            <td><field  name="ph_1_percent_a"  colspan="3"  nolabel="1"/></td>
+                            <td><field  name="ph_1_percent_b"  colspan="3"  nolabel="1"/></td>
+                            <td> <field  name="ph_1_percent_c"  colspan="3"  nolabel="1"/></td>
 
                           </tr>
                         </tbody>
@@ -96,23 +94,24 @@
 
 
                      <div>
-                          <table style="width: 20%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"> <field name="ph_average"/></td>
+                            <td><span>Average</span></td>
+                            <td> <field name="ph_average"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
-                            <td style="padding: 8px;"><field name='ph_conformity'
+                            <td><span>Conformity</span></td>
+                            <td><field name='ph_conformity'
                                decoration-success="ph_conformity == 'pass'" 
                                decoration-danger="ph_conformity == 'fail'" 
                                readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"> <field name='ph_nabl'/></td>
+                            <td> <span>NABL</span></td>
+                            <td> <field name='ph_nabl'/></td>
                            </tr>
-                     
+                     </tbody>
                           </table>
                       </div> 
 
@@ -127,19 +126,19 @@
                     </div>
 
                     <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> Wt of Crucible + Blank residue after igniation (gm) (A)</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_blank_crucible_after_ignition"/></td>
+                            <td><span> Wt of Crucible + Blank residue after igniation (gm) (A)</span></td>
+                            <td><field name="wt_blank_crucible_after_ignition"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> Wt of Cruciable +Blank residue after HF (gm) (B)</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_blank_crucible_after_hf"/></td>
+                            <td><span> Wt of Cruciable +Blank residue after HF (gm) (B)</span></td>
+                            <td><field name="wt_blank_crucible_after_hf"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Diff. in Wt of silica in Blank (gm) = A - B</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="diff_in_wt_of_silica_blank"/></td>
+                            <td><span>Diff. in Wt of silica in Blank (gm) = A - B</span></td>
+                            <td><field name="diff_in_wt_of_silica_blank"/></td>
                           </tr>
                         </tbody>
                       </table>
@@ -153,20 +152,20 @@
                     </group>-->
 
                    <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Wt of Cruciable +Sample residue after HF (gm) (B)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C</span></td>
+                            <td><span>Wt of Cruciable +Sample residue after HF (gm) (B)</span></td>
+                            <td><span>A</span></td>
+                            <td><span>B</span></td>
+                            <td><span>C</span></td>
                             
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> </span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="wt_crucible_after_ignition_a"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="wt_crucible_after_ignition_b"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="wt_crucible_after_ignition_c"  colspan="3"  nolabel="1"/></td>
+                            <td ><span> </span></td>
+                            <td> <field  name="wt_crucible_after_ignition_a"  colspan="3"  nolabel="1"/></td>
+                            <td> <field  name="wt_crucible_after_ignition_b"  colspan="3"  nolabel="1"/></td>
+                            <td> <field  name="wt_crucible_after_ignition_c"  colspan="3"  nolabel="1"/></td>
                      </tr>
                       </tbody>
                       </table>
@@ -198,20 +197,20 @@
 
 
                    <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Diff. in Wt of silica in Sample (gm) = A - B</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C</span></td>
+                            <td><span>Diff. in Wt of silica in Sample (gm) = A - B</span></td>
+                            <td><span>A</span></td>
+                            <td><span>B</span></td>
+                            <td><span>C</span></td>
                             
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> </span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="wt_crucible_after_hf_a"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="wt_crucible_after_hf_b"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="wt_crucible_after_hf_c"  colspan="3"  nolabel="1"/></td>
+                            <td><span> </span></td>
+                            <td> <field  name="wt_crucible_after_hf_a"  colspan="3"  nolabel="1"/></td>
+                            <td> <field  name="wt_crucible_after_hf_b"  colspan="3"  nolabel="1"/></td>
+                            <td> <field  name="wt_crucible_after_hf_c"  colspan="3"  nolabel="1"/></td>
                             
                           </tr>
                         </tbody>
@@ -220,7 +219,7 @@
 
 
 
-<!-- 
+            <!-- 
                     <group invisible="not alkali_aggregate_dissolved_visible">
                         <label for="wt_crucible_after_hf_a" string="Wt of  Cruciable +Sample residue after HF (gm) (B)" />
                         <div class="address_format " >
@@ -244,20 +243,20 @@
 
 
                     <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Dissolved Silica </span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C</span></td>
+                            <td><span>Dissolved Silica </span></td>
+                            <td><span>A</span></td>
+                            <td><span>B</span></td>
+                            <td><span>C</span></td>
                             
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> </span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="diff_in_wt_of_silica_a"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="diff_in_wt_of_silica_b"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="diff_in_wt_of_silica_c"  colspan="3"  nolabel="1"/></td>
+                            <td><span> </span></td>
+                            <td> <field  name="diff_in_wt_of_silica_a"  colspan="3"  nolabel="1"/></td>
+                            <td> <field  name="diff_in_wt_of_silica_b"  colspan="3"  nolabel="1"/></td>
+                            <td> <field  name="diff_in_wt_of_silica_c"  colspan="3"  nolabel="1"/></td>
                            </tr> 
                         </tbody>
                       </table>
@@ -319,22 +318,24 @@
 
 
                          <div>
-                          <table style="width: 20%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name="average_dissolved_silica"/></td>
+                            <td><span>Average</span></td>
+                            <td><field name="average_dissolved_silica"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
-                            <td style="padding: 8px;"> <field name='dissolved_silica_conformity'
+                            <td><span>Conformity</span></td>
+                            <td> <field name='dissolved_silica_conformity'
                                decoration-success="dissolved_silica_conformity == 'pass'" 
                                decoration-danger="dissolved_silica_conformity == 'fail'" 
                                readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name='dissolved_silica_nabl'/></td>
+                            <td><span>NABL</span></td>
+                            <td><field name='dissolved_silica_nabl'/></td>
                            </tr>
+                           </tbody>
                      
                           </table>
                       </div> 
@@ -350,20 +351,20 @@
 
 
                     <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Blank Reading (ml) (A) </span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C</span></td>
+                            <td><span>Blank Reading (ml) (A) </span></td>
+                            <td><span>A</span></td>
+                            <td><span>B</span></td>
+                            <td><span>C</span></td>
                             
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> </span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="blank_reading1"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="blank_reading2"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field  name="blank_reading3"  colspan="3"  nolabel="1"/></td>
+                            <td><span> </span></td>
+                            <td> <field  name="blank_reading1"  colspan="3"  nolabel="1"/></td>
+                            <td> <field  name="blank_reading2"  colspan="3"  nolabel="1"/></td>
+                            <td> <field  name="blank_reading3"  colspan="3"  nolabel="1"/></td>
                            </tr> 
                         </tbody>
                       </table>
@@ -391,20 +392,20 @@
 
 
                     <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Burette Reading (sample) (ml) (B) </span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C</span></td>
+                            <td><span>Burette Reading (sample) (ml) (B) </span></td>
+                            <td><span>A</span></td>
+                            <td><span>B</span></td>
+                            <td><span>C</span></td>
                             
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> </span></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="burette_reading1"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="burette_reading2"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="burette_reading3"  colspan="3"  nolabel="1"/></td>
+                            <td><span> </span></td>
+                            <td>  <field  name="burette_reading1"  colspan="3"  nolabel="1"/></td>
+                            <td>  <field  name="burette_reading2"  colspan="3"  nolabel="1"/></td>
+                            <td>  <field  name="burette_reading3"  colspan="3"  nolabel="1"/></td>
                            </tr> 
                         </tbody>
                       </table>
@@ -430,20 +431,20 @@
                     </group>   -->
 
                    <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Diff in Reading (ml) (A-B) </span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C</span></td>
+                            <td><span>Diff in Reading (ml) (A-B) </span></td>
+                            <td><span>A</span></td>
+                            <td><span>B</span></td>
+                            <td><span>C</span></td>
                             
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> </span></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="diff_in_reading1"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="diff_in_reading2"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="diff_in_reading3"  colspan="3"  nolabel="1"/></td>
+                            <td><span> </span></td>
+                            <td>  <field  name="diff_in_reading1"  colspan="3"  nolabel="1"/></td>
+                            <td>  <field  name="diff_in_reading2"  colspan="3"  nolabel="1"/></td>
+                            <td>  <field  name="diff_in_reading3"  colspan="3"  nolabel="1"/></td>
                            </tr> 
                         </tbody>
                       </table>
@@ -472,20 +473,20 @@
 
 
                      <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Normality of 0.05N HCL </span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C</span></td>
+                            <td><span>Normality of 0.05N HCL </span></td>
+                            <td><span>A</span></td>
+                            <td><span>B</span></td>
+                            <td><span>C</span></td>
                             
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> </span></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="normality1"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="normality2"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="normality3"  colspan="3"  nolabel="1"/></td>
+                            <td><span> </span></td>
+                            <td>  <field  name="normality1"  colspan="3"  nolabel="1"/></td>
+                            <td>  <field  name="normality2"  colspan="3"  nolabel="1"/></td>
+                            <td>  <field  name="normality3"  colspan="3"  nolabel="1"/></td>
                            </tr> 
                         </tbody>
                       </table>
@@ -514,20 +515,20 @@
 
 
                     <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table  class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Reduction in Alkalinity </span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>A</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>B</span></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C</span></td>
+                            <td><span>Reduction in Alkalinity </span></td>
+                            <td><span>A</span></td>
+                            <td><span>B</span></td>
+                            <td><span>C</span></td>
                             
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span> </span></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="reduction_in_alkalinity1"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="reduction_in_alkalinity2"  colspan="3"  nolabel="1"/></td>
-                            <td style="border: 1px solid black; padding: 5px;">  <field  name="reduction_in_alkalinity3"  colspan="3"  nolabel="1"/></td>
+                            <td><span> </span></td>
+                            <td>  <field  name="reduction_in_alkalinity1"  colspan="3"  nolabel="1"/></td>
+                            <td>  <field  name="reduction_in_alkalinity2"  colspan="3"  nolabel="1"/></td>
+                            <td>  <field  name="reduction_in_alkalinity3"  colspan="3"  nolabel="1"/></td>
                            </tr> 
                         </tbody>
                       </table>
@@ -570,9 +571,10 @@
 
 
                     <div>
-                          <table style="width: 20%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
+                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
                             <td style="padding: 5px;"> <field name="average_reduction_alkalinity"/></td>
                            </tr>
                            <tr>
@@ -586,7 +588,7 @@
                             <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
                             <td style="padding: 5px;"><field name='reduction_alkalinity_nabl'/></td>
                            </tr>
-                     
+                            </tbody>
                           </table>
                       </div> 
 
@@ -600,43 +602,43 @@
                     </div>
 
                     <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Sample Wt</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="sample_wt_chloride"/></td>
+                            <td ><span>Sample Wt</span></td>
+                            <td> <field name="sample_wt_chloride"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume make Upto</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="volume_make_upto_chloride"/></td>
+                            <td><span>Volume make Upto</span></td>
+                            <td> <field name="volume_make_upto_chloride"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Aliqote taken</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="aliqote_taken_chloride"/></td>
+                            <td><span>Aliqote taken</span></td>
+                            <td> <field name="aliqote_taken_chloride"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume of silver nitrate added</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="volume_silver_nitrate_added"/></td>
+                            <td><span>Volume of silver nitrate added</span></td>
+                            <td> <field name="volume_silver_nitrate_added"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume of ammonia thiocynate for (Blank)</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="volume_ammonia_blank"/></td>
+                            <td><span>Volume of ammonia thiocynate for (Blank)</span></td>
+                            <td> <field name="volume_ammonia_blank"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume of ammonia thiocynate for (Sample)</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="volume_ammonia_sample"/></td>
+                            <td><span>Volume of ammonia thiocynate for (Sample)</span></td>
+                            <td> <field name="volume_ammonia_sample"/></td>
                           </tr>
                            <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume of ammonia thiocynate consumed</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="volume_ammonia_consumed"/></td>
+                            <td><span>Volume of ammonia thiocynate consumed</span></td>
+                            <td> <field name="volume_ammonia_consumed"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Normality of ammonia thiocynate (0.1)</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="normality_of_ammonia"/></td>
+                            <td><span>Normality of ammonia thiocynate (0.1)</span></td>
+                            <td> <field name="normality_of_ammonia"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Chloride %</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="chloride_percent"/></td>
+                            <td><span>Chloride %</span></td>
+                            <td> <field name="chloride_percent"/></td>
                           </tr>
 
                         </tbody>
@@ -672,19 +674,20 @@
 
                     
                       <div>
-                          <table style="width: 20%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
-                            <td style="padding: 8px;">  <field name='chloride_conformity'
+                            <td><span>Conformity</span></td>
+                            <td>  <field name='chloride_conformity'
                                decoration-success="chloride_conformity == 'pass'" 
                                decoration-danger="chloride_conformity == 'fail'" 
                                readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name='chloride_nabl'/></td>
+                            <td><span>NABL</span></td>
+                            <td><field name='chloride_nabl'/></td>
                            </tr>
-                     
+                     </tbody>
                           </table>
                       </div> 
 
@@ -700,35 +703,35 @@
 
 
                   <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Sample Wt</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="sample_wt_sulphate"/></td>
+                            <td><span>Sample Wt</span></td>
+                            <td><field name="sample_wt_sulphate"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Volume make Upto</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="volume_make_upto_sulphate"/></td>
+                            <td><span>Volume make Upto</span></td>
+                            <td><field name="volume_make_upto_sulphate"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Aliqote taken</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="aliqote_taken_sulphate"/></td>
+                            <td><span>Aliqote taken</span></td>
+                            <td><field name="aliqote_taken_sulphate"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Wt. of empty crucible+residue after ignition</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_empty_crucible_after_ignition"/></td>
+                            <td><span>Wt. of empty crucible+residue after ignition</span></td>
+                            <td><field name="wt_empty_crucible_after_ignition"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Weight of empty crucible</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_empty_crucible"/></td>
+                            <td><span>Weight of empty crucible</span></td>
+                            <td><field name="wt_empty_crucible"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Difference in Weight</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="difference_in_wt_sulphate"/></td>
+                            <td><span>Difference in Weight</span></td>
+                            <td><field name="difference_in_wt_sulphate"/></td>
                           </tr>
                            <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>SO3 %</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="sulphate_percent"/></td>
+                            <td><span>SO3 %</span></td>
+                            <td> <field name="sulphate_percent"/></td>
                           </tr>
 
                         </tbody>
@@ -756,19 +759,20 @@
 
 
                       <div>
-                          <table style="width: 20%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
-                            <td style="padding: 8px;"> <field name='sulphate_conformity'
+                            <td> <span>Conformity</span></td>
+                            <td> <field name='sulphate_conformity'
                                decoration-success="sulphate_conformity == 'pass'" 
                                decoration-danger="sulphate_conformity == 'fail'" 
                                readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"> <field name='avrg_avrg_sulphate_nabl'/></td>
+                            <td><span>NABL</span></td>
+                            <td> <field name='avrg_avrg_sulphate_nabl'/></td>
                            </tr>
-                     
+                     </tbody>
                           </table>
                       </div> 
 
@@ -781,31 +785,31 @@
                     </div>
                     
                   <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(A)Weight of sample taken</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="sample_wt_na2O"/></td>
+                            <td><span>(A)Weight of sample taken</span></td>
+                            <td> <field name="sample_wt_na2O"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(B)Dilution</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="dilution_na2O"/></td>
+                            <td><span>(B)Dilution</span></td>
+                            <td> <field name="dilution_na2O"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(C)Sodium reading</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="sidium_reading_na2O"/></td>
+                            <td><span>(C)Sodium reading</span></td>
+                            <td> <field name="sidium_reading_na2O"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(D)Factor from graph</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="factor_graph_na2O"/></td>
+                            <td><span>(D)Factor from graph</span></td>
+                            <td> <field name="factor_graph_na2O"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(E)Dilution *Reading* factor *100/10000*wt of sample*A4</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="dilution_reading_na2O"/></td>
+                            <td><span>(E)Dilution *Reading* factor *100/10000*wt of sample*A4</span></td>
+                            <td> <field name="dilution_reading_na2O"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(F)Na *1.3480</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"> <field name="na2O"/></td>
+                            <td><span>(F)Na *1.3480</span></td>
+                            <td> <field name="na2O"/></td>
                           </tr>
                     
                         </tbody>
@@ -836,19 +840,20 @@
 
 
                       <div>
-                          <table style="width: 20%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
-                            <td style="padding: 8px;"> <field name='na2O_conformity'
+                            <td><span>Conformity</span></td>
+                            <td> <field name='na2O_conformity'
                                decoration-success="na2O_conformity == 'pass'" 
                                decoration-danger="na2O_conformity == 'fail'" 
                                readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"> <field name='na2O_nabl'/></td>
+                            <td><span>NABL</span></td>
+                            <td> <field name='na2O_nabl'/></td>
                            </tr>
-                     
+                          </tbody>
                           </table>
                       </div> 
                     <group/>
@@ -863,31 +868,31 @@
                     </div>
 
  <div>
-                     <table style="border: 1px solid black; width: 45%; margin-top:10px;">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(A)Weight of sample taken</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="sample_wt_k2O"/></td>
+                            <td><span>(A)Weight of sample taken</span></td>
+                            <td><field name="sample_wt_k2O"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(B)Dilution</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="dilution_k2O"/></td>
+                            <td><span>(B)Dilution</span></td>
+                            <td><field name="dilution_k2O"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(C)Potasium reading</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="sidium_reading_k2O"/></td>
+                            <td><span>(C)Potasium reading</span></td>
+                            <td><field name="sidium_reading_k2O"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(D)Factor from graph</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="factor_graph_k2O"/></td>
+                            <td><span>(D)Factor from graph</span></td>
+                            <td><field name="factor_graph_k2O"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(E)Dilution *Reading* factor *100/10000*wt of sample*A4</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="dilution_reading_k2O"/></td>
+                            <td><span>(E)Dilution *Reading* factor *100/10000*wt of sample*A4</span></td>
+                            <td><field name="dilution_reading_k2O"/></td>
                           </tr>
                           <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>(F)K *1.20</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="k2O"/></td>
+                            <td><span>(F)K *1.20</span></td>
+                            <td><field name="k2O"/></td>
                           </tr>
                     
                         </tbody>
@@ -919,19 +924,20 @@
 
                     
                  <div>
-                          <table style="width: 20%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
-                            <td style="padding: 8px;"><field name='k2O_conformity'
+                            <td><span>Conformity</span></td>
+                            <td><field name='k2O_conformity'
                                decoration-success="k2O_conformity == 'pass'" 
                                decoration-danger="k2O_conformity == 'fail'" 
                                readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name='k2O_nabl'/></td>
+                            <td><span>NABL</span></td>
+                            <td><field name='k2O_nabl'/></td>
                            </tr>
-                     
+                     </tbody>
                           </table>
                       </div> 
                     <group/>
@@ -962,23 +968,24 @@
 
 
                      <div>
-                          <table style="width: 20%; margin-top:10px;">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
                           <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"><field name="total_alkali_content"/></td>
+                            <td><span>Average</span></td>
+                            <td><field name="total_alkali_content"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Conformity</span></td>
-                            <td style="padding: 8px;"><field name='total_alkali_content_conformity'
+                            <td><span>Conformity</span></td>
+                            <td><field name='total_alkali_content_conformity'
                                decoration-success="total_alkali_content_conformity == 'pass'" 
                                decoration-danger="total_alkali_content_conformity == 'fail'" 
                                readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="padding: 5px;"> <field name='total_alkali_content_nabl'/></td>
+                            <td><span>NABL</span></td>
+                            <td> <field name='total_alkali_content_nabl'/></td>
                            </tr>
-                     
+                     </tbody>
                           </table>
                       </div> 
                     <group/>

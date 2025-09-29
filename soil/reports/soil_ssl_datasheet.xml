@@ -210,7 +210,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr t-foreach="data.child_lines" t-as="r">
+								<tr t-foreach="data.sieve_analysis_child_lines" t-as="r">
 									<td>
 										<span t-esc="r.serial_no"/>
 									</td>
@@ -239,7 +239,7 @@
 							<table>
 								<tr> 
 									<td colspan="12">Total Weight :<![CDATA[&nbsp;]]>
-										<span t-esc="data.total1" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="data.total_sieve_analysis" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
 
@@ -629,49 +629,46 @@
 									</th>
 									<th>
 										<span>
-											Weight of soil sample,(gms)
+										Container No.
+										</span>
+									</th>
+										<th>
+										<span>
+										No. of Blows
 										</span>
 									</th>
 									<th>
 										<span>
-										No.of Blows
+										Wt. of Container + Wet Soil
 										</span>
 									</th>
 									<th>
 										<span>
-											Container No
+											Wt. of Container + dry Soil
 										</span>
 									</th>
 									<th>
 										<span>
-											Weight of container,(gms)
+										Loss of Moisture (gm)
 										</span>
 									</th>
 									<th>
 										<span>
-										Weight of wet sample + container (gm)
+										Weight of Container
 										</span>
 									</th>
 									<th>
 										<span>
-											Weigth of dry sample + Container (gms)
+										Weight of Dry Soil
 										</span>
 									</th>
 									<th>
 										<span>
-											Weight of water (mg)
+											Moisture Content %
 										</span>
 									</th>
-									<th>
-										<span>
-											Weight of oven dry sample (mg)
-										</span>
-									</th>
-									<th>
-										<span>
-										Water content (%)
-										</span>
-									</th>
+
+								
 								</tr>
 							</thead>
 							<tbody>
@@ -684,32 +681,30 @@
 										</div>
 									</td>
 									<td>
-										<span t-esc="r.sample_of_wet"/>
+										<span t-esc="r.container_no1"/>
 									</td>
 									<td>
 										<span t-esc="r.blwo_no1"/>
 									</td>
 									<td>
-										<span t-esc="r.container_no1" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.wt_of_con_wet" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.wt_of_con" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.wt_of_con_dry" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.wet_sample_con" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.loss_of_moisture" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.dry_sample_con"  t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.wt_containner"  t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.wt_water"  t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.wt_of_dry"  t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.oven_dry_wt"  t-options='{"widget": "float", "precision": 2}' />
+										<span t-esc="r.moisture_content"  t-options='{"widget": "float", "precision": 2}' />
 									</td>
-									<td>
-										<span t-esc="r.water_content"  t-options='{"widget": "float", "precision": 2}' />
-									</td>
+									
 								</tr>
 							</tbody>
 						</table>
@@ -1129,6 +1124,134 @@
 							</table>
 						</div>
 						</div>
+
+					<div t-if="data.shrinkage_limit_visible">
+						
+							<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:15px"><b><span t-field="data.shrinkage_limit_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th>
+										<span>
+											Container No
+										</span>
+									</th>
+									<th>
+										<span>
+											Mass of container (m1) 
+										</span>
+									</th>
+									<th>
+										<span>
+										Wt. of Container + Wet Soil(m2)
+										</span>
+									</th>
+									<th>
+										<span>
+										Wt. of Container + dry Soil (m3)
+										</span>
+									</th>
+									<th>
+										<span>
+											mass of dry soil (Ms=m3-m1)
+										</span>
+									</th>
+									<th>
+										<span>
+										mass of water (Mw=m2-m3)
+										</span>
+									</th>
+									<th>
+										<span>
+										Moisture Content %(Mw/Ms*100)
+										</span>
+									</th>
+									<th>
+										<span>
+										Volume of wet soil (V1)
+										</span>
+									</th>
+									<th>
+										<span>
+										Volume of dry Soil pat (V2)
+										</span>
+									</th>
+									<th>
+										<span>
+										Shrinkage limit (%)
+										</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.shrinkage_limit_table" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.container_no"/>
+									</td>
+									<td>
+										<span t-esc="r.shrinkage_mass" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.shrinkage_wet" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_dry" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.mass_dry"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.mass_water"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.moisture_content_shri"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.volume_wet_shri"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.volume_dry_shir"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.shrinkage_limit"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.plastic_limit_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Shrinkage limit (%) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.shrinkage_limit1"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+								</tr>
+							</table>
+						</div>
+						
+					</div>
 
                     <!-- authorizeRowDataSheet -->
                     

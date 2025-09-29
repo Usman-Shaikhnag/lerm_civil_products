@@ -2021,6 +2021,10 @@
                 </tbody>
             </table>
 
+				<div t-if="data.graph_image_combine_granding" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.graph_image_combine_granding.decode('utf-8')" style="max-width: 100%;"/>
+                 </div>
+
 				<!-- <div t-if="data.graph_image_combination10and20mm" style="margin-top: 20px;">
                         <img t-att-src="'data:image/png;base64,' + data.graph_image_combination10and20mm.decode('utf-8')" style="max-width: 100%;"/>
                     </div> -->

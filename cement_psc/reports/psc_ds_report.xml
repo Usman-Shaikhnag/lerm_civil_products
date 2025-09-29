@@ -137,14 +137,7 @@
 									<span t-field="data.avg_density" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
 							</tr>
-							<tr>
-								<td colspan="6">Specific Gravity of Cement   :
-									<![CDATA[&nbsp;]]>
-								</td>
-									<td>
-									<span t-field="data.specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-							</tr>
+						
 						</table>
 					</div>
 
@@ -299,8 +292,8 @@
 								</td>
 								<td colspan="3">Needle penetration in mm
 								</td>
-								<td colspan="3">Duration of time in minutes
-								</td>
+								<!-- <td colspan="3">Duration of time in minutes
+								</td> -->
 							</tr>
 
 							<t t-set="i" t-value="0"/>
@@ -323,9 +316,9 @@
 								<td colspan="3">
 									<span t-esc="r['needle_penitration']"/>
 								</td>
-								<td colspan="3">
+								<!-- <td colspan="3">
 									<span t-esc="r['duration']"/>
-								</td>
+								</td> -->
 							</tr>
 						</table>
 						
@@ -422,6 +415,92 @@
 									Setting Time
 								</div>
 
+								 <div class="d-flex" style="gap:10px; margin-bottom:20px; align-items:stretch;"  invisible="not initial_setting_time_visible or not final_setting_time_visible">
+
+                        <!-- Left side -->
+							     	<div style="width:50%; text-align:center;" class="equal-box">
+										<div class="o_form_label"
+											style="font-weight:bold; background:#f0f0f0; padding:6px; margin-bottom:0; border:1px solid #ccc; border-bottom:0;">
+											Initial Setting Time
+										</div>
+                           			<table style="margin-top:10px">
+
+										<tr cols="12">
+											<td colspan="3">Sr.No
+											</td>
+											<td colspan="3">Date &amp;  Time
+											</td>
+											<td colspan="3">Penetration Of Needle
+											</td>
+											
+										</tr>
+
+										<t t-set="i" t-value="0"/>
+										<tr t-foreach="data.intial_time_lines" t-as="r">
+											<td colspan="3">
+												<div>
+													<span t-esc="i + 1" />
+													<t t-set="i" t-value="i+1"/>
+												</div>
+											</td>
+											<td colspan="3">
+												<span t-esc="r['clock_time']"/>
+											</td>
+											<td colspan="3">
+												<span t-esc="r['penetration_intial']"/>
+											</td>
+											
+										</tr>
+									</table>
+								</div>
+
+
+                  
+
+
+                        <!-- Right side -->
+
+                         <div style="width:50%; text-align:center;" class="equal-box">
+                            <div class="o_form_label"
+                                style="font-weight:bold; background:#f0f0f0; padding:6px; margin-bottom:0; border:1px solid #ccc; border-bottom:0;">
+                              Final Setting Time
+                            </div>
+                           <table style="margin-top:10px">
+
+										<tr cols="12">
+											<td colspan="3">Sr.No
+											</td>
+											<td colspan="3">Date &amp;  Time
+											</td>
+											<td colspan="3">Impression Of Needle
+											</td>
+											
+										</tr>
+
+										<t t-set="i" t-value="0"/>
+										<tr t-foreach="data.final_time_lines" t-as="r">
+											<td colspan="3">
+												<div>
+													<span t-esc="i + 1" />
+													<t t-set="i" t-value="i+1"/>
+												</div>
+											</td>
+											<td colspan="3">
+												<span t-esc="r['clock_time1']"/>
+											</td>
+											<td colspan="3">
+												<span t-esc="r['impression_intial1']"/>
+											</td>
+											
+										</tr>
+									</table>
+                        </div>
+
+                       
+
+                    </div>
+
+
 							<table style="width:100%; border-collapse: collapse; border:1px solid black;margin-top:10px" t-if="data.initial_setting_time_visible">
 								<thead>
 									<tr >
@@ -484,6 +563,80 @@
 								</tbody>
 							</table>
 						</div>
+
+						<div t-if="data.specific_gravity_visible" style="margin-top:10px">
+						<div style="text-align:center;font-size:18px">
+							Specific Gravity of Cement
+						</div>
+
+						<table class="table table-sm table-bordered custom_table_borders" invisible="not specific_gravity_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Trial 1</th>
+                                <th>Trial 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Weight of empty bottle (W₁ g)</span></td>
+                                
+								<td><span t-field="data.wt_of_empty_bottle" /></td>
+								<td><span t-field="data.wt_of_empty_bottle1" /></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of bottle + Cement ( W₂ g)</span></td>
+                                
+								<td><span t-field="data.wt_of_bottle_cement" /></td>
+								<td><span t-field="data.wt_of_bottle_cement1" /></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Specific gravity bottle + Cement + Kerosene ( W₃ g)</span></td>
+                              
+								<td><span t-field="data.wt_of_specific_bpttle" /></td>
+								<td><span t-field="data.wt_of_specific_bpttle1" /></td>
+                            </tr>
+
+                             <tr>
+                                <td><span class="fw-bold">Weight of bottle + Full Kerosene( W₄ g)</span></td>
+                              
+								<td><span t-field="data.wt_of_kerosene" /></td>
+								<td><span t-field="data.wt_of_kerosene1" /></td>
+                            </tr>
+
+                              <tr>
+                                <td><span class="fw-bold">Weight of bottle + Full Water ( W₅ g)</span></td>
+                             
+								<td><span t-field="data.wt_of_bottle_water" /></td>
+								<td><span t-field="data.wt_of_bottle_water1" /></td>
+                            </tr>
+
+                               <tr>
+                                <td><span class="fw-bold">Specific gravity</span></td>
+								<td><span t-field="data.specific_gravity" /></td>
+								<td><span t-field="data.specific_gravity1" /></td>
+                            </tr>
+
+                           
+
+                           
+                        </tbody>
+                    </table>
+
+						
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Avg Specific gravity  :
+									<![CDATA[&nbsp;]]>
+									</td>
+									<td>
+									<span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+								
+							</tr>
+						</table>
+					</div>
 
 					
 
@@ -736,24 +889,27 @@
 									</span>
 								</th>
 								<th style="text-align: center;">
-									<span>
+									<!-- <span>
 										Test Parameter
-									</span>
+									</span> -->
+									<span t-esc="eln.material.test_parameter"/>
 								</th>
 								<th style="text-align: center;">
 									<span t-field="eln.material.method_reference"></span>
 								</th>
 
 								<th style="text-align: center;">
-									<span>
+								<span t-esc="eln.material.unit"/>
+									<!-- <span>
 										Unit
-									</span>
+									</span> -->
 								</th>
 								
 								<th style="text-align: center;">
-									<span>
+									<!-- <span>
 										Test Result
-									</span>
+									</span> -->
+									<span t-esc="eln.material.result_remark"/>
 								</th>
 								
 								
@@ -826,7 +982,7 @@
 							</tr>
 
 <!-- Density of Cement (Le-Chatlier Flask) -->
-								<tr t-if="cement.density_cement_visible and (cement.specific_gravity_nabl == 'pass' and nabl or (cement.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="cement.density_cement_visible and (cement.avg_density_nabl == 'pass' and nabl or (cement.avg_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
@@ -835,13 +991,13 @@
 								<td style="text-align: center;">
 									
 									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2104587frt-372f-4775-9bcb-e9dd70e6e6df')]).parameter_name"/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','23145870-372f-4775-9bcb-e9dd70e3587g')]).parameter_name"/>
 									</span>
 									
 								</td>
 								<td style="text-align: center;">
 									<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2104587frt-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23145870-372f-4775-9bcb-e9dd70e3587g')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                         </t>
@@ -851,20 +1007,20 @@
 
 									<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2104587frt-372f-4775-9bcb-e9dd70e6e6df')]).unit.name"/>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','23145870-372f-4775-9bcb-e9dd70e3587g')]).unit.name"/>
 									</span>
 								</td>
 								
 								
 								<td style="text-align: center;">
 									<span>
-										<span t-field="cement.specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="cement.avg_density" t-options='{"widget": "float", "precision": 2}'/>
 									</span>									
 								</td>
 								
 								<td style="text-align: center;">
 									<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2104587frt-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23145870-372f-4775-9bcb-e9dd70e3587g')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                         </t>
@@ -874,7 +1030,7 @@
 							
 								
 								<td t-if="eln.conformity" style="text-align: center;">
-									<span t-field="cement.specific_gravity_conformity"/>
+									<span t-field="cement.avg_density_conformity"/>
 								</td>
 							</tr>
 
@@ -1143,6 +1299,62 @@
 								</tr>
 
 
+									<!-- Specific gravity of Cement -->
+
+								<tr t-if="cement.specific_gravity_visible and (cement.avg_specific_gravity_nabl == 'pass' and nabl or (cement.avg_specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+										
+									</td>
+									<td style="text-align: center;">
+										
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','0157yutr1034-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
+										</span>
+										
+									</td>
+									<td style="text-align: center;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','0157yutr1034-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+											</t>
+										</t>
+										</span>
+									</td>
+
+										<td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','0157yutr1034-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+										</span>
+									</td>
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<span t-field="cement.avg_specific_gravity" t-options='{"widget": "float", "precision": 3}'/>
+										</span>									
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','0157yutr1034-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td>
+								
+									
+									<td t-if="eln.conformity" style="text-align: center;">
+										<span t-field="cement.avg_specific_gravity_conformity"/>
+									</td>
+								</tr>
+
+
+
 							
 						<!-- Compressive Strength  --> 
 						
@@ -1382,15 +1594,14 @@
 								</div>
 							</div>
 
-							<!-- <div>
-								<div>
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div>
-							 -->
+							<div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
 							<div>
 								<div>
 									<b>

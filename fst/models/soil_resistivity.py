@@ -12,27 +12,41 @@ import io, base64
 from math import sqrt, pi
 import math
 
-class SoilResistivity(models.Model):
+class ERTSoilResistivity(models.Model):
     _name = "ert.soil.resistivity"
     # _description = "Soil Resistivity Test"
 
     # name= fields.Char("Name",default="Soil")
-    name = fields.Char(string="Name", required=True, copy=False, readonly=True, 
-                       default=lambda self: self.env['ir.sequence'].next_by_code('ert.soil.resistivity.seq') or 'Soil')
+    name = fields.Char(string="Name", required=True, copy=False, readonly=True, default='New')
+
     ert_parent_id = fields.Many2one('lerm.ert.parent') 
     
 
-    graph_images = fields.One2many('soil.resistivity.line', 'parent_id',string="Graphs")
-    line_ids = fields.One2many("soil.resistivity.line", "parent_id", string="Resistivity Table")
+    graph_images = fields.One2many('ert.soil.resistivity.line', 'parent_id',string="Graphs")
+    line_ids = fields.One2many("ert.soil.resistivity.line", "parent_id", string="Resistivity Table")
 
-
+    @api.model
+    def create(self, vals):
+        if vals.get("name", "New") == "New":
+            vals["name"] = self.env["ir.sequence"].next_by_code("ert.soil.resistivity.seq") or "New"
+            
+        record = super().create(vals)
+        if record.ert_parent_id:
+            self.env['ert.lines'].sudo().create({
+                'parent_id': record.ert_parent_id.id,
+                'soil_resistivity_id': record.id
+            })
+        return record
+        
+    
+    
     def save_ert(self):
-        ert_parent = self.env['lerm.ert.parent'].sudo().search([('id','=',self.ert_parent_id.id)])
-        # import wdb; wdb.set_trace()
-        ert_parent.ert_lines.sudo().create({
-            'parent_id':ert_parent.id,
-            'soil_resistivity_id':self.id
-        })
+        # ert_parent = self.env['lerm.ert.parent'].sudo().search([('id','=',self.ert_parent_id.id)])
+        # # import wdb; wdb.set_trace()
+        # ert_parent.ert_lines.sudo().create({
+        #     'parent_id':ert_parent.id,
+        #     'soil_resistivity_id':self.id
+        # })
         return {
             'view_mode': 'form',
             'res_model': "lerm.ert.parent",
@@ -41,7 +55,76 @@ class SoilResistivity(models.Model):
             'res_id': self.ert_parent_id.id,
             
         }
+    
+    # def action_print_soil_resistivity_report(self):
+    #     report = self.env.ref('fst.soil_resistivity_report_py3o')
+    #     filename = f"{self.name or 'ERT'}"
+    #     return report.report_action(self, config={'report_name': filename})
 
+
+    # def button_add_footer(self):
+    #     for rec in self:
+    #         # Delete previous footer
+    #         footer = rec.line_ids.filtered(lambda l: l.sr_no_label == "Avg. Resistivity")
+    #         footer.unlink()
+
+    #         # Data lines only
+    #         lines = rec.line_ids.filtered(lambda l: l.sr_no_label != "Avg. Resistivity")
+    #         if not lines:
+    #             continue
+
+    #         radius_vals = []
+    #         for i, line in enumerate(lines, start=1):
+    #             line.sr_no_label = str(i)
+
+    #             # Ensure area is defined
+    #             if not line.area:
+    #                 line.area = 0  # Or compute it here if formula exists
+
+    #             # ----- Auto compute Correct Resistance (*_2) from Site Reading (*_1) -----
+    #             line.resistivity_n2 = line.resistivity_n1 * 1 if line.resistivity_n1 else 0
+    #             line.resistivity_ne2 = line.resistivity_ne1 * 1 if line.resistivity_ne1 else 0
+    #             line.resistivity_e2 = line.resistivity_e1 * 1 if line.resistivity_e1 else 0
+    #             line.resistivity_se2 = line.resistivity_se1 * 1 if line.resistivity_se1 else 0
+    #             line.resistivity_s2 = line.resistivity_s1 * 1 if line.resistivity_s1 else 0
+    #             line.resistivity_sw2 = line.resistivity_sw1 * 1 if line.resistivity_sw1 else 0
+    #             line.resistivity_w2 = line.resistivity_w1 * 1 if line.resistivity_w1 else 0
+    #             line.resistivity_nw2 = line.resistivity_nw1 * 1 if line.resistivity_nw1 else 0
+
+    #             # ----- Original resistivity calculations -----
+    #             line.resistivity_n  = 2 * pi * line.resistivity_n2 * line.spacing if line.resistivity_n2 and line.spacing else 0
+    #             line.resistivity_ne = 2 * pi * line.resistivity_ne2 * line.spacing if line.resistivity_ne2 and line.spacing else 0
+    #             line.resistivity_e  = 2 * pi * line.resistivity_e2 * line.spacing if line.resistivity_e2 and line.spacing else 0
+    #             line.resistivity_se = 2 * pi * line.resistivity_se2 * line.spacing if line.resistivity_se2 and line.spacing else 0
+    #             line.resistivity_s  = 2 * pi * line.resistivity_s2 * line.spacing if line.resistivity_s2 and line.spacing else 0
+    #             line.resistivity_sw = 2 * pi * line.resistivity_sw2 * line.spacing if line.resistivity_sw2 and line.spacing else 0
+    #             line.resistivity_w  = 2 * pi * line.resistivity_w2 * line.spacing if line.resistivity_w2 and line.spacing else 0
+    #             line.resistivity_nw = 2 * pi * line.resistivity_nw2 * line.spacing if line.resistivity_nw2 and line.spacing else 0
+
+    #             # Compute radius from area
+    #             line.radius = sqrt(line.area / pi) if line.area else 0
+    #             radius_vals.append(line.radius)
+
+    #         # Footer average
+    #         avg_vals = {
+    #             'resistivity_n':  sum([l.resistivity_n for l in lines]) / len(lines),
+    #             'resistivity_ne': sum([l.resistivity_ne for l in lines]) / len(lines),
+    #             'resistivity_e':  sum([l.resistivity_e for l in lines]) / len(lines),
+    #             'resistivity_se': sum([l.resistivity_se for l in lines]) / len(lines),
+    #             'resistivity_s':  sum([l.resistivity_s for l in lines]) / len(lines),
+    #             'resistivity_sw': sum([l.resistivity_sw for l in lines]) / len(lines),
+    #             'resistivity_w':  sum([l.resistivity_w for l in lines]) / len(lines),
+    #             'resistivity_nw': sum([l.resistivity_nw for l in lines]) / len(lines),
+    #             'radius': sum(radius_vals) / len(radius_vals),
+    #         }
+
+    #         # Add footer line
+    #         self.env['ert.soil.resistivity.line'].create({
+    #             'sr_no': len(lines) + 1,
+    #             'sr_no_label': "Avg. Resistivity",
+    #             'parent_id': rec.id,
+    #             **avg_vals
+    #         })
 
     def button_add_footer(self):
         for rec in self:
@@ -62,110 +145,193 @@ class SoilResistivity(models.Model):
                 if not line.area:
                     line.area = 0  # Or compute it here if formula exists
 
-                # Original resistivity calculations
-                line.resistivity_n  = 2 * pi * line.resistivity_n2 * line.spacing if line.resistivity_n2 and line.spacing else 0
-                line.resistivity_ne = 2 * pi * line.resistivity_ne2 * line.spacing if line.resistivity_ne2 and line.spacing else 0
-                line.resistivity_e  = 2 * pi * line.resistivity_e2 * line.spacing if line.resistivity_e2 and line.spacing else 0
-                line.resistivity_se = 2 * pi * line.resistivity_se2 * line.spacing if line.resistivity_se2 and line.spacing else 0
-                line.resistivity_s  = 2 * pi * line.resistivity_s2 * line.spacing if line.resistivity_s2 and line.spacing else 0
-                line.resistivity_sw = 2 * pi * line.resistivity_sw2 * line.spacing if line.resistivity_sw2 and line.spacing else 0
-                line.resistivity_w  = 2 * pi * line.resistivity_w2 * line.spacing if line.resistivity_w2 and line.spacing else 0
-                line.resistivity_nw = 2 * pi * line.resistivity_nw2 * line.spacing if line.resistivity_nw2 and line.spacing else 0
+                # ----- Auto compute Correct Resistance (*_2) from Site Reading (*_1) -----
+                line.resistivity_n2  = round(line.resistivity_n1  * rec.factor_multiplied, 2) if line.resistivity_n1  else 0
+                line.resistivity_ne2 = round(line.resistivity_ne1 * rec.factor_multiplied, 2) if line.resistivity_ne1 else 0
+                line.resistivity_e2  = round(line.resistivity_e1  * rec.factor_multiplied, 2) if line.resistivity_e1  else 0
+                line.resistivity_se2 = round(line.resistivity_se1 * rec.factor_multiplied, 2) if line.resistivity_se1 else 0
+                line.resistivity_s2  = round(line.resistivity_s1  * rec.factor_multiplied, 2) if line.resistivity_s1  else 0
+                line.resistivity_sw2 = round(line.resistivity_sw1 * rec.factor_multiplied, 2) if line.resistivity_sw1 else 0
+                line.resistivity_w2  = round(line.resistivity_w1  * rec.factor_multiplied, 2) if line.resistivity_w1  else 0
+                line.resistivity_nw2 = round(line.resistivity_nw1 * rec.factor_multiplied, 2) if line.resistivity_nw1 else 0
+
+                # ----- Original resistivity calculations -----
+                line.resistivity_n  = round(2 * pi * line.resistivity_n2  * line.spacing, 2) if line.resistivity_n2  and line.spacing else 0
+                line.resistivity_ne = round(2 * pi * line.resistivity_ne2 * line.spacing, 2) if line.resistivity_ne2 and line.spacing else 0
+                line.resistivity_e  = round(2 * pi * line.resistivity_e2  * line.spacing, 2) if line.resistivity_e2  and line.spacing else 0
+                line.resistivity_se = round(2 * pi * line.resistivity_se2 * line.spacing, 2) if line.resistivity_se2 and line.spacing else 0
+                line.resistivity_s  = round(2 * pi * line.resistivity_s2  * line.spacing, 2) if line.resistivity_s2  and line.spacing else 0
+                line.resistivity_sw = round(2 * pi * line.resistivity_sw2 * line.spacing, 2) if line.resistivity_sw2 and line.spacing else 0
+                line.resistivity_w  = round(2 * pi * line.resistivity_w2  * line.spacing, 2) if line.resistivity_w2  and line.spacing else 0
+                line.resistivity_nw = round(2 * pi * line.resistivity_nw2 * line.spacing, 2) if line.resistivity_nw2 and line.spacing else 0
 
                 # Compute radius from area
-                line.radius = sqrt(line.area / pi)
+                line.radius = round(sqrt(line.area / pi), 2) if line.area else 0
                 radius_vals.append(line.radius)
 
             # Footer average
             avg_vals = {
-                'resistivity_n':  sum([2*pi*l.resistivity_n2*l.spacing for l in lines])/len(lines),
-                'resistivity_ne': sum([2*pi*l.resistivity_ne2*l.spacing for l in lines])/len(lines),
-                'resistivity_e':  sum([2*pi*l.resistivity_e2*l.spacing for l in lines])/len(lines),
-                'resistivity_se': sum([2*pi*l.resistivity_se2*l.spacing for l in lines])/len(lines),
-                'resistivity_s':  sum([2*pi*l.resistivity_s2*l.spacing for l in lines])/len(lines),
-                'resistivity_sw': sum([2*pi*l.resistivity_sw2*l.spacing for l in lines])/len(lines),
-                'resistivity_w':  sum([2*pi*l.resistivity_w2*l.spacing for l in lines])/len(lines),
-                'resistivity_nw': sum([2*pi*l.resistivity_nw2*l.spacing for l in lines])/len(lines),
-                'radius': sum(radius_vals)/len(radius_vals),
-            }
+                        'resistivity_n':  round(sum([l.resistivity_n  for l in lines]) / len(lines), 2),
+                        'resistivity_ne': round(sum([l.resistivity_ne for l in lines]) / len(lines), 2),
+                        'resistivity_e':  round(sum([l.resistivity_e  for l in lines]) / len(lines), 2),
+                        'resistivity_se': round(sum([l.resistivity_se for l in lines]) / len(lines), 2),
+                        'resistivity_s':  round(sum([l.resistivity_s  for l in lines]) / len(lines), 2),
+                        'resistivity_sw': round(sum([l.resistivity_sw for l in lines]) / len(lines), 2),
+                        'resistivity_w':  round(sum([l.resistivity_w  for l in lines]) / len(lines), 2),
+                        'resistivity_nw': round(sum([l.resistivity_nw for l in lines]) / len(lines), 2),
+                        'radius':        round(sum(radius_vals) / len(radius_vals), 2),
+                    }
 
             # Add footer line
-            self.env['soil.resistivity.line'].create({
+            self.env['ert.soil.resistivity.line'].create({
                 'sr_no': len(lines) + 1,
                 'sr_no_label': "Avg. Resistivity",
                 'parent_id': rec.id,
                 **avg_vals
             })
+
         
 
-    ert_point = fields.Char(string="ERT POINT NO")
+    ert_point = fields.Char(string="ERT")
+    factor_multiplied = fields.Float(
+        string="Multiplication Factor"    )
 
-    temperature_site = fields.Char(string="Temperature At Site :")
-    last_weather = fields.Char(string="Last 2 Days Weather :")
-    voltage = fields.Char(string="Voltage :")
-    present_weather = fields.Char(string="Present Weather :")
+    temperature_site = fields.Char(string="Temperature At Site")
+    last_weather = fields.Char(string="Last 2 Days Weather")
+    current = fields.Char(string="Current")
+    voltage = fields.Char(string="Voltage")
+    present_weather = fields.Char(string="Present Weather")
 
-    pin_line_ids = fields.One2many("soil.resistivity.pin.line", "parent_id", string="Resistivity Table")
+    pin_line_ids = fields.One2many("ert.soil.resistivity.pin.line", "parent_id", string="Resistivity Table")
 
-    avg_equivalent_radius = fields.Float(string="Average Equivalent Radius", compute="_compute_avg_equivalent_radius", store=True)
+    ert_recommended = fields.Char(string="Recommended ERT")
 
-    @api.depends('pin_line_ids.equivalent_radius')
-    def _compute_avg_equivalent_radius(self):
+
+    avg_equivalent_radius = fields.Float(
+        string="Average Equivalent Radius",
+       
+        store=True
+    )
+
+    class_of_soil = fields.Char(
+        string="Class Of Soil As Per IS 3043:2018",
+      
+        store=True
+    )
+
+    def action_copy_spacing_to_pin(self):
         for rec in self:
+            # Clear old lines
+            rec.pin_line_ids.unlink()
+
+            vals_list = []
+            for line in rec.line_ids[:-1]:  # last line skip
+                vals_list.append({
+                    "parent_id": rec.id,
+                    "pin_spacing": line.spacing,
+                    "equivalent_radius": line.radius,
+                })
+            if vals_list:
+                self.env["ert.soil.resistivity.pin.line"].create(vals_list)
+
+            # ----- Calculate avg_equivalent_radius, ert_recommended & class_of_soil -----
             if rec.pin_line_ids:
-                total = sum(line.equivalent_radius for line in rec.pin_line_ids if line.equivalent_radius)
-                count = len([line for line in rec.pin_line_ids if line.equivalent_radius])
-                rec.avg_equivalent_radius = total / count if count > 0 else 0.0
+                total = sum(rec.pin_line_ids.mapped("equivalent_radius"))
+                avg = total / len(rec.pin_line_ids)
+
+                # Average set kar
+                rec.avg_equivalent_radius = round(avg, 2)
+
+                # Recommended ERT set kar (rounded + text)
+                rec.ert_recommended = f"Approx. {round(avg)} Ω m"
+
+                # Classification logic
+                if avg < 25:
+                    rec.class_of_soil = "Severely Corrosive"
+                elif 25 <= avg < 50:
+                    rec.class_of_soil = "Moderately Corrosive"
+                elif 50 <= avg <= 100:
+                    rec.class_of_soil = "Mildly Corrosive"
+                else:
+                    rec.class_of_soil = "Very Mild Corrosive"
             else:
                 rec.avg_equivalent_radius = 0.0
+                rec.ert_recommended = False
+                rec.class_of_soil = False
+
    
     def action_generate_graph(self):
         for rec in self:
+        # Collect all values from all lines
+            all_values = []
             for line in rec.line_ids:
-                line.action_generate_graph()
+                if line.sr_no_label != "Avg. Resistivity":
+                    all_values.extend([
+                        line.resistivity_n, line.resistivity_ne, line.resistivity_e,
+                        line.resistivity_se, line.resistivity_s, line.resistivity_sw,
+                        line.resistivity_w, line.resistivity_nw
+                    ])
+
+            if not all_values:
+                continue
+
+            # Compute global ymax
+            data_max = max(all_values)
+
+            def round_up_nice(x):
+                if x <= 10:
+                    return 10
+                order = 10 ** int(math.floor(math.log10(x)))
+                return math.ceil(x / order) * order
+
+            ymax_global = round_up_nice(data_max)
+
+            for line in rec.line_ids:
+                if line.sr_no_label != "Avg. Resistivity":
+                    line.action_generate_graph(ymax=ymax_global)
 
 
 
-class SoilResistivityLine(models.Model):
-    _name = "soil.resistivity.line"
+class ERTSoilResistivityLine(models.Model):
+    _name = "ert.soil.resistivity.line"
     _description = "Soil Resistivity Line"
 
-    parent_id = fields.Many2one("soil.resistivity", string="Test Point")
+    parent_id = fields.Many2one("ert.soil.resistivity", string="Test Point")
     sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
     spacing = fields.Float("Pin Spacing (m)")
 
-    resistivity_n1  = fields.Float("North (0°) Resistance (Ω)(site reading)")
-    resistivity_n2  = fields.Float("North (0°) Correct Resistance (Ω)")
-    resistivity_n  = fields.Float("North (0°) Resistivity")
+    resistivity_n1  = fields.Float("North (0°) Resistance (Ω)(site reading)",digits=(16, 2))
+    resistivity_n2  = fields.Float("North (0°) Correct Resistance (Ω)", digits=(16, 2))
+    resistivity_n  = fields.Float("North (0°) Resistivity", digits=(16, 2))
 
 
-    resistivity_ne1 = fields.Float("North-East (45°) Resistance (Ω)(site reading)")
-    resistivity_ne2 = fields.Float("North-East (45°) Correct Resistance (Ω)")
-    resistivity_ne = fields.Float("North-East (45°) Resistivity")
+    resistivity_ne1 = fields.Float("North-East (45°) Resistance (Ω)(site reading)", digits=(16, 2))
+    resistivity_ne2 = fields.Float("North-East (45°) Correct Resistance (Ω)", digits=(16, 2))
+    resistivity_ne = fields.Float("North-East (45°) Resistivity", digits=(16, 2))
 
-    resistivity_e1  = fields.Float("East (90°) Resistance (Ω)(site reading)")
-    resistivity_e2  = fields.Float("East (90°) Correct Resistance (Ω)")
-    resistivity_e  = fields.Float("East (90°) Resistivity")
+    resistivity_e1  = fields.Float("East (90°) Resistance (Ω)(site reading)", digits=(16, 2))
+    resistivity_e2  = fields.Float("East (90°) Correct Resistance (Ω)", digits=(16, 2))
+    resistivity_e  = fields.Float("East (90°) Resistivity", digits=(16, 2))
 
-    resistivity_se1 = fields.Float("South-East (135°) Resistance (Ω)(site reading)")
-    resistivity_se2 = fields.Float("South-East (135°) Correct Resistance (Ω)")
-    resistivity_se = fields.Float("South-East (135°) Resistivity")
+    resistivity_se1 = fields.Float("South-East (135°) Resistance (Ω)(site reading)", digits=(16, 2))
+    resistivity_se2 = fields.Float("South-East (135°) Correct Resistance (Ω)", digits=(16, 2))
+    resistivity_se = fields.Float("South-East (135°) Resistivity", digits=(16, 2))
 
-    resistivity_s1  = fields.Float("South (180°) Resistance (Ω)(site reading)")
-    resistivity_s2  = fields.Float("South (180°) Correct Resistance (Ω)")
-    resistivity_s  = fields.Float("South (180°) Resistivity")
+    resistivity_s1  = fields.Float("South (180°) Resistance (Ω)(site reading)", digits=(16, 2))
+    resistivity_s2  = fields.Float("South (180°) Correct Resistance (Ω)", digits=(16, 2))
+    resistivity_s  = fields.Float("South (180°) Resistivity", digits=(16, 2))
 
-    resistivity_sw1 = fields.Float("South-West (225°) Resistance (Ω)(site reading)")
-    resistivity_sw2 = fields.Float("South-West (225°) Correct Resistance (Ω)")
-    resistivity_sw = fields.Float("South-West (225°) Resistivity")
+    resistivity_sw1 = fields.Float("South-West (225°) Resistance (Ω)(site reading)", digits=(16, 2))
+    resistivity_sw2 = fields.Float("South-West (225°) Correct Resistance (Ω)", digits=(16, 2))
+    resistivity_sw = fields.Float("South-West (225°) Resistivity", digits=(16, 2))
 
-    resistivity_w1  = fields.Float("West (270°) Resistance (Ω)(site reading)")
-    resistivity_w2  = fields.Float("West (270°) Correct Resistance (Ω)")
-    resistivity_w  = fields.Float("West (270°) Resistivity")
+    resistivity_w1  = fields.Float("West (270°) Resistance (Ω)(site reading)", digits=(16, 2))
+    resistivity_w2  = fields.Float("West (270°) Correct Resistance (Ω)", digits=(16, 2))
+    resistivity_w  = fields.Float("West (270°) Resistivity", digits=(16, 2))
 
-    resistivity_nw1 = fields.Float("North-West (315°) Resistance (Ω)(site reading)")
-    resistivity_nw2 = fields.Float("North-West (315°) Correct Resistance (Ω)")
-    resistivity_nw = fields.Float("North-West (315°) Resistivity")
+    resistivity_nw1 = fields.Float("North-West (315°) Resistance (Ω)(site reading)", digits=(16, 2))
+    resistivity_nw2 = fields.Float("North-West (315°) Correct Resistance (Ω)", digits=(16, 2))
+    resistivity_nw = fields.Float("North-West (315°) Resistivity", digits=(16, 2))
 
     area = fields.Float("Area",digits=(12,4))
     radius = fields.Float("Radius")
@@ -181,7 +347,7 @@ class SoilResistivityLine(models.Model):
 
     graph_image = fields.Binary("Graph", readonly=True)
     
-    def action_generate_graph(self):
+    def action_generate_graph(self, ymax=None):
         
         # Example data
         categories = ['N', 'NE', 'E', 'SE', 'S','SW','W','NW']
@@ -207,9 +373,10 @@ class SoilResistivityLine(models.Model):
                 return 10
             order = 10 ** int(math.floor(math.log10(x)))
             return math.ceil(x / order) * order
-                
+
         ymin = 0
-        ymax = round_up_nice(data_max)
+        if ymax is None:
+            ymax = round_up_nice(data_max)
         
         N = len(categories)
         angles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
@@ -285,7 +452,7 @@ class SoilResistivityLine(models.Model):
             offset = 0.8
             
             ax.text(
-                x * offset, y * offset, f"{v:.2f}",
+                x * offset- 0.08 * ymax, y * offset, f"{v:.2f}",
                 ha='center', va='center',
                 fontsize=11,
                 rotation=angle_deg,
@@ -300,10 +467,10 @@ class SoilResistivityLine(models.Model):
             ax.text(x, y, cat, ha='center', va='center', fontsize=10, fontweight="bold")
 
         # --- Add diagonal radial labels dynamically ---
-        label_angle = np.pi / 3   # 60 degrees
+        label_angle = np.pi / 2.05   # 90 degrees
         for y in yticks[1:]:
             x, yy = y * np.cos(label_angle), y * np.sin(label_angle)
-            ax.text(x*1, yy*1, f"{int(y)}", ha='left', va='bottom', fontsize=9, color="black")
+            ax.text(x*1.5, yy*1, f"{int(y)}", ha='left', va='bottom', fontsize=10, fontweight="bold")
         
         # Add red circle at outer radius
         circle = plt.Circle((0, 0), radius_equiv, color='red', fill=False, linewidth=2)
@@ -336,8 +503,9 @@ class SoilResistivityLine(models.Model):
         buf.seek(0)
 
         self.graph_image = base64.b64encode(buf.read()).decode("utf-8")
-        self.area = area
-        self.radius = radius_equiv
+        self.area = round(area, 2)
+        self.radius = round(radius_equiv, 2)
+
 
     # def action_generate_graph(self):
     #     def _radar_factory(num_vars, frame='polygon', proj_name='radar_poly'):
@@ -448,7 +616,7 @@ class SoilResistivityLine(models.Model):
                 max_serial_no = max(existing_records.mapped('sr_no'))
                 vals['sr_no'] = max_serial_no + 1
 
-        return super(SoilResistivityLine, self).create(vals)
+        return super(ERTSoilResistivityLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -458,11 +626,11 @@ class SoilResistivityLine(models.Model):
 
 
 
-class SoilResistivityPinLine(models.Model):
-    _name = "soil.resistivity.pin.line"
+class ERTSoilResistivityPinLine(models.Model):
+    _name = "ert.soil.resistivity.pin.line"
     _description = "Soil Resistivity Line"
 
-    parent_id = fields.Many2one("soil.resistivity", string="Test Point")
+    parent_id = fields.Many2one("ert.soil.resistivity", string="Test Point")
     pin_spacing = fields.Float("Pin Spacing (m)")
     equivalent_radius = fields.Float("Equivalent Radius")
-    class_of_soil = fields.Char("Class of Soil")
+    # class_of_soil = fields.Char("Class of Soil")

@@ -80,7 +80,10 @@
 								<tr>
 									<th class="text-center">Sr.No</th>
 									<th class="text-center">Location of Sample</th>
-									<th class="text-center"> Test Result</th>
+									<th class="text-center">
+									<span t-esc="eln.material.result_remark"/>
+									 <!-- Test Result -->
+									 </th>
 									<!-- <th >Unit</th> -->
 									<th class="text-center"> 
 										<span t-field="eln.material.specifications"></span>
@@ -245,15 +248,14 @@
 								</div>
 							</div>
 
-							<!-- <div>
-								<div>
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div>
-							 -->
+							<div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
 							<div>
 								<div>
 									<b>

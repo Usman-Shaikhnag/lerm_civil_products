@@ -75,14 +75,26 @@
 
                         <tr style="height:20px;">
                             <td   >Sr.No</td>
-                            <td  >Test Parameters</td>
-							 <td > Result</td>
-                            <td  >Unit</td>
+                            <td  >
+							<span t-esc="eln.material.test_parameter"/>
+							<!-- Test Parameters -->
+							</td>
+							 <td >
+							 <span t-esc="eln.material.result_remark"/>
+							  <!-- Result -->
+							  </td>
+                            <td  >
+							<span t-esc="eln.material.unit"/>
+							<!-- Unit -->
+							</td>
 							 <td style="width:25%" >
 								<!-- <span t-field="eln.material.specifications"></span> -->
 								<span t-field="eln.material.specifications"/>
 							</td>
-                            <td  >Test Method</td>
+                            <td  >
+							<span t-esc="eln.material.method_reference"/>
+							<!-- Test Method -->
+							</td>
                           
                             <td  t-if="eln.conformity">Conformity</td>
 
@@ -249,14 +261,14 @@
 								</div>
 							</div>
 
-							<!-- <div>
-								<div>
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div> -->
+							<div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
 							
 							<div>
 								<div>

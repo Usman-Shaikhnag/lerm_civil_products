@@ -76,11 +76,23 @@
 							<thead>
 								<tr style="height:5px;">
 									<td rowspan="1" >Sr.No</td>
-									<td rowspan="1" >Test Parameters</td>
-									<td rowspan="1"> Test Result</td>
-									<td rowspan="1" >Unit</td>
+									<td rowspan="1" >
+									<span t-esc="eln.material.test_parameter"/>
+									<!-- Test Parameters -->
+									</td>
+									<td rowspan="1"> 
+									<span t-esc="eln.material.result_remark"/>
+									<!-- Test Result -->
+									</td>
+									<td rowspan="1" >
+									<span t-esc="eln.material.unit"/>
+									<!-- Unit -->
+									</td>
 									<td rowspan="1"><span t-field="eln.material.specifications"></span></td>
-									<td rowspan="1" >Test Method</td>
+									<td rowspan="1" >
+									<span t-esc="eln.material.method_reference"/>
+									<!-- Test Method -->
+									</td>
 									<td rowspan="1" t-if="eln.conformity">Conformity</td>
 								</tr>
 							</thead>
@@ -722,6 +734,57 @@
 
 								</tr>
 
+
+
+
+								<tr t-if="data.shrinkage_limit_visible and (data.shrinkage_limit1_nabl == 'pass' and nabl or (data.shrinkage_limit1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.shrinkage_limit1" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.shrinkage_limit1_conformity"/>
+									</td>
+
+								</tr>
+
 							
 							
 							</tbody>
@@ -1269,14 +1332,14 @@
 								</div>
 							</div>
 
-							<!-- <div>
-								<div>
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div> -->
+							<div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
 							
 							<div>
 								<div>

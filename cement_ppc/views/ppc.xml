@@ -118,25 +118,22 @@
                                     <span>g/cm³</span>
                                 </td>
                             </tr>
+                          
                             <tr>
-                                <td><label class="fw-bold" for="specific_gravity">Specific Gravity of Cement</label></td>
-                                <td><field name="specific_gravity" nolabel="1"/></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="specific_gravity_conformity">Specific Gravity Conformity</label></td>
+                                <td><label class="fw-bold" for="avg_density_conformity"> Conformity</label></td>
                                 <td>
-                                    <field name="specific_gravity_conformity"
-                                        decoration-success="specific_gravity_conformity == 'pass'"
-                                        decoration-danger="specific_gravity_conformity == 'fail'"
+                                    <field name="avg_density_conformity"
+                                        decoration-success="avg_density_conformity == 'pass'"
+                                        decoration-danger="avg_density_conformity == 'fail'"
                                         readonly="1"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td><label class="fw-bold" for="specific_gravity_nabl">Specific Gravity NABL</label></td>
+                                <td><label class="fw-bold" for="avg_density_nabl"> NABL</label></td>
                                 <td>
-                                    <field name="specific_gravity_nabl"
-                                        decoration-success="specific_gravity_nabl == 'pass'"
-                                        decoration-danger="specific_gravity_nabl == 'fail'"
+                                    <field name="avg_density_nabl"
+                                        decoration-success="avg_density_nabl == 'pass'"
+                                        decoration-danger="avg_density_nabl == 'fail'"
                                         readonly="1"/>
                                 </td>
                             </tr>
@@ -271,7 +268,7 @@
                                 <field name="wt_of_water" style="text-align: center; width: 120px;"/>
                                 <field name="water_mix" style="text-align: center; width: 120px;"/>
                                 <field name="needle_penitration" style="text-align: center; width: 120px;"/>
-                                <field name="duration" style="text-align: center; width: 120px;" widget="char"/>
+                                <!-- <field name="duration" style="text-align: center; width: 120px;" widget="char"/> -->
                             </tree>
                         </field>
                     </div>
@@ -383,6 +380,47 @@
                         </h1>
                     </div>
 
+                    <div class="d-flex" style="gap:10px; margin-bottom:20px; align-items:stretch;"  invisible="not initial_setting_time_visible or not final_setting_time_visible">
+
+                        <!-- Left side -->
+                       <div style="width:50%; text-align:center;" class="equal-box">
+                            <div class="o_form_label"
+                                style="font-weight:bold; background:#f0f0f0; padding:6px; margin-bottom:0; border:1px solid #ccc; border-bottom:0;">
+                                Initial Setting Time
+                            </div>
+                            <field name="intial_time_lines" class="custom_table_borders" style="margin-top:0; margin-bottom:0; width:100%;">
+                                <tree editable="bottom">
+                                    <field name="serial_no"/>
+                                    <field name="clock_time" />
+                                    <field name="penetration_intial"/>
+                                </tree>
+                            </field>
+                        </div>
+
+
+                  
+
+
+                        <!-- Right side -->
+
+                         <div style="width:50%; text-align:center;" class="equal-box">
+                            <div class="o_form_label"
+                                style="font-weight:bold; background:#f0f0f0; padding:6px; margin-bottom:0; border:1px solid #ccc; border-bottom:0;">
+                              Final Setting Time
+                            </div>
+                            <field name="final_time_lines" class="custom_table_borders" style="margin-top:0; margin-bottom:0; width:100%;">
+                                <tree editable="bottom">
+                                    <field name="serial_no"/>
+                                    <field name="clock_time1" />
+                                    <field name="impression_intial1"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                       
+
+                    </div>
+
                     <div class="d-flex gap-2 align-items-start" style="width:100%;">
     
                             <!-- Initial Setting Time Table -->
@@ -453,10 +491,9 @@
 
                         </div>
 
-                    <div class="d-flex gap-2 align-items-start" style="width:100%;">
-                        <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="initial_setting_time_visible == False">
+                    <div style="width:50%;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" invisible="initial_setting_time_visible == False">
                         <tbody>
-                           
                             <tr>
                                 <td><label class="fw-bold" for="initial_setting_conformity">Initial Setting Time Conformity</label></td>
                                 <td>
@@ -502,6 +539,103 @@
                         </tbody>
                     </table>
                     </div>
+
+
+                    <div class="text-center" invisible="specific_gravity_visible == False">
+                        <h1>
+                            <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+                    
+                <div  invisible="specific_gravity_visible == False">
+                    <table class="table table-sm table-bordered custom_table_borders" invisible="not specific_gravity_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Trial 1</th>
+                                <th>Trial 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Weight of empty bottle (W₁ g)</span></td>
+                                <td><field name="wt_of_empty_bottle"/></td>
+                                <td><field name="wt_of_empty_bottle1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of bottle + Cement ( W₂ g)</span></td>
+                                <td><field name="wt_of_bottle_cement"/></td>
+                                <td><field name="wt_of_bottle_cement1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Specific gravity bottle + Cement + Kerosene ( W₃ g)</span></td>
+                                <td><field name="wt_of_specific_bpttle"/></td>
+                                <td><field name="wt_of_specific_bpttle1"/></td>
+                            </tr>
+
+                             <tr>
+                                <td><span class="fw-bold">Weight of bottle + Full Kerosene( W₄ g)</span></td>
+                                <td><field name="wt_of_kerosene"/></td>
+                                <td><field name="wt_of_kerosene1"/></td>
+                            </tr>
+
+                              <tr>
+                                <td><span class="fw-bold">Weight of bottle + Full Water ( W₅ g)</span></td>
+                                <td><field name="wt_of_bottle_water"/></td>
+                                <td><field name="wt_of_bottle_water1"/></td>
+                            </tr>
+
+                               <tr>
+                                <td><span class="fw-bold">Specific gravity</span></td>
+                                <td><field name="specific_gravity"/></td>
+                                <td><field name="specific_gravity1"/></td>
+                            </tr>
+
+                           
+
+                           
+                        </tbody>
+                    </table>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_specific_gravity">Avg. Specific Gravity</label></td>
+                                    <td><field name="avg_specific_gravity"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+
+                         <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" >
+                        <tbody>
+                           
+                            <tr>
+                                <td><label class="fw-bold" for="avg_specific_gravity_conformity"> Conformity</label></td>
+                                <td>
+                                    <field name="avg_specific_gravity_conformity"
+                                        decoration-success="avg_specific_gravity_conformity == 'pass'"
+                                        decoration-danger="avg_specific_gravity_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_specific_gravity_nabl"> NABL</label></td>
+                                <td>
+                                    <field name="avg_specific_gravity_nabl"
+                                        decoration-success="avg_specific_gravity_nabl == 'pass'"
+                                        decoration-danger="avg_specific_gravity_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
 
 
                     <div invisible = "compressive_visible == False" >

@@ -7,7 +7,7 @@ from lxml import etree
 
 class TileChequredDatasheet1(models.AbstractModel):
         _name = 'report.chequerd_tile.tile_chequred_datasheet'
-        _description = 'Tile  Chequered DataSheet '
+        _description = 'Tile  Chequered DataSheet'
     
         @api.model
         def _get_report_values(self, docids, data):
@@ -37,7 +37,7 @@ class TileChequredDatasheet1(models.AbstractModel):
 
 class TileChequeredReport1(models.AbstractModel):
     _name = 'report.chequerd_tile.tile_chequered_report'
-    _description = 'Tile Chequered Report '
+    _description = 'Tile Chequered Report'
     
     @api.model
     def _get_report_values(self, docids, data):
@@ -48,6 +48,14 @@ class TileChequeredReport1(models.AbstractModel):
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
         else:
             eln = self.env['lerm.eln'].sudo().browse(docids) 
+
+        qr_static = qrcode.QRCode(box_size=6, border=2)
+        qr_static.add_data("https://www.lerm.in")
+        qr_static.make(fit=True)
+        buf_static = BytesIO()
+        qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
+        qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
+
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
         qr.add_data(eln.kes_no)
         qr.make(fit=True)
@@ -71,6 +79,7 @@ class TileChequeredReport1(models.AbstractModel):
             'eln': eln,
             'data' : general_data,
             'qrcode': qr_code,
+            'qrcode_static': qr_static_b64,
             'stamp' : inreport_value,
             'nabl' : nabl
         }

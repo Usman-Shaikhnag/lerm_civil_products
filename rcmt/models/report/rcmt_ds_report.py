@@ -43,6 +43,7 @@ class RCMTReport(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data):
         # eln = self.env['lerm.eln'].sudo().browse(docids)
+        nabl = data.get('nabl')
         if data.get('report_wizard') == True:
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['sample'])])
         elif 'active_id' in data['context']:
@@ -50,10 +51,25 @@ class RCMTReport(models.AbstractModel):
         else:
             eln = self.env['lerm.eln'].sudo().browse(docids)
         
+        qr_static = qrcode.QRCode(box_size=6, border=2)
+        qr_static.add_data("https://www.lerm.in")
+        qr_static.make(fit=True)
+        buf_static = BytesIO()
+        qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
+        qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
+        
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-        qr.add_data(eln.kes_no)
+        # qr.add_data(eln.kes_no)
+        url = self.env['ir.config_parameter'].sudo().search([('key','=','web.base.url')]).value
+
+        if nabl:
+            url = url +'/download_report/nabl/'+ str(eln.id)
+        else:
+            url = url +'/download_report/nonnabl/'+ str(eln.id)
+        qr.add_data(url)
         qr.make(fit=True)
         qr_image = qr.make_image()
+        # import wdb; wdb.set_trace()
 
         # Convert the QR code image to base64 string
         buffered = BytesIO()
@@ -72,5 +88,9 @@ class RCMTReport(models.AbstractModel):
         return {
             'eln': eln,
             'rcmt': rcmt_data,
-            'qrcode': qr_code
+            'qrcode': qr_code,
+            'qrcode_static': qr_static_b64
         }
+
+
+
