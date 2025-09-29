@@ -471,7 +471,7 @@
 											</t>
 										</span>
 									</td>
-									<td  rowspan="3" style="text-align: center; vertical-align: middle;">
+									<td  rowspan="2" style="text-align: center; vertical-align: middle;">
 										<span >
 											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')]).parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -489,7 +489,7 @@
 
 								</tr>
 
-								<tr t-if="data.heavy_visible and (data.heavy_table_nabl == 'pass' and nabl or (data.heavy_table_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<!-- <tr t-if="data.heavy_visible and (data.heavy_table_nabl == 'pass' and nabl or (data.heavy_table_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td colspan="1">
 										<div>
 											<span t-esc="i + 1" />
@@ -497,9 +497,7 @@
 										</div>
 									</td>
 									<td>
-										<!-- <span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')]).parameter_name"/>
-										</span> -->
+									
 										Optimum Moisture Content   %
 									</td>
 									<td>
@@ -520,23 +518,13 @@
 											</t>
 										</span>
 									</td>
-									<!-- <td  >
-										<span>
-											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','120vbf14-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-														<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td> -->
-
+									
 								
 								
 									<td t-if="eln.conformity">
-										<!-- <span t-field="data.heavy_table_conformity"/> -->
 									</td>
 
-								</tr>
+								</tr> -->
 
 									<tr t-if="data.heavy_visible and (data.heavy_table_nabl == 'pass' and nabl or (data.heavy_table_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td colspan="1">
@@ -546,9 +534,7 @@
 										</div>
 									</td>
 									<td>
-										<!-- <span>
-											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')]).parameter_name"/>
-										</span> -->
+									
 								Max. Dry density gm/cc
 									</td>
 									<td>
