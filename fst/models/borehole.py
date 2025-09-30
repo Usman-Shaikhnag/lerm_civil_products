@@ -68,6 +68,167 @@ class ERTBorehole(models.Model):
     
     grain_size_graph = fields.Binary("Grain Size Graph", store=True)
 
+    def generate_borehole_graph(self):
+        for borehole in self:
+            if not borehole.nvalue_ids:
+                borehole.graph_image = False
+                continue
+
+            # 1. Sort the records by top_depth
+            # Assume borehole.nvalue_ids are objects with attributes like top_depth, bottom_depth, etc.
+            all_records = sorted(borehole.nvalue_ids, key=lambda l: l.top_depth)
+            
+            # --- START OF NEW DATA PROCESSING (Merging Logic) ---
+            
+            # Identify the records that define segment boundaries (SPT or UDS).
+            # This logic must be safe even if 'sample_type' is None or missing.
+            def is_sample_boundary(record):
+                sample_type = record.sample_type.strip().upper() if record.sample_type else ""
+                return sample_type != "DRILLING"
+                
+            sample_records = [rec for rec in all_records if is_sample_boundary(rec)]
+            
+            # If no sample records are found, use the raw data (or exit gracefully)
+            if not sample_records:
+                 # No samples found, treat as one large segment from min_depth to max_depth if needed, 
+                 # but for this problem, we'll continue with the original sorted list if no samples.
+                 lines_to_plot = all_records
+            else:
+                lines_to_plot = []
+                current_top_depth = 0.0
+                
+                # Start from 0m and extend to the first sample's top_depth, 
+                # using the properties of the first sample (e.g., N-value=0, classification)
+                first_sample = sample_records[0]
+                if first_sample.top_depth > current_top_depth:
+                    # Create a placeholder for the interval from 0.0 to the first sample
+                    placeholder_line = type('obj', (object,), {
+                        'top_depth': current_top_depth,
+                        'bottom_depth': first_sample.top_depth,
+                        'n_value': 0,
+                        'sample_type': 'DRILLING',
+                        'classification': first_sample.classification,
+                    })()
+                    lines_to_plot.append(placeholder_line)
+                
+                # Iterate through the sample records to define the merged segments
+                for i, sample_rec in enumerate(sample_records):
+                    # The segment starts at the current record's top depth
+                    new_line_top_depth = sample_rec.top_depth
+                    
+                    # Determine the segment's bottom depth
+                    if i < len(sample_records) - 1:
+                        # Segment ends at the top depth of the NEXT sample record
+                        new_line_bottom_depth = sample_records[i+1].top_depth
+                    else:
+                        # Last sample segment ends at its own bottom depth (or max depth)
+                        new_line_bottom_depth = all_records[-1].bottom_depth
+
+                    # Create the new, merged segment line. 
+                    # It inherits all key properties from the sample record.
+                    new_line = type('obj', (object,), {
+                        'top_depth': new_line_top_depth,
+                        'bottom_depth': new_line_bottom_depth,
+                        'n_value': sample_rec.n_value,
+                        'sample_type': sample_rec.sample_type,
+                        'classification': sample_rec.classification,
+                    })()
+                    lines_to_plot.append(new_line)
+
+            lines = lines_to_plot # Use the new list of merged segments
+            # --- END OF NEW DATA PROCESSING ---
+
+            fig, ax = plt.subplots(figsize=(2, 4))
+            
+            # Ensure max_depth is calculated from the last segment's bottom depth
+            # The structure of the previous logic handles the max_depth correctly:
+            max_depth = lines[-1].bottom_depth
+            min_depth = 0.0
+            
+            # Draw log rectangle outline with high zorder to be on top
+            ax.plot([0, 0], [min_depth, max_depth], color="black", zorder=3)
+            ax.plot([1, 1], [min_depth, max_depth], color="black", zorder=3)
+            ax.plot([0, 1], [min_depth, min_depth], color="black", zorder=3)
+            ax.plot([0, 1], [max_depth, max_depth], color="black", zorder=3)
+
+            # Map classification to hatches
+            hatch_map = {
+                "poorly_graded": ".....",
+                "well_graded": "\\\\\\\\\\",
+            }
+            
+            # The MIN_SEGMENT_LINE_DRAW_LENGTH variable is no longer needed/relevant
+            
+            # --- The placeholder logic is now simplified/handled by the new lines_to_plot list ---
+            
+            # Soil segments and patterns
+            for line in lines:
+                hatch_style = hatch_map.get(line.classification, None)
+                segment_length = line.bottom_depth - line.top_depth
+                
+                # Draw the segment rectangle
+                rect = patches.Rectangle(
+                    (0, line.top_depth),
+                    1.0,
+                    segment_length,
+                    edgecolor="darkgoldenrod",
+                    facecolor="white" if hatch_style else "lightgrey",
+                    hatch=hatch_style,
+                    linewidth=0,
+                    zorder=2
+                )
+                ax.add_patch(rect)
+                
+                x_start_top = 0.0 if line.top_depth == min_depth else -0.2
+                ax.plot([x_start_top, 1.2], [line.top_depth, line.top_depth], color="black", linewidth=0.5, zorder=3)
+                ax.plot([-0.2, 1.2], [line.bottom_depth, line.bottom_depth], color="black", linewidth=0.5, zorder=3)
+
+            # Define a small vertical offset to move labels slightly up (towards 0m)
+            VERTICAL_OFFSET = 0.11
+            
+            for line in lines:
+                # Place N-Value labels at the top depth, moved upwards by the offset
+                if line.n_value:
+                    ax.text(-0.05, line.top_depth - VERTICAL_OFFSET, str(line.n_value), ha="right", va="center",
+                             fontsize=9, color="brown", fontweight="bold")
+                
+                # Place UDS label at the top depth, moved upwards by the offset
+                if line.sample_type and "UDS" in line.sample_type.strip().upper():
+                    ax.text(-0.05, line.top_depth - VERTICAL_OFFSET, "UDS", ha="right", va="center",
+                             fontsize=9, color="black")
+
+            # Depth labels on right (using the new merged segment boundaries)
+            segment_depths = set()
+            segment_depths.add(min_depth) 
+                
+            for line in lines:
+                segment_depths.add(line.top_depth)
+                segment_depths.add(line.bottom_depth)
+                
+            for d in sorted(list(segment_depths)):
+                if d >= min_depth and d <= max_depth:
+                    ax.text(1.02, d - VERTICAL_OFFSET, f"{d:.1f}m", fontsize=8, ha="left", va="center")
+
+            # N-Value label + straight arrow
+            ax.text(-0.20, -0.4, "N-Value", color="blue", fontsize=10,
+                    ha="center", fontweight="bold")
+            ax.annotate("",
+                        xy=(-0.20, 0.1), xytext=(-0.20, -0.35),
+                        arrowprops=dict(facecolor='red', arrowstyle="->"))
+
+            # Borehole name top center
+            ax.text(0.5, -0.45, borehole.name or "", color="red", fontsize=12,
+                    ha="center", va="bottom", fontweight="bold")
+
+            ax.set_xlim(-0.3, 1.3)
+            ax.set_ylim(max_depth, -0.5)
+            ax.axis("off")
+
+            buf = io.BytesIO()
+            plt.savefig(buf, format="png", bbox_inches="tight", dpi=180)
+            plt.close(fig)
+            borehole.graph_image = base64.b64encode(buf.getvalue())
+
     def generate_corrected_spt_graph(self):
         self.ensure_one()
 
@@ -90,7 +251,9 @@ class ERTBorehole(models.Model):
         ax.plot(corrected_n_values, depths, marker='s', linestyle='-', color='r', label='Corrected N value')
 
         # Format the plot
-        ax.set_xlabel('SPT BLOWS PER 30 CM PENETRATION')
+        # ax.set_xlabel('SPT BLOWS PER 30 CM PENETRATION')
+        ax.xaxis.set_label_position('top')
+        ax.xaxis.tick_top()
         ax.set_ylabel('DEPTH BELOW GROUND LEVEL m.')
         ax.set_title('SPT BLOWS PER 30 CM PENETRATION', y=1.05)
         ax.invert_yaxis()
@@ -107,101 +270,6 @@ class ERTBorehole(models.Model):
         # Store the graph as base64-encoded binary data
         self.corrected_spt_graph = base64.b64encode(buffer.getvalue())
         buffer.close()
-
-    def generate_borehole_graph(self):
-        for borehole in self:
-            if not borehole.nvalue_ids:
-                borehole.graph_image = False
-                continue
-
-            fig, ax = plt.subplots(figsize=(2, 4))
-            lines = sorted(borehole.nvalue_ids, key=lambda l: l.top_depth)
-            min_depth, max_depth = 0, 6.0
-
-            # Draw log rectangle outline with high zorder to be on top
-            ax.plot([0, 0], [min_depth, max_depth], color="black", zorder=3)
-            ax.plot([1, 1], [min_depth, max_depth], color="black", zorder=3)
-            ax.plot([0, 1], [min_depth, min_depth], color="black", zorder=3)
-            ax.plot([0, 1], [max_depth, max_depth], color="black", zorder=3)
-
-            # Map classification to hatches
-            hatch_map = {
-                "poorly_graded": ".....",
-                "well_graded": "\\\\\\\\\\",
-            }
-            
-            # Draw a placeholder segment from 0.0 if the first data point starts later
-            if lines and lines[0].top_depth > min_depth:
-                rect = patches.Rectangle(
-                    (0, min_depth),
-                    1.0,
-                    lines[0].top_depth - min_depth,
-                    edgecolor="none",
-                    facecolor="white",
-                    linewidth=0,
-                    zorder=2
-                )
-                ax.add_patch(rect)
-                # Draw the top and bottom black lines that extend slightly
-                ax.plot([-0.05, 1.05], [min_depth, min_depth], color="black", linewidth=0.5, zorder=3)
-                ax.plot([-0.05, 1.05], [lines[0].top_depth, lines[0].top_depth], color="black", linewidth=0.5, zorder=3)
-            
-            # Soil segments and patterns
-            for line in lines:
-                hatch_style = hatch_map.get(line.classification, None)
-                
-                rect = patches.Rectangle(
-                    (0, line.top_depth),
-                    1.0,
-                    line.bottom_depth - line.top_depth,
-                    edgecolor="darkgoldenrod",  # Change this to "none" to remove full border
-                    facecolor="white" if hatch_style else "lightgrey",
-                    hatch=hatch_style,
-                    linewidth=0,
-                    zorder=2
-                )
-                ax.add_patch(rect)
-                
-                # Draw black horizontal lines at the top and bottom of each segment
-                # The lines extend from -0.05 to 1.05 on the x-axis
-                ax.plot([-0.05, 1.05], [line.top_depth, line.top_depth], color="black", linewidth=0.5, zorder=3)
-                ax.plot([-0.05, 1.05], [line.bottom_depth, line.bottom_depth], color="black", linewidth=0.5, zorder=3)
-
-            for line in lines:
-                # Place N-Value labels at the top depth
-                if line.n_value:
-                    ax.text(-0.15, line.top_depth, str(line.n_value), ha="right", va="center",
-                            fontsize=9, color="brown", fontweight="bold")
-                
-                # Place UDS label at the top depth, checking for "UDS" as a substring
-                if line.sample_type and "UDS" in line.sample_type.strip().upper():
-                    ax.text(-0.15, line.top_depth, "UDS", ha="right", va="center",
-                            fontsize=9, color="black")
-
-            # Depth labels on right
-            for d in np.arange(min_depth, max_depth + 0.5, 0.5):
-                ax.text(1.05, d, f"{d:.1f}m", fontsize=8, ha="left", va="center")
-
-            # N-Value label + straight arrow
-            ax.text(-0.20, -0.4, "N-Value", color="blue", fontsize=10,
-                    ha="center", fontweight="bold")
-            ax.annotate("",
-                        xy=(-0.20, 0.1), xytext=(-0.20, -0.35),
-                        arrowprops=dict(facecolor='red', arrowstyle="->"))
-
-            # Borehole name top center
-            ax.text(0.5, -0.45, borehole.name or "", color="red", fontsize=12,
-                    ha="center", va="bottom", fontweight="bold")
-
-            ax.set_xlim(-0.3, 1.3)
-            ax.set_ylim(max_depth, -0.5)
-            ax.axis("off")
-
-            buf = io.BytesIO()
-            plt.savefig(buf, format="png", bbox_inches="tight", dpi=180)
-            plt.close(fig)
-            borehole.graph_image = base64.b64encode(buf.getvalue())
-
     # @api.depends('direct_shear_ids.applied_normal_stress', 'direct_shear_ids.shear_stress')
     def generate_shear_parameters(self):
         for borehole in self:
@@ -270,7 +338,6 @@ class ERTBorehole(models.Model):
             borehole.direct_shear_graph = base64.b64encode(buffer.getvalue())
             buffer.close()
 
-    # Dependency changed to rely on the final output field: passing_percent
     # @api.depends('grain_size_ids.line_ids.passing_percent', 'grain_size_ids.line_ids.sieve_size')
     def generate_grain_size_parameters(self):
         for borehole in self:
