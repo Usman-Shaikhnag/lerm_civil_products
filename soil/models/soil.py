@@ -1394,6 +1394,39 @@ class Soil(models.Model):
             else:
                 rec.compression_index = 0.0
 
+    # Consolidation Test (Pc) Test
+    consolidation_pc_name = fields.Char("Name",default="Consolidation Test (Pc)")
+    consolidation_pc_visible = fields.Boolean("Consolidation Test (Pc) Visible",compute="_compute_visible")
+
+    initial_height_pc = fields.Float(string="Initial Height H0 ")
+    diameter_pc = fields.Float(string="Diameter D0 ")
+    area_pc = fields.Float(string="Area ", compute="_compute_area_pc", store=True)
+    initial_void_ratio_pc = fields.Float(string="Initial Void Ratio e0")
+
+    consolidation_pc_ids = fields.One2many("mechanical.consolidation.test.pc.line", "parent_id", string="Test Lines")
+
+    preconsolidation_pressure = fields.Float(string="Preconsolidation Pressure Pc ", compute="_compute_preconsolidation_pressure", store=True)
+
+    @api.depends("diameter_pc")
+    def _compute_area_pc(self):
+        for rec in self:
+            if rec.diameter_pc:
+                radius = rec.diameter_pc / 2.0 / 10  # mm to cm
+                rec.area_pc = math.pi * radius**2
+            else:
+                rec.area_pc = 0.0
+
+    @api.depends('consolidation_pc_ids.void_ratio_pc')
+    def _compute_preconsolidation_pressure(self):
+        for record in self:
+            if record.consolidation_pc_ids:
+                total_preconsolidation_pressure = sum(record.consolidation_pc_ids.mapped('void_ratio_pc'))
+                average = total_preconsolidation_pressure / len(record.consolidation_pc_ids)
+                record.preconsolidation_pressure = (average)  # ⬅️ Rounds to nearest integer
+            else:
+                record.preconsolidation_pressure = 0.0
+
+    
 
 
     
@@ -1420,6 +1453,7 @@ class Soil(models.Model):
             record.direct_shear_visible  = False 
             record.ucs_visible  = False 
             record.consolidation_visible  = False 
+            record.consolidation_pc_visible  = False 
 
 
             for sample in record.sample_parameters:
@@ -1472,6 +1506,9 @@ class Soil(models.Model):
                 
                 if sample.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
                     record.consolidation_visible = True
+
+                if sample.internal_id == '98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r':
+                    record.consolidation_pc_visible = True
 
 
     # def open_eln_page(self):
@@ -2492,6 +2529,70 @@ class ConsolidationTestLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(ConsolidationTestLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class ConsolidationPCTestLine(models.Model):
+    _name = "mechanical.consolidation.test.pc.line"
+    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+   
+    load_pc = fields.Float(string="Load [Kg]")
+    dial_gauge_pc = fields.Float(string="Dial Gauge δ [mm]")
+    delta_h_pc = fields.Float(string="ΔH [mm]", compute="_compute_corrected_height_pc", store=True)
+    corrected_height_pc = fields.Float(string="Corrected Height H [mm]", compute="_compute_corrected_height_pc", store=True)
+    stress_pc = fields.Float(string="Stress σ [Kg/cm²]", compute="_compute_stress_pc", store=True)
+    strain_pc = fields.Float(string="Strain ε", compute="_compute_strain_pc", store=True)
+    void_ratio_pc = fields.Float(string="Void Ratio e", compute="_compute_void_ratio_pc", store=True)
+
+    @api.depends("dial_gauge_pc","parent_id.initial_height_pc")
+    def _compute_corrected_height_pc(self):
+        for rec in self:
+            H0 = rec.parent_id.initial_height_pc or 1
+            rec.delta_h_pc = rec.dial_gauge_pc
+            rec.corrected_height_pc = H0 - rec.delta_h_pc
+
+    @api.depends("load_pc","parent_id.area_pc")
+    def _compute_stress_pc(self):
+        for rec in self:
+            A = rec.parent_id.area_pc or 1
+            rec.stress_pc = rec.load_pc / A if A!=0 else 0.0
+
+    @api.depends("delta_h_pc","parent_id.initial_height_pc")
+    def _compute_strain_pc(self):
+        for rec in self:
+            H0 = rec.parent_id.initial_height_pc or 1
+            rec.strain_pc = rec.delta_h_pc / H0 if H0 !=0 else 0.0
+
+
+    @api.depends("parent_id.initial_void_ratio_pc","stress_pc")
+    def _compute_void_ratio_pc(self):
+        for rec in self:
+            e0 = rec.parent_id.initial_void_ratio_pc or 0.0
+            sigma0 = 1.0  # reference stress_pc (usually 1 Kg/cm²)
+            if rec.stress_pc > 0:
+                rec.void_ratio_pc = e0 - 0.1 * math.log10(rec.stress_pc / sigma0)  # factor can be adjusted per standard
+            else:
+                rec.void_ratio_pc = e0
+    
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(ConsolidationPCTestLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
