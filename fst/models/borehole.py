@@ -142,7 +142,7 @@ class ERTBorehole(models.Model):
             
             # Ensure max_depth is calculated from the last segment's bottom depth
             # The structure of the previous logic handles the max_depth correctly:
-            max_depth = lines[-1].bottom_depth
+            max_depth = lines[-1].top_depth
             min_depth = 0.0
             
             # Draw log rectangle outline with high zorder to be on top
