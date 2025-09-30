@@ -250,7 +250,7 @@ class ERTBorehole(models.Model):
                     label=f'Failure Envelope: C={cohesion:.2f} $\\frac{{kg}}{{cm^2}}$, $\\phi$={angle_phi_degrees:.2f}\u00b0')
 
             # Format the plot
-            ax.set_title(f'Direct Shear Test Results (BH-{borehole.name})', pad=20)
+            ax.set_title(f'Direct Shear Test Results ({borehole.name})', pad=20)
             ax.set_xlabel('Normal Stress ($\u03C3$) [kg/cm\u00b2]')
             ax.set_ylabel('Shear Stress ($\u03C4$) [kg/cm\u00b2]')
             
@@ -415,7 +415,7 @@ class ERTBorehole(models.Model):
             ax.text(custom_xticks.min() * 1.5, 105, f'Cu: {cu:.2f}', fontsize=10, color='k')
             ax.text(custom_xticks.min() * 1.5, 100, f'Cc: {cc:.2f}', fontsize=10, color='k')
 
-            ax.set_title(f'Grain Size Distribution Curve (BH: {borehole.name})', pad=20)
+            ax.set_title(f'Grain Size Distribution Curve ({borehole.name})', pad=20)
             
             plt.tight_layout()
 
