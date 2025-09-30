@@ -11,35 +11,100 @@
                     <h1>
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
-                     <!-- SBC Table -->
-                    <group string="Safe Bearing Capacity">
-                        <field name="line_ids">
-                            <tree editable="bottom">
-                                <field name="depth"/>
-                                <field name="footing_size"/>
-                                <field name="shear_criteria"/>
-                                <field name="settlement_criteria"/>
-                                <field name="recommended_sbc"/>
-                            </tree>
-                        </field>
-                    </group>
-
-                    <!-- N-Values for Graph -->
-                    <group string="N-Values">
-                        <field name="nvalue_ids">
+                    <div>
+                        <field name="nvalue_ids" class="custom_table_borders" nolabel="1">
                             <tree editable="bottom">
                                 <field name="top_depth"/>
                                 <field name="bottom_depth"/>
+                                <field name="sample_type"/>
+                                <field name="n15"/>
+                                <field name="n30"/>
+                                <field name="n45"/>
                                 <field name="n_value"/>
-                                <field name="soil_pattern"/>
+                                <field name="classification"/>
                             </tree>
                         </field>
-                    </group>
-
+                        <button name="generate_borehole_graph" type="object" string="Generate Graph" class="btn-primary"/>
+                    </div>
                     <!-- Graph -->
-                    <group string="Borehole Graph">
+                    <div>
                         <field name="graph_image" widget="image" />
-                    </group>
+                    </div>
+
+                    <div>
+                        <field name="spt_n_value_ids" class="custom_table_borders">
+                            <tree editable="bottom">
+                                <field name="depth"/>
+                                <field name="bulk_den"/>
+                                <field name="overburden_pressure"/>
+                                <field name="pore_water_pressure"/>
+                                <field name="total_pore_water_pressure"/>
+                                <field name="effective_overburden_pressure"/>
+                                <field name="effective_overburden_pressure_kg"/>
+                                <field name="overburden_correction_factor"/>
+                                <field name="observed_n_value"/>
+                                <field name="corrected_n_value"/>
+                            </tree>
+                        </field>
+                        <button name="generate_corrected_spt_graph" type="object" string="Generate Graph" class="btn-primary"/>
+                    </div>
+                    <div>
+                        <field name="corrected_spt_graph" widget="image"/>
+                    </div>
+
+                    <!-- <div class="custom_table_borders">
+                        <field name="cohesion"/>
+                        <field name="angle_of_internal_friction"/>
+                    </div> -->
+                    
+                    <div>
+                        <field name="direct_shear_ids" class="custom_table_borders">
+                            <tree editable="bottom">
+                                <field name="applied_normal_stress"/>
+                                <field name="no_of_divisions"/>
+                                <field name="proving_ring_correction_factor"/>
+                                <field name="shear_load"/>
+                                <field name="area_of_specimen"/>
+                                <field name="displacement_dial"/>
+                                <field name="displacement"/>
+                                <field name="corrected_area"/>
+                                <field name="shear_stress"/>
+                            </tree>
+                        </field>
+                    </div>
+                    <button name="generate_shear_parameters" type="object" string="Generate Graph" class="btn-primary"/>
+                    <div>
+                        <field name="direct_shear_graph" widget="image" nolabel="1"/>
+                    </div>
+                                            
+                    <field name="grain_size_ids">
+                        <tree>
+                            <field name="sample_name"/>
+                            <field name="line_ids"/>
+                        </tree>
+                        <form>
+                            <sheet>
+                                <group>
+                                    <field name="sample_name"/>         
+                                </group>
+                                <separator string="Sieve Analysis Data"/>
+                                <field name="line_ids">
+                                    <tree editable="bottom">
+                                        <field name="sieve_size"/>
+                                        <field name="percent_retained"/>
+                                        <field name="wt_retained"/>
+                                        <field name="cumulative_retained"/>
+                                        <field name="passing_percent"/>
+                                    </tree>
+                                </field>
+                            </sheet>
+                        </form>
+                    </field>
+                    <button name="generate_grain_size_parameters" type="object" string="Generate Graph" class="btn-primary"/>
+                    <div>
+                        <field name="grain_size_graph" widget="image" nolabel="1"/>
+                    </div>
+
                 </sheet>
             </form>
         </field>
