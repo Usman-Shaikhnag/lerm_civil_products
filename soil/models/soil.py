@@ -1190,6 +1190,76 @@ class Soil(models.Model):
             else:
                 record.permeability_nabl = 'fail'
 
+
+
+                  # water content
+    # water_content_name = fields.Char("Name",default="Water Content")
+    # water_content_visible = fields.Boolean("Water Content Visible",compute="_compute_visible")
+    # child_linesss = fields.One2many('mechanical.water.content.line','parent_id',string="Water Content")
+    # water_contents = fields.Float('Water Content',compute="_compute_water_content")
+
+    # @api.depends('child_linesss.water_contentss')
+    # def _compute_water_content(self):
+    #     for record in self:
+    #         if record.child_linesss:
+    #             total_water_contents = sum(record.child_linesss.mapped('water_contentss'))
+    #             average = total_water_contents / len(record.child_linesss)
+    #             record.water_contents = round(average)  # ⬅️ Rounds to nearest integer
+    #         else:
+    #             record.water_contents = 0.0
+
+
+
+    # water_contents_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_water_contents_conformity", store=True)
+
+    # @api.depends('water_contents','eln_ref','grade')
+    # def _compute_water_contents_conformity(self):
+        
+    #     for record in self:
+    #         record.water_contents_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
+                    
+    #                 lower = record.water_contents - record.water_contents*mu_value
+    #                 upper = record.water_contents + record.water_contents*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.water_contents_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.water_contents_conformity = 'fail'
+
+    # water_contents_nabl = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_water_contents_nabl", store=True)
+
+    # @api.depends('water_contents','eln_ref','grade')
+    # def _compute_water_contents_nabl(self):
+        
+    #     for record in self:
+    #         record.water_contents_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')]).parameter_table
+    #         # for material in materials:
+    #         #     if material.grade.id == record.grade.id:
+    #         lab_min = line.lab_min_value
+    #         lab_max = line.lab_max_value
+    #         mu_value = line.mu_value
+            
+    #         lower = record.water_contents - record.water_contents*mu_value
+    #         upper = record.water_contents + record.water_contents*mu_value
+    #         if lower >= lab_min and upper <= lab_max:
+    #             record.water_contents_nabl = 'pass'
+    #             break
+    #         else:
+    #             record.water_contents_nabl = 'fail'
+
     
     
    
@@ -1200,6 +1270,7 @@ class Soil(models.Model):
       
         for record in self:
             record.sieve_visible = False
+            # water_content_visible = False
             record.liquid_limit_visible = False
             record.plastic_limit_visible = False
             record.heavy_visible = False
@@ -1216,6 +1287,9 @@ class Soil(models.Model):
 
                 if sample.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
                     record.sieve_visible = True
+
+                # if sample.internal_id == '800a2dc9-49fe-4dab-83e8-63758c7f351a':
+                #     record.water_content_visible = True
                 
                 if sample.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
                     record.liquid_limit_visible = True
@@ -1520,6 +1594,60 @@ class LIQUIDLIMITLINE(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
+
+# class WATERCONTENTLINE(models.Model):
+#     _name = "mechanical.water.content.line"
+#     parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+
+#     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+#     container_noo = fields.Integer(string="Container No") 
+#     wt_of_cont = fields.Float(string="Weight of container,(gms)")
+#     wet_sample_cont = fields.Float(string="Weight of wet sample + container (gm)")
+#     dry_sample_cont = fields.Float(string="Weigth of dry sample + Container (gms)")
+#     mass_dry_soil= fields.Float(string="Mass of dry soil")
+#     water_contentss = fields.Float(string="Water content (W)=(W1-W2)(W1-Wc)/100%",compute="_compute_water_contentss")
+#     w1_w2 = fields.Float(string="(W1-W2)",compute="_compute_w1_w2")
+#     W1_Wc = fields.Float(string="(W1_Wc)",compute="_compute_W1_Wc")
+
+
+
+#     @api.depends('wet_sample_cont', 'dry_sample_cont')
+#     def _compute_w1_w2(self):
+#         for line in self:
+#             line.w1_w2 = line.wet_sample_cont - line.dry_sample_cont
+
+
+#     @api.depends('wet_sample_cont', 'wt_of_cont')
+#     def _compute_W1_Wc(self):
+#         for line in self:
+#             line.W1_Wc = line.wet_sample_cont - line.wt_of_cont
+
+
+ 
+#     @api.depends('w1_w2', 'W1_Wc')
+#     def _compute_water_contentss(self):
+#         for line in self:
+#             if line.W1_Wc != 0:
+#                 line.water_contentss = line.w1_w2 / line.W1_Wc *100
+#             else:
+#                 line.water_contentss = 0.0
+
+#     @api.model
+#     def create(self, vals):
+#         # Set the serial_no based on the existing records for the same parent
+#         if vals.get('parent_id'):
+#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+#             if existing_records:
+#                 max_serial_no = max(existing_records.mapped('serial_no'))
+#                 vals['serial_no'] = max_serial_no + 1
+
+       # return super(WATERCONTENTLINE, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 class PLASTICLIMITLINE(models.Model):
     _name = "mechanical.plasticl.limit.line"
