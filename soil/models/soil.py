@@ -1260,7 +1260,142 @@ class Soil(models.Model):
     volume_wet_table = fields.One2many('mechanical.volume.wet.line','parent_id',string="Parameter")
     volume_wet_name = fields.Char("Name",default="Volume of wet soil(V1)")
 
-    
+    # Permeability Falling Head Test
+    permeability_falling_name = fields.Char("Name",default="Permeability Falling Head Test")
+    permeability_falling_visible = fields.Boolean("Permeability Falling Head Test Visible",compute="_compute_visible")
+
+   
+    length = fields.Float(string="Length of Soil Specimen (L) [cm]", digits=(12,2))
+    diameter_mold = fields.Float(string="Diameter of Mold (D) [cm]", digits=(12,2))
+    diameter_standpipe = fields.Float(string="Diameter of Stand Pipe (d) [cm]", digits=(12,2))
+
+    # Child lines
+    test_line_ids = fields.One2many("mechanical.permeability.line", "parent_id", string="Test Readings")
+
+    # Average K
+    avg_k = fields.Float(string="Average Permeability (k) [cm/s]", compute="_compute_avg_k", store=True, digits=(12,2))
+
+    @api.depends("test_line_ids.k_value")
+    def _compute_avg_k(self):
+        for rec in self:
+            if rec.test_line_ids:
+                vals = rec.test_line_ids.mapped("k_value")
+                rec.avg_k = sum(vals) / len(vals)
+            else:
+                rec.avg_k = 0.0
+
+     # Specific Gravity
+    specific_gravity_name = fields.Char("Name",default="Specific Gravity")
+    specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
+
+    m1 = fields.Float(string="Mass of Density Bottle (M1) ", digits=(12,2))
+    m2 = fields.Float(string="Mass of Bottle & Dry Soil (M2) ", digits=(12,2))
+    m3 = fields.Float(string="Mass of Bottle, Soil & Liquid (M3) ", digits=(12,2))
+    m4 = fields.Float(string="Mass of Bottle Full of Liquid (M4) ", digits=(12,2))
+
+    specific_gravity = fields.Float(
+        string="Specific Gravity (G)",
+        compute="_compute_specific_gravity",
+        store=True,
+        digits=(12,2)
+    )
+
+    @api.depends("m1","m2","m3","m4")
+    def _compute_specific_gravity(self):
+        for rec in self:
+            try:
+                numerator = rec.m2 - rec.m1
+                denominator = (rec.m4 - rec.m1) - (rec.m3 - rec.m2)
+                if denominator != 0:
+                    rec.specific_gravity = round(numerator / denominator, 2)
+                else:
+                    rec.specific_gravity = 0.0
+            except Exception:
+                rec.specific_gravity = 0.0
+
+
+     # Direct Shear Test
+    direct_shear_name = fields.Char("Name",default="Direct Shear Test")
+    direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
+
+    proving_ring_constant = fields.Float(string="Proving Ring Constant (k)", digits=(12,3))
+
+    direct_shear_ids = fields.One2many("mechanical.direct.shear.test.line", "parent_id", string="Test Readings")
+
+    avg_shear_stress = fields.Float(
+        string="Average Shear Stress (τ_avg) ",
+        compute="_compute_avg_shear_stress",
+        store=True,
+        digits=(12,2))
+
+    @api.depends("direct_shear_ids.shear_stress")
+    def _compute_avg_shear_stress(self):
+        for rec in self:
+            vals = [line.shear_stress for line in rec.direct_shear_ids if line.shear_stress is not None]
+            rec.avg_shear_stress = round(sum(vals)/len(vals), 2) if vals else 0.0
+
+
+      # Unconfined Compressive Strength (UCS) Test
+    ucs_name = fields.Char("Name",default="Unconfined Compressive Strength (UCS) Test")
+    ucs_visible = fields.Boolean("Unconfined Compressive Strength (UCS) Test Visible",compute="_compute_visible")
+
+    initial_diameter = fields.Float(string="Initial Diameter of Specimen (D0) ", digits=(12,3))
+    initial_length = fields.Float(string="Initial Length of Specimen (L0) ", digits=(12,3))
+    initial_density = fields.Float(string="Initial Density of Specimen ", digits=(12,3))
+    proving_ring_constant = fields.Float(string="Proving Ring Constant (K) ", digits=(12,3))
+
+    ucs_ids = fields.One2many("mechanical.ucs.test.line", "parent_id", string="Test Readings")
+
+    avg_stress = fields.Float(string="Average Stress", compute="_compute_avg_stress", store=True, digits=(12,3))
+    avg_strain = fields.Float(string="Average Axial Strain", compute="_compute_avg_stress", store=True, digits=(12,3))
+
+    @api.depends("ucs_ids.stress", "ucs_ids.axial_strain")
+    def _compute_avg_stress(self):
+        for rec in self:
+            stresses = [line.stress for line in rec.ucs_ids if line.stress is not None]
+            strains = [line.axial_strain for line in rec.ucs_ids if line.axial_strain is not None]
+            rec.avg_stress = round(sum(stresses)/len(stresses),3) if stresses else 0.0
+            rec.avg_strain = round(sum(strains)/len(strains),3) if strains else 0.0
+
+     # Consolidation Test (Cc) Test
+    consolidation_name = fields.Char("Name",default="Consolidation Test (Cc)")
+    consolidation_visible = fields.Boolean("Consolidation Test (Cc) Visible",compute="_compute_visible")
+
+    initial_height = fields.Float(string="Initial Height H0 ", digits=(12,3))
+    diameter = fields.Float(string="Diameter D0 ", digits=(12,3))
+    area = fields.Float(string="Area ", compute="_compute_area", store=True, digits=(12,3))
+    initial_void_ratio = fields.Float(string="Initial Void Ratio e0", digits=(12,3))
+
+    consolidation_name_ids = fields.One2many("mechanical.consolidation.test.line", "parent_id", string="Test Lines")
+
+    compression_index = fields.Float(string="Compression Index Cc", compute="_compute_cc", store=True, digits=(12,3))
+
+    @api.depends("diameter")
+    def _compute_area(self):
+        for rec in self:
+            if rec.diameter:
+                radius = rec.diameter / 2.0 / 10  # mm to cm
+                rec.area = math.pi * radius**2
+            else:
+                rec.area = 0.0
+
+    @api.depends("consolidation_name_ids.void_ratio")
+    def _compute_cc(self):
+        # Simple approximation: slope of virgin compression line
+        for rec in self:
+            lines = sorted(rec.consolidation_name_ids, key=lambda l: l.stress or 0)
+            if len(lines) >= 2:
+                e1, e2 = lines[0].void_ratio, lines[-1].void_ratio
+                sigma1, sigma2 = lines[0].stress, lines[-1].stress
+                if sigma1 > 0 and sigma2 > 0:
+                    rec.compression_index = round((e1 - e2) / (math.log10(sigma2) - math.log10(sigma1)), 3)
+                else:
+                    rec.compression_index = 0.0
+            else:
+                rec.compression_index = 0.0
+
+
+
     
    
 
@@ -1280,6 +1415,11 @@ class Soil(models.Model):
             record.fsi_visible  = False 
             record.determination_visible  = False 
             record.shrinkage_limit_visible  = False 
+            record.permeability_falling_visible  = False 
+            record.specific_gravity_visible  = False 
+            record.direct_shear_visible  = False 
+            record.ucs_visible  = False 
+            record.consolidation_visible  = False 
 
 
             for sample in record.sample_parameters:
@@ -1317,6 +1457,21 @@ class Soil(models.Model):
 
                 if sample.internal_id == '5487gt21-ca64-44dd-b0ae-278954ggh114':
                     record.shrinkage_limit_visible = True
+                
+                if sample.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
+                    record.permeability_falling_visible = True
+
+                if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                    record.specific_gravity_visible = True
+
+                if sample.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
+                    record.direct_shear_visible = True
+
+                if sample.internal_id == 't4y57888hhhllly1-ca64-44dd-b0ae-1234567rt':
+                    record.ucs_visible = True
+                
+                if sample.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
+                    record.consolidation_visible = True
 
 
     # def open_eln_page(self):
@@ -2114,6 +2269,229 @@ class VolumeWetLINE(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(VolumeWetLINE, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+class SoilPermeabilityLine(models.Model):
+    _name = "mechanical.permeability.line"
+    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+
+    serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
+
+    h1 = fields.Float(string="Initial Head (h1) [cm]", digits=(12,2))
+    h2 = fields.Float(string="Final Head (h2) [cm]", digits=(12,2))
+    t = fields.Float(string="Time Interval (t) [s]", digits=(12,2))
+
+    k_value = fields.Float(string="Permeability (k) [cm/s]", compute="_compute_k_value", store=True, digits=(12,2))
+
+    @api.depends("h1","h2","t","parent_id.length","parent_id.diameter_mold","parent_id.diameter_standpipe")
+    def _compute_k_value(self):
+        for rec in self:
+            rec.k_value = 0.0
+            if all([rec.h1, rec.h2, rec.t, rec.parent_id.length, rec.parent_id.diameter_mold, rec.parent_id.diameter_standpipe]):
+                # Areas
+                A = math.pi * rec.parent_id.diameter_mold**2 / 4.0
+                a = math.pi * rec.parent_id.diameter_standpipe**2 / 4.0
+                L = rec.parent_id.length
+                t = rec.t
+
+                if rec.h1 != rec.h2 and A > 0 and a > 0 and L > 0 and t > 0:
+                    h1, h2 = rec.h1, rec.h2
+                    if h1 < h2:
+                        h1, h2 = h2, h1  # swap to ensure positive log
+                    k = (2.303 * a * L) / (A * t) * math.log10(h1 / h2)
+                    rec.k_value = round(k, 2)
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilPermeabilityLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+
+class DirectShearTestLine(models.Model):
+    _name = "mechanical.direct.shear.test.line"
+    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+
+    serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
+
+    ao = fields.Float(string="Area of Sample (Ao) [cm²]", digits=(12,3))
+    delta = fields.Float(string="Horizontal Dial Gauge (δ) [mm]", digits=(12,3))
+    proving_ring_reading = fields.Float(string="Proving Ring Reading", digits=(12,3))
+    normal_stress = fields.Float(string="Normal Stress [kg/cm²]", digits=(12,3))
+
+    horizontal_load = fields.Float(string="Horizontal Load [kg]", compute="_compute_shear", store=True, digits=(12,3))
+    corrected_area = fields.Float(string="Corrected Area [cm²]", compute="_compute_shear", store=True, digits=(12,3))
+    shear_stress = fields.Float(string="Shear Stress (τ) [kg/cm²]", compute="_compute_shear", store=True, digits=(12,3))
+
+    @api.depends("ao","delta","proving_ring_reading","parent_id.proving_ring_constant")
+    def _compute_shear(self):
+        for rec in self:
+            k = rec.parent_id.proving_ring_constant or 0
+            # Horizontal Load
+            rec.horizontal_load = rec.proving_ring_reading * k
+            # Corrected Area
+            rec.corrected_area = rec.ao * (1 - rec.delta/100)
+            # Shear Stress (sign preserved)
+            if rec.corrected_area != 0:
+                rec.shear_stress = rec.horizontal_load / rec.corrected_area
+            else:
+                rec.shear_stress = 0.0
+
+   
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(DirectShearTestLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class UCSTestLine(models.Model):
+    _name = "mechanical.ucs.test.line"
+    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+
+    dial_gauge = fields.Float(string="Dial Gauge Reading [mm]", digits=(12,3))
+    proving_ring_reading = fields.Float(string="Proving Ring Reading [Division]", digits=(12,3))
+    deformation = fields.Float(string="Deformation [mm]", digits=(12,3))
+    
+    load = fields.Float(string="Load [Kg]")  # now user input
+    corrected_area = fields.Float(string="Corrected Area [cm²]", compute="_compute_corrected_area", store=True, digits=(12,3))
+    axial_strain = fields.Float(string="Axial Strain", compute="_compute_axial_strain", store=True, digits=(12,3))
+    stress = fields.Float(string="Stress [Kg/cm²]", compute="_compute_stress", store=True, digits=(12,3))
+
+    @api.depends("parent_id.initial_diameter")
+    def _compute_corrected_area(self):
+        for rec in self:
+            if rec.parent_id.initial_diameter:
+                radius = rec.parent_id.initial_diameter / 2.0
+                rec.corrected_area = 3.1416 * radius * radius
+            else:
+                rec.corrected_area = 0.0
+
+    @api.depends("deformation","parent_id.initial_length")
+    def _compute_axial_strain(self):
+        for rec in self:
+            L0 = rec.parent_id.initial_length or 1
+            rec.axial_strain = rec.deformation / L0
+
+    @api.depends("load","corrected_area")
+    def _compute_stress(self):
+        for rec in self:
+            if rec.corrected_area != 0:
+                rec.stress = rec.load / rec.corrected_area
+            else:
+                rec.stress = 0.0
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(UCSTestLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class ConsolidationTestLine(models.Model):
+    _name = "mechanical.consolidation.test.line"
+    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    load = fields.Float(string="Load [Kg]")
+    dial_gauge = fields.Float(string="Dial Gauge δ [mm]")
+    delta_h = fields.Float(string="ΔH [mm]", compute="_compute_corrected_height", store=True)
+    corrected_height = fields.Float(string="Corrected Height H [mm]", compute="_compute_corrected_height", store=True)
+    stress = fields.Float(string="Stress σ [Kg/cm²]", compute="_compute_stress", store=True, digits=(12,3))
+    strain = fields.Float(string="Strain ε", compute="_compute_strain", store=True, digits=(12,3))
+    void_ratio = fields.Float(string="Void Ratio e", compute="_compute_void_ratio", store=True, digits=(12,3))
+
+    @api.depends("dial_gauge","parent_id.initial_height")
+    def _compute_corrected_height(self):
+        for rec in self:
+            H0 = rec.parent_id.initial_height or 1
+            rec.delta_h = rec.dial_gauge
+            rec.corrected_height = H0 - rec.delta_h
+
+    @api.depends("load","parent_id.area")
+    def _compute_stress(self):
+        for rec in self:
+            A = rec.parent_id.area or 1
+            rec.stress = rec.load / A if A !=0 else 0.0
+
+    @api.depends("delta_h","parent_id.initial_height")
+    def _compute_strain(self):
+        for rec in self:
+            H0 = rec.parent_id.initial_height or 1
+            rec.strain = rec.delta_h / H0 if H0 !=0 else 0.0
+
+    @api.depends("parent_id.initial_void_ratio","stress")
+    def _compute_void_ratio(self):
+        for rec in self:
+            e0 = rec.parent_id.initial_void_ratio or 0.0
+            sigma0 = 1.0  # reference stress (usually 1 Kg/cm²)
+            if rec.stress > 0:
+                rec.void_ratio = e0 - 0.1 * math.log10(rec.stress/sigma0)  # factor 0.1 placeholder, modify as per standard
+            else:
+                rec.void_ratio = e0
+
+
+    
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(ConsolidationTestLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
