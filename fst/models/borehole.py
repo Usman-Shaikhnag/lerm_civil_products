@@ -18,7 +18,7 @@ from scipy.interpolate import interp1d
 class ERTBorehole(models.Model):
     _name = "soil.borehole"
 
-    name = fields.Char(string="Name", required=True, copy=False, readonly=True, default='New')
+    name = fields.Char(string="Name", required=True, default='New')
     parent_id = fields.Many2one('soil.borehole.parent')
 
     # line_ids = fields.One2many("soil.borehole.line", "borehole_id", string="SBC Lines")
@@ -62,67 +62,92 @@ class ERTBorehole(models.Model):
             
             # Identify the records that define segment boundaries (SPT or UDS).
             # This logic must be safe even if 'sample_type' is None or missing.
-            def is_sample_boundary(record):
+            def is_sample_record(record):
                 sample_type = record.sample_type.strip().upper() if record.sample_type else ""
                 return sample_type != "DRILLING"
                 
-            sample_records = [rec for rec in all_records if is_sample_boundary(rec)]
+            sample_records = [rec for rec in all_records if is_sample_record(rec)]
             
-            # If no sample records are found, use the raw data (or exit gracefully)
+            lines_to_plot = []
+            
             if not sample_records:
-                 # No samples found, treat as one large segment from min_depth to max_depth if needed, 
-                 # but for this problem, we'll continue with the original sorted list if no samples.
-                 lines_to_plot = all_records
+                # If no samples, plot raw data (or a single default layer)
+                lines_to_plot = all_records
             else:
-                lines_to_plot = []
-                current_top_depth = 0.0
+                # Get the true overall max depth
+                max_borehole_depth = all_records[-1].bottom_depth if all_records else 0.0
+                layer_top_depth = 0.0 # Start at ground level
                 
-                # Start from 0m and extend to the first sample's top_depth, 
-                # using the properties of the first sample (e.g., N-value=0, classification)
-                first_sample = sample_records[0]
-                if first_sample.top_depth > current_top_depth:
-                    # Create a placeholder for the interval from 0.0 to the first sample
-                    placeholder_line = type('obj', (object,), {
-                        'top_depth': current_top_depth,
-                        'bottom_depth': first_sample.top_depth,
-                        'n_value': 0,
-                        'sample_type': 'DRILLING',
-                        'classification': first_sample.classification,
-                    })()
-                    lines_to_plot.append(placeholder_line)
-                
-                # Iterate through the sample records to define the merged segments
-                for i, sample_rec in enumerate(sample_records):
-                    # The segment starts at the current record's top depth
-                    new_line_top_depth = sample_rec.top_depth
+                # Iterate through sample records to define layers
+                for i, current_sample in enumerate(sample_records):
                     
-                    # Determine the segment's bottom depth
-                    if i < len(sample_records) - 1:
-                        # Segment ends at the top depth of the NEXT sample record
-                        new_line_bottom_depth = sample_records[i+1].top_depth
+                    current_sample_top = current_sample.top_depth
+                    
+                    # --- A. Plot the layer ABOVE the current sample ---
+                    # The properties for this segment (layer_top_depth to current_sample_top)
+                    # should be taken from the PREVIOUSLY defined layer.
+                    
+                    # 1. Handle the layer from 0.0m down to the FIRST sample
+                    if i == 0 and current_sample_top > 0.0:
+                        # Use the properties of the first sample for the layer above it (Common practice)
+                        preceding_layer_props = current_sample
+                        
+                    # 2. Handle layers BETWEEN samples
+                    elif i > 0 and current_sample_top > layer_top_depth:
+                        # Use properties from the PREVIOUS sample (which defined the layer above)
+                        preceding_layer_props = sample_records[i-1]
                     else:
-                        # Last sample segment ends at its own bottom depth (or max depth)
-                        new_line_bottom_depth = all_records[-1].bottom_depth
+                        preceding_layer_props = None
 
-                    # Create the new, merged segment line. 
-                    # It inherits all key properties from the sample record.
-                    new_line = type('obj', (object,), {
-                        'top_depth': new_line_top_depth,
-                        'bottom_depth': new_line_bottom_depth,
-                        'n_value': sample_rec.n_value,
-                        'sample_type': sample_rec.sample_type,
-                        'classification': sample_rec.classification,
-                    })()
-                    lines_to_plot.append(new_line)
+
+                    if preceding_layer_props:
+                        preceding_layer = type('obj', (object,), {
+                            'top_depth': layer_top_depth,
+                            'bottom_depth': current_sample_top,
+                            'n_value': 0, 
+                            'sample_type': 'DRILLING',
+                            'classification': preceding_layer_props.classification,
+                            'symbol': preceding_layer_props.symbol,
+                        })()
+                        lines_to_plot.append(preceding_layer)
+                    
+                    
+                    # --- B. Plot the layer starting at the current sample's top depth ---
+                    
+                    # This layer extends from the current sample's top depth down to:
+                    if i < len(sample_records) - 1:
+                        # The top depth of the NEXT sample
+                        layer_bottom_depth = sample_records[i+1].top_depth
+                    else:
+                        # The very bottom of the borehole
+                        layer_bottom_depth = max_borehole_depth
+
+                    # Only plot if the segment has positive length
+                    if layer_bottom_depth > current_sample_top:
+                        new_line = type('obj', (object,), {
+                            'top_depth': current_sample_top,
+                            'bottom_depth': layer_bottom_depth,
+                            'n_value': current_sample.n_value,
+                            'sample_type': current_sample.sample_type,
+                            'classification': current_sample.classification,
+                            'symbol': current_sample.symbol,
+                        })()
+                        lines_to_plot.append(new_line)
+                    
+                    # Set the start of the next layer to the bottom of the current merged segment
+                    layer_top_depth = layer_bottom_depth 
 
             lines = lines_to_plot # Use the new list of merged segments
-            # --- END OF NEW DATA PROCESSING ---
+            # --- END OF REVISED DATA PROCESSING ---
 
             fig, ax = plt.subplots(figsize=(2, 4))
             
             # Ensure max_depth is calculated from the last segment's bottom depth
             # The structure of the previous logic handles the max_depth correctly:
-            max_depth = lines[-1].top_depth
+            if all_records:
+                max_depth = all_records[-1].top_depth
+            else:
+                max_depth = 0.0 # Handle case where all_records is empty
             min_depth = 0.0
             
             # Draw log rectangle outline with high zorder to be on top
@@ -132,9 +157,31 @@ class ERTBorehole(models.Model):
             ax.plot([0, 1], [max_depth, max_depth], color="black", zorder=3)
 
             # Map classification to hatches
-            hatch_map = {
-                "poorly_graded": ".....",
-                "well_graded": "\\\\\\\\\\",
+            pattern_map = {
+                # GW (Well-graded Gravel) - Solid fill or small dots (Matplotlib doesn't have good 'solid fill' for gravel)
+                "GW": ("#FFFFCC", None), # Light brown/yellow color, no hatch for 'solid' look or fine gravel
+                
+                # CL (Clay) - Blue/gray, Horizontal lines or cross-hatching
+                "CL": ("#ADD8E6", "----"), # Light blue color, horizontal lines
+                
+                # SP (Sand) - Yellow, Diagonal hatching or stippling
+                "SP": ("#FFFF66", "....."), # Yellow color, stippling for sand (Diagonal is often '///')
+                
+                # ML (Silt) - Gray, Sparse dots or stippling
+                "ML": ("#D3D3D3", ":"), # Gray color, sparse dots/colons for silt
+                
+                # OH (Organic Clay) - Dark brown/black, Solid dark fill
+                "OH": ("#4B371C", None), # Dark brown facecolor, no hatch (simulates solid dark fill)
+                
+                # SM (Silty Sand) - Light gray/yellow, Combination of sand and silt pattern
+                # Use a combined hatch and an intermediate color
+                "SM": ("#E0E0A0", ".-"), # Light gray/yellow, combination of stipple and line
+                
+                # Example for well-graded sand (SW) - often diagonal lines
+                "SW": ("#FFFF66", "\\\\"), # Yellow, Diagonal hatching
+                
+                # Default for unclassified or missing
+                "DEFAULT": ("white", None),
             }
             
             # The MIN_SEGMENT_LINE_DRAW_LENGTH variable is no longer needed/relevant
@@ -143,7 +190,10 @@ class ERTBorehole(models.Model):
             
             # Soil segments and patterns
             for line in lines:
-                hatch_style = hatch_map.get(line.classification, None)
+                # Use the USCS symbol from your line object, defaulting to 'DEFAULT'
+                uscs_symbol = (line.symbol or line.classification or "DEFAULT").strip().upper() 
+                color, hatch_style = pattern_map.get(uscs_symbol, pattern_map["DEFAULT"])
+                
                 segment_length = line.bottom_depth - line.top_depth
                 
                 # Draw the segment rectangle
@@ -151,10 +201,14 @@ class ERTBorehole(models.Model):
                     (0, line.top_depth),
                     1.0,
                     segment_length,
-                    edgecolor="darkgoldenrod",
-                    facecolor="white" if hatch_style else "lightgrey",
+                    # Draw a distinct boundary for the soil layer
+                    edgecolor="black", 
+                    linewidth=0.5,
+                    
+                    # Apply the pattern map values
+                    facecolor=color,
                     hatch=hatch_style,
-                    linewidth=0,
+                    
                     zorder=2
                 )
                 ax.add_patch(rect)
@@ -532,8 +586,8 @@ class ERTBorehole(models.Model):
 
     @api.model
     def create(self, vals):
-        if vals.get("name", "New") == "New":
-            vals["name"] = self.env["ir.sequence"].next_by_code("soil.borehole.seq") or "New"
+        # if vals.get("name", "New") == "New":
+        #     vals["name"] = self.env["ir.sequence"].next_by_code("soil.borehole.seq") or "New"
             
         record = super().create(vals)
         if record.parent_id:
@@ -577,6 +631,8 @@ class SoilBoreholeNValue(models.Model):
     n45 = fields.Integer("N @ 45 cm")
     # This field is now computed automatically
     n_value = fields.Integer("Total N Value", compute="_compute_n_value", store=True)
+    core_recovery = fields.Char("Core recovery")
+    rqd = fields.Char("RQD")
 
     @api.depends('n30', 'n45')
     def _compute_n_value(self):
