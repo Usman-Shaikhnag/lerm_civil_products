@@ -785,6 +785,501 @@
 
 								</tr>
 
+									<tr t-if="data.permeability_falling_visible and (data.avg_k_nabl == 'pass' and nabl or (data.avg_k_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.avg_k" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.avg_k_conformity"/>
+									</td>
+
+								</tr>
+
+
+								<tr t-if="data.specific_gravity_visible and (data.specific_gravity_nabl == 'pass' and nabl or (data.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.specific_gravity" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.specific_gravity_conformity"/>
+									</td>
+
+								</tr>
+
+								<tr t-if="data.direct_shear_visible and (data.avg_shear_stress_nabl == 'pass' and nabl or (data.avg_shear_stress_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.avg_shear_stress" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.avg_shear_stress_conformity"/>
+									</td>
+
+								</tr>
+
+
+								<tr t-if="data.angle_shear_visible and (data.phi_deg_nabl == 'pass' and nabl or (data.phi_deg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.phi_deg" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.phi_deg_conformity"/>
+									</td>
+
+								</tr>
+
+
+								<tr t-if="data.ucs_visible and (data.avg_stress_nabl == 'pass' and nabl or (data.avg_stress_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.avg_stress" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.avg_stress_conformity"/>
+									</td>
+
+								</tr>
+
+
+
+								<tr t-if="data.consolidation_visible and (data.compression_index_nabl == 'pass' and nabl or (data.compression_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.compression_index" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.compression_index_conformity"/>
+									</td>
+
+								</tr>
+
+
+
+							<tr t-if="data.consolidation_pc_visible and (data.preconsolidation_pressure_nabl == 'pass' and nabl or (data.preconsolidation_pressure_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.preconsolidation_pressure" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.preconsolidation_pressure_conformity"/>
+									</td>
+
+								</tr>
+
+
+
+
+								<tr t-if="data.swelling_pressure_visible and (data.avg_swelling_pressure_nabl == 'pass' and nabl or (data.avg_swelling_pressure_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.avg_swelling_pressure" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.avg_swelling_pressure_conformity"/>
+									</td>
+
+								</tr>
+
+
+							<tr t-if="data.uu_triaxial_angle_visible and (data.phi_deg_uu_triaxial_angle_nabl == 'pass' and nabl or (data.phi_deg_uu_triaxial_angle_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.phi_deg_uu_triaxial_angle" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.phi_deg_uu_triaxial_angle_conformity"/>
+									</td>
+
+								</tr>
+
+							<tr t-if="data.uu_triaxial_cohesion_visible and (data.cohesion_uu_triaxial_cohesion_nabl == 'pass' and nabl or (data.cohesion_uu_triaxial_cohesion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.cohesion_uu_triaxial_cohesion" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.cohesion_uu_triaxial_cohesion_conformity"/>
+									</td>
+
+								</tr>
+
+
+
+
+
 							
 							
 							</tbody>
