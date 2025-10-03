@@ -18,7 +18,7 @@ from scipy.interpolate import interp1d
 class ERTBorehole(models.Model):
     _name = "soil.borehole"
 
-    name = fields.Char(string="Name", required=True, default='New')
+    name = fields.Char(string="Name", required=True)
     parent_id = fields.Many2one('soil.borehole.parent')
 
     # line_ids = fields.One2many("soil.borehole.line", "borehole_id", string="SBC Lines")
@@ -567,8 +567,8 @@ class ERTBorehole(models.Model):
             if d60 > 0: ax.axvline(x=d60, color='red', linestyle=':', linewidth=0.8)
 
             # Annotate Cu and Cc
-            ax.text(custom_xticks.min() * 1.5, 105, f'Cu: {cu:.2f}', fontsize=10, color='k')
-            ax.text(custom_xticks.min() * 1.5, 100, f'Cc: {cc:.2f}', fontsize=10, color='k')
+            # ax.text(custom_xticks.min() * 1.5, 105, f'Cu: {cu:.2f}', fontsize=10, color='k')
+            # ax.text(custom_xticks.min() * 1.5, 100, f'Cc: {cc:.2f}', fontsize=10, color='k')
 
             ax.set_title(f'Grain Size Distribution Curve ({borehole.name})', pad=20)
             
@@ -618,7 +618,7 @@ class SoilBoreholeNValue(models.Model):
 
     borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
     sample_type = fields.Char("Sample Type")
-    symbol = fields.Char("Symbol")                
+    symbol = fields.Char("Symbol")   
     classification = fields.Selection([
         ('poorly_graded','Poorly Graded Sand'),
         ('well_graded','Well Graded Sand')

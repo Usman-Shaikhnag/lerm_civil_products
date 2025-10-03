@@ -21,6 +21,19 @@
         <field name="py3o_template_fallback">reports/soil_resistivity.odt</field>
         <field name="print_report_name">'ERT Report'</field>
         <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_lerm_ert_parent"/>
+    </record>
+
+	<record id="soil_resistivity_report_single_py3o" model="ir.actions.report">
+        <field name="name">Soil Resistivity Report New</field>
+        <field name="model">ert.soil.resistivity</field>
+        <field name="report_name">fst.soil_resistivity_single</field>
+        <field name="report_type">py3o</field>
+        <field name="py3o_filetype">docx</field>
+        <field name="module">fst</field>
+        <field name="py3o_template_fallback">reports/soil_resistivity_single.odt</field>
+        <field name="print_report_name">'ERT Report'</field>
+        <field name="binding_type">report</field>
         <field name="binding_model_id" ref="model_ert_soil_resistivity"/>
     </record>
 </odoo>
