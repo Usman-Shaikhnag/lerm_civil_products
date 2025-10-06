@@ -1714,13 +1714,13 @@ class CoarseAggregateMechanical(models.Model):
                 record.avg_compacted_nabl = 'fail'
 
 
-    specific_gravity1  = fields.Float(string="Specific Gravity")
-    voids_ratio = fields.Float(
-        string="Voids Ratio (%)",
-        compute="_compute_voids_ratio",
-        store=True,
-        digits=(12, 2)
-    )
+    # specific_gravity1  = fields.Float(string="Specific Gravity")
+    # voids_ratio = fields.Float(
+    #     string="Voids Ratio (%)",
+    #     compute="_compute_voids_ratio",
+    #     store=True,
+    #     digits=(12, 2)
+    # )
 
     # @api.depends('specific_gravity1', 'avg_bulk_density')
     # def _compute_voids_ratio(self):

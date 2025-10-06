@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.tools import float_round
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.projections.polar import PolarAxes
@@ -14,6 +15,7 @@ import numpy as np
 import io, base64
 from math import sqrt, pi
 import math
+from decimal import Decimal, ROUND_HALF_UP
 from scipy.interpolate import interp1d
 class ERTBorehole(models.Model):
     _name = "soil.borehole"
@@ -340,7 +342,7 @@ class ERTBorehole(models.Model):
             fig, ax = plt.subplots(figsize=(8, 6))
 
             # Plot the raw data points
-            ax.scatter(x, y, color='red', marker='s', label='Observed Test Points')
+            ax.scatter(x, y, color='red', marker='s')
 
             # Plot the best-fit line (Failure Envelope)
             # Extend the line slightly beyond the last point
@@ -349,7 +351,7 @@ class ERTBorehole(models.Model):
             y_fit = slope * x_fit + intercept
             
             ax.plot(x_fit, y_fit, color='blue', linestyle='-', 
-                    label=f'Failure Envelope: C={cohesion:.2f} $\\frac{{kg}}{{cm^2}}$, $\\phi$={angle_phi_degrees:.2f}\u00b0')
+                    label=f'C={cohesion:.2f} $\\frac{{kg}}{{cm^2}}$, $\\phi$={angle_phi_degrees:.2f}\u00b0')
 
             # Format the plot
             ax.set_title(f'Direct Shear Test Results ({borehole.name})', pad=20)
@@ -649,12 +651,13 @@ class CorrectedSptNValue(models.Model):
     sr_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
     depth = fields.Float(string='Depth (m)')
     bulk_den = fields.Float(string='Bulk Density (T/m2)')
-    overburden_pressure = fields.Float(string='Overburden Pressure (T/m2)',compute="_compute_overburden_pressure", digits=(16, 3))
-    pore_water_pressure = fields.Float(string="Pore Water Pressure from layer",compute="_compute_pore_water_pressure", digits=(16, 3))
-    total_pore_water_pressure = fields.Float(string="total pore water pressure",compute="_compute_total_pore_water_pressure", digits=(16, 3))
-    effective_overburden_pressure = fields.Float(string='Effective Overburden Pressure (T/m2)', compute="_compute_effective_overburden_pressure", digits=(16, 3))
-    effective_overburden_pressure_kg = fields.Float(string='Effective Overburden Pressure (kg/cm2)', compute="_compute_effective_overburden_pressure_kg", digits=(16, 3))
-    overburden_correction_factor = fields.Float(string="OVERBURDEN CORRECTION FACTOR",compute="_compute_overburden_correction_factor", digits=(16, 3))
+    
+    overburden_pressure = fields.Char(string='Overburden Pressure (T/m2)', compute="_compute_overburden_pressure", store=True)
+    pore_water_pressure = fields.Char(string="Pore Water Pressure from layer", compute="_compute_pore_water_pressure", store=True)
+    total_pore_water_pressure = fields.Char(string="Total Pore Water Pressure", compute="_compute_total_pore_water_pressure", store=True)
+    effective_overburden_pressure = fields.Char(string='Effective Overburden Pressure (T/m2)', compute="_compute_effective_overburden_pressure", store=True)
+    effective_overburden_pressure_kg = fields.Char(string='Effective Overburden Pressure (kg/cm2)', compute="_compute_effective_overburden_pressure_kg", store=True)
+    overburden_correction_factor = fields.Char(string="OVERBURDEN CORRECTION FACTOR", compute="_compute_overburden_correction_factor", store=True)
     observed_n_value = fields.Integer(string='Observed SPT N Value',compute="_compute_observed_n_value")
     corrected_n_value = fields.Integer(string='Corrected SPT (N\') Value',compute="_compute_corrected_n_value")
     
@@ -692,68 +695,67 @@ class CorrectedSptNValue(models.Model):
     @api.depends('pore_water_pressure', 'borehole_id')
     def _compute_total_pore_water_pressure(self):
         for record in self:
-            record.total_pore_water_pressure = 0.0  # default
-
+            record.total_pore_water_pressure = "0.000"
             if not record.borehole_id:
                 continue
 
-            # fetch all records for this borehole sorted by depth
-            borehole_records = self.search(
-                [('borehole_id', '=', record.borehole_id.id)],
-                order="depth asc"
-            )
-
-            cumulative_pressure = 0.0
+            borehole_records = self.search([('borehole_id','=',record.borehole_id.id)], order='depth asc')
+            cumulative = Decimal('0.000')
             for rec in borehole_records:
-                cumulative_pressure += rec.pore_water_pressure or 0.0
+                pw = Decimal(str(rec.pore_water_pressure or 0.0))
+                cumulative += pw
                 if rec.id == record.id:
-                    record.total_pore_water_pressure = round(cumulative_pressure, 3)
+                    record.total_pore_water_pressure = str(cumulative.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
                     break
+
 
 
     @api.depends('depth', 'bulk_den', 'borehole_id')
     def _compute_overburden_pressure(self):
         for record in self:
-            # default
-            record.overburden_pressure = 0.0  
-
-            # skip if no borehole or invalid values
+            record.overburden_pressure = "0.000"  # default
             if not record.borehole_id or record.depth is None or record.bulk_den is None:
                 continue
 
-            # fetch all records of this borehole sorted by depth
-            borehole_records = self.search(
-                [('borehole_id', '=', record.borehole_id.id)],
-                order="depth asc"
-            )
-
-            cumulative_pressure = 0.0
-            prev_depth = 0.0
+            borehole_records = self.search([('borehole_id','=',record.borehole_id.id)], order='depth asc')
+            cumulative = Decimal('0.000')
+            prev_depth = Decimal('0.000')
 
             for rec in borehole_records:
+                rec_depth = Decimal(str(rec.depth))
+                rec_bulk = Decimal(str(rec.bulk_den))
                 if rec.id == record.id:
-                    if prev_depth == 0:  # first record
-                        record.overburden_pressure = round(rec.depth * rec.bulk_den, 3)
-                    else:  # subsequent record
-                        record.overburden_pressure = round(cumulative_pressure + ((rec.depth - prev_depth) * rec.bulk_den), 3)
+                    if prev_depth == 0:
+                        cumulative = rec_depth * rec_bulk
+                    else:
+                        cumulative += (rec_depth - prev_depth) * rec_bulk
+                    record.overburden_pressure = str(cumulative.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
                     break
                 else:
                     if prev_depth == 0:
-                        cumulative_pressure = rec.depth * rec.bulk_den
+                        cumulative = rec_depth * rec_bulk
                     else:
-                        cumulative_pressure += (rec.depth - prev_depth) * rec.bulk_den
-                    prev_depth = rec.depth
+                        cumulative += (rec_depth - prev_depth) * rec_bulk
+                    prev_depth = rec_depth
+
 
 
     @api.depends('overburden_pressure', 'total_pore_water_pressure')
     def _compute_effective_overburden_pressure(self):
         for record in self:
-            record.effective_overburden_pressure = round((record.overburden_pressure or 0.0) - (record.total_pore_water_pressure or 0.0), 3)
+            over = Decimal(str(record.overburden_pressure or '0.000'))
+            pore = Decimal(str(record.total_pore_water_pressure or '0.000'))
+            eff = over - pore
+            record.effective_overburden_pressure = str(eff.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
+
 
     @api.depends('effective_overburden_pressure')
     def _compute_effective_overburden_pressure_kg(self):
         for record in self:
-            record.effective_overburden_pressure_kg = round(record.effective_overburden_pressure / 10, 3)
+            eff = Decimal(str(record.effective_overburden_pressure or '0.000'))
+            eff_kg = eff / Decimal('10')
+            record.effective_overburden_pressure_kg = str(eff_kg.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
+
     
     @api.depends('borehole_id')
     def _compute_observed_n_value(self):
@@ -765,19 +767,24 @@ class CorrectedSptNValue(models.Model):
     @api.depends('effective_overburden_pressure_kg')
     def _compute_overburden_correction_factor(self):
         for record in self:
-            record.overburden_correction_factor = 0.0
-            v = record.effective_overburden_pressure_kg
-            # guard against zero/negative values
-            if not v or v <= 0:
+            record.overburden_correction_factor = "0.000"
+            v = Decimal(str(record.effective_overburden_pressure_kg or '0.000'))
+            if v <= 0:
                 continue
-            # log base 10 and round to 3 decimals
-            record.overburden_correction_factor = round(0.77 * math.log10(20.0 / v),3)
+            val = Decimal('0.77') * Decimal(math.log10(20.0 / float(v)))
+            record.overburden_correction_factor = str(val.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
+
     
     
     @api.depends('overburden_correction_factor','observed_n_value')
     def _compute_corrected_n_value(self):
         for record in self:
-            record.corrected_n_value = round(record.overburden_correction_factor * record.observed_n_value)
+            # convert factor to Decimal
+            factor = Decimal(record.overburden_correction_factor or '0.0')
+            n = record.observed_n_value or 0
+            corrected = factor * Decimal(n)
+            # round to nearest integer
+            record.corrected_n_value = int(corrected.to_integral_value(rounding=ROUND_HALF_UP))
 
 
 
@@ -900,6 +907,12 @@ class GrainSizeAnalysis(models.Model):
     
     borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
     sample_name = fields.Char(string='Sample ID/Depth', required=True) 
+    boulder = fields.Float(string="Boulder", compute="_compute_particle_distribution", store=True)
+    gravel = fields.Float(string="Gravel", compute="_compute_particle_distribution", store=True)
+    sand = fields.Float(string="Sand", compute="_compute_particle_distribution", store=True)
+    silt = fields.Float(string="Silt", compute="_compute_particle_distribution", store=True)
+    clay = fields.Float(string="Clay", compute="_compute_particle_distribution", store=True)
+
     d10 = fields.Float(string='D10 (mm)',digits=(16,3))
     d30 = fields.Float(string='D30 (mm)')
     d60 = fields.Float(string='D60 (mm)')
@@ -929,3 +942,47 @@ class GrainSizeAnalysis(models.Model):
                 )
             
             self.line_ids = new_lines_commands
+
+
+    @api.depends('line_ids.sieve_size', 'line_ids.percent_retained')
+    def _compute_particle_distribution(self):
+        """
+        Classifies and sums percent_retained based on sieve size ranges.
+        Handles cases like '75' or '75 mm' gracefully.
+        """
+        for record in self:
+            boulder = gravel = sand = silt = clay = 0.0
+
+            for line in record.line_ids:
+                sieve_text = (line.sieve_size or "").strip().lower().replace('mm', '').strip()
+                if not sieve_text:
+                    continue
+
+                try:
+                    sieve_size = float(sieve_text)
+                except ValueError:
+                    continue  # Skip invalid entries
+
+                percent = line.percent_retained or 0.0
+
+                if sieve_size > 80:
+                    boulder += percent
+                elif 80 >= sieve_size > 4.75:
+                    gravel += percent
+                elif 4.75 >= sieve_size > 0.075:
+                    sand += percent
+                elif 0.075 >= sieve_size > 0.002:
+                    silt += percent
+                elif sieve_size <= 0.002:
+                    clay += percent
+
+            record.boulder = boulder
+            record.gravel = gravel
+            record.sand = sand
+            record.silt = silt
+            record.clay = clay
+
+
+    def action_recompute_particle_distribution(self):
+        for record in self:
+            record._compute_particle_distribution()
