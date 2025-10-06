@@ -1962,25 +1962,43 @@ class Soil(models.Model):
     @api.depends("uu_triaxial_angle_line_ids.sigma", "uu_triaxial_angle_line_ids.tau")
     def _compute_phi_c(self):
         for rec in self:
-            if len(rec.uu_triaxial_angle_line_ids) < 2:
+            lines = rec.uu_triaxial_angle_line_ids
+
+            # किमान 2 data points असले पाहिजेत
+            if not lines or len(lines) < 2:
                 rec.phi_deg_uu_triaxial_angle = 0.0
                 rec.cohesion_uu_triaxial_angle = 0.0
                 continue
 
-            # Take first 2 points (simple two-point method)
-            p1, p2 = rec.uu_triaxial_angle_line_ids[0], rec.uu_triaxial_angle_line_ids[1]
+            slopes = []
+            intercepts = []
 
-            if (p2.sigma - p1.sigma) == 0:
+            # सर्व सलग points वरून slope व intercept काढा
+            for i in range(len(lines) - 1):
+                p1 = lines[i]
+                p2 = lines[i + 1]
+
+                if (p2.sigma - p1.sigma) == 0:
+                    continue
+
+                m = (p2.tau - p1.tau) / (p2.sigma - p1.sigma)
+                c = p1.tau - m * p1.sigma
+                slopes.append(m)
+                intercepts.append(c)
+
+            if not slopes:
                 rec.phi_deg_uu_triaxial_angle = 0.0
                 rec.cohesion_uu_triaxial_angle = 0.0
                 continue
 
-            m = (p2.tau - p1.tau) / (p2.sigma - p1.sigma)  # slope = tan(phi)
-            c = p1.tau - m * p1.sigma
+            avg_m = sum(slopes) / len(slopes)
+            avg_c = sum(intercepts) / len(intercepts)
 
-            phi_rad = math.atan(m)
-            rec.phi_deg_uu_triaxial_angle = phi_rad * 180.0 / math.pi
-            rec.cohesion_uu_triaxial_angle = c
+            phi_rad = math.atan(avg_m)
+            phi_deg = phi_rad * 180.0 / math.pi
+
+            rec.phi_deg_uu_triaxial_angle = round(phi_deg, 3)
+            rec.cohesion_uu_triaxial_angle = round(avg_c, 3)
 
       # Unconsolidated Undrained Triaxial Test (Angle of Friction)
     uu_triaxial_cohesion_name = fields.Char("Name",default="Unconsolidated Undrained Triaxial Test (Cohesion)")
@@ -2044,25 +2062,43 @@ class Soil(models.Model):
     @api.depends("uu_triaxial_cohesion_line_ids.sigma", "uu_triaxial_cohesion_line_ids.tau")
     def _compute_phi_cohesion(self):
         for rec in self:
-            if len(rec.uu_triaxial_cohesion_line_ids) < 2:
+            lines = rec.uu_triaxial_cohesion_line_ids
+
+            # किमान 2 data points असले पाहिजेत
+            if not lines or len(lines) < 2:
                 rec.phi_deg_uu_triaxial_cohesion = 0.0
                 rec.cohesion_uu_triaxial_cohesion = 0.0
                 continue
 
-            # Take first 2 points (simple two-point method)
-            p1, p2 = rec.uu_triaxial_cohesion_line_ids[0], rec.uu_triaxial_cohesion_line_ids[1]
+            slopes = []
+            intercepts = []
 
-            if (p2.sigma - p1.sigma) == 0:
+            # सर्व सलग points वरून slope व intercept काढा
+            for i in range(len(lines) - 1):
+                p1 = lines[i]
+                p2 = lines[i + 1]
+
+                if (p2.sigma - p1.sigma) == 0:
+                    continue
+
+                m = (p2.tau - p1.tau) / (p2.sigma - p1.sigma)
+                c = p1.tau - m * p1.sigma
+                slopes.append(m)
+                intercepts.append(c)
+
+            if not slopes:
                 rec.phi_deg_uu_triaxial_cohesion = 0.0
                 rec.cohesion_uu_triaxial_cohesion = 0.0
                 continue
 
-            m = (p2.tau - p1.tau) / (p2.sigma - p1.sigma)  # slope = tan(phi)
-            c = p1.tau - m * p1.sigma
+            avg_m = sum(slopes) / len(slopes)
+            avg_c = sum(intercepts) / len(intercepts)
 
-            phi_rad = math.atan(m)
-            rec.phi_deg_uu_triaxial_cohesion = phi_rad * 180.0 / math.pi
-            rec.cohesion_uu_triaxial_cohesion = c
+            phi_rad = math.atan(avg_m)
+            phi_deg = phi_rad * 180.0 / math.pi
+
+            rec.phi_deg_uu_triaxial_cohesion = round(phi_deg, 3)
+            rec.cohesion_uu_triaxial_cohesion = round(avg_c, 3)
      
 
     
