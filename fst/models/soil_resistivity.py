@@ -56,10 +56,10 @@ class ERTSoilResistivity(models.Model):
             
         }
     
-    # def action_print_soil_resistivity_report(self):
-    #     report = self.env.ref('fst.soil_resistivity_report_py3o')
-    #     filename = f"{self.name or 'ERT'}"
-    #     return report.report_action(self, config={'report_name': filename})
+    def action_print_soil_resistivity_report(self):
+        report = self.env.ref('fst.soil_resistivity_report_single_py3o')
+        filename = f"{self.name or 'ERT'}"
+        return report.report_action(self, config={'report_name': filename})
 
 
     # def button_add_footer(self):

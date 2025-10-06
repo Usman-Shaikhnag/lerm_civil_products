@@ -31,7 +31,7 @@ class LermErtParent(models.Model):
     #     return report.report_action(self, config={'report_name': filename})
 
     def print_report(self):
-        report = self.env.ref('fst.soil_resistivity_report_py3o')
+        report = self.env.ref('fst.soil_resistivity_report_py3o1')
         filename = f"{self.name or 'ERT'}"
         return report.report_action(self, config={'report_name': filename})
       
