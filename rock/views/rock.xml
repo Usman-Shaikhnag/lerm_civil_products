@@ -11,6 +11,9 @@
                         <h1>
                             <field name="name_rock"  readonly="1" nolabel="1"/>
                         </h1>
+                        <group>
+                       <field name="grade"/>
+                    </group>
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
@@ -149,12 +152,455 @@
                             <td><span>Average USC</span></td>
                             <td><field name='avg_usc' col="4"/></td>
                             </tr>
+                             <tr>
+                                <td><label for="avg_usc_conformity"></label></td>
+                                <td><field name="avg_usc_conformity"
+                                            decoration-success="avg_usc_conformity == 'pass'" 
+                                            decoration-danger="avg_usc_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="avg_usc_nabl"></label></td>
+                                <td><field name="avg_usc_nabl"
+                                            decoration-success="avg_usc_nabl == 'pass'" 
+                                            decoration-danger="avg_usc_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
                             </tbody>
                       </table>
 
-                    <!-- <group invisible="not usc_visible">
-                        <field name='avg_usc' col="4"/>
-                    </group> -->
+
+                    <div invisible="not cerchar_abrsivity_visible">
+                        <div invisible="not cerchar_abrsivity_visible">
+                        <h1 class="text-center">
+                            <field name="cerchar_abrsivity_name" readonly="1" nolabel="1"/>
+                            <field name="cerchar_abrsivity_visible" invisible="1"/>
+                          
+
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not cerchar_abrsivity_visible">
+                        <field name="child_lines_cerchar_abrsivity" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='value'/>
+                              
+                            </tree>
+                         </field> 
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not cerchar_abrsivity_visible">
+                         <tbody>
+                            <tr>
+                            <td><span>Cerchar Abrasivity Index</span></td>
+                            <td><field name='cai' /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="cai_conformity"></label></td>
+                                <td><field name="cai_conformity"
+                                            decoration-success="cai_conformity == 'pass'" 
+                                            decoration-danger="cai_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="cai_nabl"></label></td>
+                                <td><field name="cai_nabl"
+                                            decoration-success="cai_nabl == 'pass'" 
+                                            decoration-danger="cai_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                      </table>
+                    </div>
+
+
+
+                      <div invisible="not modulus_of_elasticity_visible">
+                        <div invisible="not modulus_of_elasticity_visible">
+                        <h1 class="text-center">
+                            <field name="modulus_of_elasticity_name" readonly="1" nolabel="1"/>
+                            <field name="modulus_of_elasticity_visible" invisible="1"/>
+                          
+
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not modulus_of_elasticity_visible">
+                        <field name="modulus_of_elasticity_line_ids" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='diameter'/>
+                                <field name='length'/>
+                                <field name='load'/>
+                                <field name='delta_l'/>
+                                <field name='area'/>
+                                <field name='stress'/>
+                                <field name='strain'/>
+                              
+                            </tree>
+                         </field> 
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not modulus_of_elasticity_visible">
+                         <tbody>
+                            <tr>
+                            <td><span>Modulus of Elasticity E (MPa)</span></td>
+                            <td><field name='modulus_e' /></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="modulus_e_conformity"></label></td>
+                                <td><field name="modulus_e_conformity"
+                                            decoration-success="modulus_e_conformity == 'pass'" 
+                                            decoration-danger="modulus_e_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="modulus_e_nabl"></label></td>
+                                <td><field name="modulus_e_nabl"
+                                            decoration-success="modulus_e_nabl == 'pass'" 
+                                            decoration-danger="modulus_e_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                      </table>
+                    </div>
+
+
+
+                     <!-- Point load Index -->
+                    <div invisible="not ponit_load_visible">
+                            <div invisible="not ponit_load_visible">
+                            <h1 class="text-center">
+                                <field name="ponit_load_name" readonly="1" nolabel="1"/>
+                                <field name="ponit_load_visible" invisible="1"/>
+                            
+
+                            </h1>
+                        </div>
+
+                    <div class="custom_table_borders" invisible="not ponit_load_visible">
+                        <field name="ponit_load_ids" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='diameter_mm'/>
+                                <field name='failure_load_n'/>
+                                <field name='equivalent_de'/>
+                                <field name='area_mm2'/>
+                                <field name='is_uncorrected'/>
+                                <field name='size_correction_f'/>
+                                <field name='is50'/>
+                              
+                            </tree>
+                         </field> 
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not ponit_load_visible">
+                         <tbody>
+                            <tr>
+                            <td><span>Average uncorrected</span></td>
+                            <td><field name='avg_is_uncorrected' /></td>
+                            </tr>
+
+                             <tr>
+                            <td><span>Average Is(50)</span></td>
+                            <td><field name='avg_is50' /></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="avg_is50_conformity"></label></td>
+                                <td><field name="avg_is50_conformity"
+                                            decoration-success="avg_is50_conformity == 'pass'" 
+                                            decoration-danger="avg_is50_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="avg_is50_nabl"></label></td>
+                                <td><field name="avg_is50_nabl"
+                                            decoration-success="avg_is50_nabl == 'pass'" 
+                                            decoration-danger="avg_is50_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                      </table>
+                    </div>
+
+
+                       <!-- Poison's Ratio -->
+                    <div invisible="not poison_ratio_visible">
+                            <div invisible="not poison_ratio_visible">
+                            <h1 class="text-center">
+                                <field name="poison_ratio_name" readonly="1" nolabel="1"/>
+                                <field name="poison_ratio_visible" invisible="1"/>
+                            
+
+                            </h1>
+                        </div>
+
+                    <div class="custom_table_borders" invisible="not poison_ratio_visible">
+                        <field name="poison_ratio_line_ids" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='L0_mm'/>
+                                <field name='delta_L_mm'/>
+                                <field name='d0_mm'/>
+                                <field name='delta_d_mm'/>
+                                <field name='axial_strain'/>
+                                <field name='lateral_strain'/>
+                                <field name='poisson_nu'/>
+                              
+                            </tree>
+                         </field> 
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not poison_ratio_visible">
+                         <tbody>
+                            <tr>
+                            <td><span>Average Poison's Ratio</span></td>
+                            <td><field name='avg_nu' /></td>
+                            </tr>
+
+                             <tr>
+                                <td><label for="avg_nu_conformity"></label></td>
+                                <td><field name="avg_nu_conformity"
+                                            decoration-success="avg_nu_conformity == 'pass'" 
+                                            decoration-danger="avg_nu_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="avg_nu_nabl"></label></td>
+                                <td><field name="avg_nu_nabl"
+                                            decoration-success="avg_nu_nabl == 'pass'" 
+                                            decoration-danger="avg_nu_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+
+                        
+                            </tbody>
+                      </table>
+                    </div>
+
+
+
+                     <!-- slake_index_visible -->
+                    <div invisible="not slake_index_visible">
+                            <div invisible="not slake_index_visible">
+                            <h1 class="text-center">
+                                <field name="slake_index_name" readonly="1" nolabel="1"/>
+                                <field name="slake_index_visible" invisible="1"/>
+                            
+
+                            </h1>
+                        </div>
+
+                    <div class="custom_table_borders" invisible="not slake_index_visible">
+                        <field name="slake_index_line_ids" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='w1'/>
+                                <field name='w2'/>
+                                <field name='sdi'/>
+                                
+                              
+                            </tree>
+                         </field> 
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not slake_index_visible">
+                         <tbody>
+                            <tr>
+                            <td><span>Average Slake Durability Index</span></td>
+                            <td><field name='avg_index' /></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="avg_index_conformity"></label></td>
+                                <td><field name="avg_index_conformity"
+                                            decoration-success="avg_index_conformity == 'pass'" 
+                                            decoration-danger="avg_index_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="avg_index_nabl"></label></td>
+                                <td><field name="avg_index_nabl"
+                                            decoration-success="avg_index_nabl == 'pass'" 
+                                            decoration-danger="avg_index_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+
+                        
+                            </tbody>
+                      </table>
+                    </div>
+
+
+
+
+                    <!-- tensile_strength_visible -->
+                    <div invisible="not tensile_strength_visible">
+                            <div invisible="not tensile_strength_visible">
+                            <h1 class="text-center">
+                                <field name="tensile_strength_name" readonly="1" nolabel="1"/>
+                                <field name="tensile_strength_visible" invisible="1"/>
+                            
+
+                            </h1>
+                        </div>
+
+                    <div class="custom_table_borders" invisible="not tensile_strength_visible">
+                        <field name="tensile_strength_line_ids" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='load_kn'/>
+                                <field name='diameter_mm'/>
+                                <field name='length_mm'/>
+                                <field name='tensile_strength'/>
+                                
+                              
+                            </tree>
+                         </field> 
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not tensile_strength_visible">
+                         <tbody>
+                            <tr>
+                            <td><span>Average Tensile Strength (MPa)</span></td>
+                            <td><field name='avg_tensile_strength' /></td>
+                            </tr>
+
+                              <tr>
+                                <td><label for="avg_tensile_strength_conformity"></label></td>
+                                <td><field name="avg_tensile_strength_conformity"
+                                            decoration-success="avg_tensile_strength_conformity == 'pass'" 
+                                            decoration-danger="avg_tensile_strength_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="avg_tensile_strength_nabl"></label></td>
+                                <td><field name="avg_tensile_strength_nabl"
+                                            decoration-success="avg_tensile_strength_nabl == 'pass'" 
+                                            decoration-danger="avg_tensile_strength_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+
+                        
+                            </tbody>
+                      </table>
+                    </div>
+
+
+                    <!-- Unconsolidated Undrained Triaxial Test (Angle of Friction) -->
+                <div invisible = "uu_triaxial_angle_visible == False">
+                        <h1 class="text-center">
+                            <field name="uu_triaxial_angle_name" readonly="1" nolabel="1"/>
+                            <field name="uu_triaxial_angle_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible = "uu_triaxial_angle_visible == False">
+                        <field name="uu_triaxial_angle_line_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='confining_pressure'  />
+                                <field name='deviator_stress'/>
+                                <field name='sigma1'/>
+                                <field name='sigma'/>
+                                <field name='tau'/>
+                              
+                                
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not uu_triaxial_angle_visible">
+                            <tbody>
+                                <tr>
+                                <td><label for="phi_deg_uu_triaxial_angle">Angle of Friction φ (°) </label></td>
+                                <td><field name="phi_deg_uu_triaxial_angle"/><span> </span></td>
+                            </tr>
+
+                             <!-- <tr>
+                                <td><label for="cohesion_uu_triaxial_angle">Cohesion c (kPa)</label></td>
+                                <td><field name="cohesion_uu_triaxial_angle"/><span> </span></td>
+                            </tr> -->
+                           
+                                <tr>
+                                <td><label for="phi_deg_uu_triaxial_angle_conformity"></label></td>
+                                <td><field name="phi_deg_uu_triaxial_angle_conformity"
+                                            decoration-success="phi_deg_uu_triaxial_angle_conformity == 'pass'" 
+                                            decoration-danger="phi_deg_uu_triaxial_angle_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="phi_deg_uu_triaxial_angle_nabl"></label></td>
+                                <td><field name="phi_deg_uu_triaxial_angle_nabl"
+                                            decoration-success="phi_deg_uu_triaxial_angle_nabl == 'pass'" 
+                                            decoration-danger="phi_deg_uu_triaxial_angle_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                         <!-- Unconsolidated Undrained Triaxial Test (Cohesion) -->
+                <div invisible = "uu_triaxial_cohesion_visible == False">
+                        <h1 class="text-center">
+                            <field name="uu_triaxial_cohesion_name" readonly="1" nolabel="1"/>
+                            <field name="uu_triaxial_cohesion_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible = "uu_triaxial_cohesion_visible == False">
+                        <field name="uu_triaxial_cohesion_line_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='confining_pressure'  />
+                                <field name='deviator_stress'/>
+                                <field name='sigma1'/>
+                                <field name='sigma'/>
+                                <field name='tau'/>
+                              
+                                
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not uu_triaxial_cohesion_visible">
+                            <tbody>
+                                <!-- <tr>
+                                <td><label for="phi_deg_uu_triaxial_cohesion">Angle of Friction φ (°) </label></td>
+                                <td><field name="phi_deg_uu_triaxial_cohesion"/><span> </span></td>
+                            </tr> -->
+
+                             <tr>
+                                <td><label for="cohesion_uu_triaxial_cohesion">Cohesion c (kPa)</label></td>
+                                <td><field name="cohesion_uu_triaxial_cohesion"/><span> </span></td>
+                            </tr>
+                           
+                                <tr>
+                                <td><label for="cohesion_uu_triaxial_cohesion_conformity"></label></td>
+                                <td><field name="cohesion_uu_triaxial_cohesion_conformity"
+                                            decoration-success="cohesion_uu_triaxial_cohesion_conformity == 'pass'" 
+                                            decoration-danger="cohesion_uu_triaxial_cohesion_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="cohesion_uu_triaxial_cohesion_nabl"></label></td>
+                                <td><field name="cohesion_uu_triaxial_cohesion_nabl"
+                                            decoration-success="cohesion_uu_triaxial_cohesion_nabl == 'pass'" 
+                                            decoration-danger="cohesion_uu_triaxial_cohesion_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+
+
+                   
                       <button
                             type="object"
                             class="oe_highlight" 
