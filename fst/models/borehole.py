@@ -91,6 +91,8 @@ class ERTBorehole(models.Model):
 
         # Format the plot
         ax.set_xlabel('SPT BLOWS PER 30 CM PENETRATION')
+        ax.xaxis.set_label_position('top')
+        ax.xaxis.tick_top()
         ax.set_ylabel('DEPTH BELOW GROUND LEVEL m.')
         ax.set_title('SPT BLOWS PER 30 CM PENETRATION', y=1.05)
         ax.invert_yaxis()
