@@ -9,7 +9,7 @@
             <form create="false">
                 <sheet>
                     <h1>
-                        <field name="name" string="ROCK" readonly="1" nolabel="1"/>
+                        <field name="name" readonly="1" nolabel="1"/>
                     </h1>
                     <group>
                        <field name="grade"/>
@@ -770,20 +770,20 @@
                                 <td><label for="avg_k">Average Permeability (k)  </label></td>
                                 <td><field name="avg_k"/><span> cm/s</span></td>
                             </tr>
-                                <!-- <tr>
-                                <td><label for="shrinkage_limit1_conformity"></label></td>
-                                <td><field name="shrinkage_limit1_conformity"
-                                            decoration-success="shrinkage_limit1_conformity == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_conformity == 'fail'" 
+                                <tr>
+                                <td><label for="avg_k_conformity"></label></td>
+                                <td><field name="avg_k_conformity"
+                                            decoration-success="avg_k_conformity == 'pass'" 
+                                            decoration-danger="avg_k_conformity == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                                 <tr>
-                                <td><label for="shrinkage_limit1_nabl"></label></td>
-                                <td><field name="shrinkage_limit1_nabl"
-                                            decoration-success="shrinkage_limit1_nabl == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_nabl == 'fail'" 
+                                <td><label for="avg_k_nabl"></label></td>
+                                <td><field name="avg_k_nabl"
+                                            decoration-success="avg_k_nabl == 'pass'" 
+                                            decoration-danger="avg_k_nabl == 'fail'" 
                                             readonly="1" /></td>
-                                </tr> -->
+                                </tr>
                             </tbody>
                         </table>
 
@@ -824,20 +824,20 @@
                                 <td><label for="specific_gravity">Specific Gravity (G)</label></td>
                                 <td><field name="specific_gravity"/><span></span></td>
                             </tr>
-                                <!-- <tr>
-                                <td><label for="shrinkage_limit1_conformity"></label></td>
-                                <td><field name="shrinkage_limit1_conformity"
-                                            decoration-success="shrinkage_limit1_conformity == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_conformity == 'fail'" 
+                                <tr>
+                                <td><label for="specific_gravity_conformity"></label></td>
+                                <td><field name="specific_gravity_conformity"
+                                            decoration-success="specific_gravity_conformity == 'pass'" 
+                                            decoration-danger="specific_gravity_conformity == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                                 <tr>
-                                <td><label for="shrinkage_limit1_nabl"></label></td>
-                                <td><field name="shrinkage_limit1_nabl"
-                                            decoration-success="shrinkage_limit1_nabl == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_nabl == 'fail'" 
+                                <td><label for="specific_gravity_nabl"></label></td>
+                                <td><field name="specific_gravity_nabl"
+                                            decoration-success="specific_gravity_nabl == 'pass'" 
+                                            decoration-danger="specific_gravity_nabl == 'fail'" 
                                             readonly="1" /></td>
-                                </tr> -->
+                                </tr>
                             </tbody>
                         </table>
 
@@ -886,22 +886,224 @@
                                 <td><label for="avg_shear_stress">Average Shear Stress (τ_avg) </label></td>
                                 <td><field name="avg_shear_stress"/><span> kg/cm²</span></td>
                             </tr>
-                                <!-- <tr>
-                                <td><label for="shrinkage_limit1_conformity"></label></td>
-                                <td><field name="shrinkage_limit1_conformity"
-                                            decoration-success="shrinkage_limit1_conformity == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_conformity == 'fail'" 
+                                <tr>
+                                <td><label for="avg_shear_stress_conformity"></label></td>
+                                <td><field name="avg_shear_stress_conformity"
+                                            decoration-success="avg_shear_stress_conformity == 'pass'" 
+                                            decoration-danger="avg_shear_stress_conformity == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                                 <tr>
-                                <td><label for="shrinkage_limit1_nabl"></label></td>
-                                <td><field name="shrinkage_limit1_nabl"
-                                            decoration-success="shrinkage_limit1_nabl == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_nabl == 'fail'" 
+                                <td><label for="avg_shear_stress_nabl"></label></td>
+                                <td><field name="avg_shear_stress_nabl"
+                                            decoration-success="avg_shear_stress_nabl == 'pass'" 
+                                            decoration-danger="avg_shear_stress_nabl == 'fail'" 
                                             readonly="1" /></td>
-                                </tr> -->
+                                </tr>
                             </tbody>
                         </table>
+
+                    <div invisible = "angle_shear_visible == False">
+                        <h1 class="text-center">
+                            <field name="angle_shear_name" readonly="1" nolabel="1"/>
+                            <field name="angle_shear_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible = "angle_shear_visible == False">
+                        <field name="angleshear_line_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='normal_stress'  />
+                                <field name='shear_strength'/>
+                                
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not angle_shear_visible">
+                            <tbody>
+                                <tr>
+                                <td><label for="phi_deg">Angle of Internal Friction φ (°)</label></td>
+                                <td><field name="phi_deg"/><span> </span></td>
+                            </tr>
+                              <tr>
+                                <td><label for="cohesion">Cohesion c (kPa)</label></td>
+                                <td><field name="cohesion"/><span> </span></td>
+                            </tr>
+                                <tr>
+                                <td><label for="phi_deg_conformity"></label></td>
+                                <td><field name="phi_deg_conformity"
+                                            decoration-success="phi_deg_conformity == 'pass'" 
+                                            decoration-danger="phi_deg_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="phi_deg_nabl"></label></td>
+                                <td><field name="phi_deg_nabl"
+                                            decoration-success="phi_deg_nabl == 'pass'" 
+                                            decoration-danger="phi_deg_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                 <div invisible = "swelling_pressure_visible == False">
+                        <h1 class="text-center">
+                            <field name="swelling_pressure_name" readonly="1" nolabel="1"/>
+                            <field name="swelling_pressure_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible = "swelling_pressure_visible == False">
+                        <field name="swelling_pressure_line_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='dial_gauge_reading'  />
+                                <field name='load_applied'/>
+                                <field name='area_of_sample'/>
+                                <field name='swelling_pressure'/>
+                              
+                                
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not swelling_pressure_visible">
+                            <tbody>
+                                <tr>
+                                <td><label for="avg_swelling_pressure">Average Swelling Pressure </label></td>
+                                <td><field name="avg_swelling_pressure"/><span> kg/cm²</span></td>
+                            </tr>
+                           
+                                <tr>
+                                <td><label for="avg_swelling_pressure_conformity"></label></td>
+                                <td><field name="avg_swelling_pressure_conformity"
+                                            decoration-success="avg_swelling_pressure_conformity == 'pass'" 
+                                            decoration-danger="avg_swelling_pressure_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="avg_swelling_pressure_nabl"></label></td>
+                                <td><field name="avg_swelling_pressure_nabl"
+                                            decoration-success="avg_swelling_pressure_nabl == 'pass'" 
+                                            decoration-danger="avg_swelling_pressure_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                  <!-- Unconsolidated Undrained Triaxial Test (Angle of Friction) -->
+                <div invisible = "uu_triaxial_angle_visible == False">
+                        <h1 class="text-center">
+                            <field name="uu_triaxial_angle_name" readonly="1" nolabel="1"/>
+                            <field name="uu_triaxial_angle_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible = "uu_triaxial_angle_visible == False">
+                        <field name="uu_triaxial_angle_line_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='confining_pressure'  />
+                                <field name='deviator_stress'/>
+                                <field name='sigma1'/>
+                                <field name='sigma'/>
+                                <field name='tau'/>
+                              
+                                
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not uu_triaxial_angle_visible">
+                            <tbody>
+                                <tr>
+                                <td><label for="phi_deg_uu_triaxial_angle">Angle of Friction φ (°) </label></td>
+                                <td><field name="phi_deg_uu_triaxial_angle"/><span> </span></td>
+                            </tr>
+
+                             <!-- <tr>
+                                <td><label for="cohesion_uu_triaxial_angle">Cohesion c (kPa)</label></td>
+                                <td><field name="cohesion_uu_triaxial_angle"/><span> </span></td>
+                            </tr> -->
+                           
+                                <tr>
+                                <td><label for="phi_deg_uu_triaxial_angle_conformity"></label></td>
+                                <td><field name="phi_deg_uu_triaxial_angle_conformity"
+                                            decoration-success="phi_deg_uu_triaxial_angle_conformity == 'pass'" 
+                                            decoration-danger="phi_deg_uu_triaxial_angle_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="phi_deg_uu_triaxial_angle_nabl"></label></td>
+                                <td><field name="phi_deg_uu_triaxial_angle_nabl"
+                                            decoration-success="phi_deg_uu_triaxial_angle_nabl == 'pass'" 
+                                            decoration-danger="phi_deg_uu_triaxial_angle_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                 <!-- Unconsolidated Undrained Triaxial Test (Cohesion) -->
+                <div invisible = "uu_triaxial_cohesion_visible == False">
+                        <h1 class="text-center">
+                            <field name="uu_triaxial_cohesion_name" readonly="1" nolabel="1"/>
+                            <field name="uu_triaxial_cohesion_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible = "uu_triaxial_cohesion_visible == False">
+                        <field name="uu_triaxial_cohesion_line_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='confining_pressure'  />
+                                <field name='deviator_stress'/>
+                                <field name='sigma1'/>
+                                <field name='sigma'/>
+                                <field name='tau'/>
+                              
+                                
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not uu_triaxial_cohesion_visible">
+                            <tbody>
+                                <!-- <tr>
+                                <td><label for="phi_deg_uu_triaxial_cohesion">Angle of Friction φ (°) </label></td>
+                                <td><field name="phi_deg_uu_triaxial_cohesion"/><span> </span></td>
+                            </tr> -->
+
+                             <tr>
+                                <td><label for="cohesion_uu_triaxial_cohesion">Cohesion c (kPa)</label></td>
+                                <td><field name="cohesion_uu_triaxial_cohesion"/><span> </span></td>
+                            </tr>
+                           
+                                <tr>
+                                <td><label for="cohesion_uu_triaxial_cohesion_conformity"></label></td>
+                                <td><field name="cohesion_uu_triaxial_cohesion_conformity"
+                                            decoration-success="cohesion_uu_triaxial_cohesion_conformity == 'pass'" 
+                                            decoration-danger="cohesion_uu_triaxial_cohesion_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="cohesion_uu_triaxial_cohesion_nabl"></label></td>
+                                <td><field name="cohesion_uu_triaxial_cohesion_nabl"
+                                            decoration-success="cohesion_uu_triaxial_cohesion_nabl == 'pass'" 
+                                            decoration-danger="cohesion_uu_triaxial_cohesion_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
 
 
 
@@ -965,20 +1167,20 @@
                                 <td><label for="avg_strain">Average Axial Strain </label></td>
                                 <td><field name="avg_strain"/><span> </span></td>
                             </tr>
-                                <!-- <tr>
-                                <td><label for="shrinkage_limit1_conformity"></label></td>
-                                <td><field name="shrinkage_limit1_conformity"
-                                            decoration-success="shrinkage_limit1_conformity == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_conformity == 'fail'" 
+                                <tr>
+                                <td><label for="avg_stress_conformity"></label></td>
+                                <td><field name="avg_stress_conformity"
+                                            decoration-success="avg_stress_conformity == 'pass'" 
+                                            decoration-danger="avg_stress_conformity == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                                 <tr>
-                                <td><label for="shrinkage_limit1_nabl"></label></td>
-                                <td><field name="shrinkage_limit1_nabl"
-                                            decoration-success="shrinkage_limit1_nabl == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_nabl == 'fail'" 
+                                <td><label for="avg_stress_nabl"></label></td>
+                                <td><field name="avg_stress_nabl"
+                                            decoration-success="avg_stress_nabl == 'pass'" 
+                                            decoration-danger="avg_stress_nabl == 'fail'" 
                                             readonly="1" /></td>
-                                </tr> -->
+                                </tr>
                             </tbody>
                         </table>
 
@@ -1039,20 +1241,20 @@
                                 <td><field name="compression_index"/><span> </span></td>
                             </tr>
                             
-                                <!-- <tr>
-                                <td><label for="shrinkage_limit1_conformity"></label></td>
-                                <td><field name="shrinkage_limit1_conformity"
-                                            decoration-success="shrinkage_limit1_conformity == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_conformity == 'fail'" 
+                                <tr>
+                                <td><label for="compression_index_conformity"></label></td>
+                                <td><field name="compression_index_conformity"
+                                            decoration-success="compression_index_conformity == 'pass'" 
+                                            decoration-danger="compression_index_conformity == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                                 <tr>
-                                <td><label for="shrinkage_limit1_nabl"></label></td>
-                                <td><field name="shrinkage_limit1_nabl"
-                                            decoration-success="shrinkage_limit1_nabl == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_nabl == 'fail'" 
+                                <td><label for="compression_index_nabl"></label></td>
+                                <td><field name="compression_index_nabl"
+                                            decoration-success="compression_index_nabl == 'pass'" 
+                                            decoration-danger="compression_index_nabl == 'fail'" 
                                             readonly="1" /></td>
-                                </tr> -->
+                                </tr>
                             </tbody>
                         </table>
 
@@ -1115,20 +1317,20 @@
                                 <td><field name="preconsolidation_pressure"/><span>Kg/cm² </span></td>
                             </tr>
                             
-                                <!-- <tr>
-                                <td><label for="shrinkage_limit1_conformity"></label></td>
-                                <td><field name="shrinkage_limit1_conformity"
-                                            decoration-success="shrinkage_limit1_conformity == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_conformity == 'fail'" 
+                                <tr>
+                                <td><label for="preconsolidation_pressure_conformity"></label></td>
+                                <td><field name="preconsolidation_pressure_conformity"
+                                            decoration-success="preconsolidation_pressure_conformity == 'pass'" 
+                                            decoration-danger="preconsolidation_pressure_conformity == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                                 <tr>
-                                <td><label for="shrinkage_limit1_nabl"></label></td>
-                                <td><field name="shrinkage_limit1_nabl"
-                                            decoration-success="shrinkage_limit1_nabl == 'pass'" 
-                                            decoration-danger="shrinkage_limit1_nabl == 'fail'" 
+                                <td><label for="preconsolidation_pressure_nabl"></label></td>
+                                <td><field name="preconsolidation_pressure_nabl"
+                                            decoration-success="preconsolidation_pressure_nabl == 'pass'" 
+                                            decoration-danger="preconsolidation_pressure_nabl == 'fail'" 
                                             readonly="1" /></td>
-                                </tr> -->
+                                </tr>
                             </tbody>
                         </table>
 
