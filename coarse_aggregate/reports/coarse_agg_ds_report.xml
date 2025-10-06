@@ -333,39 +333,263 @@
 							</tr>
 						</table>
 					</div>
-
-					<!-- Rodded Bulk Density (RBD) -->
-					<div t-if="data.rodded_bulk_visible" style="flex: 1; min-width: 45%;">
+<!-- 
+					Rodded Bulk Density (RBD) -->
+				 <div t-if="data.loose_bulk_visible" style="flex: 1; min-width: 45%;">
 						<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
 							Rodded Bulk Density (RBD)
 						</div>
 						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
 							<tr>
 								<td colspan="6" style="border: 1px solid #ccc; padding: 6px; font-weight: bold;">Volume of Bucket, V</td>
-								<td colspan="6" style="border: 1px solid #ccc; padding: 6px;"><span t-field="data.volume_of_bucket_rodded"/></td>
+								<td colspan="6" style="border: 1px solid #ccc; padding: 6px;"><span t-field="data.volume_of_bucket_loose"/></td>
 							</tr>
 							<tr>
 								<td colspan="6" style="border: 1px solid #ccc; padding: 6px; font-weight: bold;">Empty weight of bucket, M1</td>
-								<td colspan="6" style="border: 1px solid #ccc; padding: 6px;"><span t-field="data.weight_empty_bucket_rodded"/></td>
+								<td colspan="6" style="border: 1px solid #ccc; padding: 6px;"><span t-field="data.weight_empty_bucket_loose"/></td>
 							</tr>
 							<tr>
 								<td colspan="6" style="border: 1px solid #ccc; padding: 6px; font-weight: bold;">Bucket + Compacted Aggregate</td>
 								<td colspan="6" style="border: 1px solid #ccc; padding: 6px;"><span t-field="data.sample_plus_bucket_rodded"/></td>
-							</tr>
+							</tr> 
 							<!-- <tr>
 								<td colspan="6" style="border: 1px solid #ccc; padding: 6px; font-weight: bold;">Sample Weight (D = C - A) [kg]:</td>
 								<td colspan="6" style="border: 1px solid #ccc; padding: 6px;"><span t-field="data.sample_weight_rodded"/></td>
 							</tr> -->
-							<tr>
+							 <tr>
 								<td colspan="6" style="border: 1px solid #ccc; padding: 6px; font-weight: bold;">Rodded Bulk Density</td>
 								<td colspan="6" style="border: 1px solid #ccc; padding: 6px;">
 									<span t-field="data.rodded_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
 							</tr>
 						</table>
-					</div>
+					</div> 
 
 				</div>
+
+
+				<!-- Compacted Density -->
+				<div t-if="data.compacted_density_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Compacted Density
+						<!-- <span style="font-size: 14px; font-weight: normal; margin-left: 10px;">
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						</span> -->
+					</div>
+
+				
+					<table class="table table-sm table-bordered custom_table_borders" invisible="not compacted_density_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Sample 1</th>
+                                <th>Sample 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Wt of compacted aggregrage +measuring cylinder(C) (Kg)</span></td>
+                                
+								<td><span t-field="data.wt_of_compact"/></td>
+								<td><span t-field="data.wt_of_compact1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Compacted bulk density (Kg)</span></td>
+                                
+								<td><span t-field="data.compact_bulk"/></td>
+								<td><span t-field="data.compact_bulk1"/></td>
+                            </tr>
+                           
+
+                           
+
+                           
+                        </tbody>
+                    </table>
+
+                     
+                       
+
+						 <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_compacted">Avg Compacted Density (Kg)</label></td>
+                                 
+									  <td><span t-field="data.avg_compacted"/></td>
+                                </tr>
+                             
+                            </tbody>
+                        </table>
+			
+
+					</div>
+
+					  <!-- <div class="d-flex gap-2" invisible="not compacted_density_visible and not loose_bulk_visible">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="specific_gravity1">Specific Gravity</label></td>
+                                
+									 <td><span t-field="data.specific_gravity1"/></td>
+                                </tr>
+
+                                 <tr>
+                                    <td><label for="voids_ratio">Voids Ratio (%)</label></td>
+                                  
+									 <td><span t-field="data.voids_ratio"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                      </div> -->
+
+
+
+					  <!--% void - Compacted Density -->
+				<div t-if="data.void_compacted_density_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						% Void - Compacted Density
+						<!-- <span style="font-size: 14px; font-weight: normal; margin-left: 10px;">
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						</span> -->
+					</div>
+
+				
+					<table class="table table-sm table-bordered custom_table_borders" invisible="not void_compacted_density_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Sample 1</th>
+                                <th>Sample 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Wt of compacted aggregrage +measuring cylinder(C) (Kg)</span></td>
+                                
+								<td><span t-field="data.wt_of_compact"/></td>
+								<td><span t-field="data.wt_of_compact1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Compacted bulk density (Kg)</span></td>
+                                
+								<td><span t-field="data.compact_bulk"/></td>
+								<td><span t-field="data.compact_bulk1"/></td>
+                            </tr>
+							<tr>
+                                <td><span class="fw-bold">Specific gravity</span></td>
+                                <td><span t-field="data.specific_gravity2"/></td>
+                                <td><span t-field="data.specific_gravity3"/></td>
+                            </tr>
+                            
+                           <tr>
+                                <td><span class="fw-bold"> % Voids Compacted density</span></td>
+                                <td><span t-field="data.void_compacted_density1"/></td>
+                                <td><span t-field="data.void_compacted_density2"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                     
+                       
+
+						 <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_void_compacted_density">Avg % Void - Compacted Density (Kg)</label></td>
+                                 
+									  <td><span t-field="data.avg_void_compacted_density"/></td>
+                                </tr>
+                             
+                            </tbody>
+                        </table>
+			
+
+					</div>
+
+
+
+
+					 <!--% void - Loose Density -->
+				<div t-if="data.void_loose_density_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						% Void - Loose Density
+						<!-- <span style="font-size: 14px; font-weight: normal; margin-left: 10px;">
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						</span> -->
+					</div>
+
+				
+					<table class="table table-sm table-bordered custom_table_borders" invisible="not void_loose_density_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Sample 1</th>
+                                <th>Sample 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Wt of Loose aggregrage +measuring cylinder(C) (Kg)</span></td>
+                                
+								<td><span t-field="data.wt_of_loose"/></td>
+								<td><span t-field="data.wt_of_loose1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Loose bulk density (Kg)</span></td>
+                                
+								<td><span t-field="data.loose_bulk"/></td>
+								<td><span t-field="data.loose_bulk1"/></td>
+                            </tr>
+							<tr>
+                                <td><span class="fw-bold">Specific gravity</span></td>
+                                <td><span t-field="data.specific_gravity4"/></td>
+                                <td><span t-field="data.specific_gravity5"/></td>
+                            </tr>
+                            
+                           <tr>
+                                <td><span class="fw-bold"> % Voids Loose density</span></td>
+                                <td><span t-field="data.void_loose_density1"/></td>
+                                <td><span t-field="data.void_loose_density2"/></td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                     
+                       
+
+						 <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_void_loose_density">Avg % Void - Loose Density (Kg)</label></td>
+                                 
+									  <td><span t-field="data.avg_void_loose_density"/></td>
+                                </tr>
+                             
+                            </tbody>
+                        </table>
+			
+
+					</div>
+
+					  
 
 
 
@@ -1155,7 +1379,7 @@
 
 
 
-
+<!--  -->
     <template id="lerm_coarse_aggregate_mech_report">
 		<t t-call="web.html_container">
 			
@@ -1459,8 +1683,137 @@
 									
 								</tr>
 
+								<tr t-if="data.compacted_density_visible and (data.avg_compacted_nabl == 'pass' and nabl or (data.avg_compacted_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="avg_compacted" t-value="env['lerm.parameter.master'].search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')])"/>
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-field="avg_compacted.parameter_name"/>
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<span t-field="avg_compacted.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_compacted" t-options='{"widget": "float", "precision": 2}'/>
+										</span>									
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="avg_compacted.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="avg_compacted.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<tr t-if="data.void_compacted_density_visible and (data.avg_void_compacted_density_nabl == 'pass' and nabl or (data.avg_void_compacted_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="avg_void_compacted_density" t-value="env['lerm.parameter.master'].search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')])"/>
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-field="avg_void_compacted_density.parameter_name"/>
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<span t-field="avg_void_compacted_density.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_void_compacted_density" t-options='{"widget": "float", "precision": 2}'/>
+										</span>									
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="avg_void_compacted_density.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="avg_void_compacted_density.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<tr t-if="data.void_loose_density_visible and (data.avg_void_loose_density_nabl == 'pass' and nabl or (data.avg_void_loose_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="avg_void_loose_density" t-value="env['lerm.parameter.master'].search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')])"/>
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-field="avg_void_loose_density.parameter_name"/>
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<span t-field="avg_void_loose_density.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_void_loose_density" t-options='{"widget": "float", "precision": 2}'/>
+										</span>									
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="avg_void_loose_density.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="avg_void_loose_density.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+
+
+
+
+
 								<tr t-if="data.rodded_bulk_visible and (data.rodded_bulk_density_nabl == 'pass' and nabl or (data.rodded_bulk_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="rodded_bulk_density" t-value="env['lerm.parameter.master'].search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')])"/>
+									<t t-set="rodded_bulk_density" t-value="env['lerm.parameter.master'].search([('internal_id','=','155935d1-24d9-4276-9e4f-453803342e8c')])"/>
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>

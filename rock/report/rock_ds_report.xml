@@ -209,10 +209,768 @@
 							<td style="text-align: center;"><span t-field="data.avg_usc" t-options='{"widget": "float", "precision": 2}'/></td>
 						</tr>
 					</table>
-                    
 
-                     
-                   	
+					<div t-if="data.cerchar_abrsivity_visible">
+				           	<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:15px"><b><span t-field="data.cerchar_abrsivity_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87355786tt')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+
+							
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sample NO
+										</span>
+									</th>
+									<th>
+										<span>
+									Wear Flat Diameter (mm)
+										</span>
+									</th>
+									
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.child_lines_cerchar_abrsivity" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.value" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+									
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.cerchar_abrsivity_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Cerchar Abrasivity Index :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.cai"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								
+							</table>
+						</div>
+						
+					</div>
+
+
+					<div t-if="data.modulus_of_elasticity_visible">
+				           	<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:15px"><b><span t-field="data.modulus_of_elasticity_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-9654tyu145er2')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+
+							
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sample NO
+										</span>
+									</th>
+									<th>
+										<span>
+								Diameter (mm)
+										</span>
+									</th>
+									<th>
+										<span>
+									Length (mm)
+										</span>
+									</th>
+									<th>
+										<span>
+								Load (N)
+										</span>
+									</th>
+									<th>
+										<span>
+									ΔL (mm)
+										</span>
+									</th>
+									<th>
+										<span>
+									Area (mm²)
+										</span>
+									</th>
+									<th>
+										<span>
+									Stress σ (MPa)
+										</span>
+									</th>
+
+									<th>
+										<span>
+									Strain ε
+										</span>
+									</th>
+									
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.modulus_of_elasticity_line_ids" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.diameter" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.length" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.load" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.delta_l" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.area" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.stress" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.strain" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+									
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.modulus_of_elasticity_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Modulus of Elasticity E (MPa) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.modulus_e"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								
+							</table>
+						</div>
+						
+					</div>
+
+
+					<div t-if="data.ponit_load_visible">
+				           	<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:15px"><b><span t-field="data.ponit_load_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','6tr24ae1-b9a9-41cb-86a5-9654578gtr32e')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+
+							
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sample NO
+										</span>
+									</th>
+									<th>
+										<span>
+							Platen separation / Diameter D (mm)
+										</span>
+									</th>
+									<th>
+										<span>
+									Failure Load P (N)
+										</span>
+									</th>
+									<th>
+										<span>
+								Equivalent diameter De (mm)
+										</span>
+									</th>
+									<th>
+										<span>
+									Area  (mm²)
+										</span>
+									</th>
+									<th>
+										<span>
+									Uncorrected N/mm²
+										</span>
+									</th>
+									<th>
+										<span>
+									Size correction F
+										</span>
+									</th>
+
+									<th>
+										<span>
+									Is(50) corrected N/mm²
+										</span>
+									</th>
+									
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.ponit_load_ids" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.diameter_mm" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.failure_load_n" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.equivalent_de" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.area_mm2" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.is_uncorrected" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.size_correction_f" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.is50" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+									
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.ponit_load_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Average Is(50) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.avg_is50"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								
+							</table>
+						</div>
+						
+					</div>
+
+
+
+
+					<div t-if="data.poison_ratio_visible">
+				           	<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:15px"><b><span t-field="data.poison_ratio_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3tr74ae1-b9a9-41cb-86a5-965457878tyrw')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+
+							
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sample NO
+										</span>
+									</th>
+									<th>
+										<span>
+							Original length L0 (mm)
+										</span>
+									</th>
+									<th>
+										<span>
+								Axial extension ΔL (mm)
+										</span>
+									</th>
+									<th>
+										<span>
+							Original diameter d0 (mm)
+										</span>
+									</th>
+									<th>
+										<span>
+									Lateral change Δd (mm)
+										</span>
+									</th>
+									<th>
+										<span>
+									Axial strain ε_axial
+										</span>
+									</th>
+									<th>
+										<span>
+									Lateral strain ε_lat
+										</span>
+									</th>
+
+									<th>
+										<span>
+									Poisson's ratio ν
+										</span>
+									</th>
+									
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.poison_ratio_line_ids" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.L0_mm" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.delta_L_mm" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.d0_mm" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.delta_d_mm" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.axial_strain" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.lateral_strain" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.poisson_nu" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+									
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.poison_ratio_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Average Poison's Ratio :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.avg_nu"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								
+							</table>
+						</div>
+						
+					</div>
+
+
+
+					<div t-if="data.slake_index_visible">
+				           	<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:15px"><b><span t-field="data.slake_index_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','78er74ae1-b9a9-41cb-86a5-96578rtew214q')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+
+							
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sample NO
+										</span>
+									</th>
+									<th>
+										<span>
+							Initial Dry Weight W₁ (g)
+										</span>
+									</th>
+									<th>
+										<span>
+								Final Dry Weight W₂ (g)
+										</span>
+									</th>
+									<th>
+										<span>
+							Slake Durability Index Id (%)
+										</span>
+									</th>
+								
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.slake_index_line_ids" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.w1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.w2" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.sdi" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.slake_index_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Average Slake Durability Index :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.avg_index"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								
+							</table>
+						</div>
+						
+					</div>
+
+
+
+					<div t-if="data.tensile_strength_visible">
+				           	<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:15px"><b><span t-field="data.tensile_strength_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','88er74ae1-b9a9-41cb-86a5-9657878rte214w')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+
+							
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sample NO
+										</span>
+									</th>
+									<th>
+										<span>
+							Failure Load P (kN)
+										</span>
+									</th>
+									<th>
+										<span>
+								Diameter D (mm)
+										</span>
+									</th>
+									<th>
+										<span>
+					             	Length L (mm)
+										</span>
+									</th>
+
+										<th>
+										<span>
+					             Tensile Strength σt (MPa)
+										</span>
+									</th>
+								
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.tensile_strength_line_ids" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.load_kn" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.diameter_mm" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.length_mm" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+										<td>
+										<span t-esc="r.tensile_strength" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.tensile_strength_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Average Tensile Strength (MPa) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.avg_tensile_strength"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								
+							</table>
+						</div>
+						
+					</div>
+
+
+
+					<div t-if="data.uu_triaxial_angle_visible">
+				           	<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:15px"><b><span t-field="data.uu_triaxial_angle_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9rtr74ae1-b9a9-41cb-86a5-96578723147gtre')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+
+							
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th>
+										<span>
+									Minor Principal Stress σ3 (kPa)
+										</span>
+									</th>
+									<th>
+										<span>
+								Deviator Stress qf (kPa)
+										</span>
+									</th>
+									<th>
+										<span>
+								Major Principal Stress σ1 (kPa)
+										</span>
+									</th>
+									<th>
+										<span>
+								σ (Mohr center)
+										</span>
+									</th>
+										<th>
+										<span>
+							τ (Mohr radius)
+										</span>
+									</th>
+							
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.uu_triaxial_angle_line_ids" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.confining_pressure"/>
+									</td>
+									<td>
+										<span t-esc="r.deviator_stress" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.sigma1" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.sigma" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.tau" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.uu_triaxial_angle_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Angle of Friction φ (°) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.phi_deg_uu_triaxial_angle"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+								</tr>
+								
+							</table>
+						</div>
+						
+					</div>
+
+
+
+					<div t-if="data.uu_triaxial_cohesion_visible">
+				           	<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:15px"><b><span t-field="data.uu_triaxial_cohesion_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','0rte74ae1-b9a9-41cb-86a5-96578721254789rt')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+
+							
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th>
+										<span>
+									Minor Principal Stress σ3 (kPa)
+										</span>
+									</th>
+									<th>
+										<span>
+								Deviator Stress qf (kPa)
+										</span>
+									</th>
+									<th>
+										<span>
+								Major Principal Stress σ1 (kPa)
+										</span>
+									</th>
+									<th>
+										<span>
+								σ (Mohr center)
+										</span>
+									</th>
+										<th>
+										<span>
+							τ (Mohr radius)
+										</span>
+									</th>
+							
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.uu_triaxial_cohesion_line_ids" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.confining_pressure"/>
+									</td>
+									<td>
+										<span t-esc="r.deviator_stress" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.sigma1" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.sigma" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.tau" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.uu_triaxial_cohesion_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Cohesion c (kPa) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.cohesion_uu_triaxial_cohesion"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+								</tr>
+								
+							</table>
+						</div>
+						
+					</div>
+
+
+					
                    
                     
                     <!-- authorizeRowDataSheet -->
@@ -422,11 +1180,11 @@
 								</tr>
 						</table>
 					</div>
-				      <div t-if="data.usc_visible" style="margin-top:20px;">
+				      <!-- <div t-if="data.usc_visible" style="margin-top:20px;">
 						<p><strong>Protocol</strong> : IS : 9143-1979<![CDATA[&nbsp;]]></p>
-					</div>
+					</div> -->
 
-				<table t-if="data.usc_visible" style="margin-top:30px;">
+				<!-- <table t-if="data.usc_visible" style="margin-top:30px;">
 							<thead>
 								<tr style="font-weight: bold;">
 									<th>Parameter</th>
@@ -496,11 +1254,11 @@
 							</tbody>
 							
 
-							</table>
+							</table> -->
 
 
 
-					<div  t-if="data.porosity_visible or data.specific_gravity_visible or data.dry_density_visible or data.water_absorption_visible" style="margin-top:20px;">
+					<!-- <div  t-if="data.porosity_visible or data.specific_gravity_visible or data.dry_density_visible or data.water_absorption_visible" style="margin-top:20px;">
 						<p><strong>Protocol</strong> : IS : 13030-1991<![CDATA[&nbsp;]]></p>
 					</div>
 
@@ -581,7 +1339,7 @@
 							</tbody>
 							
 
-							</table>
+							</table> -->
 					 <div style="padding-top:5px">
 						<span t-esc="o.material.test_parameter "/> 
 
@@ -619,6 +1377,8 @@
 
 									</span>
 								</th>
+
+								<td rowspan="1" t-if="eln.conformity">Conformity</td>
 								
 
 								
@@ -735,7 +1495,7 @@
 							
 							
 						</tr>
-						<tr t-if="data.usc_visible">
+						<tr t-if="data.usc_visible and (data.avg_usc_nabl == 'pass' and nabl or (data.avg_usc_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 							<td style="text-align: center;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
@@ -758,6 +1518,268 @@
 										<span t-field="parameter.specification"/>
 								</t>
 							</td>
+
+							<td t-if="eln.conformity">
+										<span t-field="data.avg_usc_conformity"/>
+									</td>
+							
+							
+							
+						</tr>
+
+
+
+
+						<tr t-if="data.cerchar_abrsivity_visible and (data.cai_nabl == 'pass' and nabl or (data.cai_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<td style="text-align: center;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<td  >
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87355786tt')]).parameter_name"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87355786tt')]).unit.name"/>
+								</span>
+							</td>
+							<td style="text-align: center;">
+								<span t-esc="data.cai" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87355786tt')]).parameter_table" t-as="parameter">
+										<span t-field="parameter.specification"/>
+								</t>
+							</td>
+
+							<td t-if="eln.conformity">
+										<span t-field="data.cai_conformity"/>
+									</td>
+							
+							
+						</tr>
+
+
+						<tr t-if="data.modulus_of_elasticity_visible and (data.modulus_e_nabl == 'pass' and nabl or (data.modulus_e_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<td style="text-align: center;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<td  >
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-9654tyu145er2')]).parameter_name"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-9654tyu145er2')]).unit.name"/>
+								</span>
+							</td>
+							<td style="text-align: center;">
+								<span t-esc="data.modulus_e" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-9654tyu145er2')]).parameter_table" t-as="parameter">
+										<span t-field="parameter.specification"/>
+								</t>
+							</td>
+
+							<td t-if="eln.conformity">
+										<span t-field="data.modulus_e_conformity"/>
+									</td>
+							
+							
+						</tr>
+
+
+						<tr t-if="data.ponit_load_visible and (data.avg_is50_nabl == 'pass' and nabl or (data.avg_is50_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<td style="text-align: center;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<td  >
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6tr24ae1-b9a9-41cb-86a5-9654578gtr32e')]).parameter_name"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6tr24ae1-b9a9-41cb-86a5-9654578gtr32e')]).unit.name"/>
+								</span>
+							</td>
+							<td style="text-align: center;">
+								<span t-esc="data.avg_is50" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','6tr24ae1-b9a9-41cb-86a5-9654578gtr32e')]).parameter_table" t-as="parameter">
+										<span t-field="parameter.specification"/>
+								</t>
+							</td>
+
+							<td t-if="eln.conformity">
+										<span t-field="data.avg_is50_conformity"/>
+									</td>
+							
+							
+						</tr>
+
+
+						<tr t-if="data.poison_ratio_visible and (data.avg_nu_nabl == 'pass' and nabl or (data.avg_nu_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<td style="text-align: center;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<td  >
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3tr74ae1-b9a9-41cb-86a5-965457878tyrw')]).parameter_name"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3tr74ae1-b9a9-41cb-86a5-965457878tyrw')]).unit.name"/>
+								</span>
+							</td>
+							<td style="text-align: center;">
+								<span t-esc="data.avg_nu" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3tr74ae1-b9a9-41cb-86a5-965457878tyrw')]).parameter_table" t-as="parameter">
+										<span t-field="parameter.specification"/>
+								</t>
+							</td>
+
+							<td t-if="eln.conformity">
+										<span t-field="data.avg_nu_conformity"/>
+									</td>
+							
+							
+						</tr>
+
+
+						<tr t-if="data.slake_index_visible and (data.avg_index_nabl == 'pass' and nabl or (data.avg_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<td style="text-align: center;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<td  >
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','78er74ae1-b9a9-41cb-86a5-96578rtew214q')]).parameter_name"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','78er74ae1-b9a9-41cb-86a5-96578rtew214q')]).unit.name"/>
+								</span>
+							</td>
+							<td style="text-align: center;">
+								<span t-esc="data.avg_index" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','78er74ae1-b9a9-41cb-86a5-96578rtew214q')]).parameter_table" t-as="parameter">
+										<span t-field="parameter.specification"/>
+								</t>
+							</td>
+
+							<td t-if="eln.conformity">
+										<span t-field="data.avg_index_conformity"/>
+									</td>
+							
+							
+						</tr>
+
+
+						<tr t-if="data.tensile_strength_visible and (data.avg_tensile_strength_nabl == 'pass' and nabl or (data.avg_tensile_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<td style="text-align: center;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<td  >
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','88er74ae1-b9a9-41cb-86a5-9657878rte214w')]).parameter_name"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','88er74ae1-b9a9-41cb-86a5-9657878rte214w')]).unit.name"/>
+								</span>
+							</td>
+							<td style="text-align: center;">
+								<span t-esc="data.avg_tensile_strength" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','88er74ae1-b9a9-41cb-86a5-9657878rte214w')]).parameter_table" t-as="parameter">
+										<span t-field="parameter.specification"/>
+								</t>
+							</td>
+
+							<td t-if="eln.conformity">
+										<span t-field="data.avg_tensile_strength_conformity"/>
+									</td>
+							
+							
+						</tr>
+
+
+						<tr t-if="data.uu_triaxial_angle_visible and (data.phi_deg_uu_triaxial_angle_nabl == 'pass' and nabl or (data.phi_deg_uu_triaxial_angle_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<td style="text-align: center;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<td  >
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9rtr74ae1-b9a9-41cb-86a5-96578723147gtre')]).parameter_name"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9rtr74ae1-b9a9-41cb-86a5-96578723147gtre')]).unit.name"/>
+								</span>
+							</td>
+							<td style="text-align: center;">
+								<span t-esc="data.phi_deg_uu_triaxial_angle" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9rtr74ae1-b9a9-41cb-86a5-96578723147gtre')]).parameter_table" t-as="parameter">
+										<span t-field="parameter.specification"/>
+								</t>
+							</td>
+
+							<td t-if="eln.conformity">
+										<span t-field="data.phi_deg_uu_triaxial_angle_conformity"/>
+									</td>
+							
+							
+						</tr>
+
+						<tr t-if="data.uu_triaxial_cohesion_visible and (data.cohesion_uu_triaxial_cohesion_nabl == 'pass' and nabl or (data.cohesion_uu_triaxial_cohesion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<td style="text-align: center;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<td  >
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','0rte74ae1-b9a9-41cb-86a5-96578721254789rt')]).parameter_name"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','0rte74ae1-b9a9-41cb-86a5-96578721254789rt')]).unit.name"/>
+								</span>
+							</td>
+							<td style="text-align: center;">
+								<span t-esc="data.cohesion_uu_triaxial_cohesion" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','0rte74ae1-b9a9-41cb-86a5-96578721254789rt')]).parameter_table" t-as="parameter">
+										<span t-field="parameter.specification"/>
+								</t>
+							</td>
+
+							<td t-if="eln.conformity">
+										<span t-field="data.cohesion_uu_triaxial_cohesion_conformity"/>
+									</td>
 							
 							
 						</tr>

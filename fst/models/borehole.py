@@ -18,7 +18,7 @@ from scipy.interpolate import interp1d
 class ERTBorehole(models.Model):
     _name = "soil.borehole"
 
-    name = fields.Char(string="Name", required=True, default='New')
+    name = fields.Char(string="Name", required=True)
     parent_id = fields.Many2one('soil.borehole.parent')
 
     # line_ids = fields.One2many("soil.borehole.line", "borehole_id", string="SBC Lines")
@@ -214,8 +214,8 @@ class ERTBorehole(models.Model):
                 ax.add_patch(rect)
                 
                 x_start_top = 0.0 if line.top_depth == min_depth else -0.2
-                ax.plot([x_start_top, 1.2], [line.top_depth, line.top_depth], color="black", linewidth=0.5, zorder=3)
-                ax.plot([-0.2, 1.2], [line.bottom_depth, line.bottom_depth], color="black", linewidth=0.5, zorder=3)
+                ax.plot([0, 1], [line.top_depth, line.top_depth], color="black", linewidth=0.5, zorder=3)
+                ax.plot([0, 1], [line.bottom_depth, line.bottom_depth], color="black", linewidth=0.5, zorder=3)
 
             # Define a small vertical offset to move labels slightly up (towards 0m)
             VERTICAL_OFFSET = 0.11
@@ -513,7 +513,7 @@ class ERTBorehole(models.Model):
                 
                 # PLOT THE CONNECTED POINTS (Line graph) FOR THE CURRENT ANALYSIS
                 ax.semilogx(sieve_sizes, percent_passing, marker='o', linestyle='-',
-                            label=f'Sample: {analysis.sample_name}')
+                            label=f'{analysis.sample_name}')
 
             # --- Formatting and Axis Settings ---
             
@@ -542,7 +542,7 @@ class ERTBorehole(models.Model):
                 loc='upper center', 
                 # Note: This might place the legend off-screen if there are too many analyses
                 bbox_to_anchor=(0.5, -0.15), 
-                ncol=len(borehole.grain_size_ids), 
+                ncol=min(len(borehole.grain_size_ids), 7),
                 fancybox=True,
                 shadow=True,
                 fontsize=9
@@ -567,8 +567,8 @@ class ERTBorehole(models.Model):
             if d60 > 0: ax.axvline(x=d60, color='red', linestyle=':', linewidth=0.8)
 
             # Annotate Cu and Cc
-            ax.text(custom_xticks.min() * 1.5, 105, f'Cu: {cu:.2f}', fontsize=10, color='k')
-            ax.text(custom_xticks.min() * 1.5, 100, f'Cc: {cc:.2f}', fontsize=10, color='k')
+            # ax.text(custom_xticks.min() * 1.5, 105, f'Cu: {cu:.2f}', fontsize=10, color='k')
+            # ax.text(custom_xticks.min() * 1.5, 100, f'Cc: {cc:.2f}', fontsize=10, color='k')
 
             ax.set_title(f'Grain Size Distribution Curve ({borehole.name})', pad=20)
             
@@ -586,8 +586,8 @@ class ERTBorehole(models.Model):
 
     @api.model
     def create(self, vals):
-        # if vals.get("name", "New") == "New":
-        #     vals["name"] = self.env["ir.sequence"].next_by_code("soil.borehole.seq") or "New"
+        if vals.get("name", "New") == "New":
+            vals["name"] = self.env["ir.sequence"].next_by_code("soil.borehole.seq") or "New"
             
         record = super().create(vals)
         if record.parent_id:
@@ -618,7 +618,7 @@ class SoilBoreholeNValue(models.Model):
 
     borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
     sample_type = fields.Char("Sample Type")
-    symbol = fields.Char("Symbol")                
+    symbol = fields.Char("Symbol")   
     classification = fields.Selection([
         ('poorly_graded','Poorly Graded Sand'),
         ('well_graded','Well Graded Sand')

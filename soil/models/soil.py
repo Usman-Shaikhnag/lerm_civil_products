@@ -1962,25 +1962,43 @@ class Soil(models.Model):
     @api.depends("uu_triaxial_angle_line_ids.sigma", "uu_triaxial_angle_line_ids.tau")
     def _compute_phi_c(self):
         for rec in self:
-            if len(rec.uu_triaxial_angle_line_ids) < 2:
+            lines = rec.uu_triaxial_angle_line_ids
+
+            # किमान 2 data points असले पाहिजेत
+            if not lines or len(lines) < 2:
                 rec.phi_deg_uu_triaxial_angle = 0.0
                 rec.cohesion_uu_triaxial_angle = 0.0
                 continue
 
-            # Take first 2 points (simple two-point method)
-            p1, p2 = rec.uu_triaxial_angle_line_ids[0], rec.uu_triaxial_angle_line_ids[1]
+            slopes = []
+            intercepts = []
 
-            if (p2.sigma - p1.sigma) == 0:
+            # सर्व सलग points वरून slope व intercept काढा
+            for i in range(len(lines) - 1):
+                p1 = lines[i]
+                p2 = lines[i + 1]
+
+                if (p2.sigma - p1.sigma) == 0:
+                    continue
+
+                m = (p2.tau - p1.tau) / (p2.sigma - p1.sigma)
+                c = p1.tau - m * p1.sigma
+                slopes.append(m)
+                intercepts.append(c)
+
+            if not slopes:
                 rec.phi_deg_uu_triaxial_angle = 0.0
                 rec.cohesion_uu_triaxial_angle = 0.0
                 continue
 
-            m = (p2.tau - p1.tau) / (p2.sigma - p1.sigma)  # slope = tan(phi)
-            c = p1.tau - m * p1.sigma
+            avg_m = sum(slopes) / len(slopes)
+            avg_c = sum(intercepts) / len(intercepts)
 
-            phi_rad = math.atan(m)
-            rec.phi_deg_uu_triaxial_angle = phi_rad * 180.0 / math.pi
-            rec.cohesion_uu_triaxial_angle = c
+            phi_rad = math.atan(avg_m)
+            phi_deg = phi_rad * 180.0 / math.pi
+
+            rec.phi_deg_uu_triaxial_angle = round(phi_deg, 3)
+            rec.cohesion_uu_triaxial_angle = round(avg_c, 3)
 
       # Unconsolidated Undrained Triaxial Test (Angle of Friction)
     uu_triaxial_cohesion_name = fields.Char("Name",default="Unconsolidated Undrained Triaxial Test (Cohesion)")
@@ -2044,25 +2062,43 @@ class Soil(models.Model):
     @api.depends("uu_triaxial_cohesion_line_ids.sigma", "uu_triaxial_cohesion_line_ids.tau")
     def _compute_phi_cohesion(self):
         for rec in self:
-            if len(rec.uu_triaxial_cohesion_line_ids) < 2:
+            lines = rec.uu_triaxial_cohesion_line_ids
+
+            # किमान 2 data points असले पाहिजेत
+            if not lines or len(lines) < 2:
                 rec.phi_deg_uu_triaxial_cohesion = 0.0
                 rec.cohesion_uu_triaxial_cohesion = 0.0
                 continue
 
-            # Take first 2 points (simple two-point method)
-            p1, p2 = rec.uu_triaxial_cohesion_line_ids[0], rec.uu_triaxial_cohesion_line_ids[1]
+            slopes = []
+            intercepts = []
 
-            if (p2.sigma - p1.sigma) == 0:
+            # सर्व सलग points वरून slope व intercept काढा
+            for i in range(len(lines) - 1):
+                p1 = lines[i]
+                p2 = lines[i + 1]
+
+                if (p2.sigma - p1.sigma) == 0:
+                    continue
+
+                m = (p2.tau - p1.tau) / (p2.sigma - p1.sigma)
+                c = p1.tau - m * p1.sigma
+                slopes.append(m)
+                intercepts.append(c)
+
+            if not slopes:
                 rec.phi_deg_uu_triaxial_cohesion = 0.0
                 rec.cohesion_uu_triaxial_cohesion = 0.0
                 continue
 
-            m = (p2.tau - p1.tau) / (p2.sigma - p1.sigma)  # slope = tan(phi)
-            c = p1.tau - m * p1.sigma
+            avg_m = sum(slopes) / len(slopes)
+            avg_c = sum(intercepts) / len(intercepts)
 
-            phi_rad = math.atan(m)
-            rec.phi_deg_uu_triaxial_cohesion = phi_rad * 180.0 / math.pi
-            rec.cohesion_uu_triaxial_cohesion = c
+            phi_rad = math.atan(avg_m)
+            phi_deg = phi_rad * 180.0 / math.pi
+
+            rec.phi_deg_uu_triaxial_cohesion = round(phi_deg, 3)
+            rec.cohesion_uu_triaxial_cohesion = round(avg_c, 3)
      
 
     
@@ -2077,6 +2113,7 @@ class Soil(models.Model):
       
         for record in self:
             record.sieve_visible = False
+            # water_content_visible = False
             record.liquid_limit_visible = False
             record.plastic_limit_visible = False
             record.heavy_visible = False
@@ -2104,6 +2141,9 @@ class Soil(models.Model):
 
                 if sample.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
                     record.sieve_visible = True
+
+                # if sample.internal_id == '800a2dc9-49fe-4dab-83e8-63758c7f351a':
+                #     record.water_content_visible = True
                 
                 if sample.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
                     record.liquid_limit_visible = True
@@ -2455,6 +2495,60 @@ class LIQUIDLIMITLINE(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
+
+# class WATERCONTENTLINE(models.Model):
+#     _name = "mechanical.water.content.line"
+#     parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+
+#     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+#     container_noo = fields.Integer(string="Container No") 
+#     wt_of_cont = fields.Float(string="Weight of container,(gms)")
+#     wet_sample_cont = fields.Float(string="Weight of wet sample + container (gm)")
+#     dry_sample_cont = fields.Float(string="Weigth of dry sample + Container (gms)")
+#     mass_dry_soil= fields.Float(string="Mass of dry soil")
+#     water_contentss = fields.Float(string="Water content (W)=(W1-W2)(W1-Wc)/100%",compute="_compute_water_contentss")
+#     w1_w2 = fields.Float(string="(W1-W2)",compute="_compute_w1_w2")
+#     W1_Wc = fields.Float(string="(W1_Wc)",compute="_compute_W1_Wc")
+
+
+
+#     @api.depends('wet_sample_cont', 'dry_sample_cont')
+#     def _compute_w1_w2(self):
+#         for line in self:
+#             line.w1_w2 = line.wet_sample_cont - line.dry_sample_cont
+
+
+#     @api.depends('wet_sample_cont', 'wt_of_cont')
+#     def _compute_W1_Wc(self):
+#         for line in self:
+#             line.W1_Wc = line.wet_sample_cont - line.wt_of_cont
+
+
+ 
+#     @api.depends('w1_w2', 'W1_Wc')
+#     def _compute_water_contentss(self):
+#         for line in self:
+#             if line.W1_Wc != 0:
+#                 line.water_contentss = line.w1_w2 / line.W1_Wc *100
+#             else:
+#                 line.water_contentss = 0.0
+
+#     @api.model
+#     def create(self, vals):
+#         # Set the serial_no based on the existing records for the same parent
+#         if vals.get('parent_id'):
+#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+#             if existing_records:
+#                 max_serial_no = max(existing_records.mapped('serial_no'))
+#                 vals['serial_no'] = max_serial_no + 1
+
+       # return super(WATERCONTENTLINE, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 class PLASTICLIMITLINE(models.Model):
     _name = "mechanical.plasticl.limit.line"
