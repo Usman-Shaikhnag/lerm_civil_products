@@ -196,6 +196,75 @@ class FineAggregate(models.Model):
             record.total_sieve_analysis = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
 
 
+# Deleterious Content
+
+    name_finer75 = fields.Char("Name",default="Material Finer than 75 Micron")
+    finer75_visible = fields.Boolean("Finer 75 Visible",compute="_compute_visible")
+
+    wt_sample_finer75 = fields.Float("Weight of Sample in gms")
+    wt_dry_sample_finer75 = fields.Float("Weight of dry sample after retained in 75 microns")
+    material_finer75 = fields.Float("Material finer than 75 micron in %",compute="_compute_finer75")
+
+    material_finer75_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_material_finer75_conformity", store=True)
+
+    @api.depends('material_finer75','eln_ref','grade')
+    def _compute_material_finer75_conformity(self):
+        
+        for record in self:
+            record.material_finer75_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.material_finer75 - record.material_finer75*mu_value
+                    upper = record.material_finer75 + record.material_finer75*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.material_finer75_conformity = 'pass'
+                        break
+                    else:
+                        record.material_finer75_conformity = 'fail'
+
+    material_finer75_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_material_finer75_nabl", store=True)
+
+    @api.depends('material_finer75','eln_ref','grade')
+    def _compute_material_finer75_nabl(self):
+        
+        for record in self:
+            record.material_finer75_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.material_finer75 - record.material_finer75*mu_value
+            upper = record.material_finer75 + record.material_finer75*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.material_finer75_nabl = 'pass'
+                break
+            else:
+                record.material_finer75_nabl = 'fail'
+
+    @api.depends('wt_sample_finer75','wt_dry_sample_finer75')
+    def _compute_finer75(self):
+        for record in self:
+            if record.wt_sample_finer75 != 0:
+                record.material_finer75 = ((record.wt_sample_finer75 - record.wt_dry_sample_finer75)/record.wt_sample_finer75 * 100)
+            else:
+                record.material_finer75 = 0
+
+
+
       # Specific Gravity
 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
@@ -721,6 +790,7 @@ class FineAggregate(models.Model):
             record.bulking_sand_visible = False
             record.site_content_visible = False
             record.moisture_content_visible = False
+            record.finer75_visible = False
           
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
@@ -742,6 +812,9 @@ class FineAggregate(models.Model):
 
                 if sample.internal_id == "1457htyu1245-3fa3-4b83-ae31-9d281457457hy":
                     record.moisture_content_visible = True
+
+                if sample.internal_id == '2047739e-9941-4bc0-af9b-839767be6e1c':
+                    record.finer75_visible = True
 
             
               

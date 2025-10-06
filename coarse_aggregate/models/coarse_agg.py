@@ -1005,6 +1005,9 @@ class CoarseAggregateMechanical(models.Model):
             else:
                 record.material_finer75 = 0
 
+
+                
+# 
     
     name_clay_lumps = fields.Char("Name",default="Determination of Clay Lumps")
     clay_lump_visible = fields.Boolean("Clay Lump Visible",compute="_compute_visible")
@@ -1072,6 +1075,8 @@ class CoarseAggregateMechanical(models.Model):
                 record.clay_lumps_percent = 0
 
 
+
+# 
     name_light_weight = fields.Char("Name",default="Determination of Light Weight Particles")
     light_weight_visible = fields.Boolean("Light Weight Visible",compute="_compute_visible")
 
