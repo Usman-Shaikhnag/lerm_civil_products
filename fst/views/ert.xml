@@ -85,35 +85,50 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                            <button name="print_report"
-                            string="Print Project Report"
-                            type="object"
-                            class="btn-primary"/>
+                        <button name="print_report"
+                                string="Print Project Report"
+                                type="object"
+                                class="btn-primary"/>
                     </header>
+
                     <sheet>
                         <group>
                             <field name="name" />
                             <field name="rec_date"/>
-                            <field name="combined_image" widget="image"/>
-
                         </group>
 
-                        
-                        <button
-                            type="object"
-                            class="oe_highlight" 
-                            name="create_ert"
-                            string="Borehole"
-                            />
+                        <button type="object"
+                                class="oe_highlight"
+                                name="create_ert"
+                                string="Borehole"/>
 
-                        <field name="borehole_lines" readonly="1">
-                            <tree editable="bottom">
-                                <field name="soil_borehole_id" widget="many2one" options="{'no_open': False}"/>
-                                <field name="create_date" readonly="1"/>
-                            </tree>
-                        </field>
-                    
-                    
+                        <!-- Notebook section -->
+                        <notebook>
+                            <page string="ERT Lines">
+                                <field name="borehole_lines" readonly="1">
+                                    <tree editable="bottom">
+                                        <field name="soil_borehole_id" widget="many2one" options="{'no_open': False}"/>
+                                        <field name="create_date" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <!-- <page string="Combined Images">
+                                <field name="combined_images">
+                                    <tree>
+                                        <field name="sequence"/>
+                                        <field name="image" widget="image"/>
+                                    </tree>
+                                    <form>
+                                        <sheet>
+                                            <field name="sequence"/>
+                                            <field name="image" widget="image" class="oe_avatar"/>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page> -->
+                        </notebook>
+
                     </sheet>
                 </form>
             </field>
