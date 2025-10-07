@@ -622,8 +622,8 @@ class SoilBoreholeNValue(models.Model):
     sample_type = fields.Char("Sample Type")
     symbol = fields.Char("Symbol")   
     classification = fields.Selection([
-        ('poorly_graded','Poorly Graded Sand'),
-        ('well_graded','Well Graded Sand')
+        ('Poorly_Graded','Poorly Graded Sand'),
+        ('Well_Graded','Well Graded Sand')
     ])
 
     top_depth = fields.Float("Top Depth (m)")
