@@ -108,7 +108,7 @@ class ERTBorehole(models.Model):
                             'bottom_depth': current_sample_top,
                             'n_value': 0, 
                             'sample_type': 'DRILLING',
-                            # 'classification': preceding_layer_props.classification,
+                            'classification': preceding_layer_props.classification,
                             'symbol': preceding_layer_props.symbol,
                         })()
                         lines_to_plot.append(preceding_layer)
@@ -131,7 +131,7 @@ class ERTBorehole(models.Model):
                             'bottom_depth': layer_bottom_depth,
                             'n_value': current_sample.n_value,
                             'sample_type': current_sample.sample_type,
-                            # 'classification': current_sample.classification,
+                            'classification': current_sample.classification,
                             'symbol': current_sample.symbol,
                         })()
                         lines_to_plot.append(new_line)
@@ -193,10 +193,8 @@ class ERTBorehole(models.Model):
             # Soil segments and patterns
             for line in lines:
                 # Use the USCS symbol from your line object, defaulting to 'DEFAULT'
-                uscs_symbol = (line.symbol or "DEFAULT").strip().upper() 
+                uscs_symbol = (line.symbol or line.classification or "DEFAULT").strip().upper() 
                 color, hatch_style = pattern_map.get(uscs_symbol, pattern_map["DEFAULT"])
-                # uscs_symbol = (line.symbol or line.classification or "DEFAULT").strip().upper() 
-                # color, hatch_style = pattern_map.get(uscs_symbol, pattern_map["DEFAULT"])
                 
                 segment_length = line.bottom_depth - line.top_depth
                 
@@ -623,10 +621,10 @@ class SoilBoreholeNValue(models.Model):
     borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
     sample_type = fields.Char("Sample Type")
     symbol = fields.Char("Symbol")   
-    # classification = fields.Selection([
-    #     ('Poorly_Graded','Poorly Graded Sand'),
-    #     ('Well_Graded','Well Graded Sand')
-    # ])
+    classification = fields.Selection([
+        ('Poorly_Graded','Poorly Graded Sand'),
+        ('Well_Graded','Well Graded Sand')
+    ])
 
     top_depth = fields.Float("Top Depth (m)")
     bottom_depth = fields.Float("Bottom Depth (m)")
