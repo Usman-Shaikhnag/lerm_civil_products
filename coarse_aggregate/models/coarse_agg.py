@@ -1697,6 +1697,8 @@ class CoarseAggregateMechanical(models.Model):
                     else:
                         record.avg_compacted_conformity = 'fail'
 
+    
+
     @api.depends('avg_compacted','eln_ref','grade')
     def _compute_avg_compacted_nabl(self):
         
@@ -1704,28 +1706,30 @@ class CoarseAggregateMechanical(models.Model):
             record.avg_compacted_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')]).parameter_table
-            # for material in materials:
-                # if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_compacted - record.avg_compacted*mu_value
-            upper = record.avg_compacted + record.avg_compacted*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_compacted_nabl = 'pass'
-                break
-            else:
-                record.avg_compacted_nabl = 'fail'
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_compacted - record.avg_compacted*mu_value
+                    upper = record.avg_compacted + record.avg_compacted*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_compacted_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_compacted_nabl = 'fail'
+
+        
 
 
-    specific_gravity1  = fields.Float(string="Specific Gravity")
-    voids_ratio = fields.Float(
-        string="Voids Ratio (%)",
-        compute="_compute_voids_ratio",
-        store=True,
-        digits=(12, 2)
-    )
+    # specific_gravity1  = fields.Float(string="Specific Gravity")
+    # voids_ratio = fields.Float(
+    #     string="Voids Ratio (%)",
+    #     compute="_compute_voids_ratio",
+    #     store=True,
+    #     digits=(12, 2)
+    # )
 
     # @api.depends('specific_gravity1', 'avg_bulk_density')
     # def _compute_voids_ratio(self):

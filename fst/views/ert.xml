@@ -84,10 +84,18 @@
             <field name="model">soil.borehole.parent</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                            <button name="print_report"
+                            string="Print Project Report"
+                            type="object"
+                            class="btn-primary"/>
+                    </header>
                     <sheet>
                         <group>
                             <field name="name" />
                             <field name="rec_date"/>
+                            <field name="combined_image" widget="image"/>
+
                         </group>
 
                         

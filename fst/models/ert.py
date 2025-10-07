@@ -4,6 +4,8 @@ import math
 import io
 import zipfile
 import base64
+from PIL import Image
+
 
 class LermErtParent(models.Model):
     _name = "lerm.ert.parent"
@@ -86,6 +88,7 @@ class SoilBoreholeParent(models.Model):
     borehole_lines = fields.One2many('soil.borehole.lines','parent_id',"ERT Lines")
     rec_date  = fields.Date("Date")
 
+    combined_image = fields.Binary("Combined Graph Image", compute="_compute_combined_image", store=True)
     def create_ert(self):
         
         return {
@@ -97,6 +100,60 @@ class SoilBoreholeParent(models.Model):
                 'default_parent_id':self.id
             }
         }
+    
+    def print_report(self):
+        report = self.env.ref('fst.borehole_report_py3o')
+        filename = f"{self.name or 'ERT'}"
+        return report.report_action(self, config={'report_name': filename})
+    
+    @api.depends('borehole_lines.soil_borehole_id.graph_image')
+    def _compute_combined_image(self):
+        for record in self:
+            images = []
+            # Loop through borehole lines
+            for line in record.borehole_lines:
+                borehole = line.soil_borehole_id
+                if borehole and borehole.graph_image:
+                    img_data = base64.b64decode(borehole.graph_image)
+                    img = Image.open(io.BytesIO(img_data))
+                    images.append(img)
+
+            if images:
+                # Grid setup
+                grid_cols = 5
+                thumb_width = 200
+                thumb_height = 200
+
+                # Resize thumbnails
+                thumbs = []
+                for img in images:
+                    img = img.copy()
+                    img.thumbnail((thumb_width, thumb_height))
+                    thumbs.append(img)
+
+                cols = min(grid_cols, len(thumbs))
+                rows = math.ceil(len(thumbs) / grid_cols)
+
+                combined_width = cols * thumb_width
+                combined_height = rows * thumb_height
+
+                # Create blank image
+                combined_img = Image.new('RGB', (combined_width, combined_height), color=(255, 255, 255))
+
+                # Paste images
+                for idx, thumb in enumerate(thumbs):
+                    row = idx // grid_cols
+                    col = idx % grid_cols
+                    x = col * thumb_width
+                    y = row * thumb_height
+                    combined_img.paste(thumb, (x, y))
+
+                # Save to binary
+                buffer = io.BytesIO()
+                combined_img.save(buffer, format="PNG")
+                record.combined_image = base64.b64encode(buffer.getvalue())
+            else:
+                record.combined_image = False
 
 
 class LermErtLines(models.Model):
