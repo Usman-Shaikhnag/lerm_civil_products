@@ -102,9 +102,14 @@
                                 name="create_ert"
                                 string="Borehole"/>
 
-                        <!-- Notebook section -->
+                        <!-- <field name="borehole_lines" readonly="1"> 
+                            <tree editable="bottom"> 
+                                <field name="soil_borehole_id" widget="many2one" options="{'no_open': False}"/> 
+                                <field name="create_date" readonly="1"/> 
+                            </tree> 
+                        </field> -->
                         <notebook>
-                            <page string="ERT Lines">
+                            <page string="">
                                 <field name="borehole_lines" readonly="1">
                                     <tree editable="bottom">
                                         <field name="soil_borehole_id" widget="many2one" options="{'no_open': False}"/>
