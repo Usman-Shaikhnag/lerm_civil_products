@@ -29,22 +29,14 @@ class ERTBorehole(models.Model):
 
     # Add these three One2many fields
     spt_n_value_ids = fields.One2many("spt.n.value", "borehole_id", string="Corrected SPT N-Values")
+    hammer_energy = fields.Integer(string="HAMMER ENERGY Ne")
     corrected_spt_graph = fields.Binary("Correct SPT Graph")
     
     direct_shear_ids = fields.One2many("direct.shear.test", "borehole_id", string="Direct Shear Tests")
     direct_shear_graph = fields.Binary("Direct Shear Graph", store=True)
-    cohesion = fields.Float(
-        string='Cohesion (C) (Kg/cm²)', 
-        # compute='_compute_shear_parameters', 
-        store=True,
-        digits=(16, 3)
-    )
-    angle_of_internal_friction = fields.Float(
-        string='Angle of Internal Friction (\u03C6) (\u00b0)', 
-        # compute='_compute_shear_parameters', 
-        store=True,
-        digits=(16, 2)
-    )
+    cohesion = fields.Float(string='Cohesion (C) (Kg/cm²)',store=True,digits=(16, 3))
+    angle_of_internal_friction = fields.Float(string='Angle of Internal Friction (\u03C6) (\u00b0)',store=True,digits=(16, 2))
+    tan_phi = fields.Float(string='tan(phi) (Slope)',store=True,digits=(16, 3))
 
     # Link to the Grain Size Analysis test records (One2many)
     grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis Tests")    
@@ -330,11 +322,13 @@ class ERTBorehole(models.Model):
             
             # 3. Calculate Cohesion (c) and Angle of Internal Friction (phi)
             cohesion = intercept
+            tan_phi_value = slope  # Capture the slope explicitly for the new field
             angle_phi_radians = math.atan(slope)
-            angle_phi_degrees = round(math.degrees(angle_phi_radians),2)
+            angle_phi_degrees = round(math.degrees(angle_phi_radians), 2)
             
             # Store the calculated values
             borehole.cohesion = cohesion
+            borehole.tan_phi = tan_phi_value  # Assign the calculated tan(phi)
             borehole.angle_of_internal_friction = angle_phi_degrees
 
             # 4. Generate the Plot
@@ -633,8 +627,8 @@ class SoilBoreholeNValue(models.Model):
     n45 = fields.Integer("N @ 45 cm")
     # This field is now computed automatically
     n_value = fields.Integer("Total N Value", compute="_compute_n_value", store=True)
-    core_recovery = fields.Char("Core recovery")
-    rqd = fields.Char("RQD")
+    core_recovery = fields.Char("Core recovery",default="--")
+    rqd = fields.Char("RQD",default="--")
 
     @api.depends('n30', 'n45')
     def _compute_n_value(self):
@@ -650,17 +644,32 @@ class CorrectedSptNValue(models.Model):
     borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
     sr_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
     depth = fields.Float(string='Depth (m)')
+    type_of_soil = fields.Selection([
+        ('Plastic','Plastic'),
+        ('Non-Plastic','Non-Plastic')
+    ],"Type of Soil")
     bulk_den = fields.Float(string='Bulk Density (T/m2)')
-    
     overburden_pressure = fields.Char(string='Overburden Pressure (T/m2)', compute="_compute_overburden_pressure", store=True)
     pore_water_pressure = fields.Char(string="Pore Water Pressure from layer", compute="_compute_pore_water_pressure", store=True)
     total_pore_water_pressure = fields.Char(string="Total Pore Water Pressure", compute="_compute_total_pore_water_pressure", store=True)
     effective_overburden_pressure = fields.Char(string='Effective Overburden Pressure (T/m2)', compute="_compute_effective_overburden_pressure", store=True)
     effective_overburden_pressure_kg = fields.Char(string='Effective Overburden Pressure (kg/cm2)', compute="_compute_effective_overburden_pressure_kg", store=True)
     overburden_correction_factor = fields.Char(string="OVERBURDEN CORRECTION FACTOR", compute="_compute_overburden_correction_factor", store=True)
+    hammer_energy = fields.Integer("HAMMER ENERGY Ne",related="borehole_id.hammer_energy")
     observed_n_value = fields.Integer(string='Observed SPT N Value',compute="_compute_observed_n_value")
     corrected_n_value = fields.Integer(string='Corrected SPT (N\') Value',compute="_compute_corrected_n_value")
+    spt_n_dilatancy = fields.Float(string="SPT (N') Value After Dilatancy Correction ('N')",compute="_compute_spt_n_dilatancy",store=True,readonly=False,)
     
+
+    @api.depends('hammer_energy', 'corrected_n_value')
+    def _compute_spt_n_dilatancy(self):
+        for record in self:
+            if record.hammer_energy and record.corrected_n_value:
+                record.spt_n_dilatancy = record.hammer_energy * int(record.corrected_n_value)
+            else:
+                record.spt_n_dilatancy = record.corrected_n_value or 0.0
+
+
     @api.model
     def create(self, vals):
         if vals.get('borehole_id'):
@@ -842,6 +851,7 @@ class GrainSizeAnalysisLine(models.Model):
     analysis_id = fields.Many2one('grain.size.analysis', string='Analysis', ondelete='cascade')
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size mm")
+    weight = fields.Integer("Weight",related="analysis_id.weight")
     percent_retained = fields.Float(string='% of Weight Retained')
     wt_retained = fields.Float(string="Wt. Retained in gms",compute="_compute_wt_retained")
     cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained",compute="_compute_cumulative_retained")
@@ -873,10 +883,10 @@ class GrainSizeAnalysisLine(models.Model):
 
         return res
 
-    @api.depends('percent_retained')
+    @api.depends('percent_retained','weight')
     def _compute_wt_retained(self):
         for record in self:
-            record.wt_retained = (record.percent_retained*200)/100
+            record.wt_retained = (record.percent_retained * record.weight) / 100
 
     @api.depends('percent_retained', 'analysis_id.line_ids.percent_retained')
     def _compute_cumulative_retained(self):
@@ -906,7 +916,8 @@ class GrainSizeAnalysis(models.Model):
     _description = 'Grain Size Analysis Test'
     
     borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
-    sample_name = fields.Char(string='Sample ID/Depth', required=True) 
+    sample_name = fields.Char(string='Sample ID/Depth', required=True)
+    weight = fields.Integer("Weight")
     boulder = fields.Float(string="Boulder", compute="_compute_particle_distribution", store=True)
     gravel = fields.Float(string="Gravel", compute="_compute_particle_distribution", store=True)
     sand = fields.Float(string="Sand", compute="_compute_particle_distribution", store=True)
@@ -918,11 +929,16 @@ class GrainSizeAnalysis(models.Model):
     d60 = fields.Float(string='D60 (mm)')
     cu = fields.Float(string='Coefficient of Uniformity (Cu)')
     cc = fields.Float(string='Coefficient of Curvature (Cc)')
-    
+    top_depth = fields.Float("Top Depth (m)")
+    bottom_depth = fields.Float("Bottom Depth (m)")
+    classification = fields.Selection([
+        ('Poorly_Graded','Poorly Graded Sand'),
+        ('Well_Graded','Well Graded Sand')
+    ])
     line_ids = fields.One2many("grain.size.analysis.line", "analysis_id", string="Sieve Analysis Data")
 
 
-    STANDARD_SIEVE_SIZES = [100.0, 75.0, 19.0, 4.75, 2.0, 0.425, 0.075, 0.001]
+    STANDARD_SIEVE_SIZES = [100.0, 75.0, 19.0, 4.75, 2.0, 0.425, 0.075,0.002, 0.001,'Pan']
 
     @api.onchange('sample_name')
     def _onchange_sample_name_populate_lines(self):
@@ -943,39 +959,56 @@ class GrainSizeAnalysis(models.Model):
             
             self.line_ids = new_lines_commands
 
+    @api.onchange('line_ids')
+    def _onchange_update_pan_percent(self):
+        for rec in self:
+            pan_line = None
+            total_percent_other = 0.0
+
+            for line in rec.line_ids:
+                if str(line.sieve_size).strip().lower() == 'pan':
+                    pan_line = line
+                else:
+                    total_percent_other += line.percent_retained or 0.0
+
+            if pan_line:
+                # Automatically update Pan line percent
+                pan_line.percent_retained = max(0.0, 100.0 - total_percent_other)
 
     @api.depends('line_ids.sieve_size', 'line_ids.percent_retained')
     def _compute_particle_distribution(self):
-        """
-        Classifies and sums percent_retained based on sieve size ranges.
-        Handles cases like '75' or '75 mm' gracefully.
-        """
         for record in self:
             boulder = gravel = sand = silt = clay = 0.0
 
             for line in record.line_ids:
                 sieve_text = (line.sieve_size or "").strip().lower().replace('mm', '').strip()
+                
                 if not sieve_text:
                     continue
 
-                try:
-                    sieve_size = float(sieve_text)
-                except ValueError:
-                    continue  # Skip invalid entries
+                if sieve_text == 'pan':
+                    sieve_size = 0.0
+                else:
+                    try:
+                        sieve_size = float(sieve_text)
+                    except ValueError:
+                        continue
 
                 percent = line.percent_retained or 0.0
 
                 if sieve_size > 80:
                     boulder += percent
-                elif 80 >= sieve_size > 4.75:
+                elif 80 >= sieve_size >= 4.75:
                     gravel += percent
-                elif 4.75 >= sieve_size > 0.075:
+                elif 4.75 > sieve_size >= 0.075:
                     sand += percent
-                elif 0.075 >= sieve_size > 0.002:
+                elif 0.075 > sieve_size >= 0.002:
                     silt += percent
-                elif sieve_size <= 0.002:
+                elif sieve_size < 0.002:
                     clay += percent
 
+
+            # Assign results
             record.boulder = boulder
             record.gravel = gravel
             record.sand = sand
@@ -983,6 +1016,33 @@ class GrainSizeAnalysis(models.Model):
             record.clay = clay
 
 
+
     def action_recompute_particle_distribution(self):
         for record in self:
             record._compute_particle_distribution()
+            record._onchange_sample_name_link_nvalue()
+
+    @api.onchange('sample_name', 'borehole_id')
+    def _onchange_sample_name_link_nvalue(self):
+        """
+        Match Grain Size sample_name like 'SPT - 1, 1.5 mm' with NValue sample_type 'SPT - 1'
+        and copy top_depth, bottom_depth, classification.
+        """
+        for rec in self:
+            if not rec.sample_name or not rec.borehole_id:
+                continue
+
+            # Extract "SPT - X" from the sample_name
+            spt_prefix = rec.sample_name.split(',')[0].strip()  # "SPT - 1" part
+
+            # Search for matching NValue record
+            nvalue_rec = rec.env['soil.borehole.nvalue'].search([
+                ('borehole_id', '=', rec.borehole_id.id),
+                ('sample_type', '=', spt_prefix)
+            ], limit=1)
+
+            # If found, update fields
+            if nvalue_rec:
+                rec.top_depth = nvalue_rec.top_depth
+                rec.bottom_depth = nvalue_rec.bottom_depth
+                rec.classification = nvalue_rec.classification
