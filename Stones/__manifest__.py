@@ -21,3 +21,11 @@ This module contains all the common features of Stones.
     'auto_install': False,
    
 }
+
+
+
+
+
+
+
+
