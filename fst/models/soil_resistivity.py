@@ -37,7 +37,40 @@ class ERTSoilResistivity(models.Model):
                 'soil_resistivity_id': record.id
             })
         return record
+    
+    # def copy(self, default=None):
+    #     """
+    #     Overrides the copy method to explicitly ensure deep duplication of 
+    #     the records linked by graph_images and line_ids.
+    #     """
+    #     default = dict(default or {})
         
+    #     # 1. Store the original line data reference from one of the fields.
+    #     #    Since both graph_images and line_ids point to the same set of 
+    #     #    records via 'parent_id', we only need to iterate over one list.
+    #     original_lines = self.line_ids
+
+    #     # 2. IMPORTANT: Prevent Odoo's default copy mechanism from duplicating 
+    #     #    the lines for BOTH One2many fields by setting them to empty lists 
+    #     #    in the default values dictionary.
+    #     default['graph_images'] = []
+    #     default['line_ids'] = []
+        
+    #     # 3. Create the new ERTSoilResistivity header record.
+    #     #    super().copy() handles all non-One2many fields and respects 
+    #     #    the name field's copy=False attribute.
+    #     new_resistivity = super(ERTSoilResistivity, self).copy(default)
+
+    #     # 4. Manually loop over the original line records and copy them.
+    #     #    This creates exactly one set of lines with the correct data 
+    #     #    and links them to the new parent ID.
+    #     for line in original_lines:
+    #         # line.copy() creates the new line record and copies all its stored fields.
+    #         line.copy({
+    #             'parent_id': new_resistivity.id,
+    #         })
+
+    #     return new_resistivity
     
     
     def save_ert(self):
