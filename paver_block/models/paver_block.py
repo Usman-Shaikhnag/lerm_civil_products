@@ -215,6 +215,84 @@ class PaverBlock(models.Model):
                         record.avg_water_absorption_nabl = 'fail'
 
 
+
+
+             # --- 4. PaverBlock Dimensional (Width) ---
+
+paver_width_name = fields.Char("Name", default="Dimensional (Width)")
+paver_width_visible = fields.Boolean("Width Visible", compute="_compute_visible")
+paver_width_child_lines = fields.One2many('paver.width.line', 'parent_id', string="Width Lines")
+avg_paver_width = fields.Float(
+    string="Avg. Width (mm)",
+    compute="_compute_avg_paver_width", store=True
+)
+avg_paver_width_conformity = fields.Selection([
+    ('pass', 'Pass'), ('fail', 'Fail')
+], string="Conformity", compute="_compute_avg_paver_width_conformity", store=True)
+avg_paver_width_nabl = fields.Selection([
+    ('pass', 'NABL'), ('fail', 'Non-NABL')
+], string="NABL", compute="_compute_avg_paver_width_nabl", store=True)
+
+@api.depends('paver_width_child_lines.width')
+def _compute_avg_paver_width(self):
+    for rec in self:
+        lines = rec.paver_width_child_lines
+        if lines:
+            total = sum(line.width for line in lines)
+            rec.avg_paver_width = round(total / len(lines), 2)
+        else:
+            rec.avg_paver_width = 0.0
+
+@api.depends('avg_paver_width','eln_ref','grade')
+def _compute_avg_paver_width_conformity(self):
+    for record in self:
+        record.avg_paver_width_conformity = 'fail'
+        line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','WIDTH_PARAM_ID')])
+        materials = line.parameter_table
+        for material in materials:
+            if material.grade.id == record.grade.id:
+                req_min = material.req_min
+                req_max = material.req_max
+                mu_value = line.mu_value
+                lower = record.avg_paver_width - record.avg_paver_width * mu_value
+                upper = record.avg_paver_width + record.avg_paver_width * mu_value
+                if lower >= req_min and upper <= req_max:
+                    record.avg_paver_width_conformity = 'pass'
+                    break
+
+@api.depends('avg_paver_width','eln_ref','grade')
+def _compute_avg_paver_width_nabl(self):
+    for record in self:
+        record.avg_paver_width_nabl = 'fail'
+        line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','WIDTH_PARAM_ID')])
+        materials = line.parameter_table
+        for material in materials:
+            if material.grade.id == record.grade.id:
+                lab_min = line.lab_min_value
+                lab_max = line.lab_max_value
+                mu_value = line.mu_value
+                lower = record.avg_paver_width - record.avg_paver_width * mu_value
+                upper = record.avg_paver_width + record.avg_paver_width * mu_value
+                if lower >= lab_min and upper <= lab_max:
+                    record.avg_paver_width_nabl = 'pass'
+                    break
+
+
+
+
+
+@api.depends('sample_parameters')
+def _compute_visible(self):
+    for record in self:
+        # ...your code...
+        record.paver_width_visible = False
+        for sample in record.sample_parameters:
+            if sample.internal_id == "WIDTH_PARAM_ID":
+                record.paver_width_visible = True
+
+
+# 
+
     commpressive_name = fields.Char("Name",default="Compressive Strength")
     commpressive_visible = fields.Boolean("Plan Area Visible",compute="_compute_visible")
 
@@ -429,7 +507,8 @@ class PaverBlock(models.Model):
                 'type': 'ir.actions.act_window',
                 'target': 'current',
                 'res_id': self.eln_ref.id,
-                
+
+
             }
             
     
@@ -609,8 +688,19 @@ class ThicknesscorrectionLine(models.Model):
     Correction_factore = fields.Float(string=" Correction Factor")
     thickness1 = fields.Float(string="Thickness")
 
+
+
+# 
    
-   
+class PaverWidthLine(models.Model):
+    _name = "paver.width.line"
+    parent_id = fields.Many2one('mechanical.paver.block', string="Parent Id")
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    width = fields.Float(string="Width (mm)")
+# 
+
+
+
 
     # @api.model
     # def create(self, vals):

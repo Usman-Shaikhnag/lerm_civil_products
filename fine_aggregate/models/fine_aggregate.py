@@ -614,10 +614,10 @@ class FineAggregate(models.Model):
 
 
 
-            
+        
+        
 
-
-      # 5. Silt Content
+    # 5. Silt Content
 
     site_content_name = fields.Char("Name",default="Silt Content")
     site_content_visible = fields.Boolean("Silt Content",compute="_compute_visible")
@@ -715,7 +715,7 @@ class FineAggregate(models.Model):
                         record.avg_bulking_of_sand1_nabl = 'fail'
 
 
-       # 6. Moisture Content
+       # 6.  Moisture Content
 
     moisture_content_name1 = fields.Char("Name",default="Moisture Content")
     moisture_content_visible = fields.Boolean("Silt Content",compute="_compute_visible")

@@ -52,8 +52,6 @@
                    
                     </group>
                    
-                   
-                    
 
 
 
@@ -69,10 +67,6 @@
                     </table>
 
 
-
-                
-
-                   
 
                     
                         <!-- Left Table -->
@@ -159,11 +153,10 @@
                         </div>
 
 
-                    
 
 
 
-                    
+
 
                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "paver_visible == False">
                         <tbody>
@@ -209,6 +202,50 @@
                                 </field>
                             </div>
 
+
+
+<!---->
+
+  <!-- PaverBlock Dimensional (Width) Section -->
+<group invisible="paver_width_visible == False" style="white-space: nowrap; width:70%;">
+    <h1>
+        <field name="paver_width_name" readonly="1" nolabel="1"/>
+        <field name="paver_width_visible" invisible="1"/>
+    </h1>
+</group>
+<group invisible="paver_width_visible == False">
+    <field name="paver_width_child_lines" mode="tree" nolabel="1">
+        <tree editable="bottom" class="custom_table_borders">
+            <field name="serial_no"/>
+            <field name="width"/>
+        </tree>
+    </field>
+</group>
+<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible="paver_width_visible == False">
+    <tbody>
+        <tr>
+            <td><label class="fw-bold" for="avg_paver_width">Avg. Width</label></td>
+            <td><field name="avg_paver_width"/> mm</td>
+        </tr>
+        <tr>
+            <td><label class="fw-bold" for="avg_paver_width_conformity">Conformity</label></td>
+            <td><field name="avg_paver_width_conformity"
+                decoration-success="avg_paver_width_conformity == 'pass'"
+                decoration-danger="avg_paver_width_conformity == 'fail'"
+                readonly="1"/></td>
+        </tr>
+        <tr>
+            <td><label class="fw-bold" for="avg_paver_width_nabl">NABL</label></td>
+            <td><field name="avg_paver_width_nabl"
+                decoration-success="avg_paver_width_nabl == 'pass'"
+                decoration-danger="avg_paver_width_nabl == 'fail'"
+                readonly="1"/></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<!--  -->
                      <!-- <group invisible = "water_absorption_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
                      
                         <field name="avg_water_absorption" readonly="1"/>
