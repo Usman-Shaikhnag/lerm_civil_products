@@ -74,8 +74,8 @@ class Stones(models.Model):
                         record.avg_true_specific_gravity_conformity = 'fail'
 
     avg_true_specific_gravity_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_avg_true_specific_gravity_nabl", store=True)
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_true_specific_gravity_nabl", store=True)
 
     @api.depends('avg_true_specific_gravity','eln_ref','grade')
     def _compute_avg_true_specific_gravity_nabl(self):
