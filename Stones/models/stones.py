@@ -29,6 +29,46 @@ class Stones(models.Model):
 
 
 
+
+
+from odoo import api, fields, models
+
+class MechanicalStonesLine(models.Model):
+    _name = "mechanical.stones.line"
+    _description = "Stone Test Line"
+
+    parent_id = fields.Many2one('mechanical.stones', string='Parent Test')
+    sample_id = fields.Char("Sample ID")
+    oven_dry_weight = fields.Float("Oven Dry Wt (A, g)")
+    sat_surf_dry_weight = fields.Float("Sat. Surf. Dry Wt (B, g)")
+    water_added = fields.Float("Water Added (C, g)")
+    
+    water_absorption = fields.Float(
+        "Water Absorption (%)",
+        compute="_compute_values", store=True)
+    apparent_spec_gravity = fields.Float(
+        "Apparent Spec. Gravity",
+        compute="_compute_values", store=True)
+    apparent_porosity = fields.Float(
+        "Apparent Porosity (%)",
+        compute="_compute_values", store=True)
+    remarks = fields.Char("Remarks")
+
+    @api.depends('oven_dry_weight', 'sat_surf_dry_weight', 'water_added')
+    def _compute_values(self):
+        for rec in self:
+            A = rec.oven_dry_weight
+            B = rec.sat_surf_dry_weight
+            C = rec.water_added
+            if A:
+                rec.water_absorption = ((B - A) / A) * 100
+            else:
+                rec.water_absorption = 0.0
+            denom = (1000 - C) if C is not None else 0
+            rec.apparent_spec_gravity = (A / denom) if denom else 0.0
+            rec.apparent_porosity = ((B - A) / denom) * 100 if denom else 0.0
+
+
     # True Specific Gravity
 
     true_specific_gravity_name = fields.Char("Name",default="True Specific Gravity")
@@ -119,6 +159,22 @@ class Stones(models.Model):
                 
                 if sample.internal_id == "4bad1ffc-1874-4ebc-a9e9-acc9557d2fd2":
                     record.true_specific_gravity_visible = True
+
+# water absorption
+
+
+from odoo import api, fields, models
+
+class MechanicalStones(models.Model):
+    _name = "mechanical.stones"
+    _description = "Water Absorption Test of Stones"
+
+    name_stones = fields.Char("Name", default="Stones")
+    test_line_ids = fields.One2many('mechanical.stones.line', 'parent_id', string="Test Samples")
+
+
+
+
 
                
 ##########################

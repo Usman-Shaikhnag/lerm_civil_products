@@ -690,17 +690,6 @@ class ThicknesscorrectionLine(models.Model):
 
 
 
-# 
-   
-class PaverWidthLine(models.Model):
-    _name = "paver.width.line"
-    parent_id = fields.Many2one('mechanical.paver.block', string="Parent Id")
-    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    width = fields.Float(string="Width (mm)")
-# 
-
-
-
 
     # @api.model
     # def create(self, vals):
