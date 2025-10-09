@@ -41,7 +41,25 @@ class ERTBorehole(models.Model):
     # Link to the Grain Size Analysis test records (One2many)
     grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis Tests")    
     grain_size_graph = fields.Binary("Grain Size Graph", store=True)
+    
+    
+    def copy(self, default=None):
+        default = dict(default or {})
 
+        new_borehole = super().copy(default)
+
+        for rec in self.nvalue_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+        for rec in self.spt_n_value_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+        for rec in self.direct_shear_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+        for rec in self.grain_size_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+
+        return new_borehole
+    
+    
     def generate_borehole_graph(self):
         for borehole in self:
             if not borehole.nvalue_ids:
@@ -943,8 +961,8 @@ class GrainSizeAnalysis(models.Model):
     @api.onchange('sample_name')
     def _onchange_sample_name_populate_lines(self):
         """
-        Automatically populates line_ids with the 8 standard sieve sizes 
-        when the user starts a new record by entering the sample name.
+        Creates default lines when the record is manually created in the UI,
+        triggered by setting the sample_name.
         """
         if not self.line_ids and self.sample_name:
             new_lines_commands = []
@@ -954,10 +972,31 @@ class GrainSizeAnalysis(models.Model):
                     (0, 0, {
                         'sieve_size': sieve_size,
                         'passing_percent': 0.0, 
+                        # Add other default line data here if necessary
                     })
                 )
             
             self.line_ids = new_lines_commands
+    
+    # def copy(self, default=None):
+    #     default = dict(default or {})        
+    #     new_analysis = super(GrainSizeAnalysis, self).copy(default)
+    #     return new_analysis
+
+    def copy(self, default=None):
+        default = dict(default or {})
+        
+        original_line_ids = self.line_ids
+        default['line_ids'] = [] 
+        new_analysis = super(GrainSizeAnalysis, self).copy(default)
+        for line in original_line_ids:
+            line.copy({
+                'analysis_id': new_analysis.id,
+            })
+
+        return new_analysis
+
+
 
     @api.onchange('line_ids')
     def _onchange_update_pan_percent(self):

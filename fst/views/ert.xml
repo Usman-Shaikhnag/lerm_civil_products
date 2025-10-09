@@ -114,6 +114,11 @@
                                     <tree editable="bottom">
                                         <field name="soil_borehole_id" widget="many2one" options="{'no_open': False}"/>
                                         <field name="create_date" readonly="1"/>
+
+                                        <button name="action_duplicate_borehole"
+                                                string="Duplicate"
+                                                type="object"
+                                                class="btn-primary"/>
                                     </tree>
                                 </field>
                             </page>
@@ -210,13 +215,13 @@
             sequence="11"
             action="action_ert_dashboard" 
             /> 
-
+<!-- 
         <menuitem id="ert_menuitem"
             name="ERT"
             sequence="10"
             parent="fst_root"
             action="lerm_ert_parent_action"
-            /> 
+            />  -->
             
         <record id="view_ert_dashboard" model="ir.ui.view">
             <field name="name">lerm.ert.dashboard.view</field>

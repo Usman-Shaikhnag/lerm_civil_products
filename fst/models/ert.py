@@ -207,6 +207,23 @@ class SoilBoreholeLines(models.Model):
 
     parent_id = fields.Many2one('soil.borehole.parent') 
     soil_borehole_id = fields.Many2one('soil.borehole')
+    
+    def action_duplicate_borehole(self):
+        for record in self:
+            if not record.soil_borehole_id:
+                raise UserError("No Borehole is linked to duplicate.")
+
+            # 1. Read original name
+            original_name = record.soil_borehole_id.name
+
+            # 2. Copy the borehole, giving the COPY a new name
+            new_borehole = record.soil_borehole_id.copy({
+                'name': f"{original_name} Copy",
+                'parent_id': record.parent_id.id,
+            })
+
+        return True
+
 
 class ERTDashboard(models.Model):
     _name = "lerm.ert.dashboard"
