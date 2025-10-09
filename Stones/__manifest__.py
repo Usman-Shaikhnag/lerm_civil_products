@@ -12,8 +12,8 @@ This module contains all the common features of Stones.
     """,
     'depends': ['base','sale','lerm_civil'],
     'data': [
-                #  'security/ir.model.access.csv',
-                #  'views/stones.xml',
+                 'security/ir.model.access.csv',
+                 'views/stones.xml'
                 #  'reports/stones_datasheet.xml'
     ],
    

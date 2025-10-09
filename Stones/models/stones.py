@@ -3,8 +3,8 @@ from odoo.exceptions import UserError,ValidationError
 from datetime import timedelta
 import math
 
-import logging
-_logger = logging.getLogger(__name__)
+# import logging
+# _logger = logging.getLogger(__name__)
 
 
 
@@ -29,102 +29,96 @@ class Stones(models.Model):
 
 
 
+    # True Specific Gravity
 
+    true_specific_gravity_name = fields.Char("Name",default="True Specific Gravity")
+    true_specific_gravity_visible = fields.Boolean("True Specific Gravity Visible",compute="_compute_visible")
 
+    true_specific_gravity_ids = fields.One2many("mechanical.true.specific.gravity.line", "parent_id", string="Test Readings")
 
-    
+    avg_true_specific_gravity = fields.Float(
+        string="Average True Specific Gravity ",
+        compute="_compute_avg_true_specific_gravity",
+        store=True,
+        digits=(12,2))
 
+    @api.depends("true_specific_gravity_ids.true_specific_gravity")
+    def _compute_avg_true_specific_gravity(self):
+        for rec in self:
+            vals = [line.true_specific_gravity for line in rec.true_specific_gravity_ids if line.true_specific_gravity is not None]
+            rec.avg_true_specific_gravity = round(sum(vals)/len(vals), 2) if vals else 0.0
 
-#        # 3. Water Absorption
+    avg_true_specific_gravity_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_true_specific_gravity_conformity", store=True)
 
-#     water_absorption_name = fields.Char("Name",default="Water Absorption ")
-#     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
-
-#     water_absorption_child_lines = fields.One2many('paver.water.absorption.line','parent_id',string="Water Line")
-
-#     avg_water_absorption = fields.Float(
-#         string="Avg. Water Absorption (%)",
-#         compute="_compute_avg_water_absorption", store=True
-#     )
-
-#     @api.depends('water_absorption_child_lines.water_absorption')
-#     def _compute_avg_water_absorption(self):
-#         for rec in self:
-#             lines = rec.water_absorption_child_lines
-#             if lines:
-#                 total = sum(line.water_absorption for line in lines)
-#                 rec.avg_water_absorption = round(total / len(lines), 2)
-#             else:
-#                 rec.avg_water_absorption = 0.0
-
-#     avg_water_absorption_conformity = fields.Selection([
-#             ('pass', 'Pass'),
-#             ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
-
-#     @api.depends('avg_water_absorption','eln_ref','grade')
-#     def _compute_avg_water_absorption_conformity(self):
+    @api.depends('avg_true_specific_gravity','eln_ref','grade')
+    def _compute_avg_true_specific_gravity_conformity(self):
         
-#         for record in self:
-#             record.avg_water_absorption_conformity = 'fail'
-#             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')])
-#             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table
-#             for material in materials:
-#                 if material.grade.id == record.grade.id:
-#                     req_min = material.req_min
-#                     req_max = material.req_max
-#                     mu_value = line.mu_value
+        for record in self:
+            record.avg_true_specific_gravity_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
                     
-#                     lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
-#                     upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
-#                     if lower >= req_min and upper <= req_max:
-#                         record.avg_water_absorption_conformity = 'pass'
-#                         break
-#                     else:
-#                         record.avg_water_absorption_conformity = 'fail'
+                    lower = record.avg_true_specific_gravity - record.avg_true_specific_gravity*mu_value
+                    upper = record.avg_true_specific_gravity + record.avg_true_specific_gravity*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_true_specific_gravity_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_true_specific_gravity_conformity = 'fail'
 
-#     avg_water_absorption_nabl = fields.Selection([
-#         ('pass', 'NABL'),
-#         ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_water_absorption_nabl", store=True)
+    avg_true_specific_gravity_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_avg_true_specific_gravity_nabl", store=True)
 
-#     @api.depends('avg_water_absorption','eln_ref','grade')
-#     def _compute_avg_water_absorption_nabl(self):
+    @api.depends('avg_true_specific_gravity','eln_ref','grade')
+    def _compute_avg_true_specific_gravity_nabl(self):
         
-#         for record in self:
-#             record.avg_water_absorption_nabl = 'fail'
-#             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')])
-#             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table
-#             for material in materials:
-#                 if material.grade.id == record.grade.id:
-#                     lab_min = line.lab_min_value
-#                     lab_max = line.lab_max_value
-#                     mu_value = line.mu_value
-                    
-#                     lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
-#                     upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
-#                     if lower >= lab_min and upper <= lab_max:
-#                         record.avg_water_absorption_nabl = 'pass'
-#                         break
-#                     else:
-#                         record.avg_water_absorption_nabl = 'fail'
-
-
-
-
-
-
-
-#  ### Compute Visible
-#     @api.depends('sample_parameters')
-#     def _compute_visible(self):
-        
-#         for record in self:
-#             record.water_absorption_visible = False
+        for record in self:
+            record.avg_true_specific_gravity_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
             
-#             for sample in record.sample_parameters:
-#                 print("Internal Ids",sample.internal_id)
+            lower = record.avg_true_specific_gravity - record.avg_true_specific_gravity*mu_value
+            upper = record.avg_true_specific_gravity + record.avg_true_specific_gravity*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_true_specific_gravity_nabl = 'pass'
+                break
+            else:
+                record.avg_true_specific_gravity_nabl = 'fail'
+
+
+            
+
+
+
+
+
+
+
+ ### Compute Visible
+    @api.depends('sample_parameters')
+    def _compute_visible(self):
+        
+        for record in self:
+            record.true_specific_gravity_visible = False
+            
+            for sample in record.sample_parameters:
+                print("Internal Ids",sample.internal_id)
                 
-#                 if sample.internal_id == "2147fgrr-eba3-4f15-b33d-679b39f7372e":
-#                     record.water_absorption_visible = True
+                if sample.internal_id == "4bad1ffc-1874-4ebc-a9e9-acc9557d2fd2":
+                    record.true_specific_gravity_visible = True
 
                
 ##########################
@@ -145,36 +139,36 @@ class Stones(models.Model):
     # 
     # #################################        
 
-    # def open_eln_page(self):
-    # # import wdb; wdb.set_trace()
-    #     for result in self.eln_ref.parameters_result:
-    #         if result.parameter.internal_id == '2147fgrr-eba3-4f15-b33d-679b39f7372e':
-    #             result.result_char = round(self.avg_water_absorption,2)
-    #             if self.avg_water_absorption_nabl == 'pass':
-    #                 result.nabl_status = 'nabl'
-    #             else:
-    #                 result.nabl_status = 'non-nabl'
-    #             continue
+    def open_eln_page(self):
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '4bad1ffc-1874-4ebc-a9e9-acc9557d2fd2':
+                result.result_char = round(self.avg_true_specific_gravity,2)
+                if self.avg_true_specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
             
 
-    #     return {
-    #             'view_mode': 'form',
-    #             'res_model': "lerm.eln",
-    #             'type': 'ir.actions.act_window',
-    #             'target': 'current',
-    #             'res_id': self.eln_ref.id,
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
                 
-    #         }
+            }
             
     
 
-    # @api.model
-    # def create(self, vals):
-    #     # import wdb;wdb.set_trace()
-    #     record = super(Stones, self).create(vals)
-    #     # record.get_all_fields()
-    #     record.eln_ref.write({'model_id':record.id})
-    #     return record
+    @api.model
+    def create(self, vals):
+        # import wdb;wdb.set_trace()
+        record = super(Stones, self).create(vals)
+        # record.get_all_fields()
+        record.eln_ref.write({'model_id':record.id})
+        return record
 
 
 
@@ -182,31 +176,88 @@ class Stones(models.Model):
 
 
 
-    # @api.depends('eln_ref')
-    # def _compute_sample_parameters(self):
-    #     # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-    #     # print("records",records)
-    #     # self.sample_parameters = records
-    #     for record in self:
-    #         records = record.eln_ref.parameters_result.parameter.ids
-    #         record.sample_parameters = records
-    #         print("Records",records)
+    @api.depends('eln_ref')
+    def _compute_sample_parameters(self):
+        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
+        # print("records",records)
+        # self.sample_parameters = records
+        for record in self:
+            records = record.eln_ref.parameters_result.parameter.ids
+            record.sample_parameters = records
+            print("Records",records)
 
 
 
-    # def get_all_fields(self):
-    #     record = self.env['mechanical.stones'].browse(self.ids[0])
-    #     field_values = {}
-    #     for field_name, field in record._fields.items():
-    #         field_value = record[field_name]
-    #         field_values[field_name] = field_value
+    def get_all_fields(self):
+        record = self.env['mechanical.stones'].browse(self.ids[0])
+        field_values = {}
+        for field_name, field in record._fields.items():
+            field_value = record[field_name]
+            field_values[field_name] = field_value
 
-    #     return field_values
+        return field_values
 
-    # @api.depends('eln_ref')
-    # def _compute_grade_id(self):
-    #     if self.eln_ref:
-    #         self.grade = self.eln_ref.grade_id.id
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
+
+
+
+class TrueSpecificGravityLine(models.Model):
+    _name = "mechanical.true.specific.gravity.line"
+    parent_id = fields.Many2one('mechanical.stones',string="Parent Id")
+
+    serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
+
+    # sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
+    m1 = fields.Float(string="Mass of Density Bottle (M1) ", digits=(12,2))
+    m2 = fields.Float(string="Mass of Bottle & Dry Soil (M2) ", digits=(12,2))
+    m3 = fields.Float(string="Mass of Bottle, Soil & Liquid (M3) ", digits=(12,2))
+    m4 = fields.Float(string="Mass of Bottle Full of Liquid (M4) ", digits=(12,2))
+
+
+    true_specific_gravity = fields.Float(
+        string="Specific Gravity (G)",
+        compute="_compute_true_specific_gravity",
+        store=True,
+        digits=(12,2)
+    )
+
+    @api.depends("m1","m2","m3","m4")
+    def _compute_true_specific_gravity(self):
+        for rec in self:
+            try:
+                numerator = rec.m2 - rec.m1
+                denominator = (rec.m4 - rec.m1) - (rec.m3 - rec.m2)
+                if denominator != 0:
+                    rec.true_specific_gravity = round(numerator / denominator, 2)
+                else:
+                    rec.true_specific_gravity = 0.0
+            except Exception:
+                rec.true_specific_gravity = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(TrueSpecificGravityLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+
 
 
 

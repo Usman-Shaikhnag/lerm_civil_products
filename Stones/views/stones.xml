@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_stones" model="ir.ui.view">
+        <field name="name">mechanical.stones.form</field>
+        <field name="model">mechanical.stones</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                    <h1>
+                        <field name="name_stones" readonly="1" nolabel="1"/>
+                    </h1>
+                    <group>
+                       <field name="grade"/>
+                    </group>
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="size_id"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
+                    <group/>
+
+
+                    <!-- True Specific Gravity -->
+
+                    <div invisible = "true_specific_gravity_visible == False">
+                        <h1 class="text-center">
+                            <field name="true_specific_gravity_name" readonly="1" nolabel="1"/>
+                            <field name="true_specific_gravity_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+        
+
+                     <div invisible = "true_specific_gravity_visible == False">
+                        <field name="true_specific_gravity_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='m1'  />
+                                <field name='m2'/>
+                                <field name='m3'/>
+                                <field name='m4'/>
+                                <field name='true_specific_gravity'/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not true_specific_gravity_visible">
+                            <tbody>
+                                <tr>
+                                <td><label for="avg_true_specific_gravity">Average True Specific Gravity </label></td>
+                                <td><field name="avg_true_specific_gravity"/><span> kg/cm²</span></td>
+                            </tr>
+                                <tr>
+                                <td><label for="avg_true_specific_gravity_conformity"></label></td>
+                                <td><field name="avg_true_specific_gravity_conformity"
+                                            decoration-success="avg_true_specific_gravity_conformity == 'pass'" 
+                                            decoration-danger="avg_true_specific_gravity_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><label for="avg_true_specific_gravity_nabl"></label></td>
+                                <td><field name="avg_true_specific_gravity_nabl"
+                                            decoration-success="avg_true_specific_gravity_nabl == 'pass'" 
+                                            decoration-danger="avg_true_specific_gravity_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    
+
+                    
+
+
+
+
+
+                    
+                  
+                    <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
