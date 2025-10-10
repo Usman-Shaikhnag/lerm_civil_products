@@ -500,7 +500,7 @@ class ERTBorehole(models.Model):
                 continue
                 
             plt.style.use('seaborn-v0_8-whitegrid')
-            fig, ax = plt.subplots(figsize=(12, 8))
+            fig, ax = plt.subplots(figsize=(12, 9.5))
             
             # Iterate through all analyses to collect and plot data
             for analysis in borehole.grain_size_ids:
@@ -513,9 +513,11 @@ class ERTBorehole(models.Model):
                 for line in analysis.line_ids:
                     try:
                         sieve_size_mm = float(line.sieve_size)
+                        # Check to exclude 'Pan' (which is not a size) and sizes near zero
                         if sieve_size_mm > 1e-6:
                             valid_lines.append(line)
                     except ValueError:
+                        # Skip 'Pan' or any non-numeric value here
                         continue
 
                 if len(valid_lines) < 2: continue
@@ -531,7 +533,7 @@ class ERTBorehole(models.Model):
 
             # --- Formatting and Axis Settings ---
             
-            ax.set_ylim(0, 110) 
+            ax.set_ylim(-2, 110) 
             ax.set_ylabel('Percent Passing (%)')
             
             custom_xticks = np.array([0.001, 0.01, 0.1, 1.0, 10.0, 100.0])

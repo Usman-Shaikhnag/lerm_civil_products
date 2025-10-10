@@ -1,7 +1,7 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import zipfile
-from PIL import Image,ImageDraw
+from PIL import Image,ImageDraw,ImageEnhance
 import io, base64, math, logging
 
 _logger = logging.getLogger(__name__)
@@ -129,7 +129,7 @@ class SoilBoreholeParent(models.Model):
 
             grid_cols = 5
             grid_rows = 4
-            thumb_w, thumb_h = 200, 200
+            thumb_w, thumb_h = 400, 400
             max_per_image = grid_cols * grid_rows
 
             # Split into groups of 20
@@ -149,6 +149,8 @@ class SoilBoreholeParent(models.Model):
                     img = img.copy()
                     
                     img.thumbnail((thumb_w, thumb_h))
+                    enhancer = ImageEnhance.Sharpness(img)
+                    img = enhancer.enhance(1.3)
                     
                     final_thumbnail = Image.new('RGB', (thumb_w, thumb_h), color=(255, 255, 255))
                     
