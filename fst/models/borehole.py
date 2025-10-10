@@ -892,12 +892,12 @@ class GrainSizeAnalysisLine(models.Model):
 
     def unlink(self):
         # Get the parent_id before the deletion
-        parent_id = self[0].parent_id
+        analysis_id = self[0].analysis_id
 
         res = super(GrainSizeAnalysisLine, self).unlink()
 
-        if parent_id:
-            parent_id.line_ids._reorder_serial_numbers()
+        if analysis_id:
+            analysis_id.line_ids._reorder_serial_numbers()
 
         return res
 
