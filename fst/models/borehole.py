@@ -41,7 +41,7 @@ class ERTBorehole(models.Model):
     # Link to the Grain Size Analysis test records (One2many)
     grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis Tests")    
     grain_size_graph = fields.Binary("Grain Size Graph", store=True)
-    
+    weight = fields.Integer("Weight")
     
     def copy(self, default=None):
         default = dict(default or {})
@@ -892,12 +892,12 @@ class GrainSizeAnalysisLine(models.Model):
 
     def unlink(self):
         # Get the parent_id before the deletion
-        parent_id = self[0].parent_id
+        analysis_id = self[0].analysis_id
 
         res = super(GrainSizeAnalysisLine, self).unlink()
 
-        if parent_id:
-            parent_id.line_ids._reorder_serial_numbers()
+        if analysis_id:
+            analysis_id.line_ids._reorder_serial_numbers()
 
         return res
 
@@ -935,7 +935,7 @@ class GrainSizeAnalysis(models.Model):
     
     borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
     sample_name = fields.Char(string='Sample ID/Depth', required=True)
-    weight = fields.Integer("Weight")
+    weight = fields.Integer("Weight",related="borehole_id.weight")
     boulder = fields.Float(string="Boulder", compute="_compute_particle_distribution", store=True)
     gravel = fields.Float(string="Gravel", compute="_compute_particle_distribution", store=True)
     sand = fields.Float(string="Sand", compute="_compute_particle_distribution", store=True)
