@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+
+        <record id="view_temp_monitoring_form" model="ir.ui.view">
+            <field name="name">lerm.temp.monitoring.form</field>
+            <field name="model">lerm.temp.monitoring</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="project_name" />
+                        </group>
+                        <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_form"
+                            string="Open Form"
+                            />
+                        
+                    </sheet>
+                    
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

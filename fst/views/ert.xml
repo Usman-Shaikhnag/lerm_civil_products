@@ -165,6 +165,12 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="action_temp_monitoring" model="ir.actions.act_window">
+            <field name="name">Temperature Monitoring</field>
+            <field name="res_model">lerm.temp.monitoring</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <record id="soil_borehole_action" model="ir.actions.act_window">
             <field name="name">BH</field>
             <field name="type">ir.actions.act_window</field>
@@ -218,6 +224,19 @@
                                     name="%(action_soil_borehole)d"
                                     class="btn btn-success">
                                         Borehole
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="oe_kanban_global_click o_kanban_card">
+                                <div class="o_kanban_card_header">
+                                    <strong>Temperature Monitoring</strong>
+                                </div>
+                                <div class="o_kanban_card_content">
+                                    <a type="action"
+                                    name="%(action_temp_monitoring)d"
+                                    class="btn btn-primary">
+                                        Records
                                     </a>
                                 </div>
                             </div>

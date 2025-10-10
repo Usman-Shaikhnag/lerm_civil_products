@@ -24,6 +24,16 @@ class LermErtParent(models.Model):
                 'default_ert_parent_id':self.id
             }
         }
+    
+    def open_editor(self):
+        self.ensure_one()
+        frontend_base_url = "http://localhost:5173"  # your React app URL
+        url = f'{frontend_base_url}/report?id={self.id}'
+        return {
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'new',  # open in a new tab
+        }
 
     # def action_print_soil_resistivity_report(self):
     #     report = self.env.ref('fst.soil_resistivity_report_py3o')
@@ -31,7 +41,7 @@ class LermErtParent(models.Model):
     #     return report.report_action(self, config={'report_name': filename})
 
     def print_report(self):
-        report = self.env.ref('fst.soil_resistivity_report_py3o')
+        report = self.env.ref('fst.soil_resistivity_report_py3o1')
         filename = f"{self.name or 'ERT'}"
         return report.report_action(self, config={'report_name': filename})
       
