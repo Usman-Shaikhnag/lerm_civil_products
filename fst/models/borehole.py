@@ -170,30 +170,61 @@ class ERTBorehole(models.Model):
 
             # Map classification to hatches
             pattern_map = {
-                # GW (Well-graded Gravel) - Solid fill or small dots (Matplotlib doesn't have good 'solid fill' for gravel)
-                "GW": ("#FFFFCC", None), # Light brown/yellow color, no hatch for 'solid' look or fine gravel
+                # --- COARSE GRAINED SOILS (Gravels) ---
+                # GW (Well-graded Gravel): Small dots or fine grain pattern
+                "GW": ("#B8B8A0", "."),      # Light grey-brown, fine stippling
                 
-                # CL (Clay) - Blue/gray, Horizontal lines or cross-hatching
-                "CL": ("#ADD8E6", "----"), # Light blue color, horizontal lines
+                # GP (Poorly graded Gravel): Sparse dots or lines
+                "GP": ("#B8B8A0", "o"),      # Light grey-brown, sparse circles
                 
-                # SP (Sand) - Yellow, Diagonal hatching or stippling
-                "SP": ("#FFFF66", "....."), # Yellow color, stippling for sand (Diagonal is often '///')
+                # GM (Silty Gravel): Dots and slashes/lines
+                "GM": ("#A0A080", "/."),     # Grey-brown, slash + dot combination
                 
-                # ML (Silt) - Gray, Sparse dots or stippling
-                "ML": ("#D3D3D3", ":"), # Gray color, sparse dots/colons for silt
+                # GC (Clayey Gravel): Dots and X-hatching/dashes
+                "GC": ("#909070", "+"),      # Darker brown-grey, plus signs/crosses
                 
-                # OH (Organic Clay) - Dark brown/black, Solid dark fill
-                "OH": ("#4B371C", None), # Dark brown facecolor, no hatch (simulates solid dark fill)
+                # --- COARSE GRAINED SOILS (Sands) ---
+                # SW (Well-graded Sand): Diagonal lines
+                "SW": ("#FFFF99", "\\\\"),   # Pale yellow, diagonal hatching
                 
-                # SM (Silty Sand) - Light gray/yellow, Combination of sand and silt pattern
-                # Use a combined hatch and an intermediate color
-                "SM": ("#E0E0A0", ".-"), # Light gray/yellow, combination of stipple and line
+                # SP (Poorly graded Sand): Stippling (dots)
+                "SP": ("#FFFF66", "....."),  # Bright yellow, dense stippling (your current setting)
                 
-                # Example for well-graded sand (SW) - often diagonal lines
-                "SW": ("#FFFF66", "\\\\"), # Yellow, Diagonal hatching
+                # SM (Silty Sand): Stipple and line/slash combination
+                "SM": ("#E0E0A0", ".-"),     # Light gray/yellow, line + dot combination (your current setting)
                 
-                # Default for unclassified or missing
-                "DEFAULT": ("white", None),
+                # SC (Clayey Sand): Stipple and horizontal dashes
+                "SC": ("#DDAA88", "-."),     # Sandy-brown, dash + dot combination
+                
+                # --- FINE GRAINED SOILS (Silts and Clays) ---
+                # ML (Silt): Sparse dots or colons
+                "ML": ("#D3D3D3", ":"),      # Light grey, sparse dots (your current setting)
+                
+                # CL (Clay of Low Plasticity): Horizontal dashes
+                "CL": ("#ADD8E6", "----"),   # Light blue, horizontal lines (your current setting)
+                
+                # OL (Organic Silt): Dashes and diagonal slashes
+                "OL": ("#7B68EE", "/-"),     # Medium purple/blue, slash + dash combination
+                
+                # MH (Elastic/Micaceous Silt): Vertical lines
+                "MH": ("#B0C4DE", "|||"),    # Light slate gray, vertical lines
+                
+                # CH (Clay of High Plasticity): Cross-hatching (X)
+                "CH": ("#5D8AA8", "x"),      # Sky blue/slate blue, cross hatching
+                
+                # OH (Organic Clay): Dark color, solid fill or specific hatch
+                # Note: Changed from solid fill to a hatch for clarity/printing.
+                "OH": ("#4B371C", "/"),      # Dark brown, simple slash
+                
+                # --- HIGHLY ORGANIC SOILS ---
+                # PT (Peat): Wavy lines or distinctive pattern
+                "PT": ("#556B2F", "v"),      # Olive drab/dark green, 'v' for organic matter
+                
+                # --- DEFAULT/CUSTOM KEYS ---
+                "Inorganic-Clays": ("#5D8AA8", "x"), # Maps to CH pattern
+                "Organic-Clays": ("#4B371C", "/"),   # Maps to OH pattern
+                "Peat": ("#556B2F", "v"),            # Maps to PT pattern
+                "DEFAULT": ("white", None),          # Default for unclassified or missing
             }
             
             # The MIN_SEGMENT_LINE_DRAW_LENGTH variable is no longer needed/relevant
@@ -634,10 +665,47 @@ class SoilBoreholeNValue(models.Model):
 
     borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
     sample_type = fields.Char("Sample Type")
-    symbol = fields.Char("Symbol")   
+    symbol = fields.Selection([
+        ('SW', 'SW'),
+        ('SP', 'SP'),
+        ('GW', 'GW'),
+        ('GP', 'GP'),
+        ('GM', 'GM'),
+        ('GC', 'GC'),
+        
+        ('SM', 'SM'),
+        ('SC', 'SC'),
+        
+        ('ML', 'ML'),
+        ('CL', 'CL'),
+        ('OL', 'OL'),
+        ('MH', 'MH'),
+        ('CH', 'CH'),
+        ('OH', 'OH'),
+        
+        ('PT', 'PT'),
+    ])
+
     classification = fields.Selection([
         ('Poorly_Graded','Poorly Graded Sand'),
-        ('Well_Graded','Well Graded Sand')
+        ('Well_Graded','Well Graded Sand'),
+
+        ('Well-Graded Gravel', 'Well-graded gravels'),
+        ('Poorly-Graded-Gravel', 'Poorly graded gravels'),
+        ('Silty-Gravel', 'Silty gravels'),
+        ('Clayey-Gravel', 'Clayey gravels'),
+        
+        ('Silty-Sand', 'Silty sands'),
+        ('Clayey-Sand', 'Clayey sands'),
+        
+        ('Inorganic-Silt-FS', 'Inorganic silts and very fine sands'),
+        ('Inorganic-Clays-LM', 'Inorganic clays of low to medium plasticity'),
+        ('Organic-Silt', 'Organic silts'),
+        ('Inorganic-Silt', 'Inorganic silts'),
+        ('Inorganic-Clay', 'Inorganic clays of high plasticity'),
+        ('Organic-Clay', 'Organic clays'),
+        
+        ('Peat', 'Peat'),
     ])
 
     top_depth = fields.Float("Top Depth (m)")
@@ -953,7 +1021,24 @@ class GrainSizeAnalysis(models.Model):
     bottom_depth = fields.Float("Bottom Depth (m)")
     classification = fields.Selection([
         ('Poorly_Graded','Poorly Graded Sand'),
-        ('Well_Graded','Well Graded Sand')
+        ('Well_Graded','Well Graded Sand'),
+
+        ('Well-Graded Gravel', 'Well-graded gravels'),
+        ('Poorly-Graded-Gravel', 'Poorly graded gravels'),
+        ('Silty-Gravel', 'Silty gravels'),
+        ('Clayey-Gravel', 'Clayey gravels'),
+        
+        ('Silty-Sand', 'Silty sands'),
+        ('Clayey-Sand', 'Clayey sands'),
+        
+        ('Inorganic-Silt-FS', 'Inorganic silts and very fine sands'),
+        ('Inorganic-Clays-LM', 'Inorganic clays of low to medium plasticity'),
+        ('Organic-Silt', 'Organic silts'),
+        ('Inorganic-Silt', 'Inorganic silts'),
+        ('Inorganic-Clay', 'Inorganic clays of high plasticity'),
+        ('Organic-Clay', 'Organic clays'),
+        
+        ('Peat', 'Peat'),
     ])
     line_ids = fields.One2many("grain.size.analysis.line", "analysis_id", string="Sieve Analysis Data")
 
