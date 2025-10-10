@@ -524,22 +524,39 @@
                     </div>
                     
                     <div class="d-flex gap-2">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not fsi_visible">
-                            <tbody>
-                                <tr>
-                                    <td><label for="wt_sample"></label></td>
-                                    <td><field name="wt_sample"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="valume_water"></label></td>
-                                    <td><field name="valume_water"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="valime_kerosen"></label></td>
-                                    <td><field name="valime_kerosen"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <table class="table table-sm table-bordered custom_table_borders" invisible="not fsi_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Sample 1</th>
+                                <th>Sample 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Weight of the soil sample</span></td>
+                                <td><field name="wt_sample"/></td>
+                                <td><field name="wt_sample1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">The volume of soil specimen read from the graduated cylinder containing distilled water</span></td>
+                                <td><field name="valume_water"/></td>
+                                <td><field name="valume_water1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">The volume of soil specimen read from the graduated cylinder containing kerosene</span></td>
+                                <td><field name="valime_kerosen"/></td>
+                                <td><field name="valime_kerosen1"/></td>
+                            </tr>
+
+                           
+
+                           
+
+                           
+                        </tbody>
+                    </table>
                         
                         <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not fsi_visible">
                             <tbody>

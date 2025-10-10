@@ -400,42 +400,64 @@ class SoilReport(models.AbstractModel):
     def _generate_sieve_log_chart(self, data):
         x_values = []
         y_values = []
+        x_labels = []
 
+        # ✅ Use sieve_size field for X-axis and convert units
         for line in data.sieve_analysis_child_lines:
-            if line.cumulative_retained and line.cumulative_retained > 0 and line.passing_percent is not None:
-                x_values.append(line.cumulative_retained)
-                y_values.append(line.passing_percent)
+            if line.sieve_size and line.passing_percent is not None:
+                sieve_str = str(line.sieve_size).strip().lower()
+                try:
+                    if 'mm' in sieve_str:
+                        sieve_val = float(sieve_str.replace('mm', '').strip())
+                        label = f"{int(sieve_val)} mm"
+                    elif 'µ' in sieve_str or 'micron' in sieve_str:
+                        sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
+                        label = f"{int(float(sieve_str.replace('µ', '').replace('micron', '').strip()))} µm"
+                    else:
+                        sieve_val = float(sieve_str)
+                        label = f"{sieve_val} mm"
+
+                    x_values.append(sieve_val)
+                    y_values.append(float(line.passing_percent))
+                    x_labels.append(label)
+                except ValueError:
+                    continue
 
         if not x_values or not y_values:
             return None
 
-        plt.figure(figsize=(10, 5))
+        # ✅ Sort ascending for left-to-right X-axis
+        sorted_data = sorted(zip(x_values, y_values, x_labels))
+        x_values, y_values, x_labels = zip(*sorted_data)
+
+        plt.figure(figsize=(12, 5))
         ax = plt.gca()
-        
-        # ✅ Log scale X-axis
         ax.set_xscale('log')
 
-        # ✅ Main plot
+        # ✅ Plot line and points
         ax.plot(x_values, y_values, color='blue', marker='o', linestyle='-', linewidth=2)
         ax.scatter(x_values, y_values, color='red', edgecolors='black', s=60, zorder=5)
 
-        # ✅ Axis labels
-        ax.set_xlabel('Cumulative % Weight Retained (Log Scale)', fontsize=12)
+        # ✅ Labels and title
+        ax.set_xlabel('Sieve Size', fontsize=12)
         ax.set_ylabel('Passing %', fontsize=12)
         ax.set_title('WET SIEVE ANALYSIS OF SOIL SAMPLE', fontsize=14)
 
+        # ✅ Y-axis on right
+        ax.yaxis.tick_right()
+        ax.yaxis.set_label_position("right")
+
+        # ✅ X-axis custom labels (avoid overlap)
+        ax.set_xticks(x_values)
+        ax.set_xticklabels(x_labels, rotation=45, ha='right')
+
         # ✅ Grid with minor ticks
-        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=100))
+        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0) * 0.1, numticks=200))
         ax.yaxis.set_minor_locator(MultipleLocator(2))
         ax.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
-        # ✅ X-ticks formatting
-        ticks = sorted(set(x_values))
-        ax.set_xticks(ticks)
-        ax.set_xticklabels([str(round(t, 2)) for t in ticks])
-
         # ✅ Axis limits
-        ax.set_xlim(left=min(x_values) / 1.5, right=max(x_values) * 1.5)
+        ax.set_xlim(left=min(x_values)/1.5, right=max(x_values)*1.5)
         ax.set_ylim(0, 100)
 
         # ✅ Highlight max passing %
@@ -446,10 +468,10 @@ class SoilReport(models.AbstractModel):
         ax.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
         ax.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
         ax.plot(max_x, max_y, marker='o', color='red', markersize=8)
-        ax.text(max_x * 1.1, max_y + 2, f"{max_x:.2f}, {max_y:.2f}%", color='red')
+        ax.text(max_x * 1.1, max_y + 2, f"{max_x:.3f}, {max_y:.2f}%", color='red')
 
         # ✅ Save to base64
-        buffer = BytesIO()
+        buffer = io.BytesIO()
         plt.tight_layout()
         plt.savefig(buffer, format='png')
         plt.close()

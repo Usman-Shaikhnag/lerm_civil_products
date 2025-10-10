@@ -125,16 +125,58 @@ class Soil(models.Model):
 
 
     # corrected(added)
+    # def calculate_sieve(self): 
+    #     for record in self:
+    #         previous_cumulative = 0  
+    #         for line in record.sieve_analysis_child_lines:
+    #             print("Rows", str(line.percent_retained))
+    #             previous_line = line.serial_no - 1
+    #             if previous_line == 0:
+    #                 cumulative_retained = line.percent_retained
+    #             else:
+    #                 previous_line_record = self.env['mechanical.soil.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
+                    
+    #                 if previous_line_record:
+    #                     previous_cumulative = previous_line_record.cumulative_retained
+    #                 cumulative_retained = previous_cumulative + line.percent_retained
+
+    #             passing_percent = 100 - cumulative_retained
+    #             # passing_percent = cumulative_retained - 100
+
+    #             line.write({
+    #                 'cumulative_retained': round(cumulative_retained, 2),
+    #                 'passing_percent': round(passing_percent, 2),
+    #             })
+                
+    #             print("Updated Cumulative Retained:", cumulative_retained)
+    #             print("Updated Passing Percent:", passing_percent)
+
+    #             previous_cumulative = cumulative_retained
+
     def calculate_sieve(self): 
         for record in self:
             previous_cumulative = 0  
             for line in record.sieve_analysis_child_lines:
                 print("Rows", str(line.percent_retained))
                 previous_line = line.serial_no - 1
+
+                # If this line is 'Pan', directly assign fixed values
+                if line.sieve_size and line.sieve_size.lower() == 'pan':
+                    line.write({
+                        'cumulative_retained': 100.00,
+                        'passing_percent': 0.00,
+                    })
+                    print("PAN LINE: cumulative_retained=100, passing_percent=0")
+                    continue  # skip rest of logic for pan
+
+                # Normal sieve calculation
                 if previous_line == 0:
                     cumulative_retained = line.percent_retained
                 else:
-                    previous_line_record = self.env['mechanical.soil.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
+                    previous_line_record = self.env['mechanical.soil.sieve.analysis.line'].sudo().search([
+                        ("serial_no", "=", previous_line),
+                        ("parent_id", "=", record.id)
+                    ], limit=1)
                     
                     if previous_line_record:
                         previous_cumulative = previous_line_record.cumulative_retained
@@ -142,18 +184,22 @@ class Soil(models.Model):
 
                 passing_percent = 100 - cumulative_retained
 
+                # Write updated values
                 line.write({
                     'cumulative_retained': round(cumulative_retained, 2),
                     'passing_percent': round(passing_percent, 2),
                 })
-                
+
                 print("Updated Cumulative Retained:", cumulative_retained)
                 print("Updated Passing Percent:", passing_percent)
 
                 previous_cumulative = cumulative_retained
-            
-    
 
+
+
+                   
+
+   
 
     
     
@@ -175,60 +221,163 @@ class Soil(models.Model):
 
     
 
+
+
+
+    # def generate_line_chart_slive(self):
+    #     x_value = []
+    #     y_value = []
+
+    #     for line in self.sieve_analysis_child_lines:
+    #         if line.sieve_size and line.passing_percent is not None:
+    #             sieve_str = str(line.sieve_size).strip().lower()
+
+    #             try:
+    #                 if 'mm' in sieve_str:
+    #                     sieve_val = float(sieve_str.replace('mm', '').strip())
+    #                 elif 'µ' in sieve_str or 'micron' in sieve_str:
+    #                     sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
+    #                 else:
+    #                     sieve_val = float(sieve_str)  # assume plain number is in mm
+
+    #                 x_value.append(sieve_val)
+    #                 y_value.append(float(line.passing_percent))
+    #             except ValueError:
+    #                 continue  # skip invalid values
+
+    #     if not x_value or not y_value:
+    #         return False
+
+    #     # Sort ascending for left-to-right X-axis
+    #     x_value, y_value = zip(*sorted(zip(x_value, y_value)))
+
+    #     plt.figure(figsize=(10, 5))
+    #     plt.xscale('log')
+
+    #     # Plot line and points
+    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+
+    #     # Labels and title
+    #     plt.xlabel('Sieve Size (mm)', fontsize=12)
+    #     plt.ylabel('Passing %', fontsize=12)
+    #     plt.title('WET SIEVE ANALYSIS OF SOIL SAMPLE', fontsize=14)
+
+    #     # Y-axis on right
+    #     ax = plt.gca()
+    #     ax.yaxis.tick_right()
+    #     ax.yaxis.set_label_position("right")
+
+    #     # X-axis ticks
+    #     ticks = sorted(set(x_value))
+    #     plt.xticks(ticks, [str(round(t, 3)) for t in ticks])  # round to 3 decimals to show small mm
+
+    #     # Minor ticks
+    #     ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0) * 0.1, numticks=200))
+    #     ax.yaxis.set_minor_locator(MultipleLocator(2))
+
+    #     # Grid lines
+    #     plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+    #     # Limits
+    #     plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
+    #     plt.ylim(bottom=0, top=100)
+
+    #     # Highlight max passing %
+    #     max_index = y_value.index(max(y_value))
+    #     max_x = x_value[max_index]
+    #     max_y = y_value[max_index]
+
+    #     plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
+    #     plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
+    #     plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
+    #     plt.text(max_x * 1.1, max_y + 2, f"{max_x:.3f}, {max_y:.2f}%", color='red')
+
+    #     # Save to buffer
+    #     buffer = io.BytesIO()
+    #     plt.tight_layout()
+    #     plt.legend()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
+
+    #     return base64.b64encode(buffer.read())
+
+
+     
     def generate_line_chart_slive(self):
         x_value = []
         y_value = []
+        x_labels = []
+
         for line in self.sieve_analysis_child_lines:
-            if line.cumulative_retained and line.cumulative_retained > 0 and line.passing_percent is not None:
-                x_value.append(line.cumulative_retained)
-                y_value.append(line.passing_percent)
+            if line.sieve_size and line.passing_percent is not None:
+                sieve_str = str(line.sieve_size).strip().lower()
+                try:
+                    if 'mm' in sieve_str:
+                        sieve_val = float(sieve_str.replace('mm', '').strip())
+                        label = f"{int(sieve_val)} mm"
+                    elif 'µ' in sieve_str or 'micron' in sieve_str:
+                        sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
+                        label = f"{int(float(sieve_str.replace('µ', '').replace('micron', '').strip()))} µm"
+                    else:
+                        sieve_val = float(sieve_str)
+                        label = f"{sieve_val} mm"
+
+                    x_value.append(sieve_val)
+                    y_value.append(float(line.passing_percent))
+                    x_labels.append(label)
+                except ValueError:
+                    continue
 
         if not x_value or not y_value:
             return False
 
-        plt.figure(figsize=(10, 5))
+        # Sort ascending for left-to-right
+        sorted_data = sorted(zip(x_value, y_value, x_labels))
+        x_value, y_value, x_labels = zip(*sorted_data)
 
-        # ✅ Logarithmic X-axis
+        plt.figure(figsize=(12, 5))
         plt.xscale('log')
 
-        # ✅ Blue line
+        # Plot line and points
         plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-
-        # ✅ Red data points
         plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
 
-        # ✅ Labels & title
-        plt.xlabel('Cumulative % Weight Retained (Log Scale)', fontsize=12)
+        # Labels and title
+        plt.xlabel('Sieve Size', fontsize=12)
         plt.ylabel('Passing %', fontsize=12)
         plt.title('WET SIEVE ANALYSIS OF SOIL SAMPLE', fontsize=14)
 
-        # ✅ Custom x-ticks
-        ticks = sorted(set(x_value))
-        plt.xticks(ticks, [str(round(t, 2)) for t in ticks])
-
-        # ✅ More vertical & horizontal lines using minor ticks
+        # Y-axis on right
         ax = plt.gca()
-        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0) * 0.1, numticks=200))
-        ax.yaxis.set_minor_locator(MultipleLocator(2))  # Horizontal barik lines every 2%
+        ax.yaxis.tick_right()
+        ax.yaxis.set_label_position("right")
 
-        # ✅ Grid lines - barik barik
+        # X-axis: show custom labels without overlapping
+        plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
+
+        # Minor ticks
+        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0) * 0.1, numticks=200))
+        ax.yaxis.set_minor_locator(MultipleLocator(2))
+
+        # Grid lines
         plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
-        # ✅ Limits
-        plt.xlim(left=min(x_value) / 1.5, right=max(x_value) * 1.5)
+        # Limits
+        plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
         plt.ylim(bottom=0, top=100)
 
-        # ✅ Highlight max
+        # Highlight max
         max_index = y_value.index(max(y_value))
         max_x = x_value[max_index]
         max_y = y_value[max_index]
-
         plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
         plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
         plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
-        plt.text(max_x * 1.1, max_y + 2, f"{max_x:.2f}, {max_y:.2f}%", color='red')
+        plt.text(max_x * 1.1, max_y + 2, f"{max_x:.3f}, {max_y:.2f}%", color='red')
 
-        # ✅ Save
+        # Save to buffer
         buffer = io.BytesIO()
         plt.tight_layout()
         plt.legend()
@@ -237,6 +386,12 @@ class Soil(models.Model):
         buffer.seek(0)
 
         return base64.b64encode(buffer.read())
+
+
+
+
+    
+
 
 
    
@@ -1060,14 +1215,37 @@ class Soil(models.Model):
     valime_kerosen = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing kerosene")
     fsi = fields.Float(string="Free Swell Index (%)", compute="_compute_fsi", store=True)
 
+    wt_sample1 = fields.Float(string="Weight of the soil sample")
+    valume_water1 = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing distilled water")
+    valime_kerosen1 = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing kerosene")
 
-    @api.depends('valume_water', 'valime_kerosen')
+
+    # @api.depends('valume_water', 'valime_kerosen')
+    # def _compute_fsi(self):
+    #     for rec in self:
+    #         if rec.valime_kerosen:
+    #             rec.fsi = ((rec.valume_water - rec.valime_kerosen) / rec.valime_kerosen) * 100
+    #         else:
+    #             rec.fsi = 0.0  # Avoid division by zero
+
+    @api.depends('valume_water', 'valime_kerosen', 'valume_water1', 'valime_kerosen1')
     def _compute_fsi(self):
         for rec in self:
-            if rec.valime_kerosen:
-                rec.fsi = ((rec.valume_water - rec.valime_kerosen) / rec.valime_kerosen) * 100
+            fsi_values = []
+
+            # First measurement
+            if rec.valime_kerosen and rec.valime_kerosen != 0:
+                fsi_values.append(((rec.valume_water - rec.valime_kerosen) / rec.valime_kerosen) * 100)
+
+            # Second measurement
+            if rec.valime_kerosen1 and rec.valime_kerosen1 != 0:
+                fsi_values.append(((rec.valume_water1 - rec.valime_kerosen1) / rec.valime_kerosen1) * 100)
+
+            if fsi_values:
+                # ✅ Average of both measurements
+                rec.fsi = sum(fsi_values) / len(fsi_values)
             else:
-                rec.fsi = 0.0  # Avoid division by zero
+                rec.fsi = 0.0
 
     fsi_conformity = fields.Selection([
             ('pass', 'Pass'),
