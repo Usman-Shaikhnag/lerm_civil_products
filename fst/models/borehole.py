@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.tools import float_round
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.projections.polar import PolarAxes
@@ -14,6 +15,7 @@ import numpy as np
 import io, base64
 from math import sqrt, pi
 import math
+from decimal import Decimal, ROUND_HALF_UP
 from scipy.interpolate import interp1d
 class ERTBorehole(models.Model):
     _name = "soil.borehole"
@@ -27,27 +29,37 @@ class ERTBorehole(models.Model):
 
     # Add these three One2many fields
     spt_n_value_ids = fields.One2many("spt.n.value", "borehole_id", string="Corrected SPT N-Values")
+    hammer_energy = fields.Integer(string="HAMMER ENERGY Ne")
     corrected_spt_graph = fields.Binary("Correct SPT Graph")
     
     direct_shear_ids = fields.One2many("direct.shear.test", "borehole_id", string="Direct Shear Tests")
     direct_shear_graph = fields.Binary("Direct Shear Graph", store=True)
-    cohesion = fields.Float(
-        string='Cohesion (C) (Kg/cm²)', 
-        # compute='_compute_shear_parameters', 
-        store=True,
-        digits=(16, 3)
-    )
-    angle_of_internal_friction = fields.Float(
-        string='Angle of Internal Friction (\u03C6) (\u00b0)', 
-        # compute='_compute_shear_parameters', 
-        store=True,
-        digits=(16, 2)
-    )
+    cohesion = fields.Float(string='Cohesion (C) (Kg/cm²)',store=True,digits=(16, 3))
+    angle_of_internal_friction = fields.Float(string='Angle of Internal Friction (\u03C6) (\u00b0)',store=True,digits=(16, 2))
+    tan_phi = fields.Float(string='tan(phi) (Slope)',store=True,digits=(16, 3))
 
     # Link to the Grain Size Analysis test records (One2many)
     grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis Tests")    
     grain_size_graph = fields.Binary("Grain Size Graph", store=True)
+    weight = fields.Integer("Weight")
+    
+    def copy(self, default=None):
+        default = dict(default or {})
 
+        new_borehole = super().copy(default)
+
+        for rec in self.nvalue_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+        for rec in self.spt_n_value_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+        for rec in self.direct_shear_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+        for rec in self.grain_size_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+
+        return new_borehole
+    
+    
     def generate_borehole_graph(self):
         for borehole in self:
             if not borehole.nvalue_ids:
@@ -158,30 +170,61 @@ class ERTBorehole(models.Model):
 
             # Map classification to hatches
             pattern_map = {
-                # GW (Well-graded Gravel) - Solid fill or small dots (Matplotlib doesn't have good 'solid fill' for gravel)
-                "GW": ("#FFFFCC", None), # Light brown/yellow color, no hatch for 'solid' look or fine gravel
+                # --- COARSE GRAINED SOILS (Gravels) ---
+                # GW (Well-graded Gravel): Small dots or fine grain pattern
+                "GW": ("#B8B8A0", "."),      # Light grey-brown, fine stippling
                 
-                # CL (Clay) - Blue/gray, Horizontal lines or cross-hatching
-                "CL": ("#ADD8E6", "----"), # Light blue color, horizontal lines
+                # GP (Poorly graded Gravel): Sparse dots or lines
+                "GP": ("#B8B8A0", "o"),      # Light grey-brown, sparse circles
                 
-                # SP (Sand) - Yellow, Diagonal hatching or stippling
-                "SP": ("#FFFF66", "....."), # Yellow color, stippling for sand (Diagonal is often '///')
+                # GM (Silty Gravel): Dots and slashes/lines
+                "GM": ("#A0A080", "/."),     # Grey-brown, slash + dot combination
                 
-                # ML (Silt) - Gray, Sparse dots or stippling
-                "ML": ("#D3D3D3", ":"), # Gray color, sparse dots/colons for silt
+                # GC (Clayey Gravel): Dots and X-hatching/dashes
+                "GC": ("#909070", "+"),      # Darker brown-grey, plus signs/crosses
                 
-                # OH (Organic Clay) - Dark brown/black, Solid dark fill
-                "OH": ("#4B371C", None), # Dark brown facecolor, no hatch (simulates solid dark fill)
+                # --- COARSE GRAINED SOILS (Sands) ---
+                # SW (Well-graded Sand): Diagonal lines
+                "SW": ("#FFFF99", "\\\\"),   # Pale yellow, diagonal hatching
                 
-                # SM (Silty Sand) - Light gray/yellow, Combination of sand and silt pattern
-                # Use a combined hatch and an intermediate color
-                "SM": ("#E0E0A0", ".-"), # Light gray/yellow, combination of stipple and line
+                # SP (Poorly graded Sand): Stippling (dots)
+                "SP": ("#FFFF66", "....."),  # Bright yellow, dense stippling (your current setting)
                 
-                # Example for well-graded sand (SW) - often diagonal lines
-                "SW": ("#FFFF66", "\\\\"), # Yellow, Diagonal hatching
+                # SM (Silty Sand): Stipple and line/slash combination
+                "SM": ("#E0E0A0", ".-"),     # Light gray/yellow, line + dot combination (your current setting)
                 
-                # Default for unclassified or missing
-                "DEFAULT": ("white", None),
+                # SC (Clayey Sand): Stipple and horizontal dashes
+                "SC": ("#DDAA88", "-."),     # Sandy-brown, dash + dot combination
+                
+                # --- FINE GRAINED SOILS (Silts and Clays) ---
+                # ML (Silt): Sparse dots or colons
+                "ML": ("#D3D3D3", ":"),      # Light grey, sparse dots (your current setting)
+                
+                # CL (Clay of Low Plasticity): Horizontal dashes
+                "CL": ("#ADD8E6", "----"),   # Light blue, horizontal lines (your current setting)
+                
+                # OL (Organic Silt): Dashes and diagonal slashes
+                "OL": ("#7B68EE", "/-"),     # Medium purple/blue, slash + dash combination
+                
+                # MH (Elastic/Micaceous Silt): Vertical lines
+                "MH": ("#B0C4DE", "|||"),    # Light slate gray, vertical lines
+                
+                # CH (Clay of High Plasticity): Cross-hatching (X)
+                "CH": ("#5D8AA8", "x"),      # Sky blue/slate blue, cross hatching
+                
+                # OH (Organic Clay): Dark color, solid fill or specific hatch
+                # Note: Changed from solid fill to a hatch for clarity/printing.
+                "OH": ("#4B371C", "/"),      # Dark brown, simple slash
+                
+                # --- HIGHLY ORGANIC SOILS ---
+                # PT (Peat): Wavy lines or distinctive pattern
+                "PT": ("#556B2F", "v"),      # Olive drab/dark green, 'v' for organic matter
+                
+                # --- DEFAULT/CUSTOM KEYS ---
+                "Inorganic-Clays": ("#5D8AA8", "x"), # Maps to CH pattern
+                "Organic-Clays": ("#4B371C", "/"),   # Maps to OH pattern
+                "Peat": ("#556B2F", "v"),            # Maps to PT pattern
+                "DEFAULT": ("white", None),          # Default for unclassified or missing
             }
             
             # The MIN_SEGMENT_LINE_DRAW_LENGTH variable is no longer needed/relevant
@@ -328,11 +371,13 @@ class ERTBorehole(models.Model):
             
             # 3. Calculate Cohesion (c) and Angle of Internal Friction (phi)
             cohesion = intercept
+            tan_phi_value = slope  # Capture the slope explicitly for the new field
             angle_phi_radians = math.atan(slope)
-            angle_phi_degrees = round(math.degrees(angle_phi_radians),2)
+            angle_phi_degrees = round(math.degrees(angle_phi_radians), 2)
             
             # Store the calculated values
             borehole.cohesion = cohesion
+            borehole.tan_phi = tan_phi_value  # Assign the calculated tan(phi)
             borehole.angle_of_internal_friction = angle_phi_degrees
 
             # 4. Generate the Plot
@@ -340,7 +385,7 @@ class ERTBorehole(models.Model):
             fig, ax = plt.subplots(figsize=(8, 6))
 
             # Plot the raw data points
-            ax.scatter(x, y, color='red', marker='s', label='Observed Test Points')
+            ax.scatter(x, y, color='red', marker='s')
 
             # Plot the best-fit line (Failure Envelope)
             # Extend the line slightly beyond the last point
@@ -349,7 +394,7 @@ class ERTBorehole(models.Model):
             y_fit = slope * x_fit + intercept
             
             ax.plot(x_fit, y_fit, color='blue', linestyle='-', 
-                    label=f'Failure Envelope: C={cohesion:.2f} $\\frac{{kg}}{{cm^2}}$, $\\phi$={angle_phi_degrees:.2f}\u00b0')
+                    label=f'C={cohesion:.2f} $\\frac{{kg}}{{cm^2}}$, $\\phi$={angle_phi_degrees:.2f}\u00b0')
 
             # Format the plot
             ax.set_title(f'Direct Shear Test Results ({borehole.name})', pad=20)
@@ -486,7 +531,7 @@ class ERTBorehole(models.Model):
                 continue
                 
             plt.style.use('seaborn-v0_8-whitegrid')
-            fig, ax = plt.subplots(figsize=(12, 8))
+            fig, ax = plt.subplots(figsize=(12, 9.5))
             
             # Iterate through all analyses to collect and plot data
             for analysis in borehole.grain_size_ids:
@@ -499,9 +544,11 @@ class ERTBorehole(models.Model):
                 for line in analysis.line_ids:
                     try:
                         sieve_size_mm = float(line.sieve_size)
+                        # Check to exclude 'Pan' (which is not a size) and sizes near zero
                         if sieve_size_mm > 1e-6:
                             valid_lines.append(line)
                     except ValueError:
+                        # Skip 'Pan' or any non-numeric value here
                         continue
 
                 if len(valid_lines) < 2: continue
@@ -517,7 +564,7 @@ class ERTBorehole(models.Model):
 
             # --- Formatting and Axis Settings ---
             
-            ax.set_ylim(0, 110) 
+            ax.set_ylim(-2, 110) 
             ax.set_ylabel('Percent Passing (%)')
             
             custom_xticks = np.array([0.001, 0.01, 0.1, 1.0, 10.0, 100.0])
@@ -618,10 +665,47 @@ class SoilBoreholeNValue(models.Model):
 
     borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
     sample_type = fields.Char("Sample Type")
-    symbol = fields.Char("Symbol")   
+    symbol = fields.Selection([
+        ('SW', 'SW'),
+        ('SP', 'SP'),
+        ('GW', 'GW'),
+        ('GP', 'GP'),
+        ('GM', 'GM'),
+        ('GC', 'GC'),
+        
+        ('SM', 'SM'),
+        ('SC', 'SC'),
+        
+        ('ML', 'ML'),
+        ('CL', 'CL'),
+        ('OL', 'OL'),
+        ('MH', 'MH'),
+        ('CH', 'CH'),
+        ('OH', 'OH'),
+        
+        ('PT', 'PT'),
+    ])
+
     classification = fields.Selection([
-        ('poorly_graded','Poorly Graded Sand'),
-        ('well_graded','Well Graded Sand')
+        ('Poorly_Graded','Poorly Graded Sand'),
+        ('Well_Graded','Well Graded Sand'),
+
+        ('Well-Graded Gravel', 'Well-graded gravels'),
+        ('Poorly-Graded-Gravel', 'Poorly graded gravels'),
+        ('Silty-Gravel', 'Silty gravels'),
+        ('Clayey-Gravel', 'Clayey gravels'),
+        
+        ('Silty-Sand', 'Silty sands'),
+        ('Clayey-Sand', 'Clayey sands'),
+        
+        ('Inorganic-Silt-FS', 'Inorganic silts and very fine sands'),
+        ('Inorganic-Clays-LM', 'Inorganic clays of low to medium plasticity'),
+        ('Organic-Silt', 'Organic silts'),
+        ('Inorganic-Silt', 'Inorganic silts'),
+        ('Inorganic-Clay', 'Inorganic clays of high plasticity'),
+        ('Organic-Clay', 'Organic clays'),
+        
+        ('Peat', 'Peat'),
     ])
 
     top_depth = fields.Float("Top Depth (m)")
@@ -631,8 +715,8 @@ class SoilBoreholeNValue(models.Model):
     n45 = fields.Integer("N @ 45 cm")
     # This field is now computed automatically
     n_value = fields.Integer("Total N Value", compute="_compute_n_value", store=True)
-    core_recovery = fields.Char("Core recovery")
-    rqd = fields.Char("RQD")
+    core_recovery = fields.Char("Core recovery",default="--")
+    rqd = fields.Char("RQD",default="--")
 
     @api.depends('n30', 'n45')
     def _compute_n_value(self):
@@ -648,16 +732,32 @@ class CorrectedSptNValue(models.Model):
     borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
     sr_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
     depth = fields.Float(string='Depth (m)')
+    type_of_soil = fields.Selection([
+        ('Plastic','Plastic'),
+        ('Non-Plastic','Non-Plastic')
+    ],"Type of Soil")
     bulk_den = fields.Float(string='Bulk Density (T/m2)')
-    overburden_pressure = fields.Float(string='Overburden Pressure (T/m2)',compute="_compute_overburden_pressure", digits=(16, 3))
-    pore_water_pressure = fields.Float(string="Pore Water Pressure from layer",compute="_compute_pore_water_pressure", digits=(16, 3))
-    total_pore_water_pressure = fields.Float(string="total pore water pressure",compute="_compute_total_pore_water_pressure", digits=(16, 3))
-    effective_overburden_pressure = fields.Float(string='Effective Overburden Pressure (T/m2)', compute="_compute_effective_overburden_pressure", digits=(16, 3))
-    effective_overburden_pressure_kg = fields.Float(string='Effective Overburden Pressure (kg/cm2)', compute="_compute_effective_overburden_pressure_kg", digits=(16, 3))
-    overburden_correction_factor = fields.Float(string="OVERBURDEN CORRECTION FACTOR",compute="_compute_overburden_correction_factor", digits=(16, 3))
+    overburden_pressure = fields.Char(string='Overburden Pressure (T/m2)', compute="_compute_overburden_pressure", store=True)
+    pore_water_pressure = fields.Char(string="Pore Water Pressure from layer", compute="_compute_pore_water_pressure", store=True)
+    total_pore_water_pressure = fields.Char(string="Total Pore Water Pressure", compute="_compute_total_pore_water_pressure", store=True)
+    effective_overburden_pressure = fields.Char(string='Effective Overburden Pressure (T/m2)', compute="_compute_effective_overburden_pressure", store=True)
+    effective_overburden_pressure_kg = fields.Char(string='Effective Overburden Pressure (kg/cm2)', compute="_compute_effective_overburden_pressure_kg", store=True)
+    overburden_correction_factor = fields.Char(string="OVERBURDEN CORRECTION FACTOR", compute="_compute_overburden_correction_factor", store=True)
+    hammer_energy = fields.Integer("HAMMER ENERGY Ne",related="borehole_id.hammer_energy")
     observed_n_value = fields.Integer(string='Observed SPT N Value',compute="_compute_observed_n_value")
     corrected_n_value = fields.Integer(string='Corrected SPT (N\') Value',compute="_compute_corrected_n_value")
+    spt_n_dilatancy = fields.Float(string="SPT (N') Value After Dilatancy Correction ('N')",compute="_compute_spt_n_dilatancy",store=True,readonly=False,)
     
+
+    @api.depends('hammer_energy', 'corrected_n_value')
+    def _compute_spt_n_dilatancy(self):
+        for record in self:
+            if record.hammer_energy and record.corrected_n_value:
+                record.spt_n_dilatancy = record.hammer_energy * int(record.corrected_n_value)
+            else:
+                record.spt_n_dilatancy = record.corrected_n_value or 0.0
+
+
     @api.model
     def create(self, vals):
         if vals.get('borehole_id'):
@@ -692,68 +792,67 @@ class CorrectedSptNValue(models.Model):
     @api.depends('pore_water_pressure', 'borehole_id')
     def _compute_total_pore_water_pressure(self):
         for record in self:
-            record.total_pore_water_pressure = 0.0  # default
-
+            record.total_pore_water_pressure = "0.000"
             if not record.borehole_id:
                 continue
 
-            # fetch all records for this borehole sorted by depth
-            borehole_records = self.search(
-                [('borehole_id', '=', record.borehole_id.id)],
-                order="depth asc"
-            )
-
-            cumulative_pressure = 0.0
+            borehole_records = self.search([('borehole_id','=',record.borehole_id.id)], order='depth asc')
+            cumulative = Decimal('0.000')
             for rec in borehole_records:
-                cumulative_pressure += rec.pore_water_pressure or 0.0
+                pw = Decimal(str(rec.pore_water_pressure or 0.0))
+                cumulative += pw
                 if rec.id == record.id:
-                    record.total_pore_water_pressure = round(cumulative_pressure, 3)
+                    record.total_pore_water_pressure = str(cumulative.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
                     break
+
 
 
     @api.depends('depth', 'bulk_den', 'borehole_id')
     def _compute_overburden_pressure(self):
         for record in self:
-            # default
-            record.overburden_pressure = 0.0  
-
-            # skip if no borehole or invalid values
+            record.overburden_pressure = "0.000"  # default
             if not record.borehole_id or record.depth is None or record.bulk_den is None:
                 continue
 
-            # fetch all records of this borehole sorted by depth
-            borehole_records = self.search(
-                [('borehole_id', '=', record.borehole_id.id)],
-                order="depth asc"
-            )
-
-            cumulative_pressure = 0.0
-            prev_depth = 0.0
+            borehole_records = self.search([('borehole_id','=',record.borehole_id.id)], order='depth asc')
+            cumulative = Decimal('0.000')
+            prev_depth = Decimal('0.000')
 
             for rec in borehole_records:
+                rec_depth = Decimal(str(rec.depth))
+                rec_bulk = Decimal(str(rec.bulk_den))
                 if rec.id == record.id:
-                    if prev_depth == 0:  # first record
-                        record.overburden_pressure = round(rec.depth * rec.bulk_den, 3)
-                    else:  # subsequent record
-                        record.overburden_pressure = round(cumulative_pressure + ((rec.depth - prev_depth) * rec.bulk_den), 3)
+                    if prev_depth == 0:
+                        cumulative = rec_depth * rec_bulk
+                    else:
+                        cumulative += (rec_depth - prev_depth) * rec_bulk
+                    record.overburden_pressure = str(cumulative.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
                     break
                 else:
                     if prev_depth == 0:
-                        cumulative_pressure = rec.depth * rec.bulk_den
+                        cumulative = rec_depth * rec_bulk
                     else:
-                        cumulative_pressure += (rec.depth - prev_depth) * rec.bulk_den
-                    prev_depth = rec.depth
+                        cumulative += (rec_depth - prev_depth) * rec_bulk
+                    prev_depth = rec_depth
+
 
 
     @api.depends('overburden_pressure', 'total_pore_water_pressure')
     def _compute_effective_overburden_pressure(self):
         for record in self:
-            record.effective_overburden_pressure = round((record.overburden_pressure or 0.0) - (record.total_pore_water_pressure or 0.0), 3)
+            over = Decimal(str(record.overburden_pressure or '0.000'))
+            pore = Decimal(str(record.total_pore_water_pressure or '0.000'))
+            eff = over - pore
+            record.effective_overburden_pressure = str(eff.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
+
 
     @api.depends('effective_overburden_pressure')
     def _compute_effective_overburden_pressure_kg(self):
         for record in self:
-            record.effective_overburden_pressure_kg = round(record.effective_overburden_pressure / 10, 3)
+            eff = Decimal(str(record.effective_overburden_pressure or '0.000'))
+            eff_kg = eff / Decimal('10')
+            record.effective_overburden_pressure_kg = str(eff_kg.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
+
     
     @api.depends('borehole_id')
     def _compute_observed_n_value(self):
@@ -765,19 +864,24 @@ class CorrectedSptNValue(models.Model):
     @api.depends('effective_overburden_pressure_kg')
     def _compute_overburden_correction_factor(self):
         for record in self:
-            record.overburden_correction_factor = 0.0
-            v = record.effective_overburden_pressure_kg
-            # guard against zero/negative values
-            if not v or v <= 0:
+            record.overburden_correction_factor = "0.000"
+            v = Decimal(str(record.effective_overburden_pressure_kg or '0.000'))
+            if v <= 0:
                 continue
-            # log base 10 and round to 3 decimals
-            record.overburden_correction_factor = round(0.77 * math.log10(20.0 / v),3)
+            val = Decimal('0.77') * Decimal(math.log10(20.0 / float(v)))
+            record.overburden_correction_factor = str(val.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
+
     
     
     @api.depends('overburden_correction_factor','observed_n_value')
     def _compute_corrected_n_value(self):
         for record in self:
-            record.corrected_n_value = round(record.overburden_correction_factor * record.observed_n_value)
+            # convert factor to Decimal
+            factor = Decimal(record.overburden_correction_factor or '0.0')
+            n = record.observed_n_value or 0
+            corrected = factor * Decimal(n)
+            # round to nearest integer
+            record.corrected_n_value = int(corrected.to_integral_value(rounding=ROUND_HALF_UP))
 
 
 
@@ -835,6 +939,7 @@ class GrainSizeAnalysisLine(models.Model):
     analysis_id = fields.Many2one('grain.size.analysis', string='Analysis', ondelete='cascade')
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size mm")
+    weight = fields.Integer("Weight",related="analysis_id.weight")
     percent_retained = fields.Float(string='% of Weight Retained')
     wt_retained = fields.Float(string="Wt. Retained in gms",compute="_compute_wt_retained")
     cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained",compute="_compute_cumulative_retained")
@@ -857,19 +962,19 @@ class GrainSizeAnalysisLine(models.Model):
 
     def unlink(self):
         # Get the parent_id before the deletion
-        parent_id = self[0].parent_id
+        analysis_id = self[0].analysis_id
 
         res = super(GrainSizeAnalysisLine, self).unlink()
 
-        if parent_id:
-            parent_id.line_ids._reorder_serial_numbers()
+        if analysis_id:
+            analysis_id.line_ids._reorder_serial_numbers()
 
         return res
 
-    @api.depends('percent_retained')
+    @api.depends('percent_retained','weight')
     def _compute_wt_retained(self):
         for record in self:
-            record.wt_retained = (record.percent_retained*200)/100
+            record.wt_retained = (record.percent_retained * record.weight) / 100
 
     @api.depends('percent_retained', 'analysis_id.line_ids.percent_retained')
     def _compute_cumulative_retained(self):
@@ -899,23 +1004,52 @@ class GrainSizeAnalysis(models.Model):
     _description = 'Grain Size Analysis Test'
     
     borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
-    sample_name = fields.Char(string='Sample ID/Depth', required=True) 
+    sample_name = fields.Char(string='Sample ID/Depth', required=True)
+    weight = fields.Integer("Weight",related="borehole_id.weight")
+    boulder = fields.Float(string="Boulder", compute="_compute_particle_distribution", store=True)
+    gravel = fields.Float(string="Gravel", compute="_compute_particle_distribution", store=True)
+    sand = fields.Float(string="Sand", compute="_compute_particle_distribution", store=True)
+    silt = fields.Float(string="Silt", compute="_compute_particle_distribution", store=True)
+    clay = fields.Float(string="Clay", compute="_compute_particle_distribution", store=True)
+
     d10 = fields.Float(string='D10 (mm)',digits=(16,3))
     d30 = fields.Float(string='D30 (mm)')
     d60 = fields.Float(string='D60 (mm)')
     cu = fields.Float(string='Coefficient of Uniformity (Cu)')
     cc = fields.Float(string='Coefficient of Curvature (Cc)')
-    
+    top_depth = fields.Float("Top Depth (m)")
+    bottom_depth = fields.Float("Bottom Depth (m)")
+    classification = fields.Selection([
+        ('Poorly_Graded','Poorly Graded Sand'),
+        ('Well_Graded','Well Graded Sand'),
+
+        ('Well-Graded Gravel', 'Well-graded gravels'),
+        ('Poorly-Graded-Gravel', 'Poorly graded gravels'),
+        ('Silty-Gravel', 'Silty gravels'),
+        ('Clayey-Gravel', 'Clayey gravels'),
+        
+        ('Silty-Sand', 'Silty sands'),
+        ('Clayey-Sand', 'Clayey sands'),
+        
+        ('Inorganic-Silt-FS', 'Inorganic silts and very fine sands'),
+        ('Inorganic-Clays-LM', 'Inorganic clays of low to medium plasticity'),
+        ('Organic-Silt', 'Organic silts'),
+        ('Inorganic-Silt', 'Inorganic silts'),
+        ('Inorganic-Clay', 'Inorganic clays of high plasticity'),
+        ('Organic-Clay', 'Organic clays'),
+        
+        ('Peat', 'Peat'),
+    ])
     line_ids = fields.One2many("grain.size.analysis.line", "analysis_id", string="Sieve Analysis Data")
 
 
-    STANDARD_SIEVE_SIZES = [100.0, 75.0, 19.0, 4.75, 2.0, 0.425, 0.075, 0.001]
+    STANDARD_SIEVE_SIZES = [100.0, 75.0, 19.0, 4.75, 2.0, 0.425, 0.075,0.002, 0.001,'Pan']
 
     @api.onchange('sample_name')
     def _onchange_sample_name_populate_lines(self):
         """
-        Automatically populates line_ids with the 8 standard sieve sizes 
-        when the user starts a new record by entering the sample name.
+        Creates default lines when the record is manually created in the UI,
+        triggered by setting the sample_name.
         """
         if not self.line_ids and self.sample_name:
             new_lines_commands = []
@@ -925,7 +1059,116 @@ class GrainSizeAnalysis(models.Model):
                     (0, 0, {
                         'sieve_size': sieve_size,
                         'passing_percent': 0.0, 
+                        # Add other default line data here if necessary
                     })
                 )
             
             self.line_ids = new_lines_commands
+    
+    # def copy(self, default=None):
+    #     default = dict(default or {})        
+    #     new_analysis = super(GrainSizeAnalysis, self).copy(default)
+    #     return new_analysis
+
+    def copy(self, default=None):
+        default = dict(default or {})
+        
+        original_line_ids = self.line_ids
+        default['line_ids'] = [] 
+        new_analysis = super(GrainSizeAnalysis, self).copy(default)
+        for line in original_line_ids:
+            line.copy({
+                'analysis_id': new_analysis.id,
+            })
+
+        return new_analysis
+
+
+
+    @api.onchange('line_ids')
+    def _onchange_update_pan_percent(self):
+        for rec in self:
+            pan_line = None
+            total_percent_other = 0.0
+
+            for line in rec.line_ids:
+                if str(line.sieve_size).strip().lower() == 'pan':
+                    pan_line = line
+                else:
+                    total_percent_other += line.percent_retained or 0.0
+
+            if pan_line:
+                # Automatically update Pan line percent
+                pan_line.percent_retained = max(0.0, 100.0 - total_percent_other)
+
+    @api.depends('line_ids.sieve_size', 'line_ids.percent_retained')
+    def _compute_particle_distribution(self):
+        for record in self:
+            boulder = gravel = sand = silt = clay = 0.0
+
+            for line in record.line_ids:
+                sieve_text = (line.sieve_size or "").strip().lower().replace('mm', '').strip()
+                
+                if not sieve_text:
+                    continue
+
+                if sieve_text == 'pan':
+                    sieve_size = 0.0
+                else:
+                    try:
+                        sieve_size = float(sieve_text)
+                    except ValueError:
+                        continue
+
+                percent = line.percent_retained or 0.0
+
+                if sieve_size > 80:
+                    boulder += percent
+                elif 80 >= sieve_size >= 4.75:
+                    gravel += percent
+                elif 4.75 > sieve_size >= 0.075:
+                    sand += percent
+                elif 0.075 > sieve_size >= 0.002:
+                    silt += percent
+                elif sieve_size < 0.002:
+                    clay += percent
+
+
+            # Assign results
+            record.boulder = boulder
+            record.gravel = gravel
+            record.sand = sand
+            record.silt = silt
+            record.clay = clay
+
+
+
+    def action_recompute_particle_distribution(self):
+        for record in self:
+            record._compute_particle_distribution()
+            record._onchange_sample_name_link_nvalue()
+
+    @api.onchange('sample_name', 'borehole_id')
+    def _onchange_sample_name_link_nvalue(self):
+        """
+        Match Grain Size sample_name like 'SPT - 1, 1.5 mm' with NValue sample_type 'SPT - 1'
+        and copy top_depth, bottom_depth, classification.
+        """
+        for rec in self:
+            if not rec.sample_name or not rec.borehole_id:
+                continue
+
+            # Extract "SPT - X" from the sample_name
+            spt_prefix = rec.sample_name.split(',')[0].strip()  # "SPT - 1" part
+
+            # Search for matching NValue record
+            nvalue_rec = rec.env['soil.borehole.nvalue'].search([
+                ('borehole_id', '=', rec.borehole_id.id),
+                ('sample_type', '=', spt_prefix)
+            ], limit=1)
+
+            # If found, update fields
+            if nvalue_rec:
+                rec.top_depth = nvalue_rec.top_depth
+                rec.bottom_depth = nvalue_rec.bottom_depth
+                rec.classification = nvalue_rec.classification

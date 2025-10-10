@@ -1,9 +1,10 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
-import math
-import io
 import zipfile
-import base64
+from PIL import Image,ImageDraw,ImageEnhance
+import io, base64, math, logging
+
+_logger = logging.getLogger(__name__)
 
 class LermErtParent(models.Model):
     _name = "lerm.ert.parent"
@@ -96,6 +97,9 @@ class SoilBoreholeParent(models.Model):
     borehole_lines = fields.One2many('soil.borehole.lines','parent_id',"ERT Lines")
     rec_date  = fields.Date("Date")
 
+    combined_images = fields.One2many('soil.borehole.parent.image', 'parent_id', string="Combined Images", compute="_compute_combined_images", store=True)
+
+
     def create_ert(self):
         
         return {
@@ -107,6 +111,101 @@ class SoilBoreholeParent(models.Model):
                 'default_parent_id':self.id
             }
         }
+    
+    def print_report(self):
+        report = self.env.ref('fst.borehole_report_py3o')
+        filename = f"{self.name or 'ERT'}"
+        return report.report_action(self, config={'report_name': filename})
+    
+    @api.depends('borehole_lines.soil_borehole_id.graph_image')
+    def _compute_combined_images(self):
+        for record in self:
+            # Clear existing records
+            record.combined_images.unlink()
+
+            images = []
+            for line in record.borehole_lines:
+                borehole = line.soil_borehole_id
+                if borehole and borehole.graph_image:
+                    try:
+                        img_data = base64.b64decode(borehole.graph_image)
+                        img = Image.open(io.BytesIO(img_data))
+                        images.append(img)
+                    except Exception as e:
+                        _logger.warning(f"Skipping invalid image: {e}")
+
+            if not images:
+                continue
+
+            grid_cols = 5
+            grid_rows = 4
+            thumb_w, thumb_h = 400, 400
+            max_per_image = grid_cols * grid_rows
+
+            # Split into groups of 20
+            chunks = [images[i:i + max_per_image] for i in range(0, len(images), max_per_image)]
+
+            ImageModel = self.env['soil.borehole.parent.image']
+
+            for idx, group in enumerate(chunks, start=1):
+                cols = min(grid_cols, len(group))
+                rows = math.ceil(len(group) / grid_cols)
+                combined_w = cols * thumb_w
+                combined_h = rows * thumb_h
+                combined_img = Image.new('RGB', (combined_w, combined_h), color=(255, 255, 255))
+
+                # Paste thumbnails
+                for i, img in enumerate(group):
+                    img = img.copy()
+                    
+                    img.thumbnail((thumb_w, thumb_h))
+                    enhancer = ImageEnhance.Sharpness(img)
+                    img = enhancer.enhance(1.3)
+                    
+                    final_thumbnail = Image.new('RGB', (thumb_w, thumb_h), color=(255, 255, 255))
+                    
+                    x_offset = (thumb_w - img.width) // 2
+                    y_offset = (thumb_h - img.height) // 2
+                    
+                    final_thumbnail.paste(img, (x_offset, y_offset))
+                    
+                    row, col = divmod(i, grid_cols)
+                    x = col * thumb_w
+                    y = row * thumb_h
+                    
+                    combined_img.paste(final_thumbnail, (x, y))
+                # draw = ImageDraw.Draw(combined_img)
+                # border_width = 4
+                # draw.rectangle(
+                #     [
+                #         border_width - 1, 
+                #         border_width - 1, 
+                #         combined_img.width - (border_width), 
+                #         combined_img.height - (border_width)
+                #     ],
+                #     outline="black",
+                #     width=border_width
+                # )
+
+                # Save to binary
+                buffer = io.BytesIO()
+                combined_img.save(buffer, format="PNG")
+                img_base64 = base64.b64encode(buffer.getvalue())
+
+                ImageModel.create({
+                    'parent_id': record.id,
+                    'sequence': idx,
+                    'image': img_base64,
+                })
+
+
+class SoilBoreholeParentImage(models.Model):
+    _name = "soil.borehole.parent.image"
+    _description = "Grouped Combined Images"
+
+    parent_id = fields.Many2one('soil.borehole.parent', ondelete='cascade')
+    sequence = fields.Integer("Page")
+    image = fields.Binary("Combined Graph Image")
 
 
 class LermErtLines(models.Model):
@@ -120,6 +219,23 @@ class SoilBoreholeLines(models.Model):
 
     parent_id = fields.Many2one('soil.borehole.parent') 
     soil_borehole_id = fields.Many2one('soil.borehole')
+    
+    def action_duplicate_borehole(self):
+        for record in self:
+            if not record.soil_borehole_id:
+                raise UserError("No Borehole is linked to duplicate.")
+
+            # 1. Read original name
+            original_name = record.soil_borehole_id.name
+
+            # 2. Copy the borehole, giving the COPY a new name
+            new_borehole = record.soil_borehole_id.copy({
+                'name': f"{original_name} Copy",
+                'parent_id': record.parent_id.id,
+            })
+
+        return True
+
 
 class ERTDashboard(models.Model):
     _name = "lerm.ert.dashboard"
