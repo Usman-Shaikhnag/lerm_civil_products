@@ -398,6 +398,7 @@ class SoilReport(models.AbstractModel):
 
 
     def _generate_sieve_log_chart(self, data):
+   
         x_values = []
         y_values = []
         x_labels = []
@@ -441,7 +442,7 @@ class SoilReport(models.AbstractModel):
         # ✅ Labels and title
         ax.set_xlabel('Sieve Size', fontsize=12)
         ax.set_ylabel('Passing %', fontsize=12)
-        ax.set_title('WET SIEVE ANALYSIS OF SOIL SAMPLE', fontsize=14)
+        ax.set_title('Grain Size Analysis', fontsize=14)
 
         # ✅ Y-axis on right
         ax.yaxis.tick_right()
@@ -459,6 +460,21 @@ class SoilReport(models.AbstractModel):
         # ✅ Axis limits
         ax.set_xlim(left=min(x_values)/1.5, right=max(x_values)*1.5)
         ax.set_ylim(0, 100)
+
+        # --- D10, D30, D60 points with axis guide lines ---
+        d_points = [
+            (getattr(data, 'd10', None), 10, 'black'),
+            (getattr(data, 'd30', None), 30, 'yellow'),
+            (getattr(data, 'd60', None), 60, 'orange')
+        ]
+
+        for dx, dy, color in d_points:
+            if dx:
+                # Solid point
+                ax.scatter(dx, dy, color=color, s=80, zorder=10)
+                # Axis guide lines (X & Y) to intersection
+                ax.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
+                ax.plot([0, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
 
         # ✅ Highlight max passing %
         max_index = y_values.index(max(y_values))
@@ -478,7 +494,8 @@ class SoilReport(models.AbstractModel):
         buffer.seek(0)
 
         return base64.b64encode(buffer.read()).decode('utf-8')
-        
+
+            
 
 
 

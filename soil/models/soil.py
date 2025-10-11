@@ -13,6 +13,7 @@ from scipy.optimize import minimize_scalar
 from io import BytesIO
 from scipy.interpolate import make_interp_spline
 from matplotlib.ticker import LogLocator, MultipleLocator
+import re
 
 
 
@@ -43,45 +44,204 @@ class Soil(models.Model):
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
-    total_sieve_analysis = fields.Integer(string="Total",compute="_compute_total_sieve")
 
-    gravel = fields.Float(string="Gravel",compute="_compute_gravel")
-    sand = fields.Float(string="Sand",compute="_compute_sand")
-    silt_clay = fields.Float(string="Silt + Clay",compute="_compute_silt_clay")
-    total = fields.Float(string="Total ",compute="_compute_total_percent")
+    boulder = fields.Float(string="% Boulders ",compute="_compute_boulder")
+
+    gravel = fields.Float(string="% Gravels",compute="_compute_gravel")
+    sand = fields.Float(string="%Sand",compute="_compute_sand")
+    silt_clay = fields.Float(string="%Clay",compute="_compute_silt_clay")
+    
     wt_of_sample = fields.Float(string="Weight of Sample, gms")
 
-    @api.depends('sieve_analysis_child_lines.wt_retained')
-    def _compute_gravel(self):
-        for rec in self:
-            lines = rec.sieve_analysis_child_lines.sorted(key=lambda l: l.serial_no or l.id)
-            top_two = lines[:2]  # line 0 and 1
-            total_retained = sum(line.wt_retained for line in top_two)
-
-            rec.gravel = (total_retained / 500.0) * 100 if total_retained else 0.0
-
-    @api.depends('sieve_analysis_child_lines.wt_retained')
-    def _compute_sand(self):
-        for rec in self:
-            lines = rec.sieve_analysis_child_lines.sorted(key=lambda l: l.serial_no or l.id)
-            sand = lines[2:5]  # line 0 and 1
-            sand_retained = sum(line.wt_retained for line in sand)
-
-            rec.sand = (sand_retained / 500.0) * 100 if sand_retained else 0.0
-
-    @api.depends('sieve_analysis_child_lines.wt_retained')
+    @api.depends('sieve_analysis_child_lines.passing_percent', 'sieve_analysis_child_lines.sieve_size')
     def _compute_silt_clay(self):
-        for rec in self:
-            lines = rec.sieve_analysis_child_lines.sorted(key=lambda l: l.serial_no or l.id)
-            silt_clay = lines[5:]  # line 0 and 1
-            silt_clay_retained = sum(line.wt_retained for line in silt_clay)
+        for record in self:
+            total = 0.0
+            for line in record.sieve_analysis_child_lines:
+                sieve_text = str(line.sieve_size).strip()
+                match = re.search(r'([\d\.]+)', sieve_text)
+                if not match:
+                    continue
+                try:
+                    size_value = float(match.group(1))
+                except ValueError:
+                    continue
 
-            rec.silt_clay = (silt_clay_retained / 500.0) * 100 if silt_clay_retained else 0.0
+                # µ ते mm convert करा
+                if 'µ' in sieve_text or 'mic' in sieve_text.lower():
+                    size_mm = size_value / 1000.0
+                else:
+                    size_mm = size_value
 
-    @api.depends('gravel', 'sand', 'silt_clay')
-    def _compute_total_percent(self):
-        for rec in self:
-            rec.total = (rec.gravel or 0.0) + (rec.sand or 0.0) + (rec.silt_clay or 0.0)
+                # range check (0.002 - 0.075 mm)
+                if 0.002 <= size_mm <= 0.075:
+                    total += line.passing_percent or 0.0
+
+            record.silt_clay = total
+
+    # ---------- Gravel ----------
+    @api.depends('sieve_analysis_child_lines.percent_retained', 'sieve_analysis_child_lines.sieve_size')
+    def _compute_gravel(self):
+        for record in self:
+            total = 0.0
+            for line in record.sieve_analysis_child_lines:
+                sieve_text = str(line.sieve_size).strip()
+                match = re.search(r'([\d\.]+)', sieve_text)
+                if not match:
+                    continue
+                try:
+                    size_value = float(match.group(1))
+                except ValueError:
+                    continue
+
+                # µ ते mm convert करा
+                if 'µ' in sieve_text or 'mic' in sieve_text.lower():
+                    size_mm = size_value / 1000.0
+                else:
+                    size_mm = size_value
+
+                # range check (4.75 - 80 mm)
+                if 4.75 <= size_mm <= 79.99:
+                    total += line.percent_retained or 0.0
+
+            record.gravel = total
+
+    @api.depends('sieve_analysis_child_lines.percent_retained')
+    def _compute_boulder(self):
+        for record in self:
+            boulder_sum = 0.0
+
+            for line in record.sieve_analysis_child_lines:
+                size_str = str(line.sieve_size).replace("µ", "e-3").replace("mm", "")
+                try:
+                    # µm → mm conversion
+                    if "e-3" in size_str:
+                        size_val = float(size_str) * 0.001
+                    else:
+                        size_val = float(size_str)
+                except ValueError:
+                    size_val = 0.0
+
+                # Boulder range: sieve size > 79.99 mm
+                if size_val > 79.99:
+                    boulder_sum += line.percent_retained or 0.0
+
+            record.boulder = boulder_sum
+
+    @api.depends('gravel', 'silt_clay')
+    def _compute_sand(self):
+        for record in self:
+            record.sand = 100 - ((record.gravel or 0.0) + (record.silt_clay or 0.0))
+
+    d60 = fields.Float(string="D60 (mm)",compute="_compute_d60",digits=(12,4))
+    d30 = fields.Float(string="D30 (mm)",compute="_compute_d30",digits=(12,4))
+    d10 = fields.Float(string="D10 (mm)",compute="_compute_d10",digits=(12,4))
+    cu = fields.Float(string="Cu = D60/D10",compute="_compute_cu",digits=(12,4))
+    cc = fields.Float(string="Cc = D30^2/D10* D60",compute="_compute_cc",digits=(12,4))
+
+
+    @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
+    def _compute_d60(self):
+        for record in self:
+            # extract 16mm and 10mm lines
+            line_16 = next((l for l in record.sieve_analysis_child_lines if '16' in str(l.sieve_size)), None)
+            line_10 = next((l for l in record.sieve_analysis_child_lines if '10' in str(l.sieve_size)), None)
+
+            if line_16 and line_10 and line_16.passing_percent is not None and line_10.passing_percent is not None:
+                try:
+                    x1 = 16.0
+                    x2 = 10.0
+                    y1 = float(line_16.passing_percent)
+                    y2 = float(line_10.passing_percent)
+
+                    # Check to avoid division by zero
+                    if y2 != y1:
+                        # Linear interpolation to find D60
+                        d60_value = x1 + (x2 - x1) * ((60 - y1) / (y2 - y1))
+                    else:
+                        d60_value = 0.0
+
+                    record.d60 = d60_value
+                except Exception:
+                    record.d60 = 0.0
+            else:
+                record.d60 = 0.0
+
+    @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
+    def _compute_d30(self):
+        for record in self:
+            # extract 4.75mm and 2.36mm lines
+            line_4_75 = next((l for l in record.sieve_analysis_child_lines if '4.75' in str(l.sieve_size)), None)
+            line_2_36 = next((l for l in record.sieve_analysis_child_lines if '2.36' in str(l.sieve_size)), None)
+
+            if line_4_75 and line_2_36 and line_4_75.passing_percent is not None and line_2_36.passing_percent is not None:
+                try:
+                    x1 = 4.75
+                    x2 = 2.36
+                    y1 = float(line_4_75.passing_percent)
+                    y2 = float(line_2_36.passing_percent)
+
+                    # Linear interpolation for target percent = 10%
+                    target_percent = 30.0
+
+                    if y2 != y1:
+                        d30_value = x1 + (x2 - x1) * ((target_percent - y1) / (y2 - y1))
+                    else:
+                        d30_value = 0.0
+
+                    record.d30 = d30_value
+                except Exception:
+                    record.d30 = 0.0
+            else:
+                record.d30 = 0.0
+
+    @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
+    def _compute_d10(self):
+        for record in self:
+            # find lines 1.18 mm and 600 µ
+            line_1_18 = next((l for l in record.sieve_analysis_child_lines if '1.18' in str(l.sieve_size)), None)
+            line_600um = next((l for l in record.sieve_analysis_child_lines if '600' in str(l.sieve_size)), None)
+
+            if line_1_18 and line_600um and line_1_18.passing_percent is not None and line_600um.passing_percent is not None:
+                try:
+                    # Convert sieve sizes to mm
+                    x1 = 1.18
+                    x2 = 0.6  # 600 µm = 0.6 mm
+                    y1 = float(line_1_18.passing_percent)
+                    y2 = float(line_600um.passing_percent)
+
+                    target_percent = 10.0  # D10 corresponds to 10% passing
+
+                    if y2 != y1:
+                        d10_value = x1 + (x2 - x1) * ((target_percent - y1) / (y2 - y1))
+                    else:
+                        d10_value = 0.0
+
+                    record.d10 = d10_value
+                except Exception:
+                    record.d10 = 0.0
+            else:
+                record.d10 = 0.0
+
+
+    # --- Compute Cu ---
+    @api.depends('d60','d10')
+    def _compute_cu(self):
+        for record in self:
+            if record.d10 and record.d10 != 0:
+                record.cu = record.d60 / record.d10
+            else:
+                record.cu = 0.0
+
+    # --- Compute Cc ---
+    @api.depends('d30','d10','d60')
+    def _compute_cc(self):
+        for record in self:
+            if record.d10 and record.d10 != 0 and record.d60 and record.d60 != 0:
+                record.cc = (record.d30 ** 2) / (record.d10 * record.d60)
+            else:
+                record.cc = 0.0
+    
 
 
 
@@ -124,34 +284,7 @@ class Soil(models.Model):
                 pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
 
 
-    # corrected(added)
-    # def calculate_sieve(self): 
-    #     for record in self:
-    #         previous_cumulative = 0  
-    #         for line in record.sieve_analysis_child_lines:
-    #             print("Rows", str(line.percent_retained))
-    #             previous_line = line.serial_no - 1
-    #             if previous_line == 0:
-    #                 cumulative_retained = line.percent_retained
-    #             else:
-    #                 previous_line_record = self.env['mechanical.soil.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
-                    
-    #                 if previous_line_record:
-    #                     previous_cumulative = previous_line_record.cumulative_retained
-    #                 cumulative_retained = previous_cumulative + line.percent_retained
 
-    #             passing_percent = 100 - cumulative_retained
-    #             # passing_percent = cumulative_retained - 100
-
-    #             line.write({
-    #                 'cumulative_retained': round(cumulative_retained, 2),
-    #                 'passing_percent': round(passing_percent, 2),
-    #             })
-                
-    #             print("Updated Cumulative Retained:", cumulative_retained)
-    #             print("Updated Passing Percent:", passing_percent)
-
-    #             previous_cumulative = cumulative_retained
 
     def calculate_sieve(self): 
         for record in self:
@@ -203,11 +336,11 @@ class Soil(models.Model):
 
     
     
-    @api.depends('sieve_analysis_child_lines.wt_retained')
-    def _compute_total_sieve(self):
-        for record in self:
-            print("recordd",record)
-            record.total_sieve_analysis = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
+    # @api.depends('sieve_analysis_child_lines.wt_retained')
+    # def _compute_total_sieve(self):
+    #     for record in self:
+    #         print("recordd",record)
+    #         record.total_sieve_analysis = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
 
     graph_image_slive = fields.Binary("Sieve Graph", compute="_compute_graph_image_slive", store=True)
 
@@ -219,93 +352,11 @@ class Soil(models.Model):
             else:
                 record.graph_image_slive = False
 
-    
 
 
 
-
-    # def generate_line_chart_slive(self):
-    #     x_value = []
-    #     y_value = []
-
-    #     for line in self.sieve_analysis_child_lines:
-    #         if line.sieve_size and line.passing_percent is not None:
-    #             sieve_str = str(line.sieve_size).strip().lower()
-
-    #             try:
-    #                 if 'mm' in sieve_str:
-    #                     sieve_val = float(sieve_str.replace('mm', '').strip())
-    #                 elif 'µ' in sieve_str or 'micron' in sieve_str:
-    #                     sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
-    #                 else:
-    #                     sieve_val = float(sieve_str)  # assume plain number is in mm
-
-    #                 x_value.append(sieve_val)
-    #                 y_value.append(float(line.passing_percent))
-    #             except ValueError:
-    #                 continue  # skip invalid values
-
-    #     if not x_value or not y_value:
-    #         return False
-
-    #     # Sort ascending for left-to-right X-axis
-    #     x_value, y_value = zip(*sorted(zip(x_value, y_value)))
-
-    #     plt.figure(figsize=(10, 5))
-    #     plt.xscale('log')
-
-    #     # Plot line and points
-    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
-
-    #     # Labels and title
-    #     plt.xlabel('Sieve Size (mm)', fontsize=12)
-    #     plt.ylabel('Passing %', fontsize=12)
-    #     plt.title('WET SIEVE ANALYSIS OF SOIL SAMPLE', fontsize=14)
-
-    #     # Y-axis on right
-    #     ax = plt.gca()
-    #     ax.yaxis.tick_right()
-    #     ax.yaxis.set_label_position("right")
-
-    #     # X-axis ticks
-    #     ticks = sorted(set(x_value))
-    #     plt.xticks(ticks, [str(round(t, 3)) for t in ticks])  # round to 3 decimals to show small mm
-
-    #     # Minor ticks
-    #     ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0) * 0.1, numticks=200))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(2))
-
-    #     # Grid lines
-    #     plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
-
-    #     # Limits
-    #     plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
-    #     plt.ylim(bottom=0, top=100)
-
-    #     # Highlight max passing %
-    #     max_index = y_value.index(max(y_value))
-    #     max_x = x_value[max_index]
-    #     max_y = y_value[max_index]
-
-    #     plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
-    #     plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
-    #     plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
-    #     plt.text(max_x * 1.1, max_y + 2, f"{max_x:.3f}, {max_y:.2f}%", color='red')
-
-    #     # Save to buffer
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.legend()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
-
-    #     return base64.b64encode(buffer.read())
-
-
-     
     def generate_line_chart_slive(self):
+   
         x_value = []
         y_value = []
         x_labels = []
@@ -319,7 +370,7 @@ class Soil(models.Model):
                         label = f"{int(sieve_val)} mm"
                     elif 'µ' in sieve_str or 'micron' in sieve_str:
                         sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
-                        label = f"{int(float(sieve_str.replace('µ', '').replace('micron', '').strip()))} µm"
+                        label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
                     else:
                         sieve_val = float(sieve_str)
                         label = f"{sieve_val} mm"
@@ -333,54 +384,48 @@ class Soil(models.Model):
         if not x_value or not y_value:
             return False
 
-        # Sort ascending for left-to-right
+        # Sort ascending
         sorted_data = sorted(zip(x_value, y_value, x_labels))
         x_value, y_value, x_labels = zip(*sorted_data)
 
         plt.figure(figsize=(12, 5))
         plt.xscale('log')
 
-        # Plot line and points
-        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+        # Main curve
+        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2)
+        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
 
-        # Labels and title
         plt.xlabel('Sieve Size', fontsize=12)
         plt.ylabel('Passing %', fontsize=12)
-        plt.title('WET SIEVE ANALYSIS OF SOIL SAMPLE', fontsize=14)
+        plt.title('Grain Size Analysis', fontsize=14)
 
-        # Y-axis on right
         ax = plt.gca()
-        ax.yaxis.tick_right()
-        ax.yaxis.set_label_position("right")
-
-        # X-axis: show custom labels without overlapping
         plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
-
-        # Minor ticks
-        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0) * 0.1, numticks=200))
+        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
         ax.yaxis.set_minor_locator(MultipleLocator(2))
-
-        # Grid lines
         plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
-        # Limits
         plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
         plt.ylim(bottom=0, top=100)
 
-        # Highlight max
-        max_index = y_value.index(max(y_value))
-        max_x = x_value[max_index]
-        max_y = y_value[max_index]
-        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
-        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
-        plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
-        plt.text(max_x * 1.1, max_y + 2, f"{max_x:.3f}, {max_y:.2f}%", color='red')
+        # --- D-points: D10, D30, D60 ---
+        d_points = [
+            (getattr(self, 'd10', None), 10, 'black'),
+            (getattr(self, 'd30', None), 30, 'yellow'),
+            (getattr(self, 'd60', None), 60, 'orange')
+        ]
 
-        # Save to buffer
+        for dx, dy, color in d_points:
+            if dx:
+                # Solid point
+                plt.scatter(dx, dy, color=color, s=80, zorder=10)
+                # Draw X and Y guide lines only to intersection
+                plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
+                plt.plot([0, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
+
+        # Save figure
         buffer = io.BytesIO()
         plt.tight_layout()
-        plt.legend()
         plt.savefig(buffer, format='png')
         plt.close()
         buffer.seek(0)
@@ -388,13 +433,6 @@ class Soil(models.Model):
         return base64.b64encode(buffer.read())
 
 
-
-
-    
-
-
-
-   
 
 
 
@@ -407,23 +445,46 @@ class Soil(models.Model):
     # start_date_liquid_limit = fields.Date("Start Date")
     # end_date_liquid_limit = fields.Date("End Date")
     child_liness = fields.One2many('mechanical.liquid.limits.line','parent_id',string="Liquid Limit")
-    liquid_limit = fields.Float('Liquid Limit',compute="_compute_liquid_limit")
+    liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
 
    
-    @api.depends('child_liness.moisture_content', 'child_liness.blwo_no1')
+   
+
+    @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
     def _compute_liquid_limit(self):
         for record in self:
-            if record.child_liness:
-                x = np.array(record.child_liness.mapped('blwo_no1'))
-                y = np.array(record.child_liness.mapped('moisture_content'))
+            lines = record.child_liness.filtered(lambda l: l.blwo_no1 is not None and l.moisture_content is not None)
+            if not lines or len(lines) < 2:
+                record.liquid_limit = 0.0
+                continue
 
-                if len(x) >= 2:  # regression साठी किमान 2 points हवेत
-                    coeffs = np.polyfit(x, y, 1)  # linear regression (y = m*x + c)
-                    m, c = coeffs
-                    predicted = m * 25 + c  # new_x = 25
-                    record.liquid_limit = predicted
+            # Sort by blwo_no1 ascending
+            lines_sorted = sorted(lines, key=lambda l: l.blwo_no1)
+            target = 25.0
+
+            # Find the two points around target (just below and just above)
+            lower = None
+            upper = None
+            for i, line in enumerate(lines_sorted):
+                if line.blwo_no1 < target:
+                    lower = line
+                elif line.blwo_no1 >= target and lower:
+                    upper = line
+                    break
+
+            if lower and upper:
+                x1, x2 = lower.blwo_no1, upper.blwo_no1
+                y1, y2 = lower.moisture_content, upper.moisture_content
+
+                if x2 != x1:
+                    # Linear interpolation
+                    ll_value = y1 + (y2 - y1) * (target - x1) / (x2 - x1)
                 else:
-                    record.liquid_limit = 0.0
+                    ll_value = y1
+                record.liquid_limit = ll_value
+            elif lower:
+                # If target above highest value
+                record.liquid_limit = lower.moisture_content
             else:
                 record.liquid_limit = 0.0
 
