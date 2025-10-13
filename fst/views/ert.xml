@@ -198,6 +198,12 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="action_temp_monitoring" model="ir.actions.act_window">
+            <field name="name">Temperature Monitoring</field>
+            <field name="res_model">lerm.temp.monitoring</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <record id="soil_borehole_action" model="ir.actions.act_window">
             <field name="name">BH</field>
             <field name="type">ir.actions.act_window</field>
@@ -230,27 +236,34 @@
                 <kanban class="o_kanban_dashboard" create="false" delete="false">
                     <templates>
                         <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click o_kanban_card">
-                                <div class="o_kanban_card_header">
-                                    <strong>ERTs</strong>
-                                </div>
-                                <div class="o_kanban_card_content">
+                            <div style="display: flex; gap: 20px; padding: 20px; flex-wrap: wrap;">
+                                <!-- ERTs Card -->
+                                <div style="flex: 1; min-width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center;">
+                                    <h3 style="margin-bottom: 20px;">ERTs</h3>
                                     <a type="action"
                                     name="%(action_lerm_ert_parent)d"
-                                    class="btn btn-primary">
+                                    class="btn btn-primary btn-lg">
                                         Create ERT
                                     </a>
                                 </div>
-                            </div>
-                            <div class="oe_kanban_global_click o_kanban_card">
-                                <div class="o_kanban_card_header">
-                                    <strong>Soil</strong>
-                                </div>
-                                <div class="o_kanban_card_content">
+
+                                <!-- Soil Card -->
+                                <div style="flex: 1; min-width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center;">
+                                    <h3 style="margin-bottom: 20px;">Soil</h3>
                                     <a type="action"
                                     name="%(action_soil_borehole)d"
-                                    class="btn btn-success">
+                                    class="btn btn-success btn-lg">
                                         Borehole
+                                    </a>
+                                </div>
+
+                                <!-- Temperature Monitoring Card -->
+                                <div style="flex: 1; min-width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center;">
+                                    <h3 style="margin-bottom: 20px;">Temperature Monitoring</h3>
+                                    <a type="action"
+                                    name="%(action_temp_monitoring)d"
+                                    class="btn btn-primary btn-lg">
+                                        Records
                                     </a>
                                 </div>
                             </div>
