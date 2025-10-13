@@ -1,0 +1,14 @@
+
+<odoo>
+    <data>
+        <record id="lerm_dashboard_action" model="ir.actions.client">
+            <field name="name">Lerm Dashboard</field>
+            <field name="tag">main_dashboard</field>
+        </record>
+        
+        <menuitem name="Dashboard" id="menu_dashboard" web_icon="lerm_civil_dashboard,static/description/icon.png">
+            <menuitem name="Overview" id="overview_dashboard" sequence="10" action="lerm_dashboard_action"/>    
+            <!-- <menuitem name="LERM" id="main_dashboard" sequence="10" action="lerm_dashboard_action"/>     -->
+        </menuitem> 
+    </data>
+</odoo>
