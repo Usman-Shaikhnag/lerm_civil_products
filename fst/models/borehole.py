@@ -663,50 +663,69 @@ class SoilBoreholeNValue(models.Model):
     _name = "soil.borehole.nvalue"
     _description = "Borehole N-Values"
 
+    SYMBOL_TO_CLASSIFICATION = {
+        'SW': 'Well_Graded',
+        'SP': 'Poorly_Graded',
+        'GW': 'Well-Graded Gravel',
+        'GP': 'Poorly-Graded-Gravel',
+        'GM': 'Silty-Gravel',
+        'GC': 'Clayey-Gravel',
+        
+        'SM': 'Silty-Sand',
+        'SC': 'Clayey-Sand',
+        
+        'ML': 'Inorganic-Silt-FS',
+        'CL': 'Inorganic-Clays-LM',
+        'OL': 'Organic-Silt',
+        'MH': 'Inorganic-Silt',
+        'CH': 'Inorganic-Clay',
+        'OH': 'Organic-Clay',
+        
+        'PT': 'Peat',
+    }
+
+    # Reverse mapping
+    CLASSIFICATION_TO_SYMBOL = {v: k for k, v in SYMBOL_TO_CLASSIFICATION.items()}
+
+
     borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
     sample_type = fields.Char("Sample Type")
     symbol = fields.Selection([
-        ('SW', 'SW'),
-        ('SP', 'SP'),
-        ('GW', 'GW'),
-        ('GP', 'GP'),
-        ('GM', 'GM'),
-        ('GC', 'GC'),
-        
-        ('SM', 'SM'),
-        ('SC', 'SC'),
-        
-        ('ML', 'ML'),
-        ('CL', 'CL'),
-        ('OL', 'OL'),
-        ('MH', 'MH'),
-        ('CH', 'CH'),
-        ('OH', 'OH'),
-        
-        ('PT', 'PT'),
-    ])
+            ('SW', 'SW'), ('SP', 'SP'), ('GW', 'GW'), ('GP', 'GP'), ('GM', 'GM'), ('GC', 'GC'),
+            ('SM', 'SM'), ('SC', 'SC'),
+            ('ML', 'ML'), ('CL', 'CL'), ('OL', 'OL'), ('MH', 'MH'), ('CH', 'CH'), ('OH', 'OH'),
+            ('PT', 'PT'),
+        ], string="Symbol")
 
     classification = fields.Selection([
         ('Poorly_Graded','Poorly Graded Sand'),
         ('Well_Graded','Well Graded Sand'),
-
         ('Well-Graded Gravel', 'Well-graded gravels'),
         ('Poorly-Graded-Gravel', 'Poorly graded gravels'),
         ('Silty-Gravel', 'Silty gravels'),
         ('Clayey-Gravel', 'Clayey gravels'),
-        
         ('Silty-Sand', 'Silty sands'),
         ('Clayey-Sand', 'Clayey sands'),
-        
         ('Inorganic-Silt-FS', 'Inorganic silts and very fine sands'),
         ('Inorganic-Clays-LM', 'Inorganic clays of low to medium plasticity'),
         ('Organic-Silt', 'Organic silts'),
         ('Inorganic-Silt', 'Inorganic silts'),
         ('Inorganic-Clay', 'Inorganic clays of high plasticity'),
         ('Organic-Clay', 'Organic clays'),
-        
         ('Peat', 'Peat'),
-    ])
+    ], string="Classification")
+
+    @api.onchange('symbol')
+    def _onchange_symbol(self):
+        for rec in self:
+            if rec.symbol in self.SYMBOL_TO_CLASSIFICATION:
+                rec.classification = self.SYMBOL_TO_CLASSIFICATION[rec.symbol]
+
+    @api.onchange('classification')
+    def _onchange_classification(self):
+        for rec in self:
+            if rec.classification in self.CLASSIFICATION_TO_SYMBOL:
+                rec.symbol = self.CLASSIFICATION_TO_SYMBOL[rec.classification]
 
     top_depth = fields.Float("Top Depth (m)")
     bottom_depth = fields.Float("Bottom Depth (m)")
