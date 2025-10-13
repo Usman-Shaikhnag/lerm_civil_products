@@ -124,7 +124,7 @@
 								</span>
 							</div>
 						</div>
-						<table style="margin-top:30px;" t-if="data.fsi_visible">
+						<!-- <table style="margin-top:30px;" t-if="data.fsi_visible">
 							
 								<tr >
 									<td >Weight of the soil sample:
@@ -152,7 +152,64 @@
 									
 								</tr>
 							
+						</table> -->
+
+                        <table class="table table-sm table-bordered custom_table_borders" invisible="not fsi_visible" style="white-space:nowrap;" t-if="data.fsi_visible">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Sample 1</th>
+                                <th>Sample 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Weight of the soil sample</span></td>
+								<td><span t-field="data.wt_sample" t-options='{"widget": "float", "precision": 2}'/></td>
+								<td><span t-field="data.wt_sample1" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">The volume of soil specimen read from the graduated cylinder containing distilled water</span></td>
+                              
+								<td><span t-field="data.valume_water" t-options='{"widget": "float", "precision": 2}'/></td>
+								<td><span t-field="data.valume_water1" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">The volume of soil specimen read from the graduated cylinder containing kerosene</span></td>
+                               
+								<td><span t-field="data.valime_kerosen" t-options='{"widget": "float", "precision": 2}'/></td>
+								<td><span t-field="data.valime_kerosen1" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+
+                             <tr>
+                                <td><span class="fw-bold">FSI (%)</span></td>
+                              
+								<td><span t-field="data.fsi1" t-options='{"widget": "float", "precision": 2}'/></td>
+								<td><span t-field="data.fsi2" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+
+
+							
+
+                        
+                           
+                        </tbody>
+                    </table>
+
+						<table style="margin-top:30px;" t-if="data.fsi_visible">
+							
+								
+								<tr>
+									<td >Free Swell Index (%) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.fsi" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									
+								</tr>
+							
 						</table>
+
 					</div>
 
 					<div t-if="data.sieve_visible">

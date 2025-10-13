@@ -47,14 +47,43 @@ class Soil(models.Model):
 
     boulder = fields.Float(string="% Boulders ",compute="_compute_boulder")
 
-    gravel = fields.Float(string="% Gravels",compute="_compute_gravel")
+    gravel = fields.Float(string="%Gravels",compute="_compute_gravel")
     sand = fields.Float(string="%Sand",compute="_compute_sand")
-    silt_clay = fields.Float(string="%Clay",compute="_compute_silt_clay")
+    silt_clay = fields.Float(string="%Clay",compute="_compute_clay_fraction")
+
+    silt = fields.Float(string="%Silt",compute="_compute_silt")
     
     wt_of_sample = fields.Float(string="Weight of Sample, gms")
 
     @api.depends('sieve_analysis_child_lines.passing_percent', 'sieve_analysis_child_lines.sieve_size')
-    def _compute_silt_clay(self):
+    def _compute_clay_fraction(self):
+        for record in self:
+            total = 0.0
+            for line in record.sieve_analysis_child_lines:
+                sieve_text = str(line.sieve_size).strip()
+                match = re.search(r'([\d\.]+)', sieve_text)
+                if not match:
+                    continue
+                try:
+                    size_value = float(match.group(1))
+                except ValueError:
+                    continue
+
+                # µ to mm conversion
+                if 'µ' in sieve_text or 'mic' in sieve_text.lower():
+                    size_mm = size_value / 1000.0
+                else:
+                    size_mm = size_value
+
+                # range check for clay fraction (< 0.002 mm)
+                if 0 <= size_mm < 0.002:
+                    total += line.passing_percent or 0.0
+
+            record.silt_clay = total  # Use a separate field for clay fraction
+
+
+    @api.depends('sieve_analysis_child_lines.passing_percent', 'sieve_analysis_child_lines.sieve_size')
+    def _compute_silt(self):
         for record in self:
             total = 0.0
             for line in record.sieve_analysis_child_lines:
@@ -77,7 +106,7 @@ class Soil(models.Model):
                 if 0.002 <= size_mm <= 0.075:
                     total += line.passing_percent or 0.0
 
-            record.silt_clay = total
+            record.silt = total
 
     # ---------- Gravel ----------
     @api.depends('sieve_analysis_child_lines.percent_retained', 'sieve_analysis_child_lines.sieve_size')
@@ -907,53 +936,63 @@ class Soil(models.Model):
     graph_image_density = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light", store=True)
 
 
-   
 
     def generate_line_chart_light_omc(self):
-    # Prepare data
         x_value = []
         y_value = []
         for line in self.heavy_table:
-            x_value.append(line.water_content)
-            y_value.append(line.dry_density)
+            if line.water_content and line.dry_density:
+                x_value.append(line.water_content)
+                y_value.append(line.dry_density)
 
         if not x_value or not y_value:
             return False
 
-        plt.figure(figsize=(10, 5))
+        x = np.array(x_value)
+        y = np.array(y_value)
 
-        # ✅ Blue curve with red points
-        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+        # Sort data
+        sorted_indices = np.argsort(x)
+        x = x[sorted_indices]
+        y = y[sorted_indices]
 
-        # ✅ Axis labels and title
+        # Gentle smooth curve (quadratic)
+        x_smooth = np.linspace(x.min(), x.max(), 150)
+        spline = make_interp_spline(x, y, k=2)
+        y_smooth = spline(x_smooth)
+
+        # Figure size
+        plt.figure(figsize=(10, 9))
+
+        # Plot curve and points
+        plt.plot(x_smooth, y_smooth, color='blue', linewidth=2, label='Curve')
+        plt.scatter(x, y, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+
+        # Labels and title
         plt.xlabel('Water Content (%)', fontsize=12)
         plt.ylabel('Dry Density (g/cc)', fontsize=12)
         plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
 
-        # ✅ Axis range
-        plt.xlim(left=0, right=max(x_value) + 2)
-        plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
+        # Extend y-axis to max 1.80
+        plt.xlim(left=0, right=max(x) + 2)
+        bottom_margin = min(y) - 0.05
+        plt.ylim(bottom=bottom_margin, top=1.75)  # ✅ Top fixed at 1.80
 
-        # ✅ Minor ticks for fine grid
         ax = plt.gca()
         ax.xaxis.set_minor_locator(MultipleLocator(0.5))
         ax.yaxis.set_minor_locator(MultipleLocator(0.005))
-
-        # ✅ Fine grid
         plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
-        # ✅ Highlight max dry density
-        max_index = y_value.index(max(y_value))
-        max_x = x_value[max_index]
-        max_y = y_value[max_index]
+        # Highlight OMC & MDD
+        max_index = np.argmax(y)
+        max_x = x[max_index]
+        max_y = y[max_index]
 
         plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
         plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
         plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
         plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
 
-        # ✅ Save image
         buffer = io.BytesIO()
         plt.tight_layout()
         plt.legend()
@@ -962,7 +1001,18 @@ class Soil(models.Model):
         buffer.seek(0)
 
         return base64.b64encode(buffer.read()).decode('utf-8')
-            
+
+
+
+
+
+
+   
+
+   
+
+    
+                
        
     
 
@@ -1212,8 +1262,27 @@ class Soil(models.Model):
     soil_name = fields.Char("Name",default="California Bearing Ratio")
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
    
-    soil_table = fields.One2many('mechanical.cbr.line','parent_id',string="CBR")
+    soil_table = fields.One2many('mechanical.cbr.line','parent_id',string="CBR",default=lambda self: self._default_cbr_child_lines())
     # chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
+
+    @api.model
+    def _default_cbr_child_lines(self):
+        default_liness = [
+            (0, 0, {'penetration': '0.00'}),
+            (0, 0, {'penetration': '0.50 '}),
+            (0, 0, {'penetration': '1.00'}),
+            (0, 0, {'penetration': '1.50'}),
+            (0, 0, {'penetration': '2.00'}),
+            (0, 0, {'penetration': '2.50'}),
+            (0, 0, {'penetration': ' 3.00'}),
+            (0, 0, {'penetration': '4.00'}),
+            (0, 0, {'penetration': '5.00'}),
+            (0, 0, {'penetration': '7.50'}),
+            (0, 0, {'penetration': '10.00'}),
+            (0, 0, {'penetration': '12.50'}),
+          
+        ]
+        return default_liness
 
     ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
     pt_2mm = fields.Float("PT at 2.5mm",default=1370)
@@ -1340,11 +1409,50 @@ class Soil(models.Model):
     wt_sample = fields.Float(string="Weight of the soil sample")
     valume_water = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing distilled water")
     valime_kerosen = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing kerosene")
-    fsi = fields.Float(string="Free Swell Index (%)", compute="_compute_fsi", store=True)
+
+    fsi1 = fields.Float(string="FSI (%)", compute="_compute_fsi1", store=True)
+
+    @api.depends('wt_sample', 'valume_water', 'valime_kerosen')
+    def _compute_fsi1(self):
+        for rec in self:
+            try:
+                if rec.wt_sample and rec.valume_water and rec.valime_kerosen:
+                    # Your custom formula for standard FSI
+                    rec.fsi1 = ((rec.valume_water - rec.valime_kerosen) / rec.wt_sample) * 100
+                else:
+                    rec.fsi1 = 0.0
+            except ZeroDivisionError:
+                rec.fsi1 = 0.0
+
+    fsi = fields.Float(string="Free Swell Index (%)", compute="_compute_fsi_avg", store=True)
 
     wt_sample1 = fields.Float(string="Weight of the soil sample")
     valume_water1 = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing distilled water")
     valime_kerosen1 = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing kerosene")
+
+    fsi2 = fields.Float(string="FSI (%)", compute="_compute__compute_fsi2", store=True)
+
+    @api.depends('wt_sample1', 'valume_water1', 'valime_kerosen1')
+    def _compute__compute_fsi2(self):
+        for rec in self:
+            try:
+                if rec.wt_sample1 and rec.valume_water1 and rec.valime_kerosen1:
+                    # Your custom formula for standard FSI
+                    rec.fsi2 = ((rec.valume_water1 - rec.valime_kerosen1) / rec.wt_sample1) * 100
+                else:
+                    rec.fsi2 = 0.0
+            except ZeroDivisionError:
+                rec.fsi2 = 0.0
+
+    @api.depends('fsi1', 'fsi2')
+    def _compute_fsi_avg(self):
+        for rec in self:
+            values = []
+            if rec.fsi1:
+                values.append(rec.fsi1)
+            if rec.fsi2:
+                values.append(rec.fsi2)
+            rec.fsi = sum(values) / len(values) if values else 0.0
 
 
     # @api.depends('valume_water', 'valime_kerosen')
@@ -1355,24 +1463,24 @@ class Soil(models.Model):
     #         else:
     #             rec.fsi = 0.0  # Avoid division by zero
 
-    @api.depends('valume_water', 'valime_kerosen', 'valume_water1', 'valime_kerosen1')
-    def _compute_fsi(self):
-        for rec in self:
-            fsi_values = []
+    # @api.depends('valume_water', 'valime_kerosen', 'valume_water1', 'valime_kerosen1')
+    # def _compute_fsi(self):
+    #     for rec in self:
+    #         fsi_values = []
 
-            # First measurement
-            if rec.valime_kerosen and rec.valime_kerosen != 0:
-                fsi_values.append(((rec.valume_water - rec.valime_kerosen) / rec.valime_kerosen) * 100)
+    #         # First measurement
+    #         if rec.valime_kerosen and rec.valime_kerosen != 0:
+    #             fsi_values.append(((rec.valume_water - rec.valime_kerosen) / rec.valime_kerosen) * 100)
 
-            # Second measurement
-            if rec.valime_kerosen1 and rec.valime_kerosen1 != 0:
-                fsi_values.append(((rec.valume_water1 - rec.valime_kerosen1) / rec.valime_kerosen1) * 100)
+    #         # Second measurement
+    #         if rec.valime_kerosen1 and rec.valime_kerosen1 != 0:
+    #             fsi_values.append(((rec.valume_water1 - rec.valime_kerosen1) / rec.valime_kerosen1) * 100)
 
-            if fsi_values:
-                # ✅ Average of both measurements
-                rec.fsi = sum(fsi_values) / len(fsi_values)
-            else:
-                rec.fsi = 0.0
+    #         if fsi_values:
+    #             # ✅ Average of both measurements
+    #             rec.fsi = sum(fsi_values) / len(fsi_values)
+    #         else:
+    #             rec.fsi = 0.0
 
     fsi_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -1494,6 +1602,36 @@ class Soil(models.Model):
     shrinkage_limit_visible = fields.Boolean("Shrinkage limit Visible",compute="_compute_visible")
 
     shrinkage_limit_table = fields.One2many('mechanical.shrinkage.limit.line','parent_id',string="Parameter")
+
+    def fetch_volumes_to_shrinkage(self):
+        for rec in self:
+            volume_wet = 0.0
+            volume_dry = 0.0
+
+            # Get first wet/dry line from self
+            wet_line = rec.volume_wet_table[:1] if hasattr(rec, 'volume_wet_table') else None
+            dry_line = rec.volume_dry_table[:1] if hasattr(rec, 'volume_dry_table') else None
+
+            if wet_line:
+                volume_wet = wet_line.volume_wet
+            if dry_line:
+                volume_dry = dry_line.volume_dry
+
+            # Check if a shrinkage line already exists
+            if rec.shrinkage_limit_table:
+                # Update the first line
+                line = rec.shrinkage_limit_table[0]
+                line.volume_wet_shri = volume_wet
+                line.volume_dry_shir = volume_dry
+            else:
+                # Create a new line
+                rec.shrinkage_limit_table = [(0, 0, {
+                    'volume_wet_shri': volume_wet,
+                    'volume_dry_shir': volume_dry,
+                })]
+
+    
+
 
     shrinkage_limit1 = fields.Float(string="Shrinkage limit (%)",digits=(12,3),compute="_compute_shrinkage_limit1")
 
@@ -2298,8 +2436,8 @@ class ShrinkagelimitLINE(models.Model):
     mass_dry = fields.Float(string="mass of dry soil (Ms=m3-m1)",digits=(12,3),compute="_compute_mass_dry")
     mass_water = fields.Float(string="mass of water (Mw=m2-m3)",digits=(12,3),compute="_compute_mass_water")
     moisture_content_shri = fields.Float(string="Moisture Content %(Mw/Ms*100)",digits=(12,3),compute="_compute_moisture_content_shri")
-    volume_wet_shri = fields.Float(string="Volume of wet soil (V1)",digits=(12,3),compute="_compute_volume_wet_shri")
-    volume_dry_shir = fields.Float(string="Volume of dry Soil pat (V2)",digits=(12,3),compute="_compute_volume_dry_shir")
+    volume_wet_shri = fields.Float(string="Volume of wet soil (V1)",digits=(12,3))
+    volume_dry_shir = fields.Float(string="Volume of dry Soil pat (V2)",digits=(12,3))
     shrinkage_limit = fields.Float(string="Shrinkage limit (%)",digits=(12,3),compute="_compute_shrinkage_limit")
 
     @api.depends('wt_dry', 'shrinkage_mass')
@@ -2326,27 +2464,30 @@ class ShrinkagelimitLINE(models.Model):
             else:
                 rec.moisture_content_shri = 0.0
 
-    @api.depends("parent_id")
-    def _compute_volume_wet_shri(self):
-        for rec in self:
-            volume = 0.0
-            if rec.parent_id:
-                # घेतो पहिला record volume wet lines मधून
-                wet_line = rec.parent_id.volume_wet_table[:1]  
-                if wet_line:
-                    volume = wet_line.volume_wet
-            rec.volume_wet_shri = volume
+    # @api.depends("parent_id")
+    # def _compute_volume_wet_shri(self):
+    #     for rec in self:
+    #         volume = 0.0
+    #         if rec.parent_id:
+    #             # घेतो पहिला record volume wet lines मधून
+    #             wet_line = rec.parent_id.volume_wet_table[:1]  
+    #             if wet_line:
+    #                 volume = wet_line.volume_wet
+    #         rec.volume_wet_shri = volume
 
-    @api.depends("parent_id")
-    def _compute_volume_dry_shir(self):
-        for rec in self:
-            volume1 = 0.0
-            if rec.parent_id:
-                # घेतो पहिला record volume wet lines मधून
-                wet_line1 = rec.parent_id.volume_dry_table[:1]  
-                if wet_line1:
-                    volume1 = wet_line1.volume_dry
-            rec.volume_dry_shir = volume1
+    # @api.depends("parent_id")
+    # def _compute_volume_dry_shir(self):
+    #     for rec in self:
+    #         volume1 = 0.0
+    #         if rec.parent_id:
+    #             # घेतो पहिला record volume wet lines मधून
+    #             wet_line1 = rec.parent_id.volume_dry_table[:1]  
+    #             if wet_line1:
+    #                 volume1 = wet_line1.volume_dry
+    #         rec.volume_dry_shir = volume1
+
+    
+
 
     @api.depends('moisture_content_shri', 'volume_wet_shri', 'volume_dry_shir', 'mass_dry')
     def _compute_shrinkage_limit(self):
