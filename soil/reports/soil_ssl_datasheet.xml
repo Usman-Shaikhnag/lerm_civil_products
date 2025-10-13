@@ -238,31 +238,27 @@
 						<div style="margin-top:10px" t-if="data.sieve_visible">
 							<table>
 								<tr> 
-									<td colspan="12">Total Weight :<![CDATA[&nbsp;]]>
-										<span t-esc="data.total_sieve_analysis" t-options='{"widget": "float", "precision": 2}'/>
+									<td colspan="12">% Boulders :<![CDATA[&nbsp;]]>
+										<span t-esc="data.boulder" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
 
 									<tr> 
-									<td colspan="12">Gravel :<![CDATA[&nbsp;]]>
+									<td colspan="12">% Gravels :<![CDATA[&nbsp;]]>
 										<span t-esc="data.gravel" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
 									<tr> 
-									<td colspan="12">Sand :<![CDATA[&nbsp;]]>
+									<td colspan="12">% Sand :<![CDATA[&nbsp;]]>
 										<span t-esc="data.sand" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
 									<tr> 
-									<td colspan="12">Silt + Clay :<![CDATA[&nbsp;]]>
+									<td colspan="12">% Silt + Clay :<![CDATA[&nbsp;]]>
 										<span t-esc="data.silt_clay" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
-									<tr> 
-									<td colspan="12">Total :<![CDATA[&nbsp;]]>
-										<span t-esc="data.total" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-								</tr>
+								
 							</table>
 						</div>
 					</div>
@@ -839,6 +835,112 @@
 							</table>
 						
 						</div>
+					</div>
+
+
+
+					<div t-if="data.water_content_visible">
+						
+							<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:15px"><b><span t-field="data.water_content_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','120vbf14-2ff0-4b81-aca1-365ghtyr78ww')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+							
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th>
+										<span>
+											Container No
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of container (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of container + wet soil (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of container + Dry soil (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of water in (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of ovendry soil (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Water Content (%)
+										</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.water_content_table" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.container_no"/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_con" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_con_wet" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_con_dry" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_water"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.wt_of_oven"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.water_content_pastic"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.water_content_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Water Content % :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.water_content"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</table>
+						</div>
+				
 					</div>
 
 					<div t-if="data.triaxial_visible">

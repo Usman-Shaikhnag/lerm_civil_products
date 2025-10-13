@@ -820,6 +820,56 @@
 
 								</tr>
 
+
+
+								<tr t-if="data.water_content_visible and (data.water_content_nabl == 'pass' and nabl or (data.water_content_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','120vbf14-2ff0-4b81-aca1-365ghtyr78ww')]).parameter_name"/>
+										</span>
+									</td>
+									<td>
+										<span t-field="data.water_content" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									<td>
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','120vbf14-2ff0-4b81-aca1-365ghtyr78ww')]).unit.name"/>
+										</span>
+									</td>
+										<td>
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','120vbf14-2ff0-4b81-aca1-365ghtyr78ww')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<td  >
+										<span>
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','120vbf14-2ff0-4b81-aca1-365ghtyr78ww')]).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+														<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+								
+								
+									<td t-if="eln.conformity">
+										<span t-field="data.water_content_conformity"/>
+									</td>
+
+								</tr>
+
 							
 							
 							</tbody>

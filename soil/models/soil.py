@@ -755,6 +755,72 @@ class Soil(models.Model):
                 record.plasticity_index_nabl = 'fail'
 
 
+     # Water Content
+    water_content_name = fields.Char("Name",default="Water Content")
+    water_content_visible = fields.Boolean("Water Content Visible",compute="_compute_visible")
+   
+    water_content_table = fields.One2many('mechanical.water.content.line','parent_id',string="Parameter")
+
+    water_content = fields.Float(string="Water Content % ",compute="_compute_water_content")
+   
+    @api.depends('water_content_table.water_content_pastic')
+    def _compute_water_content(self):
+        for record in self:
+            total_water_content_pastic = sum(record.water_content_table.mapped('water_content_pastic'))
+            record.water_content = total_water_content_pastic / len(record.water_content_table) if record.water_content_table else 0.0
+   
+
+    water_content_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string=" Conformity", compute="_compute_water_content_conformity", store=True)
+
+    @api.depends('water_content','eln_ref','grade')
+    def _compute_water_content_conformity(self):
+        
+        for record in self:
+            record.water_content_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-365ghtyr78ww')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-365ghtyr78ww')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.water_content - record.water_content*mu_value
+                    upper = record.water_content + record.water_content*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.water_content_conformity = 'pass'
+                        break
+                    else:
+                        record.water_content_conformity = 'fail'
+
+    water_content_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_water_content_nabl", store=True)
+
+    @api.depends('water_content','eln_ref','grade')
+    def _compute_water_content_nabl(self):
+        
+        for record in self:
+            record.water_content_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-365ghtyr78ww')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-365ghtyr78ww')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.water_content - record.water_content*mu_value
+            upper = record.water_content + record.water_content*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.water_content_nabl = 'pass'
+                break
+            else:
+                record.water_content_nabl = 'fail'
+
+
    
 
       # Havy Compaction-MDD
@@ -1511,6 +1577,7 @@ class Soil(models.Model):
             record.sieve_visible = False
             record.liquid_limit_visible = False
             record.plastic_limit_visible = False
+            record.water_content_visible = False
             record.heavy_visible = False
             record.omc_visible = False
             record.triaxial_visible = False
@@ -1532,6 +1599,9 @@ class Soil(models.Model):
 
                 if sample.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
                     record.plastic_limit_visible = True
+
+                if sample.internal_id == '120vbf14-2ff0-4b81-aca1-365ghtyr78ww':
+                    record.water_content_visible = True
 
                 if sample.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
                     record.heavy_visible = True
@@ -1893,6 +1963,60 @@ class PLASTICLIMITLINE(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(PLASTICLIMITLINE, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class WaterContentLINE(models.Model):
+    _name = "mechanical.water.content.line"
+    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+
+
+    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+    container_no = fields.Integer(string="Container No")   
+    wt_of_con = fields.Float(string="Weight of container (gm)")
+    wt_of_con_wet = fields.Float(string="Weight of container + wet soil (gm)")
+    wt_of_con_dry = fields.Float(string="Weight of container + Dry soil (gm)")
+    wt_of_water = fields.Float(string="Weight of water in (gm)",compute="_compute_wt_of_water")
+    wt_of_oven = fields.Float(string="Weight of ovendry soil (gm)",compute="_compute_wt_of_oven")
+    water_content_pastic = fields.Float(string="Water Content (%)",compute="_compute_water_content")
+
+
+    @api.depends('wt_of_con_wet', 'wt_of_con_dry')
+    def _compute_wt_of_water(self):
+        for line in self:
+            line.wt_of_water = line.wt_of_con_wet - line.wt_of_con_dry
+
+
+    @api.depends('wt_of_con', 'wt_of_con_dry')
+    def _compute_wt_of_oven(self):
+        for line in self:
+            line.wt_of_oven = line.wt_of_con_dry - line.wt_of_con
+
+
+    @api.depends('wt_of_water', 'wt_of_oven')
+    def _compute_water_content(self):
+        for line in self:
+            if line.wt_of_oven != 0:
+                line.water_content_pastic = line.wt_of_water / line.wt_of_oven * 100
+            else:
+                line.water_content_pastic = 0.0
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(WaterContentLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines

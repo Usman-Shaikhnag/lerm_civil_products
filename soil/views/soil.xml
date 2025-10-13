@@ -262,6 +262,57 @@
                         </table>
                     </div>
 
+
+
+
+                     <!-- Plastic Limit -->
+                    <div invisible = "water_content_visible == False">
+                        <h1 class="text-center">
+                            <field name="water_content_name" readonly="1" nolabel="1"/>
+                            <field name="water_content_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+
+                    <div invisible = "water_content_visible == False">
+                        <field name="water_content_table">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='container_no'/>
+                                <field name='wt_of_con'/>
+                                <field name='wt_of_con_wet'/>
+                                <field name='wt_of_con_dry'/>
+                                <field name='wt_of_water'/>
+                                <field name='wt_of_oven'/>
+                                <field name='water_content_pastic'/>
+                            </tree>
+                        </field>
+                    </div>
+                 
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not water_content_visible">
+                        <tbody>
+                           <tr>
+                                    <td><label for="water_content">Average Water Content %</label></td>
+                                    <td><field name="water_content"/></td>
+                                </tr>
+                            <tr>
+                                    <td><label for="water_content_conformity"></label></td>
+                                    <td><field  name="water_content_conformity"
+                                                decoration-success="water_content_conformity == 'pass'" 
+                                                decoration-danger="water_content_conformity == 'fail'" 
+                                                readonly="1" /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><label for="water_content_nabl"></label></td>
+                                    <td><field name="water_content_nabl"
+                                                decoration-success="water_content_nabl == 'pass'" 
+                                                decoration-danger="water_content_nabl == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                        </tbody>
+                    </table>
+
                      <!-- Heavy Compaction MDD -->
                     <div invisible = "heavy_visible == False">
                         <h1 class="text-center">
