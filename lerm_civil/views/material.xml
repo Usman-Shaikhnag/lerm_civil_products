@@ -156,16 +156,15 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_product_tree_view"/>
             <field name="arch" type="xml">
-                <!-- <field name="name" position="after">
-                    <field name="lab_name" readonly="1"/>
-                    
-                </field> -->
+              
               <xpath expr="//tree/field[@name='name']" position="after">
                 <field name="lab_name" readonly="1"/>
               </xpath>
                 
             </field>
     </record>
+
+    
 
 
     
