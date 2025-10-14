@@ -1039,9 +1039,11 @@
 						</table>
 					</div>
 
-					<div t-if="graphHeavy" style="margin-top: 5px;">
-							<img t-att-src="'data:image/png;base64,'+str(graphHeavy)" style="max-width: 100%;"/>
-					</div>
+
+
+					<div t-if="data.graph_image_density" style="margin-top: 20px;">
+								<img t-att-src="'data:image/png;base64,' + data.graph_image_density.decode('utf-8')" style="max-width: 100%;"/>
+							</div>
 
 					<div t-if="data.heavy_visible" style="margin-top: 5px;">
 						From Graph 
@@ -1239,13 +1241,17 @@
 
 
 
-			<div style="page-break-inside: avoid;margin-top:5px;padding-top:50px;">
+			<!-- <div style="page-break-inside: avoid;margin-top:5px;padding-top:50px;">
 						<t t-if="graphSieve">
 							<div style="margin-top: 5px;">
 								<img t-att-src="'data:image/png;base64,' + graphSieve" style="max-width: 100%;"/>
 							</div>
 						</t>
-				</div>
+				</div> -->
+
+					<div t-if="data.graph_image_slive" style="page-break-inside: avoid;margin-top:5px;padding-top:50px;">
+								<img t-att-src="'data:image/png;base64,' + data.graph_image_slive.decode('utf-8')" style="max-width: 100%;"/>
+					</div>
 
              <div style="page-break-inside: avoid;margin-top:5px;padding-top:50px;">
 					<t t-if="graphliquid">

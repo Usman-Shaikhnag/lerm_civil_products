@@ -165,25 +165,25 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><span class="fw-bold"> Weight of the soil sample</span></td>
+                                <td><span class="fw-bold"> Volume in Water - Vd </span></td>
 								<td><span t-field="data.wt_sample" t-options='{"widget": "float", "precision": 2}'/></td>
 								<td><span t-field="data.wt_sample1" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
                             <tr>
-                                <td><span class="fw-bold">The volume of soil specimen read from the graduated cylinder containing distilled water</span></td>
+                                <td><span class="fw-bold"> Volume in Kerosene - Vk </span></td>
                               
 								<td><span t-field="data.valume_water" t-options='{"widget": "float", "precision": 2}'/></td>
 								<td><span t-field="data.valume_water1" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
                             <tr>
-                                <td><span class="fw-bold">The volume of soil specimen read from the graduated cylinder containing kerosene</span></td>
+                                <td><span class="fw-bold">Swell (Vd - Vk) </span></td>
                                
 								<td><span t-field="data.valime_kerosen" t-options='{"widget": "float", "precision": 2}'/></td>
 								<td><span t-field="data.valime_kerosen1" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
 
                              <tr>
-                                <td><span class="fw-bold">FSI (%)</span></td>
+                                <td><span class="fw-bold">Swell Index = (Vd - Vk) / Vk X 100 (%) </span></td>
                               
 								<td><span t-field="data.fsi1" t-options='{"widget": "float", "precision": 2}'/></td>
 								<td><span t-field="data.fsi2" t-options='{"widget": "float", "precision": 2}'/></td>
@@ -201,7 +201,7 @@
 							
 								
 								<tr>
-									<td >Free Swell Index (%) :
+									<td >Avg Free Swell Index (%) :
 										<![CDATA[&nbsp;]]>
 										<span t-field="data.fsi" t-options='{"widget": "float", "precision": 2}'/>
 									</td>

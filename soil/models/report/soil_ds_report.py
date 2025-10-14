@@ -13,6 +13,7 @@ from scipy.optimize import minimize_scalar
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 import io
 from matplotlib.ticker import LogLocator, MultipleLocator
+from scipy.interpolate import make_interp_spline
 
 
 class SoilDatasheet(models.AbstractModel):
@@ -110,97 +111,85 @@ class SoilReport(models.AbstractModel):
         graph_sieve = self._generate_sieve_log_chart(general_data)
         graph_liquid = self.generate_line_chart_liquid(general_data)
 
-        plt.figure(figsize=(12, 6))
-        x_values = []
-        y_values = []
-        # import wdb;wdb.set_trace()
-        for line in general_data.heavy_table:
-            x_values.append(line.water_content)
-            y_values.append(line.dry_density)
+        # plt.figure(figsize=(15, 4))
+        # x_values = []
+        # y_values = []
+        # # import wdb;wdb.set_trace()
+        # for line in general_data.heavy_table:
+        #     x_values.append(line.water_content)
+        #     y_values.append(line.dry_density)
 
 
-        if general_data.heavy_table:
-            try:
-                max_y = max(y_values)
-            except:
-                max_y = 100
-            try:
-                min_y = round(min(y_values),2)
-            except:
-                min_y = 0
-            try:
-                # max_x = round(max(x_values),2)
-                max_x = x_values[y_values.index(max_y)]
-            except:
-                max_x = 100
-            try:
-                min_x = round(min(x_values),2)
-            except:
-                min_x = 0 
+        # if general_data.heavy_table:
+        #     try:
+        #         max_y = max(y_values)
+        #     except:
+        #         max_y = 100
+        #     try:
+        #         min_y = round(min(y_values),2)
+        #     except:
+        #         min_y = 0
+        #     try:
+        #         # max_x = round(max(x_values),2)
+        #         max_x = x_values[y_values.index(max_y)]
+        #     except:
+        #         max_x = 100
+        #     try:
+        #         min_x = round(min(x_values),2)
+        #     except:
+        #         min_x = 0 
             
             
 
 
-            # Format max_y and max_x to display 2 digits after the decimal point
-            max_y = round(max_y , 2)
-            max_x = round(max_x, 2)
+        #     # Format max_y and max_x to display 2 digits after the decimal point
+        #     max_y = round(max_y , 2)
+        #     max_x = round(max_x, 2)
 
     
 
         
-            # Perform cubic spline interpolation
-            x_smooth = np.linspace(min(x_values), max(x_values), 100)
-            # cs = CubicSpline(x_values, y_values,1)
-            # cs = interp1d(x_values, y_values,kind='cubic')
-            cs = Akima1DInterpolator(x_values, y_values)
+        #     x_smooth = np.linspace(min(x_values), max(x_values), 100)
+           
+        #     cs = Akima1DInterpolator(x_values, y_values)
 
-            # Create the line chart with a connected smooth line and markers
-            plt.plot(x_smooth, cs(x_smooth), color='red', label='Smooth Curve')
-            plt.scatter(x_values, y_values, marker='o', color='blue', s=30, label='Data Points')
+        #     plt.plot(x_smooth, cs(x_smooth), color='red', label='Smooth Curve')
+        #     plt.scatter(x_values, y_values, marker='o', color='blue', s=30, label='Data Points')
 
             
-            # Add a horizontal line with a label(, linestyle='--', label=f'Max Y = {max_y}', linestyle='--', label=f'Max X = {max_x}')
-            plt.axhline(y=max_y, color='green',linestyle='--')
+        #     plt.axhline(y=max_y, color='green',linestyle='--')
 
-            # Add a vertical line with a label
-            plt.axvline(x=max_x, color='orange',linestyle='--')
+        #     plt.axvline(x=max_x, color='orange',linestyle='--')
 
             
-            # Set the grid
-            ax = plt.gca()
-            ax.grid(which='both', linestyle='--', linewidth=0.5)
+        #     ax = plt.gca()
+        #     ax.grid(which='both', linestyle='--', linewidth=0.5)
 
-            # Set the x-axis major and minor tick marks
-            ax.xaxis.set_major_locator(ticker.MultipleLocator(1))  # Major gridlines every 1 unit
-            ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))  # Minor gridlines every 0.1 unit
+        #     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))  # Major gridlines every 1 unit
+        #     ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))  # Minor gridlines every 0.1 unit
 
-            # Set the y-axis tick marks
-            # plt.yticks([1.60, 1.62, 1.64, 1.66, 1.68, 1.70, 1.72, 1.74, 1.76, 1.78, 1.80])
-
-            # edit range here
-            plt.yticks(np.arange(min_y , round(max_y,2) + 0.2 , (max_y - min_y) / 5))
+           
+        #     plt.yticks(np.arange(min_y , round(max_y,2) + 0.2 , (max_y - min_y) / 5))
 
 
-            if max_x != min_x:
-                plt.xticks(np.arange(min_x, round(max(x_values),2) + 1.0, (max_x - min_x) / 5))
+        #     if max_x != min_x:
+        #         plt.xticks(np.arange(min_x, round(max(x_values),2) + 1.0, (max_x - min_x) / 5))
             
-            plt.gca().yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
-            plt.xlabel('% Water Content ')
-            plt.ylabel('Dry density in gm/cc')
-            plt.title('% Water Content vs Dry density in gm/cc')
-            plt.legend()
+        #     plt.gca().yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
+        #     plt.xlabel('% Water Content ')
+        #     plt.ylabel('Dry density in gm/cc')
+        #     plt.title('% Water Content vs Dry density in gm/cc')
+        #     plt.legend()
 
-            # Save the Matplotlib plot to a BytesIO object
-            buffer = BytesIO()
-            plt.savefig(buffer, format='png')
-            graph_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        #     buffer = BytesIO()
+        #     plt.savefig(buffer, format='png')
+        #     graph_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
-            # Close the Matplotlib plot to free up resources
-            plt.close()
-        else:
-            graph_image = None
-            max_y = 0
-            max_x = 0
+        #     plt.close()
+        # else:
+        #     graph_image = None
+        #     max_y = 0
+        #     max_x = 0
         
       
  
@@ -383,7 +372,7 @@ class SoilReport(models.AbstractModel):
             'qrcode_static': qr_static_b64,
             'stamp' : inreport_value,
             'nabl' : nabl,
-            'graphHeavy' : graph_image,
+            # 'graphHeavy' : graph_image,
             'graphSieve': graph_sieve,  # ✅ Added
             'graphliquid': graph_liquid,  # ✅ Added
             'graphLight' : graph_image1,
@@ -564,3 +553,8 @@ class SoilReport(models.AbstractModel):
 
         return base64.b64encode(buffer.read()).decode('utf-8')
 
+
+
+
+
+    

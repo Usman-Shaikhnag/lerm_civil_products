@@ -15,6 +15,8 @@ from scipy.interpolate import make_interp_spline
 from matplotlib.ticker import LogLocator, MultipleLocator
 import re
 
+from matplotlib.ticker import MultipleLocator, StrMethodFormatter
+
 
 
 class Soil(models.Model):
@@ -937,6 +939,83 @@ class Soil(models.Model):
 
 
 
+
+
+    # def generate_line_chart_light_omc(self):
+    #     x_value = []
+    #     y_value = []
+    #     for line in self.heavy_table:
+    #         if line.water_content and line.dry_density:
+    #             x_value.append(line.water_content)
+    #             y_value.append(line.dry_density)
+
+    #     if not x_value or not y_value:
+    #         return False
+
+    #     x = np.array(x_value)
+    #     y = np.array(y_value)
+
+    #     # Sort data
+    #     sorted_indices = np.argsort(x)
+    #     x = x[sorted_indices]
+    #     y = y[sorted_indices]
+
+    #     # Gentle smooth curve (quadratic)
+    #     x_smooth = np.linspace(x.min(), x.max(), 200)
+    #     spline = make_interp_spline(x, y, k=2)
+    #     y_smooth = spline(x_smooth)
+
+    #     # Find smooth curve peak (OMC/MDD from smooth curve)
+    #     smooth_max_index = np.argmax(y_smooth)
+    #     smooth_max_x = x_smooth[smooth_max_index]
+    #     smooth_max_y = y_smooth[smooth_max_index]
+
+    #     # ✅ Trim curve so it never goes above MDD
+    #     y_smooth = np.minimum(y_smooth, smooth_max_y)
+
+    #     # Figure size
+    #     plt.figure(figsize=(15, 5))
+
+    #     # Plot curve and points
+    #     plt.plot(x_smooth, y_smooth, color='blue', linewidth=2, label='Smooth Curve')
+    #     plt.scatter(x, y, color='red', edgecolors='black', s=60, zorder=5, label='Data Points')
+
+    #     # Labels and title
+    #     plt.xlabel('Water Content (%)', fontsize=12)
+    #     plt.ylabel('Dry Density (g/cc)', fontsize=12)
+    #     plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
+
+    #     # Extend y-axis
+    #     plt.xlim(left=0, right=max(x) + 2)
+    #     bottom_margin = min(y) - 0.05
+    #     plt.ylim(bottom=bottom_margin, top=smooth_max_y + 0.05)
+
+    #     # Grid
+    #     ax = plt.gca()
+    #     ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+    #     ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+    #     # ✅ Highlight OMC/MDD from smooth curve (shifted peak)
+    #     plt.axhline(y=smooth_max_y, color='red', linestyle='--', linewidth=1)
+    #     plt.axvline(x=smooth_max_x, color='red', linestyle='--', linewidth=1)
+    #     plt.plot(smooth_max_x, smooth_max_y, marker='o', color='red', markersize=8)
+    #     plt.text(smooth_max_x + 0.3, smooth_max_y + 0.005,
+    #             f"OMC: {smooth_max_x:.2f}%\nMDD: {smooth_max_y:.2f}",
+    #             color='red')
+
+    #     # Final touches
+    #     plt.tight_layout()
+    #     plt.legend()
+
+    #     # Save to base64
+    #     buffer = io.BytesIO()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
+    #     return base64.b64encode(buffer.read()).decode('utf-8')
+
+
     def generate_line_chart_light_omc(self):
         x_value = []
         y_value = []
@@ -957,64 +1036,63 @@ class Soil(models.Model):
         y = y[sorted_indices]
 
         # Gentle smooth curve (quadratic)
-        x_smooth = np.linspace(x.min(), x.max(), 150)
+        x_smooth = np.linspace(x.min(), x.max(), 200)
         spline = make_interp_spline(x, y, k=2)
         y_smooth = spline(x_smooth)
 
-        # Figure size
-        plt.figure(figsize=(10, 9))
+        # Find smooth curve peak (OMC/MDD)
+        smooth_max_index = np.argmax(y_smooth)
+        smooth_max_x = x_smooth[smooth_max_index]
+        smooth_max_y = y_smooth[smooth_max_index]
 
-        # Plot curve and points
-        plt.plot(x_smooth, y_smooth, color='blue', linewidth=2, label='Curve')
-        plt.scatter(x, y, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+        # Trim curve so it never goes above MDD
+        y_smooth = np.minimum(y_smooth, smooth_max_y)
+
+        # Figure size
+        plt.figure(figsize=(15, 5))
+
+        # Plot smooth curve
+        plt.plot(x_smooth, y_smooth, color='blue', linewidth=2)
+
+        # Plot points (smaller, subtle)
+        plt.scatter(x, y, color='red', edgecolors='none', s=40, zorder=5)
 
         # Labels and title
         plt.xlabel('Water Content (%)', fontsize=12)
         plt.ylabel('Dry Density (g/cc)', fontsize=12)
         plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
 
-        # Extend y-axis to max 1.80
+        # Extend y-axis
         plt.xlim(left=0, right=max(x) + 2)
-        bottom_margin = min(y) - 0.05
-        plt.ylim(bottom=bottom_margin, top=1.75)  # ✅ Top fixed at 1.80
+        plt.ylim(bottom=min(y) - 0.03, top=smooth_max_y + 0.03)
 
+        # Grid
         ax = plt.gca()
-        ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+        ax.xaxis.set_minor_locator(MultipleLocator(0.2))
         ax.yaxis.set_minor_locator(MultipleLocator(0.005))
-        plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+        plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='darkgreen', alpha=0.9)
 
-        # Highlight OMC & MDD
-        max_index = np.argmax(y)
-        max_x = x[max_index]
-        max_y = y[max_index]
+        # Highlight OMC/MDD (shifted peak)
+        plt.axhline(y=smooth_max_y, color='red', linestyle='--', linewidth=1)
+        plt.axvline(x=smooth_max_x, color='red', linestyle='--', linewidth=1)
+        plt.plot(smooth_max_x, smooth_max_y, marker='o', color='red', markersize=6)
+        plt.text(smooth_max_x + 0.2, smooth_max_y + 0.002,
+                f"OMC: {smooth_max_x:.2f}%\nMDD: {smooth_max_y:.2f}",
+                color='red', fontsize=10)
 
-        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
-        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
-        plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
-        plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
-
-        buffer = io.BytesIO()
         plt.tight_layout()
-        plt.legend()
-        plt.savefig(buffer, format='png')
+
+        # Save to base64
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png', dpi=150)
         plt.close()
         buffer.seek(0)
-
         return base64.b64encode(buffer.read()).decode('utf-8')
 
 
-
-
-
-
-   
-
-   
-
     
-                
-       
-    
+
+
 
     @api.depends('heavy_table')
     def _compute_graph_image_density_omc_light(self):
@@ -1406,43 +1484,41 @@ class Soil(models.Model):
     fsi_name = fields.Char("Name",default="Free Swell Index")
     fsi_visible = fields.Boolean("Free Swell Index Visible",compute="_compute_visible")
   
-    wt_sample = fields.Float(string="Weight of the soil sample")
-    valume_water = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing distilled water")
-    valime_kerosen = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing kerosene")
+    wt_sample = fields.Float(string="Volume in Water - Vd ")
+    valume_water = fields.Float(string=" Volume in Kerosene - Vk ")
+    valime_kerosen = fields.Float(string="Swell (Vd - Vk) ")
 
-    fsi1 = fields.Float(string="FSI (%)", compute="_compute_fsi1", store=True)
+    fsi1 = fields.Float(string="Swell Index = (Vd - Vk) / Vk X 100 (%) ",compute="_compute_swell", store=True,digits=(12,4))
 
-    @api.depends('wt_sample', 'valume_water', 'valime_kerosen')
-    def _compute_fsi1(self):
+    @api.depends('wt_sample', 'valume_water')
+    def _compute_swell(self):
         for rec in self:
-            try:
-                if rec.wt_sample and rec.valume_water and rec.valime_kerosen:
-                    # Your custom formula for standard FSI
-                    rec.fsi1 = ((rec.valume_water - rec.valime_kerosen) / rec.wt_sample) * 100
-                else:
-                    rec.fsi1 = 0.0
-            except ZeroDivisionError:
-                rec.fsi1 = 0.0
+            if rec.wt_sample is not None and rec.valume_water not in (None, 0):
+                rec.valime_kerosen = rec.wt_sample - rec.valume_water
+                rec.fsi1 = (rec.valime_kerosen / rec.valume_water) * 100
+            else:
+                rec.valime_kerosen = 0
+                rec.fsi1 = 0
 
-    fsi = fields.Float(string="Free Swell Index (%)", compute="_compute_fsi_avg", store=True)
+    
 
-    wt_sample1 = fields.Float(string="Weight of the soil sample")
-    valume_water1 = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing distilled water")
-    valime_kerosen1 = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing kerosene")
+    fsi = fields.Float(string="Free Swell Index (%)", compute="_compute_fsi_avg", store=True,digits=(12,4))
 
-    fsi2 = fields.Float(string="FSI (%)", compute="_compute__compute_fsi2", store=True)
+    wt_sample1 = fields.Float(string="Volume in Water - Vd")
+    valume_water1 = fields.Float(string=" Volume in Kerosene - Vk ")
+    valime_kerosen1 = fields.Float(string="Swell (Vd - Vk) ")
 
-    @api.depends('wt_sample1', 'valume_water1', 'valime_kerosen1')
-    def _compute__compute_fsi2(self):
+    fsi2 = fields.Float(string="Swell Index = (Vd - Vk) / Vk X 100 (%) ", compute="_compute_fsi2", store=True,digits=(12,4))
+
+    @api.depends('wt_sample1', 'valume_water1')
+    def _compute_fsi2(self):
         for rec in self:
-            try:
-                if rec.wt_sample1 and rec.valume_water1 and rec.valime_kerosen1:
-                    # Your custom formula for standard FSI
-                    rec.fsi2 = ((rec.valume_water1 - rec.valime_kerosen1) / rec.wt_sample1) * 100
-                else:
-                    rec.fsi2 = 0.0
-            except ZeroDivisionError:
-                rec.fsi2 = 0.0
+            if rec.wt_sample1 is not None and rec.valume_water1 not in (None, 0):
+                rec.valime_kerosen1 = rec.wt_sample1 - rec.valume_water1
+                rec.fsi2 = (rec.valime_kerosen1 / rec.valume_water1) * 100
+            else:
+                rec.valime_kerosen1 = 0
+                rec.fsi2 = 0
 
     @api.depends('fsi1', 'fsi2')
     def _compute_fsi_avg(self):
@@ -2464,30 +2540,7 @@ class ShrinkagelimitLINE(models.Model):
             else:
                 rec.moisture_content_shri = 0.0
 
-    # @api.depends("parent_id")
-    # def _compute_volume_wet_shri(self):
-    #     for rec in self:
-    #         volume = 0.0
-    #         if rec.parent_id:
-    #             # घेतो पहिला record volume wet lines मधून
-    #             wet_line = rec.parent_id.volume_wet_table[:1]  
-    #             if wet_line:
-    #                 volume = wet_line.volume_wet
-    #         rec.volume_wet_shri = volume
-
-    # @api.depends("parent_id")
-    # def _compute_volume_dry_shir(self):
-    #     for rec in self:
-    #         volume1 = 0.0
-    #         if rec.parent_id:
-    #             # घेतो पहिला record volume wet lines मधून
-    #             wet_line1 = rec.parent_id.volume_dry_table[:1]  
-    #             if wet_line1:
-    #                 volume1 = wet_line1.volume_dry
-    #         rec.volume_dry_shir = volume1
-
-    
-
+   
 
     @api.depends('moisture_content_shri', 'volume_wet_shri', 'volume_dry_shir', 'mass_dry')
     def _compute_shrinkage_limit(self):
