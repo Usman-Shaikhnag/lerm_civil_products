@@ -27,51 +27,30 @@ class ERTSoilResistivity(models.Model):
 
     @api.model
     def create(self, vals):
-        if vals.get("name", "New") == "New":
-            vals["name"] = self.env["ir.sequence"].next_by_code("ert.soil.resistivity.seq") or "New"
-            
         record = super().create(vals)
-        if record.ert_parent_id:
+        if not self.env.context.get('skip_auto_copy') and record.ert_parent_id:
+            # Only auto-link when NOT duplicating
             self.env['ert.lines'].sudo().create({
                 'parent_id': record.ert_parent_id.id,
                 'soil_resistivity_id': record.id
             })
         return record
     
-    # def copy(self, default=None):
-    #     """
-    #     Overrides the copy method to explicitly ensure deep duplication of 
-    #     the records linked by graph_images and line_ids.
-    #     """
-    #     default = dict(default or {})
-        
-    #     # 1. Store the original line data reference from one of the fields.
-    #     #    Since both graph_images and line_ids point to the same set of 
-    #     #    records via 'parent_id', we only need to iterate over one list.
-    #     original_lines = self.line_ids
+    def copy(self, default=None):
+        # if self.env.context.get('skip_auto_copy'):
+        #     # Just copy main record, no deep children
+        #     return super().copy(default)
 
-    #     # 2. IMPORTANT: Prevent Odoo's default copy mechanism from duplicating 
-    #     #    the lines for BOTH One2many fields by setting them to empty lists 
-    #     #    in the default values dictionary.
-    #     default['graph_images'] = []
-    #     default['line_ids'] = []
-        
-    #     # 3. Create the new ERTSoilResistivity header record.
-    #     #    super().copy() handles all non-One2many fields and respects 
-    #     #    the name field's copy=False attribute.
-    #     new_resistivity = super(ERTSoilResistivity, self).copy(default)
+        default = dict(default or {})
+        new_res = super().copy(default)
 
-    #     # 4. Manually loop over the original line records and copy them.
-    #     #    This creates exactly one set of lines with the correct data 
-    #     #    and links them to the new parent ID.
-    #     for line in original_lines:
-    #         # line.copy() creates the new line record and copies all its stored fields.
-    #         line.copy({
-    #             'parent_id': new_resistivity.id,
-    #         })
+        # Deep copy resistivity lines
+        for rec in self.line_ids:
+            rec.copy({'parent_id': new_res.id})
 
-    #     return new_resistivity
-    
+        return new_res
+
+     
     
     def save_ert(self):
         # ert_parent = self.env['lerm.ert.parent'].sudo().search([('id','=',self.ert_parent_id.id)])

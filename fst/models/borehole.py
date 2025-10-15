@@ -24,30 +24,42 @@ class ERTBorehole(models.Model):
     parent_id = fields.Many2one('soil.borehole.parent')
 
     # line_ids = fields.One2many("soil.borehole.line", "borehole_id", string="SBC Lines")
-    nvalue_ids = fields.One2many("soil.borehole.nvalue", "borehole_id", string="N-Vlaues")
+    nvalue_ids = fields.One2many("soil.borehole.nvalue", "borehole_id", string="N-Vlaues",copy=False)
     graph_image = fields.Binary("Borehole Graph")
 
     # Add these three One2many fields
-    spt_n_value_ids = fields.One2many("spt.n.value", "borehole_id", string="Corrected SPT N-Values")
+    spt_n_value_ids = fields.One2many("spt.n.value", "borehole_id", string="Corrected SPT N-Values",copy=False)
     hammer_energy = fields.Integer(string="HAMMER ENERGY Ne")
     corrected_spt_graph = fields.Binary("Correct SPT Graph")
     
-    direct_shear_ids = fields.One2many("direct.shear.test", "borehole_id", string="Direct Shear Tests")
+    direct_shear_ids = fields.One2many("direct.shear.test", "borehole_id", string="Direct Shear Tests",copy=False)
     direct_shear_graph = fields.Binary("Direct Shear Graph", store=True)
     cohesion = fields.Float(string='Cohesion (C) (Kg/cm²)',store=True,digits=(16, 3))
     angle_of_internal_friction = fields.Float(string='Angle of Internal Friction (\u03C6) (\u00b0)',store=True,digits=(16, 2))
     tan_phi = fields.Float(string='tan(phi) (Slope)',store=True,digits=(16, 3))
 
     # Link to the Grain Size Analysis test records (One2many)
-    grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis Tests")    
+    grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis Tests",copy=False) 
     grain_size_graph = fields.Binary("Grain Size Graph", store=True)
     weight = fields.Integer("Weight")
     
-    def copy(self, default=None):
-        default = dict(default or {})
+    @api.model
+    def create(self, vals):
+        record = super().create(vals)
+        if not self.env.context.get('skip_auto_copy') and record.parent_id:
+            # Only auto-link when NOT duplicating
+            self.env['soil.borehole.lines'].sudo().create({
+                'parent_id': record.parent_id.id,
+                'soil_borehole_id': record.id
+            })
+        return record
 
+    def copy(self, default=None):
+        """Safe duplication with deep-copy only once"""
+        default = dict(default or {})
         new_borehole = super().copy(default)
 
+        # Deep copy child tables
         for rec in self.nvalue_ids:
             rec.copy({'borehole_id': new_borehole.id})
         for rec in self.spt_n_value_ids:
@@ -58,6 +70,7 @@ class ERTBorehole(models.Model):
             rec.copy({'borehole_id': new_borehole.id})
 
         return new_borehole
+
     
     
     def generate_borehole_graph(self):
@@ -630,19 +643,6 @@ class ERTBorehole(models.Model):
             borehole.grain_size_graph = base64.b64encode(buffer.getvalue())
             buffer.close()
 
-
-    @api.model
-    def create(self, vals):
-        if vals.get("name", "New") == "New":
-            vals["name"] = self.env["ir.sequence"].next_by_code("soil.borehole.seq") or "New"
-            
-        record = super().create(vals)
-        if record.parent_id:
-            self.env['soil.borehole.lines'].sudo().create({
-                'parent_id': record.parent_id.id,
-                'soil_borehole_id': record.id
-            })
-        return record
 class SoilBoreholeParent(models.Model):
     _name = "soil.borehole.line.parent"
     _description = "Borehole Parent Details"

@@ -11,7 +11,7 @@ class LermErtParent(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Project Name")
-    ert_lines = fields.One2many('ert.lines','parent_id',"ERT Lines")
+    ert_lines = fields.One2many('ert.lines','parent_id',"ERT Lines", copy=False)
     rec_date  = fields.Date("Date")
 
     def create_ert(self):
@@ -45,7 +45,44 @@ class LermErtParent(models.Model):
         report = self.env.ref('fst.soil_resistivity_report_py3o1')
         filename = f"{self.name or 'ERT'}"
         return report.report_action(self, config={'report_name': filename})
-      
+    
+    
+    
+    def copy_data(self, default=None):
+        """Prevent automatic copying of One2many lines"""
+        data = super().copy_data(default)[0]
+        data['ert_lines'] = []  # remove auto-copying of lines
+        return [data]
+
+
+    def action_duplicate_parent(self):
+        for record in self:
+            # 1️⃣ Create a clean new parent
+            new_parent = record.with_context(skip_auto_copy=True).copy({
+                'name': f"{record.name} Copy",
+                'ert_lines': False,
+            })
+
+            # 2️⃣ Manually duplicate each ERT line and linked resistivity test
+            for line in record.ert_lines:
+                if line.soil_resistivity_id:
+                    # Deep copy resistivity safely
+                    new_res = line.soil_resistivity_id.with_context(skip_auto_copy=True).copy({
+                        'ert_parent_id': new_parent.id,
+                        'name': f"{line.soil_resistivity_id.name} Copy",
+                    })
+
+                    # Link new resistivity to new parent
+                    self.env['ert.lines'].create({
+                        'parent_id': new_parent.id,
+                        'soil_resistivity_id': new_res.id,
+                    })
+                else:
+                    # Empty line if no resistivity linked
+                    self.env['ert.lines'].create({'parent_id': new_parent.id})
+
+        return True
+
     # def print_report(self):
     #     # Collect soil resistivity records
     #     soil_resistivity_records = self.mapped("ert_lines.soil_resistivity_id")
@@ -94,11 +131,67 @@ class SoilBoreholeParent(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Project Name")
-    borehole_lines = fields.One2many('soil.borehole.lines','parent_id',"ERT Lines")
-    rec_date  = fields.Date("Date")
+    borehole_lines = fields.One2many('soil.borehole.lines', 'parent_id', string="Borehole Lines", copy=False)
+    rec_date = fields.Date("Date")
 
-    combined_images = fields.One2many('soil.borehole.parent.image', 'parent_id', string="Combined Images", compute="_compute_combined_images", store=True)
+    # Optional computed field
+    combined_images = fields.One2many(
+        'soil.borehole.parent.image',
+        'parent_id',
+        string="Combined Graph Image",
+        compute="_compute_combined_images",
+        store=True,
+        copy=False,
+    )
 
+    
+    def copy_data(self, default=None):
+        """Prevent automatic copying of One2many borehole lines"""
+        data = super().copy_data(default)[0]
+        data['borehole_lines'] = []  # Prevent auto-copy of child lines
+        return [data]
+
+
+    def action_duplicate_parent(self):
+        """Duplicate the parent + all linked boreholes cleanly"""
+        for record in self:
+            # 1️⃣ Create clean new parent (no O2M auto copy)
+            new_parent = record.with_context(skip_auto_copy=True).copy({
+                'name': f"{record.name} Copy",
+                'borehole_lines': False,
+            })
+
+            # 2️⃣ Manually duplicate each borehole + re-link it
+            for line in record.borehole_lines:
+                borehole = line.soil_borehole_id
+                if not borehole:
+                    continue
+
+                # Copy borehole safely
+                new_borehole = borehole.with_context(skip_auto_copy=True).copy({
+                    'name': f"{borehole.name} Copy",
+                })
+
+                # Create linking line
+                self.env['soil.borehole.lines'].create({
+                    'parent_id': new_parent.id,
+                    'soil_borehole_id': new_borehole.id,
+                })
+
+        return True
+
+        # 4️⃣ Open the new parent form
+        return True
+        # return {
+        #     'type': 'ir.actions.act_window',
+        #     'res_model': self._name,
+        #     'res_id': new_parent.id,
+        #     'view_mode': 'form',
+        #     'target': 'current',
+        # }
+
+
+    
 
     def create_ert(self):
         
@@ -111,6 +204,26 @@ class SoilBoreholeParent(models.Model):
                 'default_parent_id':self.id
             }
         }
+    
+        
+    # @api.model
+    # def get_react_base_url(self):
+    #     """Detect React app URL dynamically."""
+    #     # Check system parameter if set, fallback to localhost:3000
+    #     param = self.env['ir.config_parameter'].sudo().get_param('react_app_url', 'http://localhost:3000')
+    #     return param
+
+    # def action_open_react(self):
+    #     base_url = self.get_react_base_url()
+    #     for rec in self:
+    #         url = f"{base_url}/borehole/{rec.id}"
+    #         return {
+    #             'type': 'ir.actions.act_url',
+    #             'target': 'new',
+    #             'url': url,
+    #         }
+        
+
     
     def print_report(self):
         report = self.env.ref('fst.borehole_report_py3o')
@@ -211,14 +324,35 @@ class SoilBoreholeParentImage(models.Model):
 class LermErtLines(models.Model):
     _name = "ert.lines"  
 
-    parent_id = fields.Many2one('lerm.ert.parent') 
-    soil_resistivity_id = fields.Many2one('ert.soil.resistivity')
+    parent_id = fields.Many2one('lerm.ert.parent',copy=False)
+    soil_resistivity_id = fields.Many2one('ert.soil.resistivity',copy=False)
+    
+    
+    def action_duplicate_ert(self):
+        for record in self:
+            if not record.soil_resistivity_id:
+                raise UserError("No Borehole is linked to duplicate.")
+
+            # 1. Read original name
+            original_name = record.soil_resistivity_id.name
+
+            # 2. Copy the borehole, giving the COPY a new name
+            new_borehole = record.soil_resistivity_id.copy({
+                'name': f"{original_name} Copy",
+                'ert_parent_id': record.parent_id.id,
+            })
+
+        return True
+    
+    def action_delete_line(self):
+        for rec in self:
+            rec.unlink()
 
 class SoilBoreholeLines(models.Model):
     _name = "soil.borehole.lines" 
 
-    parent_id = fields.Many2one('soil.borehole.parent') 
-    soil_borehole_id = fields.Many2one('soil.borehole')
+    parent_id = fields.Many2one('soil.borehole.parent', copy=False)
+    soil_borehole_id = fields.Many2one('soil.borehole', copy=False)
     
     def action_duplicate_borehole(self):
         for record in self:
@@ -235,6 +369,10 @@ class SoilBoreholeLines(models.Model):
             })
 
         return True
+
+    def action_delete_line(self):
+        for rec in self:
+            rec.unlink()
 
 
 class ERTDashboard(models.Model):

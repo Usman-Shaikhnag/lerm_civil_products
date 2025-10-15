@@ -70,6 +70,8 @@
                             <tree editable="bottom">
                                 <field name="soil_resistivity_id" widget="many2one" options="{'no_open': False}"/>
                                 <field name="create_date" readonly="1"/>
+                                <button name="action_duplicate_ert" string="Duplicate" type="object" icon="fa-copy" class="btn-secondary"/>
+                                <button name="action_delete_line" string="Delete" type="object" icon="fa-trash" class="btn-danger"/>
                             </tree>
                         </field>
                     
@@ -78,7 +80,20 @@
                 </form>
             </field>
         </record>
-                
+        
+        <record id="soil_borehole_parent_tree_view" model="ir.ui.view">
+            <field name="name">soil.borehole.parent.tree</field>
+            <field name="model">soil.borehole.parent</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name='name'/>
+                    <field name="rec_date" optional="show" />
+                    <button name="action_duplicate_parent" string="Duplicate Project" type="object" class="btn-secondary" icon="fa-copy"/>
+                </tree>
+            </field>
+        </record>
+
+
         <record id="soil_borehole_parent_view" model="ir.ui.view">
             <field name="name">soil.borehole.parent.form</field>
             <field name="model">soil.borehole.parent</field>
@@ -86,6 +101,7 @@
                 <form>
                     <header>
                         <button name="print_report" string="Print Project Report" type="object" class="btn-primary"/>
+                        <!-- <button name="action_open_react" string="Open in React" type="object" class="btn-primary"/> -->
 
                     </header>
 
@@ -113,10 +129,9 @@
                                         <field name="soil_borehole_id" widget="many2one" options="{'no_open': False}"/>
                                         <field name="create_date" readonly="1"/>
 
-                                        <button name="action_duplicate_borehole"
-                                                string="Duplicate"
-                                                type="object"
-                                                class="btn-primary"/>
+                                        <button name="action_duplicate_borehole" string="Duplicate" type="object" class="btn-secondary" icon="fa-copy"/>
+                                        <button name="action_delete_line" string="Delete" type="object" icon="fa-trash" class="btn-danger"/>
+                                    
                                     </tree>
                                 </field>
                             </page>
@@ -161,6 +176,8 @@
                     </header> -->
                     <field name='name'/>
                     <field name="rec_date" optional="show" />
+                    <button name="action_duplicate_parent" string="Duplicate Project" type="object" class="btn-secondary" icon="fa-copy"/>
+
                 </tree>
             </field>
         </record>
