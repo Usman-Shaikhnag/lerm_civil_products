@@ -26,7 +26,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class TemperatureMonitoringController(http.Controller):
-    @http.route('/create_temp_mon', type='json', auth='public', methods=['POST'], csrf=False,cors='*')
+    @http.route('/create_temp_mon', type='json', auth='public', methods=['POST', 'OPTIONS'], csrf=False,cors='*')
     def create_temp_mon(self, **kwargs):
         # Get raw POST data
         # import wdb; wdb.set_trace()
