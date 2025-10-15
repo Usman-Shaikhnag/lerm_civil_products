@@ -19,7 +19,9 @@
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
                         <field name="eln_ref" readonly="1"/>
-                        <field name="size_id"/>
+                        <!-- <field name="size_id"/> -->
+                        <field name="size" />
+                        <field name="product_id" invisible="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
 
@@ -81,6 +83,71 @@
                                 </tr>
                             </tbody>
                         </table>
+
+
+                     <!-- Scratch hardness According to Moh's Scale -->
+
+                      <div invisible="not scratch_hardness_visible">
+                        <h1>
+                            <field name="scratch_hardness_name" readonly="1" nolabel="1"/>
+                            <field name="scratch_hardness_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <!-- <div class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <table>
+                    <tbody>
+                      <tr>
+                        <td><span>Type of group</span></td>
+                      </tr>
+                      <tr>
+                        <td><field name="size" /></td>
+                      </tr>
+                      </tbody>
+                    </table>
+                        
+                    </div> -->
+
+                    <div>
+                    <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
+                    <tbody>
+                      <tr>
+                        <td><span>Observations</span></td>
+                        <td><span>1</span></td>
+                        <td><span>2</span></td>
+                        <td><span>3</span></td>
+                        <td><span>4</span></td>
+                        <td><span>5</span></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td><field  name="observations1"  colspan="1"  nolabel="1"/></td>
+                        <td><field  name="observations2"  colspan="1"  nolabel="1"/></td>
+                        <td><field  name="observations3"  colspan="1"  nolabel="1"/></td>
+                        <td><field  name="observations4"  colspan="1"  nolabel="1"/></td>
+                        <td> <field  name="observations5"  colspan="1"  nolabel="1"/></td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    </div>
+                    <group/>
+
+                    <div>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
+                      <tr>
+                        <td><span>Scratch hardness According to Moh's Scale</span></td>
+                        <td><field name='scratch_hardness_avg' col="1"/></td>
+                      </tr>
+                      <tr>
+                        <td><span>Requirement ,Scratch hardness According to Moh's Scale</span></td>
+                        <td> <field name='requirement_scratch_hardness' col="1"/></td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    </div>
+                    <group/>
 
                     
 
