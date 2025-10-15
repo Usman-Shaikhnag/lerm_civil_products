@@ -2048,10 +2048,7 @@ class CoarseAggregateMechanical(models.Model):
                     record.soundness_na2so4_visible = True
                 if sample.internal_id == '89650e58-11a6-42af-8eb7-187467443a79':
                     record.soundness_mgso4_visible = True
-                # if sample.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
-                #     record.elongation_visible = True
-                # if sample.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
-                #     record.flakiness_visible = True
+              
 
                 if sample.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
                     record.elongation_visible = True
