@@ -38,7 +38,9 @@
     'reports/general_report_template.xml',
     'reports/general_template.xml',
     'reports/mechanical_general_template.xml',
-    'security/ir.model.access.csv'
+    'security/ir.model.access.csv',
+    'reports/genstru_eln_report.xml',
+    'reports/genstru_eln_datasheet.xml'
    
 
 

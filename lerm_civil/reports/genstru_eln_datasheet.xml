@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="genstru_data_sheet_header">
+        <div t-attf-class="header article" t-att-style="report_header_style">
+			<div class="row">
+				<div class="col-12"  style="display: flex; justify-content: space-between;">
+				
+				
+					<div style="text-align:center;">
+						TEST DATA SHEET
+					</div>
+					
+				</div>
+			</div>
+        </div>
+        <div t-attf-class="article" t-att-style="report_header_style">
+            <t t-out="0"/>
+        </div>
+		<div t-attf-class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+            
+				
+                <div t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+	</template>
+ 
+
+</odoo>
