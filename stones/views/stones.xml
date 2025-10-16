@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_stones" model="ir.ui.view">
+        <field name="name">mechanical.stones.form</field>
+        <field name="model">mechanical.stones</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                    <h1>
+                        <field name="name_stones" readonly="1" nolabel="1"/>
+                    </h1>
+                    <group>
+                       <field name="grade"/>
+                    </group>
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="size_id"/>
+                        
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
+                    <group/>
+
+
+                  
+
+                     <!-- Scratch hardness According to Moh's Scale -->
+
+                      <div invisible="not scratch_hardness_visible">
+                        <h1>
+                            <field name="scratch_hardness_name" readonly="1" nolabel="1"/>
+                            <field name="scratch_hardness_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                 
+
+                    <div invisible="not scratch_hardness_visible">
+                    <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
+                    <tbody>
+                      <tr>
+                        <td><span>Observations</span></td>
+                        <td><span>1</span></td>
+                        <td><span>2</span></td>
+                        <td><span>3</span></td>
+                        <td><span>4</span></td>
+                        <td><span>5</span></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td><field  name="observations1"  colspan="1"  nolabel="1"/></td>
+                        <td><field  name="observations2"  colspan="1"  nolabel="1"/></td>
+                        <td><field  name="observations3"  colspan="1"  nolabel="1"/></td>
+                        <td><field  name="observations4"  colspan="1"  nolabel="1"/></td>
+                        <td> <field  name="observations5"  colspan="1"  nolabel="1"/></td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    </div>
+                    <group/>
+
+                    <div invisible="not scratch_hardness_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <tbody>
+                      <tr>
+                        <td><span>Scratch hardness According to Moh's Scale</span></td>
+                        <td><field name='scratch_hardness_avg' col="1"/></td>
+                      </tr>
+                     
+                      </tbody>
+                    </table>
+                    </div>
+                    <group/>
+
+
+
+                     <!-- Compressive Strength in dry condition -->
+
+                    <div invisible = "compressive_dry_visible == False">
+                        <h1 class="text-center">
+                            <field name="compressive_dry_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_dry_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+        
+
+                     <div invisible = "compressive_dry_visible == False">
+                        <field name="compressive_dry_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name="serial_no" />
+                                    <field name="date" />
+                                    <field name="lab_id" width="120"/>
+                                    <field name="room_temp" width="100"/>
+                                    <field name="relative_humidity" width="100"/>
+                                    
+                                    <!-- ✅ Wrap long text fields -->
+                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;"/>
+                                    <field name="stone_type" width="150" style="white-space: normal;"/>
+                                    <field name="shape_stone" width="160" style="white-space: normal;"/>
+                                    <field name="test_conditin" width="150" style="white-space: normal;"/>
+
+                                    <field name="height_shape" width="100"/>
+                                    <field name="width_stone" width="100"/>
+                                    <field name="load_perpendiculer" width="150"/>
+                                    <field name="load_parallel" width="150"/>
+                                    <field name="load_perpendiculer_n" width="150"/>
+                                    <field name="load_parallel_n" width="150"/>
+                                    <field name="duration_test" width="120"/>
+                                    <field name="appearance_stone" width="180"/>
+                                    <field name="hd_stone" width="100"/>
+                                    <field name="area_stone" width="120"/>
+                                    <field name="compressive_perpendiculer" width="200"/>
+                                    <field name="compressive_parallel" width="200"/>
+                                    <field name="stress_perpendiculer" width="180"/>
+                                    <field name="stress_parallel" width="180"/>
+
+
+                            </tree>
+                        </field>
+                    </div>
+
+
+                    <div invisible = "compressive_dry_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><span>Average Compressive Strength Perpendicular Dry  (N/mm²)</span></td>
+                                <td><field name='compressive_perpendiculer_avg' col="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>Average Compressive Strength Parallel Dry (N/mm²)</span></td>
+                                <td> <field name='compressive_parallel_avg' col="1"/></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                     <!-- Compressive Strength in wet condition -->
+
+                    <div invisible = "compressive_wet_visible == False">
+                        <h1 class="text-center">
+                            <field name="compressive_wet_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_wet_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+        
+
+                     <div invisible="compressive_wet_visible == False">
+                            <field name="compressive_wet_ids">
+                                <tree editable="bottom" class="custom_table_borders" string="Compressive Wet Test Readings">
+                                    <field name="serial_no"/>
+                                    <field name="date" />
+                                    <field name="lab_id" width="120"/>
+                                    <field name="room_temp" width="100"/>
+                                    <field name="relative_humidity" width="100"/>
+                                    
+                                    <!-- ✅ Wrap long text fields -->
+                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;"/>
+                                    <field name="stone_type" width="150" style="white-space: normal;"/>
+                                    <field name="shape_stone" width="160" style="white-space: normal;"/>
+                                    <field name="test_conditin" width="150" style="white-space: normal;"/>
+
+                                    <field name="height_shape" width="100"/>
+                                    <field name="width_stone" width="100"/>
+                                    <field name="load_perpendiculer" width="150"/>
+                                    <field name="load_parallel" width="150"/>
+                                    <field name="load_perpendiculer_n" width="150"/>
+                                    <field name="load_parallel_n" width="150"/>
+                                    <field name="duration_test" width="120"/>
+                                    <field name="appearance_stone" width="180"/>
+                                    <field name="hd_stone" width="100"/>
+                                    <field name="area_stone" width="120"/>
+                                    <field name="compressive_perpendiculer" width="200"/>
+                                    <field name="compressive_parallel" width="200"/>
+                                    <field name="stress_perpendiculer" width="180"/>
+                                    <field name="stress_parallel" width="180"/>
+                                </tree>
+                            </field>
+                        </div>
+
+
+
+                        <div invisible = "compressive_wet_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><span>Average Compressive Strength Perpendicular Wet (N/mm²)</span></td>
+                                <td><field name='compressive_perpendiculer_wet_avg' col="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>Average Compressive Strength Parallel Wet (N/mm²)</span></td>
+                                <td> <field name='compressive_parallel_wet_avg' col="1"/></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div invisible="not (porosity_visible or water_absorption_visible or app_specific_visible or true_specific_visible)">
+
+                        <h1 class="text-center">
+                            <field name="porosity_name" readonly="1" nolabel="1"/>
+                            <field name="porosity_visible" invisible="1"/>
+                            <field name="water_absorption_visible" invisible="1"/>
+                            <field name="app_specific_visible" invisible="1"/>
+                            <field name="true_specific_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+                <div invisible="not (porosity_visible or water_absorption_visible or app_specific_visible or true_specific_visible)">
+
+
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><span>Weight of oven dried test piece in gm</span></td>
+                                <td><field name='weight_oven_dried' col="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>Weight of saturated surface dry test piece gm</span></td>
+                                <td> <field name='weight_saturated_surface_dry' col="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><span>Quantity of water added in 1000 ml jar containing tets piece in gm</span></td>
+                                <td> <field name='water_added' col="1"/></td>
+                            </tr>
+
+                             <tr>
+                                <td><span>App. Porosity</span></td>
+                                <td> <field name='app_porosity' col="1"/></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><span>Weight of oven dried test piece in gm</span></td>
+                                <td><field name='wet_of_oven_water' col="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>Weight of saturated surface dry test piece gm</span></td>
+                                <td> <field name='wet_of_satureted_water' col="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><span>Water Absorption</span></td>
+                                <td> <field name='water_absorption' col="1"/></td>
+                            </tr>
+
+                            
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                    <div class="d-flex gap-2">
+                        
+
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><span>Weight of oven dried test piece in gm</span></td>
+                                <td><field name='wet_of_oven_specific' col="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>Quantity of water added in 1000 ml jar containing tets piece in gm</span></td>
+                                <td> <field name='water_addes_specifc' col="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><span>App. Specific gravity</span></td>
+                                <td> <field name='app_specific_gravity' col="1"/></td>
+                            </tr>
+
+                            
+                            </tbody>
+                        </table>
+
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><span>Weight of empty Sp. Gravity bottle with stopper  in gms</span></td>
+                                <td><field name='wet_true_specific' col="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>Wt. of bottle with stopper and powder in gms</span></td>
+                                <td> <field name='wt_stop_true_specifc' col="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><span>Wt. of bottle with stopper, powder and distilled water at room temp. in gms</span></td>
+                                <td> <field name='wt_bottle_true_specifc' col="1"/></td>
+                            </tr>
+
+                             <tr>
+                                <td><span>Wt. of bottle with stopper filled with distilled water at room temp. in gms</span></td>
+                                <td> <field name='wt_bottle_stope_true_specifc' col="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>True Specific gravity</span></td>
+                                <td> <field name='true_specific_gravity' col="1"/></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    </div>
+
+
+                    
+
+                  
+                    <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
