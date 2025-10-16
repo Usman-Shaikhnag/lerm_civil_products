@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+<template id="genstru_layout_header_footer_lerm_eln">
+        <div t-attf-class="header article" t-att-style="report_header_style">
+            <table style="width:100%;border-collapse:collapse;font-family:'Arial';font-size:11px;">
+                <tr style="height:100px;">
+                    <!-- LEFT: Logo -->
+                    <td style="width:20%;vertical-align:middle;text-align:left;">
+                        <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'" style="height:40px;"/>
+                        <div style="font-size:9px;">Consultants Pvt. Ltd.</div>
+                    </td>
+
+                    <!-- CENTER: Title -->
+                    <td style="width:55%;text-align:center;vertical-align:middle;" class="" t-foreach="eln" t-as="o">
+                        <div style="font-weight:bold;text-transform:uppercase;font-size:12px;">
+                            TEST REPORT - <span t-field="o.material.name"/> SAMPLES - GCPL/QF/7-8 A
+                        </div>
+                        <div style="margin-top:4px; border-top:1px solid #000; width:100%;"></div>
+                        <table style="width:100%;font-size:9px;margin-top:3px;">
+                            <tr>
+                                <td style="text-align:left;">
+                                    Issue No. and Date: (03) and 01/01/2021
+                                </td>
+                                <td style="text-align:right;">
+                                    Revision No. and Date: 02 and 22/07/2022
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+                   
+             
+
+                <td style="width:55%;text-align:center;vertical-align:middle;">
+                        <div style="font-size:12px;">
+                             “Bhumanthan”, Survey No. 50/1, Parkhe Vasti,<br/>
+                            Near Hirai Sita Mandir, Hinjewadi, Pune - 411057.
+                        </div>
+                        <div style="margin-top:4px;border-top:1px solid #000;"></div>
+                        <table style="width:100%;font-size:9px;margin-top:3px;">
+                            <tr>
+                              <td style="text-align:left; width:70%;">
+                                    <div style="text-align:left; font-size:11px; line-height:1.4;">
+                                        <b>W:</b> www.genstru.com<br/>
+                                        <b>E:</b> email@genstru.in
+                                    </div>
+                                </td>
+                                <td style="text-align:right; width:30%;">
+                                    <img t-att-src="'/lerm_civil/static/src/img/qr_logo.png'" style="height:40px; width:auto;"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+
+                    <td style="width:40%; vertical-align:middle; text-align:left;">
+                        <img t-att-src="'/lerm_civil/static/src/img/nabl_logo.png'" style="height:100px; width:auto;"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+         <div t-attf-class="article" t-att-style="report_header_style">
+			
+            <t t-out="0"/>
+				
+        </div>
+
+        	<div t-attf-class="footer o_standard_footer">
+            <div class="text-center" style="padding-top:45px; border-top: 1px solid black">					
+				<!-- <div class="footerQR" style="">
+					<div style="">
+						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+					</div>
+					
+					<div style="">
+						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="height: 65px;" />
+					</div>
+					<div style="">
+						<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 65px; height: 60px"/>
+					</div>
+
+				</div> -->
+                <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+				
+					
+            </div>	
+            </div>
+
+    </template>
+</odoo>
