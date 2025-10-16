@@ -351,57 +351,6 @@ class FineAggregate(models.Model):
 
   
 
-    # specific_gravity_conformity = fields.Selection([
-    #         ('pass', 'Pass'),
-    #         ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
-
-    # @api.depends('specific_gravity','eln_ref','grade')
-    # def _compute_specific_gravity_conformity(self):
-        
-    #     for record in self:
-    #         record.specific_gravity_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
-                    
-    #                 lower = record.specific_gravity - record.specific_gravity*mu_value
-    #                 upper = record.specific_gravity + record.specific_gravity*mu_value
-    #                 if lower >= req_min and upper <= req_max:
-    #                     record.specific_gravity_conformity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.specific_gravity_conformity = 'fail'
-
-    # specific_gravity_nabl = fields.Selection([
-    #     ('pass', 'NABL'),
-    #     ('fail', 'Non-NABL')], string="NABL", compute="_compute_specific_gravity_nabl", store=True)
-
-    # @api.depends('specific_gravity','eln_ref','grade')
-    # def _compute_specific_gravity_nabl(self):
-        
-    #     for record in self:
-    #         record.specific_gravity_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 lab_min = line.lab_min_value
-    #                 lab_max = line.lab_max_value
-    #                 mu_value = line.mu_value
-                    
-    #                 lower = record.specific_gravity - record.specific_gravity*mu_value
-    #                 upper = record.specific_gravity + record.specific_gravity*mu_value
-    #                 if lower >= lab_min and upper <= lab_max:
-    #                     record.specific_gravity_nabl = 'pass'
-    #                     break
-    #                 else:
-    #                     record.specific_gravity_nabl = 'fail'
-
-
 
 
 
@@ -723,6 +672,8 @@ class FineAggregate(models.Model):
     #             record.loose_bulk_density = record.sample_weight / record.weight_bucket
     #         else:
     #             record.loose_bulk_density = 0.0
+
+
 
 
       # 4. Bulking of Sand
@@ -1263,248 +1214,8 @@ class FineAggregate(models.Model):
             else:
                 record.avg_compacted_nabl = 'fail'
 
-# Soundness Na2SO4
-    soundness_na2so4_name = fields.Char("Name",default="Soundness Na2SO4")
-    soundness_na2so4_visible = fields.Boolean("Soundness Na2SO4 Visible",compute="_compute_visible")
 
-    soundness_na2so4_child_lines = fields.One2many('mechanical.soundness.na2so4.line','parent_id',string="Parameter",default=lambda self: self._default_soundness_na2so4_child_lines())
-    total_na2so4 = fields.Integer(string="Total",compute="_compute_total_na2so4")
-    soundness_na2so4 = fields.Float(string="Soundness",compute="_compute_soundness_na2so4")
-
-    total_grading = fields.Float(string="Total Grading of Original sample in %", compute="_compute_total_grading")
-
-    @api.depends('soundness_na2so4_child_lines.grading_original_sample')
-    def _compute_total_grading(self):
-        for record in self:
-            total_grading = sum(line.grading_original_sample for line in record.soundness_na2so4_child_lines)
-            record.total_grading = total_grading
-
-
-    total_weight_before = fields.Float(string="Total Weight of test fraction before test in gm", compute="_compute_total_weight")
-
-    @api.depends('soundness_na2so4_child_lines.weight_before_test')
-    def _compute_total_weight(self):
-        for record in self:
-            total_weight_before = sum(line.weight_before_test for line in record.soundness_na2so4_child_lines)
-            record.total_weight_before = total_weight_before
-
-    total_weight_after = fields.Float(string="Total Weight of test feaction Passing Finer Sieve After ", compute="_compute_total_weight_after")
-
-    @api.depends('soundness_na2so4_child_lines.weight_after_test')
-    def _compute_total_weight_after(self):
-        for record in self:
-            total_weight_after = sum(line.weight_after_test for line in record.soundness_na2so4_child_lines)
-            record.total_weight_after = total_weight_after
-
-    total_commulative = fields.Float(string="Total Commulative percentage Loss", compute="_compute_total_cumulative")
-
-    @api.depends('soundness_na2so4_child_lines.cumulative_loss_percent')
-    def _compute_total_cumulative(self):
-        for record in self:
-            total_commulative = sum(line.cumulative_loss_percent for line in record.soundness_na2so4_child_lines)
-            record.total_commulative = total_commulative
-    
-
-    @api.depends('soundness_na2so4_child_lines.weight_before_test')
-    def _compute_total_na2so4(self):
-        for record in self:
-            record.total_na2so4 = sum(record.soundness_na2so4_child_lines.mapped('weight_before_test'))
-    
-
-    @api.depends('soundness_na2so4_child_lines.cumulative_loss_percent')
-    def _compute_soundness_na2so4(self):
-        for record in self:
-            record.soundness_na2so4 = round((sum(record.soundness_na2so4_child_lines.mapped('cumulative_loss_percent'))),2)
-
-
-    @api.model
-    def _default_soundness_na2so4_child_lines(self):
-        default_lines = [
-            (0, 0, {'sieve_size_passing': '63 mm', 'sieve_size_retained': '40 mm'}),
-            (0, 0, {'sieve_size_passing': '40 mm', 'sieve_size_retained': '20 mm'}),
-            (0, 0, {'sieve_size_passing': '20 mm', 'sieve_size_retained': '10 mm'}),
-            (0, 0, {'sieve_size_passing': '10 mm', 'sieve_size_retained': '4.75 mm'})
-           
-        ]
-        return default_lines
-
-
-    soundness_na2so4_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_soundness_na2so4_conformity", store=True)
-
-    @api.depends('soundness_na2so4','eln_ref','grade')
-    def _compute_soundness_na2so4_conformity(self):
-        
-        for record in self:
-            record.soundness_na2so4_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','758e7e1-1de7-4297-b30c-d54a4f4e61e5')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','758e7e1-1de7-4297-b30c-d54a4f4e61e5')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.soundness_na2so4 - record.soundness_na2so4*mu_value
-                    upper = record.soundness_na2so4 + record.soundness_na2so4*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.soundness_na2so4_conformity = 'pass'
-                        break
-                    else:
-                        record.soundness_na2so4_conformity = 'fail'
-
-    soundness_na2so4_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_soundness_na2so4_nabl", store=True)
-
-    @api.depends('soundness_na2so4','eln_ref','grade')
-    def _compute_soundness_na2so4_nabl(self):
-        
-        for record in self:
-            record.soundness_na2so4_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','758e7e1-1de7-4297-b30c-d54a4f4e61e5')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','758e7e1-1de7-4297-b30c-d54a4f4e61e5')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.soundness_na2so4 - record.soundness_na2so4*mu_value
-            upper = record.soundness_na2so4 + record.soundness_na2so4*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.soundness_na2so4_nabl = 'pass'
-                break
-            else:
-                record.soundness_na2so4_nabl = 'fail'
-
-
-    # Soundness MgSO4
-    soundness_mgso4_name = fields.Char("Name",default="Soundness MgSO4")
-    soundness_mgso4_visible = fields.Boolean("Soundness MgSO4 Visible",compute="_compute_visible")
-
-    soundness_mgso4_child_lines = fields.One2many('mechanical.soundness.mgso4.line','parent_id',string="Parameter",default=lambda self: self._default_soundness_mgso4_child_lines())
-    total_mgso4 = fields.Integer(string="Total",compute="_compute_total_mgso4")
-    soundness_mgso4 = fields.Float(string="Soundness",compute="_compute_soundness_mgso4")
-
-
-    total_grading1 = fields.Float(string="Total Grading of Original sample in %", compute="_compute_total_grading1")
-
-    @api.depends('soundness_mgso4_child_lines.grading_original_sample')
-    def _compute_total_grading1(self):
-        for record in self:
-            total_grading1 = sum(line.grading_original_sample for line in record.soundness_mgso4_child_lines)
-            record.total_grading1 = total_grading1
-
-    total_weight_before_test1 = fields.Float(string="Total Weight of test fraction before test in gm.", compute="_compute_total_weight_before_test1")
-
-    @api.depends('soundness_mgso4_child_lines.weight_before_test')
-    def _compute_total_weight_before_test1(self):
-        for record in self:
-            total_weight_before_test1 = sum(line.weight_before_test for line in record.soundness_mgso4_child_lines)
-            record.total_weight_before_test1 = total_weight_before_test1
-
-
-    total_weight_before1 = fields.Float(string="Total Weight of test fraction before test in gm", compute="_compute_total_weight1")
-
-    @api.depends('soundness_mgso4_child_lines.weight_before_test')
-    def _compute_total_weight1(self):
-        for record in self:
-            total_weight_before1 = sum(line.weight_before_test for line in record.soundness_mgso4_child_lines)
-            record.total_weight_before1 = total_weight_before1
-
-    total_weight_after1 = fields.Float(string="Total Weight of test feaction Passing Finer Sieve After ", compute="_compute_total_weight_after1")
-
-    @api.depends('soundness_mgso4_child_lines.weight_after_test')
-    def _compute_total_weight_after1(self):
-        for record in self:
-            total_weight_after1 = sum(line.weight_after_test for line in record.soundness_mgso4_child_lines)
-            record.total_weight_after1 = total_weight_after1
-
-    total_commulative1 = fields.Float(string="Total Commulative percentage Loss", compute="_compute_total_cumulative1")
-
-    @api.depends('soundness_mgso4_child_lines.cumulative_loss_percent')
-    def _compute_total_cumulative1(self):
-        for record in self:
-            total_commulative1 = sum(line.cumulative_loss_percent for line in record.soundness_mgso4_child_lines)
-            record.total_commulative1 = total_commulative1
-    
-    
-
-    @api.depends('soundness_mgso4_child_lines.weight_before_test')
-    def _compute_total_mgso4(self):
-        for record in self:
-            record.total_mgso4 = sum(record.soundness_mgso4_child_lines.mapped('weight_before_test'))
-    
-
-    @api.depends('soundness_mgso4_child_lines.cumulative_loss_percent')
-    def _compute_soundness_mgso4(self):
-        for record in self:
-            record.soundness_mgso4 = round((sum(record.soundness_mgso4_child_lines.mapped('cumulative_loss_percent'))),2)
-    
-
-    @api.model
-    def _default_soundness_mgso4_child_lines(self):
-        default_lines = [
-            (0, 0, {'sieve_size_passing': '63 mm', 'sieve_size_retained': '40 mm'}),
-            (0, 0, {'sieve_size_passing': '40 mm', 'sieve_size_retained': '20 mm'}),
-            (0, 0, {'sieve_size_passing': '20 mm', 'sieve_size_retained': '10 mm'}),
-            (0, 0, {'sieve_size_passing': '10 mm', 'sieve_size_retained': '4.75 mm'})
-           
-        ]
-        return default_lines
-
-    soundness_mgso4_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_soundness_mgso4_conformity", store=True)
-
-
-    @api.depends('soundness_mgso4','eln_ref','grade')
-    def _compute_soundness_mgso4_conformity(self):
-        
-        for record in self:
-            record.soundness_mgso4_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d17d8e33-7c9d-4408-9f01-d49d726f9007')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d17d8e33-7c9d-4408-9f01-d49d726f9007')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.soundness_mgso4 - record.soundness_mgso4*mu_value
-                    upper = record.soundness_mgso4 + record.soundness_mgso4*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.soundness_mgso4_conformity = 'pass'
-                        break
-                    else:
-                        record.soundness_mgso4_conformity = 'fail'
-
-    soundness_mgso4_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_soundness_mgso4_nabl", store=True)
-
-    @api.depends('soundness_mgso4','eln_ref','grade')
-    def _compute_soundness_mgso4_nabl(self):
-        
-        for record in self:
-            record.soundness_mgso4_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.soundness_mgso4 - record.soundness_mgso4*mu_value
-                    upper = record.soundness_mgso4 + record.soundness_mgso4*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.soundness_mgso4_nabl = 'pass'
-                        break
-                    else:
-                        record.soundness_mgso4_nabl = 'fail'
+                
     
 
 
@@ -1661,9 +1372,7 @@ class FineAggregate(models.Model):
             record.compacted_density_visible = False
             record.void_compacted_density_visible = False
             record.void_loose_density_visible = False
-            record.soundness_na2so4_visible = False
-            record.soundness_mgso4_visible = False
-        
+           
           
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
@@ -1702,12 +1411,7 @@ class FineAggregate(models.Model):
                 if sample.internal_id == 'a594196d-d59f-4044-a801-6388ba38a723':
                     record.void_loose_density_visible = True
 
-                if sample.internal_id == '5758e7e1-1de7-4297-b30c-d54a4f4e61e5':
-                    record.soundness_na2so4_visible = True
-
-                if sample.internal_id == 'd17d8e33-7c9d-4408-9f01-d49d726f9007':
-                    record.soundness_mgso4_visible = True
-            
+              
 
 
 
@@ -2141,79 +1845,3 @@ class MoistureContentLine(models.Model):
 
 
 
-
-class SoundnessNa2Line(models.Model):
-    _name = "mechanical.soundness.na2so4.line"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
-    
-    sieve_size_passing = fields.Char(string="Sieve Size Passing")
-    sieve_size_retained = fields.Char(string="Sieve Size Retained")
-    weight_before_test = fields.Float(string="Weight of test fraction before test in gm.")
-    weight_after_test = fields.Float(string="Weight of test feaction Passing Finer Sieve After test")
-    grading_original_sample = fields.Float(string="Grading of Original sample in %", compute="_compute_grading")
-    passing_percent = fields.Float(string="Percentage Passing Finer Sieve After test (Percentage Loss)",compute="_compute_passing_percent")
-    cumulative_loss_percent = fields.Float(string="Commulative percentage Loss",compute="_compute_cumulative_na2so4")
-    
-    @api.depends('parent_id.total_na2so4','weight_before_test')
-    def _compute_grading(self):
-        for record in self:
-            try:
-                record.grading_original_sample = (record.weight_before_test/record.parent_id.total_na2so4)*100
-            except ZeroDivisionError:
-                record.grading_original_sample = 0
-
-    @api.depends('weight_before_test','weight_after_test')
-    def _compute_passing_percent(self):
-        for record in self:
-            try:
-                record.passing_percent = (record.weight_after_test / record.weight_before_test)*100
-            except:
-                record.passing_percent = 0
-
-    @api.depends('weight_after_test', 'parent_id.total_na2so4')
-    def _compute_cumulative_na2so4(self):
-        for record in self:
-            try:
-                record.cumulative_loss_percent = (record.weight_after_test / record.parent_id.total_na2so4) * 100
-            except:
-                record.cumulative_loss_percent = 0
-
-
-
-    
-
-class SoundnessMgLine(models.Model):
-    _name = "mechanical.soundness.mgso4.line"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
-    
-    sieve_size_passing = fields.Char(string="Sieve Size Passing")
-    sieve_size_retained = fields.Char(string="Sieve Size Retained")
-    weight_before_test = fields.Float(string="Weight of test fraction before test in gm.")
-    weight_after_test = fields.Float(string="Weight of test feaction Passing Finer Sieve After test")
-    grading_original_sample = fields.Float(string="Grading of Original sample in %", compute="_compute_grading")
-    passing_percent = fields.Float(string="Percentage Passing Finer Sieve After test (Percentage Loss)",compute="_compute_passing_percent")
-    cumulative_loss_percent = fields.Float(string="Commulative percentage Loss",compute="_compute_cumulative_mgso4")
-    
-    @api.depends('parent_id.total_mgso4','weight_before_test')
-    def _compute_grading(self):
-        for record in self:
-            try:
-                record.grading_original_sample = (record.weight_before_test/record.parent_id.total_mgso4)*100
-            except ZeroDivisionError:
-                record.grading_original_sample = 0
-
-    @api.depends('weight_before_test','weight_after_test')
-    def _compute_passing_percent(self):
-        for record in self:
-            try:
-                record.passing_percent = (record.weight_after_test / record.weight_before_test)*100
-            except:
-                record.passing_percent = 0
-
-    @api.depends('weight_after_test', 'parent_id.total_mgso4')
-    def _compute_cumulative_mgso4(self):
-        for record in self:
-            try:
-                record.cumulative_loss_percent = (record.weight_after_test / record.parent_id.total_mgso4) * 100
-            except:
-                record.cumulative_loss_percent = 0
