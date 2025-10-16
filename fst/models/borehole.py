@@ -17,6 +17,7 @@ from math import sqrt, pi
 import math
 from decimal import Decimal, ROUND_HALF_UP
 from scipy.interpolate import interp1d
+# from grainpy import Sample
 class ERTBorehole(models.Model):
     _name = "soil.borehole"
 
@@ -433,213 +434,115 @@ class ERTBorehole(models.Model):
     # @api.depends('grain_size_ids.line_ids.passing_percent', 'grain_size_ids.line_ids.sieve_size')
     def generate_grain_size_parameters(self):
         for borehole in self:
-            # --- 1. Calculate and Store D-Values/Coefficients for EACH Analysis ---
-            
-            # This list will store the *first* valid analysis's calculated D-values 
-            # to be used for the graph's vertical projection lines later.
+            borehole.grain_size_graph = False
             first_analysis_params = {'d10': 0.0, 'd30': 0.0, 'd60': 0.0, 'cu': 0.0, 'cc': 0.0}
             first_analysis_found = False
 
             if not borehole.grain_size_ids:
-                # If no analyses, clear the graph field on the borehole and continue
-                borehole.grain_size_graph = False
                 continue
 
-            # Reset the borehole's graph flag/field before starting
-            borehole.grain_size_graph = False
-            # Define evenly spaced X points in log-space for plotting
-            x_min = 0.001  # smallest sieve size
-            x_max = 100.0  # largest sieve size
-            x_plot = np.logspace(np.log10(x_min), np.log10(x_max), 100)  # 100 points
+            # Ensure D-values are precomputed
+            borehole.grain_size_ids._compute_d_values()
+
+            plt.style.use('seaborn-v0_8-whitegrid')
+            fig, ax = plt.subplots(figsize=(12, 9.5))
 
             for analysis in borehole.grain_size_ids:
-                # Clear previous values on the analysis record (moved from borehole)
-                analysis.d10 = analysis.d30 = analysis.d60 = analysis.cu = analysis.cc = 0.0
+                valid_lines = []
 
-                if not analysis.line_ids or len(analysis.line_ids) < 2:
-                    continue
-                
-                valid_lines_calc = []
+                # --- Parse sieve sizes and percent passing ---
                 for line in analysis.line_ids:
+                    if not line.sieve_size or line.passing_percent is None:
+                        continue
+                    sieve_str = str(line.sieve_size).strip().lower()
                     try:
-                        sieve_size_mm = float(line.sieve_size)
-                        # Use a small epsilon check instead of 'sieve_size_mm > 0' for robust float comparison
-                        if sieve_size_mm > 1e-6: 
-                            valid_lines_calc.append(line)
-                    except ValueError:
+                        if 'mm' in sieve_str:
+                            sieve_val = float(sieve_str.replace('mm','').strip())
+                        elif 'µ' in sieve_str or 'micron' in sieve_str:
+                            sieve_val = float(sieve_str.replace('µ','').replace('micron','').strip()) / 1000
+                        elif sieve_str == 'pan':
+                            continue  # skip pan
+                        else:
+                            sieve_val = float(sieve_str)
+                        valid_lines.append((sieve_val, line.passing_percent))
+                    except:
                         continue
 
-                if len(valid_lines_calc) < 2:
+                if len(valid_lines) < 2:
                     continue
 
-                valid_lines_calc.sort(key=lambda r: float(r.sieve_size), reverse=True)
+                # Sort by sieve size ascending
+                valid_lines.sort(key=lambda x: x[0])
+                sieve_sizes = np.array([v[0] for v in valid_lines])
+                percent_passing = np.array([v[1] for v in valid_lines])
 
-                sieve_sizes_calc = np.array([float(r.sieve_size) for r in valid_lines_calc])
-                percent_passing_calc = np.array([r.passing_percent for r in valid_lines_calc])
-                
-                # D-Value Calculation Setup
-                sort_indices = np.argsort(percent_passing_calc)
-                sorted_percent_passing = percent_passing_calc[sort_indices]
-                sorted_sieve_sizes = sieve_sizes_calc[sort_indices]
-                
-                # Guard against log10(0) if any sieve size is <= 0 (though checked above, good to be safe)
-                if np.any(sorted_sieve_sizes <= 0):
-                    continue
-                    
-                log_sorted_sieve_sizes = np.log10(sorted_sieve_sizes)
+                # Plot line graph
+                ax.semilogx(sieve_sizes, percent_passing, marker='o', linestyle='-', label=analysis.sample_name)
 
-                # Calculate D-values using the external interpolation function
-                # NOTE: Assumes 'interpolate_d_value' is defined and accessible
-                # Helper function for Interpolation
-                def interpolate_d_value(percent_passing, sieve_size_log, target_percent):
-                    """Interpolates the particle size (D value) corresponding to a target percent passing."""
-                    try:
-                        # remove duplicate % passing
-                        unique_pp, idx = np.unique(percent_passing, return_index=True)
-                        unique_sieve_log = sieve_size_log[idx]
-
-                        # guard: target must be within range
-                        if target_percent < unique_pp.min() or target_percent > unique_pp.max():
-                            return 0.0
-
-                        # linear interpolation in log scale
-                        log_d_value = np.interp(target_percent, unique_pp, unique_sieve_log)
-                        return 10 ** log_d_value
-                    except Exception:
-                        return 0.0
-
-                d10 = interpolate_d_value(sorted_percent_passing, log_sorted_sieve_sizes, 10.0)
-                d30 = interpolate_d_value(sorted_percent_passing, log_sorted_sieve_sizes, 30.0)
-                d60 = interpolate_d_value(sorted_percent_passing, log_sorted_sieve_sizes, 60.0)
-
-                d10 = round(d10, 3)
-                d30 = round(d30, 2)
-                d60 = round(d60, 2)
-
-                # Calculate Cu and Cc
-                cu = d60 / d10 if d10 > 0 and d60 > 0 else 0.0
-                cc = (d30**2) / (d60 * d10) if d60 * d10 > 0 and d30 > 0 else 0.0
-
-                cu = round(cu, 2)
-                cc = round(cc, 2)
-                # Store the calculated values on the CURRENT ANALYSIS RECORD
-                analysis.write({
-                    'd10': d10,
-                    'd30': d30,
-                    'd60': d60,
-                    'cu': cu,
-                    'cc': cc,
-                })
-
-
-                # Store parameters of the FIRST successfully calculated analysis for plotting
-                if not first_analysis_found:
+                # Store first valid D-values for annotation
+                if not first_analysis_found and analysis.d10 > 0:
                     first_analysis_params.update({
-                        'd10': d10, 'd30': d30, 'd60': d60, 'cu': cu, 'cc': cc
+                        'd10': analysis.d10,
+                        'd30': analysis.d30,
+                        'd60': analysis.d60,
+                        'cu': analysis.cu,
+                        'cc': analysis.cc
                     })
                     first_analysis_found = True
 
-            # Continue to the next borehole if no analysis was valid for calculation
             if not first_analysis_found:
+                plt.close(fig)
                 continue
-                
-            plt.style.use('seaborn-v0_8-whitegrid')
-            fig, ax = plt.subplots(figsize=(12, 9.5))
-            
-            # Iterate through all analyses to collect and plot data
-            for analysis in borehole.grain_size_ids:
-                
-                # Re-run data validation for each analysis for plotting
-                if not analysis.line_ids or len(analysis.line_ids) < 2:
-                    continue
-                
-                valid_lines = []
-                for line in analysis.line_ids:
-                    try:
-                        sieve_size_mm = float(line.sieve_size)
-                        # Check to exclude 'Pan' (which is not a size) and sizes near zero
-                        if sieve_size_mm > 1e-6:
-                            valid_lines.append(line)
-                    except ValueError:
-                        # Skip 'Pan' or any non-numeric value here
-                        continue
 
-                if len(valid_lines) < 2: continue
-                    
-                valid_lines.sort(key=lambda r: float(r.sieve_size), reverse=True)
-
-                sieve_sizes = np.array([float(r.sieve_size) for r in valid_lines])
-                percent_passing = np.array([r.passing_percent for r in valid_lines])
-                
-                # PLOT THE CONNECTED POINTS (Line graph) FOR THE CURRENT ANALYSIS
-                ax.semilogx(sieve_sizes, percent_passing, marker='o', linestyle='-',
-                            label=f'{analysis.sample_name}')
-
-            # --- Formatting and Axis Settings ---
-            
-            ax.set_ylim(-2, 110) 
+            # --- Axis settings ---
+            ax.set_ylim(-2, 110)
             ax.set_ylabel('Percent Passing (%)')
-            
+            ax.set_xlabel('Sieve Size (mm) [Log Scale]')
+            ax.set_title(f'Grain Size Distribution Curve ({borehole.name})', pad=20)
+
             custom_xticks = np.array([0.001, 0.01, 0.1, 1.0, 10.0, 100.0])
             ax.set_xlim(custom_xticks.min(), custom_xticks.max())
             ax.set_xticks(custom_xticks)
+            ax.xaxis.set_minor_locator(LogLocator(subs=np.arange(2, 10)*0.1, numticks=10))
+            ax.get_xaxis().set_major_formatter(ScalarFormatter())
 
-            ax.xaxis.set_minor_locator(LogLocator(subs=np.arange(2, 10) * 0.1, numticks=10))
-            
-            ax.get_xaxis().set_major_formatter(ScalarFormatter()) 
-            ax.set_xlabel('Sieve Size (mm) [Log Scale]')
-            
-            # Grid lines
-            ax.set_yticks(np.arange(0, 101, 10), minor=False) 
-            ax.set_yticks(np.arange(0, 101, 5), minor=True) 
-            # ax.xaxis.set_minor_locator(MultipleLocator(custom_xticks*0.))
+            # Grid
+            ax.set_yticks(np.arange(0, 101, 10), minor=False)
+            ax.set_yticks(np.arange(0, 101, 5), minor=True)
+            ax.grid(True, which='major', axis='both', ls='-', linewidth=0.8)
+            ax.grid(True, which='minor', axis='x', ls='--', linewidth=0.5)
+            ax.grid(True, which='minor', axis='y', ls='--', linewidth=0.5)
 
-            ax.grid(True, which="major", axis="both", ls="-", linewidth=0.8)
-            ax.grid(True, which="minor", axis="x", ls="--", linewidth=0.5) # Apply minor grid only to X-axis
-            ax.grid(True, which="minor", axis="y", ls="--", linewidth=0.5) # Keep minor Y-axis grid
-            # Add Legend
+            # Legend
             ax.legend(
-                loc='upper center', 
-                # Note: This might place the legend off-screen if there are too many analyses
-                bbox_to_anchor=(0.5, -0.15), 
+                loc='upper center',
+                bbox_to_anchor=(0.5, -0.15),
                 ncol=min(len(borehole.grain_size_ids), 7),
-                fancybox=True,
-                shadow=True,
-                fontsize=9
+                fancybox=True, shadow=True, fontsize=9
             )
 
-            # --- Annotations (D-Values) using the FIRST valid analysis's parameters ---
-            
+            # --- D-value Annotations ---
             d10 = first_analysis_params['d10']
             d30 = first_analysis_params['d30']
             d60 = first_analysis_params['d60']
-            cu = first_analysis_params['cu']
-            cc = first_analysis_params['cc']
-            
-            # Horizontal guidelines for D-values (10%, 30%, 60%)
+
+            # Horizontal guide lines
             ax.axhline(y=10, color='red', linestyle='--', linewidth=0.8)
             ax.axhline(y=30, color='red', linestyle='--', linewidth=0.8)
             ax.axhline(y=60, color='red', linestyle='--', linewidth=0.8)
-            
-            # Vertical projection lines calculated D-values
-            if d10 > 0: ax.axvline(x=d10, color='red', linestyle=':', linewidth=0.8)
-            if d30 > 0: ax.axvline(x=d30, color='red', linestyle=':', linewidth=0.8)
-            if d60 > 0: ax.axvline(x=d60, color='red', linestyle=':', linewidth=0.8)
 
-            # Annotate Cu and Cc
-            # ax.text(custom_xticks.min() * 1.5, 105, f'Cu: {cu:.2f}', fontsize=10, color='k')
-            # ax.text(custom_xticks.min() * 1.5, 100, f'Cc: {cc:.2f}', fontsize=10, color='k')
+            # Vertical D-value lines
+            # for d_val, y_target, color in zip([d10, d30, d60], [10,30,60], ['black','orange','green']):
+            #     if d_val > 0:
+            #         ax.scatter(d_val, y_target, color=color, s=80, zorder=10)
+            #         ax.axvline(x=d_val, ymin=0, ymax=y_target/100, color=color, linestyle='--', linewidth=1)
 
-            ax.set_title(f'Grain Size Distribution Curve ({borehole.name})', pad=20)
-            
-            plt.tight_layout()
+            plt.tight_layout(rect=[0, 0.1, 1, 1])
 
-            # --- 3. Save and Store the Graph on the Borehole Record (assuming one graph per borehole) ---
+            # Save figure to binary and encode
             buffer = io.BytesIO()
             plt.savefig(buffer, format='png')
             plt.close(fig)
-
-            # Store the graph on the BOREHOLE record as originally intended
             borehole.grain_size_graph = base64.b64encode(buffer.getvalue())
             buffer.close()
 
@@ -1031,11 +934,11 @@ class GrainSizeAnalysis(models.Model):
     silt = fields.Float(string="Silt", compute="_compute_particle_distribution", store=True)
     clay = fields.Float(string="Clay", compute="_compute_particle_distribution", store=True)
 
-    d10 = fields.Float(string='D10 (mm)',digits=(16,3))
-    d30 = fields.Float(string='D30 (mm)')
-    d60 = fields.Float(string='D60 (mm)')
-    cu = fields.Float(string='Coefficient of Uniformity (Cu)')
-    cc = fields.Float(string='Coefficient of Curvature (Cc)')
+    d10 = fields.Float(string='D10 (mm)', compute='_compute_d_values', store=True, digits=(12, 4))
+    d30 = fields.Float(string='D30 (mm)', compute='_compute_d_values', store=True, digits=(12, 4))
+    d60 = fields.Float(string='D60 (mm)', compute='_compute_d_values', store=True, digits=(12, 4))
+    cu = fields.Float(string='Coefficient of Uniformity (Cu)', compute='_compute_d_values', store=True, digits=(12, 4))
+    cc = fields.Float(string='Coefficient of Curvature (Cc)', compute='_compute_d_values', store=True, digits=(12, 4))
     top_depth = fields.Float("Top Depth (m)")
     bottom_depth = fields.Float("Bottom Depth (m)")
     classification = fields.Selection([
@@ -1063,6 +966,58 @@ class GrainSizeAnalysis(models.Model):
 
 
     STANDARD_SIEVE_SIZES = [100.0, 75.0, 19.0, 4.75, 2.0, 0.425, 0.075,0.002, 0.001,'Pan']
+    
+    def _compute_d_values(self):
+        for record in self:
+            sieve_sizes = []
+            passing_percents = []
+
+            # Parse sieve sizes
+            for line in record.line_ids:
+                if not line.sieve_size or line.passing_percent is None:
+                    continue
+                s = str(line.sieve_size).strip().lower()
+                try:
+                    if 'mm' in s:
+                        sieve_val = float(s.replace('mm','').strip())
+                    elif 'µ' in s or 'micron' in s:
+                        sieve_val = float(s.replace('µ','').replace('micron','').strip()) / 1000
+                    elif s == 'pan':
+                        continue
+                    else:
+                        sieve_val = float(s)
+                    sieve_sizes.append(sieve_val)
+                    passing_percents.append(line.passing_percent)
+                except:
+                    continue
+
+            sieve_sizes = np.array(sieve_sizes)
+            passing_percents = np.array(passing_percents)
+
+            record.d10 = record.d30 = record.d60 = record.cu = record.cc = 0.0
+
+            if sieve_sizes.size < 2 or sieve_sizes.size != passing_percents.size:
+                continue
+
+            # Sort by sieve size ascending
+            sort_idx = np.argsort(sieve_sizes)
+            sieve_sizes = sieve_sizes[sort_idx]
+            passing_percents = passing_percents[sort_idx]
+
+            # --- Logarithmic interpolation helper ---
+            def log_interp(target):
+                if target < passing_percents.min() or target > passing_percents.max():
+                    return 0.0
+                return 10**np.interp(target, passing_percents, np.log10(sieve_sizes))
+
+            record.d10 = log_interp(10.0)
+            record.d30 = log_interp(30.0)
+            record.d60 = log_interp(60.0)
+
+            # Cu and Cc
+            if record.d10 > 0 and record.d60 > 0:
+                record.cu = record.d60 / record.d10
+                record.cc = (record.d30**2) / (record.d10 * record.d60) if record.d30 > 0 else 0.0
 
     @api.onchange('sample_name')
     def _onchange_sample_name_populate_lines(self):
