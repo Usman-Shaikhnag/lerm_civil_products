@@ -106,38 +106,38 @@
                                 <th colspan="6"><span t-field="env['lerm.parameter.master'].search([('internal_id','=','318d72a1-7188-4086-b132-62b50e63f5d1')]).test_method.test_method"/></th>
                             </tr>
 							<tr cols="12">
-                                <td colspan="2">IS Sieve Size
+                                <td class="text-center" colspan="2">IS Sieve Size
                                 </td>
-                                <td colspan="2">Wt. Retained in gms
+                                <td class="text-center" colspan="2">Wt. Retained in gms
                                 </td>
-                                <td colspan="2">% Retained
+                                <td class="text-center" colspan="2">% Retained
                                 </td>
-                                <td colspan="2">Cum. Retained %
+                                <td class="text-center" colspan="2">Cum. Retained %
                                 </td>
-                                <td colspan="2">Passing %
+                                <td class="text-center" colspan="2">Passing %
                                 </td>
-                                <td colspan="2">Specified Limits
+                                <td class="text-center" colspan="2">Specified Limits
                                 </td>
                             </tr>
 
                             <t t-set="k" t-value="0"/>
                             <tr t-foreach="data.sieve_analysis_child_lines" t-as="r">
-                                <td colspan="2">
+                                <td class="text-center" colspan="2">
                                     <span t-esc="r['sieve_size']"/>
                                 </td>
-                                <td colspan="2">
+                                <td class="text-center" colspan="2">
                                     <span t-esc="r['wt_retained']"/>
                                 </td>
-                                <td colspan="2">
+                                <td class="text-center" colspan="2">
                                     <span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>
-                                <td colspan="2">
+                                <td class="text-center" colspan="2">
                                     <span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>
-                                <td colspan="2">
+                                <td class="text-center" colspan="2">
                                     <span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>
-                                <td colspan="2">
+                                <td class="text-center" colspan="2">
                                     <span t-esc="r['specific_limt']" />
                                 </td>
                             </tr>
@@ -170,71 +170,52 @@
 					<div>  
 						<table style="margin-top:5px">
 						<thead>
-
 							<tr style="height:10px;">
-								<th style="text-align: center;" rowspan="1" >Sr.No</th>
-								<th style="text-align: center;" rowspan="1" >Test Parameters</th>
-								<th  style="text-align: center;"><span t-field="eln.material.method_reference"></span></th>
-								<th style="text-align: center;" rowspan="1">Test Result</th>
-								<th style="text-align: center;" rowspan="1"><span t-field="eln.material.specifications"></span></th>
-								<th style="text-align: center;" rowspan="1" >Unit</th>
-								<th style="text-align: center;" rowspan="1" t-if="eln.conformity">Conformity</th>
+								<th style="text-align: center;">Sr.No</th>
+								<th style="text-align: center;">Test Parameters</th>
+								<th style="text-align: center;"><span t-field="eln.material.method_reference"></span></th>
+								<th style="text-align: center;">Unit</th>
+								<th style="text-align: center;">Test Result</th>
+								<th style="text-align: center;"><span t-field="eln.material.specifications"></span></th>
+								<th style="text-align: center;" t-if="eln.conformity">Conformity</th>
 							</tr>
 						</thead>
 						
 						<t t-set="i" t-value="1"/>
 						<tbody>
-
-						
-
 							<tr t-if="data.specific_gravity_visible and (data.specific_gravity_nabl == 'pass' and nabl or (data.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-								<td style="text-align: center;" colspan="1">
-									<div>
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</div>
+								<t t-set="specific_gravity" t-value="env['lerm.parameter.master'].search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')])"/>
+								
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
 								</td>
 								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')]).parameter_name"/>
-									</span>
+									<span t-field="specific_gravity.parameter_name"/>
 								</td>
 								<td style="text-align: center;" >
-									<span>
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-											</t>
+									<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
 										</t>
-									</span>
+									</t>
+								</td>
+								<td style="text-align: center;">
+									<span t-field="specific_gravity.unit.name"/>
 								</td>
 								<td style="text-align: center;">
 									<span t-field="data.water_absorption" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
-								
-								
-									<td style="text-align: center;">
-									<span>
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-									</span>
-								</td>
 								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')]).unit.name"/>
-									</span>
+									<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
 								</td>
-							
-
-							
-							
 								<td style="text-align: center;" t-if="eln.conformity">
 									<span t-field="data.specific_gravity_conformity"/>
 								</td>
-
 							</tr>
 
 
