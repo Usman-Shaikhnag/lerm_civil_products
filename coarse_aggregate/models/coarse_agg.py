@@ -2002,10 +2002,6 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
-
-
-
-
     @api.depends('eln_ref')
     def _compute_visible(self):
         for record in self:
