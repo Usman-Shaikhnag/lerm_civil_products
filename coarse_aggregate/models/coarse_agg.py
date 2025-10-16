@@ -769,7 +769,7 @@ class CoarseAggregateMechanical(models.Model):
 
     avg_load_for_10fine_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_compacted_density_conformity", store=True)
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_load_for_10fine_conformity", store=True)
 
     @api.depends('avg_load_for_10fine','eln_ref','grade')
     def _compute_avg_load_for_10fine_conformity(self):
