@@ -321,6 +321,225 @@
                       </div>
                 
                     </div>
+
+
+
+
+
+                    <!--  -->
+
+
+
+
+                    <!-- compacted density -->
+
+
+                     <div class="text-center" invisible="compacted_density_visible == False">
+                        <h1>
+                            <field name="compacted_density_name" readonly="1" nolabel="1"/>
+                            <field name="compacted_density_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-100 custom_table_borders" invisible="not compacted_density_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Capacity of Cylinder Use for Test in litre (V)</span></td>
+                                <td><field name="capacity_of_cylinderr"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of empty cylinder (kg)</span></td>
+                                <td><field name="wtt_of_empty_cylinder_compacted"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of cylinder + aggregate (kg)</span></td>
+                                <td><field name="wtt_cylinder_aggregate_compacted"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Mass of Compacted Aggregate in Cylinder (A) – Kg</span></td>
+                                <td><field name="mass_of_compacted_aggregate"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Compacted Density (Ƴ1) = (A/V) Kg/lit</span></td>
+                                <td><field name="compacted_density"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                        
+                       
+                   
+
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="compacted_density_visible == False">
+                            <tbody>
+                                <tr>
+                                <td><label for="compacted_density_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="compacted_density_conformity"
+                                        decoration-success="compacted_density_conformity == 'pass'"
+                                        decoration-danger="compacted_density_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="compacted_density_nabl">NABL</label></td>
+                                <td>
+                                    <field name="compacted_density_nabl" readonly="1"
+                                        decoration-success="compacted_density_nabl == 'pass'"
+                                        decoration-danger="compacted_density_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+
+            <!-- Loose density -->
+
+
+                     <div class="text-center" invisible="loose_density_visible == False">
+                        <h1>
+                            <field name="loose_density_name" readonly="1" nolabel="1"/>
+                            <field name="loose_density_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-100 custom_table_borders" invisible="not loose_density_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Capacity of Cylinder Use for Test in litre (V)</span></td>
+                                <td><field name="capacity_of_cylinder_loose"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of empty cylinder (kg)</span></td>
+                                <td><field name="wtt_of_empty_cylinder_loose"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of cylinder + aggregate (kg)</span></td>
+                                <td><field name="wtt_cylinder_aggregate_loose"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Mass of Compacted Aggregate in Cylinder (A) – Kg</span></td>
+                                <td><field name="mass_of_loose_aggregate"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Compacted Density (Ƴ1) = (A/V) Kg/lit</span></td>
+                                <td><field name="loose_density"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                        
+                       
+                   
+
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="loose_density_visible == False">
+                            <tbody>
+                                <tr>
+                                <td><label for="loose_density_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="loose_density_conformity"
+                                        decoration-success="loose_density_conformity == 'pass'"
+                                        decoration-danger="loose_density_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="loose_density_nabl">NABL</label></td>
+                                <td>
+                                    <field name="loose_density_nabl" readonly="1"
+                                        decoration-success="loose_density_nabl == 'pass'"
+                                        decoration-danger="loose_density_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Void In Compacted And Loose Density -->
+
+
+
+                        <div class="text-center">
+                        <h1>
+                            <field name="voids_loose_and_compacted_name" readonly="1" nolabel="1"/>
+                            <field name="voids_compacted_density_visible" invisible="1"/>
+                            <field name="voids_loose_density_visible" invisible="1"/>
+                            <!-- <field name="void_loose_compacted_visible" invisible="1"/> -->
+
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-100 custom_table_borders" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Sp. Gravity of Material (Gs)</span></td>
+                                <td><field name="specific_gravity_voids"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Percent Voids in Compacted Density = (Gs - Ƴ1 )/Gs x 100</span></td>
+                                <td><field name="voids_compacted_density"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Percent Voids in Loose Density = (Gs – Ƴ2 )/Gs x 100"</span></td>
+                                <td><field name="voids_loose_density"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+            <div style="display:flex;">
+                <div style="width:50%">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%" > 
+                            <tbody>
+                                <tr>
+                                <td><label for="voids_compacted_density_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="voids_compacted_density_conformity"
+                                        decoration-success="voids_compacted_density_conformity == 'pass'"
+                                        decoration-danger="voids_compacted_density_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="voids_compacted_density_nabl">NABL</label></td>
+                                <td>
+                                    <field name="voids_compacted_density_nabl" readonly="1"
+                                        decoration-success="voids_compacted_density_nabl == 'pass'"
+                                        decoration-danger="voids_compacted_density_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                </div>
+                <div style="width:50%">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                <td><label for="voids_loose_density_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="voids_loose_density_conformity"
+                                        decoration-success="voids_loose_density_conformity == 'pass'"
+                                        decoration-danger="voids_loose_density_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="voids_loose_density_nabl">NABL</label></td>
+                                <td>
+                                    <field name="voids_loose_density_nabl" readonly="1"
+                                        decoration-success="voids_loose_density_nabl == 'pass'"
+                                        decoration-danger="voids_loose_density_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                </div>
+                </div>
+
+
+
+                <!--  -->
                     
                     
                     
@@ -329,92 +548,7 @@
                     
     
 
-                                   <!-- loose_bulk_visible -->
-
-                     <div invisible="loose_bulk_visible == False">
-                        <h1 class="text-center">
-                            <field name="loose_bulk_name" readonly="1" nolabel="1"/>
-                            <field name="loose_bulk_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                   
-                   
-
-                    <!-- <group invisible = "loose_bulk_visible == False" style="white-space: nowrap; width:50%;" >
-                        <field name="weight_bucket" />
-                        <field name="empty_bucket" />
-                        <field name="bucket_compact"  />
-                        <field name="bucket_loos"   />
-                        <field name="loose_bulk_density" />
-                          <field name="compact_bulk_density" />
-                    </group> -->
-                            <table invisible="loose_bulk_visible == False" class="table table-sm table-bordered w-50 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label class="fw-bold" for="weight_bucket"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="weight_bucket"/> 
-                                                <span> ltrs</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="empty_bucket"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="empty_bucket"/> 
-                                                <span> g</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="bucket_compact"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="bucket_compact"/> 
-                                                <span> g</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="bucket_loos"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="bucket_loos"/> 
-                                                <span> g</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <table invisible="loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label class="fw-bold" for="loose_bulk_density"/></td>
-                                        <td><field name="loose_bulk_density"/> <span>kg/cu.m</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="compact_bulk_density"/></td>
-                                        <td><field name="compact_bulk_density" nolabel="1"/> <span>kg/cu.m</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="loose_bulk_density_conformity"/></td>
-                                        <td><field name="loose_bulk_density_conformity" 
-                                                            decoration-success="loose_bulk_density_conformity == 'pass'" 
-                                                            decoration-danger="loose_bulk_density_conformity == 'fail'" 
-                                                            readonly="1"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="loose_bulk_density_nabl"/></td>
-                                        <td><field name="loose_bulk_density_nabl" 
-                                                            decoration-success="loose_bulk_density_nabl == 'pass'" 
-                                                            decoration-danger="loose_bulk_density_nabl == 'fail'" 
-                                                            readonly="1"/></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                  
 
 
 
@@ -568,7 +702,7 @@
 
 
 
-                    <table invisible="site_content_visible == False or loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                    <table invisible="site_content_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="content_height_sand_a">Height of Sand + Silt in the Cylinder (A)</label></td>
@@ -631,7 +765,7 @@
                         </field>
                     </div>
 
-                    <table invisible="moisture_content_visible == False or loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                    <table invisible="moisture_content_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="wet_dry">Weight of Wet Sand Sample (W1)</label></td>
@@ -674,250 +808,7 @@
 
 
 
-                      <!-- compacted density -->
-
-
-                     <div class="text-center" invisible="compacted_density_visible == False">
-                        <h1>
-                            <field name="compacted_density_name1" readonly="1" nolabel="1"/>
-                            <field name="compacted_density_visible" invisible="1"/>
-
-                        </h1>
-                    </div>
-                    
-                    <!-- Main Table: Specific Gravity Measurements -->
-                    <table class="table table-sm table-bordered custom_table_borders" invisible="not compacted_density_visible" style="white-space:nowrap;">
-                        <thead>
-                            <tr>
-                                <th>Description</th>
-                                <th>Sample 1</th>
-                               
-                                <!-- <th>Result</th> -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span class="fw-bold"> Wt of compacted aggregrage + measuring cylinder(C) (Kg)</span></td>
-                                <td><field name="wt_of_compact"/></td>
-                               
-                            </tr>
-                            <tr>
-                                <td><span class="fw-bold">Compacted bulk density (Kg)</span></td>
-                                <td><field name="compact_bulk"/></td>
-                               
-                            </tr>
-                           
-                           
-
-                           
-                        </tbody>
-                    </table>
-
-                    <div class="d-flex gap-2" invisible="not compacted_density_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="avg_compacted">Avg Compacted Density</label></td>
-                                    <td><field name="avg_compacted"/>  <span><field name="avg_compacted_unit" readonly="1" nolabel="1"/></span></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>
-                    </div>
-
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="compacted_density_visible == False">
-                            <tbody>
-                                <tr>
-                                <td><label for="avg_compacted_conformity">Conformity</label></td>
-                                <td>
-                                    <field name="avg_compacted_conformity"
-                                        decoration-success="avg_compacted_conformity == 'pass'"
-                                        decoration-danger="avg_compacted_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label for="avg_compacted_nabl">NABL</label></td>
-                                <td>
-                                    <field name="avg_compacted_nabl" readonly="1"
-                                        decoration-success="avg_compacted_nabl == 'pass'"
-                                        decoration-danger="avg_compacted_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-
-
-                         <!--% Voids - Loose density -->
-
-
-                     <div class="text-center" invisible="void_loose_density_visible == False">
-                        <h1>
-                            <field name="void_loose_density_name" readonly="1" nolabel="1"/>
-                            <field name="void_loose_density_visible" invisible="1"/>
-
-                        </h1>
-                    </div>
-
-                     <table class="table table-sm table-bordered custom_table_borders" invisible="not void_loose_density_visible" style="white-space:nowrap;">
-                        <thead>
-                            <tr>
-                                <th>Description</th>
-                                <th>Sample 1</th>
-                                <th>Sample 2</th>
-                                <!-- <th>Result</th> -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span class="fw-bold"> Wt of Loose aggregrage +measuring cylinder(C) (Kg)</span></td>
-                                <td><field name="wt_of_loose"/></td>
-                                <td><field name="wt_of_loose1"/></td>
-                            </tr>
-                            <tr>
-                                <td><span class="fw-bold">Loose bulk density (Kg)</span></td>
-                                <td><field name="loose_bulk"/></td>
-                                <td><field name="loose_bulk1"/></td>
-                            </tr>
-                            <tr>
-                                <td><span class="fw-bold">Specific gravity</span></td>
-                                <td><field name="specific_gravity4"/></td>
-                                <td><field name="specific_gravity5"/></td>
-                            </tr>
-                            
-                           <tr>
-                                <td><span class="fw-bold"> % Voids Loose density</span></td>
-                                <td><field name="void_loose_density1"/></td>
-                                <td><field name="void_loose_density2"/></td>
-                            </tr>
-                           
-                        </tbody>
-                    </table>
-
-
-                     <div class="d-flex gap-2" invisible="not void_loose_density_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="avg_void_loose_density">Avg % Voids Loose Density</label></td>
-                                    <td><field name="avg_void_loose_density"/></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>
-                        
-                       
-                    </div>
-
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                <td><label for="avg_void_loose_density_conformity">Conformity</label></td>
-                                <td>
-                                    <field name="avg_void_loose_density_conformity"
-                                        decoration-success="avg_void_loose_density_conformity == 'pass'"
-                                        decoration-danger="avg_void_loose_density_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label for="avg_void_loose_density_nabl">NABL</label></td>
-                                <td>
-                                    <field name="avg_void_loose_density_nabl" readonly="1"
-                                        decoration-success="avg_void_loose_density_nabl == 'pass'"
-                                        decoration-danger="avg_void_loose_density_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-
-                    <!--% Voids - compacted density -->
-
-
-                     <div class="text-center" invisible="void_compacted_density_visible == False">
-                        <h1>
-                            <field name="void_compacted_density_name" readonly="1" nolabel="1"/>
-                            <field name="void_compacted_density_visible" invisible="1"/>
-
-                        </h1>
-                    </div>
-
-                     <table class="table table-sm table-bordered custom_table_borders" invisible="not void_compacted_density_visible" style="white-space:nowrap;">
-                        <thead>
-                            <tr>
-                                <th>Description</th>
-                                <th>Sample 1</th>
-                                <th>Sample 2</th>
-                                <!-- <th>Result</th> -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span class="fw-bold"> Wt of compacted aggregrage +measuring cylinder(C) (Kg)</span></td>
-                                <td><field name="wt_of_compact"/></td>
-                                <td><field name="wt_of_compact1"/></td>
-                            </tr>
-                            <tr>
-                                <td><span class="fw-bold">Compacted bulk density (Kg)</span></td>
-                                <td><field name="compact_bulk"/></td>
-                                <td><field name="compact_bulk1"/></td>
-                            </tr>
-                            <tr>
-                                <td><span class="fw-bold">Specific gravity</span></td>
-                                <td><field name="specific_gravity2"/></td>
-                                <td><field name="specific_gravity3"/></td>
-                            </tr>
-                            
-                           <tr>
-                                <td><span class="fw-bold"> % Voids Compacted density</span></td>
-                                <td><field name="void_compacted_density1"/></td>
-                                <td><field name="void_compacted_density2"/></td>
-                            </tr>
-                           
-                        </tbody>
-                    </table>
-
-
-                     <div class="d-flex gap-2" invisible="not void_compacted_density_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="avg_void_compacted_density">Avg % Voids Compacted Density</label></td>
-                                    <td><field name="avg_void_compacted_density"/></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>
-                        
-                       
-                    </div>
-
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                <td><label for="avg_void_compacted_density_conformity">Conformity</label></td>
-                                <td>
-                                    <field name="avg_void_compacted_density_conformity"
-                                        decoration-success="avg_void_compacted_density_conformity == 'pass'"
-                                        decoration-danger="avg_void_compacted_density_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label for="avg_void_compacted_density_nabl">NABL</label></td>
-                                <td>
-                                    <field name="avg_void_compacted_density_nabl" readonly="1"
-                                        decoration-success="avg_void_compacted_density_nabl == 'pass'"
-                                        decoration-danger="avg_void_compacted_density_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                     
 
 
                 
