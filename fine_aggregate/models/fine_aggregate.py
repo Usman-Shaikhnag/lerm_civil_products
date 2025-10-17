@@ -572,106 +572,7 @@ class FineAggregate(models.Model):
 
 
           
-     # Loose Bulk Density (LBD)
-
-    loose_bulk_name = fields.Char("Name",default=" Bulk Density")
-    loose_bulk_visible = fields.Boolean("Bulk Density Visible",compute="_compute_visible")
-
-    weight_bucket = fields.Float(string="Volume of Bucket V, ltrs",digits=(16,3))
-    empty_bucket = fields.Float(string="Empty weight of bucket, M1 g",digits=(16,3))
-    bucket_compact = fields.Float(string="Bucket + Compacted Aggregate g")
-    bucket_loos = fields.Float(string="Bucket + Loose Aggregate g")
-
-    loose_bulk_density = fields.Float(string="Loose Bulk Density kg/cu.m",compute="_compute_loose_bulk_density")
-
-    @api.depends('bucket_loos', 'empty_bucket', 'weight_bucket')
-    def _compute_loose_bulk_density(self):
-        for rec in self:
-            if rec.weight_bucket:
-                rec.loose_bulk_density = (rec.bucket_loos - rec.empty_bucket) / rec.weight_bucket
-            else:
-                rec.loose_bulk_density = 0.0
-
-
-    compact_bulk_density = fields.Float(string="Compacted Bulk Density kg/cu.m",compute="_compute_bulk_densities")
-
-    @api.depends('bucket_loos', 'bucket_compact', 'empty_bucket', 'weight_bucket')
-    def _compute_bulk_densities(self):
-        for rec in self:
-            if rec.weight_bucket:
-                rec.loose_bulk_density = (rec.bucket_loos - rec.empty_bucket) / rec.weight_bucket
-                rec.compact_bulk_density = (rec.bucket_compact - rec.empty_bucket) / rec.weight_bucket
-            else:
-                rec.loose_bulk_density = 0.0
-                rec.compact_bulk_density = 0.0
-
-    loose_bulk_density_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_loose_bulk_density_conformity", store=True)
-
-    @api.depends('loose_bulk_density','eln_ref','grade')
-    def _compute_loose_bulk_density_conformity(self):
-        
-        for record in self:
-            record.loose_bulk_density_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.loose_bulk_density - record.loose_bulk_density*mu_value
-                    upper = record.loose_bulk_density + record.loose_bulk_density*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.loose_bulk_density_conformity = 'pass'
-                        break
-                    else:
-                        record.loose_bulk_density_conformity = 'fail'
-
-    loose_bulk_density_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_loose_bulk_density_nabl", store=True)
-
-    @api.depends('loose_bulk_density','eln_ref','grade')
-    def _compute_loose_bulk_density_nabl(self):
-        
-        for record in self:
-            record.loose_bulk_density_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.loose_bulk_density - record.loose_bulk_density*mu_value
-                    upper = record.loose_bulk_density + record.loose_bulk_density*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.loose_bulk_density_nabl = 'pass'
-                        break
-                    else:
-                        record.loose_bulk_density_nabl = 'fail'
-
-
-
-
-    # @api.depends('sample_plus_bucket', 'weight_empty_bucket')
-    # def _compute_sample_weight(self):
-    #     for record in self:
-    #         record.sample_weight = record.sample_plus_bucket - record.weight_empty_bucket
-
     
-
-    # @api.depends('sample_weight', 'weight_bucket')
-    # def _compute_loose_bulk_density(self):
-    #     for record in self:
-    #         if record.weight_bucket:
-    #             record.loose_bulk_density = record.sample_weight / record.weight_bucket
-    #         else:
-    #             record.loose_bulk_density = 0.0
 
 
 
@@ -987,373 +888,314 @@ class FineAggregate(models.Model):
                         record.avg_moisture_nabl = 'fail'
 
 
- #   7  % Voids - Loose density
-    void_loose_density_name = fields.Char("Name", default="% Voids - Loose density")
-    void_loose_density_visible = fields.Boolean("% Voids - Loose density Visible",compute="_compute_visible")
+ 
+
+# 
 
 
-
-    wt_of_loose = fields.Float(string="Wt of Loose aggregrage +measuring cylinder(C) (Kg)")
-    loose_bulk = fields.Float(string="Loose bulk density= (C-A)/V)) (Kg)",compute="_compute_loose_bulk",digits=(12,3))
-    wt_of_loose1 = fields.Float(string="Wt of Loose aggregrage +measuring cylinder(C) (Kg)")
-    loose_bulk1 = fields.Float(string="Loose bulk density= (C-A)/V)) (Kg)",compute="_compute_loose_bulk1",digits=(12,3))
-
-    @api.depends('wt_of_loose', 'empty_bucket', 'weight_bucket')
-    def _compute_loose_bulk(self):
-        for rec in self:
-            if rec.weight_bucket and rec.wt_of_loose and rec.empty_bucket:
-                rec.loose_bulk = (rec.wt_of_loose - rec.empty_bucket) / rec.weight_bucket
-            else:
-                rec.loose_bulk = 0.0
+# Compacted  Or Rodded Density
 
 
-    @api.depends('wt_of_loose1', 'empty_bucket', 'weight_bucket')
-    def _compute_loose_bulk1(self):
-        for rec in self:
-            if rec.weight_bucket and rec.wt_of_loose1 and rec.empty_bucket:
-                rec.loose_bulk1 = (rec.wt_of_loose1 - rec.empty_bucket) / rec.weight_bucket
-            else:
-                rec.loose_bulk1 = 0.0
-                 # Average
-
-    avg_void_loose_density=fields.Float(string="Avg % Voids - Loose Density",compute="_compute_avg_void_loose_density",digits=(12,3))
-
-    @api.depends('void_loose_density1','void_loose_density2')
-    def _compute_avg_void_loose_density(self):
-        for rec in self:
-            if rec.void_loose_density1 and rec.void_loose_density2 :
-                rec.avg_void_loose_density = (rec.void_loose_density1 + rec.void_loose_density2) / 2
-            else:
-                rec.avg_void_loose_density= 0.0
-
-    avg_void_loose_density_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Loose Bulk NABL", compute="_compute_avg_void_loose_density_nabl", store=True)
-    
-    avg_void_loose_density_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Loose Bulk Conformity", compute="_compute_avg_void_loose_density_conformity", store=True)
-    
-    @api.depends('avg_void_loose_density','eln_ref','grade')
-    def _compute_avg_void_loose_density_conformity(self):
-        
-        for record in self:
-            record.avg_void_loose_density_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')]).parameter_table
-            for material in materials:
-                # if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_void_loose_density - record.avg_void_loose_density*mu_value
-                    upper = record.avg_void_loose_density + record.avg_void_loose_density*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_void_loose_density_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_void_loose_density_conformity = 'fail'
-
-    @api.depends('avg_void_loose_density','eln_ref','grade')
-    def _compute_avg_void_loose_density_nabl(self):
-        
-        for record in self:
-            record.avg_void_loose_density_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')]).parameter_table
-            # for material in materials:
-                # if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_void_loose_density - record.avg_void_loose_density*mu_value
-            upper = record.avg_void_loose_density + record.avg_void_loose_density*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_void_loose_density_nabl = 'pass'
-                break
-            else:
-                record.avg_void_loose_density_nabl = 'fail'
-
-
-    # # Average
-    # @api.depends('wt_of_loose', 'wt_of_loose1')
-    # def _compute_avg_loose(self):
-    #     for rec in self:
-    #         if rec.wt_of_loose and rec.wt_of_loose1:
-    #             rec.avg_loose = (rec.wt_of_loose + rec.wt_of_loose1) / 2
-    #         else:
-    #             rec.avg_loose = 0.0
-
-
-    void_loose_density1=fields.Float(string="% Voids",compute="_compute_void_loose_density1")
-
-    void_loose_density2=fields.Float(string="% Voids",compute="_compute_void_loose_density2")
-
-    specific_gravity4  = fields.Float(string="Specific Gravity")
-    specific_gravity5  = fields.Float(string="Specific Gravity")
-
-    @api.depends('specific_gravity4','loose_bulk')
-    def _compute_void_loose_density1(self):
-        for record in self:
-            if record.specific_gravity4:
-            # if record.void_compacted_density1:
-              record.void_loose_density1 = ((record.specific_gravity4-record.loose_bulk) /record.specific_gravity4)*100
-            else:
-              record.void_loose_density1 = 0.0
-    
-    @api.depends('specific_gravity5','loose_bulk1')
-    def _compute_void_loose_density2(self):
-        for record in self:
-            if record.specific_gravity5:
-            # if record.void_compacted_density2:
-              record.void_loose_density2 = ((record.specific_gravity5-record.loose_bulk1) /record.specific_gravity5)*100
-            else:
-              record.void_loose_density2 = 0.0
-
-
-
-
-          #  8 Bulk Density
-    compacted_density_name1 = fields.Char("Name",default="Compacted Density ")
+    compacted_density_name = fields.Char("Name",default="Compacted Density ")
     compacted_density_visible = fields.Boolean("compacted density  Visible",compute="_compute_visible")
 
-    wt_of_compact = fields.Float(string="Capacity of Cylinder Use for Test in litre (V)")
-    weight_empty_cylender = fields.Float(string="Weight of empty cylinder (kg)")
-    volume_of_cylender = fields.Float(string="Weight of cylinder + aggregate (kg)")
-    compact_bulk = fields.Float(string="Compacted bulk density= (C-A)/V)) (Kg)",compute="_compute_compact_bulk",digits=(12,3))
-    volume_of_cylender1 = fields.Float(string="Volume of measuring cylinder (v) (lit)")
-    weight_empty_cylender1 = fields.Float(string="Wt of empty measuring cylinder (A) (Kg)")
 
-    avg_bulk_density = fields.Float(string="Avg bulk density ",compute="_compute_avg_bulk_density",digits=(12,3))
+    capacity_of_cylinderr = fields.Float(string="Capacity of Cylinder Use for Test in litre (V)")
+    wtt_of_empty_cylinder_compacted = fields.Float(string="Weight of empty cylinder (kg)")
+    wtt_cylinder_aggregate_compacted = fields.Float(string="Weight of cylinder + aggregate (kg)")
+    mass_of_compacted_aggregate = fields.Float("Mass of Compacted Aggregate in Cylinder (A) – Kg",compute="_compute_mass_of_compacted_aggregate")
 
-    @api.depends('wt_of_compact', 'empty_bucket', 'weight_bucket')
-    def _compute_compact_bulk(self):
+    compacted_density = fields.Float("Compacted Density (Ƴ1) = (A/V) Kg/lit",compute="_compute_compacted_density")
+
+    @api.depends('wtt_cylinder_aggregate_compacted', 'wtt_of_empty_cylinder_compacted')
+    def _compute_mass_of_compacted_aggregate(self):
         for rec in self:
-            if rec.weight_bucket and rec.wt_of_compact and rec.empty_bucket:
-                rec.compact_bulk = (rec.wt_of_compact - rec.empty_bucket) / rec.weight_bucket
-            else:
-                rec.compact_bulk = 0.0
+            rec.mass_of_compacted_aggregate = rec.wtt_cylinder_aggregate_compacted - rec.wtt_of_empty_cylinder_compacted
+            
 
-    
-
-    wt_of_compact1 = fields.Float(string="Wt of compacted aggregrage +measuring cylinder(C) (Kg)")
-    compact_bulk1 = fields.Float(string="Compacted bulk density= (C-A)/V)) (Kg)",compute="_compute_compact_bulk1",digits=(12,3))
-
-    @api.depends('wt_of_compact1', 'empty_bucket', 'weight_bucket')
-    def _compute_compact_bulk1(self):
+    @api.depends('capacity_of_cylinderr', 'mass_of_compacted_aggregate')
+    def _compute_compacted_density(self):
         for rec in self:
-            if rec.weight_bucket and rec.wt_of_compact1 and rec.empty_bucket:
-                rec.compact_bulk1 = (rec.wt_of_compact1 - rec.empty_bucket) / rec.weight_bucket
+            if rec.capacity_of_cylinderr !=0:
+              rec.compacted_density = round(rec.mass_of_compacted_aggregate / rec.capacity_of_cylinderr,2)
             else:
-                rec.compact_bulk1 = 0.0
-
-    avg_compacted = fields.Float(string="Avg Compacted Density",compute="_compute_avg_compacted",digits=(12,3)) 
-
-    # Average
-    @api.depends('compact_bulk', 'compact_bulk1')
-    def _compute_avg_compacted(self):
-        for rec in self:
-            if rec.compact_bulk and rec.compact_bulk1:
-                rec.avg_compacted = (rec.compact_bulk + rec.compact_bulk1) / 2
-            else:
-                rec.avg_compacted = 0.0
+             rec.compacted_density = 0.0
 
 
-       
-
-   
-    avg_compacted_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Compacted Bulk NABL", compute="_compute_avg_compacted_nabl", store=True)
-
-    avg_compacted_conformity = fields.Selection([
+    compacted_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Compacted Bulk Conformity", compute="_compute_avg_compacted_conformity", store=True)
+            ('fail', 'Fail')], string="Conformity", compute="_compute_compacted_density_conformity", store=True)
 
-    @api.depends('avg_compacted','eln_ref','grade')
-    def _compute_avg_compacted_conformity(self):
+    @api.depends('compacted_density','eln_ref','grade')
+    def _compute_compacted_density_conformity(self):
         
         for record in self:
-            record.avg_compacted_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')]).parameter_table
+            record.compacted_density_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')]).parameter_table
             for material in materials:
                 # if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.avg_compacted - record.avg_compacted*mu_value
-                    upper = record.avg_compacted + record.avg_compacted*mu_value
+                    lower = record.compacted_density - record.compacted_density*mu_value
+                    upper = record.compacted_density + record.compacted_density*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.avg_compacted_conformity = 'pass'
+                        record.compacted_density_conformity = 'pass'
                         break
                     else:
-                        record.avg_compacted_conformity = 'fail'
+                        record.compacted_density_conformity = 'fail'
 
-    @api.depends('avg_compacted','eln_ref','grade')
-    def _compute_avg_compacted_nabl(self):
-        
-        for record in self:
-            record.avg_compacted_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')]).parameter_table
-            # for material in materials:
-                # if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_compacted - record.avg_compacted*mu_value
-            upper = record.avg_compacted + record.avg_compacted*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_compacted_nabl = 'pass'
-                break
-            else:
-                record.avg_compacted_nabl = 'fail'
-
-
-                
-    
-
-
-            # 9 % Voids - Compacted density
-    void_compacted_density_name = fields.Char("Name", default="% Voids - Compacted density")
-    void_compacted_density_visible = fields.Boolean("% Voids - Compacted density Visible",compute="_compute_visible")
-
-    void_compacted_density1=fields.Float(string="% Voids",compute="_compute_void_compacted_density1")
-
-    void_compacted_density2=fields.Float(string="% Voids",compute="_compute_void_compacted_density2")
-
-    wt_of_compact = fields.Float(string="Wt of compacted aggregrage +measuring cylinder(C) (Kg)")
-    compact_bulk = fields.Float(string="Compacted bulk density= (C-A)/V)) (Kg)",compute="_compute_compact_bulk",digits=(12,3))
-
-    avg_bulk_density = fields.Float(string="Avg bulk density ",compute="_compute_avg_bulk_density",digits=(12,3))
-
-    @api.depends('wt_of_compact', 'empty_bucket', 'weight_bucket')
-    def _compute_compact_bulk(self):
-        for rec in self:
-            if rec.weight_bucket and rec.wt_of_compact and rec.empty_bucket:
-                rec.compact_bulk = (rec.wt_of_compact - rec.empty_bucket) / rec.weight_bucket
-            else:
-                rec.compact_bulk = 0.0
-
-    
-
-    wt_of_compact1 = fields.Float(string="Wt of compacted aggregrage +measuring cylinder(C) (Kg)")
-    compact_bulk1 = fields.Float(string="Compacted bulk density= (C-A)/V)) (Kg)",compute="_compute_compact_bulk1",digits=(12,3))
-
-    @api.depends('wt_of_compact1', 'empty_bucket', 'weight_bucket')
-    def _compute_compact_bulk1(self):
-        for rec in self:
-            if rec.weight_bucket and rec.wt_of_compact1 and rec.empty_bucket:
-                rec.compact_bulk1 = (rec.wt_of_compact1 - rec.empty_bucket) / rec.weight_bucket
-            else:
-                rec.compact_bulk1 = 0.0
-
-    avg_compacted = fields.Float(string="Avg Compacted Density",compute="_compute_avg_compacted",digits=(12,3))
-
-    # Average
-    @api.depends('compact_bulk', 'compact_bulk1')
-    def _compute_avg_compacted(self):
-        for rec in self:
-            if rec.compact_bulk and rec.compact_bulk1:
-                rec.avg_compacted = (rec.compact_bulk + rec.compact_bulk1) / 2
-            else:
-                rec.avg_compacted = 0.0
-
-
-    specific_gravity2  = fields.Float(string="Specific Gravity")
-    specific_gravity3  = fields.Float(string="Specific Gravity")
-
-
-    
-
-    @api.depends('specific_gravity2','compact_bulk')
-    def _compute_void_compacted_density1(self):
-        for record in self:
-            if record.specific_gravity2:
-            # if record.void_compacted_density1:
-              record.void_compacted_density1 = ((record.specific_gravity2-record.compact_bulk) /record.specific_gravity2)*100
-            else:
-              record.void_compacted_density1 = 0.0
-    
-    @api.depends('specific_gravity3','compact_bulk1')
-    def _compute_void_compacted_density2(self):
-        for record in self:
-            if record.specific_gravity3:
-            # if record.void_compacted_density2:
-              record.void_compacted_density2 = ((record.specific_gravity3-record.compact_bulk1) /record.specific_gravity3)*100
-            else:
-              record.void_compacted_density2 = 0.0
-
-            
-
-    # Average
-
-    avg_void_compacted_density=fields.Float(string="Avg % Voids - Compacted Density",compute="_compute_avg_void_compacted_density",digits=(12,3))
-
-    @api.depends('void_compacted_density1','void_compacted_density2')
-    def _compute_avg_void_compacted_density(self):
-        for rec in self:
-            if rec.void_compacted_density1 and rec.void_compacted_density2 :
-                rec.avg_void_compacted_density = (rec.void_compacted_density1 + rec.void_compacted_density2) / 2
-            else:
-                rec.avg_void_compacted_density= 0.0
-
-    avg_void_compacted_density_nabl = fields.Selection([
+    compacted_density_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Compacted Bulk NABL", compute="_compute_avg_void_compacted_density_nabl", store=True)
-    
-    avg_void_compacted_density_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Compacted Bulk Conformity", compute="_compute_avg_void_compacted_density_conformity", store=True)
-    
-    @api.depends('avg_void_compacted_density','eln_ref','grade')
-    def _compute_avg_void_compacted_density_conformity(self):
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_compacted_density_nabl", store=True)
+
+    @api.depends('compacted_density','eln_ref','grade')
+    def _compute_compacted_density_nabl(self):
         
         for record in self:
-            record.avg_void_compacted_density_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','089650e58-11a6-42af-8eb7-187467443a79')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')]).parameter_table
+            record.compacted_density_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.compacted_density - record.compacted_density*mu_value
+                    upper = record.compacted_density + record.compacted_density*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.compacted_density_nabl = 'pass'
+                        break
+                    else:
+                        record.compacted_density_nabl = 'fail'
+
+
+    # Loose Density
+    loose_density_name = fields.Char("Name",default="Loose Density ")
+    loose_density_visible = fields.Boolean("Loose density  Visible",compute="_compute_visible")
+
+
+    capacity_of_cylinder_loose = fields.Float(string="Capacity of Cylinder Use for Test in litre (V)")
+    wtt_of_empty_cylinder_loose = fields.Float(string="Weight of empty cylinder (kg)")
+    wtt_cylinder_aggregate_loose = fields.Float(string="Weight of cylinder + aggregate (kg)")
+    mass_of_loose_aggregate = fields.Float("Mass of Loose Aggregate in Cylinder (A) – Kg",compute="_compute_mass_of_loose_aggregate")
+
+    loose_density = fields.Float("Loose Density (Ƴ1) = (A/V) Kg/lit",compute="_compute_loose_density")
+
+    @api.depends('wtt_cylinder_aggregate_loose', 'wtt_of_empty_cylinder_loose')
+    def _compute_mass_of_loose_aggregate(self):
+        for rec in self:
+            rec.mass_of_loose_aggregate = rec.wtt_cylinder_aggregate_loose - rec.wtt_of_empty_cylinder_loose
+            
+
+    @api.depends('capacity_of_cylinder_loose', 'mass_of_loose_aggregate')
+    def _compute_loose_density(self):
+        for rec in self:
+            if rec.capacity_of_cylinder_loose !=0:
+              rec.loose_density = round(rec.mass_of_loose_aggregate / rec.capacity_of_cylinder_loose,2)
+            else:
+             rec.loose_density = 0.0
+
+
+    loose_density_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_loose_density_conformity", store=True)
+
+    @api.depends('loose_density','eln_ref','grade')
+    def _compute_loose_density_conformity(self):
+        
+        for record in self:
+            record.loose_density_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8a944a9b-4d7d-44a3-a82c-6d8bacc07846')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8a944a9b-4d7d-44a3-a82c-6d8bacc07846')]).parameter_table
             for material in materials:
                 # if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.avg_void_compacted_density - record.avg_void_compacted_density*mu_value
-                    upper = record.avg_void_compacted_density + record.avg_void_compacted_density*mu_value
+                    lower = record.loose_density - record.loose_density*mu_value
+                    upper = record.loose_density + record.loose_density*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.avg_void_compacted_density_conformity = 'pass'
+                        record.loose_density_conformity = 'pass'
                         break
                     else:
-                        record.avg_void_compacted_density_conformity = 'fail'
+                        record.loose_density_conformity = 'fail'
 
-    @api.depends('avg_void_compacted_density','eln_ref','grade')
-    def _compute_avg_void_compacted_density_nabl(self):
+    loose_density_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_loose_density_nabl", store=True)
+
+    @api.depends('loose_density','eln_ref','grade')
+    def _compute_loose_density_nabl(self):
         
         for record in self:
-            record.avg_void_compacted_density_nabl = 'fail'
+            record.loose_density_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8a944a9b-4d7d-44a3-a82c-6d8bacc07846')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8a944a9b-4d7d-44a3-a82c-6d8bacc07846')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.loose_density - record.loose_density*mu_value
+                    upper = record.loose_density + record.loose_density*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.loose_density_nabl = 'pass'
+                        break
+                    else:
+                        record.loose_density_nabl = 'fail'
+                        
+                        
+
+
+    # Void Loose density And Void Compacted Density
+
+    voids_loose_and_compacted_name = fields.Char("Name",default="Void In Compacted Density & Voids In Loose Density ")
+    # void_loose_compacted_visible = fields.Boolean("Void In Compacted Density & Voids In Loose Density ",compute="_compute_visible")
+
+    voids_compacted_density_name = fields.Char("Name",default="Void In Compacted Density ")
+    voids_compacted_density_visible = fields.Boolean("Void In Compacted Visible",compute="_compute_visible")
+
+    voids_loose_density_name = fields.Char("Name",default="Void In Loose Density ")
+    voids_loose_density_visible = fields.Boolean("Void Loose density Visible",compute="_compute_visible")
+
+    specific_gravity_voids = fields.Float(string="Sp. Gravity of Material (Gs)")
+
+    voids_compacted_density = fields.Float(string="Percent Voids in Compacted Density = (Gs - Ƴ1 )/Gs x 100",compute="_compute_voids_compacted_density")
+    voids_loose_density = fields.Float(string="Percent Voids in Loose Density = (Gs – Ƴ2 )/Gs x 100",compute="_compute_voids_loose_density")
+
+
+
+
+
+
+    @api.depends('specific_gravity_voids', 'compacted_density')
+    def _compute_voids_compacted_density(self):
+        for rec in self:
+            if rec.specific_gravity_voids !=0:
+              rec.voids_compacted_density = round(((rec.specific_gravity_voids - rec.compacted_density)/rec.specific_gravity_voids * 100),2)
+            else:
+             rec.voids_compacted_density = 0.0
+             
+
+    @api.depends('specific_gravity_voids', 'loose_density')
+    def _compute_voids_loose_density(self):
+        for rec in self:
+            if rec.specific_gravity_voids !=0:
+              rec.voids_loose_density = round(((rec.specific_gravity_voids - rec.loose_density)/rec.specific_gravity_voids * 100),2)
+            else:
+             rec.voids_loose_density = 0.0  
+
+
+    voids_compacted_density_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Void In Compacted Density Conformity", compute="_compute_voids_compacted_density_conformity", store=True)
+
+    @api.depends('voids_compacted_density','eln_ref','grade')
+    def _compute_voids_compacted_density_conformity(self):
+        
+        for record in self:
+            record.voids_compacted_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')]).parameter_table
-            # for material in materials:
+            for material in materials:
                 # if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_void_compacted_density - record.avg_void_compacted_density*mu_value
-            upper = record.avg_void_compacted_density + record.avg_void_compacted_density*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_void_compacted_density_nabl = 'pass'
-                break
-            else:
-                record.avg_void_compacted_density_nabl = 'fail'
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.voids_compacted_density - record.voids_compacted_density*mu_value
+                    upper = record.voids_compacted_density + record.voids_compacted_density*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.voids_compacted_density_conformity = 'pass'
+                        break
+                    else:
+                        record.voids_compacted_density_conformity = 'fail'
+
+    voids_compacted_density_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="Void In Compacted Density NABL", compute="_compute_voids_compacted_density_nabl", store=True)
+
+    @api.depends('voids_compacted_density','eln_ref','grade')
+    def _compute_voids_compacted_density_nabl(self):
+        
+        for record in self:
+            record.voids_compacted_density_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.voids_compacted_density - record.voids_compacted_density*mu_value
+                    upper = record.voids_compacted_density + record.voids_compacted_density*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.voids_compacted_density_nabl = 'pass'
+                        break
+                    else:
+                        record.voids_compacted_density_nabl = 'fail'  
+
+    voids_loose_density_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Void In Loose Density Conformity", compute="_compute_voids_loose_density_conformity", store=True)
+
+    @api.depends('voids_loose_density','eln_ref','grade')
+    def _compute_voids_loose_density_conformity(self):
+        
+        for record in self:
+            record.voids_loose_density_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.voids_loose_density - record.voids_loose_density*mu_value
+                    upper = record.voids_loose_density + record.voids_loose_density*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.voids_loose_density_conformity = 'pass'
+                        break
+                    else:
+                        record.voids_loose_density_conformity = 'fail'
+
+    voids_loose_density_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="Void In Loose Density NABL", compute="_compute_voids_loose_density_nabl", store=True)
+
+    @api.depends('voids_loose_density','eln_ref','grade')
+    def _compute_voids_loose_density_nabl(self):
+        
+        for record in self:
+            record.voids_loose_density_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.voids_loose_density - record.voids_loose_density*mu_value
+                    upper = record.voids_loose_density + record.voids_loose_density*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.voids_loose_density_nabl = 'pass'
+                        break
+                    else:
+                        record.voids_loose_density_nabl = 'fail'
 
 
+# 
+    
+    
 
      ### Compute Visible
     @api.depends('sample_parameters')
@@ -1364,14 +1206,15 @@ class FineAggregate(models.Model):
             record.sieve_visible = False
             record.specific_gravity_visible = False
             record.water_absorption_visible = False
-            record.loose_bulk_visible = False
+            record.loose_density_visible = False
             record.bulking_sand_visible = False
             record.site_content_visible = False
             record.moisture_content_visible = False
             record.finer75_visible = False
             record.compacted_density_visible = False
-            record.void_compacted_density_visible = False
-            record.void_loose_density_visible = False
+            record.voids_compacted_density_visible = False
+            record.voids_loose_density_visible = False
+            
            
           
             for sample in record.sample_parameters:
@@ -1387,7 +1230,7 @@ class FineAggregate(models.Model):
                     record.specific_gravity_visible = True
 
                 if sample.internal_id == "4587tyhloos-3fa3-4b83-ae31-9d281767188c":
-                    record.loose_bulk_visible = True
+                    record.loose_density_visible = True
 
                 if sample.internal_id == "45789bhgt25-3fa3-4b83-ae31-9d28176718457":
                     record.bulking_sand_visible = True
@@ -1401,21 +1244,18 @@ class FineAggregate(models.Model):
                 if sample.internal_id == '2047739e-9941-4bc0-af9b-839767be6e1c':
                     record.finer75_visible = True
                 
-
-                if sample.internal_id == '3cf93161-4452-4aa5-a8e0-b24ffea753b3':
+                if sample.internal_id == 'd961c78a-9f5c-4e7f-9f03-86ab65740161':
                     record.compacted_density_visible  = True
 
-                if sample.internal_id == '58e8035f-76e4-4cfb-be47-c18c228fd1b0':
-                    record.void_compacted_density_visible = True
+                if sample.internal_id == 'a699d9fd-57f5-4044-97ea-2bea87bf9c44':
+                    record.voids_compacted_density_visible = True
                 
-                if sample.internal_id == 'a594196d-d59f-4044-a801-6388ba38a723':
-                    record.void_loose_density_visible = True
+                if sample.internal_id == '8a944a9b-4d7d-44a3-a82c-6d8bacc07846':
+                    record.voids_loose_density_visible = True
 
               
 
-
-
-            
+        
               
     # def open_eln_page(self):
     #     # import wdb; wdb.set_trace()
@@ -1451,8 +1291,8 @@ class FineAggregate(models.Model):
 
 
             if result.parameter.internal_id == '4587tyhloos-3fa3-4b83-ae31-9d281767188c':
-                result.result_char = round(self.loose_bulk_density,2)
-                if self.loose_bulk_density_nabl == 'pass':
+                result.result_char = round(self.loose_density,2)
+                if self.loose_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -1480,7 +1320,7 @@ class FineAggregate(models.Model):
                 continue
 
             # Compacted density
-            if result.parameter.internal_id == '357f579d-a310-4015-bc11-28a85c53ac83':
+            if result.parameter.internal_id == 'd961c78a-9f5c-4e7f-9f03-86ab65740161':
                 result.result_char = round(self.avg_compacted,2)
                 if self.avg_compacted_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1491,7 +1331,7 @@ class FineAggregate(models.Model):
 
             
             # % void Compacted density
-            if result.parameter.internal_id == '04a95dc1-4b45-4817-a9b2-dd722bbe6281':
+            if result.parameter.internal_id == 'a699d9fd-57f5-4044-97ea-2bea87bf9c44':
                 result.result_char = round(self.avg_void_compacted_density,2)
                 if self.avg_void_compacted_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1501,7 +1341,7 @@ class FineAggregate(models.Model):
 
 
             # % void Loose density
-            if result.parameter.internal_id == '919587f2-5b45-4da1-bb73-10164b861833':
+            if result.parameter.internal_id == '8a944a9b-4d7d-44a3-a82c-6d8bacc07846':
                 result.result_char = round(self.avg_void_loose_density,2)
                 if self.avg_void_loose_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
