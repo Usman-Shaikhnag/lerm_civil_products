@@ -1807,7 +1807,73 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
+  # Rate of Evaporation
+    rate_of_evaporation_name = fields.Char(default="Rate of Evaporation")
 
+    rate_of_evaporation_visible = fields.Boolean(compute="_compute_visible")
+
+    rate_of_evaporation_table = fields.One2many('mechanical.rate.of.evaporation.line','parent_id',string="Rate of Evaporation")
+
+    avg_rate_evaporation = fields.Float('Average Rate Of Evaporation',compute="_compute_avg_rate_evaporation")
+
+
+    @api.depends('rate_of_evaporation_table.rate_evaporation')
+    def _compute_avg_rate_evaporation(self):
+        for record in self:
+            if record.rate_of_evaporation_table:
+              record.avg_rate_evaporation = sum(record.rate_of_evaporation_table.mapped('rate_evaporation'))/ len(record.rate_of_evaporation_table)
+            else:
+                record.avg_rate_evaporation = 0.0
+
+    avg_rate_evaporation_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_rate_evaporation_conformity", store=True)
+
+    @api.depends('avg_rate_evaporation','eln_ref','grade')
+    def _compute_avg_rate_evaporation_conformity(self):
+        
+        for record in self:
+            record.avg_rate_evaporation_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e9d9c62-e634-47a2-a689-2c6c8538493c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e9d9c62-e634-47a2-a689-2c6c8538493c')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_rate_evaporation - record.avg_rate_evaporation*mu_value
+                    upper = record.avg_rate_evaporation + record.avg_rate_evaporation*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_rate_evaporation_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_rate_evaporation_conformity = 'fail'
+
+    avg_rate_evaporation_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_rate_evaporation_nabl", store=True)
+
+    @api.depends('avg_rate_evaporation','eln_ref','grade')
+    def _compute_avg_rate_evaporation_nabl(self):
+        
+        for record in self:
+            record.avg_rate_evaporation_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e9d9c62-e634-47a2-a689-2c6c8538493c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e9d9c62-e634-47a2-a689-2c6c8538493c')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_rate_evaporation - record.avg_rate_evaporation*mu_value
+                    upper = record.avg_rate_evaporation + record.avg_rate_evaporation*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_rate_evaporation_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_rate_evaporation_nabl = 'fail'
 
 
 
@@ -1826,6 +1892,8 @@ class CoarseAggregateMechanical(models.Model):
 
     sieve_analysis_child_lines = fields.One2many('mechanical.coarse.aggregate.sieve.analysis.line','parent_id',string="Parameter")
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
+
+
 
 
     def default_get(self, fields):
@@ -1939,6 +2007,11 @@ class CoarseAggregateMechanical(models.Model):
             # Only update specific_limits of existing lines
             for line, specific_limit in zip(self.sieve_analysis_child_lines, specific_limits):
                 line.specific_limits = specific_limit
+
+
+    
+    
+
 
 
 
@@ -2096,6 +2169,10 @@ class CoarseAggregateMechanical(models.Model):
         buffer.seek(0)
 
         return base64.b64encode(buffer.read())
+    
+
+
+
 
     
 
@@ -2124,6 +2201,7 @@ class CoarseAggregateMechanical(models.Model):
             record.compacted_density_visible = False
             record.voids_compacted_density_visible = False
             record.voids_loose_density_visible = False
+            record.rate_of_evaporation_visible = False
 
 
 
@@ -2176,6 +2254,9 @@ class CoarseAggregateMechanical(models.Model):
                 
                 if sample.internal_id == '919587f2-5b45-4da1-bb73-10164b861833':
                     record.voids_loose_density_visible = True
+
+                if sample.internal_id == '8e9d9c62-e634-47a2-a689-2c6c8538493c':
+                    record.rate_of_evaporation_visible = True
 
 
 
@@ -2286,6 +2367,18 @@ class CoarseAggregateMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
+             # Rate Of Evaporation
+            if result.parameter.internal_id == '8e9d9c62-e634-47a2-a689-2c6c8538493c':
+                result.result_char = round(self.avg_rate_evaporation,2)
+                if self.avg_rate_evaporation_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            
+
 
         return {
                 'view_mode': 'form',
@@ -2348,8 +2441,8 @@ class SieveAnalysisLine(models.Model):
     sieve_size = fields.Char(string="IS Sieve Size mm")
     wt_retained = fields.Float(string="Wt. Retained in gms")
     percent_retained = fields.Float(string='Cummulative Weight Retained in (gms)', compute="_compute_percent_retained",digits=(16,2))
-    cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained ", store=True,digits=(16,2))
-    passing_percent = fields.Float(string="% of wt passing",digits=(16,2))
+    cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained ", compute="_compute_cumulative__retained",  store=True,digits=(16,2))
+    passing_percent = fields.Float(string="% of wt passing",compute="_compute_passing_percent",digits=(16,2))
     specific_limits = fields.Char(string="Specified Limits",store=True)
 
 
@@ -2404,13 +2497,70 @@ class SieveAnalysisLine(models.Model):
 
 
 
-    @api.depends('wt_retained', 'parent_id.weight_of_sample')
-    def _compute_percent_retained(self):
+    # @api.depends('wt_retained', 'parent_id.weight_of_sample')
+    # def _compute_percent_retained(self):
+    #     for record in self:
+    #         try:
+    #             record.percent_retained = (record.wt_retained / record.parent_id.weight_of_sample) * 100
+    #         except ZeroDivisionError:
+    #             record.percent_retained = 0
+
+
+    # @api.depends('wt_retained')
+    # def _compute_percent_retained(self):
+    #     cumulative = 0
+    #     for record in self:
+    #         # Get all previous records with an ID less than or equal to this one (or in the same group)
+    #         records_to_sum = self.search([('id', '<=', record.id)])
+    #         cumulative = sum(r.wt_retained for r in records_to_sum)
+    #         record.percent_retained = cumulative
+
+    @api.depends('percent_retained', 'parent_id.weight_of_sample')
+    def _compute_cumulative__retained(self):
         for record in self:
             try:
-                record.percent_retained = (record.wt_retained / self.parent_id.weight_of_sample) * 100
+                # import wdb;wdb.set_trace()
+                record.cumulative_retained = (record.percent_retained / record.parent_id.weight_of_sample) * 100
             except ZeroDivisionError:
-                record.percent_retained = 0
+                record.cumulative_retained = 0
+
+
+    
+
+    @api.depends('wt_retained', 'parent_id.sieve_analysis_child_lines.wt_retained')
+    def _compute_percent_retained(self):
+        for record in self:
+            cumulative = 0.0
+            found = False
+
+            for line in sorted(record.parent_id.sieve_analysis_child_lines, key=lambda l: l.serial_no):
+                cumulative += line.wt_retained or 0.0
+                if line.id == record.id:
+                    found = True
+                    record.percent_retained = cumulative
+                    break
+
+            if not found:
+                record.percent_retained = 0.0
+
+    @api.onchange('cumulative_retained')
+    def _compute_passing_percent(self):
+        for record in self:
+            record.passing_percent = 100 - record.cumulative_retained
+        
+    
+
+
+    def get_previous_record(self):
+        for record in self:
+            # import wdb; wdb.set_trace()
+            sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
+            # index = sorted_lines.index(record)
+            # print("Working")
+
+
+    
+
 
 
     @api.depends('cumulative_retained')
@@ -2425,6 +2575,49 @@ class SieveAnalysisLine(models.Model):
             sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
             # index = sorted_lines.index(record)
             # print("Working")
+
+
+class RateOfEvaporation(models.Model):
+    _name = "mechanical.rate.of.evaporation.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+
+    sr_no = fields.Integer(string="Beaker", readonly=True, copy=False, default=1)
+    W1 = fields.Float(string="W1 = Weight of beaker + water before evaporation.")
+    W2 = fields.Float(string="W2 = Weight of beaker + water after 4 hr evaporation.")
+    W3 = fields.Float(string="W3 = ( W1 - W2 )",compute="_compute_W3")
+    rate_evaporation = fields.Float(string="Rate of Evaporation (gm/h)",compute="_compute_rate_evaporation")
+
+    @api.depends('W1','W2')
+    def _compute_W3(self):
+        for record in self:
+            record.W3 = (record.W1 - record.W2)
+
+    @api.depends('W3')
+    def _compute_rate_evaporation(self):
+        for record in self:
+            record.rate_evaporation = (record.W3 / 4)
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(RateOfEvaporation, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+    
+
+
+
 
 
    

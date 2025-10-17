@@ -1388,6 +1388,67 @@
                 </div>
                 </div>
 
+                <!-- Rate Of Evaporation -->
+
+
+                     <div class="text-center" invisible="rate_of_evaporation_visible == False">
+                        <h1>
+                            <field name="rate_of_evaporation_name" readonly="1" nolabel="1"/>
+                            <field name="rate_of_evaporation_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+
+                    <div invisible="rate_of_evaporation_visible == False" class="custom_table_borders">
+                        <field name="rate_of_evaporation_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="sr_no" string="Beaker"/>
+                                <field name='W1'/>
+                                <field name='W2'/>
+                                <field name='W3' readonly="1"/>
+                                <field name='rate_evaporation' readonly="1"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not rate_of_evaporation_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Average Rate Of Evaporation</span></td>
+                                <td><field name="avg_rate_evaporation"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                        
+                       
+                   
+
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="rate_of_evaporation_visible == False">
+                            <tbody>
+                                <tr>
+                                <td><label for="avg_rate_evaporation_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_rate_evaporation_conformity"
+                                        decoration-success="avg_rate_evaporation_conformity == 'pass'"
+                                        decoration-danger="avg_rate_evaporation_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="avg_rate_evaporation_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_rate_evaporation_nabl" readonly="1"
+                                        decoration-success="avg_rate_evaporation_nabl == 'pass'"
+                                        decoration-danger="avg_rate_evaporation_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+
+
 
 
                         
