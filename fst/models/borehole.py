@@ -531,12 +531,6 @@ class ERTBorehole(models.Model):
             ax.axhline(y=30, color='red', linestyle='--', linewidth=0.8)
             ax.axhline(y=60, color='red', linestyle='--', linewidth=0.8)
 
-            # Vertical D-value lines
-            # for d_val, y_target, color in zip([d10, d30, d60], [10,30,60], ['black','orange','green']):
-            #     if d_val > 0:
-            #         ax.scatter(d_val, y_target, color=color, s=80, zorder=10)
-            #         ax.axvline(x=d_val, ymin=0, ymax=y_target/100, color=color, linestyle='--', linewidth=1)
-
             plt.tight_layout(rect=[0, 0.1, 1, 1])
 
             # Save figure to binary and encode

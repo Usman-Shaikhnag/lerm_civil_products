@@ -70,8 +70,8 @@
                             <tree editable="bottom">
                                 <field name="soil_resistivity_id" widget="many2one" options="{'no_open': False}"/>
                                 <field name="create_date" readonly="1"/>
-                                <button name="action_duplicate_ert" string="Duplicate" type="object" icon="fa-copy" class="btn-secondary"/>
-                                <button name="action_delete_line" string="Delete" type="object" icon="fa-trash" class="btn-danger"/>
+                                <button name="action_duplicate_ert" string="Duplicate" type="object" icon="fa-copy" class="btn-secondary me-5"/>
+                                <button name="action_delete_line" string="Delete" type="object" icon="fa-trash" class="btn-danger" confirm="Are you sure you want to delete this line?"/>
                             </tree>
                         </field>
                     
@@ -129,8 +129,8 @@
                                         <field name="soil_borehole_id" widget="many2one" options="{'no_open': False}"/>
                                         <field name="create_date" readonly="1"/>
 
-                                        <button name="action_duplicate_borehole" string="Duplicate" type="object" class="btn-secondary" icon="fa-copy"/>
-                                        <button name="action_delete_line" string="Delete" type="object" icon="fa-trash" class="btn-danger"/>
+                                        <button name="action_duplicate_borehole" string="Duplicate" type="object" class="btn-secondary me-5" icon="fa-copy"/>
+                                        <button name="action_delete_line" string="Delete" type="object" icon="fa-trash" class="btn-danger" confirm="Are you sure you want to delete this line?"/>
                                     
                                     </tree>
                                 </field>

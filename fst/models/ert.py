@@ -346,6 +346,7 @@ class LermErtLines(models.Model):
     
     def action_delete_line(self):
         for rec in self:
+            
             rec.unlink()
 
 class SoilBoreholeLines(models.Model):
