@@ -578,7 +578,7 @@ class FineAggregate(models.Model):
     # result_wt_sample_inwater = fields.Float(string="Wt of Saturated Aggregate in Water:- (A)",compute="_compute_result")
     # result_oven_dried_wt = fields.Float(string="Wt of Oven Dried Aggregate in Air :- (C)",compute="_compute_result")
 
-    specific_gravity = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity")
+    specific_gravity = fields.Float(string="Specific Gravity")
     water_absorption = fields.Float(string="Water absorption  %",compute="_compute_water_absorption")
 
 
@@ -1451,13 +1451,13 @@ class FineAggregate(models.Model):
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
         for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == '45875ght-7188-4086-b132-62b50e63f1245gt':
-                result.result_char = round(self.specific_gravity,2)
-                if self.specific_gravity_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+            # if result.parameter.internal_id == '45875ght-7188-4086-b132-62b50e63f1245gt':
+            #     result.result_char = round(self.specific_gravity,2)
+            #     if self.specific_gravity_nabl == 'pass':
+            #         result.nabl_status = 'nabl'
+            #     else:
+            #         result.nabl_status = 'non-nabl'
+            #     continue
 
             # water absorbtion
             if result.parameter.internal_id == '4dbde30b-0cdc-4641-abdd-68a574fd7e1f':
