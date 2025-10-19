@@ -516,7 +516,7 @@ class ERTBorehole(models.Model):
             # Legend
             ax.legend(
                 loc='upper center',
-                bbox_to_anchor=(0.5, -0.15),
+                bbox_to_anchor=(0.5, -0.05), # Keep this or adjust slightly if needed
                 ncol=min(len(borehole.grain_size_ids), 7),
                 fancybox=True, shadow=True, fontsize=9
             )
@@ -531,7 +531,8 @@ class ERTBorehole(models.Model):
             ax.axhline(y=30, color='red', linestyle='--', linewidth=0.8)
             ax.axhline(y=60, color='red', linestyle='--', linewidth=0.8)
 
-            plt.tight_layout(rect=[0, 0.1, 1, 1])
+            # Keep rect as is, or slightly adjust if the legend seems too squashed
+            plt.tight_layout(rect=[0, 0.05, 1, 1]) # Keep this or adjust slightly if needed
 
             # Save figure to binary and encode
             buffer = io.BytesIO()
