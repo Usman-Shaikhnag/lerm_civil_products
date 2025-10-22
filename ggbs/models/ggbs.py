@@ -424,29 +424,29 @@ class GgbsMechanical(models.Model):
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # for result in self.eln_ref.parameters_result:
                    
-                    if result.parameter.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
-                        result.result_char = self.average_specific_gravity
-                        if self.specific_gravity_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
-                    if result.parameter.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
-                        result.result_char = self.slag_activity_index_7days
-                        if self.specific_gravity_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
-                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
-                        result.result_char = self.fineness_air_permeability
-                        if self.fineness_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
+        #             if result.parameter.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
+        #                 result.result_char = self.average_specific_gravity
+        #                 if self.specific_gravity_nabl == 'pass':
+        #                     result.nabl_status = 'nabl'
+        #                 else:
+        #                     result.nabl_status = 'non-nabl'
+        #                 continue
+        #             if result.parameter.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
+        #                 result.result_char = self.slag_activity_index_7days
+        #                 if self.specific_gravity_nabl == 'pass':
+        #                     result.nabl_status = 'nabl'
+        #                 else:
+        #                     result.nabl_status = 'non-nabl'
+        #                 continue
+        #             if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
+        #                 result.result_char = self.fineness_air_permeability
+        #                 if self.fineness_nabl == 'pass':
+        #                     result.nabl_status = 'nabl'
+        #                 else:
+        #                     result.nabl_status = 'non-nabl'
+        #                 continue
                   
 
         return {
