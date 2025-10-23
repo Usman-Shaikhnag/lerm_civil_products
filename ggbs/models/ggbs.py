@@ -48,6 +48,9 @@ class GgbsMechanical(models.Model):
     specific_gravity_name1 = fields.Char("Name",default="Density Test")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
+    temp_specific = fields.Float("Temp.°C")
+    humidity_specific= fields.Float("Humidity %")
+
     temp_water1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
     temp_water2 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
 
@@ -109,56 +112,56 @@ class GgbsMechanical(models.Model):
 
 
 
-    # specific_gravity_confirmity = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail'),
-    #     ('not_applicable', 'Not Applicable'),
-    # ], string='Confirmity', default='fail',compute="_compute_specific_gravity_confirmity")
-    # specific_gravity_nabl = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail'),
-    # ], string='NABL', default='fail',compute="_compute_specific_gravity_nabl")
+    specific_gravity_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('not_applicable', 'Not Applicable'),
+    ], string='Confirmity', default='fail',compute="_compute_specific_gravity_confirmity")
+    specific_gravity_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_specific_gravity_nabl")
 
 
-    # @api.depends('average_specific_gravity','eln_ref','grade')
-    # def _compute_specific_gravity_confirmity(self):
-    #     for record in self:
-    #         record.specific_gravity_confirmity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
-    #                 lower = record.average_specific_gravity - record.average_specific_gravity*mu_value
-    #                 upper = record.average_specific_gravity + record.average_specific_gravity*mu_value
-    #                 if lower >= req_min and upper <= req_max :
-    #                     record.specific_gravity_confirmity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.specific_gravity_confirmity = 'fail'
+    @api.depends('average_density','eln_ref','grade')
+    def _compute_specific_gravity_confirmity(self):
+        for record in self:
+            record.specific_gravity_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.average_density - record.average_density*mu_value
+                    upper = record.average_density + record.average_density*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.specific_gravity_confirmity = 'pass'
+                        break
+                    else:
+                        record.specific_gravity_confirmity = 'fail'
     
-    # @api.depends('average_specific_gravity','eln_ref','grade')
-    # def _compute_specific_gravity_nabl(self):
+    @api.depends('average_density','eln_ref','grade')
+    def _compute_specific_gravity_nabl(self):
         
-    #     for record in self:
-    #         record.specific_gravity_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 lab_min = line.lab_min_value
-    #                 lab_max = line.lab_max_value
-    #                 mu_value = line.mu_value
+        for record in self:
+            record.specific_gravity_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
                     
-    #                 lower = record.average_specific_gravity - record.average_specific_gravity*mu_value
-    #                 upper = record.average_specific_gravity + record.average_specific_gravity*mu_value
-    #                 if lower >= lab_min and upper <= lab_max:
-    #                     record.specific_gravity_nabl = 'pass'
-    #                     break
-    #                 else:
-    #                     record.specific_gravity_nabl = 'fail'
+                    lower = record.average_density - record.average_density*mu_value
+                    upper = record.average_density + record.average_density*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.specific_gravity_nabl = 'pass'
+                        break
+                    else:
+                        record.specific_gravity_nabl = 'fail'
 
    
 
@@ -224,7 +227,114 @@ class GgbsMechanical(models.Model):
 
     sai1 = fields.Float(string="Slag Activity Index",digits=(12,2),compute="_compute_slag_activity_index")
 
+    temp_7day = fields.Float("7 Days Temp.°C")
+    humidity_7day= fields.Float("7 Days Humidity %")
+
+    day_7_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('not_applicable', 'Not Applicable'),
+    ], string='7 Days Confirmity', default='fail',compute="_compute_day_7_confirmity")
+    day_7_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='7 Days NABL', default='fail',compute="_compute_day_7_nabl")
+
+
+    @api.depends('sai1','eln_ref','grade')
+    def _compute_day_7_confirmity(self):
+        for record in self:
+            record.day_7_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.sai1 - record.sai1*mu_value
+                    upper = record.sai1 + record.sai1*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.day_7_confirmity = 'pass'
+                        break
+                    else:
+                        record.day_7_confirmity = 'fail'
+    
+    @api.depends('sai1','eln_ref','grade')
+    def _compute_day_7_nabl(self):
+        
+        for record in self:
+            record.day_7_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.sai1 - record.sai1*mu_value
+                    upper = record.sai1 + record.sai1*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.day_7_nabl = 'pass'
+                        break
+                    else:
+                        record.day_7_nabl = 'fail'
+
     sai2 = fields.Float(string="Slag Activity Index",digits=(12,2),compute="_compute_slag_activity_index")
+    temp_28day = fields.Float("28 Days Temp.°C")
+    humidity_28day= fields.Float("28 Days Humidity %")
+
+    day_28_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('not_applicable', 'Not Applicable'),
+    ], string='28 Days Confirmity', default='fail',compute="_compute_day_28_confirmity")
+    day_28_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='28 Days NABL', default='fail',compute="_compute_day_28_nabl")
+
+
+    @api.depends('sai2','eln_ref','grade')
+    def _compute_day_28_confirmity(self):
+        for record in self:
+            record.day_28_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.sai2 - record.sai2*mu_value
+                    upper = record.sai2 + record.sai2*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.day_28_confirmity = 'pass'
+                        break
+                    else:
+                        record.day_28_confirmity = 'fail'
+    
+    @api.depends('sai2','eln_ref','grade')
+    def _compute_day_28_nabl(self):
+        
+        for record in self:
+            record.day_28_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.sai2 - record.sai2*mu_value
+                    upper = record.sai2 + record.sai2*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.day_28_nabl = 'pass'
+                        break
+                    else:
+                        record.day_28_nabl = 'fail'
 
     # @api.depends('average_strength1', 'average_cement_strength1', 'average_strength2', 'average_cement_strength2')
     # def _compute_slag_activity_index(self):
@@ -295,7 +405,8 @@ class GgbsMechanical(models.Model):
     fineness_name = fields.Char("Name",default="Fineness by Blaines Air Permeability Method")
     fineness_visible = fields.Boolean("Fineness by Blaines Air Permeability Method Visible",compute="_compute_visible")
 
-    fineness_temp = fields.Float("Testing Temperature")
+    temp_fineness = fields.Float("Temp.°C")
+    humidity_fineness= fields.Float("Humidity %")
 
     density_cement = fields.Float(string="Density of Cement (g/cc)", digits=(12, 3))
     
@@ -343,56 +454,56 @@ class GgbsMechanical(models.Model):
 
     
     
-    # fineness_confirmity = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail'),
-    #     ('not_applicable', 'Not Applicable'),
-    # ], string='Confirmity', default='fail',compute="_compute_fineness_confirmity")
-    # fineness_nabl = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail'),
-    # ], string='NABL', default='fail',compute="_compute_fineness_nabl")
+    fineness_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('not_applicable', 'Not Applicable'),
+    ], string='Confirmity', default='fail',compute="_compute_fineness_confirmity")
+    fineness_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_fineness_nabl")
 
 
-    # @api.depends('fineness_air_permeability','eln_ref','grade')
-    # def _compute_fineness_confirmity(self):
-    #     for record in self:
-    #         record.fineness_confirmity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
-    #                 lower = record.fineness_air_permeability - record.fineness_air_permeability*mu_value
-    #                 upper = record.fineness_air_permeability + record.fineness_air_permeability*mu_value
-    #                 if lower >= req_min and upper <= req_max :
-    #                     record.fineness_confirmity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.fineness_confirmity = 'fail'
+    @api.depends('specific_surface_first','eln_ref','grade')
+    def _compute_fineness_confirmity(self):
+        for record in self:
+            record.fineness_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.specific_surface_first - record.specific_surface_first*mu_value
+                    upper = record.specific_surface_first + record.specific_surface_first*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.fineness_confirmity = 'pass'
+                        break
+                    else:
+                        record.fineness_confirmity = 'fail'
     
-    # @api.depends('fineness_air_permeability','eln_ref','grade')
-    # def _compute_fineness_nabl(self):
+    @api.depends('specific_surface_first','eln_ref','grade')
+    def _compute_fineness_nabl(self):
         
-    #     for record in self:
-    #         record.fineness_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 lab_min = line.lab_min_value
-    #                 lab_max = line.lab_max_value
-    #                 mu_value = line.mu_value
+        for record in self:
+            record.fineness_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
                     
-    #                 lower = record.fineness_air_permeability - record.fineness_air_permeability*mu_value
-    #                 upper = record.fineness_air_permeability + record.fineness_air_permeability*mu_value
-    #                 if lower >= lab_min and upper <= lab_max:
-    #                     record.fineness_nabl = 'pass'
-    #                     break
-    #                 else:
-    #                     record.fineness_nabl = 'fail'
+                    lower = record.specific_surface_first - record.specific_surface_first*mu_value
+                    upper = record.specific_surface_first + record.specific_surface_first*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.fineness_nabl = 'pass'
+                        break
+                    else:
+                        record.fineness_nabl = 'fail'
 
    
     
@@ -424,29 +535,37 @@ class GgbsMechanical(models.Model):
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
-        # for result in self.eln_ref.parameters_result:
+        for result in self.eln_ref.parameters_result:
                    
-        #             if result.parameter.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
-        #                 result.result_char = self.average_specific_gravity
-        #                 if self.specific_gravity_nabl == 'pass':
-        #                     result.nabl_status = 'nabl'
-        #                 else:
-        #                     result.nabl_status = 'non-nabl'
-        #                 continue
-        #             if result.parameter.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
-        #                 result.result_char = self.slag_activity_index_7days
-        #                 if self.specific_gravity_nabl == 'pass':
-        #                     result.nabl_status = 'nabl'
-        #                 else:
-        #                     result.nabl_status = 'non-nabl'
-        #                 continue
-        #             if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
-        #                 result.result_char = self.fineness_air_permeability
-        #                 if self.fineness_nabl == 'pass':
-        #                     result.nabl_status = 'nabl'
-        #                 else:
-        #                     result.nabl_status = 'non-nabl'
-        #                 continue
+                    if result.parameter.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
+                        result.result_char = self.average_density
+                        if self.specific_gravity_nabl == 'pass':
+                            result.nabl_status = 'nabl'
+                        else:
+                            result.nabl_status = 'non-nabl'
+                        continue
+                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-321478658':
+                        result.result_char = self.sai1
+                        if self.day_7_nabl == 'pass':
+                            result.nabl_status = 'nabl'
+                        else:
+                            result.nabl_status = 'non-nabl'
+                        continue
+
+                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-3214855pp':
+                        result.result_char = self.sai2
+                        if self.day_28_nabl == 'pass':
+                            result.nabl_status = 'nabl'
+                        else:
+                            result.nabl_status = 'non-nabl'
+                        continue
+                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
+                        result.result_char = self.specific_surface_first
+                        if self.fineness_nabl == 'pass':
+                            result.nabl_status = 'nabl'
+                        else:
+                            result.nabl_status = 'non-nabl'
+                        continue
                   
 
         return {

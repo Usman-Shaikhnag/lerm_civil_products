@@ -40,7 +40,30 @@
                     </div>
                     <group/>
 
-                    <div>
+                      <div class="d-flex gap-2" invisible="not specific_gravity_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_specific">Temp.°C</label></td>
+                                    <td><field name="temp_specific"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_specific">Humidity %</label></td>
+                                    <td><field name="humidity_specific"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div invisible="not specific_gravity_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                        <tbody>
                          <tr>
@@ -101,7 +124,7 @@
                      </table>
                     </div>
 
-                    <div>
+                    <div invisible="not specific_gravity_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                           <tr>
@@ -114,6 +137,27 @@
                           </table>
                       </div>
                       <group/>
+
+
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not specific_gravity_visible">
+                        <tbody>
+                          <tr>
+                                <td><label for="specific_gravity_confirmity"></label></td>
+                                <td><field  name="specific_gravity_confirmity"
+                                            decoration-success="specific_gravity_confirmity == 'pass'" 
+                                            decoration-danger="specific_gravity_confirmity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="specific_gravity_nabl"></label></td>
+                                <td><field name="specific_gravity_nabl"
+                                            decoration-success="specific_gravity_nabl == 'pass'" 
+                                            decoration-danger="specific_gravity_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
 
 
 
@@ -208,6 +252,51 @@
                   </div>
 
 
+                   <div class="d-flex gap-2" invisible="not slag_activity_7_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_7day">7 Days Temp.°C</label></td>
+                                    <td><field name="temp_7day"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_7day">7 Days Humidity %</label></td>
+                                    <td><field name="humidity_7day"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not slag_activity_7_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_28day">28 Days Temp.°C</label></td>
+                                    <td><field name="temp_28day"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_28day">28 Days Humidity %</label></td>
+                                    <td><field name="humidity_28day"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
                    <div class="custom_table_borders" style="width:100%;" invisible = "slag_activity_7_visible == False">
                             <table style="width: 100%; border-collapse: collapse;">
                                 <thead>
@@ -276,12 +365,78 @@
                             </table>
                         </div>
 
-                         <div style="text-align: center;"  invisible = "fineness_visible == False">
+                       
+
+                    <div class="d-flex gap-2" invisible="not slag_activity_7_visible" style="margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                               
+                                  <tr>
+                                <td><label for="day_7_confirmity"></label></td>
+                                <td><field  name="day_7_confirmity"
+                                            decoration-success="day_7_confirmity == 'pass'" 
+                                            decoration-danger="day_7_confirmity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="day_7_nabl"></label></td>
+                                <td><field name="day_7_nabl"
+                                            decoration-success="day_7_nabl == 'pass'" 
+                                            decoration-danger="day_7_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                  <tr>
+                                <td><label for="day_28_confirmity"></label></td>
+                                <td><field  name="day_28_confirmity"
+                                            decoration-success="day_28_confirmity == 'pass'" 
+                                            decoration-danger="day_28_confirmity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="day_28_nabl"></label></td>
+                                <td><field name="day_28_nabl"
+                                            decoration-success="day_28_nabl == 'pass'" 
+                                            decoration-danger="day_28_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                         <div style="text-align: center;margin-top: 20px;"  invisible = "fineness_visible == False" >
                           <h1>
                               <field name="fineness_name" readonly="1" nolabel="1"/>
                               <field name="fineness_visible" invisible="1"/>
                           </h1>
                       </div>
+
+                      <div class="d-flex gap-2" invisible="not fineness_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_fineness">Temp.°C</label></td>
+                                    <td><field name="temp_fineness"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_fineness">Humidity %</label></td>
+                                    <td><field name="humidity_fineness"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
 
 
                       <div class="custom_table_borders" style="width:100%;" invisible = "fineness_visible == False">
@@ -363,7 +518,29 @@
                                 </tbody>
                             </table>
 
+
+                        
                           </div>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not fineness_visible" style="margin-top: 20px;">
+                        <tbody>
+                          <tr>
+                                <td><label for="fineness_confirmity"></label></td>
+                                <td><field  name="fineness_confirmity"
+                                            decoration-success="fineness_confirmity == 'pass'" 
+                                            decoration-danger="fineness_confirmity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="fineness_nabl"></label></td>
+                                <td><field name="fineness_nabl"
+                                            decoration-success="fineness_nabl == 'pass'" 
+                                            decoration-danger="fineness_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                                 
 
                 
