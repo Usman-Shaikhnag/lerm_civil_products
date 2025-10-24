@@ -365,7 +365,7 @@ class FineAggregate(models.Model):
     # result_wt_sample_inwater = fields.Float(string="Wt of Saturated Aggregate in Water:- (A)",compute="_compute_result")
     # result_oven_dried_wt = fields.Float(string="Wt of Oven Dried Aggregate in Air :- (C)",compute="_compute_result")
 
-    specific_gravity = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity")
+    specific_gravity = fields.Float(string="Specific Gravity")
     water_absorption = fields.Float(string="Water absorption  %",compute="_compute_water_absorption")
 
 
@@ -1161,8 +1161,149 @@ class FineAggregate(models.Model):
                     else:
                         record.voids_loose_density_nabl = 'fail'
 
+    #  Soudness Test 
+    soudness_name = fields.Char("Name",default="Soudness Test ")
+    soudness_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
 
-# 
+    soudness_child_lines = fields.One2many('fine.soudness.line','parent_id',string="Parameter")
+
+    
+
+
+
+    sieve_name = fields.Char("Name",default="Sieve Analysis")
+    # sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+
+    wt_of_sample = fields.Float(string="Wt. Of Sample Taken For Analysis (gms) = ", digits=(8,3))
+ 
+    sieve_analysis_soundness_lines = fields.One2many('mechanical.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_soundness_lines())
+
+    total_percent_retained = fields.Float(
+        string="Total % Retained",
+        compute="_compute_total_percent_retained",
+        store=True
+    )
+
+    @api.depends('sieve_analysis_soundness_lines.percent_retained')
+    def _compute_total_percent_retained(self):
+        for rec in self:
+            rec.total_percent_retained = sum(
+                line.percent_retained for line in rec.sieve_analysis_soundness_lines
+            )
+
+    
+    @api.model
+    def _default_sieve_analysis_soundness_lines(self):
+        default_lines = [
+            (0, 0, {'sieve_size': '10', 'particle_size': '4.75'}),
+            (0, 0, {'sieve_size': '4.75', 'particle_size': '2.36'}),
+            (0, 0, {'sieve_size': '2.36', 'particle_size': '1.18'}),
+            (0, 0, {'sieve_size': '1.18', 'particle_size': '0.6'}),
+            (0, 0, {'sieve_size': '0.6', 'particle_size': '0.3'}),
+            (0, 0, {'sieve_size': '0.3', 'particle_size': '0.15'}),
+            (0, 0, {'sieve_size': '0.15', 'particle_size': 'Pan'}),
+        ]
+        return default_lines
+
+
+    # @api.onchange('sieve_analysis_child_lines')
+    # def _onchange_sieve_analysis_child_lines(self):
+    #     for rec in self:
+    #         pan_line = None
+    #         total_retained = 0.0
+    #         target_sieves = ['80mm','40mm','20mm','16mm', '10mm', '4.75mm', '2.36mm','1.18mm','600 µ','425 µ','300µ','212µ','150µ','75µ']
+
+    #         for line in rec.sieve_analysis_child_lines:
+    #             if line.sieve_size and line.sieve_size.lower() == 'pan':
+    #                 pan_line = line
+    #             elif line.sieve_size in target_sieves:
+    #                 total_retained += line.wt_retained or 0.0
+
+    #         if pan_line:
+    #             pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
+
+
+
+
+    def calculate_sieve(self): 
+        for record in self:
+            previous_cumulative = 0  
+            for line in record.sieve_analysis_soundness_lines:
+                print("Rows", str(line.percent_retained))
+                previous_line = line.serial_no - 1
+
+               
+
+                # Normal sieve calculation
+                if previous_line == 0:
+                    cumulative_retained = line.percent_retained
+                else:
+                    previous_line_record = self.env['mechanical.sieve.analysis.line'].sudo().search([
+                        ("serial_no", "=", previous_line),
+                        ("parent_id", "=", record.id)
+                    ], limit=1)
+                    
+                    if previous_line_record:
+                        previous_cumulative = previous_line_record.cumulative_retained
+                    cumulative_retained = previous_cumulative + line.percent_retained
+
+                passing_percent = 100 - cumulative_retained
+
+                # Write updated values
+                line.write({
+                    'cumulative_retained': round(cumulative_retained, 2),
+                    'passing_percent': round(passing_percent, 2),
+                })
+
+                print("Updated Cumulative Retained:", cumulative_retained)
+                print("Updated Passing Percent:", passing_percent)
+
+                previous_cumulative = cumulative_retained
+
+
+    ouantitative_name = fields.Char("Name",default="Quantitatively Examination :-")
+    # sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+
+ 
+    ouantitative_soundness_lines = fields.One2many('fine.ouantitative.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_ouantitative_soundness_lines())
+
+    
+    @api.model
+    def _default_ouantitative_soundness_lines(self):
+        default_lines = [
+            (0, 0, {'size': '10mm to 4.75mm'}),
+            (0, 0, {'size': '4.75mm to 2.36mm'}),
+            (0, 0, {'size': '2.36mm to 1.18mm'}),
+            (0, 0, {'size': '1.18mm to 0.6mm'}),
+            (0, 0, {'size': '0.6mm to 0.3mm'})
+            
+            
+        ]
+        return default_lines
+
+
+    quantitative_name = fields.Char("Name",default="Quantitatively Examination")
+
+    quantitative_soundness_lines = fields.One2many('fine.quantitative.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_quantitative_soundness_lines())
+
+    
+    @api.model
+    def _default_quantitative_soundness_lines(self):
+        default_lines = [
+            (0, 0, {'passing': '10mm', 'retained': '4.75mm'}),
+            (0, 0, {'passing': '4.75mm', 'retained': '2.36mm'}),
+            (0, 0, {'passing': '2.36mm', 'retained': '1.18mm'}),
+            (0, 0, {'passing': '1.18mm', 'retained': '0.6mm'}),
+            (0, 0, {'passing': '0.6mm', 'retained': '0.3mm'}),
+            (0, 0, {'passing': '0.3mm', 'retained': '0.15mm'}),
+            (0, 0, {'passing': '0.15mm', 'retained': 'Pan'}),
+        ]
+        return default_lines
+
+
+
+
+
     
     
 
@@ -1183,6 +1324,7 @@ class FineAggregate(models.Model):
             record.compacted_density_visible = False
             record.voids_compacted_density_visible = False
             record.voids_loose_density_visible = False
+            record.soudness_visible = False
             
            
           
@@ -1222,6 +1364,9 @@ class FineAggregate(models.Model):
                 if sample.internal_id == '8a944a9b-4d7d-44a3-a82c-6d8bacc07846':
                     record.voids_loose_density_visible = True
 
+                if sample.internal_id == 'a0e7aaf3-68ff-4e75-830d-91ae04c98f5796':
+                    record.soudness_visible = True
+
               
 
         
@@ -1241,13 +1386,13 @@ class FineAggregate(models.Model):
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
         for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == '45875ght-7188-4086-b132-62b50e63f1245gt':
-                result.result_char = round(self.specific_gravity,2)
-                if self.specific_gravity_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+            # if result.parameter.internal_id == '45875ght-7188-4086-b132-62b50e63f1245gt':
+            #     result.result_char = round(self.specific_gravity,2)
+            #     if self.specific_gravity_nabl == 'pass':
+            #         result.nabl_status = 'nabl'
+            #     else:
+            #         result.nabl_status = 'non-nabl'
+            #     continue
 
             # water absorbtion
             if result.parameter.internal_id == '4dbde30b-0cdc-4641-abdd-68a574fd7e1f':
@@ -1642,6 +1787,361 @@ class MoistureContentLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+class SoudnessLine(models.Model):
+    _name = "fine.soudness.line"
+    parent_id = fields.Many2one('mechanical.fine.aggregate',string="Parent Id")
+
+    serial_no = fields.Integer(string="Cycle No", readonly=True, copy=False, default=1)
+
+    immersed_datetime = fields.Datetime(string="Date & Time of Sample immersed in Solution for 16 to 18 hrs.")
+    temp_solution = fields.Float(string="Temp. of Solution (°C)", digits=(6,2))
+    specific_gravity_solution = fields.Float(string="Specific Gravity of Solution", digits=(8,3))
+    removed_datetime = fields.Datetime(string="Date & Time of Sample Removed from Solution")
+    oven_datetime = fields.Datetime(string="Date & Time of Sample Kept in Oven (105 to 1100C) for Drying ")
+
+    hours_1 = fields.Char(string="Hours 1",compute="_compute_hours_1",store=True)
+    hours_2 = fields.Char(string="Hours 2",compute="_compute_hours_2",store=True)
+    hours_3 = fields.Char(string="Hours 3",compute="_compute_hours_3",store=True)
+
+    @api.depends('oven_datetime', 'parent_id.soudness_child_lines.immersed_datetime')
+    def _compute_hours_1(self):
+        """
+        Compute hours_1 = (Next line's immersed_datetime) - (Current line's oven_datetime)
+        """
+        for rec in self:
+            rec.hours_1 = False
+            if not rec.oven_datetime or not rec.parent_id:
+                continue
+
+            lines = rec.parent_id.soudness_child_lines.sorted(key=lambda l: l.serial_no)
+            line_list = list(lines)
+
+            if rec in line_list:
+                current_index = line_list.index(rec)
+                # check next line exists
+                if current_index + 1 < len(line_list):
+                    next_line = line_list[current_index + 1]
+                    if next_line.immersed_datetime:
+                        diff = next_line.immersed_datetime - rec.oven_datetime
+                        total_seconds = diff.total_seconds()
+                        if total_seconds > 0:
+                            hours = int(total_seconds // 3600)
+                            minutes = int((total_seconds % 3600) // 60)
+                            seconds = int(total_seconds % 60)
+                            rec.hours_1 = f"{hours:02}:{minutes:02}:{seconds:02}"
+                        else:
+                            rec.hours_1 = "00:00:00"
+
+    # ---------------- HOURS 2 -----------------
+    @api.depends('immersed_datetime', 'removed_datetime')
+    def _compute_hours_2(self):
+        """Compute Hours 2 = removed_datetime - immersed_datetime"""
+        for rec in self:
+            rec.hours_2 = False
+            if rec.immersed_datetime and rec.removed_datetime:
+                diff = rec.removed_datetime - rec.immersed_datetime
+                total_seconds = diff.total_seconds()
+                if total_seconds > 0:
+                    hours = int(total_seconds // 3600)
+                    minutes = int((total_seconds % 3600) // 60)
+                    seconds = int(total_seconds % 60)
+                    rec.hours_2 = f"{hours:02}:{minutes:02}:{seconds:02}"
+                else:
+                    rec.hours_2 = "00:00:00"
+
+
+    @api.depends('removed_datetime', 'oven_datetime')
+    def _compute_hours_3(self):
+        """Compute Hours 2 = oven_datetime - removed_datetime"""
+        for rec in self:
+            rec.hours_3 = False
+            if rec.removed_datetime and rec.oven_datetime:
+                diff = rec.oven_datetime - rec.removed_datetime
+                total_seconds = diff.total_seconds()
+                if total_seconds > 0:
+                    hours = int(total_seconds // 3600)
+                    minutes = int((total_seconds % 3600) // 60)
+                    seconds = int(total_seconds % 60)
+                    rec.hours_3 = f"{hours:02}:{minutes:02}:{seconds:02}"
+                else:
+                    rec.hours_3 = "00:00:00"
+
+    
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoudnessLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class SieveAnalysisSoudnesLine(models.Model):
+    _name = "mechanical.sieve.analysis.line"
+    parent_id = fields.Many2one('mechanical.fine.aggregate', string="Parent Id")
+    
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sieve_size = fields.Char(string="IS Sieve Size")
+    particle_size = fields.Char(string="Retained")
+    wt_retained = fields.Float(string="Wt. Retained before test(gm)")
+    percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained")
+    wt_sample_testing = fields.Char(string="Weight of sample for testing (gm)",compute="_compute_wt_sample_testing_display")
+    actual_wt = fields.Float(string="Actual Weight of sample taken (gm)")
+    cumulative_retained = fields.Float(string="Cum. Retained %",compute="_compute_cum_retained" , store=True)
+    passing_percent = fields.Float(string="% Passing ")
+
+    # @api.onchange('cumulative_retained')
+    # def _compute_passing_percent(self):
+    #     for record in self:
+    #         record.passing_percent = 100 - record.cumulative_retained
+
+    @api.depends('percent_retained')
+    def _compute_wt_sample_testing_display(self):
+        for rec in self:
+            if rec.percent_retained < 5:
+                rec.wt_sample_testing = "-"
+            else:
+                rec.wt_sample_testing = "100"
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SieveAnalysisSoudnesLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+    def write(self, vals):
+        # Handle row deletions and adjust serial numbers
+        if 'parent_id' in vals or 'wt_retained' in vals:
+            for record in self:
+                if record.parent_id and record.parent_id == vals.get('parent_id') and 'wt_retained' in vals:
+                    record.percent_retained = vals['wt_retained'] / record.parent_id.total * 100 if record.parent_id.total else 0
+
+            new_self = super(SieveAnalysisSoudnesLine, self).write(vals)
+
+            if 'wt_retained' in vals:
+                for record in self:
+                    # record.parent_id._compute_total()
+                    pass
+
+            return new_self
+
+        return super(SieveAnalysisSoudnesLine, self).write(vals)
+
+    def unlink(self):
+        # Get the parent_id before the deletion
+        parent_id = self[0].parent_id
+
+        res = super(SieveAnalysisSoudnesLine, self).unlink()
+
+        if parent_id:
+            parent_id.sieve_analysis_soundness_lines._reorder_serial_numbers()
+
+        return res
+
+
+    @api.depends('wt_retained', 'parent_id.wt_of_sample')
+    def _compute_percent_retained(self):
+        for record in self:
+            try:
+                record.percent_retained = (record.wt_retained / record.parent_id.wt_of_sample) * 100 if record.parent_id.wt_of_sample else 0.0
+            except ZeroDivisionError:
+                record.percent_retained = 0.0
+
+
+
+    # @api.depends('cumulative_retained')
+    # def _compute_cum_retained(self):
+    #     self.cumulative_retained=0
+
+    @api.depends('percent_retained', 'parent_id.sieve_analysis_soundness_lines.percent_retained')
+    def _compute_cum_retained(self):
+        for record in self:
+            cumulative = 0.0
+            found = False
+
+            for line in sorted(record.parent_id.sieve_analysis_soundness_lines, key=lambda l: l.serial_no):
+                cumulative += line.percent_retained or 0.0
+                if line.id == record.id:
+                    found = True
+                    record.cumulative_retained = cumulative
+                    break
+
+            if not found:
+                record.cumulative_retained = 0.0
+
+        
+    
+
+
+    def get_previous_record(self):
+        for record in self:
+            # import wdb; wdb.set_trace()
+            sorted_lines = sorted(record.parent_id.sieve_analysis_soundness_lines, key=lambda r: r.id)
+            # index = sorted_lines.index(record)
+            # print("Working")
+
+class OuantitativelyExaminationLine(models.Model):
+    _name = "fine.ouantitative.line"
+    parent_id = fields.Many2one('mechanical.fine.aggregate',string="Parent Id")
+
+    serial_no = fields.Integer(string="Cycle No", readonly=True, copy=False, default=1)
+
+    size = fields.Char(string="Size")
+    cycle = fields.Float(string="Test Cycle ")
+    original_sulphate = fields.Float(string="Original wt. of Sample-gms.Sodium Sulphate", digits=(8,3),compute="_compute_original_sulphate",store=True)
+    original_magnesiu = fields.Float(string="Original wt. of Sample-gms.Magnesium ", digits=(8,3))
+    wt_sulhate = fields.Float(string="Weight Retained After  5 Cycle-gms Sodium Sulphate")
+    wt_manesium = fields.Float(string="Weight Retained After  5 Cycle-gms Magnesium ")
+    loss_sulphae = fields.Float(string="% Loss Sodium Sulphate",compute="_compute_loss_sulphae",digits=(12,1))
+    loss_manesium = fields.Float(string="% Loss Magnesium ")
+
+    @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
+    def _compute_original_sulphate(self):
+        for rec in self:
+            if rec.parent_id:
+                line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
+                    lambda l: l.serial_no == rec.serial_no
+                )
+                rec.original_sulphate = line.actual_wt if line else 0.0
+            else:
+                rec.original_sulphate = 0.0
+
+    @api.depends('original_sulphate', 'wt_sulhate')
+    def _compute_loss_sulphae(self):
+        """Compute % Loss Sodium Sulphate"""
+        for rec in self:
+            if not rec.original_sulphate or rec.wt_sulhate == 0:
+                rec.loss_sulphae = 0.0
+            else:
+                rec.loss_sulphae = round(((rec.original_sulphate - rec.wt_sulhate) / rec.wt_sulhate) * 100, 2)
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(OuantitativelyExaminationLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class QuantitativelyExaminationLine(models.Model):
+    _name = "fine.quantitative.line"
+    parent_id = fields.Many2one('mechanical.fine.aggregate',string="Parent Id")
+
+    serial_no = fields.Integer(string="Cycle No", readonly=True, copy=False, default=1)
+
+    passing = fields.Char(string="Sieve Size-mm Passing")
+    retained = fields.Char(string="Sieve Size-mm Retained")
+    grading_sulphate = fields.Float(string="Grading of Original Sample  (%)s.Sodium Sulphate", digits=(8,2),compute="_compute_grading_sulphate",store=True)
+    sieve_magnesiu = fields.Float(string="Sieve Used For Loss  Determination.Magnesium ", digits=(8,3))
+    wt_fraction_sulhate = fields.Float(string="Weight of test Fraction  (retained) after test (gm) Sodium Sulphate",compute="_compute_wt_fraction_sulhate",store=True)
+    wt_fraction_manesium = fields.Float(string="Weight of test Fraction  (retained) after test  (gm) Magnesium ")
+    finalloss_sulphae = fields.Float(string="Final loss (%) Sulphate",compute="_compute_finalloss_sulphae",store="_compute_finalloss_sulphae")
+    final_loss_manesium = fields.Float(string="Final loss (%) Magnesium ")
+
+    avg_sulphae = fields.Float(string="Weighted Average  (Corrected % loss) Sulphate",compute="_compute_avg_sulphae",store=True)
+    avg_manesium = fields.Float(string="Weighted Average  (Corrected % loss) Magnesium ")
+
+    @api.depends('finalloss_sulphae', 'grading_sulphate')
+    def _compute_avg_sulphae(self):
+        for rec in self:
+            rec.avg_sulphae = (rec.finalloss_sulphae * rec.grading_sulphate) / 100 if rec.grading_sulphate else 0.0
+
+    @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
+    def _compute_finalloss_sulphae(self):
+        for rec in self:
+            # percent_retained from sieve_analysis_soundness_lines
+            sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)
+            percent_ret = sieve_line.percent_retained if sieve_line else 0.0
+
+            # loss_sulphae from ouantitative_soundness_lines
+            ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)
+            loss_sulphae_val = ou_line.loss_sulphae if ou_line else 0.0
+
+            if 0 < percent_ret < 5:
+                rec.finalloss_sulphae = 0.0  # किंवा आधीची value
+            else:
+                rec.finalloss_sulphae = loss_sulphae_val
+
+    @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
+    def _compute_grading_sulphate(self):
+        for rec in self:
+            if rec.parent_id:
+                line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
+                    lambda l: l.serial_no == rec.serial_no
+                )
+                rec.grading_sulphate = line.percent_retained if line else 0.0
+            else:
+                rec.grading_sulphate = 0.0
+
+    @api.depends('serial_no', 'parent_id.ouantitative_soundness_lines')
+    def _compute_wt_fraction_sulhate(self):
+        for rec in self:
+            if rec.parent_id:
+                line = rec.parent_id.ouantitative_soundness_lines.filtered(
+                    lambda l: l.serial_no == rec.serial_no
+                )
+                rec.wt_fraction_sulhate = line.wt_sulhate if line else 0.0
+            else:
+                rec.wt_fraction_sulhate = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(QuantitativelyExaminationLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
 
 
 

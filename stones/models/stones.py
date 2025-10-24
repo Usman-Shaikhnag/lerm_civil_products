@@ -28,6 +28,14 @@ class Stones(models.Model):
             self.size_id = self.eln_ref.size_id.id
 
 
+     
+    lab_id1 = fields.Char(string="Lab ID No. ")
+    room_temp1 = fields.Float(string="Temperature during test", digits=(12,2))
+    relative_humidity1= fields.Float(string="Relative humidity during test ", digits=(12,2))
+    depth = fields.Char(string="Depth")
+    stone_type1 = fields.Char(string="Type of Stone")
+
+
 
    
 #  Scratch hardness According to Moh's Scale
@@ -227,6 +235,19 @@ class Stones(models.Model):
                 record.true_specific_gravity = (record.wt_stop_true_specifc - record.wet_true_specific) / denominator
             else:
                 record.true_specific_gravity = 0.0
+
+    true_porosity = fields.Float(string="True porosity",compute="_compute_true_porosity",digits=(12,2),store=True)
+
+    @api.depends('app_specific_gravity', 'true_specific_gravity')
+    def _compute_true_porosity(self):
+        for record in self:
+            if record.true_specific_gravity and record.true_specific_gravity != 0:
+                record.true_porosity = ((record.true_specific_gravity - record.app_specific_gravity) / record.true_specific_gravity) * 100
+            else:
+                record.true_porosity = 0.0
+
+
+
 
         
 
