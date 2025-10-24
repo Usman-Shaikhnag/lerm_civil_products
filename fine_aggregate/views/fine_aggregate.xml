@@ -37,6 +37,24 @@
 
                         </h1>
                     </div>
+
+                    <div> 
+                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
+                    <tbody>
+                        <tr>
+                            <td ><label for="temp_sieve_analysis"/></td>
+                            <td ><field name="temp_sieve_analysis"/></td>
+                        </tr>
+                        <tr>
+                            <td ><label for="humidity_sieve_analysis"/></td>
+                            <td  ><field name="humidity_sieve_analysis"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                    
+                    </div>
                    
                     <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sieve_visible">
                         <tbody>
@@ -74,6 +92,8 @@
                         </button>
                     </div>
 
+
+           <div>
                 <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
                     <tbody>
                         <tr>
@@ -86,108 +106,7 @@
                         </tr>
                     </tbody>
                 </table>
-                    
-
-
-                      <!-- Soundness Na2So4  -->
-                <!-- <div invisible="specific_gravity_visible == False">
-                    <h1 class="text-center">
-                        <field name="specific_gravity_name" readonly="1" nolabel="1"/>
-                        <field name="specific_gravity_visible" invisible="1"/>
-
-                    </h1>
-                </div> -->
-
-                <!-- <div invisible="specific_gravity_visible == False">
-                    <field name="specific_gravity_child_lines" nolabel="1"  style="width:100%" >
-                        <tree editable="bottom"  class="custom_table_borders">
-                            <field name="serial_no"/>
-                            <field name="wt_of_staurated_a"/>
-                            <field name="wt_of_pycnometer_b" />
-                            <field name="wt_of_pycnometer_c"/>
-                            <field name="wt_of_oven_d"/>
-                        </tree>
-                    </field>
-                
-                </div> -->
-
-
-
-                    <!-- Left-side table for A, B, C, D -->
-                <!-- <div style="display: flex; gap: 20px;" invisible="not specific_gravity_visible"> -->
-                    <!-- Left table -->
-                    <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50">
-                        <tbody>
-                         <tr>
-                              <td><span>Trial Number</span></td>
-                              <td><span>1</span></td>
-                               <td><span>2</span></td>
-                            </tr>
-
-                            <tr>
-                                <td><label for="avg_staurated_a">Wt of Saturated surface dry Aggregate in Air: (A)</label></td>
-                                <td><field name="avg_staurated_a"/></td>
-                                 <td><field name="avg_staurated_a"/></td>
-                            </tr>
-                            <tr>
-                                <td><label for="avg_pycnometer_b">Wt of Pycnometer containing sample and Water: (B)</label></td>
-                                <td><field name="avg_pycnometer_b"/></td>
-                                <td><field name="avg_pycnometer_b"/></td>
-                            </tr>
-
-                            <tr>
-                                <td><label for="avg_pycnometer_c">Wt of Pycnometer containing Water: (C)</label></td>
-                                <td><field name="avg_pycnometer_c"/></td>
-                                 <td><field name="avg_pycnometer_c"/></td>
-                            </tr>
-
-                            <tr>
-                                <td><label for="avg_oven_d">Wt of Oven Dried Aggregate: (D)</label></td>
-                                <td><field name="avg_oven_d"/></td>
-                                 <td><field name="avg_oven_d"/></td>
-                            </tr>
-                        </tbody>
-                    </table> -->
-
-
-
-
-
-                    <!-- Right table -->
-                    <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50">
-                        <tbody>
-
-                            <tr>
-                                <td><label for="specific_gravity">Avg Specific Gravity</label></td>
-                                <td><field name="specific_gravity" nolabel="1"/></td>
-                                 
-                            </tr>
-                            <tr>
-                                <td><label for="water_absorption">Water Absorption %</label></td>
-                                <td><field name="water_absorption" nolabel="1"/></td>
-                                
-                            </tr>
-                            <tr>
-                                <td><label for="specific_gravity_conformity">Specific Gravity Conformity</label></td>
-                                <td>
-                                    <field name="specific_gravity_conformity"
-                                        decoration-success="specific_gravity_conformity == 'pass'"
-                                        decoration-danger="specific_gravity_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label for="specific_gravity_nabl">Specific Gravity NABL</label></td>
-                                <td>
-                                    <field name="specific_gravity_nabl" readonly="1"
-                                        decoration-success="specific_gravity_nabl == 'pass'"
-                                        decoration-danger="specific_gravity_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div> -->
-
+                </div>
 
 
 
@@ -201,6 +120,20 @@
                         </h1>
                     </div>
 
+                     <div> 
+                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
+                    <tbody>
+                        <tr>
+                            <td ><label for="temp_specific_gravity_water_absorption"/></td>
+                            <td ><field name="temp_specific_gravity_water_absorption"/></td>
+                        </tr>
+                        <tr>
+                            <td ><label for="humidity_temp_specific_gravity_water_absorption"/></td>
+                            <td  ><field name="humidity_temp_specific_gravity_water_absorption"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
 
                     <table class="table table-sm table-bordered custom_table_borders" invisible="not specific_gravity_visible" style="white-space:nowrap;">
                         <thead>
@@ -248,7 +181,10 @@
                             </tr>
                         </tbody>
                     </table>
+                    
 
+
+                    
 
                     <div style="display:flex;">
                       <div style="width:50%">
@@ -333,6 +269,8 @@
 
                     <!-- compacted density -->
 
+            
+
 
                      <div class="text-center" invisible="compacted_density_visible == False">
                         <h1>
@@ -341,6 +279,24 @@
 
                         </h1>
                     </div>
+
+
+                    <div> 
+                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
+                    <tbody>
+                        <tr>
+                            <td ><label for="temp_density"/></td>
+                            <td ><field name="temp_density"/></td>
+                        </tr>
+                        <tr>
+                            <td ><label for="humidity_density"/></td>
+                            <td  ><field name="humidity_density"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+
+
 
                     <table class="table table-sm table-bordered w-100 custom_table_borders" invisible="not compacted_density_visible" style="white-space:nowrap;">
                         <tbody>
@@ -631,6 +587,21 @@
                         </h1>
                     </div>
 
+                     <div> 
+                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
+                    <tbody>
+                        <tr>
+                            <td ><label for="temp_finer75_visible"/></td>
+                            <td ><field name="temp_finer75_visible"/></td>
+                        </tr>
+                        <tr>
+                            <td ><label for="humidity_finer75_visible"/></td>
+                            <td  ><field name="humidity_finer75_visible"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+
                  <table class="table table-sm table-bordered w-100 mt-2 custom_table_borders" invisible="finer75_visible == False" style="white-space:nowrap;">
                         <tbody>
                             <tr>
@@ -806,11 +777,6 @@
                         </tbody>
                     </table>
 
-
-
-                     
-
-
                 
                      <button
                             type="object"
@@ -818,9 +784,6 @@
                             name="open_eln_page"
                             string="Submit"
                             />
-
-
-
                 </sheet>
             </form>
         </field>
