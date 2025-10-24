@@ -1162,6 +1162,11 @@ class FineAggregate(models.Model):
                         record.voids_loose_density_nabl = 'fail'
 
     #  Soudness Test 
+
+
+    temp_soudness = fields.Float(string="Temperature of soudness")
+    humidity_soudness = fields.Float(string="humidity of soudness")
+
     soudness_name = fields.Char("Name",default="Soudness Test ")
     soudness_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
 
@@ -2035,7 +2040,7 @@ class OuantitativelyExaminationLine(models.Model):
 
     @api.depends('original_sulphate', 'wt_sulhate')
     def _compute_loss_sulphae(self):
-        """Compute % Loss Sodium Sulphate"""
+        
         for rec in self:
             if not rec.original_sulphate or rec.wt_sulhate == 0:
                 rec.loss_sulphae = 0.0
