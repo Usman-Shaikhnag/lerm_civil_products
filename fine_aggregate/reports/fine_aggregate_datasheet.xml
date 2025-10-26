@@ -2,10 +2,9 @@
 <odoo>
     <template id="fine_agg_datasheet_ssl">
         <t t-call="web.html_container">
-            <t t-call="lerm_civil.mechanical_data_sheet_header">
-        
+            <t t-call="lerm_civil.genstru_data_sheet_header">
                 <div style="text-align:center;font-size:18px;font-weight: bold">
-                 Fine Aggregate DataSheet SSL
+                    FINE AGGREGATE
                 </div>
 
                 <div class="container_eln" style="margin-top:5px">
@@ -13,7 +12,7 @@
                         <tr cols="12">
                             
                             <td colspan="6">Job No :
-                                <![CDATA[&nbsp;]]>
+                                <![CDATA[&nbsp;]]>		
                                 <span t-field="eln.kes_no"></span>
                             </td>
                             <td colspan="6">Test Start Date: 
@@ -27,22 +26,34 @@
                             <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
                             </td>
                         </tr>
-
-                          <tr style="height:50px" cols="12">
-								<td colspan="4">Performed By :
-									<![CDATA[&nbsp;]]>
-									<span t-field="eln.technician.name"/>
-								</td>
-								<td colspan="4">Witness Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="eln.witness_name"/>
-								</td>
-								<td colspan="4">Witness Signature :
-									<![CDATA[&nbsp;]]>
-									<span style='padding:20px'></span>
-								</td>
-							</tr>
+                        <!-- <tr>
+                            <td colspan="6">Age at Test: <span t-field="data.age_of_days"></span>
+                            </td>
+                            <td colspan="6">Sample Conditioning: <span t-field="data.sample_condition"></span>
+                            </td>
+                        </tr> -->
                     </table>
+					
+					<table>
+						<tr style="height:50px" cols="12">
+                            <td colspan="4">Performed By :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.technician.name"/>
+                            </td>
+                            <td colspan="4">Witness Name :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.witness_name"/>
+                            </td>
+                            <td colspan="4">Witness Signature :
+                                <![CDATA[&nbsp;]]>
+                                <span style='padding:20px'></span>
+                            </td>
+                        </tr>
+					</table>
+
+
+
+
 
                     <!-- Sieve Analysis  -->
                     <div t-if="data.sieve_visible" style="margin-top:20px">
@@ -138,9 +149,9 @@
 
 
 
-                       <!-- Dimension  -->
+                       <!-- Dimension      Water absorption or specific-->
                     
-                    <div t-if="data.specific_gravity_visible" style="margin-top:20px">
+                    <!-- <div t-if="data.specific_gravity_visible" style="margin-top:20px">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')]).parameter_name"/>
                             <span>
@@ -223,11 +234,126 @@
 
                     </div>
 
+ -->
 
+
+
+
+ <div t-if="data.specific_gravity_visible or data.water_absorption_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Specific Gravity And Water Absorption
+					</div>
+
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Observations
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								 1
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								 2
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Weight of basket and the sample while suspended in water (A1) gm
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wt_basket_and_sample"/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wt_basket_and_sample_2"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Weight of empty basket in water (A2) gm
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wt_empty_basket"/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wt_empty_basket_2"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Weight of Saturated Aggregate  in Water (A) = (A1 – A2) – gms
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wt_sample_inwater"/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wt_sample_inwater_2"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Weight of surface dried aggregate (B) gm
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wt_surface_dry"/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wt_surface_dry_2"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Weight of  oven dried aggregates (C) gm	
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.oven_dried_wt" />
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.oven_dried_wt_2" />
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Specific Gravity of Fine aggregates [C/(B-A)]	
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.specific_gravity_1" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.specific_gravity_2" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Water absorption [100(B-C)/C]	
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.water_absorption_1" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.water_absorption_2" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+					</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: left; padding: 8px; border: 1px solid black;">Average Specific Gravity</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black;">
+									<span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: left; padding: 8px; border: 1px solid black;">Average Water Absorption - %</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black;">
+									<span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+					</div>
 
 
                     <!--density  -->
-                    
+<!--                     
                 <div t-if="data.loose_bulk_visible" style="margin-top:20px">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')]).parameter_name"/>
@@ -347,291 +473,258 @@
 
                         </table>
 
-                    </div>
+                    </div> -->
 
+<!--Compacted Density  -->
+					<div t-if="data.compacted_density_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Compacted Density
+					</div>
 
-                        <!-- 4. Bulking of Sand -->
-                    
-                    <div t-if="data.bulking_sand_visible" style="margin-top:20px">
-                        <div style="text-align:center;font-size:18px">
-                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')]).parameter_name"/>
-                            <span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-							</span>
-                        </div>
-                    <table style="margin-top:20px">
-					<thead >
-						<tr cols="12">
-							<td >Sr no 
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Capacity of Cylinder Use for Test in litre (V)
 							</td>
-
-							<td  style="text-align:center;">Height of Sand in Cylinder:- (A)
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.capacity_of_cylinderr"/>
 							</td>
-
-                            <td  style="text-align:center;">Height of Settled Sand:- (B)
-
-							</td>
-                          
-                            <td  style="text-align:center;">Loss of Height of Sand:- (A-B)
-							</td>
-
-                         
 						</tr>
-						
-						</thead>
-						  <tbody>
-
-						<t t-set="i" t-value="0"/>
-						<tr t-foreach="data.bulking_sand_child_lines" t-as="r">
-							<td >
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Weight of empty cylinder (kg)
 							</td>
-							<td >
-								<span t-esc="r['height_of_sand']" />
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wtt_of_empty_cylinder_compacted"/>
 							</td>
-                            <td >
-								<span t-esc="r['height_of_settled']" />
-							</td>
-                            <td >
-								<span t-esc="r['loss_off_height']" />
-							</td>
-                         
-
-							
 						</tr>
-						</tbody>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Weight of cylinder + aggregate (kg)
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wtt_cylinder_aggregate_compacted"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Mass of Compacted Aggregate in Cylinder (A) – Kg	
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.mass_of_compacted_aggregate" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Compacted Density (Ƴ1) = (A/V) Kg/lit	
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.compacted_density" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
 					</table>
+					</div>
 
-                    <table style="margin-top:5px">
-                            <tr cols="12">
-                                <td colspan="6"><b>Average Bulking of Sand (%):</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.avg_bulking_of_sand" t-options='{"widget": "float", "precision": 1}'/>
-                                </td>
-                            </tr>
-                            
-                          
-                        </table>
+					<!--Loose density  -->
+					<div t-if="data.compacted_density_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Loose density
+					</div>
 
-                       
-                    </div>
-
-
-
-
-                      <!-- 5. Silt Content-->
-                    
-                    <div t-if="data.site_content_visible" style="margin-top:20px">
-                        <div style="text-align:center;font-size:18px">
-                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','2547ghty124m-3fa3-4b83-ae31-9d281457nhy14')]).parameter_name"/>
-                            <span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2547ghty124m-3fa3-4b83-ae31-9d281457nhy14')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-							</span>
-                        </div>
-                    <table style="margin-top:20px">
-					<thead >
-						<tr cols="12">
-							<td >Sr no 
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Capacity of Cylinder Use for Test in litre (V)
 							</td>
-
-							<td  style="text-align:center;">Height of Sand + Silt in the glass Cylinder:- (A)
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.capacity_of_cylinder_loose"/>
 							</td>
-
-                            <td  style="text-align:center;">Height of Sand:- (B)
-
-							</td>
-                          
-                            <td  style="text-align:center;">Height of Silt:- (A-B)
-							</td>
-
-                         
-						
 						</tr>
-						
-						</thead>
-						  <tbody>
-
-						<t t-set="i" t-value="0"/>
-						<tr t-foreach="data.site_content_child_lines" t-as="r">
-							<td >
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Weight of empty cylinder (kg)
 							</td>
-							<td >
-								<span t-esc="r['heigh_sand_silt']" />
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wtt_of_empty_cylinder_loose"/>
 							</td>
-                            <td >
-								<span t-esc="r['height_of_sand']" />
-							</td>
-                            <td >
-								<span t-esc="r['height_silt']" />
-							</td>
-                           
-                         
-
-							
 						</tr>
-						</tbody>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Weight of cylinder + aggregate (kg)
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wtt_cylinder_aggregate_loose"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Mass of Loose Aggregate in Cylinder (A) – Kg 	
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.mass_of_loose_aggregate" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Loose Density (Ƴ1) = (A/V) Kg/lit	
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.loose_density" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
 					</table>
+					</div>
 
-                    <table style="margin-top:5px">
-                            <tr cols="12">
-                                <td colspan="6"><b>Average Bulking of Sand (%):</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.avg_bulking_of_sand1" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                            </tr>
-                            
-                          
-                        </table>
+					<!--Void In Compacted And Loose Density  -->
+					<div t-if="data.voids_compacted_density_visible or data.voids_loose_density_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Void In Compacted And Loose Density
+					</div>
 
-                       
-                    </div>
-
-
-                     <!-- 6. Moisture Content-->
-                    
-                    <div t-if="data.moisture_content_visible" style="margin-top:20px">
-                        <div style="text-align:center;font-size:18px">
-                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1457htyu1245-3fa3-4b83-ae31-9d281457457hy')]).parameter_name"/>
-                            <span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1457htyu1245-3fa3-4b83-ae31-9d281457457hy')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-							</span>
-                        </div>
-                    <table style="margin-top:20px">
-					<thead >
-						<tr cols="12">
-							<td >Sr no 
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Sp. Gravity of Material (Gs)
 							</td>
-
-							<td  style="text-align:center;">Weight of Wet Sand Sample, (W1)
-
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.specific_gravity_voids"/>
 							</td>
-
-                            <td  style="text-align:center;">Weight of Dry Sand Sample, (W2)
-
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Percent Voids in Compacted Density = (Gs - Ƴ1 )/Gs x 100 	
 							</td>
-                          
-                            <td  style="text-align:center;">Diff. Between Wet and Dry Sand:- (W1-W2)
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.voids_compacted_density" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
-
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Percent Voids in Loose Density = (Gs – Ƴ2 )/Gs x 100	
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.voids_loose_density" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+					</table>
+					</div>
                         
-                           
-						
-						</tr>
-						
-						</thead>
-						  <tbody>
-
-						<t t-set="i" t-value="0"/>
-						<tr t-foreach="data.moisture_content_child_lines" t-as="r">
-							<td >
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-							</td>
-							<td >
-								<span t-esc="r['wt_sand']" />
-							</td>
-                            <td >
-								<span t-esc="r['wt_dry']" />
-							</td>
-                            <td >
-								<span t-esc="r['diff_wet_sand']" />
-							</td>
-                          
-
-							
-						</tr>
-						</tbody>
-					</table>
-
-                    <table style="margin-top:5px">
-                            <tr cols="12">
-                                <td colspan="6"><b>Average Moisture Content (%):</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.avg_moisture" t-options='{"widget": "float", "precision": 1}'/>
-                                </td>
-                            </tr>
-                            
-                          
-                        </table>
-
-                       
-                    </div>
-
      
                
-                    
-                    <!-- authorizeRowDataSheet -->
-                    
-                   <div class="authorizeRowDataSheet">
-						<div>
-                            <div>
-                                <b>
-                                    Tested By 
-                                </b>
-                                
-                            </div>
-                            <div style="height:40px">
 
-                            </div>
-                            <div>
-                                <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
-                                </b>
-                            </div>
-						</div>
-						<div style="margin-left:500px">
-							
-							<div>
-								<b>
-									Approved By
-								</b>
-							</div>
-							<div style="height:40px">
 
-							</div>
-							<div>
-								<b>
-								<span t-esc="eln.sample_id.check_by.name"/>
-								</b>
-							</div>
+
+
+
+               <div t-if="data.finer75_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						DETERMINATION OF MATERIAL FINER THAN 75 MICRON
+					</div>
+
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Weight of Sample in gms
+							</td>
 							
-							<div>
-								<b>
-									(<span t-esc="eln.sample_id.check_by.job_title"/>)
-								</b>
-							</div>
-						</div>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wt_sample_finer75"/>
+							</td>
+		
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Weight of dry sample after retained in 75 microns
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.wt_dry_sample_finer75"/>
+							</td>
+							
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Material finer than 75 micron in %
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.material_finer75"/>
+							</td>
+							
+						</tr>
+						
+						</table>
 					</div>
                     
-                </div>
+                    
+                    <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<div style="height:20px">
 
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.technician.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+
+							<div>
+						<div>
+							<!-- <img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/> -->
+						</div>
+				
+					</div>
+							
+							<div>
+								<div>
+									<b>
+										Reviewed &amp; Issued By
+									</b>
+									
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+								<!-- <div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div> -->
+							<!-- </div> -->
+						</div>
+                    
+                </div>
+</div> 
             </t>
         </t>
     </template>
-    </odoo>
+                    
+    
+    </odoo> 
+
+
+
+
+
+
