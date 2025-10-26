@@ -93,7 +93,11 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
-    # Crushing Value
+    # Crushing Value 
+
+    temp_crushing_value = fields.Char(string="Temp.°C")
+    humidity_crushing_value= fields.Char(string="Humidity %")
+
     crushing_value_name = fields.Char("Name",default="Crushing Value")
     crushing_visible = fields.Boolean("Crushing Visible",compute="_compute_visible")
 
@@ -207,87 +211,13 @@ class CoarseAggregateMechanical(models.Model):
                         record.average_crushing_value_nabl = 'fail'
 
 
-    
-
-    # Abrasion Value
-    abrasion_value_name = fields.Char("Name",default="Los Angeles Abrasion Value")
-    abrasion_visible = fields.Boolean("Abrasion Visible",compute="_compute_visible")
-
-    parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    total_weight_sample_abrasion = fields.Float(string="Total weight of Sample in gms")
-    weight_passing_sample_abrasion = fields.Float(string="Weight of Passing sample in 1.70 mm IS sieve in gms")
-    weight_retain_sample_abrasion = fields.Integer(string="Weight of Retain sample in 1.70 mm IS sieve in gms",compute="_compute_weight_retain_sample_abrasion")
-    abrasion_value_percentage = fields.Float(string="Abrasion Value (%)",compute="_compute_sample_weight")
-
-    abrasion_value_percentage_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_abrasion_value_percentager_conformity", store=True)
-
-    @api.depends('abrasion_value_percentage','eln_ref','grade')
-    def _compute_abrasion_value_percentager_conformity(self):
-        
-        for record in self:
-            record.abrasion_value_percentage_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.abrasion_value_percentage - record.abrasion_value_percentage*mu_value
-                    upper = record.abrasion_value_percentage + record.abrasion_value_percentage*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.abrasion_value_percentage_conformity = 'pass'
-                        break
-                    else:
-                        record.abrasion_value_percentage_conformity = 'fail'
-
-    abrasion_value_percentage_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_abrasion_value_percentage_nabl", store=True)
-
-    @api.depends('abrasion_value_percentage','eln_ref','grade')
-    def _compute_abrasion_value_percentage_nabl(self):
-        
-        for record in self:
-            record.abrasion_value_percentage_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.abrasion_value_percentage - record.abrasion_value_percentage*mu_value
-                    upper = record.abrasion_value_percentage + record.abrasion_value_percentage*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.abrasion_value_percentage_nabl = 'pass'
-                        break
-                    else:
-                        record.abrasion_value_percentage_nabl = 'fail'
 
 
 
+    # Specific Gravity 
+    temp_specific_water = fields.Char(string="Temp.°C")
+    humidity_specific_water= fields.Char(string="Humidity %")
 
-    @api.depends('total_weight_sample_abrasion', 'weight_passing_sample_abrasion')
-    def _compute_weight_retain_sample_abrasion(self):
-        for line in self:
-            line.weight_retain_sample_abrasion = line.total_weight_sample_abrasion - line.weight_passing_sample_abrasion
-
-
-    @api.depends('total_weight_sample_abrasion', 'weight_passing_sample_abrasion')
-    def _compute_sample_weight(self):
-        for line in self:
-            if line.total_weight_sample_abrasion != 0:
-                line.abrasion_value_percentage = (line.weight_passing_sample_abrasion / line.total_weight_sample_abrasion) * 100
-            else:
-                line.abrasion_value_percentage = 0.0
-
-
-    # Specific Gravety 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
@@ -508,6 +438,10 @@ class CoarseAggregateMechanical(models.Model):
 
 
     # Impact Value 
+
+    temp_impact_value = fields.Char(string="Temp.°C")
+    humidity_impact_value= fields.Char(string="Humidity %")
+
     impact_value_name = fields.Char("Name",default=" Impact Value")
     impact_visible = fields.Boolean("Impact Visible",compute="_compute_visible")
 
@@ -647,23 +581,13 @@ class CoarseAggregateMechanical(models.Model):
                 record.impact_value_nabl = 'fail'
 
 
-    # @api.depends('impact_value_child_lines.impact_value')
-    # def _compute_average_impact_value(self):
-    #     for record in self:
-    #         if record.impact_value_child_lines:
-    #             sum_impact_value = sum(record.impact_value_child_lines.mapped('impact_value'))
-    #             record.average_impact_value = ((sum_impact_value / len(record.impact_value_child_lines)))
-    #         else:
-    #             record.average_impact_value = 0.0
-
-    # @api.model
-    # def create(self, vals):
-    #     # import wdb;wdb.set_trace()
-    #     record = super(coarseAggregateMechanical, self).create(vals)
-    #     record.parameter_id.write({'model_id':record.id})
-    #     return record
+    
    
     # !0% Fine Value
+
+    temp_fine_value = fields.Char(string="Temp.°C")
+    humidity_fine_value= fields.Char(string="Humidity %")
+
     name_10fine = fields.Char(default="10% Fine Value")
     fine10_visible = fields.Boolean("10% Fine Visible",compute="_compute_visible")
 
@@ -818,699 +742,265 @@ class CoarseAggregateMechanical(models.Model):
                         record.avg_load_for_10fine_nabl = 'fail'
 
     
-    
 
-    # Soundness Na2SO4
-    soundness_na2so4_name = fields.Char("Name",default="Soundness Na2SO4")
-    soundness_na2so4_visible = fields.Boolean("Soundness Na2SO4 Visible",compute="_compute_visible")
 
-    soundness_na2so4_child_lines = fields.One2many('mechanical.soundness.na2so4.line','parent_id',string="Parameter",default=lambda self: self._default_soundness_na2so4_child_lines())
-    total_na2so4 = fields.Integer(string="Total",compute="_compute_total_na2so4")
-    soundness_na2so4 = fields.Float(string="Soundness",compute="_compute_soundness_na2so4")
 
-    total_grading = fields.Float(string="Total Grading of Original sample in %", compute="_compute_total_grading")
 
-    @api.depends('soundness_na2so4_child_lines.grading_original_sample')
-    def _compute_total_grading(self):
-        for record in self:
-            total_grading = sum(line.grading_original_sample for line in record.soundness_na2so4_child_lines)
-            record.total_grading = total_grading
 
 
-    total_weight_before = fields.Float(string="Total Weight of test fraction before test in gm", compute="_compute_total_weight")
+     #  Elongation Index
+    temp_elongation = fields.Char(string="Temp.°C")
+    humidity_elongation= fields.Char(string="Humidity %")
 
-    @api.depends('soundness_na2so4_child_lines.weight_before_test')
-    def _compute_total_weight(self):
-        for record in self:
-            total_weight_before = sum(line.weight_before_test for line in record.soundness_na2so4_child_lines)
-            record.total_weight_before = total_weight_before
-
-    total_weight_after = fields.Float(string="Total Weight of test feaction Passing Finer Sieve After ", compute="_compute_total_weight_after")
-
-    @api.depends('soundness_na2so4_child_lines.weight_after_test')
-    def _compute_total_weight_after(self):
-        for record in self:
-            total_weight_after = sum(line.weight_after_test for line in record.soundness_na2so4_child_lines)
-            record.total_weight_after = total_weight_after
-
-    total_commulative = fields.Float(string="Total Commulative percentage Loss", compute="_compute_total_cumulative")
-
-    @api.depends('soundness_na2so4_child_lines.cumulative_loss_percent')
-    def _compute_total_cumulative(self):
-        for record in self:
-            total_commulative = sum(line.cumulative_loss_percent for line in record.soundness_na2so4_child_lines)
-            record.total_commulative = total_commulative
-    
-
-    @api.depends('soundness_na2so4_child_lines.weight_before_test')
-    def _compute_total_na2so4(self):
-        for record in self:
-            record.total_na2so4 = sum(record.soundness_na2so4_child_lines.mapped('weight_before_test'))
-    
-
-    @api.depends('soundness_na2so4_child_lines.cumulative_loss_percent')
-    def _compute_soundness_na2so4(self):
-        for record in self:
-            record.soundness_na2so4 = round((sum(record.soundness_na2so4_child_lines.mapped('cumulative_loss_percent'))),2)
-
-
-    @api.model
-    def _default_soundness_na2so4_child_lines(self):
-        default_lines = [
-            (0, 0, {'sieve_size_passing': '63 mm', 'sieve_size_retained': '40 mm'}),
-            (0, 0, {'sieve_size_passing': '40 mm', 'sieve_size_retained': '20 mm'}),
-            (0, 0, {'sieve_size_passing': '20 mm', 'sieve_size_retained': '10 mm'}),
-            (0, 0, {'sieve_size_passing': '10 mm', 'sieve_size_retained': '4.75 mm'})
-           
-        ]
-        return default_lines
-
-
-    soundness_na2so4_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_soundness_na2so4_conformity", store=True)
-
-    @api.depends('soundness_na2so4','eln_ref','grade')
-    def _compute_soundness_na2so4_conformity(self):
-        
-        for record in self:
-            record.soundness_na2so4_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.soundness_na2so4 - record.soundness_na2so4*mu_value
-                    upper = record.soundness_na2so4 + record.soundness_na2so4*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.soundness_na2so4_conformity = 'pass'
-                        break
-                    else:
-                        record.soundness_na2so4_conformity = 'fail'
-
-    soundness_na2so4_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_soundness_na2so4_nabl", store=True)
-
-    @api.depends('soundness_na2so4','eln_ref','grade')
-    def _compute_soundness_na2so4_nabl(self):
-        
-        for record in self:
-            record.soundness_na2so4_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.soundness_na2so4 - record.soundness_na2so4*mu_value
-            upper = record.soundness_na2so4 + record.soundness_na2so4*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.soundness_na2so4_nabl = 'pass'
-                break
-            else:
-                record.soundness_na2so4_nabl = 'fail'
-
-
-    # Soundness MgSO4
-    soundness_mgso4_name = fields.Char("Name",default="Soundness MgSO4")
-    soundness_mgso4_visible = fields.Boolean("Soundness MgSO4 Visible",compute="_compute_visible")
-
-    soundness_mgso4_child_lines = fields.One2many('mechanical.soundness.mgso4.line','parent_id',string="Parameter",default=lambda self: self._default_soundness_mgso4_child_lines())
-    total_mgso4 = fields.Integer(string="Total",compute="_compute_total_mgso4")
-    soundness_mgso4 = fields.Float(string="Soundness",compute="_compute_soundness_mgso4")
-
-
-    total_grading1 = fields.Float(string="Total Grading of Original sample in %", compute="_compute_total_grading1")
-
-    @api.depends('soundness_mgso4_child_lines.grading_original_sample')
-    def _compute_total_grading1(self):
-        for record in self:
-            total_grading1 = sum(line.grading_original_sample for line in record.soundness_mgso4_child_lines)
-            record.total_grading1 = total_grading1
-
-    total_weight_before_test1 = fields.Float(string="Total Weight of test fraction before test in gm.", compute="_compute_total_weight_before_test1")
-
-    @api.depends('soundness_mgso4_child_lines.weight_before_test')
-    def _compute_total_weight_before_test1(self):
-        for record in self:
-            total_weight_before_test1 = sum(line.weight_before_test for line in record.soundness_mgso4_child_lines)
-            record.total_weight_before_test1 = total_weight_before_test1
-
-
-    total_weight_before1 = fields.Float(string="Total Weight of test fraction before test in gm", compute="_compute_total_weight1")
-
-    @api.depends('soundness_mgso4_child_lines.weight_before_test')
-    def _compute_total_weight1(self):
-        for record in self:
-            total_weight_before1 = sum(line.weight_before_test for line in record.soundness_mgso4_child_lines)
-            record.total_weight_before1 = total_weight_before1
-
-    total_weight_after1 = fields.Float(string="Total Weight of test feaction Passing Finer Sieve After ", compute="_compute_total_weight_after1")
-
-    @api.depends('soundness_mgso4_child_lines.weight_after_test')
-    def _compute_total_weight_after1(self):
-        for record in self:
-            total_weight_after1 = sum(line.weight_after_test for line in record.soundness_mgso4_child_lines)
-            record.total_weight_after1 = total_weight_after1
-
-    total_commulative1 = fields.Float(string="Total Commulative percentage Loss", compute="_compute_total_cumulative1")
-
-    @api.depends('soundness_mgso4_child_lines.cumulative_loss_percent')
-    def _compute_total_cumulative1(self):
-        for record in self:
-            total_commulative1 = sum(line.cumulative_loss_percent for line in record.soundness_mgso4_child_lines)
-            record.total_commulative1 = total_commulative1
-    
-    
-
-    @api.depends('soundness_mgso4_child_lines.weight_before_test')
-    def _compute_total_mgso4(self):
-        for record in self:
-            record.total_mgso4 = sum(record.soundness_mgso4_child_lines.mapped('weight_before_test'))
-    
-
-    @api.depends('soundness_mgso4_child_lines.cumulative_loss_percent')
-    def _compute_soundness_mgso4(self):
-        for record in self:
-            record.soundness_mgso4 = round((sum(record.soundness_mgso4_child_lines.mapped('cumulative_loss_percent'))),2)
-    
-
-    @api.model
-    def _default_soundness_mgso4_child_lines(self):
-        default_lines = [
-            (0, 0, {'sieve_size_passing': '63 mm', 'sieve_size_retained': '40 mm'}),
-            (0, 0, {'sieve_size_passing': '40 mm', 'sieve_size_retained': '20 mm'}),
-            (0, 0, {'sieve_size_passing': '20 mm', 'sieve_size_retained': '10 mm'}),
-            (0, 0, {'sieve_size_passing': '10 mm', 'sieve_size_retained': '4.75 mm'})
-           
-        ]
-        return default_lines
-
-    soundness_mgso4_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_soundness_mgso4_conformity", store=True)
-
-
-    @api.depends('soundness_mgso4','eln_ref','grade')
-    def _compute_soundness_mgso4_conformity(self):
-        
-        for record in self:
-            record.soundness_mgso4_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.soundness_mgso4 - record.soundness_mgso4*mu_value
-                    upper = record.soundness_mgso4 + record.soundness_mgso4*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.soundness_mgso4_conformity = 'pass'
-                        break
-                    else:
-                        record.soundness_mgso4_conformity = 'fail'
-
-    soundness_mgso4_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_soundness_mgso4_nabl", store=True)
-
-    @api.depends('soundness_mgso4','eln_ref','grade')
-    def _compute_soundness_mgso4_nabl(self):
-        
-        for record in self:
-            record.soundness_mgso4_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.soundness_mgso4 - record.soundness_mgso4*mu_value
-                    upper = record.soundness_mgso4 + record.soundness_mgso4*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.soundness_mgso4_nabl = 'pass'
-                        break
-                    else:
-                        record.soundness_mgso4_nabl = 'fail'
-    
-
-
-    # #Elongation Index
-    # elongation_name = fields.Char("Name",default="Elongation Index")
-    # elongation_visible = fields.Boolean("Elongation Visible",compute="_compute_visible")
-
-    # parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    # wt_retained_total_elongation = fields.Float(string="Wt Retained Total",compute="_compute_wt_retained_total_elongation")
-    # elongated_retain_total = fields.Float(string="Elongated Retained Total",compute="_compute_elongated_retain")
-    # flaky_passing_total = fields.Float(string="Flaky Passing Total",compute="_compute_flaky_passing")
-    # aggregate_elongation = fields.Float(string="Aggregate Elongation Value in %",compute="_compute_aggregate_elongation")
-    # aggregate_flakiness = fields.Float(string="Aggregate Flakiness Value in %",compute="_compute_aggregate_flakiness")
-    # # combine_elongation_flakiness = fields.Float(string="Combine Elongation & Flakiness Value in %",compute="_compute_combine_elongation_flakiness")
-
-
-    # @api.depends('elongation_child_lines.wt_retained')
-    # def _compute_wt_retained_total_elongation(self):
-    #     for record in self:
-    #         record.wt_retained_total_elongation = sum(record.elongation_child_lines.mapped('wt_retained'))
-
-    # @api.depends('elongation_child_lines.elongated_retain')
-    # def _compute_elongated_retain(self):
-    #     for record in self:
-    #         record.elongated_retain_total = sum(record.elongation_child_lines.mapped('elongated_retain'))
-
-    # # @api.depends('elongation_child_lines.flaky_passing')
-    # # def _compute_flaky_passing(self):
-    # #     for record in self:
-    # #         record.flaky_passing_total = sum(record.elongation_child_lines.mapped('flaky_passing'))
-
-    # @api.depends('wt_retained_total_elongation','elongated_retain_total')
-    # def _compute_aggregate_elongation(self):
-    #     for record in self:
-    #         if record.elongated_retain_total != 0:
-    #             record.aggregate_elongation = round((record.elongated_retain_total / record.wt_retained_total_elongation * 100),1)
-    #         else:
-    #             record.aggregate_elongation = 0.0
-
-    # @api.model
-    # def default_elongation_sizes(self):
-    #     default_lines = [
-    #         (0, 0, {'sieve_size': '63 mm'}),
-    #         (0, 0, {'sieve_size': '50 mm'}),
-    #         (0, 0, {'sieve_size': '40 mm'}),
-    #         (0, 0, {'sieve_size': '31.5 mm'}),
-    #         (0, 0, {'sieve_size': '25 mm'}),
-    #         (0, 0, {'sieve_size': '20 mm'}),
-    #         (0, 0, {'sieve_size': '16 mm'}),
-    #         (0, 0, {'sieve_size': '12.5 mm'}),
-    #         (0, 0, {'sieve_size': '10 mm'}),
-    #         (0, 0, {'sieve_size': '6.3 mm'}),
-    #         (0, 0, {'sieve_size': '4.75 mm'}),
-    #         (0, 0, {'sieve_size': '2.36 mm'}),
-    #         (0, 0, {'sieve_size': '1.18 mm'}),
-    #         (0, 0, {'sieve_size': 'Pan'}),
-            
-    #     ]
-    #     return default_lines   
-
-
-
-
-    # @api.depends('wt_retained_total','flaky_passing_total')
-    # def _compute_aggregate_flakiness(self):
-    #     for record in self:
-    #         if record.flaky_passing_total != 0:
-    #             record.aggregate_flakiness = record.flaky_passing_total / record.wt_retained_total * 100
-    #         else:
-    #             record.aggregate_flakiness = 0.0
-
-    # @api.depends('aggregate_elongation','aggregate_flakiness')
-    # def _compute_combine_elongation_flakiness(self):
-    #     for record in self:
-    #         if record.aggregate_flakiness != 0:
-    #             record.combine_elongation_flakiness = record.aggregate_elongation + record.aggregate_flakiness
-    #         else:
-    #             record.combine_elongation_flakiness = 0.0
-
-
-    # # Flakiness Index 
-    # flakiness_name = fields.Char("Name",default="Flakiness Index")
-    # flakiness_visible = fields.Boolean("Flakiness Visible",compute="_compute_visible")
-
-    # parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    # wt_retained_total_flakiness = fields.Float(string="Wt Retained Total",compute="_compute_wt_retained_total_flakiness")
-    # flaky_passing_total = fields.Float(string="Flaky Passing Total",compute="_compute_flaky_passing")
-    # aggregate_flakiness = fields.Float(string="Aggregate Flakiness Value in %",compute="_compute_aggregate_flakiness")
-    # combine_elongation_flakiness = fields.Float(string="Combine Elongation & Flakiness Value in %",compute="_compute_combine_elongation_flakiness")
-    # # elongated_retain_total = fields.Float(string="Elongated Retained Total",compute="_compute_elongated_retain")
-    # # aggregate_elongation = fields.Float(string="aggregate Elongation Value in %",compute="_compute_aggregate_elongation")
-
-    # @api.depends('flakiness_child_lines.wt_retained')
-    # def _compute_wt_retained_total_flakiness(self):
-    #     for record in self:
-    #         record.wt_retained_total_flakiness = sum(record.flakiness_child_lines.mapped('wt_retained'))
-
-    # @api.depends('flakiness_child_lines.flaky_passing')
-    # def _compute_flaky_passing(self):
-    #     for record in self:
-    #         record.flaky_passing_total = sum(record.flakiness_child_lines.mapped('flaky_passing'))
-
-
-    # @api.depends('wt_retained_total_flakiness','flaky_passing_total')
-    # def _compute_aggregate_flakiness(self):
-    #     for record in self:
-    #         if record.flaky_passing_total != 0:
-    #             record.aggregate_flakiness = round((record.flaky_passing_total / record.wt_retained_total_flakiness * 100),1)
-    #         else:
-    #             record.aggregate_flakiness = 0.0
-
-    # @api.depends('aggregate_elongation','aggregate_flakiness')
-    # def _compute_combine_elongation_flakiness(self):
-    #     for record in self:
-    #         if record.aggregate_flakiness != 0:
-    #             record.combine_elongation_flakiness = record.aggregate_elongation + record.aggregate_flakiness
-    #         else:
-    #             record.combine_elongation_flakiness = 0.0
-
-     # Flakiness and Elongation 
-    elongation_name = fields.Char(default="Elongation and Flakiness Index")
+    elongation_name = fields.Char(default="Elongation Index")
     elongation_visible = fields.Boolean(compute="_compute_visible")
 
-    flakiness_name = fields.Char(default=" Flakiness Index")
-    flakiness_visible = fields.Boolean(compute="_compute_visible")
+    elongation_table = fields.One2many('mechanical.elongation.index.line','parent_id',string="Elongation Index",default=lambda self: self.default_elongation_sizes())
 
-    elongation_table = fields.One2many('mechanical.elongation.flakiness.line','parent_id',string="Elongation Flakiness Index",default=lambda self: self.default_flakiness_sizes())
+    total_weight_retained_el = fields.Float('Total Weight Retained on each Sieve (W’n) gms',compute="_compute_total_weight_retained_el",store=True)
+    total_percent_retained_el = fields.Float('Total % Retained on each Sieve X’n',compute="_compute_total_percent_retained_el",store=True)
 
-    total_wt_retained_fl_el = fields.Float('Total',compute="_compute_total_el_fl")
-    total_elongated_retained = fields.Float('Total Elongation',compute="_compute_total_elongation")
-    total_flakiness_retained = fields.Float('Total Flakiness',compute="_compute_total_flakiness")
+    total_weight_retained_mat_elongated = fields.Float('Total Weight Retained Elongated Material (P’n) gms',compute="_compute_total_weight_retained_mat_elongated",store=True)
 
-    aggregate_elongation = fields.Float('Aggregate Elongation Value in %',compute="_compute_aggregate_elongation")
-    aggregate_flakiness = fields.Float('Aggregate Flakiness Value in %' ,compute="_compute_aggregate_flakiness")
-    aggregate_combine = fields.Float('Aggregate Elongation & Flakiness Value in %',compute="_compute_aggregate_combine")
+    total_percent_retained_material = fields.Float('Total % Retained Material Y’n',compute="_compute_total_percent_retained_material", store=True)
+    total_total_percent_retained_el = fields.Float('Total (X’n x Y’n)',compute="_compute_total_total_percent_retained_el" , store=True)
 
-
-    aggregate_combine_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_combine_conformity", store=True)
-
-    @api.depends('aggregate_combine','eln_ref','grade')
-    def _compute_aggregate_combine_conformity(self):
-        
-        for record in self:
-            record.aggregate_combine_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
-            for material in materials:
-                # if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.aggregate_combine - record.aggregate_combine*mu_value
-                    upper = record.aggregate_combine + record.aggregate_combine*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.aggregate_combine_conformity = 'pass'
-                        break
-                    else:
-                        record.aggregate_combine_conformity = 'fail'
-
-    aggregate_combine_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_aggregate_combine_nabl", store=True)
-
-    @api.depends('aggregate_combine','eln_ref','grade')
-    def _compute_aggregate_combine_nabl(self):
-        
-        for record in self:
-            record.aggregate_combine_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
-            # for material in materials:
-                # if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.aggregate_combine - record.aggregate_combine*mu_value
-            upper = record.aggregate_combine + record.aggregate_combine*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.aggregate_combine_nabl = 'pass'
-                break
-            else:
-                record.aggregate_combine_nabl = 'fail'
-
-
-    @api.depends('elongation_table.wt_retained')
-    def _compute_total_el_fl(self):
-        for record in self:
-            record.total_wt_retained_fl_el = sum(record.elongation_table.mapped('wt_retained'))
-
-    @api.depends('elongation_table.elongated_retained')
-    def _compute_total_elongation(self):
-        for record in self:
-            record.total_elongated_retained = sum(record.elongation_table.mapped('elongated_retained'))
-
-    @api.depends('elongation_table.flakiness_retained')
-    def _compute_total_flakiness(self):
-        for record in self:
-            record.total_flakiness_retained = sum(record.elongation_table.mapped('flakiness_retained'))
-
-    @api.depends('total_wt_retained_fl_el','total_elongated_retained')
-    def _compute_aggregate_elongation(self):
-        for record in self:
-            if record.total_elongated_retained != 0:
-                record.aggregate_elongation = record.total_elongated_retained/record.total_wt_retained_fl_el * 100
-            else:
-                record.aggregate_elongation = 0
-
-    @api.depends('total_wt_retained_fl_el','total_flakiness_retained')
-    def _compute_aggregate_flakiness(self):
-        for record in self:
-            if record.total_flakiness_retained != 0:
-                record.aggregate_flakiness = record.total_flakiness_retained/record.total_wt_retained_fl_el*100
-            else:
-                record.aggregate_flakiness = 0
-    
-
-    @api.depends('total_wt_retained_fl_el','total_flakiness_retained')
-    def _compute_aggregate_combine(self):
-        for record in self:
-            record.aggregate_combine = round(record.aggregate_elongation+record.aggregate_flakiness,2)
-            
+    elongation_index = fields.Float('Elongation Index (%)',compute="_compute_elongation_index")
 
 
 
-   
+
+
     @api.model
-    def default_flakiness_sizes(self):
+    def default_elongation_sizes(self):
         default_lines = [
-            (0, 0, {'sieve_size': '40 - 31.5'}),
-            (0, 0, {'sieve_size': '31.5 - 25'}),
-            (0, 0, {'sieve_size': '25 - 20'}),
-            (0, 0, {'sieve_size': '20 - 16'}),
-            (0, 0, {'sieve_size': '16 - 12.5'}),
-            (0, 0, {'sieve_size': '12.5 - 10'}),
-            (0, 0, {'sieve_size': '10 - 6.3'}),
-            (0, 0, {'sieve_size': 'Pan'}),
+            (0, 0, {'sieve_size_passing': '63','sieve_size_retained':'50','length_gauge':'0','weight_retained_el_char':'--','percent_retained_el_char':'--','weight_retained_mat_elongated_char':'--','percent_retained_material_cha':'--'}),
+            (0, 0, {'sieve_size_passing': '50','sieve_size_retained':'40','length_gauge':'81','weight_retained_el_char':'W’1','percent_retained_el_char':'X’1','weight_retained_mat_elongated_char':'P’1','percent_retained_material_cha':'Y’1'}),
+            (0, 0, {'sieve_size_passing': '40','sieve_size_retained':'31.5','length_gauge':'64.4','weight_retained_el_char':'W’2','percent_retained_el_char':'X’2','weight_retained_mat_elongated_char':'P’2','percent_retained_material_cha':'Y’2'}),
+            (0, 0, {'sieve_size_passing': '31.5','sieve_size_retained':'25','length_gauge':'0','weight_retained_el_char':'--','percent_retained_el_char':'--','weight_retained_mat_elongated_char':'--','percent_retained_material_cha':'--'}),
+            (0, 0, {'sieve_size_passing': '25','sieve_size_retained':'20', 'length_gauge':'40.5','weight_retained_el_char':'W’3','percent_retained_el_char':'X’3','weight_retained_mat_elongated_char':'P’3','percent_retained_material_cha':'Y’3'}),
+            (0, 0, {'sieve_size_passing': '20','sieve_size_retained':'16','length_gauge':'32.4','weight_retained_el_char':'W’4','percent_retained_el_char':'X’4','weight_retained_mat_elongated_char':'P’4','percent_retained_material_cha':'Y’4'}),
+            (0, 0, {'sieve_size_passing': '16','sieve_size_retained':'12.5','length_gauge':'25.6','weight_retained_el_char':'W’5','percent_retained_el_char':'X’5','weight_retained_mat_elongated_char':'P’5','percent_retained_material_cha':'Y’5'}),
+            (0, 0, {'sieve_size_passing': '12.5','sieve_size_retained':'10','length_gauge':'20.2','weight_retained_el_char':'W’6','percent_retained_el_char':'X’6','weight_retained_mat_elongated_char':'P’6','percent_retained_material_cha':'Y’6'}),
+            (0, 0, {'sieve_size_passing': '10','sieve_size_retained':'6.3','length_gauge':'14.7','weight_retained_el_char':'W’7','percent_retained_el_char':'X’7','weight_retained_mat_elongated_char':'P’7','percent_retained_material_cha':'Y’7'}),
             
         ]
         return default_lines   
 
+    @api.depends('elongation_table.weight_retained_el')
+    def _compute_total_weight_retained_el(self):
+        for record in self:
+            record.total_weight_retained_el = sum(record.elongation_table.mapped('weight_retained_el'))
 
+    @api.depends('elongation_table.percent_retained_el')
+    def _compute_total_percent_retained_el(self):
+        for record in self:
+            record.total_percent_retained_el = sum(record.elongation_table.mapped('percent_retained_el'))
 
-    # Deleterious Content
+    
+    @api.depends('elongation_table.weight_retained_mat_elongated')
+    def _compute_total_weight_retained_mat_elongated(self):
+        for record in self:
+            record.total_weight_retained_mat_elongated = sum(record.elongation_table.mapped('weight_retained_mat_elongated'))
 
-    name_finer75 = fields.Char("Name",default="Material Finer than 75 Micron")
-    finer75_visible = fields.Boolean("Finer 75 Visible",compute="_compute_visible")
+    @api.depends('elongation_table.percent_retained_material')
+    def _compute_total_percent_retained_material(self):
+        for record in self:
+            record.total_percent_retained_material = sum(record.elongation_table.mapped('percent_retained_material'))
 
-    wt_sample_finer75 = fields.Float("Weight of Sample in gms")
-    wt_dry_sample_finer75 = fields.Float("Weight of dry sample after retained in 75 microns")
-    material_finer75 = fields.Float("Material finer than 75 micron in %",compute="_compute_finer75")
+    @api.depends('elongation_table.total_percent_retained_el')
+    def _compute_total_total_percent_retained_el(self):
+        for record in self:
+            record.total_total_percent_retained_el = sum(record.elongation_table.mapped('total_percent_retained_el'))
 
-    material_finer75_conformity = fields.Selection([
+    @api.depends('total_total_percent_retained_el')
+    def _compute_elongation_index(self):
+        for record in self:
+            record.elongation_index = round(record.total_total_percent_retained_el / 100,2)
+    
+    elongation_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_material_finer75_conformity", store=True)
+            ('fail', 'Fail')], string="Conformity", compute="_compute_elongation_index_conformity", store=True)
 
-    @api.depends('material_finer75','eln_ref','grade')
-    def _compute_material_finer75_conformity(self):
+    @api.depends('elongation_index','eln_ref','grade')
+    def _compute_elongation_index_conformity(self):
         
         for record in self:
-            record.material_finer75_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')]).parameter_table
+            record.elongation_index_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
+                # if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.material_finer75 - record.material_finer75*mu_value
-                    upper = record.material_finer75 + record.material_finer75*mu_value
+                    lower = record.elongation_index - record.elongation_index*mu_value
+                    upper = record.elongation_index + record.elongation_index*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.material_finer75_conformity = 'pass'
+                        record.elongation_index_conformity = 'pass'
                         break
                     else:
-                        record.material_finer75_conformity = 'fail'
+                        record.elongation_index_conformity = 'fail'
 
-    material_finer75_nabl = fields.Selection([
+    elongation_index_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_material_finer75_nabl", store=True)
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_elongation_index_nabl", store=True)
 
-    @api.depends('material_finer75','eln_ref','grade')
-    def _compute_material_finer75_nabl(self):
+    @api.depends('elongation_index','eln_ref','grade')
+    def _compute_elongation_index_nabl(self):
         
         for record in self:
-            record.material_finer75_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')]).parameter_table
+            record.elongation_index_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
             # for material in materials:
-            #     if material.grade.id == record.grade.id:
+                # if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.material_finer75 - record.material_finer75*mu_value
-            upper = record.material_finer75 + record.material_finer75*mu_value
+            lower = record.elongation_index - record.elongation_index*mu_value
+            upper = record.elongation_index + record.elongation_index*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.material_finer75_nabl = 'pass'
+                record.elongation_index_nabl = 'pass'
                 break
             else:
-                record.material_finer75_nabl = 'fail'
+                record.elongation_index_nabl = 'fail'
 
-    @api.depends('wt_sample_finer75','wt_dry_sample_finer75')
-    def _compute_finer75(self):
+
+    # Flakiness Index 
+
+    temp_flakiness = fields.Char(string="Temp.°C")
+    humidity_flakiness= fields.Char(string="Humidity %")
+
+    flakiness_name = fields.Char("Name",default="Flakiness Index")
+    flakiness_visible = fields.Boolean("Flakiness Visible",compute="_compute_visible")
+
+    flakiness_table = fields.One2many('mechanical.flakiness.index.line','parent_id',string="Flakiness Index",default=lambda self: self.default_flakiness_sizes())
+
+    total_weight_retained_fl = fields.Float('Wt. Retained on each Sieve (Wn) gms',compute="_compute_total_weight_retained_fl",store=True)
+    total_percent_retained_fl = fields.Float('% Retained on each Sieve Xn = (Wn/W)x100',compute="_compute_total_percent_retained_fl",store=True)
+
+    total_weight_retained_mat_fl = fields.Float('Wt. Passing through Gauge (Pn) gms.',compute="_compute_total_weight_retained_mat_fl",store=True)
+
+    total_percent_retained_material_fl = fields.Float('% Passing through Gauge Yn = (Pn/Wn)x100',compute="_compute_total_percent_retained_material_fl", store=True)
+    total_total_percent_retained_fl = fields.Float('Total (X’n x Y’n)',compute="_compute_total_total_percent_retained_fl" , store=True)
+
+    flakiness_index = fields.Float('Flakiness Index (%)',compute="_compute_flakiness_index")
+
+
+
+
+
+    @api.model
+    def default_flakiness_sizes(self):
+        default_lines = [
+            (0, 0, {'sieve_size_passing_fl': '63','sieve_size_retained_fl':'50','length_gauge_fl':'33.9','weight_retained_fl_char':'W1','percent_retained_fl_char':'X1','weight_retained_mat_fl_char':'P1','percent_retained_material_fl_char':'Y1'}),
+            (0, 0, {'sieve_size_passing_fl': '50','sieve_size_retained_fl':'40','length_gauge_fl':'27','weight_retained_fl_char':'W2','percent_retained_fl_char':'X2','weight_retained_mat_fl_char':'P1','percent_retained_material_fl_char':'Y1'}),
+            (0, 0, {'sieve_size_passing_fl': '40','sieve_size_retained_fl':'31.5','length_gauge_fl':'21.5','weight_retained_fl_char':'W3','percent_retained_fl_char':'X3','weight_retained_mat_fl_char':'P3','percent_retained_material_fl_char':'Y3'}),
+            (0, 0, {'sieve_size_passing_fl': '31.5','sieve_size_retained_fl':'25','length_gauge_fl':'16.95','weight_retained_fl_char':'W4','percent_retained_fl_char':'X4','weight_retained_mat_fl_char':'P4','percent_retained_material_fl_char':'Y4'}),
+            (0, 0, {'sieve_size_passing_fl': '25','sieve_size_retained_fl':'20', 'length_gauge_fl':'13.5','weight_retained_fl_char':'W5','percent_retained_fl_char':'X5','weight_retained_mat_fl_char':'P5','percent_retained_material_fl_char':'Y5'}),
+            (0, 0, {'sieve_size_passing_fl': '20','sieve_size_retained_fl':'16','length_gauge_fl':'10.8','weight_retained_fl_char':'W6','percent_retained_fl_char':'X6','weight_retained_mat_fl_char':'P6','percent_retained_material_fl_char':'Y6'}),
+            (0, 0, {'sieve_size_passing_fl': '16','sieve_size_retained_fl':'12.5','length_gauge_fl':'8.55','weight_retained_fl_char':'W7','percent_retained_fl_char':'X7','weight_retained_mat_fl_char':'P7','percent_retained_material_fl_char':'Y7'}),
+            (0, 0, {'sieve_size_passing_fl': '12.5','sieve_size_retained_fl':'10','length_gauge_fl':'6.75','weight_retained_fl_char':'W8','percent_retained_fl_char':'X8','weight_retained_mat_fl_char':'P8','percent_retained_material_fl_char':'Y8'}),
+            (0, 0, {'sieve_size_passing_fl': '10','sieve_size_retained_fl':'6.3','length_gauge_fl':'4.89','weight_retained_fl_char':'W9','percent_retained_fl_char':'X9','weight_retained_mat_fl_char':'P9','percent_retained_material_fl_char':'Y9'}),
+            
+        ]
+        return default_lines   
+
+    @api.depends('flakiness_table.weight_retained_fl')
+    def _compute_total_weight_retained_fl(self):
         for record in self:
-            if record.wt_sample_finer75 != 0:
-                record.material_finer75 = ((record.wt_sample_finer75 - record.wt_dry_sample_finer75)/record.wt_sample_finer75 * 100)
-            else:
-                record.material_finer75 = 0
+            record.total_weight_retained_fl = sum(record.flakiness_table.mapped('weight_retained_fl'))
+
+    @api.depends('flakiness_table.percent_retained_fl')
+    def _compute_total_percent_retained_fl(self):
+        for record in self:
+            record.total_percent_retained_fl = sum(record.flakiness_table.mapped('percent_retained_fl'))
 
     
-    name_clay_lumps = fields.Char("Name",default="Determination of Clay Lumps")
-    clay_lump_visible = fields.Boolean("Clay Lump Visible",compute="_compute_visible")
+    @api.depends('flakiness_table.weight_retained_mat_fl')
+    def _compute_total_weight_retained_mat_fl(self):
+        for record in self:
+            record.total_weight_retained_mat_fl = sum(record.flakiness_table.mapped('weight_retained_mat_fl'))
 
-    wt_sample_clay_lumps = fields.Float("Weight of Sample in gms")
-    wt_dry_sample_clay_lumps = fields.Float("Weight of dry sample after retained in 75 microns")
-    clay_lumps_percent = fields.Float("Clay Lumps in %",compute="_compute_clay_lumps")
+    @api.depends('flakiness_table.percent_retained_material_fl')
+    def _compute_total_percent_retained_material_fl(self):
+        for record in self:
+            record.total_percent_retained_material_fl = sum(record.flakiness_table.mapped('percent_retained_material_fl'))
 
-    clay_lumps_percent_conformity = fields.Selection([
+    @api.depends('flakiness_table.total_percent_retained_fl')
+    def _compute_total_total_percent_retained_fl(self):
+        for record in self:
+            record.total_total_percent_retained_fl = sum(record.flakiness_table.mapped('total_percent_retained_fl'))
+
+    @api.depends('total_total_percent_retained_fl')
+    def _compute_flakiness_index(self):
+        for record in self:
+            record.flakiness_index = round(record.total_total_percent_retained_fl / 100,2)
+    
+    flakiness_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_clay_lumps_percent_conformity", store=True)
+            ('fail', 'Fail')], string="Conformity", compute="_compute_flakiness_index_conformity", store=True)
 
-    @api.depends('clay_lumps_percent','eln_ref','grade')
-    def _compute_clay_lumps_percent_conformity(self):
+    @api.depends('flakiness_index','eln_ref','grade')
+    def _compute_flakiness_index_conformity(self):
         
         for record in self:
-            record.clay_lumps_percent_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d7e389bc-21ad-41eb-a602-f448f996eb2f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d7e389bc-21ad-41eb-a602-f448f996eb2f')]).parameter_table
+            record.flakiness_index_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be7a60bc-bb2c-410d-b91a-4f8730a4ac6f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be7a60bc-bb2c-410d-b91a-4f8730a4ac6f')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
+                # if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.clay_lumps_percent - record.clay_lumps_percent*mu_value
-                    upper = record.clay_lumps_percent + record.clay_lumps_percent*mu_value
+                    lower = record.flakiness_index - record.flakiness_index*mu_value
+                    upper = record.flakiness_index + record.flakiness_index*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.clay_lumps_percent_conformity = 'pass'
+                        record.flakiness_index_conformity = 'pass'
                         break
                     else:
-                        record.clay_lumps_percent_conformity = 'fail'
+                        record.flakiness_index_conformity = 'fail'
 
-    clay_lumps_percent_nabl = fields.Selection([
+    flakiness_index_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_clay_lumps_percent_nabl", store=True)
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_flakiness_index_nabl", store=True)
 
-    @api.depends('clay_lumps_percent','eln_ref','grade')
-    def _compute_clay_lumps_percent_nabl(self):
+    @api.depends('flakiness_index','eln_ref','grade')
+    def _compute_flakiness_index_nabl(self):
         
         for record in self:
-            record.clay_lumps_percent_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d7e389bc-21ad-41eb-a602-f448f996eb2f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d7e389bc-21ad-41eb-a602-f448f996eb2f')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.clay_lumps_percent - record.clay_lumps_percent*mu_value
-                    upper = record.clay_lumps_percent + record.clay_lumps_percent*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.clay_lumps_percent_nabl = 'pass'
-                        break
-                    else:
-                        record.clay_lumps_percent_nabl = 'fail'
-
-    @api.depends('wt_sample_clay_lumps','wt_dry_sample_clay_lumps')
-    def _compute_clay_lumps(self):
-        for record in self:
-            if record.wt_sample_clay_lumps != 0:
-                record.clay_lumps_percent = ((record.wt_sample_clay_lumps - record.wt_dry_sample_clay_lumps)/record.wt_sample_clay_lumps * 100)
+            record.flakiness_index_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be7a60bc-bb2c-410d-b91a-4f8730a4ac6f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be7a60bc-bb2c-410d-b91a-4f8730a4ac6f')]).parameter_table
+            # for material in materials:
+                # if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.flakiness_index - record.flakiness_index*mu_value
+            upper = record.flakiness_index + record.flakiness_index*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.flakiness_index_nabl = 'pass'
+                break
             else:
-                record.clay_lumps_percent = 0
+                record.flakiness_index_nabl = 'fail'
 
 
-    name_light_weight = fields.Char("Name",default="Determination of Light Weight Particles")
-    light_weight_visible = fields.Boolean("Light Weight Visible",compute="_compute_visible")
 
-    wt_sample_light_weight = fields.Float("Weight of Sample in gms")
-    wt_dry_sample_light_weight = fields.Float("Weight of dry sample after retained in 75 microns")
-    light_weight_percent = fields.Float("Light Weight Particle in %",compute="_compute_light_weight")
-
-    light_weight_percent_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_light_weight_percent_conformity", store=True)
-
-    @api.depends('light_weight_percent','eln_ref','grade')
-    def _compute_light_weight_percent_conformity(self):
-        
-        for record in self:
-            record.light_weight_percent_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e7cc6b68-2550-4e1e-a28e-8526295e733f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e7cc6b68-2550-4e1e-a28e-8526295e733f')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.light_weight_percent - record.light_weight_percent*mu_value
-                    upper = record.light_weight_percent + record.light_weight_percent*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.light_weight_percent_conformity = 'pass'
-                        break
-                    else:
-                        record.light_weight_percent_conformity = 'fail'
-
-    light_weight_percent_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_light_weight_percent_nabl", store=True)
-
-    @api.depends('light_weight_percent','eln_ref','grade')
-    def _compute_light_weight_percent_nabl(self):
-        
-        for record in self:
-            record.light_weight_percent_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e7cc6b68-2550-4e1e-a28e-8526295e733f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e7cc6b68-2550-4e1e-a28e-8526295e733f')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.light_weight_percent - record.light_weight_percent*mu_value
-                    upper = record.light_weight_percent + record.light_weight_percent*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.light_weight_percent_nabl = 'pass'
-                        break
-                    else:
-                        record.light_weight_percent_nabl = 'fail'
-
-    @api.depends('wt_sample_light_weight','wt_dry_sample_light_weight')
-    def _compute_light_weight(self):
-        for record in self:
-            if record.wt_sample_light_weight != 0:
-                record.light_weight_percent = record.wt_dry_sample_light_weight/record.wt_sample_light_weight*100
-            else:
-                record.light_weight_percent = 0
+    
 
 
 
 
     # Compacted  Or Rodded Density
+
+    temp_density = fields.Char(string="Temp.°C")
+    humidity_density= fields.Char(string="Humidity %")
 
 
     compacted_density_name = fields.Char("Name",default="Compacted Density ")
@@ -1808,6 +1298,10 @@ class CoarseAggregateMechanical(models.Model):
 
 
   # Rate of Evaporation
+
+    temp_evaporation = fields.Char(string="Temp.°C")
+    humidity_evaporation= fields.Char(string="Humidity %")
+
     rate_of_evaporation_name = fields.Char(default="Rate of Evaporation")
 
     rate_of_evaporation_visible = fields.Boolean(compute="_compute_visible")
@@ -1883,15 +1377,184 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
+    # Abrasion Value
+
+    temp_abrasion_value = fields.Char(string="Temp.°C")
+    humidity_abrasion_value= fields.Char(string="Humidity %")
+
+
+    abrasion_value_name = fields.Char("Name",default="Abrasion Value By Los Angeles+")
+    abrasion_value_visible = fields.Boolean("Abrasion Value Visible",compute="_compute_visible")
+
+    abrasion_value_child_lines = fields.One2many('mechanical.abrasion.value.line','parent_id',string="Parameter",default=lambda self: self._default_abrasion_value_child_lines())
+
+    abrasion_value_child_lines_second = fields.One2many('mechanical.abrasion.value.second.line','parent_id',string="Second Parameter",default=lambda self: self._default_abrasion_value_child_lines_second())
+
+    @api.model
+    def _default_abrasion_value_child_lines(self):
+        default_lines = [
+            (0, 0, {'sieve_passing_ab': '80','sieve_retained_ab': '63','grade_a':'---','grade_b':'---','grade_c':'---','grade_d':'---','grade_e':'2500','grade_f':'---','grade_g':'---'}),
+            (0, 0, {'sieve_passing_ab': '63','sieve_retained_ab': '50','grade_a':'---','grade_b':'---','grade_c':'---','grade_d':'---','grade_e':'2500','grade_f':'---','grade_g':'---'}),
+            (0, 0, {'sieve_passing_ab': '50','sieve_retained_ab': '40','grade_a':'---','grade_b':'---','grade_c':'---','grade_d':'---','grade_e':'5000','grade_f':'5000','grade_g':'---'}),
+            (0, 0, {'sieve_passing_ab': '40','sieve_retained_ab': '25','grade_a':'1250','grade_b':'---','grade_c':'---','grade_d':'---','grade_e':'---','grade_f':'5000','grade_g':'5000'}),
+            (0, 0, {'sieve_passing_ab': '25','sieve_retained_ab': '20','grade_a':'1250','grade_b':'---','grade_c':'---','grade_d':'---','grade_e':'---','grade_f':'---','grade_g':'5000'}),
+            (0, 0, {'sieve_passing_ab': '20','sieve_retained_ab': '12.5','grade_a':'1250','grade_b':'2500','grade_c':'---','grade_d':'---','grade_e':'---','grade_f':'---','grade_g':'---'}),
+            (0, 0, {'sieve_passing_ab': '12.5','sieve_retained_ab': '10','grade_a':'1250','grade_b':'2500','grade_c':'---','grade_d':'---','grade_e':'---','grade_f':'---','grade_g':'---'}),
+            (0, 0, {'sieve_passing_ab': '10','sieve_retained_ab': '6.3','grade_a':'---','grade_b':'---','grade_c':'2500','grade_d':'---','grade_e':'---','grade_f':'---','grade_g':'---'}),
+            (0, 0, {'sieve_passing_ab': '6.3','sieve_retained_ab': '.75','grade_a':'---','grade_b':'---','grade_c':'2500','grade_d':'---','grade_e':'---','grade_f':'---','grade_g':'---'}),
+            (0, 0, {'sieve_passing_ab': '4.75','sieve_retained_ab': '2.36','grade_a':'---','grade_b':'---','grade_c':'---','grade_d':'5000','grade_e':'---','grade_f':'---','grade_g':'---'})
+            
+        ]
+        return default_lines
     
 
+    @api.model
+    def _default_abrasion_value_child_lines_second(self):
+        default_lines = [
+            (0, 0, {'grading_ab': 'No. Of Spheres','grade_a1':'12','grade_b2':'11','grade_c3':'8','grade_d4':'6','grade_e5':'12','grade_f6':'12','grade_g7':'12'}),
+            (0, 0, {'grading_ab': 'Weight of Charge','grade_a1':'5000 ± 25','grade_b2':'4584 ± 25','grade_c3':'3330 ± 20','grade_d4':'2500 ± 15','grade_e5':'5000 ± 25','grade_f6':'5000 ± 25','grade_g7':'5000 ± 25'}),
+            (0, 0, {'grading_ab': 'Machine Revolutions','grade_a1':'500','grade_b2':'500','grade_c3':'500','grade_d4':'500','grade_e5':'1000','grade_f6':'1000','grade_g7':'1000'})
+            
+        ]
+        return default_lines
+    
+    wt_of_agg_ab = fields.Integer(string="Weight of Aggregate for Testing (A) – gms")
+    wt_of_agg_retained_ab = fields.Integer(string="Weight of Aggregate Retained on 1.70 mm Sieve (B) - gms")
+    wt_of_agg_passing_ab = fields.Float(string="Weight of Aggregate Passing 1.70 mm Sieve (C) – gms",compute="_compute_wt_of_agg_passing_ab")
+
+    agg_abrasion_value = fields.Float(string="Aggregate Abrasion Value (Wear) in % = (C/A)x100",compute="_compute_agg_abrasion_value")
+
+    @api.depends('wt_of_agg_ab', 'wt_of_agg_retained_ab')
+    def _compute_wt_of_agg_passing_ab(self):
+        for line in self:
+            line.wt_of_agg_passing_ab = line.wt_of_agg_ab - line.wt_of_agg_retained_ab
+
+
+    @api.depends('wt_of_agg_passing_ab', 'wt_of_agg_ab')
+    def _compute_agg_abrasion_value(self):
+        for line in self:
+            if line.wt_of_agg_ab != 0:
+                line.agg_abrasion_value = (line.wt_of_agg_passing_ab / line.wt_of_agg_ab) * 100
+            else:
+                line.agg_abrasion_value = 0.0
+
+
+
+    wt_of_agg_ab_1 = fields.Integer(string="Weight of Aggregate for Testing (A) – gms")
+    wt_of_agg_retained_ab_1 = fields.Integer(string="Weight of Aggregate Retained on 1.70 mm Sieve (B) - gms")
+    wt_of_agg_passing_ab_1 = fields.Float(string="Weight of Aggregate Passing 1.70 mm Sieve (C) – gms",compute="_compute_wt_of_agg_passing_ab_1")
+
+    agg_abrasion_value_1 = fields.Float(string="Aggregate Abrasion Value (Wear) in % = (C/A)x100",compute="_compute_agg_abrasion_value_1")
+
+    @api.depends('wt_of_agg_ab_1', 'wt_of_agg_retained_ab_1')
+    def _compute_wt_of_agg_passing_ab_1(self):
+        for line in self:
+            line.wt_of_agg_passing_ab_1 = line.wt_of_agg_ab_1 - line.wt_of_agg_retained_ab_1
+
+
+    @api.depends('wt_of_agg_passing_ab_1', 'wt_of_agg_ab_1')
+    def _compute_agg_abrasion_value_1(self):
+        for line in self:
+            if line.wt_of_agg_ab_1 != 0:
+                line.agg_abrasion_value_1 = (line.wt_of_agg_passing_ab_1 / line.wt_of_agg_ab_1) * 100
+            else:
+                line.agg_abrasion_value_1 = 0.0
+    
+
+
+    avg_abrasion_value = fields.Float(string="Average Abrasion Value",compute="_compute_avg_abrasion_value")
+    
+
+    @api.depends('agg_abrasion_value', 'agg_abrasion_value_1')
+    def _compute_avg_abrasion_value(self):
+        for line in self:
+                line.avg_abrasion_value = (line.agg_abrasion_value + line.agg_abrasion_value_1) /2
+
+
+
+    avg_abrasion_value_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_abrasion_value_conformity", store=True)
+
+    @api.depends('avg_abrasion_value','eln_ref','grade')
+    def _compute_avg_abrasion_value_conformity(self):
+        
+        for record in self:
+            record.avg_abrasion_value_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_abrasion_value - record.avg_abrasion_value*mu_value
+                    upper = record.avg_abrasion_value + record.avg_abrasion_value*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_abrasion_value_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_abrasion_value_conformity = 'fail'
+
+    avg_abrasion_value_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_abrasion_value_nabl", store=True)
+
+    @api.depends('avg_abrasion_value','eln_ref','grade')
+    def _compute_avg_abrasion_value_nabl(self):
+        
+        for record in self:
+            record.avg_abrasion_value_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_abrasion_value - record.avg_abrasion_value*mu_value
+                    upper = record.avg_abrasion_value + record.avg_abrasion_value*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_abrasion_value_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_abrasion_value_nabl = 'fail'
+    
+
+
+
+
+
     # Sieve Analysis 
+    temp_sieve_analysis = fields.Char(string="Temp.°C")
+    humidity_sieve_analysis= fields.Char(string="Humidity %")
+    
     weight_of_sample = fields.Float(string="Weight of Sample in gms")
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
-    sieve_analysis_child_lines = fields.One2many('mechanical.coarse.aggregate.sieve.analysis.line','parent_id',string="Parameter")
+    sieve_analysis_child_lines = fields.One2many('mechanical.coarse.aggregate.sieve.analysis.line','parent_id',string="Parameter",default=lambda self: self._default_sieve_analysis_child_lines())
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
+
+
+    @api.model
+    def _default_sieve_analysis_child_lines(self):
+        default_lines = [
+            (0, 0, {'sieve_size': '80'}),
+            (0, 0, {'sieve_size': '63'}),
+            (0, 0, {'sieve_size': '40'}),
+            (0, 0, {'sieve_size': '20'}),
+            (0, 0, {'sieve_size': '16'}),
+            (0, 0, {'sieve_size': '12.5'}),
+            (0, 0, {'sieve_size': '10'}),
+            (0, 0, {'sieve_size': '4.75'}),
+            (0, 0, {'sieve_size': '2.36'}),
+            (0, 0, {'sieve_size': 'Pan'})
+            
+        ]
+        return default_lines
 
 
 
@@ -2024,18 +1687,27 @@ class CoarseAggregateMechanical(models.Model):
                 # print("Rows",str(line.percent_retained))
                 previous_line = line.serial_no - 1
                 if previous_line == 0:
-                    if line.percent_retained == 0:
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                                    'passing_percent': 100 ,})
-                    else:
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                                    'passing_percent': round(100 -line.percent_retained - line.percent_retained,2),})
-                else:
+                #     if line.percent_retained == 0:
+                #         line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
+                #                     'passing_percent': 100 ,})
+                #     else:
+                #         line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
+                #                     'passing_percent': round(100 -line.percent_retained - line.percent_retained,2),})
+                # else:
                     previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
                     line.write({'cumulative_retained': previous_line_record + line.percent_retained,
                                 'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
                     
                     # print("Previous Cumulative",previous_line_record)
+
+
+    # def calculate_sieve(self): 
+    #     for record in self:
+    #         record.populate_sieve_analysis_lines()  # replace default_get call
+            
+
+            
+
                     
 
     
@@ -2172,6 +1844,260 @@ class CoarseAggregateMechanical(models.Model):
     
 
 
+     #  Soundness Test 
+
+    temp_soudness = fields.Char(string="Temp.°C")
+    humidity_soudness= fields.Char(string="Humidity %")
+
+    soudness_name = fields.Char("Name",default="Soudness Test ")
+    soudness_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
+
+    soudness_magnesium_name = fields.Char("Name",default="Soudness Magnesium Test ")
+    soudness_magnesium_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
+
+    soudness_child_lines = fields.One2many('coarse.soudness.line','parent_id',string="Parameter")
+
+    
+
+
+
+    sieve_name = fields.Char("Name",default="Sieve Analysis")
+    # sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+
+    wt_of_sample = fields.Float(string="Wt. Of Sample Taken For Analysis (gms) = ", digits=(8,3))
+ 
+    sieve_analysis_soundness_lines = fields.One2many('mechanical.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_soundness_lines())
+
+    total_percent_retained = fields.Float(
+        string="Total % Retained",
+        compute="_compute_total_percent_retained",
+        store=True
+    )
+
+    @api.depends('sieve_analysis_soundness_lines.percent_retained')
+    def _compute_total_percent_retained(self):
+        for rec in self:
+            rec.total_percent_retained = sum(
+                line.percent_retained for line in rec.sieve_analysis_soundness_lines
+            )
+
+    
+    @api.model
+    def _default_sieve_analysis_soundness_lines(self):
+        default_lines = [
+            (0, 0, {'sieve_size': 'Above 80mm', 'particle_size': '4.80mm'}),
+            (0, 0, {'sieve_size': '80mm', 'particle_size': '63mm'}),
+            (0, 0, {'sieve_size': '63mm', 'particle_size': '40mm'}),
+            (0, 0, {'sieve_size': '40mm', 'particle_size': '20mm'}),
+            (0, 0, {'sieve_size': '20mm', 'particle_size': '10mm'}),
+            (0, 0, {'sieve_size': '10mm', 'particle_size': 'Pan'}),
+        ]
+        return default_lines
+
+
+    # @api.onchange('sieve_analysis_child_lines')
+    # def _onchange_sieve_analysis_child_lines(self):
+    #     for rec in self:
+    #         pan_line = None
+    #         total_retained = 0.0
+    #         target_sieves = ['80mm','40mm','20mm','16mm', '10mm', '4.75mm', '2.36mm','1.18mm','600 µ','425 µ','300µ','212µ','150µ','75µ']
+
+    #         for line in rec.sieve_analysis_child_lines:
+    #             if line.sieve_size and line.sieve_size.lower() == 'pan':
+    #                 pan_line = line
+    #             elif line.sieve_size in target_sieves:
+    #                 total_retained += line.wt_retained or 0.0
+
+    #         if pan_line:
+    #             pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
+
+
+
+
+    def calculate_sieve(self): 
+        for record in self:
+            previous_cumulative = 0  
+            for line in record.sieve_analysis_soundness_lines:
+                print("Rows", str(line.percent_retained))
+                previous_line = line.serial_no - 1
+
+               
+
+                # Normal sieve calculation
+                if previous_line == 0:
+                    cumulative_retained = line.percent_retained
+                else:
+                    previous_line_record = self.env['mechanical.sieve.analysis.line'].sudo().search([
+                        ("serial_no", "=", previous_line),
+                        ("parent_id", "=", record.id)
+                    ], limit=1)
+                    
+                    if previous_line_record:
+                        previous_cumulative = previous_line_record.cumulative_retained
+                    cumulative_retained = previous_cumulative + line.percent_retained
+
+                passing_percent = 100 - cumulative_retained
+
+                # Write updated values
+                line.write({
+                    'cumulative_retained': round(cumulative_retained, 2),
+                    'passing_percent': round(passing_percent, 2),
+                })
+
+                print("Updated Cumulative Retained:", cumulative_retained)
+                print("Updated Passing Percent:", passing_percent)
+
+                previous_cumulative = cumulative_retained
+
+
+    ouantitative_name = fields.Char("Name",default="Quantitatively Examination :-")
+    # sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+
+ 
+    ouantitative_soundness_lines = fields.One2many('coarse.ouantitative.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_ouantitative_soundness_lines())
+
+    
+    @api.model
+    def _default_ouantitative_soundness_lines(self):
+        default_lines = [
+            (0, 0, {'size': '+80mm'}),
+            (0, 0, {'size': '80mm to 63mm'}),
+            (0, 0, {'size': '63mm to 40mm'}),
+            (0, 0, {'size': '40mm to 20mm'}),
+            (0, 0, {'size': '20mm to 10mm'}),
+            (0, 0, {'size': '10mm to 4.75mm'})
+            
+            
+        ]
+        return default_lines
+
+
+    quantitative_name = fields.Char("Name",default="Quantitatively Examination")
+
+    quantitative_soundness_lines = fields.One2many('coarse.quantitative.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_quantitative_soundness_lines())
+
+    
+    @api.model
+    def _default_quantitative_soundness_lines(self):
+        default_lines = [
+            (0, 0, {'passing': 'Above 80mm', 'retained': '80mm'}),
+            (0, 0, {'passing': '80mm', 'retained': '63mm'}),
+            (0, 0, {'passing': '63mm', 'retained': '40mm'}),
+            (0, 0, {'passing': '40mm', 'retained': '20mm'}),
+            (0, 0, {'passing': '20mm', 'retained': '10mm'}),
+            (0, 0, {'passing': '10mm', 'retained': '4.75mm'}),
+        ]
+        return default_lines
+    
+
+    total_grading_sulphate = fields.Float(string="Total Grading of Original Sample  (%)s.Sodium Sulphate", digits=(8,2),compute="_compute_total_grading_sulphate",store=True)
+
+    total_finalloss_sulphae= fields.Float(string="Total Final loss (%) Sulphate", digits=(8,2),compute="_compute_total_finalloss_sulphae",store=True)
+
+    total_final_loss_manesium= fields.Float(string="Total Final loss (%) Magnesium", digits=(8,2),compute="_compute_total_final_loss_manesium",store=True)
+
+    total_wt_fraction_sulhate= fields.Float(string="Total Weight of test Fraction  (retained) after test (gm) Sodium Sulphate", digits=(8,2),compute="_compute_total_wt_fraction_sulhate",store=True)
+
+    total_wt_fraction_manesium= fields.Float(string="Total Weight of test Fraction  (retained) after test  (gm) Magnesium ", digits=(8,2),compute="_compute_total_wt_fraction_manesium",store=True)
+
+    total_avg_sulphae= fields.Float(string="Total Weighted Average  (Corrected % loss) Sulphate", digits=(8,2),compute="_compute_total_avg_sulphae",store=True)
+
+    total_avg_manesium= fields.Float(string="Total Weighted Average  (Corrected % loss) Magnesium ", digits=(8,2),compute="_compute_total_avg_manesium",store=True)
+
+
+
+
+    @api.depends('quantitative_soundness_lines.grading_sulphate')
+    def _compute_total_grading_sulphate(self):
+        for record in self:
+            record.total_grading_sulphate = sum(record.quantitative_soundness_lines.mapped('grading_sulphate'))
+
+
+    @api.depends('quantitative_soundness_lines.finalloss_sulphae')
+    def _compute_total_finalloss_sulphae(self):
+        for record in self:
+            record.total_finalloss_sulphae = sum(record.quantitative_soundness_lines.mapped('finalloss_sulphae'))
+
+    @api.depends('quantitative_soundness_lines.final_loss_manesium')
+    def _compute_total_final_loss_manesium(self):
+        for record in self:
+            record.total_final_loss_manesium = sum(record.quantitative_soundness_lines.mapped('final_loss_manesium'))
+
+    @api.depends('quantitative_soundness_lines.wt_fraction_sulhate')
+    def _compute_total_wt_fraction_sulhate(self):
+        for record in self:
+            record.total_wt_fraction_sulhate = sum(record.quantitative_soundness_lines.mapped('wt_fraction_sulhate'))
+            
+    @api.depends('quantitative_soundness_lines.wt_fraction_manesium')
+    def _compute_total_wt_fraction_manesium(self):
+        for record in self:
+            record.total_wt_fraction_manesium = sum(record.quantitative_soundness_lines.mapped('wt_fraction_manesium'))
+
+    @api.depends('quantitative_soundness_lines.avg_sulphae')
+    def _compute_total_avg_sulphae(self):
+        for record in self:
+            record.total_avg_sulphae = sum(record.quantitative_soundness_lines.mapped('avg_sulphae'))
+
+
+
+    @api.depends('quantitative_soundness_lines.avg_manesium')
+    def _compute_total_avg_manesium(self):
+        for record in self:
+            record.total_avg_manesium = sum(record.quantitative_soundness_lines.mapped('avg_manesium'))
+
+
+    total_avg_sulphae_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_total_avg_sulphae_conformity", store=True)
+
+    @api.depends('total_avg_sulphae','eln_ref','grade')
+    def _compute_total_avg_sulphae_conformity(self):
+        
+        for record in self:
+            record.total_avg_sulphae_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.total_avg_sulphae - record.total_avg_sulphae*mu_value
+                    upper = record.total_avg_sulphae + record.total_avg_sulphae*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.total_avg_sulphae_conformity = 'pass'
+                        break
+                    else:
+                        record.total_avg_sulphae_conformity = 'fail'
+
+    total_avg_sulphae_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_total_avg_sulphae_nabl", store=True)
+
+    @api.depends('total_avg_sulphae','eln_ref','grade')
+    def _compute_total_avg_sulphae_nabl(self):
+        
+        for record in self:
+            record.total_avg_sulphae_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.total_avg_sulphae - record.total_avg_sulphae*mu_value
+                    upper = record.total_avg_sulphae + record.total_avg_sulphae*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.total_avg_sulphae_nabl = 'pass'
+                        break
+                    else:
+                        record.total_avg_sulphae_nabl = 'fail'
+    
+
+
 
 
     
@@ -2184,24 +2110,26 @@ class CoarseAggregateMechanical(models.Model):
     def _compute_visible(self):
         for record in self:
             record.crushing_visible = False
-            record.abrasion_visible = False
+            record.abrasion_value_visible = False
             record.specific_gravity_visible = False
             record.water_absorption_visible = False
             record.impact_visible = False
             record.fine10_visible = False
-            record.soundness_na2so4_visible = False
-            record.soundness_mgso4_visible = False
+            # record.soundness_na2so4_visible = False
+            # record.soundness_mgso4_visible = False
             record.elongation_visible = False
             record.flakiness_visible = False
-            record.finer75_visible = False
-            record.clay_lump_visible = False
-            record.light_weight_visible = False
+            # record.finer75_visible = False
+            # record.clay_lump_visible = False
+            # record.light_weight_visible = False
             record.loose_density_visible = False
             record.sieve_visible = False
             record.compacted_density_visible = False
             record.voids_compacted_density_visible = False
             record.voids_loose_density_visible = False
             record.rate_of_evaporation_visible = False
+            record.soudness_visible = False
+            record.soudness_magnesium_visible = False
 
 
 
@@ -2210,7 +2138,7 @@ class CoarseAggregateMechanical(models.Model):
                 if sample.internal_id == 'ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71':
                     record.crushing_visible = True
                 if sample.internal_id == '37f2161e-5cc0-413f-b76c-10478c65baf9':
-                    record.abrasion_visible = True
+                    record.abrasion_value_visible = True
                 if sample.internal_id == '3114db41-cfa7-49ad-9324-fcdbc9661038':
                     record.specific_gravity_visible = True
                 if sample.internal_id == '22ee804f-41a3-4fd1-a301-a8d9180fba10':
@@ -2219,15 +2147,11 @@ class CoarseAggregateMechanical(models.Model):
                     record.impact_visible = True
                 if sample.internal_id == '5f506c08-4369-491d-93a6-030514c29661':
                     record.fine10_visible = True
-                if sample.internal_id == '153f3c8b-6ccb-4db0-b89d-02db61f61e81':
-                    record.soundness_na2so4_visible = True
-                if sample.internal_id == '89650e58-11a6-42af-8eb7-187467443a79':
-                    record.soundness_mgso4_visible = True
-                # if sample.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
-                #     record.elongation_visible = True
-                # if sample.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
-                #     record.flakiness_visible = True
-
+                # if sample.internal_id == '153f3c8b-6ccb-4db0-b89d-02db61f61e81':
+                #     record.soundness_na2so4_visible = True
+                if sample.internal_id == '8b80bc59-f49e-483e-8ccd-2fb4b076620e':
+                    record.soudness_magnesium_visible = True
+                    
                 if sample.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
                     record.elongation_visible = True
                     # record.flakiness_visible = True
@@ -2235,12 +2159,12 @@ class CoarseAggregateMechanical(models.Model):
                 if sample.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
                     record.flakiness_visible = True
                     # record.elongation_visible = True
-                if sample.internal_id == '988f5bf6-c865-453c-9cd6-993a5a59ad95':
-                    record.finer75_visible = True
-                if sample.internal_id == 'd7e389bc-21ad-41eb-a602-f448f996eb2f':
-                    record.clay_lump_visible = True
-                if sample.internal_id == 'e7cc6b68-2550-4e1e-a28e-8526295e733f':
-                    record.light_weight_visible = True
+                # if sample.internal_id == '988f5bf6-c865-453c-9cd6-993a5a59ad95':
+                #     record.finer75_visible = True
+                # if sample.internal_id == 'd7e389bc-21ad-41eb-a602-f448f996eb2f':
+                #     record.clay_lump_visible = True
+                # if sample.internal_id == 'e7cc6b68-2550-4e1e-a28e-8526295e733f':
+                #     record.light_weight_visible = True
                 if sample.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
                     record.loose_density_visible = True
                 if sample.internal_id == 'c2168fff-e47c-4155-99ff-9d7dc223e768':
@@ -2258,6 +2182,8 @@ class CoarseAggregateMechanical(models.Model):
                 if sample.internal_id == '8e9d9c62-e634-47a2-a689-2c6c8538493c':
                     record.rate_of_evaporation_visible = True
 
+                if sample.internal_id == 'c8cd69bd-1f89-4f22-bae6-b81de73e6c2':
+                    record.soudness_visible = True
 
 
 
@@ -2268,8 +2194,8 @@ class CoarseAggregateMechanical(models.Model):
 
             # Elongation
             if result.parameter.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
-                result.result_char = round(self.aggregate_elongation,2)
-                if self.aggregate_combine_conformity == 'pass':
+                result.result_char = round(self.elongation_index,2)
+                if self.elongation_index_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2277,8 +2203,8 @@ class CoarseAggregateMechanical(models.Model):
 
             # Flakiness
             if result.parameter.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
-                result.result_char = round(self.aggregate_flakiness,2)
-                if self.aggregate_combine_conformity == 'pass':
+                result.result_char = round(self.flakiness_index,2)
+                if self.flakiness_index_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2312,10 +2238,21 @@ class CoarseAggregateMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
+
             # crushing value 
             if result.parameter.internal_id == 'ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71':
                 result.result_char = round(self.average_crushing_value,2)
                 if self.average_crushing_value_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            
+
+            # Abrasion Value
+            if result.parameter.internal_id == '37f2161e-5cc0-413f-b76c-10478c65baf9':
+                result.result_char = round(self.avg_abrasion_value,2)
+                if self.avg_abrasion_value_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2371,6 +2308,15 @@ class CoarseAggregateMechanical(models.Model):
             if result.parameter.internal_id == '8e9d9c62-e634-47a2-a689-2c6c8538493c':
                 result.result_char = round(self.avg_rate_evaporation,2)
                 if self.avg_rate_evaporation_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+             # Soundness Test
+            if result.parameter.internal_id == 'c8cd69bd-1f89-4f22-bae6-b81de73e6c2':
+                result.result_char = round(self.total_avg_sulphae,2)
+                if self.total_avg_sulphae_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2623,198 +2569,591 @@ class RateOfEvaporation(models.Model):
    
 
 
-# class ElongationIndexLine(models.Model):
-#     _name = "mechanical.elongation.index.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+class ElongationIndexLine(models.Model):
+    _name = "mechanical.elongation.index.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
    
-#     sr_no = fields.Integer(string="Sr No", readonly=True, copy=False, default=1)
-#     sieve_size = fields.Char(string="I.S Sieve Size")
-#     wt_retained = fields.Integer(string="Wt Retained (in gms)")
-#     elongated_retain = fields.Float(string="Elongated Retained (in gms)")
-#     # flaky_passing = fields.Float(string="Flaky Passing (in gms)")
+    sr_no = fields.Integer(string="Sr No", readonly=True, copy=False, default=1)
+    sieve_size_passing = fields.Float(string="Passing")
+    sieve_size_retained = fields.Float(string="Retained")
+    length_gauge = fields.Float(string="Length Gauge mm	")
+    weight_retained_el_char = fields.Char(string="Weight Retained on each Sieve (W’n) gms")
+    weight_retained_el = fields.Float(string="Weight Retained on each Sieve (W’n) gms") 
+    percent_retained_el = fields.Float(string="% Retained on each Sieve X’n = (W’n/W’)x100",compute="_compute_percent_retained_el")
+    percent_retained_el_char = fields.Char(string="% Retained on each Sieve X’n")
+    weight_retained_mat_elongated = fields.Float(string="Weight Retained Elongated Material (P’n) gms	")
+    weight_retained_mat_elongated_char = fields.Char(string="Weight Retained Elongated Material (P’n) gms")
+    percent_retained_material =  fields.Float(string="% Retained Material Y’n = (P’n/W’n)x100",compute="_compute_percent_retained_material")
+    percent_retained_material_cha = fields.Char(string="% Retained Material Y’n")
+    total_percent_retained_el = fields.Float(string="(X’n x Y’n)",compute="_compute_total_percent_retained_el")
+    # wt_retained = fields.Integer(string="Wt Retained (in gms)")
+    # elongated_retain = fields.Float(string="Elongated Retained (in gms)")
+    # flaky_passing = fields.Float(string="Flaky Passing (in gms)")
     
 
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(ElongationIndexLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
+
+
+    @api.depends('parent_id.total_weight_retained_el','weight_retained_el')
+    def _compute_percent_retained_el(self):
+        for record in self:
+            try:
+                record.percent_retained_el = round((record.weight_retained_el /record.parent_id.total_weight_retained_el) * 100,2)
+            except ZeroDivisionError:
+                record.percent_retained_el = 0
     
 
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('sr_no'))
-#                 vals['sr_no'] = max_serial_no + 1
 
-#         return super(ElongationIndexLine, self).create(vals)
+    @api.depends('weight_retained_el','weight_retained_mat_elongated')
+    def _compute_percent_retained_material(self):
+        for record in self:
+            try:
+                record.percent_retained_material = round((record.weight_retained_mat_elongated/record.weight_retained_el)*100,2)
+            except ZeroDivisionError:
+                record.percent_retained_material = 0
 
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.sr_no = index + 1
+    @api.depends('percent_retained_el','percent_retained_material')
+    def _compute_total_percent_retained_el(self):
+        for record in self:
+            try:
+                record.total_percent_retained_el = (record.percent_retained_el * record.percent_retained_material)
+            except ZeroDivisionError:
+                record.total_percent_retained_el = 0
 
-# class FlakinessIndexLine(models.Model):
-#     _name = "mechanical.flakiness.index.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+
+class FlakinessIndexLine(models.Model):
+    _name = "mechanical.flakiness.index.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
    
-#     sr_no = fields.Integer(string="Sr No", readonly=True, copy=False, default=1)
-#     sieve_size = fields.Char(string="I.S Sieve Size")
-#     wt_retained = fields.Integer(string="Wt Retained (in gms)")
-#     # elongated_retain = fields.Float(string="Elongated Retained (in gms)")
-#     flaky_passing = fields.Float(string="Flaky Passing (in gms)")
+    sr_no = fields.Integer(string="Sr No", readonly=True, copy=False, default=1)
+    sieve_size_passing_fl = fields.Float(string="Passing")
+    sieve_size_retained_fl = fields.Float(string="Retained")
+    length_gauge_fl = fields.Float(string="Thickness Gauge-MM")
+
+    weight_retained_fl_char = fields.Char(string="Wt. Retained on each Sieve (Wn) gms")
+    weight_retained_fl = fields.Float(string="Wt. Retained on each Sieve (Wn) gms") 
+
+    percent_retained_fl = fields.Float(string="% Retained on each Sieve Xn = (Wn/W)x100",compute="_compute_percent_retained_fl")
+    percent_retained_fl_char = fields.Char(string="% Retained on each Sieve Xn = (Wn/W)x100")
+
+    weight_retained_mat_fl = fields.Float(string="Wt. Passing through Gauge (Pn) gms.")
+    weight_retained_mat_fl_char = fields.Char(string="Wt. Passing through Gauge (Pn) gms.")
+
+    percent_retained_material_fl =  fields.Float(string="% Passing through Gauge Yn = (Pn/Wn)x100",compute="_compute_percent_retained_material_fl")
+    percent_retained_material_fl_char = fields.Char(string="% Passing through Gauge Yn = (Pn/Wn)x100")
+
+    total_percent_retained_fl = fields.Float(string="(X’n x Y’n)",compute="_compute_total_percent_retained_fl")
+    # wt_retained = fields.Integer(string="Wt Retained (in gms)")
+    # elongated_retain = fields.Float(string="Elongated Retained (in gms)")
+    # flaky_passing = fields.Float(string="Flaky Passing (in gms)")
     
 
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(FlakinessIndexLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
+
+
+    @api.depends('parent_id.total_weight_retained_fl','weight_retained_fl')
+    def _compute_percent_retained_fl(self):
+        for record in self:
+            try:
+                record.percent_retained_fl = round((record.weight_retained_fl /record.parent_id.total_weight_retained_fl) * 100,2)
+            except ZeroDivisionError:
+                record.percent_retained_fl = 0
     
+
+
+    @api.depends('weight_retained_fl','weight_retained_mat_fl')
+    def _compute_percent_retained_material_fl(self):
+        for record in self:
+            try:
+                record.percent_retained_material_fl = round((record.weight_retained_mat_fl/record.weight_retained_fl)*100,2)
+            except ZeroDivisionError:
+                record.percent_retained_material_fl = 0
+
+    @api.depends('percent_retained_fl','percent_retained_material_fl')
+    def _compute_total_percent_retained_fl(self):
+        for record in self:
+            try:
+                record.total_percent_retained_fl = (record.percent_retained_fl * record.percent_retained_material_fl)
+            except ZeroDivisionError:
+                record.total_percent_retained_fl = 0
 
    
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('sr_no'))
-#                 vals['sr_no'] = max_serial_no + 1
 
-#         return super(FlakinessIndexLine, self).create(vals)
 
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.sr_no = index + 1
 
-class ElongationFlacnessLine(models.Model):
-    _name = "mechanical.elongation.flakiness.line"
+
+
+
+
+class AbrasionValueLine(models.Model):
+    _name = "mechanical.abrasion.value.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+   
+    sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
+    sieve_passing_ab = fields.Float(string="Passing – mm")
+    sieve_retained_ab = fields.Float(string="Retained -  mm")
+    grade_a = fields.Char(string="A")
+    grade_b = fields.Char(string="B")
+    grade_c = fields.Char(string="C")
+    grade_d = fields.Char(string="D")
+    grade_e = fields.Char(string="E")
+    grade_f = fields.Char(string="F")
+    grade_g = fields.Char(string="G")
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(AbrasionValueLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
+class AbrasionValueSecondLine(models.Model):
+    _name = "mechanical.abrasion.value.second.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+
+
+    # Second table
+    sr_no1 = fields.Integer(string="Test", readonly=True, copy=False, default=1)
+    grading_ab = fields.Char(string="Grading")
+    grade_a1 = fields.Char(string="A")
+    grade_b2 = fields.Char(string="B")
+    grade_c3 = fields.Char(string="C")
+    grade_d4 = fields.Char(string="D")
+    grade_e5 = fields.Char(string="E")
+    grade_f6 = fields.Char(string="F")
+    grade_g7 = fields.Char(string="G")
+
+
+
+
+
+
+
+    
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no1'))
+                vals['sr_no1'] = max_serial_no + 1
+
+        return super(AbrasionValueSecondLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no1 = index + 1
+
+
+
+
+class SoudnessLine(models.Model):
+    _name = "coarse.soudness.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+
+    serial_no = fields.Integer(string="Cycle No", readonly=True, copy=False, default=1)
+
+    immersed_datetime = fields.Datetime(string="Date & Time of Sample immersed in Solution for 16 to 18 hrs.")
+    temp_solution = fields.Float(string="Temp. of Solution (°C)", digits=(6,2))
+    specific_gravity_solution = fields.Float(string="Specific Gravity of Solution", digits=(8,3))
+    removed_datetime = fields.Datetime(string="Date & Time of Sample Removed from Solution")
+    oven_datetime = fields.Datetime(string="Date & Time of Sample Kept in Oven (105 to 1100C) for Drying ")
+
+    hours_1 = fields.Char(string="Hours 1",compute="_compute_hours_1",store=True)
+    hours_2 = fields.Char(string="Hours 2",compute="_compute_hours_2",store=True)
+    hours_3 = fields.Char(string="Hours 3",compute="_compute_hours_3",store=True)
+
+    @api.depends('oven_datetime', 'parent_id.soudness_child_lines.immersed_datetime')
+    def _compute_hours_1(self):
+        """
+        Compute hours_1 = (Next line's immersed_datetime) - (Current line's oven_datetime)
+        """
+        for rec in self:
+            rec.hours_1 = False
+            if not rec.oven_datetime or not rec.parent_id:
+                continue
+
+            lines = rec.parent_id.soudness_child_lines.sorted(key=lambda l: l.serial_no)
+            line_list = list(lines)
+
+            if rec in line_list:
+                current_index = line_list.index(rec)
+                # check next line exists
+                if current_index + 1 < len(line_list):
+                    next_line = line_list[current_index + 1]
+                    if next_line.immersed_datetime:
+                        diff = next_line.immersed_datetime - rec.oven_datetime
+                        total_seconds = diff.total_seconds()
+                        if total_seconds > 0:
+                            hours = int(total_seconds // 3600)
+                            minutes = int((total_seconds % 3600) // 60)
+                            seconds = int(total_seconds % 60)
+                            rec.hours_1 = f"{hours:02}:{minutes:02}:{seconds:02}"
+                        else:
+                            rec.hours_1 = "00:00:00"
+
+    # ---------------- HOURS 2 -----------------
+    @api.depends('immersed_datetime', 'removed_datetime')
+    def _compute_hours_2(self):
+        """Compute Hours 2 = removed_datetime - immersed_datetime"""
+        for rec in self:
+            rec.hours_2 = False
+            if rec.immersed_datetime and rec.removed_datetime:
+                diff = rec.removed_datetime - rec.immersed_datetime
+                total_seconds = diff.total_seconds()
+                if total_seconds > 0:
+                    hours = int(total_seconds // 3600)
+                    minutes = int((total_seconds % 3600) // 60)
+                    seconds = int(total_seconds % 60)
+                    rec.hours_2 = f"{hours:02}:{minutes:02}:{seconds:02}"
+                else:
+                    rec.hours_2 = "00:00:00"
+
+
+    @api.depends('removed_datetime', 'oven_datetime')
+    def _compute_hours_3(self):
+        """Compute Hours 2 = oven_datetime - removed_datetime"""
+        for rec in self:
+            rec.hours_3 = False
+            if rec.removed_datetime and rec.oven_datetime:
+                diff = rec.oven_datetime - rec.removed_datetime
+                total_seconds = diff.total_seconds()
+                if total_seconds > 0:
+                    hours = int(total_seconds // 3600)
+                    minutes = int((total_seconds % 3600) // 60)
+                    seconds = int(total_seconds % 60)
+                    rec.hours_3 = f"{hours:02}:{minutes:02}:{seconds:02}"
+                else:
+                    rec.hours_3 = "00:00:00"
+
+    
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoudnessLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class SieveAnalysisSoudnesLine(models.Model):
+    _name = "mechanical.sieve.analysis.line"
     parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
-
+    
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size")
-    wt_retained = fields.Float(string="Wt. Retained in gms")
-    elongated_retained = fields.Float(string="Elongated Retained in gms")
-    flakiness_retained = fields.Float(string="Flakiness Retained in gms")
+    particle_size = fields.Char(string="Retained")
+    wt_retained = fields.Float(string="Wt. Retained before test(gm)")
+    percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained")
+    wt_sample_testing = fields.Char(string="Weight of sample for testing (gm)",compute="_compute_wt_sample_testing_display")
+    actual_wt = fields.Float(string="Actual Weight of sample taken (gm)")
+    cumulative_retained = fields.Float(string="Cum. Retained %",compute="_compute_cum_retained" , store=True)
+    passing_percent = fields.Float(string="% Passing ")
+
+    # @api.onchange('cumulative_retained')
+    # def _compute_passing_percent(self):
+    #     for record in self:
+    #         record.passing_percent = 100 - record.cumulative_retained
+
+    @api.depends('percent_retained')
+    def _compute_wt_sample_testing_display(self):
+        for rec in self:
+            if rec.percent_retained < 5:
+                rec.wt_sample_testing = "-"
+            else:
+                rec.wt_sample_testing = "100"
 
 
-class SoundnessNa2Line(models.Model):
-    _name = "mechanical.soundness.na2so4.line"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
-    
-    sieve_size_passing = fields.Char(string="Sieve Size Passing")
-    sieve_size_retained = fields.Char(string="Sieve Size Retained")
-    weight_before_test = fields.Float(string="Weight of test fraction before test in gm.")
-    weight_after_test = fields.Float(string="Weight of test feaction Passing Finer Sieve After test")
-    grading_original_sample = fields.Float(string="Grading of Original sample in %", compute="_compute_grading")
-    passing_percent = fields.Float(string="Percentage Passing Finer Sieve After test (Percentage Loss)",compute="_compute_passing_percent")
-    cumulative_loss_percent = fields.Float(string="Commulative percentage Loss",compute="_compute_cumulative_na2so4")
-    
-    @api.depends('parent_id.total_na2so4','weight_before_test')
-    def _compute_grading(self):
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SieveAnalysisSoudnesLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+    def write(self, vals):
+        # Handle row deletions and adjust serial numbers
+        if 'parent_id' in vals or 'wt_retained' in vals:
+            for record in self:
+                if record.parent_id and record.parent_id == vals.get('parent_id') and 'wt_retained' in vals:
+                    record.percent_retained = vals['wt_retained'] / record.parent_id.total * 100 if record.parent_id.total else 0
+
+            new_self = super(SieveAnalysisSoudnesLine, self).write(vals)
+
+            if 'wt_retained' in vals:
+                for record in self:
+                    # record.parent_id._compute_total()
+                    pass
+
+            return new_self
+
+        return super(SieveAnalysisSoudnesLine, self).write(vals)
+
+    def unlink(self):
+        # Get the parent_id before the deletion
+        parent_id = self[0].parent_id
+
+        res = super(SieveAnalysisSoudnesLine, self).unlink()
+
+        if parent_id:
+            parent_id.sieve_analysis_soundness_lines._reorder_serial_numbers()
+
+        return res
+
+
+    @api.depends('wt_retained', 'parent_id.wt_of_sample')
+    def _compute_percent_retained(self):
         for record in self:
             try:
-                record.grading_original_sample = (record.weight_before_test/record.parent_id.total_na2so4)*100
+                record.percent_retained = (record.wt_retained / record.parent_id.wt_of_sample) * 100 if record.parent_id.wt_of_sample else 0.0
             except ZeroDivisionError:
-                record.grading_original_sample = 0
+                record.percent_retained = 0.0
 
-    @api.depends('weight_before_test','weight_after_test')
-    def _compute_passing_percent(self):
-        for record in self:
-            try:
-                record.passing_percent = (record.weight_after_test / record.weight_before_test)*100
-            except:
-                record.passing_percent = 0
 
-    @api.depends('weight_after_test', 'parent_id.total_na2so4')
-    def _compute_cumulative_na2so4(self):
+
+    # @api.depends('cumulative_retained')
+    # def _compute_cum_retained(self):
+    #     self.cumulative_retained=0
+
+    @api.depends('percent_retained', 'parent_id.sieve_analysis_soundness_lines.percent_retained')
+    def _compute_cum_retained(self):
         for record in self:
-            try:
-                record.cumulative_loss_percent = (record.weight_after_test / record.parent_id.total_na2so4) * 100
-            except:
-                record.cumulative_loss_percent = 0
+            cumulative = 0.0
+            found = False
+
+            for line in sorted(record.parent_id.sieve_analysis_soundness_lines, key=lambda l: l.serial_no):
+                cumulative += line.percent_retained or 0.0
+                if line.id == record.id:
+                    found = True
+                    record.cumulative_retained = cumulative
+                    break
+
+            if not found:
+                record.cumulative_retained = 0.0
+
+        
+    
+
+
+    def get_previous_record(self):
+        for record in self:
+            # import wdb; wdb.set_trace()
+            sorted_lines = sorted(record.parent_id.sieve_analysis_soundness_lines, key=lambda r: r.id)
+            # index = sorted_lines.index(record)
+            # print("Working")
+
+class OuantitativelyExaminationLine(models.Model):
+    _name = "coarse.ouantitative.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+
+    serial_no = fields.Integer(string="Cycle No", readonly=True, copy=False, default=1)
+
+    size = fields.Char(string="Size")
+    cycle = fields.Float(string="Test Cycle ")
+    original_sulphate = fields.Float(string="Original wt. of Sample-gms.Sodium Sulphate", digits=(8,3),compute="_compute_original_sulphate",store=True)
+    original_magnesiu = fields.Float(string="Original wt. of Sample-gms.Magnesium ", digits=(8,3))
+    wt_sulhate = fields.Float(string="Weight Retained After  5 Cycle-gms Sodium Sulphate")
+    wt_manesium = fields.Float(string="Weight Retained After  5 Cycle-gms Magnesium ")
+    loss_sulphae = fields.Float(string="% Loss Sodium Sulphate",compute="_compute_loss_sulphae",digits=(12,1))
+    loss_manesium = fields.Float(string="% Loss Magnesium ")
+
+    @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
+    def _compute_original_sulphate(self):
+        for rec in self:
+            if rec.parent_id:
+                line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
+                    lambda l: l.serial_no == rec.serial_no
+                )[:1]
+                rec.original_sulphate = line.actual_wt if line else 0.0
+            else:
+                rec.original_sulphate = 0.0
+
+    @api.depends('original_sulphate', 'wt_sulhate')
+    def _compute_loss_sulphae(self):
+        """Compute % Loss Sodium Sulphate"""
+        for rec in self:
+            if not rec.original_sulphate or rec.wt_sulhate == 0:
+                rec.loss_sulphae = 0.0
+            else:
+                rec.loss_sulphae = round(((rec.original_sulphate - rec.wt_sulhate) / rec.wt_sulhate) * 100, 2)
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(OuantitativelyExaminationLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class QuantitativelyExaminationLine(models.Model):
+    _name = "coarse.quantitative.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+
+    serial_no = fields.Integer(string="Cycle No", readonly=True, copy=False, default=1)
+
+    passing = fields.Char(string="Sieve Size-mm Passing")
+    retained = fields.Char(string="Sieve Size-mm Retained")
+    grading_sulphate = fields.Float(string="Grading of Original Sample  (%)s.Sodium Sulphate", digits=(8,2),compute="_compute_grading_sulphate",store=True)
+    sieve_magnesiu = fields.Float(string="Sieve Used For Loss  Determination.Magnesium ", digits=(8,3))
+    wt_fraction_sulhate = fields.Float(string="Weight of test Fraction  (retained) after test (gm) Sodium Sulphate",compute="_compute_wt_fraction_sulhate",store=True)
+    wt_fraction_manesium = fields.Float(string="Weight of test Fraction  (retained) after test  (gm) Magnesium ")
+    finalloss_sulphae = fields.Float(string="Final loss (%) Sulphate",compute="_compute_finalloss_sulphae",store="_compute_finalloss_sulphae")
+    final_loss_manesium = fields.Float(string="Final loss (%) Magnesium ")
+
+    avg_sulphae = fields.Float(string="Weighted Average  (Corrected % loss) Sulphate",compute="_compute_avg_sulphae",store=True)
+    avg_manesium = fields.Float(string="Weighted Average  (Corrected % loss) Magnesium ")
+
+    @api.depends('finalloss_sulphae', 'grading_sulphate')
+    def _compute_avg_sulphae(self):
+        for rec in self:
+            rec.avg_sulphae = (rec.finalloss_sulphae * rec.grading_sulphate) / 100 if rec.grading_sulphate else 0.0
+
+    @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
+    def _compute_finalloss_sulphae(self):
+        for rec in self:
+            # percent_retained from sieve_analysis_soundness_lines
+            sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)[:1]
+            percent_ret = sieve_line.percent_retained if sieve_line else 0.0
+
+            # loss_sulphae from ouantitative_soundness_lines
+            ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)[:1]
+            loss_sulphae_val = ou_line.loss_sulphae if ou_line else 0.0
+
+            if 0 < percent_ret < 5:
+                rec.finalloss_sulphae = 0.0  # किंवा आधीची value
+            else:
+                rec.finalloss_sulphae = loss_sulphae_val
+
+            
+
+    @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
+    def _compute_grading_sulphate(self):
+        for rec in self:
+            if rec.parent_id:
+                line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
+                    lambda l: l.serial_no == rec.serial_no
+                )[:1] 
+                rec.grading_sulphate = line.percent_retained if line else 0.0
+            else:
+                rec.grading_sulphate = 0.0
+
+    @api.depends('serial_no', 'parent_id.ouantitative_soundness_lines')
+    def _compute_wt_fraction_sulhate(self):
+        for rec in self:
+            if rec.parent_id:
+                line = rec.parent_id.ouantitative_soundness_lines.filtered(
+                    lambda l: l.serial_no == rec.serial_no
+                )[:1]
+                rec.wt_fraction_sulhate = line.wt_sulhate if line else 0.0
+            else:
+                rec.wt_fraction_sulhate = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(QuantitativelyExaminationLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 
     
-
-class SoundnessMgLine(models.Model):
-    _name = "mechanical.soundness.mgso4.line"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
     
-    sieve_size_passing = fields.Char(string="Sieve Size Passing")
-    sieve_size_retained = fields.Char(string="Sieve Size Retained")
-    weight_before_test = fields.Float(string="Weight of test fraction before test in gm.")
-    weight_after_test = fields.Float(string="Weight of test feaction Passing Finer Sieve After test")
-    grading_original_sample = fields.Float(string="Grading of Original sample in %", compute="_compute_grading")
-    passing_percent = fields.Float(string="Percentage Passing Finer Sieve After test (Percentage Loss)",compute="_compute_passing_percent")
-    cumulative_loss_percent = fields.Float(string="Commulative percentage Loss",compute="_compute_cumulative_mgso4")
-    
-    @api.depends('parent_id.total_mgso4','weight_before_test')
-    def _compute_grading(self):
-        for record in self:
-            try:
-                record.grading_original_sample = (record.weight_before_test/record.parent_id.total_mgso4)*100
-            except ZeroDivisionError:
-                record.grading_original_sample = 0
-
-    @api.depends('weight_before_test','weight_after_test')
-    def _compute_passing_percent(self):
-        for record in self:
-            try:
-                record.passing_percent = (record.weight_after_test / record.weight_before_test)*100
-            except:
-                record.passing_percent = 0
-
-    @api.depends('weight_after_test', 'parent_id.total_mgso4')
-    def _compute_cumulative_mgso4(self):
-        for record in self:
-            try:
-                record.cumulative_loss_percent = (record.weight_after_test / record.parent_id.total_mgso4) * 100
-            except:
-                record.cumulative_loss_percent = 0
-
-
-
-
-
-
-# class AbrasionValueCoarseAggregateLine(models.Model):
-#     _name = "mechanical.abrasion.value.coarse.aggregate.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
-#     total_weight_sample = fields.Integer(string="Total weight of Sample in gms")
-#     weight_passing_sample = fields.Integer(string="Weight of Passing sample in 1.70 mm IS sieve in gms")
-#     weight_retain_sample = fields.Integer(string="Weight of Retain sample in 1.70 mm IS sieve in gms",compute="_compute_weight_retain_sample")
-#     abrasion_value_percentage = fields.Float(string="Abrasion Value (in %)",compute="_compute_sample_weight")
-
-
-#     @api.depends('total_weight_sample', 'weight_passing_sample')
-#     def _compute_weight_retain_sample(self):
-#         for line in self:
-#             line.weight_retain_sample = line.total_weight_sample - line.weight_passing_sample
-
-
-#     @api.depends('total_weight_sample', 'weight_passing_sample')
-#     def _compute_sample_weight(self):
-#         for line in self:
-#             if line.total_weight_sample != 0:
-#                 line.abrasion_value_percentage = (line.weight_passing_sample / line.total_weight_sample) * 100
-#             else:
-#                 line.abrasion_value_percentage = 0.0
-
-
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('sr_no'))
-    #             vals['sr_no'] = max_serial_no + 1
-
-    #     return super(AbrasionValueCoarseAggregateLine, self).create(vals)
-
-    # def _reorder_serial_numbers(self):
-    #     # Reorder the serial numbers based on the positions of the records in child_lines
-    #     records = self.sorted('id')
-    #     for index, record in enumerate(records):
-    #         record.sr_no = index + 1
 
