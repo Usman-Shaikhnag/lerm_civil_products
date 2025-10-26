@@ -37,6 +37,24 @@
 
                         </h1>
                     </div>
+
+                    <div> 
+                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
+                    <tbody>
+                        <tr>
+                            <td ><label for="temp_sieve_analysis"/></td>
+                            <td ><field name="temp_sieve_analysis"/></td>
+                        </tr>
+                        <tr>
+                            <td ><label for="humidity_sieve_analysis"/></td>
+                            <td  ><field name="humidity_sieve_analysis"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                    
+                    </div>
                    
                     <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sieve_visible">
                         <tbody>
@@ -74,6 +92,8 @@
                         </button>
                     </div>
 
+
+           <div>
                 <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
                     <tbody>
                         <tr>
@@ -86,14 +106,12 @@
                         </tr>
                     </tbody>
                 </table>
-                    
+                </div>
 
 
-                 
-                   
 
 
-                <div class="text-center" invisible="specific_gravity_visible == False">
+<div class="text-center" invisible="specific_gravity_visible == False">
                         <h1>
                             <field name="specific_gravity_name" readonly="1" nolabel="1"/>
                             <field name="specific_gravity_visible" invisible="1"/>
@@ -102,6 +120,20 @@
                         </h1>
                     </div>
 
+                     <div> 
+                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
+                    <tbody>
+                        <tr>
+                            <td ><label for="temp_specific_gravity_water_absorption"/></td>
+                            <td ><field name="temp_specific_gravity_water_absorption"/></td>
+                        </tr>
+                        <tr>
+                            <td ><label for="humidity_temp_specific_gravity_water_absorption"/></td>
+                            <td  ><field name="humidity_temp_specific_gravity_water_absorption"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
 
                     <table class="table table-sm table-bordered custom_table_borders" invisible="not specific_gravity_visible" style="white-space:nowrap;">
                         <thead>
@@ -149,7 +181,10 @@
                             </tr>
                         </tbody>
                     </table>
+                    
 
+
+                    
 
                     <div style="display:flex;">
                       <div style="width:50%">
@@ -234,6 +269,8 @@
 
                     <!-- compacted density -->
 
+            
+
 
                      <div class="text-center" invisible="compacted_density_visible == False">
                         <h1>
@@ -242,6 +279,24 @@
 
                         </h1>
                     </div>
+
+
+                    <div> 
+                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
+                    <tbody>
+                        <tr>
+                            <td ><label for="temp_density"/></td>
+                            <td ><field name="temp_density"/></td>
+                        </tr>
+                        <tr>
+                            <td ><label for="humidity_density"/></td>
+                            <td  ><field name="humidity_density"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+
+
 
                     <table class="table table-sm table-bordered w-100 custom_table_borders" invisible="not compacted_density_visible" style="white-space:nowrap;">
                         <tbody>
@@ -532,6 +587,21 @@
                         </h1>
                     </div>
 
+                     <div> 
+                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
+                    <tbody>
+                        <tr>
+                            <td ><label for="temp_finer75_visible"/></td>
+                            <td ><field name="temp_finer75_visible"/></td>
+                        </tr>
+                        <tr>
+                            <td ><label for="humidity_finer75_visible"/></td>
+                            <td  ><field name="humidity_finer75_visible"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+
                  <table class="table table-sm table-bordered w-100 mt-2 custom_table_borders" invisible="finer75_visible == False" style="white-space:nowrap;">
                         <tbody>
                             <tr>
@@ -707,154 +777,6 @@
                         </tbody>
                     </table>
 
-
-
-                         <!-- Soundness Na2So4  -->
-                <div invisible="soudness_visible == False">
-                    <h1 class="text-center">
-                        <field name="soudness_name" readonly="1" nolabel="1"/>
-                        <field name="soudness_visible" invisible="1"/>
-
-                    </h1>
-                </div>
-
-                <div invisible="soudness_visible == False">
-                    <field name="soudness_child_lines" nolabel="1"  style="width:100%" >
-                        <tree editable="bottom"  class="custom_table_borders">
-                            <field name="serial_no"/>
-                            <field name="immersed_datetime"/>
-                            <field name="temp_solution" />
-                            <field name="specific_gravity_solution"/>
-                            <field name="removed_datetime"/>
-                             <field name="oven_datetime"/>
-                            <field name="hours_1"/>
-                            <field name="hours_2"/>
-                            <field name="hours_3"/>
-                        </tree>
-                    </field>
-                
-                </div>
-
-
-                
-
-                    <!-- Sieve Analysis -->
-                    <div invisible = "soudness_visible == False">
-                        <h1 class="text-center">
-                            <field name="sieve_name" readonly="1" nolabel="1"/>
-                            <field name="soudness_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not soudness_visible">
-                        <tbody>
-                            <tr>
-                                <td class="w-25"><label for="wt_of_sample"/></td>
-                                <td  class="w-25">
-                                    <field name="wt_of_sample"/>
-                                </td>
-                              
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <field name="sieve_analysis_soundness_lines" invisible = "soudness_visible == False">
-                        <tree editable="bottom" class="custom_table_borders">
-                            <field name="serial_no"/>
-                            <field name="sieve_size"/>
-                            <field name="particle_size"/>
-                            <field name="wt_retained"/>
-                           
-                            <field name="percent_retained"/>
-                              <field name="wt_sample_testing"/>
-                              <field name="actual_wt"/>
-                            <field name="cumulative_retained"/>
-                            <field name="passing_percent"/>
-                        </tree>
-                    </field>
-
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"   invisible="not soudness_visible">
-                            <tbody>
-                                <tr>
-                                    <td><label for="total_percent_retained"></label></td>
-                                    <td><field name="total_percent_retained"/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-
-                  
-                    <div invisible="soudness_visible == False">
-                        <button type="object" name="calculate_sieve" class="btn btn-primary">
-                            <i class="fa fa-calculator mr-1"/> Calculate
-                        </button>
-                    </div>
-
-
-                    <div invisible = "soudness_visible == False">
-                        <h1 class="text-center">
-                            <field name="ouantitative_name" readonly="1" nolabel="1"/>
-                            <field name="soudness_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-                 
-                    
-                    <field name="ouantitative_soundness_lines" invisible = "soudness_visible == False">
-                        <tree editable="bottom" class="custom_table_borders">
-                            <field name="serial_no"/>
-                            <field name="size"/>
-                            <field name="cycle"/>
-                            <field name="original_sulphate"/>
-                           
-                            <field name="original_magnesiu"/>
-                              <field name="wt_sulhate"/>
-                              <field name="wt_manesium"/>
-                            <field name="loss_sulphae"/>
-                            <field name="loss_manesium"/>
-                        </tree>
-                    </field>
-
-                   
-
-                     
-
-
-                    <div invisible = "soudness_visible == False">
-                        <h1 class="text-center">
-                            <field name="quantitative_name" readonly="1" nolabel="1"/>
-                            <field name="soudness_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-                 
-                    
-                    <field name="quantitative_soundness_lines" invisible = "soudness_visible == False">
-                        <tree editable="bottom" class="custom_table_borders">
-                            <field name="serial_no"/>
-                            <field name="passing"/>
-                            <field name="retained"/>
-                            <field name="grading_sulphate"/>
-                           
-                            <field name="sieve_magnesiu"/>
-                              <field name="wt_fraction_sulhate"/>
-                              <field name="wt_fraction_manesium"/>
-                            <field name="finalloss_sulphae"/>
-                            <field name="final_loss_manesium"/>
-                            <field name="avg_sulphae"/>
-                            <field name="avg_manesium"/>
-                        </tree>
-                    </field>
-
-
-
-
-
-
-
-                     
-
-
                 
                      <button
                             type="object"
@@ -862,9 +784,6 @@
                             name="open_eln_page"
                             string="Submit"
                             />
-
-
-
                 </sheet>
             </form>
         </field>
