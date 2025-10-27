@@ -30,6 +30,7 @@
     'views/portal/lerm_portal.xml',
     'views/customer_sample_requests.xml',
     'views/partner_document.xml',
+    'views/overview.xml',
     # 'views/ftp_upload_wizard_views.xml',
     # 'views/ftp_upload_wizard_views.xml',
     # 'views/mechanical/sieve_analysis.xml',
