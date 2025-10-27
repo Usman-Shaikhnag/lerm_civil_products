@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<odoo>
-    <data>
+    <odoo>
+     <data>
 
         <record id="mechanical_fine_aggregateee" model="ir.ui.view">
         <field name="name">mechanical.fine.aggregate.form</field>
@@ -12,8 +12,8 @@
                         <field name="name_aggregate" readonly="1" nolabel="1"/>
                     </h1>
                     <group >
-                       <field name="grade"/>
-                    </group>
+                      <field name="grade"/>
+                </group>
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
@@ -36,24 +36,6 @@
                             <field name="sieve_visible" invisible="1"/>
 
                         </h1>
-                    </div>
-
-                    <div> 
-                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
-                    <tbody>
-                        <tr>
-                            <td ><label for="temp_sieve_analysis"/></td>
-                            <td ><field name="temp_sieve_analysis"/></td>
-                        </tr>
-                        <tr>
-                            <td ><label for="humidity_sieve_analysis"/></td>
-                            <td  ><field name="humidity_sieve_analysis"/></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-
-                    
                     </div>
                    
                     <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sieve_visible">
@@ -93,7 +75,11 @@
                     </div>
 
 
-           <div>
+
+
+
+
+
                 <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
                     <tbody>
                         <tr>
@@ -106,13 +92,13 @@
                         </tr>
                     </tbody>
                 </table>
-                </div>
+                    
 
 
+                 
+                   
 
 
-     <div class="text-center" invisible="specific_gravity_visible == False">
-                
                 <div class="text-center" invisible="specific_gravity_visible == False">
                         <h1>
                             <field name="specific_gravity_name" readonly="1" nolabel="1"/>
@@ -121,23 +107,13 @@
 
                         </h1>
                     </div>
-                 </div>
 
-                 
-                     <div> 
-                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
-                    <tbody>
-                        <tr>
-                            <td ><label for="temp_specific_gravity_water_absorption"/></td>
-                            <td ><field name="temp_specific_gravity_water_absorption"/></td>
-                        </tr>
-                        <tr>
-                            <td ><label for="humidity_temp_specific_gravity_water_absorption"/></td>
-                            <td  ><field name="humidity_temp_specific_gravity_water_absorption"/></td>
-                        </tr>
-                    </tbody>
-                </table>
-                </div>
+
+
+
+
+
+
 
                     <table class="table table-sm table-bordered custom_table_borders" invisible="not specific_gravity_visible" style="white-space:nowrap;">
                         <thead>
@@ -185,10 +161,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    
 
-
-                    
 
                     <div style="display:flex;">
                       <div style="width:50%">
@@ -266,14 +239,19 @@
 
 
 
-                    <!--  -->
 
 
+
+                
 
 
                     <!-- compacted density -->
 
-            
+
+
+
+
+
 
 
                      <div class="text-center" invisible="compacted_density_visible == False">
@@ -285,20 +263,9 @@
                     </div>
 
 
-                    <div> 
-                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
-                    <tbody>
-                        <tr>
-                            <td ><label for="temp_density"/></td>
-                            <td ><field name="temp_density"/></td>
-                        </tr>
-                        <tr>
-                            <td ><label for="humidity_density"/></td>
-                            <td  ><field name="humidity_density"/></td>
-                        </tr>
-                    </tbody>
-                </table>
-                </div>
+
+
+
 
 
 
@@ -590,21 +557,6 @@
 
                         </h1>
                     </div>
-
-                     <div> 
-                    <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
-                    <tbody>
-                        <tr>
-                            <td ><label for="temp_finer75_visible"/></td>
-                            <td ><field name="temp_finer75_visible"/></td>
-                        </tr>
-                        <tr>
-                            <td ><label for="humidity_finer75_visible"/></td>
-                            <td  ><field name="humidity_finer75_visible"/></td>
-                        </tr>
-                    </tbody>
-                </table>
-                </div>
 
                  <table class="table table-sm table-bordered w-100 mt-2 custom_table_borders" invisible="finer75_visible == False" style="white-space:nowrap;">
                         <tbody>
@@ -920,6 +872,15 @@
                         </tree>
                     </field>
 
+
+
+
+
+
+
+                     
+
+
                 
                      <button
                             type="object"
@@ -927,6 +888,9 @@
                             name="open_eln_page"
                             string="Submit"
                             />
+
+
+
                 </sheet>
             </form>
         </field>

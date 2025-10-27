@@ -654,46 +654,272 @@
 						</table>
 					</div>
 
-                  <!-- Soundness -->
 
-					  <!-- <div t-if="data.soudness_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+
+
+
+                <!--  Soundness -->
+				 <div t-if="data.soudness_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
 					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
 						Soundness
 					</div>
-
-					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Weight of Sample in gms
-							</td>
-							
-							<td colspan="6" style="border: 1px solid black; padding: 6px;">
-								<span t-field="data.wt_sample_finer75"/>
-							</td>
-		
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Weight of dry sample after retained in 75 microns
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px;">
-								<span t-field="data.wt_dry_sample_finer75"/>
-							</td>
-							
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Material finer than 75 micron in %
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px;">
-								<span t-field="data.material_finer75"/>
-							</td>
-							
-						</tr>
-						
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="2">Cycle</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="2">Date And Time of Sample immersed in Solution for 16 to 18 hrs.	</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="2">Temp. of Solution °C</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="2">Specific Gravity of Solution</th>
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="2"> Date And Time of Sample Removed from Solution	</th>
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="2"> Date And Time of Sample Kept in Oven (105 to 1100C) for Drying	</th>
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="2"> Hours 1	</th>
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="2"> Hours 2	</th>
+									
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="2"> Hours 3	</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.soudness_child_lines" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['immersed_datetime']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['temp_solution']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['specific_gravity_solution']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['removed_datetime']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['oven_datetime']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['hours_1']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['hours_2']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['hours_3']" />
+									</td>
+								</tr>
+							</tbody>
 						</table>
-					</div>  -->
-                    
+
+
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;margin-top:25px;">
+							<thead>
+
+								<tr style="background-color:#f9f9f9; text-align: center;">
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;text-align: center;" colspan="16">Sieve Size mm (Before Test)</th>
+								</tr>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="2">Passing</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="2">Retained	</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="2">Wt. Retained before test(gm)</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="2">% Retained</th>
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="2"> Weight of sample for testing (gm)	</th>
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="2"> Actual Weight of sample taken (gm)</th>
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="2"> Cum. Retained %	</th>
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="2">% Passing	</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.sieve_analysis_soundness_lines" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['sieve_size']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['particle_size']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['wt_retained']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['wt_sample_testing']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['actual_wt']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['cumulative_retained']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['passing_percent']" />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: center; padding: 8px; border: 1px solid black;">Total % Retained</td>
+								<td colspan="6" style="padding: 8px;text-align: center; border: 1px solid black;">
+									<span t-field="data.total_percent_retained"/>
+								</td>
+							</tr>
+						</table>
+
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;margin-top:25px;">
+							<thead>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+								   <th style="border: 1px solid black; font-weight: bold;padding: 8px;text-align: center;" colspan="8">Ouantitatively Examination</th>
+								</tr>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;text-align: center;" rowspan="2">Size</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;text-align: center;" rowspan="2">Test Cycle</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;text-align: center;" colspan="2">Original wt. of Sample-gms</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;text-align: center;" colspan="2">Weight Retained After  5 Cycle-gms</th>
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;text-align: center;" colspan="2">% Loss</th>
+								</tr>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Sodium Sulphate</th>
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Magnesium</th>
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Sodium Sulphate</th>
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Magnesium</th>
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Sodium Sulphate</th>
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Magnesium</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.ouantitative_soundness_lines" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['size']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['cycle']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['original_sulphate']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['original_magnesiu']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['wt_sulhate']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['wt_manesium']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['loss_sulphae']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['loss_manesium']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;margin-top:25px;">
+							<thead>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+								   <th style="border: 1px solid black; font-weight: bold;padding: 8px;text-align: center;" colspan="10">Ouantitative Examination</th>
+								</tr>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;text-align: center;" colspan="2">Sieve Size mm</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;text-align: center;" rowspan="2">Grading of Original Sample</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;text-align: center;" rowspan="2">Sieve Used For Loss  Determination</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;text-align: center;" colspan="2">Weight of test Fraction  (retained) after test (gm)</th>
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;text-align: center;" colspan="2">Final loss (%)</th>
+									<th style="border: 1px solid black;font-weight: bold; padding: 8px;text-align: center;" colspan="2">Weighted Average  (Corrected % loss)</th>
+								</tr>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+								
+								  <th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="1">Passing</th>
+								  <th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="1">Retained	</th>
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Sodium Sulphate</th>
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Magnesium</th>
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Sodium Sulphate</th>
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Magnesium</th>
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Sodium Sulphate</th>
+								  <th style="border: 1px solid black;font-weight: bold; padding: 8px;" colspan="1">Magnesium</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.quantitative_soundness_lines" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['passing']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['retained']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['grading_sulphate']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['sieve_magnesiu']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['wt_fraction_sulhate']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['wt_fraction_manesium']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['finalloss_sulphae']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['final_loss_manesium']" t-options='{"widget": "float", "precision": 2}'/>
+										
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['avg_sulphae']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="1">
+										<span t-esc="r['avg_manesium']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: left; padding: 8px; border: 1px solid black;">Total Grading of Original Sample (%)s.Sodium Sulphate</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black; width:15%;">
+									<span t-field="data.total_grading_sulphate" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: left; padding: 8px; border: 1px solid black;">Total Weight of test Fraction (retained) after test (gm) Sodium Sulphate</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black; width:15%;">
+									<span t-field="data.total_wt_fraction_sulhate" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: left; padding: 8px; border: 1px solid black;">Total Final loss (%) Sulphate</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black; width:15%;">
+									<span t-field="data.total_finalloss_sulphae" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: left; padding: 8px; border: 1px solid black;">Total Weighted Average (Corrected % loss) Sulphate</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black; width:15%;">
+									<span t-field="data.total_avg_sulphae" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+
+						</div>
+
+					 
                     
                     
                     <div class="signatureContainer girdgird">

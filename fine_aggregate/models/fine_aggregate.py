@@ -66,13 +66,12 @@ class FineAggregate(models.Model):
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
-    temp_sieve_analysis = fields.Float(string="Temperature of sieve Analysis")
-    humidity_sieve_analysis = fields.Float(string="humidity of sieve Analysis")
+
 
     sieve_analysis_child_lines = fields.One2many('mechanical.fine.agg.sieve.analysis.ssl.line','parent_id',string="Parameter",
                                                   default=lambda self: self._default_sieve_analysis_child_lines())
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
-
+    # cumulative = fields.Float(string="Cumulative",compute="_compute_cumulative")
     wt_of_sample = fields.Float(string="Weight of Sample, gms")
     zone_type = fields.Selection(
     selection=[
@@ -241,13 +240,183 @@ class FineAggregate(models.Model):
 
 
 
+
+
+#     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
+#     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+
+#     sieve_analysis_child_lines = fields.One2many('mechanical.fine.agg.sieve.analysis.line','parent_id',string="Parameter",
+#                                                   default=lambda self: self._default_sieve_analysis_child_lines())
+#     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
+#     # cumulative = fields.Float(string="Cumulative",compute="_compute_cumulative")
+#     wt_of_sample = fields.Float(string="Weight of Sample, gms")
+#     zone_type = fields.Selection(
+#     selection=[
+#         ('zone_i', 'Zone I'),
+#         ('zone_ii', 'Zone II'),
+#         ('zone_iii', 'Zone III'),
+#         ('zone_iv', 'Zone IV'),
+#     ],
+#     string="Zone",
+#     required=False  
+# )
+
+
+#     fineness_modulus = fields.Float(string="Fineness Modulus", compute="_compute_fineness_modulus")
+#     grading = fields.Char(string="Grading",compute="_compute_zone_display_name")
+
+#     @api.depends('zone_type')
+#     def _compute_zone_display_name(self):
+#         for record in self:
+#             if record.zone_type:
+#                 record.grading = dict(self._fields['zone_type'].selection).get(record.zone_type, '')
+#             else:
+#                 record.grading = ''
+
+
+
+#     # @api.depends('sieve_analysis_child_lines.cumulative_retained')
+#     # def _compute_fineness_modulus(self):
+#     #     for record in self:
+#     #         fineness_modulus = sum(line.cumulative_retained for line in record.sieve_analysis_child_lines)/100
+#     #         record.fineness_modulus = fineness_modulus
+
+#     @api.depends('sieve_analysis_child_lines.cumulative_retained')
+#     def _compute_fineness_modulus(self):
+#         for record in self:
+#             # Exclude the last line (assumes order is important)
+#             lines = record.sieve_analysis_child_lines[:-1]  # all except last
+#             fineness_modulus = sum(line.cumulative_retained for line in lines) / 100
+#             record.fineness_modulus = fineness_modulus
+
+
+
+#     @api.model
+#     def _default_sieve_analysis_child_lines(self):
+#         default_lines = [
+#             (0, 0, {'sieve_size': '10 mm'}),
+#             (0, 0, {'sieve_size': '4.75 mm'}),
+#             (0, 0, {'sieve_size': '2.36 mm'}),
+#             (0, 0, {'sieve_size': '1.18 mm'}),
+#             (0, 0, {'sieve_size': '600 micron'}),
+#             (0, 0, {'sieve_size': '300 micron'}),
+#             (0, 0, {'sieve_size': '150 micron'}),
+#               (0, 0, {'sieve_size': 'Pan'})
+            
+#         ]
+#         return default_lines
+
+#     @api.onchange('zone_type')
+#     def _onchange_zone_type(self):
+#         zone_limits = {
+#             'zone_i': {
+#                 '10 mm': '100',
+#                 '4.75 mm': '90 - 100',
+#                 '2.36 mm': '60 - 95',
+#                 '1.18 mm': '30 - 70',
+#                 '600 micron': '15 - 34',
+#                 '300 micron': '5 - 20',
+#                 '150 micron': '0 - 10',
+#                 'Pan': '-',
+#             },
+#             'zone_ii': {
+#                 '10 mm': '100',
+#                 '4.75 mm': '90 - 100',
+#                 '2.36 mm': '75 - 100',
+#                 '1.18 mm': '55 - 90',
+#                 '600 micron': '35 - 59',
+#                 '300 micron': '8 - 30',
+#                 '150 micron': '0 - 10',
+#                 'Pan': '-',
+#             },
+#             'zone_iii': {
+#                 '10 mm': '100',
+#                 '4.75 mm': '90 - 100',
+#                 '2.36 mm': '85 - 100',
+#                 '1.18 mm': '75 - 100',
+#                 '600 micron': '60 - 79',
+#                 '300 micron': '12 - 40',
+#                 '150 micron': '0 - 10',
+#                 'Pan': '-',
+#             },
+#             'zone_iv': {
+#                 '10 mm': '100',
+#                 '4.75 mm': '95 - 100',
+#                 '2.36 mm': '95 - 100',
+#                 '1.18 mm': '90 - 100',
+#                 '600 micron': '80 - 100',
+#                 '300 micron': '15 - 50',
+#                 '150 micron': '0 - 5',
+#                 'Pan': '-',
+#             }
+#         }
+
+#         limits = zone_limits.get(self.zone_type)
+#         if limits:
+#             for line in self.sieve_analysis_child_lines:
+#                 line.specific_limt = limits.get(line.sieve_size, '')
+
+
+
+
+#     @api.onchange('sieve_analysis_child_lines')
+#     def _onchange_sieve_analysis_child_lines(self):
+#         for rec in self:
+#             pan_line = None
+#             total_retained = 0.0
+#             target_sieves = ['10 mm','4.75 mm','2.36 mm','1.18 mm', '600 micron', '300 micron', '150 micron']
+
+#             for line in rec.sieve_analysis_child_lines:
+#                 if line.sieve_size and line.sieve_size.lower() == 'pan':
+#                     pan_line = line
+#                 elif line.sieve_size in target_sieves:
+#                     total_retained += line.wt_retained or 0.0
+
+#             if pan_line:
+#                 pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
+
+
+#     # corrected(added)
+#     def calculate_sieve(self): 
+#         for record in self:
+#             previous_cumulative = 0  
+#             for line in record.sieve_analysis_child_lines:
+#                 print("Rows", str(line.percent_retained))
+#                 previous_line = line.serial_no - 1
+#                 if previous_line == 0:
+#                     cumulative_retained = line.percent_retained
+#                 else:
+#                     previous_line_record = self.env['mechanical.fine.agg.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
+                    
+#                     if previous_line_record:
+#                         previous_cumulative = previous_line_record.cumulative_retained
+#                     cumulative_retained = previous_cumulative + line.percent_retained
+
+#                 passing_percent = 100 - cumulative_retained
+
+#                 line.write({
+#                     'cumulative_retained': round(cumulative_retained, 2),
+#                     'passing_percent': round(passing_percent, 2),
+#                 })
+                
+#                 print("Updated Cumulative Retained:", cumulative_retained)
+#                 print("Updated Passing Percent:", passing_percent)
+
+#                 previous_cumulative = cumulative_retained
+            
+    
+    
+#     @api.depends('sieve_analysis_child_lines.wt_retained')
+#     def _compute_total_sieve(self):
+#         for record in self:
+#             print("recordd",record)
+#             record.total_sieve_analysis = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
+
+
 # Deleterious Content
 
     name_finer75 = fields.Char("Name",default="Material Finer than 75 Micron")
     finer75_visible = fields.Boolean("Finer 75 Visible",compute="_compute_visible")
-
-    temp_finer75_visible = fields.Float(string="Temperature of finer 75 visible")
-    humidity_finer75_visible = fields.Float(string="humidity of finer 75 visible")
 
     wt_sample_finer75 = fields.Float("Weight of Sample in gms")
     wt_dry_sample_finer75 = fields.Float("Weight of dry sample after retained in 75 microns")
@@ -313,14 +482,60 @@ class FineAggregate(models.Model):
 
 
 
+      # Specific Gravity
+
+    # specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
+    # specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
+
+    # specific_gravity_child_lines = fields.One2many('fine.specific.and.water.line','parent_id',string="Parameter")
+
+    # avg_staurated_a = fields.Float(string="Wt of Saturated surface dry  Aggregate in Air:- (A)", compute="_compute_avg_lines")
+    # avg_pycnometer_b = fields.Float(string="Wt of Pycnometer containing sample and Water:- (B)", compute="_compute_avg_lines")
+    # avg_pycnometer_c = fields.Float(string="Wt of Pycnometer containing Water:- (C)", compute="_compute_avg_lines")
+    # avg_oven_d = fields.Float(string="Wt of Oven Dried Aggregate :- ( D )", compute="_compute_avg_lines")
+
+    # @api.depends('specific_gravity_child_lines')
+    # def _compute_avg_lines(self):
+    #     for rec in self:
+    #         lines = rec.specific_gravity_child_lines
+    #         count = len(lines)
+    #         if count:
+    #             rec.avg_staurated_a = sum(line.wt_of_staurated_a for line in lines) / count
+    #             rec.avg_pycnometer_b = sum(line.wt_of_pycnometer_b for line in lines) / count
+    #             rec.avg_pycnometer_c = sum(line.wt_of_pycnometer_c for line in lines) / count
+    #             rec.avg_oven_d = sum(line.wt_of_oven_d for line in lines) / count
+    #         else:
+    #             rec.avg_staurated_a = rec.avg_pycnometer_b = rec.avg_pycnometer_c = rec.avg_oven_d = 0.0
+
+   
+
+    # specific_gravity = fields.Float(string="Avg Specific Gravity",compute="_compute_specific_gravity")
+
+    # @api.depends('avg_staurated_a', 'avg_pycnometer_b', 'avg_pycnometer_c', 'avg_oven_d')
+    # def _compute_specific_gravity(self):
+    #     for rec in self:
+    #         denominator = rec.avg_staurated_a - (rec.avg_pycnometer_b - rec.avg_pycnometer_c)
+    #         rec.specific_gravity = rec.avg_oven_d / denominator if denominator else 0.0
+
+
+    # water_absorption = fields.Float(string="Water Absorption % ",compute="_compute_water_absorption")
+
+    # @api.depends('avg_staurated_a', 'avg_oven_d')
+    # def _compute_water_absorption(self):
+    #     for rec in self:
+    #         if rec.avg_oven_d:
+    #             rec.water_absorption = ((rec.avg_staurated_a - rec.avg_oven_d) / rec.avg_oven_d) * 100
+    #         else:
+    #             rec.water_absorption = 0.0
+
+   
+
+  
 
 
 
 
     # Specific Gravety 
-    temp_specific_gravity_water_absorption = fields.Float(string="Temperature of temp specific gravity water absorption")
-    humidity_temp_specific_gravity_water_absorption = fields.Float(string="humidity of temp specific gravity water absorption")
-
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
@@ -861,10 +1076,7 @@ class FineAggregate(models.Model):
 
 # Compacted  Or Rodded Density
 
-    temp_density = fields.Float(string="Temperature of density")
-    humidity_density = fields.Float(string="humidity of density")
 
-    
     compacted_density_name = fields.Char("Name",default="Compacted Density ")
     compacted_density_visible = fields.Boolean("compacted density  Visible",compute="_compute_visible")
 
@@ -1161,12 +1373,18 @@ class FineAggregate(models.Model):
                     else:
                         record.voids_loose_density_nabl = 'fail'
 
+
+
+
+
+
+
+
+
+
+
+
     #  Soudness Test 
-
-
-    temp_soudness = fields.Float(string="Temperature of soudness")
-    humidity_soudness = fields.Float(string="humidity of soudness")
-
     soudness_name = fields.Char("Name",default="Soudness Test ")
     soudness_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
 
@@ -1637,6 +1855,106 @@ class SieveAnalysisLine(models.Model):
 
 
 
+# class SieveAnalysisLine(models.Model):
+#     _name = "mechanical.fine.agg.sieve.analysis.line"
+#     parent_id = fields.Many2one('mechanical.fine.aggregate', string="Parent Id")
+    
+#     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+#     sieve_size = fields.Char(string="IS Sieve Size")
+#     wt_retained = fields.Float(string="Wt. Retained in gms")
+#     percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained",digits=(12,1))
+#     cumulative_retained = fields.Float(string="Cum. Retained %", compute="_compute_cum_retained", store=True,digits=(12,1))
+#     passing_percent = fields.Float(string="Passing %",digits=(12,1))
+#     specific_limt = fields.Char(string="Specified Limits")
+
+
+
+#     @api.model
+#     def create(self, vals):
+#         # Set the serial_no based on the existing records for the same parent
+#         if vals.get('parent_id'):
+#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+#             if existing_records:
+#                 max_serial_no = max(existing_records.mapped('serial_no'))
+#                 vals['serial_no'] = max_serial_no + 1
+
+#         return super(SieveAnalysisLine, self).create(vals)
+
+#     def _reorder_serial_numbers(self):
+#         # Reorder the serial numbers based on the positions of the records in child_lines
+#         records = self.sorted('id')
+#         for index, record in enumerate(records):
+#             record.serial_no = index + 1
+
+#     def write(self, vals):
+#         # Handle row deletions and adjust serial numbers
+#         if 'parent_id' in vals or 'wt_retained' in vals:
+#             for record in self:
+#                 if record.parent_id and record.parent_id == vals.get('parent_id') and 'wt_retained' in vals:
+#                     record.percent_retained = vals['wt_retained'] / record.parent_id.total * 100 if record.parent_id.total else 0
+
+#             new_self = super(SieveAnalysisLine, self).write(vals)
+
+#             if 'wt_retained' in vals:
+#                 for record in self:
+#                     # record.parent_id._compute_total()
+#                     pass
+
+#             return new_self
+
+#         return super(SieveAnalysisLine, self).write(vals)
+
+#     def unlink(self):
+#         # Get the parent_id before the deletion
+#         parent_id = self[0].parent_id
+
+#         res = super(SieveAnalysisLine, self).unlink()
+
+#         if parent_id:
+#             parent_id.sieve_analysis_child_lines._reorder_serial_numbers()
+
+#         return res
+
+
+#     @api.depends('wt_retained', 'parent_id.wt_of_sample')
+#     def _compute_percent_retained(self):
+#         for record in self:
+#             try:
+#                 # import wdb;wdb.set_trace()
+#                 record.percent_retained = (record.wt_retained / record.parent_id.wt_of_sample) * 100 
+#             except ZeroDivisionError:
+#                  record.percent_retained = 0.0
+
+#     @api.depends('cumulative_retained')
+#     def _compute_cum_retained(self):
+#         self.cumulative_retained=0
+
+#     @api.depends('percent_retained', 'parent_id.sieve_analysis_child_lines.percent_retained')
+#     def _compute_cum_retained(self):
+#         for record in self:
+#             cumulative = 0.0
+#             found = False
+
+#             for line in sorted(record.parent_id.sieve_analysis_child_lines, key=lambda l: l.serial_no):
+#                 cumulative += line.percent_retained or 0.0
+#                 if line.id == record.id:
+#                     found = True
+#                     record.cumulative_retained = cumulative
+#                     break
+
+#             if not found:
+#                 record.cumulative_retained = 0.0
+
+        
+    
+
+
+#     def get_previous_record(self):
+#         for record in self:
+#             # import wdb; wdb.set_trace()
+#             sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
+#             # index = sorted_lines.index(record)
+#             # print("Working")
 
 
 class SpecificAndWaterLine(models.Model):
@@ -1649,6 +1967,27 @@ class SpecificAndWaterLine(models.Model):
     wt_of_pycnometer_c = fields.Float(string="Wt of Pycnometer containing Water:- (C)")
     wt_of_oven_d = fields.Float(string="Wt of Oven Dried Aggregate :- ( D )")
 
+    # specific_gravity = fields.Float(string="Specific Gravity", compute="_compute_values", store=True)
+    # water_absorption = fields.Float(string="Water Absorption (%)", compute="_compute_values", store=True)
+
+    # @api.depends('wt_of_staurated_a', 'wt_of_pycnometer_b', 'wt_of_pycnometer_c', 'wt_of_oven_d')
+    # def _compute_values(self):
+    #     for rec in self:
+    #         A = rec.wt_of_staurated_a
+    #         B = rec.wt_of_pycnometer_b
+    #         C = rec.wt_of_pycnometer_c
+    #         D = rec.wt_of_oven_d
+
+    #         if D and ((A - D) - (B - C)):
+    #             rec.specific_gravity = D / ((A - D) - (B - C))
+    #         else:
+    #             rec.specific_gravity = 0.0
+
+    #         if D:
+    #             rec.water_absorption = ((A - D) / D) * 100
+    #         else:
+    #             rec.water_absorption = 0.0
+   
 
     @api.model
     def create(self, vals):
@@ -2040,7 +2379,7 @@ class OuantitativelyExaminationLine(models.Model):
 
     @api.depends('original_sulphate', 'wt_sulhate')
     def _compute_loss_sulphae(self):
-        
+        """Compute % Loss Sodium Sulphate"""
         for rec in self:
             if not rec.original_sulphate or rec.wt_sulhate == 0:
                 rec.loss_sulphae = 0.0
@@ -2146,6 +2485,13 @@ class QuantitativelyExaminationLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
+
+
+
+
+
+
+            
 
 
 
