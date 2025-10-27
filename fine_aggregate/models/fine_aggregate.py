@@ -1399,7 +1399,7 @@ class FineAggregate(models.Model):
 
     wt_of_sample = fields.Float(string="Wt. Of Sample Taken For Analysis (gms) = ", digits=(8,3))
  
-    sieve_analysis_soundness_lines = fields.One2many('mechanical.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_soundness_lines())
+    sieve_analysis_soundness_lines = fields.One2many('mechanical.soudness.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_soundness_lines())
 
     total_percent_retained = fields.Float(
         string="Total % Retained",
@@ -1461,7 +1461,7 @@ class FineAggregate(models.Model):
                 if previous_line == 0:
                     cumulative_retained = line.percent_retained
                 else:
-                    previous_line_record = self.env['mechanical.sieve.analysis.line'].sudo().search([
+                    previous_line_record = self.env['mechanical.soudness.sieve.analysis.line'].sudo().search([
                         ("serial_no", "=", previous_line),
                         ("parent_id", "=", record.id)
                     ], limit=1)
@@ -1522,6 +1522,113 @@ class FineAggregate(models.Model):
             (0, 0, {'passing': '0.15mm', 'retained': 'Pan'}),
         ]
         return default_lines
+
+
+    total_grading_sulphate = fields.Float(string="Total Grading of Original Sample  (%)s.Sodium Sulphate", digits=(8,2),compute="_compute_total_grading_sulphate",store=True)
+
+    total_finalloss_sulphae= fields.Float(string="Total Final loss (%) Sulphate", digits=(8,2),compute="_compute_total_finalloss_sulphae",store=True)
+
+    total_final_loss_manesium= fields.Float(string="Total Final loss (%) Magnesium", digits=(8,2),compute="_compute_total_final_loss_manesium",store=True)
+
+    total_wt_fraction_sulhate= fields.Float(string="Total Weight of test Fraction  (retained) after test (gm) Sodium Sulphate", digits=(8,2),compute="_compute_total_wt_fraction_sulhate",store=True)
+
+    total_wt_fraction_manesium= fields.Float(string="Total Weight of test Fraction  (retained) after test  (gm) Magnesium ", digits=(8,2),compute="_compute_total_wt_fraction_manesium",store=True)
+
+    total_avg_sulphae= fields.Float(string="Total Weighted Average  (Corrected % loss) Sulphate", digits=(8,2),compute="_compute_total_avg_sulphae",store=True)
+
+    total_avg_manesium= fields.Float(string="Total Weighted Average  (Corrected % loss) Magnesium ", digits=(8,2),compute="_compute_total_avg_manesium",store=True)
+
+
+
+
+    @api.depends('quantitative_soundness_lines.grading_sulphate')
+    def _compute_total_grading_sulphate(self):
+        for record in self:
+            record.total_grading_sulphate = sum(record.quantitative_soundness_lines.mapped('grading_sulphate'))
+
+
+    @api.depends('quantitative_soundness_lines.finalloss_sulphae')
+    def _compute_total_finalloss_sulphae(self):
+        for record in self:
+            record.total_finalloss_sulphae = sum(record.quantitative_soundness_lines.mapped('finalloss_sulphae'))
+
+    @api.depends('quantitative_soundness_lines.final_loss_manesium')
+    def _compute_total_final_loss_manesium(self):
+        for record in self:
+            record.total_final_loss_manesium = sum(record.quantitative_soundness_lines.mapped('final_loss_manesium'))
+
+    @api.depends('quantitative_soundness_lines.wt_fraction_sulhate')
+    def _compute_total_wt_fraction_sulhate(self):
+        for record in self:
+            record.total_wt_fraction_sulhate = sum(record.quantitative_soundness_lines.mapped('wt_fraction_sulhate'))
+            
+    @api.depends('quantitative_soundness_lines.wt_fraction_manesium')
+    def _compute_total_wt_fraction_manesium(self):
+        for record in self:
+            record.total_wt_fraction_manesium = sum(record.quantitative_soundness_lines.mapped('wt_fraction_manesium'))
+
+    @api.depends('quantitative_soundness_lines.avg_sulphae')
+    def _compute_total_avg_sulphae(self):
+        for record in self:
+            record.total_avg_sulphae = sum(record.quantitative_soundness_lines.mapped('avg_sulphae'))
+
+
+
+    @api.depends('quantitative_soundness_lines.avg_manesium')
+    def _compute_total_avg_manesium(self):
+        for record in self:
+            record.total_avg_manesium = sum(record.quantitative_soundness_lines.mapped('avg_manesium'))
+
+
+    total_avg_sulphae_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_total_avg_sulphae_conformity", store=True)
+
+    @api.depends('total_avg_sulphae','eln_ref','grade')
+    def _compute_total_avg_sulphae_conformity(self):
+        
+        for record in self:
+            record.total_avg_sulphae_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.total_avg_sulphae - record.total_avg_sulphae*mu_value
+                    upper = record.total_avg_sulphae + record.total_avg_sulphae*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.total_avg_sulphae_conformity = 'pass'
+                        break
+                    else:
+                        record.total_avg_sulphae_conformity = 'fail'
+
+    total_avg_sulphae_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_total_avg_sulphae_nabl", store=True)
+
+    @api.depends('total_avg_sulphae','eln_ref','grade')
+    def _compute_total_avg_sulphae_nabl(self):
+        
+        for record in self:
+            record.total_avg_sulphae_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.total_avg_sulphae - record.total_avg_sulphae*mu_value
+                    upper = record.total_avg_sulphae + record.total_avg_sulphae*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.total_avg_sulphae_nabl = 'pass'
+                        break
+                    else:
+                        record.total_avg_sulphae_nabl = 'fail'
 
 
 
@@ -2236,7 +2343,7 @@ class SoudnessLine(models.Model):
 
 
 class SieveAnalysisSoudnesLine(models.Model):
-    _name = "mechanical.sieve.analysis.line"
+    _name = "mechanical.soudness.sieve.analysis.line"
     parent_id = fields.Many2one('mechanical.fine.aggregate', string="Parent Id")
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
@@ -2369,13 +2476,14 @@ class OuantitativelyExaminationLine(models.Model):
     @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
     def _compute_original_sulphate(self):
         for rec in self:
-            if rec.parent_id:
+            rec.original_sulphate = 0.0
+            if rec.parent_id and rec.serial_no:
                 line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
                     lambda l: l.serial_no == rec.serial_no
                 )
-                rec.original_sulphate = line.actual_wt if line else 0.0
-            else:
-                rec.original_sulphate = 0.0
+                # Take only the first matching line to avoid singleton error
+                if line:
+                    rec.original_sulphate = line[0].actual_wt or 0.0
 
     @api.depends('original_sulphate', 'wt_sulhate')
     def _compute_loss_sulphae(self):
@@ -2432,40 +2540,51 @@ class QuantitativelyExaminationLine(models.Model):
     @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
     def _compute_finalloss_sulphae(self):
         for rec in self:
-            # percent_retained from sieve_analysis_soundness_lines
-            sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)
-            percent_ret = sieve_line.percent_retained if sieve_line else 0.0
+            rec.finalloss_sulphae = 0.0
+            if not rec.parent_id or not rec.serial_no:
+                continue
 
-            # loss_sulphae from ouantitative_soundness_lines
-            ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)
-            loss_sulphae_val = ou_line.loss_sulphae if ou_line else 0.0
+            # 1️⃣ Get the matching sieve analysis line
+            sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
+                lambda l: l.serial_no == rec.serial_no
+            )
+            percent_ret = sieve_line[0].percent_retained if sieve_line else 0.0
 
+            # 2️⃣ Get the matching quantitative line
+            ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(
+                lambda l: l.serial_no == rec.serial_no
+            )
+            loss_sulphae_val = ou_line[0].loss_sulphae if ou_line else 0.0
+
+            # 3️⃣ Apply logic
             if 0 < percent_ret < 5:
-                rec.finalloss_sulphae = 0.0  # किंवा आधीची value
+                rec.finalloss_sulphae = 0.0  # किंवा आधीची value ठेवू शकता
             else:
                 rec.finalloss_sulphae = loss_sulphae_val
 
     @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
     def _compute_grading_sulphate(self):
         for rec in self:
-            if rec.parent_id:
+            rec.grading_sulphate = 0.0
+            if rec.parent_id and rec.serial_no:
                 line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
                     lambda l: l.serial_no == rec.serial_no
                 )
-                rec.grading_sulphate = line.percent_retained if line else 0.0
-            else:
-                rec.grading_sulphate = 0.0
+                if line:
+                    # Take the first matching record to avoid singleton error
+                    rec.grading_sulphate = line[0].percent_retained or 0.0
 
     @api.depends('serial_no', 'parent_id.ouantitative_soundness_lines')
     def _compute_wt_fraction_sulhate(self):
         for rec in self:
-            if rec.parent_id:
+            rec.wt_fraction_sulhate = 0.0
+            if rec.parent_id and rec.serial_no:
                 line = rec.parent_id.ouantitative_soundness_lines.filtered(
                     lambda l: l.serial_no == rec.serial_no
                 )
-                rec.wt_fraction_sulhate = line.wt_sulhate if line else 0.0
-            else:
-                rec.wt_fraction_sulhate = 0.0
+                if line:
+                    # Safely pick the first record to avoid singleton issue
+                    rec.wt_fraction_sulhate = line[0].wt_sulhate or 0.0
 
 
     @api.model
