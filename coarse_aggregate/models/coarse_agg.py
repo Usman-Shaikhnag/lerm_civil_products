@@ -2199,15 +2199,14 @@ class ImpactValueLine(models.Model):
 
     sample_no = fields.Integer(string="Sample", readonly=True, copy=False, default=1)
     total_wt_aggregate = fields.Float(string="Wt of Aggregate Passing I.S Sieve 12.5 mm but retained in I.S. Sieve 10 mm Gms (W1)")
-    wt_of_aggregate_retained = fields.Float(string="Wt of Aggregate Retained on  I.S Sieve 2.36  mm after the test Gms (W2)")
-    wt_of_aggregate_passing = fields.Float(string="Wt of Stone Pieces Passing I.S Sieve 2.36 mm after the test ( W3)", compute="_compute_wt_of_aggregate_retained")
+    wt_of_aggregate_retained = fields.Float(string="Wt of Aggregate Retained on  I.S Sieve 2.36  mm after the test Gms (W2)", compute="_compute_wt_of_aggregate_retained")
+    wt_of_aggregate_passing = fields.Float(string="Wt of Stone Pieces Passing I.S Sieve 2.36 mm after the test ( W3)")
     impact_value = fields.Float(string="Aggregate Impact value", compute="_compute_impact_value")
 
     @api.depends('total_wt_aggregate', 'wt_of_aggregate_retained')
     def _compute_wt_of_aggregate_retained(self):
         for rec in self:
-            rec.wt_of_aggregate_passing = rec.total_wt_aggregate - rec.wt_of_aggregate_retained
-
+            rec.wt_of_aggregate_retained = rec.total_wt_aggregate - rec.wt_of_aggregate_passing
 
 
     @api.depends('wt_of_aggregate_passing', 'total_wt_aggregate')
