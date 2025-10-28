@@ -1738,131 +1738,7 @@
 
 
 
-						    <tr  t-if="data.sieve_visible">
-								<td rowspan="7" style="text-align: center;">
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</td>
-
-								<td colspan ="2">
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).parameter_name"/>
-								</td>
-								<td rowspan="7" style="text-align: center;padding-top:90px;">
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).test_method"/>
-								</td>
-								<!-- <td style="text-align: center;">
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table" t-as="parameter">
-										
-											<span t-field="parameter.specification"/>
-										
-									</t>
-								</td>	 -->
-
-								<td rowspan="7" style="text-align: center;padding-top:90px;" >
-									<span>
-										<span t-field="data.temp_sieve_analysis"/>
-									</span>									
-								</td>	
-									<td rowspan="7" style="text-align: center;padding-top:90px;" >
-									<span>
-										<span t-field="data.humidity_sieve_analysis"/>
-									</span>									
-								</td>	
-
-								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).unit.name"/>
-									</span>
-								</td>
-								<td style="text-align: center;">
-									<span>
-										<!-- <span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/> -->--
-									</span>									
-								</td>
-
-								<td rowspan="2" style="text-align: center;padding-top:10px;">
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
-											<span t-field="parameter.permissable_limit"/>
-										<!-- </t> -->
-									</t>
-								</td>
-								
-									
-
-								<td style="text-align: center;" t-if="eln.conformity">
-									<!-- <span t-field="coarse_aggregate.avg_specific_gravity_conformity"/> -->
-								</td>
-								
-							</tr>
-
-							<tr  t-if="data.sieve_visible"  style="text-align: center;">
-
-
-
-							   <td colspan ="2" style="border: 1px solid black; padding: 6px;text-align: center;">
-										<span>IS Sieve Size (mm)</span>
-									</td>
-
-								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).unit.name"/>
-									</span>
-								</td> 
-
-								 <td style="border: 1px solid black; padding: 6px;text-align: center;">
-									<span> 
-									   --
-									</span>									
-								</td>
-
-								<!-- <td style="border: 1px solid black; padding: 6px;text-align: center;">
-									<span> 
-									   
-									</span>									
-								</td> -->
-
-								
-								
-							</tr>
-
-
-							<tr  t-if="data.sieve_visible" t-foreach="data.sieve_analysis_child_lines" t-as="r" style="text-align: center;">
-
-
-
-							   <td colspan ="2" style="border: 1px solid black; padding: 6px;text-align: center;" >
-										<span t-esc="r['sieve_size']"/>
-									</td>
-
-
-
-								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).unit.name"/>
-									</span>
-								</td>
-
-								<td style="border: 1px solid black; padding: 6px;text-align: center;">
-										<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-								<!-- <td style="text-align: center;">
-									<span>
-										<span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
-									</span>									
-								</td> -->
-
-								<td style="border: 1px solid black; padding: 6px;text-align: center;">
-										<span t-esc="r['specific_limits']"/>
-									</td>
-								
-									
-
-								<td style="text-align: center;" t-if="eln.conformity">
-									<!-- <span t-field="coarse_aggregate.avg_specific_gravity_conformity"/> -->
-								</td>
-								
-							</tr>
+						    
 
 
 							
@@ -2680,6 +2556,132 @@
 										<!-- </t> -->
 									</t>
 								</td>
+								
+									
+
+								<td style="text-align: center;" t-if="eln.conformity">
+									<!-- <span t-field="coarse_aggregate.avg_specific_gravity_conformity"/> -->
+								</td>
+								
+							</tr>
+
+							<tr  t-if="data.sieve_visible">
+								<td rowspan="12" style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td colspan ="2">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).parameter_name"/>
+								</td>
+								<td rowspan="12" style="text-align: center;padding-top:90px;">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).test_method"/>
+								</td>
+								<!-- <td style="text-align: center;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table" t-as="parameter">
+										
+											<span t-field="parameter.specification"/>
+										
+									</t>
+								</td>	 -->
+
+								<td rowspan="12" style="text-align: center;padding-top:90px;" >
+									<span>
+										<span t-field="data.temp_sieve_analysis"/>
+									</span>									
+								</td>	
+									<td rowspan="12" style="text-align: center;padding-top:90px;" >
+									<span>
+										<span t-field="data.humidity_sieve_analysis"/>
+									</span>									
+								</td>	
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).unit.name"/>
+									</span>
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<!-- <span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/> -->--
+									</span>									
+								</td>
+
+								<td rowspan="2" style="text-align: center;padding-top:10px;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+											<span t-field="parameter.permissable_limit"/>
+										<!-- </t> -->
+									</t>
+								</td>
+								
+									
+
+								<td style="text-align: center;" t-if="eln.conformity">
+									<!-- <span t-field="coarse_aggregate.avg_specific_gravity_conformity"/> -->
+								</td>
+								
+							</tr>
+
+							<tr  t-if="data.sieve_visible"  style="text-align: center;">
+
+
+
+							   <td colspan ="2" style="border: 1px solid black; padding: 6px;text-align: center;">
+										<span>IS Sieve Size (mm)</span>
+									</td>
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).unit.name"/>
+									</span>
+								</td> 
+
+								 <td style="border: 1px solid black; padding: 6px;text-align: center;">
+									<span> 
+									   --
+									</span>									
+								</td>
+
+								<!-- <td style="border: 1px solid black; padding: 6px;text-align: center;">
+									<span> 
+									   
+									</span>									
+								</td> -->
+
+								
+								
+							</tr>
+
+
+							<tr  t-if="data.sieve_visible" t-foreach="data.sieve_analysis_child_lines" t-as="r" style="text-align: center;">
+
+
+
+							   <td colspan ="2" style="border: 1px solid black; padding: 6px;text-align: center;" >
+										<span t-esc="r['sieve_size']"/>
+									</td>
+
+
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).unit.name"/>
+									</span>
+								</td>
+
+								<td style="border: 1px solid black; padding: 6px;text-align: center;">
+										<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								<!-- <td style="text-align: center;">
+									<span>
+										<span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+									</span>									
+								</td> -->
+
+								<td style="border: 1px solid black; padding: 6px;text-align: center;">
+										<span t-esc="r['specific_limits']"/>
+									</td>
 								
 									
 
