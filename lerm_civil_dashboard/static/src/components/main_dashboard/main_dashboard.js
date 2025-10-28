@@ -94,76 +94,6 @@ class MainDashboard extends Component {
     this.dashboard_state.technician_data = tech_data_result;
   }
 
-  renderTimeChart() {
-    // --- Time chart ---
-    if (this.chartInstance) this.chartInstance.destroy();
-    const ctx = this.chartRef.el.getContext("2d");
-    this.chartInstance = new Chart(ctx, {
-      type: this.timeChartType,
-      data: {
-        labels: this.dashboard_state.labels,
-        datasets: [
-          {
-            label: "Samples No",
-            data: this.dashboard_state.counts,
-            borderWidth: 2,
-            fill: true,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false, // 👈 allow custom height
-        plugins: { legend: { display: true } },
-      },
-    });
-  }
-
-  renderStateChart() {
-    // --- State chart ---
-    if (this.stateChartInstance) this.stateChartInstance.destroy();
-    const ctx2 = this.stateChartRef.el.getContext("2d");
-    // Add colors only if bar
-    const stateDataset = {
-      label: "Samples No",
-      data: this.dashboard_state.state_counts,
-      borderWidth: 2,
-      fill: true,
-    };
-    if (this.stateChartType === "bar") {
-      stateDataset.backgroundColor = [
-        "rgba(255, 99, 132, 0.2)",
-        "rgba(255, 159, 64, 0.2)",
-        "rgba(255, 205, 86, 0.2)",
-        "rgba(75, 192, 192, 0.2)",
-        "rgba(54, 162, 235, 0.2)",
-        "rgba(153, 102, 255, 0.2)",
-        "rgba(201, 203, 207, 0.2)",
-      ];
-      stateDataset.borderColor = [
-        "rgb(255, 99, 132)",
-        "rgb(255, 159, 64)",
-        "rgb(255, 205, 86)",
-        "rgb(75, 192, 192)",
-        "rgb(54, 162, 235)",
-        "rgb(153, 102, 255)",
-        "rgb(201, 203, 207)",
-      ];
-    }
-    this.stateChartInstance = new Chart(ctx2, {
-      type: this.stateChartType,
-      data: {
-        labels: this.dashboard_state.state_labels,
-        datasets: [stateDataset],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false, // 👈 allow custom height
-        plugins: { legend: { display: true } },
-      },
-    });
-  }
-
   _onDateInputChange(ev) {
     const field = ev.target.dataset.field; // 'start_date' or 'end_date'
     this.filter_state[field] = ev.target.value;
@@ -291,7 +221,13 @@ class MainDashboard extends Component {
 
       // Conditionally add the discipline filter if it's not 'ALL'
       ...(this.filter_state.activeDiscipline !== "ALL"
-        ? [["discipline_id.discipline", "=", this.filter_state.activeDiscipline]]
+        ? [
+            [
+              "discipline_id.discipline",
+              "=",
+              this.filter_state.activeDiscipline,
+            ],
+          ]
         : []),
     ];
 
@@ -313,6 +249,76 @@ class MainDashboard extends Component {
     };
 
     return this.action.doAction(action);
+  }
+
+  renderTimeChart() {
+    // --- Time chart ---
+    if (this.chartInstance) this.chartInstance.destroy();
+    const ctx = this.chartRef.el.getContext("2d");
+    this.chartInstance = new Chart(ctx, {
+      type: this.timeChartType,
+      data: {
+        labels: this.dashboard_state.labels,
+        datasets: [
+          {
+            label: "Samples No",
+            data: this.dashboard_state.counts,
+            borderWidth: 2,
+            fill: true,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false, // 👈 allow custom height
+        plugins: { legend: { display: true } },
+      },
+    });
+  }
+
+  renderStateChart() {
+    // --- State chart ---
+    if (this.stateChartInstance) this.stateChartInstance.destroy();
+    const ctx2 = this.stateChartRef.el.getContext("2d");
+    // Add colors only if bar
+    const stateDataset = {
+      label: "Samples No",
+      data: this.dashboard_state.state_counts,
+      borderWidth: 2,
+      fill: true,
+    };
+    if (this.stateChartType === "bar") {
+      stateDataset.backgroundColor = [
+        "rgba(255, 99, 132, 0.2)",
+        "rgba(255, 159, 64, 0.2)",
+        "rgba(255, 205, 86, 0.2)",
+        "rgba(75, 192, 192, 0.2)",
+        "rgba(54, 162, 235, 0.2)",
+        "rgba(153, 102, 255, 0.2)",
+        "rgba(201, 203, 207, 0.2)",
+      ];
+      stateDataset.borderColor = [
+        "rgb(255, 99, 132)",
+        "rgb(255, 159, 64)",
+        "rgb(255, 205, 86)",
+        "rgb(75, 192, 192)",
+        "rgb(54, 162, 235)",
+        "rgb(153, 102, 255)",
+        "rgb(201, 203, 207)",
+      ];
+    }
+    this.stateChartInstance = new Chart(ctx2, {
+      type: this.stateChartType,
+      data: {
+        labels: this.dashboard_state.state_labels,
+        datasets: [stateDataset],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false, // 👈 allow custom height
+        plugins: { legend: { display: true } },
+      },
+    });
   }
 }
 

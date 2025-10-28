@@ -3,6 +3,7 @@ from odoo import http
 from odoo.http import request
 from datetime import datetime
 from collections import defaultdict, Counter
+from operator import itemgetter # Required for sorting
 
 class LermCivilDashboard(http.Controller):
 
@@ -163,3 +164,91 @@ class LermCivilDashboard(http.Controller):
             })
             
         return data
+    
+    
+    @http.route(['/lerm/customer/overview/data'], type='json', auth='user', methods=["POST"])
+    def customer_overview_data(self, **kw):
+        """
+        Fetches sample counts grouped by customer, filtered by date, discipline, and search query.
+        Applies sorting and pagination based on user input.
+        Returns the paginated customer list and the total customer count.
+        """
+        start_date = kw.get('start_date')
+        end_date = kw.get('end_date')
+        discipline = kw.get('discipline')
+        search_query = kw.get('search_query', '').strip() 
+
+        # NEW: Pagination parameters with safe defaults
+        page_size = int(kw.get('page_size', 10))  
+        page_number = int(kw.get('page_number', 1))
+
+        Sample = request.env['lerm.srf.sample'].sudo()
+        domain = []
+
+        # 1. Date Filtering
+        if start_date and end_date:
+            try:
+                start_dt = datetime.strptime(start_date, '%Y-%m-%d')
+                end_dt = datetime.strptime(end_date, '%Y-%m-%d')
+                domain += [
+                    ('sample_received_date', '>=', start_dt),
+                    ('sample_received_date', '<=', end_dt),
+                ]
+            except Exception:
+                pass
+
+        # 2. Discipline Filtering
+        if discipline and discipline != "ALL":
+            domain.append(('discipline_id.discipline', '=', discipline))
+
+        # 3. Search Query Filtering (Customer Name)
+        if search_query:
+            domain.append(('customer_id.name', 'ilike', f'%{search_query}%'))
+
+
+        # 4. Find all distinct customers within the current domain
+        samples_in_period = Sample.search(domain)
+        
+        # Using a set to ensure unique customer records, including False (No Customer)
+        customers = set(samples_in_period.mapped('customer_id'))
+
+        data = []
+        for customer in customers:
+            customer_id = customer.id if customer else 0
+            customer_name = customer.name if customer else "No Customer"
+            
+            if customer:
+                customer_samples = samples_in_period.filtered(lambda s: s.customer_id.id == customer_id)
+            else:
+                customer_samples = samples_in_period.filtered(lambda s: not s.customer_id)
+                
+            if len(customer_samples) > 0:
+                data.append({
+                    'customer_id': customer_id, 
+                    'customer_name': customer_name, 
+                    'total_samples': len(customer_samples),
+                    'assignment_pending': len(customer_samples.filtered(lambda s: s.state == '1-allotment_pending')),
+                    'alloted': len(customer_samples.filtered(lambda s: s.state == '2-alloted')),
+                    'pending_verification': len(customer_samples.filtered(lambda s: s.state == '3-pending_verification')),
+                    'pending_approval': len(customer_samples.filtered(lambda s: s.state == '5-pending_approval')),
+                    'in_report': len(customer_samples.filtered(lambda s: s.state == '4-in_report')),
+                    'cancelled': len(customer_samples.filtered(lambda s: s.state == '6-cancelled')),
+                })
+        
+        # 5. Sort the complete data set (Descending by total_samples)
+        data.sort(key=itemgetter('total_samples'), reverse=True)
+
+        # 6. Apply Pagination
+        total_customers = len(data)
+        
+        # Calculate offset
+        offset = (page_number - 1) * page_size
+        
+        # Apply limit and offset to slice the data
+        paginated_data = data[offset : offset + page_size]
+        
+        return {
+            'customers': paginated_data,
+            'total_customers': total_customers
+        }
+
