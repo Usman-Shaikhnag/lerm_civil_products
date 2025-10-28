@@ -17,7 +17,7 @@ This module contains all the common features of Sales Management and eCommerce.
                'reports/mix_design_ds_report.xml'
 
     ],
-        'assets': {
+    'assets': {
         'web.assets_backend': [
             'concrete_mix_design/static/src/css/custom_style.css',
         ],
