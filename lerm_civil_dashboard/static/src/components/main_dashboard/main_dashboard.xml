@@ -1,23 +1,23 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <templates>
-    <t t-name="lerm_civil_dashboard.MainDashboard" owl="1"> 
-        <div class="scrollable-dashboard p-4">
-            <!-- KPI Boxes -->
-            <div class="row g-3 mb-4">
-                <div class="col-12">
-                    <div class="d-flex flex-wrap justify-content-center gap-3">
+    <t t-name="lerm_civil_dashboard.MainDashboard" owl="1">
+        <div class="scrollable-dashboard container-fluid py-4 bg-light">
+            
+            <!-- KPI Section -->
+            <div class="row g-3 mb-5 justify-content-center">
+                <div class="col-12 text-center">
+                    <div class="d-flex flex-wrap justify-content-center gap-4">
                         <!-- Total Samples -->
-                        <div class="kpi-box p-3 border rounded-3 shadow-sm text-center"
-                            style="min-width: 150px; cursor: default;">
-                            <div class="fw-bold text-muted">Total Samples</div>
+                        <div class="kpi-box p-4 rounded-4 shadow bg-white hover-scale" style="min-width: 180px;">
+                            <div class="fw-bold text-dark">Total Samples</div>
                             <div class="fw-bold text-primary fs-4" t-esc="this.dashboard_state.projects_count"/>
                         </div>
 
-                        <!-- States (with 0 if no records) -->
+                        <!-- Dynamic States -->
                         <t t-foreach="this.dashboard_state.state_data" t-as="item" t-key="item.state">
-                            <div class="kpi-box p-3 border rounded-3 shadow-sm text-center"
-                                style="min-width: 150px; cursor: pointer;"
-                                t-on-click="() => this.onKpiClick(item.state)">
+                            <div class="kpi-box p-4 rounded-4 shadow-sm bg-white text-center hover-glow hover-scale"
+                                 style="min-width: 180px; cursor: pointer;"
+                                 t-on-click="() => this.onKpiClick(item.state)">
                                 <div class="fw-bold text-dark" t-esc="item.state_label"/>
                                 <div class="fw-bold text-success fs-4" t-esc="item.count"/>
                             </div>
@@ -26,63 +26,134 @@
                 </div>
             </div>
 
-
-
-            <!-- Date Filters -->
-            <div class="row mb-4 justify-content-center">
-                <div class="col-md-8 text-center">
-                    <div class="btn-group mb-3">
-                        <button class="btn btn-outline-primary" t-on-click="_onDateFilter" data-days="30">Last 30 Days</button>
-                        <button class="btn btn-outline-primary" t-on-click="_onDateFilter" data-days="180">Last 180 Days</button>
-                        <button class="btn btn-outline-primary" t-on-click="_onDateFilter" data-days="365">Last 365 Days</button>
-                    </div>
-                    <div>
-                        <input type="date" class="form-control d-inline-block w-auto me-2" t-ref="start_date"/>
-                        <input type="date" class="form-control d-inline-block w-auto me-2" t-ref="end_date"/>
-                        <button class="btn btn-success" t-on-click="_onCustomDate">Apply</button>
+            <!-- Date Filter -->
+            <div class="row mb-5 align-items-start g-4">
+                <!-- Date Filter (Left Column) -->
+                <!-- Discipline Filter (Right Column) -->
+                <div class="col-lg-6 col-md-12 text-lg-end">
+                    <h5 class="mb-3 text-primary"><i class="fa fa-layer-group me-2 text-muted"/>Filter by Discipline</h5>
+                    
+                    <div class="btn-group shadow-sm flex-wrap justify-content-lg-end justify-content-start">
+                        <!-- Discipline Filter Buttons -->
+                        <button class="btn" t-on-click="_onDisciplineFilter" data-discipline="ALL"
+                                t-att-class="{'btn-primary': this.filter_state.activeDiscipline === 'ALL', 'btn-outline-primary': this.filter_state.activeDiscipline !== 'ALL'}">ALL</button>
+                        <button class="btn" t-on-click="_onDisciplineFilter" data-discipline="MECHANICAL"
+                                t-att-class="{'btn-primary': this.filter_state.activeDiscipline === 'MECHANICAL', 'btn-outline-primary': this.filter_state.activeDiscipline !== 'MECHANICAL'}">MECHANICAL</button>
+                        <button class="btn" t-on-click="_onDisciplineFilter" data-discipline="NDT"
+                                t-att-class="{'btn-primary': this.filter_state.activeDiscipline === 'NDT', 'btn-outline-primary': this.filter_state.activeDiscipline !== 'NDT'}">NON-DESTRUCTIVE TESTING</button>
+                        <button class="btn" t-on-click="_onDisciplineFilter" data-discipline="CHEMICAL"
+                                t-att-class="{'btn-primary': this.filter_state.activeDiscipline === 'CHEMICAL', 'btn-outline-primary': this.filter_state.activeDiscipline !== 'CHEMICAL'}">CHEMICAL</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Charts Side by Side -->
-            <div class="row g-4">
-                <!-- Samples Over Time -->
-                <div class="col-md-6">
-                    <div class="card shadow-sm border-0 rounded-3 h-100">
-                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0">Samples Over Time</h6>
-                            <div>
-                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchTimeChart('line')">Line</button>
-                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchTimeChart('bar')">Bar</button>
-                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchTimeChart('pie')">Pie</button>
+                <div class="col-lg-6 col-md-12">
+                    <h5 class="mb-3 text-primary"><i class="fa fa-calendar-alt me-2 text-muted"/>Filter by Date Range</h5>
+                    
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <div class="btn-group" role="group">
+                            <!-- Date Filter Buttons -->
+                            <button t-attf-class="btn btn-sm #{filter_state.activeDays == 30 ? 'btn-primary' : 'btn-outline-primary'}"
+                                    t-on-click="_onDateFilter" data-days="30">30 Days</button>
+                            <button t-attf-class="btn btn-sm #{filter_state.activeDays == 180 ? 'btn-primary' : 'btn-outline-primary'}"
+                                    t-on-click="_onDateFilter" data-days="180">180 Days</button>
+                            <button t-attf-class="btn btn-sm #{filter_state.activeDays == 365 ? 'btn-primary' : 'btn-outline-primary'}"
+                                    t-on-click="_onDateFilter" data-days="365">365 Days</button>
+                        </div>
+                        
+                        <!-- Custom Date Inputs -->
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="date" t-att-value="filter_state.start_date" t-on-change="_onDateInputChange"
+                                    data-field="start_date" class="form-control form-control-sm" style="width: 130px;"/>
+                            <input type="date" t-att-value="filter_state.end_date" t-on-change="_onDateInputChange"
+                                    data-field="end_date" class="form-control form-control-sm" style="width: 130px;"/>
+                            <button class="btn btn-secondary btn-sm" t-on-click="_onCustomDate">Apply</button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <!-- Technician Samples Overview -->
+            <h2 class="mb-4 mt-5 border-top pt-4 text-primary text-center">Technician Sample Overview</h2>
+
+            <div t-if="dashboard_state.technician_data.length" class="row">
+                <t t-foreach="dashboard_state.technician_data" t-as="tech" t-key="tech.technician_id">
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card shadow hover-lift h-100" 
+                             style="border-radius: 1rem; cursor: pointer;" 
+                             t-on-click="() => this._onTechnicianCardClick(tech.technician_id)">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary border-bottom pb-2">
+                                    <i class="fa fa-user me-2"/> <t t-esc="tech.technician_name"/>
+                                </h5>
+                                <div class="mb-3">
+                                    <span class="text-muted small">Total Samples Assigned</span>
+                                    <h3 class="fw-bold text-dark mt-1"><t t-esc="tech.total_samples"/></h3>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center small">
+                                        <span><i class="fa fa-play-circle text-primary me-2"/>Alloted</span>
+                                        <span class="badge text-bg-primary"><t t-esc="tech.alloted"/></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center small">
+                                        <span><i class="fa fa-hourglass-half text-warning me-2"/>Pending Verification</span>
+                                        <span class="badge text-bg-warning"><t t-esc="tech.pending_verification"/></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center small">
+                                        <span><i class="fa fa-clock-o text-danger me-2"/>Pending Approval</span>
+                                        <span class="badge text-bg-danger"><t t-esc="tech.pending_approval"/></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center small">
+                                        <span><i class="fa fa-file-text-o text-success me-2"/>In Report</span>
+                                        <span class="badge text-bg-success"><t t-esc="tech.in_report"/></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center small text-muted">
+                                        <span><i class="fa fa-times-circle me-2"/>Cancelled</span>
+                                        <span class="badge text-bg-light border"><t t-esc="tech.cancelled"/></span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
-                        <!-- <div class="card-body"> -->
+                    </div>
+                </t>
+            </div>
+            <div t-else="" class="alert alert-info mt-3 text-center" role="alert">
+                <i class="fa fa-info-circle me-2"/> No technician data found.
+            </div>
+
+            <!-- Charts -->
+            <div class="row g-4 mt-5">
+                <div class="col-md-6">
+                    <div class="card shadow-sm rounded-3 h-100 border-0">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Samples Over Time</h6>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchTimeChart('line')">Line</button>
+                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchTimeChart('bar')">Bar</button>
+                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchTimeChart('pie')">Pie</button>
+                            </div>
+                        </div>
                         <div class="card-body text-center" style="height:350px;">
                             <canvas t-ref="chartCanvas"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <!-- Samples by State -->
                 <div class="col-md-6">
-                    <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card shadow-sm rounded-3 h-100 border-0">
                         <div class="card-header bg-light d-flex justify-content-between align-items-center">
                             <h6 class="mb-0">Samples by State</h6>
-                            <div>
-                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchStateChart('line')">Line</button>
-                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchStateChart('bar')">Bar</button>
-                                <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.switchStateChart('pie')">Pie</button>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchStateChart('line')">Line</button>
+                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchStateChart('bar')">Bar</button>
+                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchStateChart('pie')">Pie</button>
                             </div>
                         </div>
                         <div class="card-body text-center" style="height:350px;">
                             <canvas t-ref="stateChartCanvas"></canvas>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
     </t>
 </templates>
