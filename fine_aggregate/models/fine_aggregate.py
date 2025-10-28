@@ -66,6 +66,12 @@ class FineAggregate(models.Model):
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
+
+
+    temp_sieve_analysis = fields.Char(string="Temp.°C")
+    humidity_sieve_analysis= fields.Char(string="Humidity %")
+
+
     sieve_analysis_child_lines = fields.One2many('mechanical.fine.agg.sieve.analysis.ssl.line','parent_id',string="Parameter",
                                                   default=lambda self: self._default_sieve_analysis_child_lines())
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
@@ -240,181 +246,24 @@ class FineAggregate(models.Model):
 
 
 
-#     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
-#     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
-
-#     sieve_analysis_child_lines = fields.One2many('mechanical.fine.agg.sieve.analysis.line','parent_id',string="Parameter",
-#                                                   default=lambda self: self._default_sieve_analysis_child_lines())
-#     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
-#     # cumulative = fields.Float(string="Cumulative",compute="_compute_cumulative")
-#     wt_of_sample = fields.Float(string="Weight of Sample, gms")
-#     zone_type = fields.Selection(
-#     selection=[
-#         ('zone_i', 'Zone I'),
-#         ('zone_ii', 'Zone II'),
-#         ('zone_iii', 'Zone III'),
-#         ('zone_iv', 'Zone IV'),
-#     ],
-#     string="Zone",
-#     required=False  
-# )
-
-
-#     fineness_modulus = fields.Float(string="Fineness Modulus", compute="_compute_fineness_modulus")
-#     grading = fields.Char(string="Grading",compute="_compute_zone_display_name")
-
-#     @api.depends('zone_type')
-#     def _compute_zone_display_name(self):
-#         for record in self:
-#             if record.zone_type:
-#                 record.grading = dict(self._fields['zone_type'].selection).get(record.zone_type, '')
-#             else:
-#                 record.grading = ''
 
 
 
-#     # @api.depends('sieve_analysis_child_lines.cumulative_retained')
-#     # def _compute_fineness_modulus(self):
-#     #     for record in self:
-#     #         fineness_modulus = sum(line.cumulative_retained for line in record.sieve_analysis_child_lines)/100
-#     #         record.fineness_modulus = fineness_modulus
-
-#     @api.depends('sieve_analysis_child_lines.cumulative_retained')
-#     def _compute_fineness_modulus(self):
-#         for record in self:
-#             # Exclude the last line (assumes order is important)
-#             lines = record.sieve_analysis_child_lines[:-1]  # all except last
-#             fineness_modulus = sum(line.cumulative_retained for line in lines) / 100
-#             record.fineness_modulus = fineness_modulus
-
-
-
-#     @api.model
-#     def _default_sieve_analysis_child_lines(self):
-#         default_lines = [
-#             (0, 0, {'sieve_size': '10 mm'}),
-#             (0, 0, {'sieve_size': '4.75 mm'}),
-#             (0, 0, {'sieve_size': '2.36 mm'}),
-#             (0, 0, {'sieve_size': '1.18 mm'}),
-#             (0, 0, {'sieve_size': '600 micron'}),
-#             (0, 0, {'sieve_size': '300 micron'}),
-#             (0, 0, {'sieve_size': '150 micron'}),
-#               (0, 0, {'sieve_size': 'Pan'})
-            
-#         ]
-#         return default_lines
-
-#     @api.onchange('zone_type')
-#     def _onchange_zone_type(self):
-#         zone_limits = {
-#             'zone_i': {
-#                 '10 mm': '100',
-#                 '4.75 mm': '90 - 100',
-#                 '2.36 mm': '60 - 95',
-#                 '1.18 mm': '30 - 70',
-#                 '600 micron': '15 - 34',
-#                 '300 micron': '5 - 20',
-#                 '150 micron': '0 - 10',
-#                 'Pan': '-',
-#             },
-#             'zone_ii': {
-#                 '10 mm': '100',
-#                 '4.75 mm': '90 - 100',
-#                 '2.36 mm': '75 - 100',
-#                 '1.18 mm': '55 - 90',
-#                 '600 micron': '35 - 59',
-#                 '300 micron': '8 - 30',
-#                 '150 micron': '0 - 10',
-#                 'Pan': '-',
-#             },
-#             'zone_iii': {
-#                 '10 mm': '100',
-#                 '4.75 mm': '90 - 100',
-#                 '2.36 mm': '85 - 100',
-#                 '1.18 mm': '75 - 100',
-#                 '600 micron': '60 - 79',
-#                 '300 micron': '12 - 40',
-#                 '150 micron': '0 - 10',
-#                 'Pan': '-',
-#             },
-#             'zone_iv': {
-#                 '10 mm': '100',
-#                 '4.75 mm': '95 - 100',
-#                 '2.36 mm': '95 - 100',
-#                 '1.18 mm': '90 - 100',
-#                 '600 micron': '80 - 100',
-#                 '300 micron': '15 - 50',
-#                 '150 micron': '0 - 5',
-#                 'Pan': '-',
-#             }
-#         }
-
-#         limits = zone_limits.get(self.zone_type)
-#         if limits:
-#             for line in self.sieve_analysis_child_lines:
-#                 line.specific_limt = limits.get(line.sieve_size, '')
-
-
-
-
-#     @api.onchange('sieve_analysis_child_lines')
-#     def _onchange_sieve_analysis_child_lines(self):
-#         for rec in self:
-#             pan_line = None
-#             total_retained = 0.0
-#             target_sieves = ['10 mm','4.75 mm','2.36 mm','1.18 mm', '600 micron', '300 micron', '150 micron']
-
-#             for line in rec.sieve_analysis_child_lines:
-#                 if line.sieve_size and line.sieve_size.lower() == 'pan':
-#                     pan_line = line
-#                 elif line.sieve_size in target_sieves:
-#                     total_retained += line.wt_retained or 0.0
-
-#             if pan_line:
-#                 pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
-
-
-#     # corrected(added)
-#     def calculate_sieve(self): 
-#         for record in self:
-#             previous_cumulative = 0  
-#             for line in record.sieve_analysis_child_lines:
-#                 print("Rows", str(line.percent_retained))
-#                 previous_line = line.serial_no - 1
-#                 if previous_line == 0:
-#                     cumulative_retained = line.percent_retained
-#                 else:
-#                     previous_line_record = self.env['mechanical.fine.agg.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
-                    
-#                     if previous_line_record:
-#                         previous_cumulative = previous_line_record.cumulative_retained
-#                     cumulative_retained = previous_cumulative + line.percent_retained
-
-#                 passing_percent = 100 - cumulative_retained
-
-#                 line.write({
-#                     'cumulative_retained': round(cumulative_retained, 2),
-#                     'passing_percent': round(passing_percent, 2),
-#                 })
-                
-#                 print("Updated Cumulative Retained:", cumulative_retained)
-#                 print("Updated Passing Percent:", passing_percent)
-
-#                 previous_cumulative = cumulative_retained
-            
-    
-    
-#     @api.depends('sieve_analysis_child_lines.wt_retained')
-#     def _compute_total_sieve(self):
-#         for record in self:
-#             print("recordd",record)
-#             record.total_sieve_analysis = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
-
-
-# Deleterious Content
+# Deleterious Content Material Finer than 75 Micron
 
     name_finer75 = fields.Char("Name",default="Material Finer than 75 Micron")
     finer75_visible = fields.Boolean("Finer 75 Visible",compute="_compute_visible")
+
+
+
+      
+    temp_finer75_visible = fields.Char(string="Temp.°C")
+    humidity_finer75_visible = fields.Char(string="Humidity %")
+
+
+
+    water_absorption_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
+    water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
 
     wt_sample_finer75 = fields.Float("Weight of Sample in gms")
     wt_dry_sample_finer75 = fields.Float("Weight of dry sample after retained in 75 microns")
@@ -480,55 +329,8 @@ class FineAggregate(models.Model):
 
 
 
-      # Specific Gravity
-
-    # specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
-    # specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
-
-    # specific_gravity_child_lines = fields.One2many('fine.specific.and.water.line','parent_id',string="Parameter")
-
-    # avg_staurated_a = fields.Float(string="Wt of Saturated surface dry  Aggregate in Air:- (A)", compute="_compute_avg_lines")
-    # avg_pycnometer_b = fields.Float(string="Wt of Pycnometer containing sample and Water:- (B)", compute="_compute_avg_lines")
-    # avg_pycnometer_c = fields.Float(string="Wt of Pycnometer containing Water:- (C)", compute="_compute_avg_lines")
-    # avg_oven_d = fields.Float(string="Wt of Oven Dried Aggregate :- ( D )", compute="_compute_avg_lines")
-
-    # @api.depends('specific_gravity_child_lines')
-    # def _compute_avg_lines(self):
-    #     for rec in self:
-    #         lines = rec.specific_gravity_child_lines
-    #         count = len(lines)
-    #         if count:
-    #             rec.avg_staurated_a = sum(line.wt_of_staurated_a for line in lines) / count
-    #             rec.avg_pycnometer_b = sum(line.wt_of_pycnometer_b for line in lines) / count
-    #             rec.avg_pycnometer_c = sum(line.wt_of_pycnometer_c for line in lines) / count
-    #             rec.avg_oven_d = sum(line.wt_of_oven_d for line in lines) / count
-    #         else:
-    #             rec.avg_staurated_a = rec.avg_pycnometer_b = rec.avg_pycnometer_c = rec.avg_oven_d = 0.0
-
-   
-
-    # specific_gravity = fields.Float(string="Avg Specific Gravity",compute="_compute_specific_gravity")
-
-    # @api.depends('avg_staurated_a', 'avg_pycnometer_b', 'avg_pycnometer_c', 'avg_oven_d')
-    # def _compute_specific_gravity(self):
-    #     for rec in self:
-    #         denominator = rec.avg_staurated_a - (rec.avg_pycnometer_b - rec.avg_pycnometer_c)
-    #         rec.specific_gravity = rec.avg_oven_d / denominator if denominator else 0.0
 
 
-    # water_absorption = fields.Float(string="Water Absorption % ",compute="_compute_water_absorption")
-
-    # @api.depends('avg_staurated_a', 'avg_oven_d')
-    # def _compute_water_absorption(self):
-    #     for rec in self:
-    #         if rec.avg_oven_d:
-    #             rec.water_absorption = ((rec.avg_staurated_a - rec.avg_oven_d) / rec.avg_oven_d) * 100
-    #         else:
-    #             rec.water_absorption = 0.0
-
-   
-
-  
 
 
 
@@ -539,6 +341,11 @@ class FineAggregate(models.Model):
 
     water_absorption_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
+
+
+    temp_specific_gravity_water_absorption = fields.Char(string="Temp.°C")
+    humidity_temp_specific_gravity_water_absorption= fields.Char(string="Humidity %")
+
 
 
 
@@ -1079,6 +886,12 @@ class FineAggregate(models.Model):
     compacted_density_visible = fields.Boolean("compacted density  Visible",compute="_compute_visible")
 
 
+    
+    temp_density = fields.Char(string="Temp.°C")
+    humidity_density= fields.Char(string="Humidity %")
+
+
+
     capacity_of_cylinderr = fields.Float(string="Capacity of Cylinder Use for Test in litre (V)")
     wtt_of_empty_cylinder_compacted = fields.Float(string="Weight of empty cylinder (kg)")
     wtt_cylinder_aggregate_compacted = fields.Float(string="Weight of cylinder + aggregate (kg)")
@@ -1155,6 +968,9 @@ class FineAggregate(models.Model):
     # Loose Density
     loose_density_name = fields.Char("Name",default="Loose Density ")
     loose_density_visible = fields.Boolean("Loose density  Visible",compute="_compute_visible")
+
+    temp_density = fields.Char(string="Temp.°C")
+    humidity_density= fields.Char(string="Humidity %")
 
 
     capacity_of_cylinder_loose = fields.Float(string="Capacity of Cylinder Use for Test in litre (V)")
@@ -1239,6 +1055,11 @@ class FineAggregate(models.Model):
 
     voids_compacted_density_name = fields.Char("Name",default="Void In Compacted Density ")
     voids_compacted_density_visible = fields.Boolean("Void In Compacted Visible",compute="_compute_visible")
+
+
+    temp_density = fields.Char(string="Temp.°C")
+    humidity_density= fields.Char(string="Humidity %")
+
 
     voids_loose_density_name = fields.Char("Name",default="Void In Loose Density ")
     voids_loose_density_visible = fields.Boolean("Void Loose density Visible",compute="_compute_visible")
@@ -1371,6 +1192,17 @@ class FineAggregate(models.Model):
                     else:
                         record.voids_loose_density_nabl = 'fail'
 
+
+
+
+
+
+
+
+
+
+
+
     #  Soudness Test 
     soudness_name = fields.Char("Name",default="Soudness Test ")
     soudness_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
@@ -1378,6 +1210,8 @@ class FineAggregate(models.Model):
     soudness_child_lines = fields.One2many('fine.soudness.line','parent_id',string="Parameter")
 
     
+    temp_soudness = fields.Char(string="Temp.°C")
+    humidity_soudness = fields.Char(string="Humidity %")
 
 
 
@@ -1386,7 +1220,7 @@ class FineAggregate(models.Model):
 
     wt_of_sample = fields.Float(string="Wt. Of Sample Taken For Analysis (gms) = ", digits=(8,3))
  
-    sieve_analysis_soundness_lines = fields.One2many('mechanical.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_soundness_lines())
+    sieve_analysis_soundness_lines = fields.One2many('mechanical.soudness.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_soundness_lines())
 
     total_percent_retained = fields.Float(
         string="Total % Retained",
@@ -1448,7 +1282,7 @@ class FineAggregate(models.Model):
                 if previous_line == 0:
                     cumulative_retained = line.percent_retained
                 else:
-                    previous_line_record = self.env['mechanical.sieve.analysis.line'].sudo().search([
+                    previous_line_record = self.env['mechanical.soudness.sieve.analysis.line'].sudo().search([
                         ("serial_no", "=", previous_line),
                         ("parent_id", "=", record.id)
                     ], limit=1)
@@ -1509,6 +1343,113 @@ class FineAggregate(models.Model):
             (0, 0, {'passing': '0.15mm', 'retained': 'Pan'}),
         ]
         return default_lines
+
+
+    total_grading_sulphate = fields.Float(string="Total Grading of Original Sample  (%)s.Sodium Sulphate", digits=(8,2),compute="_compute_total_grading_sulphate",store=True)
+
+    total_finalloss_sulphae= fields.Float(string="Total Final loss (%) Sulphate", digits=(8,2),compute="_compute_total_finalloss_sulphae",store=True)
+
+    total_final_loss_manesium= fields.Float(string="Total Final loss (%) Magnesium", digits=(8,2),compute="_compute_total_final_loss_manesium",store=True)
+
+    total_wt_fraction_sulhate= fields.Float(string="Total Weight of test Fraction  (retained) after test (gm) Sodium Sulphate", digits=(8,2),compute="_compute_total_wt_fraction_sulhate",store=True)
+
+    total_wt_fraction_manesium= fields.Float(string="Total Weight of test Fraction  (retained) after test  (gm) Magnesium ", digits=(8,2),compute="_compute_total_wt_fraction_manesium",store=True)
+
+    total_avg_sulphae= fields.Float(string="Total Weighted Average  (Corrected % loss) Sulphate", digits=(8,2),compute="_compute_total_avg_sulphae",store=True)
+
+    total_avg_manesium= fields.Float(string="Total Weighted Average  (Corrected % loss) Magnesium ", digits=(8,2),compute="_compute_total_avg_manesium",store=True)
+
+
+
+
+    @api.depends('quantitative_soundness_lines.grading_sulphate')
+    def _compute_total_grading_sulphate(self):
+        for record in self:
+            record.total_grading_sulphate = sum(record.quantitative_soundness_lines.mapped('grading_sulphate'))
+
+
+    @api.depends('quantitative_soundness_lines.finalloss_sulphae')
+    def _compute_total_finalloss_sulphae(self):
+        for record in self:
+            record.total_finalloss_sulphae = sum(record.quantitative_soundness_lines.mapped('finalloss_sulphae'))
+
+    @api.depends('quantitative_soundness_lines.final_loss_manesium')
+    def _compute_total_final_loss_manesium(self):
+        for record in self:
+            record.total_final_loss_manesium = sum(record.quantitative_soundness_lines.mapped('final_loss_manesium'))
+
+    @api.depends('quantitative_soundness_lines.wt_fraction_sulhate')
+    def _compute_total_wt_fraction_sulhate(self):
+        for record in self:
+            record.total_wt_fraction_sulhate = sum(record.quantitative_soundness_lines.mapped('wt_fraction_sulhate'))
+            
+    @api.depends('quantitative_soundness_lines.wt_fraction_manesium')
+    def _compute_total_wt_fraction_manesium(self):
+        for record in self:
+            record.total_wt_fraction_manesium = sum(record.quantitative_soundness_lines.mapped('wt_fraction_manesium'))
+
+    @api.depends('quantitative_soundness_lines.avg_sulphae')
+    def _compute_total_avg_sulphae(self):
+        for record in self:
+            record.total_avg_sulphae = sum(record.quantitative_soundness_lines.mapped('avg_sulphae'))
+
+
+
+    @api.depends('quantitative_soundness_lines.avg_manesium')
+    def _compute_total_avg_manesium(self):
+        for record in self:
+            record.total_avg_manesium = sum(record.quantitative_soundness_lines.mapped('avg_manesium'))
+
+
+    total_avg_sulphae_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_total_avg_sulphae_conformity", store=True)
+
+    @api.depends('total_avg_sulphae','eln_ref','grade')
+    def _compute_total_avg_sulphae_conformity(self):
+        
+        for record in self:
+            record.total_avg_sulphae_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.total_avg_sulphae - record.total_avg_sulphae*mu_value
+                    upper = record.total_avg_sulphae + record.total_avg_sulphae*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.total_avg_sulphae_conformity = 'pass'
+                        break
+                    else:
+                        record.total_avg_sulphae_conformity = 'fail'
+
+    total_avg_sulphae_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_total_avg_sulphae_nabl", store=True)
+
+    @api.depends('total_avg_sulphae','eln_ref','grade')
+    def _compute_total_avg_sulphae_nabl(self):
+        
+        for record in self:
+            record.total_avg_sulphae_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.total_avg_sulphae - record.total_avg_sulphae*mu_value
+                    upper = record.total_avg_sulphae + record.total_avg_sulphae*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.total_avg_sulphae_nabl = 'pass'
+                        break
+                    else:
+                        record.total_avg_sulphae_nabl = 'fail'
 
 
 
@@ -2223,7 +2164,7 @@ class SoudnessLine(models.Model):
 
 
 class SieveAnalysisSoudnesLine(models.Model):
-    _name = "mechanical.sieve.analysis.line"
+    _name = "mechanical.soudness.sieve.analysis.line"
     parent_id = fields.Many2one('mechanical.fine.aggregate', string="Parent Id")
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
@@ -2356,13 +2297,14 @@ class OuantitativelyExaminationLine(models.Model):
     @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
     def _compute_original_sulphate(self):
         for rec in self:
-            if rec.parent_id:
+            rec.original_sulphate = 0.0
+            if rec.parent_id and rec.serial_no:
                 line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
                     lambda l: l.serial_no == rec.serial_no
                 )
-                rec.original_sulphate = line.actual_wt if line else 0.0
-            else:
-                rec.original_sulphate = 0.0
+                # Take only the first matching line to avoid singleton error
+                if line:
+                    rec.original_sulphate = line[0].actual_wt or 0.0
 
     @api.depends('original_sulphate', 'wt_sulhate')
     def _compute_loss_sulphae(self):
@@ -2419,40 +2361,51 @@ class QuantitativelyExaminationLine(models.Model):
     @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
     def _compute_finalloss_sulphae(self):
         for rec in self:
-            # percent_retained from sieve_analysis_soundness_lines
-            sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)
-            percent_ret = sieve_line.percent_retained if sieve_line else 0.0
+            rec.finalloss_sulphae = 0.0
+            if not rec.parent_id or not rec.serial_no:
+                continue
 
-            # loss_sulphae from ouantitative_soundness_lines
-            ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)
-            loss_sulphae_val = ou_line.loss_sulphae if ou_line else 0.0
+            # 1️⃣ Get the matching sieve analysis line
+            sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
+                lambda l: l.serial_no == rec.serial_no
+            )
+            percent_ret = sieve_line[0].percent_retained if sieve_line else 0.0
 
+            # 2️⃣ Get the matching quantitative line
+            ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(
+                lambda l: l.serial_no == rec.serial_no
+            )
+            loss_sulphae_val = ou_line[0].loss_sulphae if ou_line else 0.0
+
+            # 3️⃣ Apply logic
             if 0 < percent_ret < 5:
-                rec.finalloss_sulphae = 0.0  # किंवा आधीची value
+                rec.finalloss_sulphae = 0.0  # किंवा आधीची value ठेवू शकता
             else:
                 rec.finalloss_sulphae = loss_sulphae_val
 
     @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
     def _compute_grading_sulphate(self):
         for rec in self:
-            if rec.parent_id:
+            rec.grading_sulphate = 0.0
+            if rec.parent_id and rec.serial_no:
                 line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
                     lambda l: l.serial_no == rec.serial_no
                 )
-                rec.grading_sulphate = line.percent_retained if line else 0.0
-            else:
-                rec.grading_sulphate = 0.0
+                if line:
+                    # Take the first matching record to avoid singleton error
+                    rec.grading_sulphate = line[0].percent_retained or 0.0
 
     @api.depends('serial_no', 'parent_id.ouantitative_soundness_lines')
     def _compute_wt_fraction_sulhate(self):
         for rec in self:
-            if rec.parent_id:
+            rec.wt_fraction_sulhate = 0.0
+            if rec.parent_id and rec.serial_no:
                 line = rec.parent_id.ouantitative_soundness_lines.filtered(
                     lambda l: l.serial_no == rec.serial_no
                 )
-                rec.wt_fraction_sulhate = line.wt_sulhate if line else 0.0
-            else:
-                rec.wt_fraction_sulhate = 0.0
+                if line:
+                    # Safely pick the first record to avoid singleton issue
+                    rec.wt_fraction_sulhate = line[0].wt_sulhate or 0.0
 
 
     @api.model
@@ -2472,6 +2425,13 @@ class QuantitativelyExaminationLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
+
+
+
+
+
+
+            
 
 
 

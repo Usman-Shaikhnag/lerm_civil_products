@@ -1,458 +1,458 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	
-	   <template id="fineaggregate_report_ssl">
-		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
-			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
-				<!-- <div style="text-align:center;margin-top:10px">
-					<p style="font-size:15px"><b>Test Report</b></p>
-				</div> -->
-
-				
-				<div class="container_eln" style="padding-top:50px;">
-					<div class="" t-foreach="eln" t-as="o">
-						<table style="margin-top:10px; border:none">
-							<tr>
-								<td colspan="2" style=" font-weight: bold;">Client Details:</td>
-								<td colspan="10">
-									<span t-field="o.srf_id.customer.name"/><br />
-									<span t-field="o.srf_id.customer.street"/>
-									<span t-field="o.srf_id.customer.street2"/>
-									<span t-field="o.srf_id.customer.city"/>
-									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
-									<span t-field="o.srf_id.customer.state_id"/>
-									
-									<span t-field="o.srf_id.customer.country_id"/>
-								</td>
-							</tr>
-							<tr>
-								<!-- <td colspan="12">Project / Site Address :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
-								<td colspan="2" style=" font-weight: bold;">Client Reference:</td>
-								<td colspan="10"><span t-field="o.srf_id.client_refrence"/></td>
-							</tr>
-
-							<tr>
-								<td colspan="2" style=" font-weight: bold;">Name of Work:</td>
-								<td colspan="10"><span t-field="o.srf_id.name_work"/></td>
-							</tr>
-
-							<tr>
-								<td colspan="2" style=" font-weight: bold;">Date of Testing:</td>
-								<td colspan="10">
-									<span t-field="o.start_date"/> to <span t-field="o.end_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Size:</td>
-								<td colspan="10">
-									<span t-field="o.sample_id.size_id.size"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Grade:</td>
-								<td colspan="10">
-									<span t-field="o.grade_id.grade"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Material/Test Name:</td>
-								<td colspan="10">
-									<span t-field="o.material.name"/>
-								</td>
-							</tr>
-
-							<!-- Source of Sample (only if value exists) -->
-							<tr t-if="o.material.source_sample">
-								<td colspan="2" style="font-weight: bold;">Source of Sample</td>
-								<td colspan="10">
-									<span t-field="o.material.source_sample"/>
-								</td>
-							</tr>
-
-							<!-- Test method adopted (only if value exists) -->
-							<tr t-if="o.material.test_method_adopted">
-								<td colspan="2" style="font-weight: bold;">Test method adopted:</td>
-								<td colspan="10">
-									<span t-field="o.material.test_method_adopted"/>
-								</td>
-							</tr>
-
-						</table>
-					</div>
-
-                     <div t-if="data.sieve_visible" style="margin-top:5px">
-						<!-- <div style="text-align:center;font-size:18px">
-							<span>Sieve Analysis </span>: <span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','318d72a1-7188-4086-b132-62b50e63f5d1')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-							</span>
-							<span t-esc="o.material.test_parameter "/> 
-						</div> -->
-						<table t-if="data.sieve_visible">
-                            <tr cols="12">
-                                <th colspan="6">1. Sieve Analysis (Gradation) :-</th>
-                                <th colspan="6"><span t-field="env['lerm.parameter.master'].search([('internal_id','=','318d72a1-7188-4086-b132-62b50e63f5d1')]).test_method.test_method"/></th>
-                            </tr>
-							<tr cols="12">
-                                <td class="text-center" colspan="2">IS Sieve Size
-                                </td>
-                                <td class="text-center" colspan="2">Wt. Retained in gms
-                                </td>
-                                <td class="text-center" colspan="2">% Retained
-                                </td>
-                                <td class="text-center" colspan="2">Cum. Retained %
-                                </td>
-                                <td class="text-center" colspan="2">Passing %
-                                </td>
-                                <td class="text-center" colspan="2">Specified Limits
+    <!-- Fine Aggregate Report Template -->
+    <template id="fineaggregate_report_ssl">
+        <t t-call="web.html_container">
+            <t t-call="lerm_civil.genstru_layout_header_footer_lerm_eln">
+                <div class="container_eln" style="padding-top:50px;">
+                    <t t-set="fine_aggregate" t-value="env['mechanical.fine.aggregate'].search([('eln_ref', '=', eln.id)], limit=1)"/>
+                    
+                    <div class="" t-foreach="eln" t-as="o">
+                        <table style="margin-top:10px; border:none">
+                            <tr>
+                                <td colspan="2" style=" font-weight: bold;">Client Details:</td>
+                                <td colspan="10">
+                                    <span t-field="o.srf_id.customer.name"/><br />
+                                    <span t-field="o.srf_id.customer.street"/>
+                                    <span t-field="o.srf_id.customer.street2"/>
+                                    <span t-field="o.srf_id.customer.city"/>
+                                    <span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+                                    <span t-field="o.srf_id.customer.state_id"/>
+                                    <span t-field="o.srf_id.customer.country_id"/>
                                 </td>
                             </tr>
-
-                            <t t-set="k" t-value="0"/>
-                            <tr t-foreach="data.sieve_analysis_child_lines" t-as="r">
-                                <td class="text-center" colspan="2">
-                                    <span t-esc="r['sieve_size']"/>
+                            <tr>
+                                <td colspan="2" style=" font-weight: bold;">Client Reference:</td>
+                                <td colspan="10"><span t-field="o.srf_id.client_refrence"/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style=" font-weight: bold;">Name of Work:</td>
+                                <td colspan="10"><span t-field="o.srf_id.name_work"/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style=" font-weight: bold;">Date of Testing:</td>
+                                <td colspan="10">
+                                    <span t-field="o.start_date"/> to <span t-field="o.end_date"/>
                                 </td>
-                                <td class="text-center" colspan="2">
-                                    <span t-esc="r['wt_retained']"/>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="font-weight: bold;">Size:</td>
+                                <td colspan="10">
+                                    <span t-field="o.sample_id.size_id.size"/>
                                 </td>
-                                <td class="text-center" colspan="2">
-                                    <span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="font-weight: bold;">Grade:</td>
+                                <td colspan="10">
+                                    <span t-field="o.grade_id.grade"/>
                                 </td>
-                                <td class="text-center" colspan="2">
-                                    <span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="font-weight: bold;">Material/Test Name:</td>
+                                <td colspan="10">
+                                    <span t-field="o.material.name"/>
                                 </td>
-                                <td class="text-center" colspan="2">
-                                    <span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
+                            </tr>
+                            <tr t-if="o.material.source_sample">
+                                <td colspan="2" style="font-weight: bold;">Source of Sample</td>
+                                <td colspan="10">
+                                    <span t-field="o.material.source_sample"/>
                                 </td>
-                                <td class="text-center" colspan="2">
-                                    <span t-esc="r['specific_limt']" />
+                            </tr>
+                            <tr t-if="o.material.test_method_adopted">
+                                <td colspan="2" style="font-weight: bold;">Test method adopted:</td>
+                                <td colspan="10">
+                                    <span t-field="o.material.test_method_adopted"/>
                                 </td>
                             </tr>
                         </table>
-                        
-                        <!-- added -->
-                       <table style="margin-top:5px">
-                            <tr cols="12">
-							 <td colspan="6">Grading Zone :
-                                    <![CDATA[&nbsp;]]>
+                    </div>
+                    
+
+
+                    <!-- Test Results Table -->
+                    <div style="margin-top:20px">
+                        <table class="table table-bordered" style="width:100%; border-collapse: collapse;" border="1">
+                            <thead>
+                                <tr style="background-color:#f9f9f9;">
+                                    <th style="text-align: center; padding: 8px;">Sr No</th>
+                                    <th style="text-align: center; padding: 8px;">Name of Test</th>
+                                    <th style="text-align: center; padding: 8px;">Test Method</th>
+								    <th style="text-align: center; padding: 8px;" colspan="2">Environmental Condition</th>
+                                    <th style="text-align: center; padding: 8px;">Test Results</th>
+                                    <th style="text-align: center; padding: 8px;">Test Specifications</th>
+                                    <!-- <th style="text-align: center; padding: 8px;">Conformity</th> -->
+                                </tr>
+                                <tr style="background-color:#f9f9f9;">
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th style="text-align: center; padding: 8px;">Temp.°C</th>
+                                    <th style="text-align: center; padding: 8px;">Humidity %</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+                             <!-- Sieve Analysis Table -->
+                                <tr>
+                                    <td rowspan="9" style ="text-align: center; padding: 8px;">1</td>
+                                    <td style="font-weight: bold; padding: 8px;">Sieve Analysis Table</td>
+
+                             <td  rowspan="9" style="text-align: center; padding-top: 120px;">IS : 2386 (P1) 1963(RA 2021)</td>
+
+                                    <td  rowspan="9" style="text-align: center; padding-top: 120px;">
+                                     <span t-field="data.temp_sieve_analysis"/>
+                                    </td>
+                                    <td  rowspan="9" style="text-align: center; padding-top: 120px;">
+                                        <span t-field="data.humidity_sieve_analysis"/>
+                                     <span t-field="data.temp_sieve_analysis"/>
+                                    </td>
+
+
+                                    <td  rowspan="9" style="text-align: center; padding-top: 120px;">
+                                        <span t-field="data.humidity_sieve_analysis"/>
+                                    </td>
+
+
+                                    
+                                    <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <table style="width:100%; border:none;">
+                                                <tr>
+                                                    <!-- <td><b>Trial 1:</b> <span t-field="fine_aggregate.specific_gravity_1" t-options='{"widget": "float", "precision": 2}'/></td>
+                                                    <td><b>Trial 2:</b> <span t-field="fine_aggregate.specific_gravity_2" t-options='{"widget": "float", "precision": 2}'/></td>
+                                                    <td><b>Average:</b> <span t-field="fine_aggregate.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td> -->
+                                                </tr>
+                                            </table>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">As per IS 383</td>
+                                    <!-- <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.avg_specific_gravity_conformity"/>
+                                        </t>
+                                    </td> -->
+                                </tr>
+
+
+
+                              <t t-set="k" t-value="0"/>
+								<tr t-foreach="data.sieve_analysis_child_lines" t-as="r" style="text-align: center;">
+									
+									<td style="border: 1px solid black; padding: 6px;" colspan="1">
+										<span t-esc="r['sieve_size']"/>
+									</td>
+                                  </tr>
+
+
+
+                                <!-- Specific Gravity -->
+                                <tr>
+                                    <td style="text-align: center; padding: 8px;">1</td>
+                                    <td style="font-weight: bold; padding: 8px;">Specific Gravity</td>
+                             <td style="text-align: center; padding: 8px;">IS : 2386 (P3) 1963 (RA 2021)</td>
+                                    <td style="text-align: center; padding: 8px;">
+                                     <span t-field="data.temp_specific_gravity_water_absorption"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <span t-field="data.humidity_temp_specific_gravity_water_absorption"/>
+                                     <span t-field="data.temp_specific_gravity_water_absorption"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <span t-field="data.humidity_temp_specific_gravity_water_absorption"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <table style="width:100%; border:none;">
+                                                <tr>
+                                                    <!-- <td><b>Trial 1:</b> <span t-field="fine_aggregate.specific_gravity_1" t-options='{"widget": "float", "precision": 2}'/></td>
+                                                    <td><b>Trial 2:</b> <span t-field="fine_aggregate.specific_gravity_2" t-options='{"widget": "float", "precision": 2}'/></td>
+                                                    <td><b>Average:</b> <span t-field="fine_aggregate.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td> -->
+                                                </tr>
+                                            </table>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">As per IS 383</td>
+                                    <!-- <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.avg_specific_gravity_conformity"/>
+                                        </t>
+                                    </td> -->
+                                </tr>
+
+                                <!-- Water Absorption -->
+                                <tr>
+                                    <td style="text-align: center; padding: 8px;">2</td>
+                                    <td style="font-weight: bold; padding: 8px;">Water Absorption %</td>
+                    <td style="text-align: center; padding: 8px;">IS : 2386 (P3) 1963 (RA 2021)</td>
+                                    <td style="text-align: center; padding: 8px;">
+                                       <span t-field="data.temp_specific_gravity_water_absorption"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                      <span t-field="data.humidity_temp_specific_gravity_water_absorption"/>
+                                       <span t-field="data.temp_specific_gravity_water_absorption"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                      <span t-field="data.humidity_temp_specific_gravity_water_absorption"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <table style="width:100%; border:none;">
+                                                <tr>
+                                                    <!-- <td><b>Trial 1:</b> <span t-field="fine_aggregate.water_absorption_1" t-options='{"widget": "float", "precision": 2}'/> %</td>
+                                                    <td><b>Trial 2:</b> <span t-field="fine_aggregate.water_absorption_2" t-options='{"widget": "float", "precision": 2}'/> %</td>
+                                                    <td><b>Average:</b> <span t-field="fine_aggregate.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/> %</td> -->
+                                                </tr>
+                                            </table>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">Max 2% as per IS 383</td>
+                                    <!-- <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.avg_water_absorption_conformity"/>
+                                        </t>
+                                    </td> -->
+                                </tr>
+
+                                <!-- Silt Content -->
+                                <tr>
+                                    <td style="text-align: center; padding: 8px;">3</td>
+                                    <td style="font-weight: bold; padding: 8px;">Particle Finer Than 75 micron %</td>
+                                    <td style="text-align: center; padding: 8px;">IS : 2386 (P1) 1963 (RA 2021)</td>
+                                    <td style="text-align: center; padding: 8px;">
+                                      <span t-field="data.temp_finer75_visible"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                       <span t-field="data.humidity_finer75_visible"/>
+                                      <span t-field="data.temp_finer75_visible"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                       <span t-field="data.humidity_finer75_visible"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.material_finer75" /> %
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">IS : 2386 (P1) 1963 (RA 2021)</td>
+                                    <!-- <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.material_finer75_conformity"/>
+                                        </t>
+                                    </td> -->
+                                </tr>
+
+                                <!-- Bulk Density Compacted -->
+                                <tr>
+                                    <td style="text-align: center; padding: 8px;">4</td>
+                                    <td style="font-weight: bold; padding: 8px;">Bulk Density Compacted</td>
+                    <td style="text-align: center; padding: 8px;">IS : 2386 (P3)(RA 2021)</td>
+
+
+                                    <td style="text-align: center; padding: 8px;">
+                                          <span t-field="data.temp_density"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                     <span t-field="data.humidity_density"/>
+                                          <span t-field="data.temp_density"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                     <span t-field="data.humidity_density"/>
+                                    </td>
+
+
+
+                                    
+                                    <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.compacted_density" t-options='{"widget": "float", "precision": 2}'/> <span t-field="fine_aggregate.avg_compacted_unit"/>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">-</td>
+                                    <!-- <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.compacted_density_conformity"/>
+                                        </t>
+                                    </td> -->
+                                </tr>
+
+                                <!-- Bulk Density Loose -->
+                                <tr>
+                                    <td style="text-align: center; padding: 8px;">5</td>
+                                    <td style="font-weight: bold; padding: 8px;">Bulk Density Loose</td>
+                     <td style="text-align: center; padding: 8px;">IS : 2386 (P3)(RA 2021)</td>
+                                    <td style="text-align: center; padding: 8px;">
+                                     <span t-field="data.temp_density"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <span t-field="data.humidity_density"/>
+                                     <span t-field="data.temp_density"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <span t-field="data.humidity_density"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.loose_density" t-options='{"widget": "float", "precision": 2}'/> <span t-field="fine_aggregate.avg_compacted_unit"/>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">-</td>
+                                    <!-- <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.loose_density_conformity"/>
+                                        </t>
+                                    </td> -->
+                                </tr>
+
+                                <!-- Voids in Compacted Density -->
+                                <tr>
+                                    <td style="text-align: center; padding: 8px;">6</td>
+                                    <td style="font-weight: bold; padding: 8px;">Voids in Compacted Density %</td>
+                                    <td style="text-align: center; padding: 8px;">IS : 2386 (P3)(RA 2021)</td>
+                                    <td style="text-align: center; padding: 8px;">
+                                      <span t-field="data.temp_density"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                       <span t-field="data.humidity_density"/>
+                                      <span t-field="data.temp_density"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                       <span t-field="data.humidity_density"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.voids_compacted_density" t-options='{"widget": "float", "precision": 2}'/> %
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">-</td>
+                                    <!-- <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.voids_compacted_density_conformity"/>
+                                        </t>
+                                    </td> -->
+                                </tr>
+
+                                <!-- Voids in Loose Density -->
+                                <tr>
+                                    <td style="text-align: center; padding: 8px;">7</td>
+                                    <td style="font-weight: bold; padding: 8px;">Voids in Loose Density %</td>
+                                    <td style="text-align: center; padding: 8px;">IS : 2386 (P3)(RA 2021)</td>
+                                    <td style="text-align: center; padding: 8px;">
+                                      <span t-field="data.temp_density"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                       <span t-field="data.humidity_density"/>
+                                      <span t-field="data.temp_density"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                       <span t-field="data.humidity_density"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.voids_loose_density" t-options='{"widget": "float", "precision": 2}'/> %
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">-</td>
+                                    <!-- <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.voids_loose_density_conformity"/>
+                                        </t>
+                                    </td> -->
+                                </tr>
+
+
+
+
+                                  <!-- Soundness -->
+                                <tr>
+                                    <td style="text-align: center; padding: 8px;">1</td>
+                                    <td style="font-weight: bold; padding: 8px;">Soundness</td>
+                             <td style="text-align: center; padding: 8px;">IS : 2386 (P5) 1963(RA 2021)</td>
+                                    <td style="text-align: center; padding: 8px;">
+
+                                     <span t-field="data.temp_soudness"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <span t-field="data.humidity_soudness"/>
+                                     <span t-field="data.temp_soudness"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">
+                                        <span t-field="data.humidity_soudness"/>
+                                    </td>
+
+
+                                    <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <table style="width:100%; border:none;">
+                                                <tr>
+                                                    <!-- <td><b>Trial 1:</b> <span t-field="fine_aggregate.specific_gravity_1" t-options='{"widget": "float", "precision": 2}'/></td>
+                                                    <td><b>Trial 2:</b> <span t-field="fine_aggregate.specific_gravity_2" t-options='{"widget": "float", "precision": 2}'/></td>
+                                                    <td><b>Average:</b> <span t-field="fine_aggregate.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td> -->
+                                                </tr>
+                                            </table>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center; padding: 8px;">As per IS 383</td>
+                                    <!-- <td style="text-align: center; padding: 8px;">
+                                        <t t-if="fine_aggregate">
+                                            <span t-field="fine_aggregate.avg_specific_gravity_conformity"/>
+                                        </t>
+                                    </td> -->
+                                </tr>
+
+            
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Remarks and Notes Section -->
+                    <div style="margin-top:5px" class="noteContainer">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td style="padding: 5px; font-style: italic; font-size: 12px;">
+                                    <b>Remarks:-</b>
+                                    &#160;&#160;(1) Refer to Annexure- I to know environmental and test conditions
+                                    &#160;&#160;(2) *Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter
+                                    &#160;&#160;(3) All tests conducted as per relevant IS codes
                                 </td>
-                                <td colspan="6">
-                                    <![CDATA[&nbsp;]]>
-                                    <span t-field="data.grading"/>
-                                </td>
-                                <td colspan="6">Fineness Modulus :
-                                    <![CDATA[&nbsp;]]>
-                                </td>
-                                <td colspan="6">
-                                    <![CDATA[&nbsp;]]>
-                                    <span t-field="data.fineness_modulus"/>
-                                </td>
-								
                             </tr>
-                        </table> 
-                     
+                            <tr>
+                                <td style="padding: 5px; font-style: italic; font-size: 12px;">
+                                    <b>Notes:-</b>
+                                    &#160;&#160;a. The information marked with an # received from customer
+                                    &#160;&#160;b. The results listed refer only to tested parameters and sample as received from customer
+                                    &#160;&#160;c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.
+                                    &#160;&#160;d.This document shall not be reproduced in part or full without the approval of Genstru.
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <!-- Signature Section -->
+                    <div class="signatureContainer girdgird">
+                        <div>
+                            <div><b>Prepared By</b></div>
+                            <div style="height:20px"></div>
+                            <div><b><span t-esc="eln.technician.name"/></b></div>
+                            <div><b>(<span t-esc="eln.sample_id.check_by.job_title"/>)</b></div>
+                        </div>
+
+                        <div>
+                            <div></div>
+                        </div>
                         
-					</div>         
-					
-					<div>  
-						<table style="margin-top:5px">
-							<thead>
-								<tr style="height:10px;">
-									<th style="text-align: center;">Sr.No</th>
-									<th style="text-align: center;">
-									<span t-esc="eln.material.test_parameter"/>
-									<!-- Test Parameters -->
-									</th>
-									<th style="text-align: center;"><span t-field="eln.material.method_reference"></span></th>
-									<th style="text-align: center;">
-									<span t-esc="eln.material.unit"/>
-									<!-- Unit -->
-									</th>
-									<th style="text-align: center;">
-									<span t-esc="eln.material.result_remark"/>
-									<!-- Test Result -->
-									</th>
-									<th style="text-align: center;"><span t-field="eln.material.specifications"></span></th>
-									<th style="text-align: center;" t-if="eln.conformity">Conformity</th>
-								</tr>
-							</thead>
-							
-							<t t-set="i" t-value="1"/>
-							<tbody>
-								<tr t-if="data.specific_gravity_visible and (data.specific_gravity_nabl == 'pass' and nabl or (data.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="specific_gravity" t-value="env['lerm.parameter.master'].search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="specific_gravity.parameter_name"/>
-									</td>
-									<td style="text-align: center;" >
-										<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-												<span t-field="parameter.specification"/>
-											</t>
-										</t>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="specific_gravity.unit.name"/>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="data.water_absorption" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="text-align: center;">
-										<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-									</td>
-									<td style="text-align: center;" t-if="eln.conformity">
-										<span t-field="data.specific_gravity_conformity"/>
-									</td>
-								</tr>
-
-								<tr t-if="data.bulking_sand_visible and (data.avg_bulking_of_sand_nabl == 'pass' and nabl or (data.avg_bulking_of_sand_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="bulking_sand" t-value="env['lerm.parameter.master'].search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="bulking_sand.parameter_name"/>
-									</td>
-									<td  style="text-align: center; vertical-align: middle;">
-										<t t-foreach="bulking_sand.parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-												<span t-field="parameter.specification"/>
-											</t>
-										</t>
-									</td >
-									<td style="text-align: center;">
-										<span t-field="bulking_sand.unit.name"/>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="data.avg_bulking_of_sand" t-options='{"widget": "float", "precision": 2}'/>
-									</td>							
-									<td style="text-align: center;">
-										<t t-foreach="bulking_sand.parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-												<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-									</td>
-
-									<td style="text-align: center;" t-if="eln.conformity">
-										<span t-field="data.avg_bulking_of_sand_conformity"/>
-									</td>
-								</tr>
-
-								<tr t-if="data.loose_bulk_visible and (data.loose_bulk_density_nabl == 'pass' and nabl or (data.loose_bulk_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="loose_bulk" t-value="env['lerm.parameter.master'].search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')])"/>
-									<td style="text-align: center;" >
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="loose_bulk.parameter_name"/>
-									</td>
-									<td style="text-align: center;">
-										<t t-foreach="loose_bulk.parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-												<span t-field="parameter.specification"/>
-											</t>
-										</t>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="loose_bulk.unit.name"/>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="data.loose_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
-									</td>								
-									<td style="text-align: center;" >
-										<t t-foreach="loose_bulk.parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-									</td>
-									<td  style="text-align: center;" t-if="eln.conformity">
-										<span t-field="data.loose_bulk_density_conformity"/>
-									</td>
-								</tr>
-
-								<tr t-if="data.site_content_visible and (data.avg_bulking_of_sand1_nabl == 'pass' and nabl or (data.avg_bulking_of_sand1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="site_content" t-value="env['lerm.parameter.master'].search([('internal_id','=','2547ghty124m-3fa3-4b83-ae31-9d281457nhy14')])"/>
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="site_content.parameter_name"/>
-									</td>
-									<td style="text-align: center;">
-										<t t-foreach="site_content.parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-											</t>
-										</t>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="site_content.unit.name"/>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="data.avg_bulking_of_sand1" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="text-align: center;">
-										<t t-foreach="site_content.parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-									</td>
-									<td style="text-align: center;" t-if="eln.conformity">
-										<span t-field="data.avg_bulking_of_sand1_conformity"/>
-									</td>
-								</tr>
-
-								<tr t-if="data.moisture_content_visible and (data.avg_moisture_nabl == 'pass' and nabl or (data.avg_moisture_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="moisture_content" t-value="env['lerm.parameter.master'].search([('internal_id','=','1457htyu1245-3fa3-4b83-ae31-9d281457457hy')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="moisture_content.parameter_name"/>
-									</td>
-									<td style="text-align: center;">
-										<t t-foreach="moisture_content.parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-											</t>
-										</t>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="moisture_content.unit.name"/>
-									</td>
-									<td style="text-align: center;">
-										<span t-field="data.avg_moisture" t-options='{"widget": "float", "precision": 2}'/>
-									</td>								
-									<td style="text-align: center;">
-										<t t-foreach="moisture_content.parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-											</t>
-										</t>
-									</td>
-									<td style="text-align: center;" t-if="eln.conformity">
-										<span t-field="data.avg_moisture_conformity"/>
-									</td>
-
-								</tr>
-
-							</tbody>
-						</table>
-					</div>         
-
-				
-					<div style="margin-top:0;margin-bottom:0;padding:0; page-break-inside: avoid;">
-						<div class="">
-							<table class="table table-bordered">
-								<tr>
-									<td style="padding: 5px; font-style: italic; font-size: 12px;">
-										<b>Note:-</b>
-										&#160;&#160;(i) The results relate only to the items tested 
-										&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
-										&#160;&#160;(iii) Any corrections invalidate the test reports 
-										&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
-										&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
-										&#160;&#160;(vi) # mark indicates Details given by Client.
-										<t t-if="eln.has_witness">
-											&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
-										</t>
-										<t t-if="eln.remarks">
-											&#160;&#160;<span t-esc="eln.remarks"/>
-										</t>
-									</td>
-								</tr>
-							</table>
-						</div>
-						<div style="margin-top:0;padding:0;" class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Checked By
-									</b>
-								</div>
-								<div style="height:30px">
-
-								</div>
-								<div>
-									<b>
-										<span t-esc="eln.technician.name"/>
-									</b>
-								</div>
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.check_by.job_title"/>)
-									</b>
-								</div>
-							</div>
-
-							<div>
-						<div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div>
-						<div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
-					</div>
-
-
-							<div>
-								<div>
-									<b>
-										Approved By 
-									</b>
-								</div>
-								<div style="height:30px">
-								</div>
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-							</div>
-						</div>
-						<div style="text-align:center;margin-top:2px;margin-bottom:0;padding:0;">
-							......End of Report......
-						</div>
-					</div>
-				</div>
-			</t>
-		</t>
-	</template>
+                        <div>
+                            <div><b>Reviewed &amp; Issued By</b></div>
+                            <div style="height:20px"></div>
+                            <div><b><span t-esc="eln.sample_id.approved_by.name"/></b></div>
+                            <div><b>(<span t-esc="eln.sample_id.approved_by.job_title"/>)</b></div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
 </odoo>
