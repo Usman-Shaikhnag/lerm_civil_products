@@ -16,6 +16,29 @@ class MechanicalBricks(models.Model):
     # child_lines = fields.One2many('mechanical.water.absorption.bricks.line','parent_id',string="Parameter")
     # test_start_date = fields.Date("Test Start Date")
     # test_end_date = fields.Date("Test End Date")
+
+    compressive_strength_unit = fields.Char(
+    compute="_compute_units", store=False
+    )
+    water_absorption_unit = fields.Char(
+        compute="_compute_units", store=False
+    )
+
+    def _compute_units(self):
+        for rec in self:
+            comp_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '31478fghht-9287-48c7-a607-bf1b64a8115d')
+            ], limit=1)
+            water_param = self.env['lerm.parameter.master'].search([
+                ('internal_id', '=', '321475gfet1-f3ab-4b19-af25-91a4671baf5f')
+            ], limit=1)
+
+            rec.compressive_strength_unit = comp_param.unit.name if comp_param.unit else ""
+            rec.water_absorption_unit = water_param.unit.name if water_param.unit else ""
+
+
+
+        
    
     length_in_mm = fields.Float(string="Length in mm")
     width_in_mm = fields.Float(string="Width in mm")

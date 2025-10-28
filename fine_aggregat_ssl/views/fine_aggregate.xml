@@ -3,8 +3,8 @@
     <data>
 
         <record id="mechanical_fine_aggregate_ssl" model="ir.ui.view">
-        <field name="name">mechanical.fine.aggregate.ssl.form</field>
-        <field name="model">mechanical.fine.aggregate.ssl</field>
+        <field name="name">mechanical.fine.aggregate.form</field>
+        <field name="model">mechanical.fine.aggregate</field>
         <field name="arch" type="xml">
             <form create="false">
                 <sheet>
@@ -136,7 +136,7 @@
                         <tbody>
                             <tr>
                                 <td><label for="specific_gravity">Avg Specific Gravity</label></td>
-                                <td><field name="specific_gravity" nolabel="1"/></td>
+                                <td><field name="specific_gravity"/>  <span><field name="specific_gravity_unit" readonly="1" nolabel="1"/></span></td>
                             </tr>
                             <tr>
                                 <td><label for="water_absorption">Water Absorption %</label></td>
@@ -184,56 +184,60 @@
                           <field name="compact_bulk_density" />
                     </group> -->
               
-                      <table invisible="loose_bulk_visible == False" class="table table-sm table-bordered w-50 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label class="fw-bold" for="weight_bucket"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="weight_bucket"/> 
-                                                <span> ltrs</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="empty_bucket"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="empty_bucket"/> 
-                                                <span> g</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="bucket_compact"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="bucket_compact"/> 
-                                                <span> g</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="bucket_loos"/></td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <field name="bucket_loos"/> 
-                                                <span> g</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                   <table class="table table-sm table-bordered custom_table_borders" invisible="not loose_bulk_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Sample 1</th>
+                                <th>Sample 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Volume of measuring cylinder (v) (lit)</span></td>
+                                <td><field name="volume_of_cylender"/></td>
+                                <td><field name="volume_of_cylender1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Wt of empty measuring cylinder (A) (Kg)</span></td>
+                                <td><field name="weight_empty_cylender"/></td>
+                                <td><field name="weight_empty_cylender1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Wt of loose aggregrage +measuring cylinder(B) (Kg)</span></td>
+                                <td><field name="loose_measuring_cylender"/></td>
+                                <td><field name="loose_measuring_cylender1"/></td>
+                            </tr>
+
+                             <tr>
+                                <td><span class="fw-bold">Loose Bulk Density (Kg)</span></td>
+                                <td><field name="loose_bulk_density"/></td>
+                                <td><field name="loose_bulk_density1"/></td>
+                            </tr>
+
+                           
+
+                           
+                        </tbody>
+                    </table>
+
+                     <div class="d-flex gap-2" invisible="not loose_bulk_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_bulk_density">Avg loose density Kg/lit</label> </td>
+                                    <td><field name="avg_bulk_density"/>  <span><field name="bulk_density_unit" readonly="1" nolabel="1"/></span></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                       
+                    </div>
                             <table invisible="loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                                 <tbody>
-                                    <tr>
-                                        <td><label class="fw-bold" for="loose_bulk_density"/></td>
-                                        <td><field name="loose_bulk_density"/> <span>kg/cu.m</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label class="fw-bold" for="compact_bulk_density"/></td>
-                                        <td><field name="compact_bulk_density" nolabel="1"/> <span>kg/cu.m</span></td>
-                                    </tr>
+                                  
                                     <tr>
                                         <td><label class="fw-bold" for="loose_bulk_density_conformity"/></td>
                                         <td><field name="loose_bulk_density_conformity" 
@@ -250,6 +254,79 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                             <div class="text-center" invisible="compacted_density_visible == False">
+                        <h1>
+                            <field name="compacted_density_name1" readonly="1" nolabel="1"/>
+                            <field name="compacted_density_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+                    
+                    <!-- Main Table: Specific Gravity Measurements -->
+                    <table class="table table-sm table-bordered custom_table_borders" invisible="not compacted_density_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Sample 1</th>
+                                <th>Sample 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Wt of compacted aggregrage +measuring cylinder(C) (Kg)</span></td>
+                                <td><field name="wt_of_compact"/></td>
+                                <td><field name="wt_of_compact1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Compacted bulk density (Kg)</span></td>
+                                <td><field name="compact_bulk"/></td>
+                                <td><field name="compact_bulk1"/></td>
+                            </tr>
+                           
+                           
+
+                           
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2" invisible="not compacted_density_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_compacted">Avg Compacted Density </label></td>
+                                    <td><field name="avg_compacted"/>  <span><field name="avg_compacted_unit" readonly="1" nolabel="1"/></span></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                       
+                    </div>
+
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="compacted_density_visible == False">
+                            <tbody>
+                                <tr>
+                                <td><label for="avg_compacted_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_compacted_conformity"
+                                        decoration-success="avg_compacted_conformity == 'pass'"
+                                        decoration-danger="avg_compacted_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="avg_compacted_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_compacted_nabl" readonly="1"
+                                        decoration-success="avg_compacted_nabl == 'pass'"
+                                        decoration-danger="avg_compacted_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
 
 
                     <!-- Bulking of Sand -->
@@ -295,8 +372,8 @@
                             <td><field name="avg_loss_c"/></td>
                         </tr>
                         <tr>
-                            <td><label class="fw-bold" for="avg_bulking_of_sand">Average Bulking of Sand (%)</label></td>
-                            <td><field name="avg_bulking_of_sand"/></td>
+                            <td><label class="fw-bold" for="avg_bulking_of_sand">Average Bulking of Sand </label></td>
+                            <td><field name="avg_bulking_of_sand"/>  <span><field name="avg_bulking_of_sand_unit" readonly="1" nolabel="1"/></span></td>
                         </tr>
                         <tr>
                             <td><label class="fw-bold" for="avg_bulking_of_sand_conformity">Bulking Conformity</label></td>
@@ -338,7 +415,7 @@
                     </field>   
                 </div>
 
-                                        <table invisible="site_content_visible == False or loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                    <table invisible="site_content_visible == False or loose_bulk_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="content_height_sand_a">Height of Sand + Silt in the Cylinder (A)</label></td>
@@ -355,10 +432,10 @@
                             <tr>
                                 <td><label class="fw-bold" for="avg_bulking_of_sand1">Silt Content</label></td>
                                 <td>
-                                    <div class="d-flex">
-                                        <field name="avg_bulking_of_sand1" />
-                                        <span class="ms-2">%</span>
-                                    </div>
+                                    <!-- <div class="d-flex"> -->
+                                        <field name="avg_bulking_of_sand1" />   <span><field name="silt_contect_unit" readonly="1" nolabel="1"/></span>
+                                      
+                                    <!-- </div> -->
                                 </td>
                             </tr>
                             <tr>
@@ -417,10 +494,10 @@
                             <tr>
                                 <td><label class="fw-bold" for="avg_moisture">Average Moisture Content</label></td>
                                 <td>
-                                    <div class="d-flex">
-                                        <field name="avg_moisture" nolabel="1"/>
-                                        <span class="ms-2">%</span>
-                                    </div>
+                                    <!-- <div class="d-flex"> -->
+                                        <field name="avg_moisture" nolabel="1"/>    <span><field name="avg_moisture_unit" readonly="1" nolabel="1"/></span>
+                                       
+                                    <!-- </div> -->
                                 </td>
                             </tr>
                             <tr>

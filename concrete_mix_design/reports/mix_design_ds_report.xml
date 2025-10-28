@@ -2,62 +2,11 @@
 <odoo>
 
 
-<template id="data_sheet_header_design_mix">
-        <div t-attf-class="header article" t-att-style="report_header_style">
-            <div class="row">
-                <div class="col-12">
-				
-				<div style="margin-top:1.5rem;height:1rem;">
-					<span> </span>
-				</div>
-				<div class="container_eln" >
-					<table style="border:none;">
-						<tr cols="12" style="border:none;">
-							<td colspan="4" style="border:none;">
-								<span style="text-align:left;">	
-									FORMAT No:- <![CDATA[&nbsp;]]> 
-								</span>
-							</td>
-							<td colspan="4" style="border:none;">
-								<span style="text-align:left;margin-left:23%;">	
-									Test Report No:-  ABC
-								</span>
-							</td>
-							<td colspan="4" style="border:none;">
-								<span style="text-align:left;margin-left:20%;">	
-									Date:- <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
-								</span>
-							</td>
-						</tr>
-					
-					</table>
 
-				</div>
-                    <div style="text-align:center;margin-top:12px">	
-                       ABC LABS
-                    </div>
-                    <div style="text-align:center;">
-                        TEST DATA SHEET
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div t-attf-class="article" t-att-style="report_header_style">
-            <t t-out="0"/>
-        </div>
-        <div t-attf-class="footer o_standard_footer">
-            <div class="text-center" style="border-top: 1px solid black;">
-              
-                <div t-if="report_type == 'pdf'" class="footertext">
-                    Page: <span class="page"/> / <span class="topage"/>
-                </div>
-            </div>
-        </div>
-    </template>
 <template id="design_mix_datasheet">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
-			<t t-call="lerm_civil.data_sheet_header_design_mix">
+			<t t-call="lerm_civil.mechanical_data_sheet_header">
                 <div style="text-align:center;font-size:18px">
                  DESIGN MIX DATASHEET
                 </div>
@@ -1171,72 +1120,113 @@
 	<template id="design_mix_report">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
-			<t t-call="lerm_civil.design_mix_header_footer">
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				<!-- <div style="text-align:center;margin-top:10px">
 					<p style="font-size:15px"><b>Test Report</b></p>
 				</div> -->
-				<div class="container_eln">
+			<div class="container_eln" style="padding-top:20px;">
+					
+					<div t-foreach="eln" t-as="o">
+						<!-- <table>
+							<tr>
+								<td colspan="3">Report no :
+								</td>
+								<td colspan="3">
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="3">Report Date :
+								<span t-field="o.end_date"/>
+								</td>
+								<td colspan="3">
+									<span t-field="o.srf_date"/>
+								</td>
+								<td colspan="3" t-if="nabl">ULR NO :
+								</td>
+								<td colspan="3" t-if="nabl">
+									<span t-field="o.sample_id.ulr_no"/>
+								</td>
+							</tr>
+						</table> -->
+						<table style="margin-top:10px; border:none">
+							<tr>
+								<td colspan="2" style=" font-weight: bold;">Client Details:</td>
+								<td colspan="10">
+									<span t-field="o.srf_id.customer.name"/><br />
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+									,
+									<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<!-- <td colspan="12">Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td> -->
+								<td colspan="2" style=" font-weight: bold;">Client Reference:</td>
+								<td colspan="10"><span t-field="o.srf_id.client_refrence"/></td>
+							</tr>
 
-					<div class="" t-foreach="eln" t-as="o">
-						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
-							<tbody>
-								<tr>
-									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.srf_id.customer.name"/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
-									</td>
-								
-								</tr>
-								
-								<tr>
-									<td><strong>Client's Reference</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
-								</tr>
+							<tr>
+								<td colspan="2" style=" font-weight: bold;">Name of Work:</td>
+								<td colspan="10"><span t-field="o.srf_id.name_work"/></td>
+							</tr>
+						<!-- </table>
 
-								<tr>
-									<td><strong>Name of Work</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
-								</tr>
+						<table class="table" style="width:100%; font-size: 13px;"> -->
+							<tr>
+								<td colspan="2" style=" font-weight: bold;">Date of Testing:</td>
+								<td colspan="10">
+									<span t-field="o.start_date"/> to <span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" style="font-weight: bold;">Size:</td>
+								<td colspan="10">
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" style="font-weight: bold;">Grade:</td>
+								<td colspan="10">
+									<span t-field="o.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" style="font-weight: bold;">Material/Test Name:</td>
+								<td colspan="10">
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
 
-								<tr>
-									<td><strong>Date of Testing</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.start_date" style="margin-right:10px;"/> to 
-										<span t-field="o.end_date" style="margin-left:10px;"/>
-									</td>
-								</tr>
+							<!-- Source of Sample (only if value exists) -->
+							<tr t-if="o.material.source_sample">
+								<td colspan="2" style="font-weight: bold;">Source of Sample</td>
+								<td colspan="10">
+									<span t-field="o.material.source_sample"/>
+								</td>
+							</tr>
 
-								<tr>
-									<td><strong>Type of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
-								</tr>
+							<!-- Test method adopted (only if value exists) -->
+							<tr t-if="o.material.test_method_adopted">
+								<td colspan="2" style="font-weight: bold;">Test method adopted:</td>
+								<td colspan="10">
+									<span t-field="o.material.test_method_adopted"/>
+								</td>
+							</tr>
 
-								<tr>
-									<td><strong>Grade of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
-								</tr>
-
-								<!-- Source of Sample (only if value exists) -->
-								<tr t-if="o.material.source_sample">
-									<td style="font-weight: bold;">Source of Sample</td>
-									<td><span t-field="o.material.source_sample"/></td>
-								</tr>
-
-								<!-- Test method adopted (only if value exists) -->
-								<tr t-if="o.material.test_method_adopted">
-									<td style="font-weight: bold;">Test method adopted:</td>
-									<td><span t-field="o.material.test_method_adopted"/></td>
-								</tr>
-							</tbody>
 						</table>
-					</div>
 
+					</div>
 					<table style="margin-top:20px">
 						<tr cols="12">
 							<td colspan="1">Sr no 
@@ -2236,92 +2226,87 @@
 					
 			
 
-					<div style="page-break-inside: avoid;">
-						<div style="margin-top:20px" class="noteContainer">
-							<div>
-								<b>Note :-</b>
-							</div>
-							<div>
-								<ul>
-									<li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-									</li>
-									<li>
-										Sample(s) was/were not drawn by laboratory.
-									</li>
-									<li>
-										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-									</li>
-									<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-								</ul>
-							</div>
-						</div>
-						
-						<div class="signatureContainer girdgird" style="margin-top:50px;page-break-inside: avoid;">
-							<div>
-								<div>
-									<b>
-										Checked By
-									</b>
-								</div>
-								<div style="height:30px">
-
-								</div>
-								<!-- <div>
-									<b>
-										<span t-esc="eln.sample_id.check_by.name"/>
-									</b>
-								</div> -->
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.check_by.job_title"/>)
-									</b>
-								</div>
-							</div>
-							<div>
-								<!-- <div>
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div> -->
-								<div style="padding-top:5px">
-									Format No. 
-								</div>
-							</div>
-							<div>
-								<div>
-									<b>
-										Approved By 
-									</b>
-									
-								</div>
-								<div style="height:30px">
-
-								</div>
-								<!-- <div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div> -->
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.approved_by.job_title"/>) 
-									</b>
-								</div>
-								
-							</div>
-						</div>
-					    <!-- </div> -->
-						<div style="text-align:center;margin-top:25px">
-							......End of Report......
-						</div>
+						<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+						<table class="table table-bordered">
+							<tr>
+								<td style="padding: 5px; font-style: italic; font-size: 12px;">
+									<b>Note:-</b>
+									&#160;&#160;(i) The results relate only to the items tested 
+									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+									&#160;&#160;(iii) Any corrections invalidate the test reports 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
+									&#160;&#160;(vi) # mark indicates Details given by Client.
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</td>
+							</tr>
+						</table>
 					</div>
 
-				</div>
+		<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+						<div>
+							<div>
+								<b>
+								Checked By
+								</b>
+							</div>
+							<div style="height:40px">
+
+							</div>
+
+							<div>
+								<b>
+									<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+						<div>
+							<div>
+								<b>
+									Approved By
+								</b>
+							</div>
+							<div style="height:40px">
+
+							</div>
+							<div>
+								<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+								</b>
+							</div>
+
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+								</b>
+							</div>
+							<!-- <div>
+								<b>
+									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+								</b>
+							</div> -->
+						</div>
+					</div>
+					
+				<!-- </div> -->
+			</div>
+
+			<div style="margin-top: 10px; text-align: center;">
+				<p style="padding-top: 10px;">
+						...... End Of Report......
+				</p>
+			</div>
 			</t>
 		</t>
 	</template>

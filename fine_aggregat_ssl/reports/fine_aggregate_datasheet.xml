@@ -234,113 +234,121 @@
                         </div>
                    
                   
-                        <table style="margin-top:20px;">
+                       <table class="table table-sm table-bordered custom_table_borders" invisible="not loose_bulk_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Sample 1</th>
+                                <th>Sample 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Volume of measuring cylinder (v) (lit)</span></td>
+                                
+								<td><span t-field="data.volume_of_cylender"/></td>
+								<td><span t-field="data.volume_of_cylender1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Wt of empty measuring cylinder (A) (Kg)</span></td>
+                                
+								<td><span t-field="data.weight_empty_cylender"/></td>
+								<td><span t-field="data.weight_empty_cylender1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Wt of loose aggregrage +measuring cylinder(B) (Kg)</span></td>
+                               
+								<td><span t-field="data.loose_measuring_cylender"/></td>
+								<td><span t-field="data.loose_measuring_cylender1"/></td>
+                            </tr>
 
+                             <tr>
+                                <td><span class="fw-bold">Loose Bulk Density (Kg)</span></td>
+                                
+								 <td><span t-field="data.loose_bulk_density"/></td>
+								  <td><span t-field="data.loose_bulk_density1"/></td>
+                            </tr>
+
+                           
+
+                           
+                        </tbody>
+                    </table>
+
+                     
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                             <tbody>
                                 <tr>
-
-                                    <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                          Volume of Bucket, V
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.weight_bucket" />
-                                        </span>
-                                    </td>
-
+                                    <td><label for="avg_bulk_density">Avg loose density Kg/lit</label></td>
+                                 
+									  <td><span t-field="data.avg_bulk_density"/></td>
                                 </tr>
-                                <tr>
-
-                                    <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                         Empty weight of bucket, M1
-
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.empty_bucket" />
-                                        </span>
-                                    </td>
-
-                                </tr>
-
-                                <tr>
-
-                                    <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                        Bucket + Compacted Aggregate
-                                            
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.bucket_compact"/>
-                                        </span>
-                                    </td>
-
-
-
-                                </tr>
-                                <tr>
-
-                                    <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                    Bucket + Loose Aggregate
-                                            
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.bucket_loos"/>
-                                        </span>
-                                    </td>
-
-                                </tr>
-
-                                <tr>
-
-                                    <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                      Loose Bulk Density
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.loose_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-
-                                     <td style="text-align: ">
-                                        <span style="text-align: center;">
-                                 Compacted Bulk Density
-
-                                        </span>
-                                    </td>
-
-                                    <td style="text-align: center;">
-                                        <span style="text-align: center;">
-                                            <span t-field="data.compact_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
-                                        </span>
-                                    </td>
-
-                                </tr>
-
-
+                             
                             </tbody>
-
                         </table>
-
                     </div>
+
+
+                    <div t-if="data.compacted_density_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','6987456gg-a310-4015-bc11-28a85c53ac83')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','6987456gg-a310-4015-bc11-28a85c53ac83')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+
+				
+					<table class="table table-sm table-bordered custom_table_borders" invisible="not compacted_density_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Sample 1</th>
+                                <th>Sample 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Wt of compacted aggregrage +measuring cylinder(C) (Kg)</span></td>
+                                
+								<td><span t-field="data.wt_of_compact"/></td>
+								<td><span t-field="data.wt_of_compact1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Compacted bulk density (Kg)</span></td>
+                                
+								<td><span t-field="data.compact_bulk"/></td>
+								<td><span t-field="data.compact_bulk1"/></td>
+                            </tr>
+                           
+
+                           
+
+                           
+                        </tbody>
+                    </table>
+
+                     
+                       
+
+						 <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_compacted">Avg Compacted Density (Kg)</label></td>
+                                 
+									  <td><span t-field="data.avg_compacted"/></td>
+                                </tr>
+                             
+                            </tbody>
+                        </table>
+			
+
+					</div>
 
 
                         <!-- 4. Bulking of Sand -->
