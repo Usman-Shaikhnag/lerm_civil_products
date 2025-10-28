@@ -37,6 +37,10 @@ class Material(models.Model):
     source_sample = fields.Char(string="Source Sample")
     test_method_adopted = fields.Char(string="Test Method Adopted")
 
+    report_header_ids = fields.One2many("lerm.header.line", "product_id", string="Test Readings")
+    
+    
+
     @api.depends('is_sample', 'is_product_based_calculation')
     def _compute_visibility_flags(self):
         for rec in self:
@@ -305,3 +309,17 @@ class ProductProduct(models.Model):
 #     # def _compute_pricelist(self):
 #     #     # import wdb; wdb.set_trace();
 #     #     self.pricelist_id = self.move_id.pricelist_id.id 
+
+class HeaderDataLine(models.Model):
+    _name = 'lerm.header.line'
+    # _rec_name = 'qty'
+    
+    product_id = fields.Many2one('product.template')
+    
+    issue_no = fields.Integer(string="Issue No",digits=(12,2))
+    issue_date = fields.Date(string="Issue Date")
+
+    revision_no = fields.Integer(string="Revision No",digits=(12,2))
+    revision_date = fields.Date(string="Revision Date")
+
+    is_active = fields.Boolean(string="Is Active")
