@@ -6,12 +6,7 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='vat']" position="before">
-                    <field name="pan_no"/>
-                    <field name="consultant"/>
-                    <field name="quality_manager"/>
-                    <field name="quality_manager_no"/>
-                </xpath>
+                
                 <xpath expr="//field[@name='vat']" position="attributes">
                     <attribute name="string">GST</attribute>
                 </xpath>
@@ -27,9 +22,7 @@
                         </field>
                     </page>
                 </xpath>
-                <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="msme_reg_no"/>
-                </xpath>
+                
                 <xpath expr="//page[@name='internal_notes']" position="after">
                     <page string="PO Number">
                         <field name="po_numbers" nolabel="1" >
