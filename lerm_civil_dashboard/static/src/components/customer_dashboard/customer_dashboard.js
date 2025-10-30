@@ -59,7 +59,7 @@ class CustomerDashboard extends Component {
     } = this.filter_state;
 
     try {
-      const result = await this.rpc("/lerm/customer/overview/data", {
+      const result = await jsonrpc("/lerm/customer/overview/data", {
         start_date,
         end_date,
         discipline: activeDiscipline,
