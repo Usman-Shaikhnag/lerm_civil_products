@@ -21,11 +21,21 @@
                         <table style="width:100%;font-size:9px;margin-top:3px;">
                             <tr>
                                 <td style="text-align:left;">
-                                    Issue No. and Date: (03) and 01/01/2021
+                                  <t t-foreach="o.material.report_header_ids" t-as="hdr">
+                                        <t t-if="hdr.is_active">
+                                            Issue No. and Date: (<span t-esc="hdr.issue_no"/>) and <span t-esc="hdr.issue_date.strftime('%d/%m/%y') if hdr.issue_date else ''"/>
+                                        </t>
+                                    </t>
                                 </td>
                                 <td style="text-align:right;">
-                                    Revision No. and Date: 02 and 22/07/2022
+                                 <t t-foreach="o.material.report_header_ids" t-as="hdr">
+                                        <t t-if="hdr.is_active">
+                                            Revision No. and Date: (<span t-esc="hdr.revision_no"/>) and <span t-esc="hdr.revision_date.strftime('%d/%m/%y') if hdr.revision_date else ''"/>
+                                        </t>
+                                    </t>
+                                    
                                 </td>
+                                
                             </tr>
 
                         </table>
