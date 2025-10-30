@@ -63,9 +63,7 @@
 
 								<td><strong>Starting Date</strong>: </td>
 								<td>
-									<!-- <t t-if="data.rock_child_lines">
-										<span t-field="data.rock_child_lines[0].date_received"/>
-									</t> -->
+							        <span t-field="o.start_date" style="margin-right:10px;"/>
 								</td>
 							
 							</tr>
@@ -73,13 +71,11 @@
 							<tr>
 
 								<td><strong>Type of Sample &amp; Condition</strong>: </td>
-								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								<td ><span t-field="o.material.name"/></td>
 
 							<td><strong>Completion Date</strong>: </td>
 								<td>
-									<!-- <t t-if="data.rock_child_lines">
-										<span t-field="data.rock_child_lines[0].date_testing"/>
-									</t> -->
+								<span t-field="o.end_date" />
 								</td>
 						</tr>
 
@@ -90,7 +86,7 @@
 
 						</div>
                         
-                        <table>
+                        <table  style="margin-top:50px">
                             <tr cols="12" style="background-color:#f9f9f9;">
                                 <td rowspan="2" style="text-align: center;"><b>Sr No</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Location</b></td>
@@ -147,7 +143,7 @@
 								
 							</tr>
 
-							<tr cols="12" style="background-color:#f9f9f9;">
+							<tr cols="12" >
                                 <td colspan="1" style="text-align: center;"><b>1</b></td>
                                 <td colspan="1" style="text-align: center;"><b><span t-field="data.lab_id1" /></b></td>
                                 
@@ -173,35 +169,26 @@
                         </table>
 
 
-						<div style="margin-top:5px" class="noteContainer">
-							<table class="table table-bordered">
+						<div style="margin-top:50px" class="noteContainer">
+						<table >
 							<tr>
-								<td style="padding: 5px; font-style: italic; font-size: 12px;">
-									<b>Remarks:-</b>
-									&#160;&#160;(1) Refer to Annexure- I to know environmental and test conditions
-									&#160;&#160;(2) *Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter
-									&#160;&#160;(3) Mode of failure for UCS test: A] Axial B] Shear C] Multiple Fracturing D] Along foliation  E] Y shaped  
-									&#160;&#160;(4) Orientation of sample for Point load strength index test:  A1] Axial B1] Diametric
-								
-								</td>
-							</tr>
+							
+								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
+									<b>Remarks:</b><br/><br/>
+									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
+									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
 
-							<tr>
-								<td style="padding: 5px; font-style: italic; font-size: 12px;">
-									<b>Notes:-</b>
-									&#160;&#160;a. The information marked with an #  received from customer
-									&#160;&#160;b. The results listed refer only to tested parameters and sample as received from customer
-									&#160;&#160;c. The balance samples if any will be discarded  after 15 days from the date of issue of test certificate unless otherwise specified.
-									&#160;&#160;d.This document shall not be reproduced in part or full without the approval of Genstru.
-									&#160;&#160;e. ^represents unsoaked test
-									&#160;&#160;f. $ represents crumbled in water
-								
+									<b>Notes:-</b><br/><br/>
+								    	a. The information marked with an # received from customer<br/><br/>
+							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
+							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
+							        	d. This document shall not be reproduced in part or full without the approval of Genstru.
 								</td>
 							</tr>
-						</table>
+							</table  >
 						</div>
 						<div class="signatureContainer girdgird">
-							<div>
+							<!-- <div>
 								<div>
 									<b>
 										Prepared By
@@ -220,23 +207,22 @@
 										(<span t-esc="eln.sample_id.check_by.job_title"/>)
 									</b>
 								</div>
-							</div>
+							</div> -->
 
-							<div>
+							<!-- <div>
 						<div>
-							<!-- <img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/> -->
-						</div>
+						</div> -->
 
-						<div>
+						<!-- <div>
 									<b>
 										Stamp
 									</b>
 									
-								</div>
+								</div> -->
 				
-					</div>
+					<!-- </div> -->
 							
-							<div>
+							<!-- <div>
 								<div>
 									<b>
 										Reviewed &amp; Issued By
@@ -258,16 +244,32 @@
 									</b>
 								</div>
 								
-								<!-- <div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div> -->
-							</div>
-						</div>
-						<!-- <div style="text-align:center;margin-top:10px">
-							......End of Report......
-						</div> -->
+
+							</div> -->
+						<!-- </div> -->
+
+				<table style="width:100%; border:1px solid black; border-collapse:collapse; font-family:Arial; font-size:12px; text-align:center;">
+						<tr style="height:100px;">
+							<!-- तीनही कॉलम उंचीत समान -->
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Assistant Technical Manager</b><br/>
+								<span style="font-size:12px;">Prepared By</span>
+							</td>
+
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Stamp</b>
+							</td>
+
+							<td style="width:33.33%; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Technical Manager: </b><br/>
+								<span style="font-size:12px;">Reviewed &amp; Issued By</span>
+							</td>
+						</tr>
+
+					</table>
+
+                   </div>
+					
 					</div>
 
 
