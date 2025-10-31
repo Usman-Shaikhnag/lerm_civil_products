@@ -135,9 +135,11 @@
                                  
                                     <th style="border: 1px solid black; padding: 8px;" rowspan="2">Cross sectional area (mm&amp;sup2;)</th>
                                     <th style="border: 1px solid black; padding: 8px;" rowspan="2">Maximum Load (kN)</th>
-                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Type of Failure</th>
+                                    <!-- <th style="border: 1px solid black; padding: 8px;" rowspan="2">Type of Failure</th> -->
                                     <th style="border: 1px solid black; padding: 8px;" rowspan="2">Compressive strength (N/mm&amp;sup2;)</th>
                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2"> Average Compressive strength (N/mm&amp;sup2;)</th>
+
+                                      <th style="border: 1px solid black; padding: 8px;" rowspan="2">Type of Failure</th>
                                 </tr>
                                 <tr>
 
@@ -164,7 +166,7 @@
     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['relative_humidity']"/></td>
     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['load']"/></td>
     <td style="border: 1px solid black; padding: 6px;"><span t-esc="'%.2f' % r['cross_sectional_area']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td>
+    <!-- <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td> -->
     <td style="border: 1px solid black; padding: 6px;"> <span t-esc="'%.2f' % r['compressive_strength']"/></td>
 
     
@@ -175,6 +177,9 @@
     </t>
 
     <t t-set="line_count" t-value="line_count + 1"/>
+
+
+     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td>
    </tr>
 
    </tbody>

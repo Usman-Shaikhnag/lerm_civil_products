@@ -592,9 +592,10 @@
 
 								<td><strong>Starting Date</strong>: </td>
 								<td>
-									<t t-if="data.rock_child_lines">
+									<!-- <t t-if="data.rock_child_lines">
 										<span t-field="data.rock_child_lines[0].date_received"/>
-									</t>
+									</t> -->
+									 <span t-field="o.start_date" style="margin-right:10px;"/>
 								</td>
 							
 							</tr>
@@ -606,9 +607,10 @@
 
 							<td><strong>Completion Date</strong>: </td>
 								<td>
-									<t t-if="data.rock_child_lines">
-										<span t-field="data.rock_child_lines[0].date_testing"/>
-									</t>
+									<!-- <t t-if="data.rock_child_lines">
+										<span t-field="data.rock_child_lines[0].date_testing"/> -->
+										<span t-field="o.end_date" />
+									<!-- </t> -->
 								</td>
 						</tr>
 
@@ -813,67 +815,52 @@
 							</tr>
 						</table>
 						</div>
-						<div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								<div style="height:20px">
+						
+							
+							<div style="margin-top:50px" class="noteContainer">
+						<table >
+							<tr>
+							
+								<td style="padding: 5px; font-size: 15px; line-height: 18px;">
+									<b>Remarks:</b><br/><br/>
+									    
+									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
+										W-Wearing Surfaces , NW-Non Wearing Surfaces<br/><br/>
 
-								</div>
-								<div>
-									<b>
-										<span t-esc="eln.technician.name"/>
-									</b>
-								</div>
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.check_by.job_title"/>)
-									</b>
-								</div>
-							</div>
-
-							<div>
-						<div>
-							<!-- <img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/> -->
+									<b>Notes:-</b><br/><br/>
+								    	a. The information marked with an # received from customer<br/><br/>
+							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
+							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
+							        	d. This document shall not be reproduced in part or full without the approval of Genstru.
+								</td>
+							</tr>
+							</table  >
 						</div>
+
+						<div class="signatureContainer girdgird">
+							<table style="width:100%; border:1px solid black; border-collapse:collapse; font-family:Arial; font-size:12px; text-align:center;">
+						    <tr style="height:100px;">
+							
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Assistant Technical Manager</b><br/>
+								<span style="font-size:12px;">Prepared By</span>
+							</td>
+
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Stamp</b>
+							</td>
+
+							<td style="width:33.33%; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Technical Manager: </b><br/>
+								<span style="font-size:12px;">Reviewed &amp; Issued By</span>
+							</td>
+						</tr>
+
+					</table>
+						
 				
 					</div>
-							
-							<div>
-								<div>
-									<b>
-										Reviewed &amp; Issued By
-									</b>
-									
-								</div>
-								<div style="height:20px">
-
-								</div>
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-								<!-- <div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div> -->
-							</div>
-						</div>
-						<!-- <div style="text-align:center;margin-top:10px">
-							......End of Report......
-						</div> -->
+						
 					</div>
 
 
