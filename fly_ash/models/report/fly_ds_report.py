@@ -109,7 +109,7 @@ class FlyashReport(models.AbstractModel):
         }
         model = eln.get_product_base_calc_line(data).ir_model.model
         flyash_data = self.env[model].search([("id","=",eln.model_id)])
-        print(flyash_data.normal_consistency_fly_1)
+        # print(flyash_data.normal_consistency_fly_1)
         return {
             'eln': eln,
             'flyash': flyash_data,
