@@ -120,86 +120,19 @@
                                 <field name='room_temp' string="Room Temp (°C)"/>
                                 <field name='relative_humidity' string="RH (%)"/>
                                 <field name="load" string="Load (kN)"/>
-                                <field name='cross_sectional_area' string="Area (mm²)" readonly="1"/>
-                                <field name='compressive_strength' string="Strength (N/mm²)" readonly="1"/>
+                                <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]"/>
+                                <field name='compressive_strength' string="Strength (N/mm²)" readonly="1" digits ="[16,2]"/>
                                 <field name='avg_compressive_strength' string="Avg Strength (N/mm²)" readonly="1"/>
                                 <field name='type_of_failure' string="Type of Failure"/>
                             </tree>
                         </field> 
                         
                         <!-- Calculate Average Button -->
-                        <button type="object" name="action_calculate_avg_strength" class="btn btn-primary mb-2">
+                        <!-- <button type="object" name="action_calculate_avg_strength" class="btn btn-primary mb-2">
                             <i class="fa fa-calculator mr-1"/> Calculate Average
-                        </button>
+                        </button> -->
                             
-                        <!-- Results Summary -->
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="average_strength">Average Compressive Strength</label></td>
-                                    <td><field name="average_strength"/> N/mm²</td>
-                                </tr>
-                                <tr>
-                                    <td><label for="confirmity">Conformity</label></td>
-                                    <td>
-                                        <field name="confirmity" style="color: green;" invisible="confirmity != 'pass'"/>
-                                        <field name="confirmity" style="color: red;" invisible="confirmity != 'fail'"/>
-                                        <field name="confirmity" style="color: black;" invisible="confirmity != 'not_applicable'"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><label for="nabl">NABL</label></td>
-                                    <td>
-                                        <field name="nabl" style="color: green;" invisible="nabl != 'pass'"/>
-                                        <field name="nabl" style="color: red;" invisible="nabl != 'fail'"/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <!-- Permissible Range -->
-                        <div class="custom_table_borders" style="width:100%; margin-top: 20px;">
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <thead>
-                                    <tr>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                            Permissible Range
-                                        </th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                            N/mm²
-                                        </th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                            kN
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                            <div class="o_form_label">7 Days</div>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="days_7_kmm" nolabel="1"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="days_7_n" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                            <div class="o_form_label">28 Days</div>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="days_28_kmm" nolabel="1"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="days_28_n" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
+                    
                         <!-- Hidden Grade Lines -->
                         <field name="grade_child_lines" nolabel="1" class="custom_table_borders" invisible="1">
                             <tree editable="bottom">

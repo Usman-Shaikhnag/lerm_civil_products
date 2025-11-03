@@ -1,279 +1,327 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="view_mechanical_concrete_cube_form" model="ir.ui.view">
-            <field name="name">mechanical.concrete.cube.form</field>
-            <field name="model">mechanical.concrete.cube</field>
-            <field name="arch" type="xml">
-                <form string="Compressive Strength of Concrete Cube">
-                    <sheet>
-                        <!-- Header Information -->
-                        <group>
-                            <group>
-                                <div class="o_form_label">Issue No.: -</div>
-                                <div class="o_form_label">Revision No</div>
-                            </group>
-                            <group>
-                                <div class="o_form_label">"Bhumanthan", Survey No. 50/1, Parkhe Vasti, Near Hirai Sitai Mandir, Hinjewadi, Pune- 411057.</div>
-                            </group>
-                        </group>
+	
+	
+	 <template id="compresive_concrete_cube_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			
+			<!-- <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln_general"> -->
+			<t t-call="lerm_civil.genstru_layout_header_footer_lerm_eln">
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report on GGBS Mechanical</b></p>
+				</div> -->
+				<div class="container_eln">
+					<div t-foreach="eln" t-as="o">
+					
+						 <table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
+							<tr>
+								<td ><strong>Mechanical Testing</strong>: </td>
+								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								<td ><strong>URL NO</strong>: </td>
+								<td style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td>
+							</tr>
 
-                        <group>
-                            <group>
-                                <div class="o_form_label">Issue Date: -</div>
-                                <div class="o_form_label">Revision Date:</div>
-                            </group>
-                            <group>
-                                <div class="o_form_label">TEST REPORT-CONCRETE CUBE/CORE SAMPLES-GCPL/QF/7-8-E</div>
-                            </group>
-                        </group>
+							<tr>
+								<td><strong>Project Name</strong>: </td>
+								<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 
-                        <group>
-                            <div class="o_form_label">W: www.genstru.com E: email@genstru.in</div>
-                        </group>
+								<td><strong>Date of Report</strong>: </td>
+									
+								<td >
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								</td>
+							</tr>
+						
+							
+						
+							<tr>
+							<td style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
+							<td style="padding-left: 10px;width:25%;">
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+								<!-- <td><strong>Date Sample Received</strong>: </td> -->
+								<!-- <td >
+								<span t-field="o.sample_id.sample_received_date"/>
+								</td > -->
+								
 
-                        <separator/>
+								<td><strong>Date Sample Received</strong>:</td>
+								<td>
+									<!-- <t t-if="ggbs.rock_child_lines">
+										<span t-field="data.rock_child_lines[0].date_received"/>
+									</t> -->
+								</td>
+							</tr>
+							<tr>
+								<td><strong>Report No.</strong>: </td>
+								<td></td>
 
-                        <!-- Mechanical Testing Section -->
-                        <div class="o_form_label">Mechanical Testing</div>
-                        <div class="o_form_label">Building material</div>
-                        <div class="o_form_label">ULR-</div>
+								<td><strong>Starting Date</strong>: </td>
+								<td>
+									<!-- <t t-if="data.rock_child_lines">
+										<span t-field="data.rock_child_lines[0].date_received"/>
+									</t> -->
+								</td>
+							
+							</tr>
+							
+							<tr>
 
-                        <separator/>
+								<td><strong>Type of Sample &amp; Condition</strong>: </td>
+								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
 
-                        <!-- Project Information -->
-                        <group>
-                            <group>
-                                <label for="project_name" string="Project Name:"/>
-                                <field name="project_name"/>
-                            </group>
-                            <group>
-                                <div class="o_form_label">Date of Report: DD/MM/YYYY</div>
-                            </group>
-                        </group>
+							<td><strong>Completion Date</strong>: </td>
+								<td>
+									<!-- <t t-if="data.rock_child_lines">
+										<span t-field="data.rock_child_lines[0].date_testing"/>
+									</t> -->
+								</td>
+						</tr>	
+						</table>
+					</div>
 
-                        <group>
-                            <group>
-                                <label for="customer_address" string="Name and Address of Customer:"/>
-                                <field name="customer_address"/>
-                            </group>
-                            <group>
-                                <div class="o_form_label">Date Sample Received: DD/MM/YYYY</div>
-                            </group>
-                        </group>
 
-                        <group>
-                            <group>
-                                <label for="report_no" string="Report No.:"/>
-                                <field name="report_no"/>
-                            </group>
-                            <group>
-                                <div class="o_form_label">Starting Date: DD/MM/YYYY</div>
-                            </group>
-                        </group>
+                   <div>
+                
+                        <div style="margin-top: 30px;">
+                            <!-- Type of Sample Details -->
+                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px;">
+                                <tr>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><strong>Type of Sample:</strong></td>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><span t-field="data.type_of_sample"/></td>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><strong>Grade of concrete:</strong></td>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><span t-field="o.grade_id.grade"/></td>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><strong>Curing Condition:</strong></td>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><span t-field="data.curing_condition"/></td>
+                                </tr>
+                            </table>
 
-                        <group>
-                            <group>
-                                <label for="type_of_sample" string="Type of Sample:"/>
-                                <field name="type_of_sample"/>
-                                <label for="grade" string="Grade of concrete:"/>
-                                <field name="grade"/>
-                                <label for="curing_condition" string="Curing Condition:"/>
-                                <field name="curing_condition"/>
-                            </group>
-                            <group>
-                                <div class="o_form_label">Completion Date: DD/MM/YYYY</div>
-                            </group>
-                        </group>
+                              <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px;">
+                                <tr>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><strong>Details of Machine:</strong></td>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><span t-field="data.machine_details"/></td>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><strong>Loading capacity:</strong></td>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><span t-field="data.loading_capacity"/></td>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><strong>Calibration date:</strong></td>
+                                    <td style="border: 1px solid #000; padding: 8px; width: 16%;"><span t-field="data.calibration_date"/></td>
+                                </tr>
+                            </table>
+                    </div>
 
-                        <!-- Machine Details -->
-                        <group>
-                            <group>
-                                <label for="machine_details" string="Details of Machine:"/>
-                                <field name="machine_details"/>
-                                <label for="loading_capacity" string="Loading capacity:"/>
-                                <field name="loading_capacity"/>
-                                <label for="calibration_date" string="Calibration date:"/>
-                                <field name="calibration_date"/>
-                            </group>
-                            <group>
-                                <label for="structure_details" string="Details of the structure:"/>
-                                <field name="structure_details"/>
-                            </group>
-                        </group>
+                    <!-- ADDED TABLE FROM IMAGE -->
+                    <div style="margin-top: 30px;">
+                        <!-- Main Test Results Table -->
+                       <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                            <thead>
+                                <tr style="background-color:#f0f0f0; text-align: center;">
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Sr No.</th>
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Identification Mark</th>
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Casting</th>
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Testing</th>
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Age Age of Specimen (days)</th>
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Room temperature (&amp;deg;C)</th>
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Relative Humidity (%)</th>
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Weight of cube (gms)</th>
+                                    <th style="border: 1px solid black; padding: 8px;" colspan="2"> Plan Dimensions of Testing Faces (mm)</th>
+                                             
+                                    
+                                 
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Cross sectional area (mm&amp;sup2;)</th>
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Maximum Load (kN)</th>
+                                    <!-- <th style="border: 1px solid black; padding: 8px;" rowspan="2">Type of Failure</th> -->
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Compressive strength (N/mm&amp;sup2;)</th>
+                                   <th style="border: 1px solid black; padding: 8px;" rowspan="2"> Average Compressive strength (N/mm&amp;sup2;)</th>
 
-                        <separator/>
+                                      <th style="border: 1px solid black; padding: 8px;" rowspan="2">Type of Failure</th>
+                                </tr>
+                                <tr>
 
-                        <!-- Test Results Table -->
-                        <div class="o_form_label">Test Results</div>
-                        <field name="child_lines">
-                            <tree editable="bottom">
-                                <field name="sr_no" string="Sr.No."/>
-                                <field name="id_mark" string="Identification Mark"/>
-                                <field name="dt_of_casting" string="Date of Casting"/>
-                                <field name="dt_of_testing1" string="Date of Testing"/>
-                                <field name="days" string="Age of Specimen (days)"/>
-                                <field name="room_temp" string="Room temperature"/>
-                                <field name="relative_humidity" string="Relative Humidity"/>
-                                <field name="wt_sample" string="Weight of cube"/>
-                                <field name="length" string="Length"/>
-                                <field name="diameter" string="Diameter"/>
-                                <field name="cross_sectional_area" string="Cross sectional area"/>
-                                <field name="load" string="Maximum Load"/>
-                                <field name="compressive_strength" string="Compressive strength"/>
-                                <field name="avg_compressive_strength" string="Average Compressive strength"/>
-                                <field name="type_of_failure" string="Type of Failure"/>
-                            </tree>
-                        </field>
-
-                        <!-- Grade Reference Table -->
-                        <div class="o_form_label">Grade Reference Values</div>
-                        <field name="grade_child_lines">
-                            <tree editable="bottom">
-                                <field name="sr_no" string="Sr.No."/>
-                                <field name="grade1" string="Grade"/>
-                                <field name="sd" string="Standard Deviation"/>
-                            </tree>
-                        </field>
-
-                        <!-- Calculations Section -->
-                        <group>
-                            <div class="o_form_label">Calculations</div>
-                            <field name="area_of_cube" string="Area of Cube (mm²)" readonly="1"/>
-                            <field name="average_strength" string="Average Compressive Strength (N/mm²)" readonly="1"/>
-                            
-                            <group string="7 Days Calculation">
-                                <field name="days_7_kmm" string="Strength (N/mm²)" readonly="1"/>
-                                <field name="days_7_n" string="Load (kN)" readonly="1"/>
-                            </group>
-                            
-                            <group string="28 Days Calculation">
-                                <field name="days_28_kmm" string="Strength (N/mm²)" readonly="1"/>
-                                <field name="days_28_n" string="Load (kN)" readonly="1"/>
-                            </group>
-                        </group>
-
-                        <!-- Age and Testing Information -->
-                        <group>
-                            <field name="age_of_days" string="Age of Testing"/>
-                            <field name="date_of_casting" string="Date of Casting" readonly="1"/>
-                            <field name="date_of_testing" string="Date of Testing" readonly="1"/>
-                            <field name="age_of_test" string="Age of Test (days)" readonly="1"/>
-                            <field name="difference" string="Difference from Required Age" readonly="1"/>
-                        </group>
-
-                        <!-- Results and Compliance -->
-                        <group>
-                            <field name="confirmity" string="Conformity" readonly="1"/>
-                            <field name="nabl" string="NABL Compliance" readonly="1"/>
-                        </group>
-
-                        <separator/>
-
-                        <!-- Remarks Section -->
-                        <div class="o_form_label">Remarks:</div>
-                        <div class="o_form_label">1) *Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter</div>
-                        <div class="o_form_label">2) Mode of failure for Compressive strength of Cube Test : A] Non-Explosive B] Semi-Explosive C] Explosive D]Un-Satisfactory</div>
-                        <div class="o_form_label">3) Mode of failure for Compressive strength of Cylinder Test : A] Cone B] Cone and Split C] Cone and Shear D] Shear E] Columnar</div>
-                        <div class="o_form_label">4) Correction factor for cube is 1 while for Cylinder is 5/4</div>
+                                  <th style="border: 1px solid black; padding: 8px;" colspan="1">Length (mm)</th>
+                                    <th style="border: 1px solid black; padding: 8px;" colspan="1">Diameter (mm)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                         
-                        <div class="o_form_label">Notes:-</div>
-                        <div class="o_form_label">a. The information marked with an # received from customer</div>
-                        <div class="o_form_label">b. The results listed refer only to tested parameters and sample as received from customer</div>
-                        <div class="o_form_label">c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.</div>
-                        <div class="o_form_label">d. This document shall not be reproduced in part or full without the approval of Genstru.</div>
 
-                        <separator/>
 
-                        <!-- Signatures Section -->
-                        <group>
-                            <group>
-                                <div class="o_form_label">Assistant Technical Manager</div>
-                                <div class="o_form_label">Stamp</div>
-                            </group>
-                            <group>
-                                <div class="o_form_label">Authorized Signatory</div>
-                            </group>
-                        </group>
+                                <t t-set="line_count" t-value="0"/>
 
-                        <group>
-                            <group>
-                                <div class="o_form_label">Prepared By</div>
-                            </group>
-                            <group>
-                                <div class="o_form_label">Reviewed &amp; Issued By</div>
-                            </group>
-                        </group>
+<tr t-foreach="data.child_lines" t-as="r" style="text-align: center;">
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['sr_no']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['id_mark']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['wt_sample']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['length']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['diameter']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_casting']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['days']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_testing1']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['room_temp']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['relative_humidity']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['load']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="'%.2f' % r['cross_sectional_area']"/></td>
+    <!-- <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td> -->
+    <td style="border: 1px solid black; padding: 6px;"> <span t-esc="'%.2f' % r['compressive_strength']"/></td>
 
-                        <group>
-                            <group>
-                                <div class="o_form_label">Prepared and Issued By:</div>
-                            </group>
-                            <group>
-                                <div class="o_form_label">Reviewed By:</div>
-                            </group>
-                            <group>
-                                <div class="o_form_label">Approved By:</div>
-                            </group>
-                        </group>
+    
+    <t t-if="(line_count + 3) % 3 == 0">
+        <td style="border: 1px solid black; padding: 6px; text-align: center; vertical-align: middle;" t-att-rowspan="4">
+            <span t-esc="r['avg_compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+        </td>
+    </t>
 
-                        <group>
-                            <group>
-                                <div class="o_form_label">Quality manager</div>
-                            </group>
-                            <group>
-                                <div class="o_form_label">Technical Manager</div>
-                            </group>
-                            <group>
-                                <div class="o_form_label">Managing Director</div>
-                            </group>
-                        </group>
+    <t t-set="line_count" t-value="line_count + 1"/>
 
-                        <div class="o_form_label">Controlled Copy</div>
 
-                    </sheet>
+     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td>
+   </tr>
+
+   </tbody>
+      </table>
+
                     
-                    <footer>
-                        <button name="action_calculate_avg_strength" string="Calculate Average Strength" type="object" class="btn-primary"/>
-                        <button name="open_eln_page" string="Update ELN" type="object" class="btn-secondary"/>
-                        <button string="Close" special="cancel" class="btn-default"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+          </div>
+                     <!-- Static sample data -->
+                                <!-- <tr   t-foreach="data.child_lines" t-as="r"  style="text-align: center;">
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['sr_no']" /></td>
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['id_mark']" /></td>
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['wt_sample']" /></td>
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['length']" /></td>
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['diameter']" /></td>
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_casting']" /></td>
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['days']" /></td>
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_testing1']" /></td>
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['room_temp']" /></td>
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['relative_humidity']" /></td>
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['load']" /></td>
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="'%.2f' % r['cross_sectional_area']"/></td> -->
+                                    <!-- <td style="border: 1px solid black; padding: 6px;"> <span t-esc="'%.2f' % r['compressive_strength']"/></td> -->
+                                    
+                                    <!-- <t t-if="line_count % 3 == 0">
+										<td style="text-align: center; vertical-align: middle;" t-att-rowspan="3">
+											<span t-esc=" r['compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+										</td>
+									</t>
+								
 
-        <!-- Tree View -->
-        <record id="view_mechanical_concrete_cube_tree" model="ir.ui.view">
-            <field name="name">mechanical.concrete.cube.tree</field>
-            <field name="model">mechanical.concrete.cube</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name"/>
-                    <field name="project_name"/>
-                    <field name="report_no"/>
-                    <field name="average_strength"/>
-                    <field name="confirmity"/>
-                    <field name="nabl"/>
-                </tree>
-            </field>
-        </record>
 
-        <!-- Action -->
-        <record id="action_mechanical_concrete_cube" model="ir.actions.act_window">
-            <field name="name">Concrete Cube Tests</field>
-            <field name="res_model">mechanical.concrete.cube</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="view_mechanical_concrete_cube_tree"/>
-        </record>
+								<t t-set="line_count" t-value="line_count + 1"/>
+								
 
-        <!-- Menu Item - Commented out since the parent doesn't exist -->
-        <!-- You can uncomment and change the parent to an existing menu when you know the correct one -->
-        <!-- 
-        <menuitem id="menu_mechanical_concrete_cube" 
-                  name="Concrete Cube Tests" 
-                  parent="put_correct_parent_here"
-                  action="action_mechanical_concrete_cube"
-                  sequence="10"/>
-        -->
-    </data>
+
+                                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']" /></td>
+                                </tr> -->
+                                                   
+    
+                       
+
+                    <!-- Machine Details -->
+                    <group>
+                        <group>
+                            <label for="machine_details" string="Details of Machine:"/>
+                            <field name="machine_details"/>
+                            <label for="loading_capacity" string="Loading capacity:"/>
+                            <field name="loading_capacity"/>
+                            <label for="calibration_date" string="Calibration date:"/>
+                            <field name="calibration_date"/>
+                        </group>
+                        <group>
+                            <label for="structure_details" string="Details of the structure:"/>
+                            <field name="structure_details"/>
+                        </group>
+                    </group>
+
+                    <separator/>
+
+                    <!-- Age and Testing Information -->
+                    <group>
+                        <field name="age_of_days" string="Age of Testing"/>
+                        <field name="date_of_casting" string="Date of Casting" readonly="1"/>
+                        <field name="date_of_testing" string="Date of Testing" readonly="1"/>
+                        <field name="age_of_test" string="Age of Test (days)" readonly="1"/>
+                        <field name="difference" string="Difference from Required Age" readonly="1"/>
+                    </group>
+
+                    <!-- Results and Compliance -->
+                    <group>
+                        <field name="confirmity" string="Conformity" readonly="1"/>
+                        <field name="nabl" string="NABL Compliance" readonly="1"/>
+                    </group>
+
+                    <separator/>
+
+
+                     <!-- <div style="margin-top: 30px;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                            <tr t-foreach="data.child_lines" t-as="r" style="font-weight: bold;">
+                                <td style="border: 1px solid black; padding: 10px; text-align: left; width: 70%;">
+                                    Average Compressive Strength
+                                </td>
+                                <td style="border: 1px solid black; padding: 10px; text-align: center; width: 30%;">
+
+                                <span t-esc="'%.2f' % r['avg_compressive_strength']" />
+                                    <span field="data.avg_compressive_strength" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div> -->
+
+                    <!-- Remarks Section -->
+
+                    <div style="margin-top:50px" class="noteContainer">
+						<table >
+							<tr>
+							
+								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
+									<b>Remarks:</b><br/><br/>
+									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
+									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
+
+									<b>Notes:-</b><br/><br/>
+								    	a. The information marked with an # received from customer<br/><br/>
+							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
+							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
+							        	d. This document shall not be reproduced in part or full without the approval of Genstru.
+								</td>
+							</tr>
+							</table  >
+						</div>
+						<div class="signatureContainer girdgird">
+							
+
+				<table style="width:100%; border:1px solid black; border-collapse:collapse; font-family:Arial; font-size:12px; text-align:center;">
+						<tr style="height:100px;">
+							
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Assistant Technical Manager</b><br/>
+								<span style="font-size:12px;">Prepared By</span>
+							</td>
+
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Stamp</b>
+							</td>
+
+							<td style="width:33.33%; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Technical Manager: </b><br/>
+								<span style="font-size:12px;">Reviewed &amp; Issued By</span>
+							</td>
+						</tr>
+
+					</table>
+
+                   </div>
+					
+					</div>
+               </div>
+               
+               
+            </t>
+        </t>
+    </template>
 </odoo>
