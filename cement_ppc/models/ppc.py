@@ -3,12 +3,15 @@ from odoo.exceptions import UserError,ValidationError
 from datetime import timedelta
 import math
 from statistics import mean
+from math import sqrt
+from decimal import Decimal, ROUND_HALF_UP
 
 
-class CementPPC(models.Model):
+class PPCCementNormalConsistency(models.Model):
     _name = "cement.ppc"
     _inherit = "lerm.eln"
     _rec_name = "name"
+    fineness_cement_name = fields.Char(string="Fineness Cement Name")
 
     name = fields.Char("Name",default="Cement")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
@@ -16,13 +19,24 @@ class CementPPC(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-    start_date = fields.Date(string="Start Date", compute="_compute_start_date", store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+
+    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+
+    @api.onchange('eln_ref')
+    def compute_date_of_casting(self):
+        for record in self:
+            if record.eln_ref.sample_id:
+                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).date_casting
+                record.date_of_casting = sample_record
+            else:
+                record.date_of_casting = None
 
     @api.depends('eln_ref')
     def _compute_size_id(self):
         if self.eln_ref:
             self.size_id = self.eln_ref.size_id.id
+    start_date = fields.Date(string="Start Date", compute="_compute_start_date", store=True)
 
     @api.depends('eln_ref.start_date')
     def _compute_start_date(self):
@@ -37,104 +51,74 @@ class CementPPC(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
-    ## Normal Consistency
-
-    fineness_cement_name = fields.Char("Name",default="Fineness of Cement by Dry Sieving")
-    fineness_cement_visible = fields.Boolean("Plan Area Visible",compute="_compute_visible")
-
-    fneness_cement_lines = fields.One2many('fineness.cement.ppc.line','parent_id',string="Fineness Cement")
-
-    avg_cement = fields.Float(string="Avg Fineness Cement",compute="_compute_avg_wt_of_residue")
-
-    avg_cement_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_cement_conformity")
-
-    avg_cement_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_avg_cement_nabl")
-
-
-    @api.depends('avg_cement','eln_ref','grade')
-    def _compute_avg_cement_conformity(self):
-        for record in self:
-            record.avg_cement_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145hjy14-372f-4775-9bcb-e9dd70e6e6df')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145hjy14-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
-            mu_value = line.mu_value
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    # mu_value = line.mu_value
-                    lower = record.avg_cement - record.avg_cement*mu_value
-                    upper = record.avg_cement + record.avg_cement*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.avg_cement_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_cement_conformity = 'fail'
-
-    @api.depends('avg_cement','eln_ref','grade')
-    def _compute_avg_cement_nabl(self):
-        
-        for record in self:
-            record.avg_cement_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145hjy14-372f-4775-9bcb-e9dd70e6e6df')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145hjy14-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
-            
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_cement - record.avg_cement*mu_value
-            upper = record.avg_cement + record.avg_cement*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_cement_nabl = 'pass'
-                break
-            else:
-                record.avg_cement_nabl = 'fail'
-
-    @api.depends('fneness_cement_lines.wt_of_residue')
-    def _compute_avg_wt_of_residue(self):
-        for rec in self:
-            values = [line.wt_of_residue for line in rec.fneness_cement_lines if line.wt_of_residue is not None]
-            rec.avg_cement = sum(values) / len(values) if values else 0.0
-
-    wt_of_cement_a = fields.Float(string="Weight of the cement sample (a) ",compute="_compute_wt_of_cement_a")
-    cement_passing_b = fields.Float(string="Cement Passing through the 90 Micron sieve (b)",compute="_compute_cement_passing_b")
-    cement_retained_a_b = fields.Float(string="Cement retained in the 90 microns (a-b)",compute="_compute_cement_retained_a_b")
-
-    @api.depends('fneness_cement_lines.wt_of_taken')
-    def _compute_wt_of_cement_a(self):
-        for rec in self:
-            if rec.fneness_cement_lines:
-                # 0th index (first line)
-                rec.wt_of_cement_a = rec.fneness_cement_lines[0].wt_of_taken
-            else:
-                rec.wt_of_cement_a = 0.0
-
-    @api.depends('wt_of_cement_a', 'avg_cement')
-    def _compute_cement_passing_b(self):
-        for rec in self:
-            rec.cement_passing_b = rec.wt_of_cement_a - rec.avg_cement
-
-    @api.depends('avg_cement')
-    def _compute_cement_retained_a_b(self):
-        for rec in self:
-            rec.cement_retained_a_b = rec.avg_cement
-
+   
 
         ## Density of Cement (Le-Chatlier Flask)
 
     density_cement_name = fields.Char("Name",default="Density of Cement (Le-Chatlier Flask)")
     density_cement_visible = fields.Boolean("Density of Cement (Le-Chatlier Flask) Visible",compute="_compute_visible")
 
-    density_cement_lines = fields.One2many('density.cement.ppc.line','parent_id',string="Fineness density")
+    temp_specific = fields.Float("Temp.°C")
+    humidity_specific= fields.Float("Humidity %")
 
-    avg_density = fields.Float(string="Density of Cement g/cm3",compute="_compute_avg_density")
+    temp_water1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
+    temp_water2 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
+
+    temp_water_after1 = fields.Float("Temperature of Water Bath  after One Hour when Flask kept in bath – 0C  ")
+    temp_water_after2 = fields.Float("Temperature of Water Bath  after One Hour when Flask kept in bath – 0C  )")
+
+    initial_kerosene1 = fields.Float("Initial Level of Kerosene after one hour kept in Water Bath(A) – ml")
+    initial_kerosene2 = fields.Float("Initial Level of Kerosene after one hour kept in Water Bath(A) – ml")
+
+    mass1 = fields.Float("Mass of Cement Sample Added in Flask (M) – gms")
+    mass2 = fields.Float("Mass of Cement Sample Added in Flask (M) – gms")
+
+    temp_water_flask1 = fields.Float("Temperature of water bath  when Flask kept in bath after Adding Cement – 0C")
+    temp_water_flask2 = fields.Float("Temperature of water bath  when Flask kept in bath after Adding Cement – 0C")
+
+    temp_water_one1 = fields.Float("Temperature of water bath  after one hour when Flask kept in bath after Adding Cement – 0C")
+    temp_water_one2 = fields.Float("Temperature of water bath  after one hour when Flask kept in bath after Adding Cement – 0C")
+
+
+    final_kerosene1 = fields.Float("Final Level of Kerosene after one hour kept in water bath(B) – ml")
+    final_kerosene2 = fields.Float("Final Level of Kerosene after one hour kept in water bath(B) – ml")
+
+    displaced1 = fields.Float("Displaced Volume after Adding Cement (V) = (B – A) – cm3", store=True, digits=(12, 2))
+    displaced2 = fields.Float("Displaced Volume after Adding Cement (V) = (B – A) – cm3", store=True, digits=(12, 2))
+
+    density1 = fields.Float("Density of Cement Sample (    ) – gms/ cm3", store=True, digits=(12, 2),compute="_compute_values")
+    density2 = fields.Float("Density of Cement Sample (    ) – gms/ cm3", store=True, digits=(12, 2),compute="_compute_values")
+
+
+    avg_density = fields.Float(string="Average Density of Cement Sample – gms/ cm3",compute="_compute_avg_density",store=True)
+
+    @api.depends(
+        'initial_kerosene1', 'final_kerosene1',
+        'initial_kerosene2', 'final_kerosene2',
+        'mass1', 'mass2'
+    )
+    def _compute_values(self):
+        for rec in self:
+            # --- Displaced volume calculations ---
+            rec.displaced1 = (rec.final_kerosene1 or 0.0) - (rec.initial_kerosene1 or 0.0)
+            rec.displaced2 = (rec.final_kerosene2 or 0.0) - (rec.initial_kerosene2 or 0.0)
+
+            # --- Density calculations ---
+            rec.density1 = (rec.mass1 / rec.displaced1) if rec.displaced1 else 0.0
+            rec.density2 = (rec.mass2 / rec.displaced2) if rec.displaced2 else 0.0
+
+    @api.depends('density1', 'density2')
+    def _compute_avg_density(self):
+        for rec in self:
+            # ensure no division by zero
+            d1 = rec.density1 or 0.0
+            d2 = rec.density2 or 0.0
+
+            # compute average only if at least one density exists
+            if d1 and d2:
+                rec.avg_density = (d1 + d2) / 2
+            else:
+                rec.avg_density = 0.0
 
     # specific_gravity = fields.Float(string="Specific Gravity of Cement",compute="_compute_cement_specific")
 
@@ -153,8 +137,8 @@ class CementPPC(models.Model):
     def _compute_avg_density_conformity(self):
         for record in self:
             record.avg_density_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hy-372f-4775-9bcb-e9dd70e6e601h')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hy-372f-4775-9bcb-e9dd70e6e601h')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be88a13b-8bc0-4d32-b8c0-43032c0cdd86')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be88a13b-8bc0-4d32-b8c0-43032c0cdd86')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -174,8 +158,8 @@ class CementPPC(models.Model):
         
         for record in self:
             record.avg_density_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hy-372f-4775-9bcb-e9dd70e6e601h')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hy-372f-4775-9bcb-e9dd70e6e601h')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be88a13b-8bc0-4d32-b8c0-43032c0cdd86')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be88a13b-8bc0-4d32-b8c0-43032c0cdd86')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -189,558 +173,358 @@ class CementPPC(models.Model):
             else:
                 record.avg_density_nabl = 'fail'
 
-    @api.depends('density_cement_lines.density')
-    def _compute_avg_density(self):
-        for rec in self:
-            values = [line.density for line in rec.density_cement_lines if line.density is not None]
-            rec.avg_density = sum(values) / len(values) if values else 0.0
-
-
-
-    ## Fineness by Blaine's Air Permeability
-
-    fineness_blaine_name = fields.Char("Name",default="Fineness by Blaine's Air Permeability")
-    fineness_blaine_visible = fields.Boolean("Fineness by Blaine's Air Permeability Visible",compute="_compute_visible")
-
-    fineness_blaine_lines = fields.One2many('fineness.blaine.ppc.line','parent_id',string="Fineness blaine")
-
-    avg_fineness_blaine = fields.Float(string="Fineness of Cement, m2/kg ",compute="_compute_avg_fineness_blaine")
-
-    avg_fineness_blaine_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_fineness_blaine_conformity")
-
-    avg_fineness_blaine_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_avg_fineness_blaine_nabl")
-
-
-    @api.depends('avg_fineness_blaine','eln_ref','grade')
-    def _compute_avg_fineness_blaine_conformity(self):
-        for record in self:
-            record.avg_fineness_blaine_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210456321t-372f-4775-9bcb-e9dd70214578r')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210456321t-372f-4775-9bcb-e9dd70214578r')]).parameter_table
-            mu_value = line.mu_value
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    # mu_value = line.mu_value
-                    lower = record.avg_fineness_blaine - record.avg_fineness_blaine*mu_value
-                    upper = record.avg_fineness_blaine + record.avg_fineness_blaine*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.avg_fineness_blaine_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_fineness_blaine_conformity = 'fail'
-
-    @api.depends('avg_fineness_blaine','eln_ref','grade')
-    def _compute_avg_fineness_blaine_nabl(self):
-        
-        for record in self:
-            record.avg_fineness_blaine_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210456321t-372f-4775-9bcb-e9dd70214578r')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210456321t-372f-4775-9bcb-e9dd70214578r')]).parameter_table
-            
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_fineness_blaine - record.avg_fineness_blaine*mu_value
-            upper = record.avg_fineness_blaine + record.avg_fineness_blaine*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_fineness_blaine_nabl = 'pass'
-                break
-            else:
-                record.avg_fineness_blaine_nabl = 'fail'
-
-    @api.depends('fineness_blaine_lines.fineness')
-    def _compute_avg_fineness_blaine(self):
-        for rec in self:
-            values = [line.fineness for line in rec.fineness_blaine_lines if line.fineness is not None]
-            rec.avg_fineness_blaine = sum(values) / len(values) if values else 0.0
-
-    k = fields.Float("K :",digits=(12,3))
   
-    e = fields.Float("E :")
 
 
-
-      ## Soundness of Cement
-
-    soundness_cement_name = fields.Char("Name",default="Soundness of Cement")
-    soundness_cement_visible = fields.Boolean("Soundness of Cement Visible",compute="_compute_visible")
-
-    soundness_cement_lines = fields.One2many('soundness.cement.ppc.line','parent_id',string="Soundness")
-
-    avg_soundness_cement = fields.Float(string="Soundness of Cement, m2/kg ",compute="_compute_avg_soundness_cement")
-
-    avg_soundness_cement_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_soundness_cement_conformity")
-
-    avg_soundness_cement_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_avg_soundness_cement_nabl")
-
-
-    @api.depends('avg_soundness_cement','eln_ref','grade')
-    def _compute_avg_soundness_cement_conformity(self):
-        for record in self:
-            record.avg_soundness_cement_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245vfrt77-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245vfrt77-372f-4775-9bcb-e9dd723547htui')]).parameter_table
-            mu_value = line.mu_value
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    # mu_value = line.mu_value
-                    lower = record.avg_soundness_cement - record.avg_soundness_cement*mu_value
-                    upper = record.avg_soundness_cement + record.avg_soundness_cement*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.avg_soundness_cement_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_soundness_cement_conformity = 'fail'
-
-    @api.depends('avg_soundness_cement','eln_ref','grade')
-    def _compute_avg_soundness_cement_nabl(self):
-        
-        for record in self:
-            record.avg_soundness_cement_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245vfrt77-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245vfrt77-372f-4775-9bcb-e9dd723547htui')]).parameter_table
-            
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_soundness_cement - record.avg_soundness_cement*mu_value
-            upper = record.avg_soundness_cement + record.avg_soundness_cement*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_soundness_cement_nabl = 'pass'
-                break
-            else:
-                record.avg_soundness_cement_nabl = 'fail'
-
-    @api.depends('soundness_cement_lines.difference')
-    def _compute_avg_soundness_cement(self):
-        for rec in self:
-            values = [line.difference for line in rec.soundness_cement_lines if line.difference is not None]
-            rec.avg_soundness_cement = sum(values) / len(values) if values else 0.0
-
-
+  
         ## Consistency of cement
 
     consistency_cement_name = fields.Char("Name",default="Consistency of cement")
     consistency_cement_visible = fields.Boolean("Consistency of cement Visible",compute="_compute_visible")
 
-    consistency_cement_lines = fields.One2many('consistensy.cement.ppc.line','parent_id',string="Consistency")
+    temp_consistency = fields.Float("Temp.°C")
+    humidity_consistency= fields.Float("Humidity %")
 
-    consitency_of_cement = fields.Float(string="Consistency of Cement ",compute="_compute_consistency_of_cement")
+    consistency_cement_lines = fields.One2many('ppc.consistensy.cement.line','parent_id',string="Consistency")
 
-    consitency_of_cement_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_consitency_of_cement_conformity")
-
-    consitency_of_cement_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_consitency_of_cement_nabl")
-
-
-    @api.depends('consitency_of_cement','eln_ref','grade')
-    def _compute_consitency_of_cement_conformity(self):
-        for record in self:
-            record.consitency_of_cement_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hhh-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hhh-372f-4775-9bcb-e9dd723547htui')]).parameter_table
-            mu_value = line.mu_value
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    # mu_value = line.mu_value
-                    lower = record.consitency_of_cement - record.consitency_of_cement*mu_value
-                    upper = record.consitency_of_cement + record.consitency_of_cement*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.consitency_of_cement_conformity = 'pass'
-                        break
-                    else:
-                        record.consitency_of_cement_conformity = 'fail'
-
-    @api.depends('consitency_of_cement','eln_ref','grade')
-    def _compute_consitency_of_cement_nabl(self):
-        
-        for record in self:
-            record.consitency_of_cement_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hhh-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hhh-372f-4775-9bcb-e9dd723547htui')]).parameter_table
-            
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.consitency_of_cement - record.consitency_of_cement*mu_value
-            upper = record.consitency_of_cement + record.consitency_of_cement*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.consitency_of_cement_nabl = 'pass'
-                break
-            else:
-                record.consitency_of_cement_nabl = 'fail'
+    avg_consistency = fields.Float("Average consistency",compute="_compute_avg_consistency",store=True,digits=(12,4))
 
     @api.depends('consistency_cement_lines.water_mix')
-    def _compute_consistency_of_cement(self):
+    def _compute_avg_consistency(self):
         for rec in self:
-            lines = rec.consistency_cement_lines.filtered(lambda l: l.water_mix)
-            if lines:
-                last_line = lines.sorted('create_date')[-1]
-                rec.consitency_of_cement = float(last_line.water_mix) or 0.0
+            if rec.consistency_cement_lines:
+                total = sum(line.water_mix for line in rec.consistency_cement_lines)
+                count = len(rec.consistency_cement_lines)
+                rec.avg_consistency = total / count if count else 0
             else:
-                rec.consitency_of_cement = 0.0
+                rec.avg_consistency = 0
+
+    avg_consistency_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('not_applicable', 'Not Applicable'),
+    ], string='Confirmity', default='fail',compute="_compute_avg_consistency_confirmity")
+    avg_consistency_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_avg_consistency_nabl")
 
 
-    setting_time_name = fields.Char("Name", default="Setting Time")
+    @api.depends('avg_consistency','eln_ref','grade')
+    def _compute_avg_consistency_confirmity(self):
+        for record in self:
+            record.avg_consistency_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','64616a30-801e-40aa-abba-32dcd71b7c37')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','64616a30-801e-40aa-abba-32dcd71b7c37')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.avg_consistency - record.avg_consistency*mu_value
+                    upper = record.avg_consistency + record.avg_consistency*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_consistency_confirmity = 'pass'
+                        break
+                    else:
+                        record.avg_consistency_confirmity = 'fail'
+    
+    @api.depends('avg_consistency','eln_ref','grade')
+    def _compute_avg_consistency_nabl(self):
+        
+        for record in self:
+            record.avg_consistency_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','64616a30-801e-40aa-abba-32dcd71b7c37')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','64616a30-801e-40aa-abba-32dcd71b7c37')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_consistency - record.avg_consistency*mu_value
+                    upper = record.avg_consistency + record.avg_consistency*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_consistency_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_consistency_nabl = 'fail'
 
-    intial_time_lines = fields.One2many('initial.time.ppc.line','parent_id',string="Initial Time")
+   
 
-    final_time_lines = fields.One2many('final.time.ppc.line','parent_id',string="Initial Time")
 
-    initial_setting_time_visible = fields.Boolean("Initial Setting Time Visible",compute="_compute_visible")
-    initial_setting_time_name = fields.Char("Name",default="Initial Setting Time")
+     ### setting Time,Final Setting Time	
 
-    temp_percent_setting = fields.Float("Temperature °C",digits=(16,1))
-    humidity_percent_setting = fields.Float("Humidity %")
-    start_date_setting = fields.Date("Start Date")
-    end_date_setting = fields.Date("End Date")
 
-    # wt_of_cement_setting_time = fields.Float("Wt. of Cement(g)",default=400)
-    # wt_of_water_required_setting_time = fields.Float("Wt.of water required (g) (0.85*P%)" , compute="_compute_wt_of_water_required",store=True )
+    intial_time_lines = fields.One2many('ppc.initial.time.line','parent_id',string="Initial Time")
 
-    # @api.depends('normal_consistency_trial1','wt_of_cement_setting_time')
-    # def _compute_wt_of_water_required(self):
-    #     for record in self:
-    #         record.wt_of_water_required_setting_time =  (((0.85 * record.normal_consistency_trial1) / 100) * record.wt_of_cement_setting_time)
 
-    #Initial setting Time
+    initial_setting_time_visible = fields.Boolean("Setting Time Visible",compute="_compute_visible")
+    initial_setting_time_name = fields.Char("Name",default="Setting Time")
 
-    time_water_added = fields.Datetime("The Time When water is added to cement (t1)",compute="_compute_initial_times",store=True)
-    time_needle_fails = fields.Datetime("The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)",compute="_compute_initial_times",store=True)
-    initial_setting_time_hours = fields.Char("Initial Setting Time (t2-t1) (Hours)", compute="_compute_initial_setting_time")
-    initial_setting_time_minutes = fields.Integer("Initial Setting Time Rounded", compute="_compute_initial_setting_time")
-    initial_setting_time_minutes_unrounded = fields.Char("Initial Setting Time",compute="_compute_initial_setting_time")
+  
+    temp_time = fields.Float("Temp.°C")
+    humidity_time= fields.Float("Humidity %")
+    avg_initial_time = fields.Float("Average Intial Time",compute="_compute_avg_initial_time",store=True,digits=(12,4))
 
-    @api.depends("intial_time_lines.clock_time", "intial_time_lines.serial_no")
-    def _compute_initial_times(self):
+    @api.depends('intial_time_lines.initial')
+    def _compute_avg_initial_time(self):
         for rec in self:
             if rec.intial_time_lines:
-                sorted_lines = rec.intial_time_lines.sorted("serial_no")
-                rec.time_water_added = sorted_lines[0].clock_time if sorted_lines else False
-                rec.time_needle_fails = sorted_lines[-1].clock_time if sorted_lines else False
+                total1 = sum(line.initial for line in rec.intial_time_lines)
+                count = len(rec.intial_time_lines)
+                rec.avg_initial_time = total1 / count if count else 0
             else:
-                rec.time_water_added = False
-                rec.time_needle_fails = False
+                rec.avg_initial_time = 0
 
-    initial_setting_conformity = fields.Selection([
+    temp_time_final = fields.Float("Temp.°C")
+    humidity_time_final = fields.Float("Humidity %")
+
+    avg_final_time = fields.Float("Average Final Time",compute="_compute_avg_final_time",store=True,digits=(12,4))
+
+    @api.depends('intial_time_lines.final')
+    def _compute_avg_final_time(self):
+        for rec in self:
+            if rec.intial_time_lines:
+                total2 = sum(line.final for line in rec.intial_time_lines)
+                count = len(rec.intial_time_lines)
+                rec.avg_final_time = total2 / count if count else 0
+            else:
+                rec.avg_final_time = 0
+
+    avg_initial_time_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_initial_setting_conformity")
+        ('not_applicable', 'Not Applicable'),
+    ], string='Initial Time Confirmity', default='fail',compute="_compute_avg_initial_time_confirmity")
+    avg_initial_time_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Initial Time NABL', default='fail',compute="_compute_avg_initial_time_nabl")
 
-    initial_setting_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string='NABL' ,compute="_compute_initial_setting_nabl" ,store=True)
 
-
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_initial_setting_conformity(self):
+    @api.depends('avg_initial_time','eln_ref','grade')
+    def _compute_avg_initial_time_confirmity(self):
         for record in self:
-            record.initial_setting_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6987456-30fe-4043-b518-015f5c60d916')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6987456-30fe-4043-b518-015f5c60d916')]).parameter_table
+            record.avg_initial_time_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d1fcbd33-f315-4290-a309-74acc90bc3f8')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d1fcbd33-f315-4290-a309-74acc90bc3f8')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
-                    lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
+                    lower = record.avg_initial_time - record.avg_initial_time*mu_value
+                    upper = record.avg_initial_time + record.avg_initial_time*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.initial_setting_conformity = 'pass'
+                        record.avg_initial_time_confirmity = 'pass'
                         break
                     else:
-                        record.initial_setting_conformity = 'fail'
-
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_initial_setting_nabl(self):
+                        record.avg_initial_time_confirmity = 'fail'
+    
+    @api.depends('avg_initial_time','eln_ref','grade')
+    def _compute_avg_initial_time_nabl(self):
         
         for record in self:
-            record.initial_setting_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6987456-30fe-4043-b518-015f5c60d916')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6987456-30fe-4043-b518-015f5c60d916')]).parameter_table
-            
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
-            upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.initial_setting_nabl = 'pass'
-                break
-            else:
-                record.initial_setting_nabl = 'fail'
+            record.avg_initial_time_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d1fcbd33-f315-4290-a309-74acc90bc3f8')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d1fcbd33-f315-4290-a309-74acc90bc3f8')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_initial_time - record.avg_initial_time*mu_value
+                    upper = record.avg_initial_time + record.avg_initial_time*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_initial_time_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_initial_time_nabl = 'fail'
 
-
-    @api.depends('time_water_added', 'time_needle_fails')
-    def _compute_initial_setting_time(self):
-        for record in self:
-            if record.time_water_added and record.time_needle_fails:
-                t1 = record.time_water_added
-                t2 = record.time_needle_fails
-                time_difference = t2 - t1
-
-                # Convert time difference to seconds and then to minutes
-                time_difference_minutes = time_difference.total_seconds() / 60
-
-                initial_setting_time_hours = time_difference.total_seconds() / 3600
-                time_delta = timedelta(hours=initial_setting_time_hours)
-                record.initial_setting_time_hours = "{:0}:{:02}".format(int(time_delta.total_seconds() // 3600), int((time_delta.total_seconds() % 3600) // 60))
-                if time_difference_minutes % 5 == 0:
-                    record.initial_setting_time_minutes = time_difference_minutes
-                else:
-                    record.initial_setting_time_minutes = round(time_difference_minutes / 5) * 5
-
-                record.initial_setting_time_minutes_unrounded = time_difference_minutes
-
-            else:
-                record.initial_setting_time_hours = False
-                record.initial_setting_time_minutes = False
-                record.initial_setting_time_minutes_unrounded = False
-
-
-
-    #Final setting Time
-
-    final_setting_time_visible = fields.Boolean("Final Setting Time Visible",compute="_compute_visible")
-    final_setting_time_name = fields.Char("Name",default="Final Setting Time")
-
-    time_needle_make_impression = fields.Datetime("The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)",compute="_compute_final_time",store=True)
-    final_setting_time_hours = fields.Char("Final Setting Time (t3-t1) (Hours)",compute="_compute_final_setting_time")
-    final_setting_time_minutes_unrounded = fields.Char("Final Setting Time",compute="_compute_final_setting_time")
-    final_setting_time_minutes = fields.Char("Final Setting Time Rounded",compute="_compute_final_setting_time")
-
-    @api.depends("final_time_lines.clock_time1", "final_time_lines.serial_no")
-    def _compute_final_time(self):
-        for rec in self:
-            if rec.final_time_lines:
-                # Sort lines by serial_no
-                sorted_lines = rec.final_time_lines.sorted("serial_no")
-                rec.time_needle_make_impression = sorted_lines[-1].clock_time1
-            else:
-                rec.time_needle_make_impression = False
-
-    final_setting_conformity = fields.Selection([
+    avg_final_time_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_final_setting_conformity")
+        ('not_applicable', 'Not Applicable'),
+    ], string='Final Time Confirmity', default='fail',compute="_compute_avg_final_time_confirmity")
+    avg_final_time_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Final Time NABL', default='fail',compute="_compute_avg_final_time_nabl")
 
-    final_setting_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string='NABL', compute="_compute_final_setting_nabl")
 
-
-    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_final_setting_conformity(self):
+    @api.depends('avg_final_time','eln_ref','grade')
+    def _compute_avg_final_time_confirmity(self):
         for record in self:
-            record.final_setting_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].search([('internal_id','=','3214ght-5e9c-4335-9ea2-2d87624c3061')])
-            materials = self.env['lerm.parameter.master'].search([('internal_id','=','3214ght-5e9c-4335-9ea2-2d87624c3061')]).parameter_table
+            record.avg_final_time_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd654789nnghh')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd654789nnghh')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
-                    lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
+                    lower = record.avg_final_time - record.avg_final_time*mu_value
+                    upper = record.avg_final_time + record.avg_final_time*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.final_setting_conformity = 'pass'
+                        record.avg_final_time_confirmity = 'pass'
                         break
                     else:
-                        record.final_setting_conformity = 'fail'
-
-    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_final_setting_nabl(self):
+                        record.avg_final_time_confirmity = 'fail'
+    
+    @api.depends('avg_final_time','eln_ref','grade')
+    def _compute_avg_final_time_nabl(self):
         
         for record in self:
-            record.final_setting_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].search([('internal_id','=','3214ght-5e9c-4335-9ea2-2d87624c3061')])
-            materials = self.env['lerm.parameter.master'].search([('internal_id','=','3214ght-5e9c-4335-9ea2-2d87624c3061')]).parameter_table
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
-            upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.final_setting_nabl = 'pass'
-                break
-            else:
-                record.final_setting_nabl = 'fail'
+            record.avg_final_time_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd654789nnghh')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd654789nnghh')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_final_time - record.avg_final_time*mu_value
+                    upper = record.avg_final_time + record.avg_final_time*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_final_time_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_final_time_nabl = 'fail'
 
 
+    # Fineness by Blaines 
 
-    @api.depends('time_needle_make_impression')
-    def _compute_final_setting_time(self):
-        for record in self:
-            if record.time_needle_make_impression and record.time_water_added:
-                t1 = record.time_water_added
-                t2 = record.time_needle_make_impression
-                time_difference = t2 - t1
-                record.final_setting_time_minutes = time_difference
-                record.final_setting_time_hours = time_difference
-                final_setting_time_decimal = time_difference.total_seconds() / 60
-                final_setting_time = int(final_setting_time_decimal)
-                if final_setting_time % 5 == 0:
-                    record.final_setting_time_minutes = final_setting_time
-                else:
-                    record.final_setting_time_minutes =  round(final_setting_time / 5) * 5
-                record.final_setting_time_minutes_unrounded = final_setting_time
-            else:
-                record.final_setting_time_hours = False
-                record.final_setting_time_minutes = False
-                record.final_setting_time_minutes_unrounded = False
+    fineness_name = fields.Char("Name",default="Fineness by Blaines Air Permeability Method")
+    fineness_visible = fields.Boolean("Fineness by Blaines Air Permeability Method Visible",compute="_compute_visible")
 
+    temp_fineness = fields.Float("Temp.°C")
+    humidity_fineness= fields.Float("Humidity %")
 
-      # Specific gravity of Cement
+    density_cement = fields.Float(string="Density of Cement (g/cc)", digits=(12, 3))
+    
+    # Time Required for Manometer Drop (Seconds)
+    first_bed_reading1 = fields.Float(string="First Bed Reading 1", digits=(12, 2))
+    first_bed_reading2 = fields.Float(string="First Bed Reading 2", digits=(12, 2))
+    second_bed_reading1 = fields.Float(string="Second Bed Reading 1", digits=(12, 2))
+    second_bed_reading2 = fields.Float(string="Second Bed Reading 2", digits=(12, 2))
 
-    specific_gravity_name = fields.Char("Name",default="Specific Gravity of Cement")
-    specific_gravity_visible = fields.Boolean("Specific gravity of Cement Visible",compute="_compute_visible")
+    avg_time_first = fields.Float(string="Average Time for Manometer Drop (First)",compute="_compute_avg_time_first", store=True, digits=(12, 2))
 
-    wt_of_empty_bottle = fields.Float(string="Weight of empty bottle (W₁ g)")
-    wt_of_bottle_cement = fields.Float(string="Weight of bottle + Cement ( W₂ g)")
-    wt_of_specific_bpttle = fields.Float(string="Weight of Specific gravity bottle + Cement + Kerosene ( W₃ g)")
-    wt_of_kerosene = fields.Float(string="Weight of bottle + Full Kerosene( W₄ g)")
-    wt_of_bottle_water = fields.Float(string="Weight of bottle + Full Water ( W₅ g)")
-
-    specific_gravity = fields.Float(string="Specific gravity ",compute="_compute_specific_gravity",digits=(12,3))
-
-    @api.depends('wt_of_empty_bottle', 'wt_of_bottle_cement', 'wt_of_specific_bpttle', 'wt_of_kerosene')
-    def _compute_specific_gravity(self):
+    @api.depends('first_bed_reading1', 'first_bed_reading2', 'second_bed_reading1', 'second_bed_reading2')
+    def _compute_avg_time_first(self):
         for rec in self:
-            if rec.wt_of_empty_bottle and rec.wt_of_bottle_cement and rec.wt_of_specific_bpttle and rec.wt_of_kerosene:
-                numerator = rec.wt_of_bottle_cement - rec.wt_of_empty_bottle
-                denominator = ((rec.wt_of_bottle_cement - rec.wt_of_empty_bottle) - (rec.wt_of_specific_bpttle - rec.wt_of_kerosene)) * 0.79
-                rec.specific_gravity = numerator / denominator if denominator else 0.0
-            else:
-                rec.specific_gravity = 0.0
+            rec.avg_time_first = (
+                rec.first_bed_reading1 + rec.first_bed_reading2 + rec.second_bed_reading1 + rec.second_bed_reading2
+            ) / 4 if any([
+                rec.first_bed_reading1, rec.first_bed_reading2, rec.second_bed_reading1, rec.second_bed_reading2
+            ]) else 0.0
 
+    apparatus_constant_first = fields.Float(string="Apparatus Constant (K) ", digits=(12, 4))
 
+    specific_surface_first = fields.Float(string="Specific Surface (First)",compute="_compute_specific_surface_first", store=True, digits=(12, 3))
 
+  
+   
 
-    wt_of_empty_bottle1 = fields.Float(string="Weight of empty bottle (W₁ g)")
-    wt_of_bottle_cement1 = fields.Float(string="Weight of bottle + Cement ( W₂ g)")
-    wt_of_specific_bpttle1 = fields.Float(string="Weight of Specific gravity bottle + Cement + Kerosene ( W₃ g)")
-    wt_of_kerosene1 = fields.Float(string="Weight of bottle + Full Kerosene( W₄ g)")
-    wt_of_bottle_water1 = fields.Float(string="Weight of bottle + Full Water ( W₅ g)")
-
-    specific_gravity1 = fields.Float(string="Specific gravity ",compute="_compute_specific_gravity1",digits=(12,3))
-
-    @api.depends('wt_of_empty_bottle1', 'wt_of_bottle_cement1', 'wt_of_specific_bpttle1', 'wt_of_kerosene1')
-    def _compute_specific_gravity1(self):
+    @api.depends('avg_time_first', 'apparatus_constant_first', 'density_cement')
+    def _compute_specific_surface_first(self):
         for rec in self:
-            if rec.wt_of_empty_bottle1 and rec.wt_of_bottle_cement1 and rec.wt_of_specific_bpttle1 and rec.wt_of_kerosene1:
-                numerator1 = rec.wt_of_bottle_cement1 - rec.wt_of_empty_bottle1
-                denominator1 = ((rec.wt_of_bottle_cement1 - rec.wt_of_empty_bottle1) - (rec.wt_of_specific_bpttle1 - rec.wt_of_kerosene1)) * 0.79
-                rec.specific_gravity1 = numerator1 / denominator1 if denominator1 else 0.0
+            if rec.avg_time_first and rec.apparatus_constant_first and rec.density_cement:
+                value = (521.08 * rec.apparatus_constant_first * sqrt(rec.avg_time_first)) / rec.density_cement / 10
+                rec.specific_surface_first = value  # No rounding
             else:
-                rec.specific_gravity1 = 0.0
+                rec.specific_surface_first = 0.0
 
-    avg_specific_gravity = fields.Float(string="Avg Specific gravity",compute="_compute_avg_specific_gravity",digits=(12,3))
-
-    # Average
-    @api.depends('specific_gravity', 'specific_gravity1')
-    def _compute_avg_specific_gravity(self):
-        for rec in self:
-            if rec.specific_gravity and rec.specific_gravity1:
-                rec.avg_specific_gravity = (rec.specific_gravity + rec.specific_gravity1) / 2
-            else:
-                rec.avg_specific_gravity = 0.0
-
-
-    avg_specific_gravity_conformity = fields.Selection([
+    
+    
+    fineness_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_specific_gravity_conformity")
+        ('not_applicable', 'Not Applicable'),
+    ], string='Confirmity', default='fail',compute="_compute_fineness_confirmity")
+    fineness_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_fineness_nabl")
 
-    avg_specific_gravity_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string="NABL",compute="_compute_avg_specific_gravity_nabl")
 
-
-    @api.depends('avg_specific_gravity','eln_ref','grade')
-    def _compute_avg_specific_gravity_conformity(self):
+    @api.depends('specific_surface_first','eln_ref','grade')
+    def _compute_fineness_confirmity(self):
         for record in self:
-            record.avg_specific_gravity_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578ty10i-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578ty10i-372f-4775-9bcb-e9dd723547htui')]).parameter_table
-            mu_value = line.mu_value
+            record.fineness_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7797b1a6-d753-41ea-85f3-eaa37aebf08b')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7797b1a6-d753-41ea-85f3-eaa37aebf08b')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    # mu_value = line.mu_value
-                    lower = record.avg_specific_gravity - record.avg_specific_gravity*mu_value
-                    upper = record.avg_specific_gravity + record.avg_specific_gravity*mu_value
+                    mu_value = line.mu_value
+                    lower = record.specific_surface_first - record.specific_surface_first*mu_value
+                    upper = record.specific_surface_first + record.specific_surface_first*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.avg_specific_gravity_conformity = 'pass'
+                        record.fineness_confirmity = 'pass'
                         break
                     else:
-                        record.avg_specific_gravity_conformity = 'fail'
-
-    @api.depends('avg_specific_gravity','eln_ref','grade')
-    def _compute_avg_specific_gravity_nabl(self):
+                        record.fineness_confirmity = 'fail'
+    
+    @api.depends('specific_surface_first','eln_ref','grade')
+    def _compute_fineness_nabl(self):
         
         for record in self:
-            record.avg_specific_gravity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578ty10i-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578ty10i-372f-4775-9bcb-e9dd723547htui')]).parameter_table
-            
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_specific_gravity - record.avg_specific_gravity*mu_value
-            upper = record.avg_specific_gravity + record.avg_specific_gravity*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_specific_gravity_nabl = 'pass'
-                break
-            else:
-                record.avg_specific_gravity_nabl = 'fail'
+            record.fineness_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7797b1a6-d753-41ea-85f3-eaa37aebf08b')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7797b1a6-d753-41ea-85f3-eaa37aebf08b')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.specific_surface_first - record.specific_surface_first*mu_value
+                    upper = record.specific_surface_first + record.specific_surface_first*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.fineness_nabl = 'pass'
+                        break
+                    else:
+                        record.fineness_nabl = 'fail'
 
+    
+
+
+   
 
                 ## Cement Compressive Strength
 
     compressive_name = fields.Char("Name",default="Cement Compressive Strength")
     compressive_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
 
-    compressive_lines = fields.One2many('compressive.ppc.line','parent_id',string="Compressive")
+    ppc_compressive_ids = fields.One2many("mechanical.ppc.compressive.line", "parent_id", string="Test Readings")
 
-    @api.onchange('start_date', 'compressive_lines')
-    def _onchange_start_date_or_lines(self):
-        for line in self.compressive_lines:
-            if not line.dt_of_casting:  
-                line.dt_of_casting = self.start_date
+    def action_calculate_avg_strength(self):
+        for rec in self:
+            lines = rec.ppc_compressive_ids.sorted(key=lambda l: l.serial_no)  # serial_no ने sort करायचं
+            group_size = 3
+
+            for i in range(0, len(lines), group_size):
+                group = lines[i:i + group_size]
+                strengths = [l.compressive_strength for l in group if l.compressive_strength > 0]
+                avg = sum(strengths) / len(strengths) if strengths else 0.0
+
+                if group:
+                    group[0].avg_compressive_strength = avg
+
+            for line in lines:
+                if line not in [lines[i] for i in range(0, len(lines), group_size)]:
+                    line.avg_compressive_strength = 0.0
 
     avg_3_days = fields.Float(string="Avg Strength (3 Days)", compute="_compute_avg_strengths", store=True)
+
+    temp_3_days = fields.Float("Temp.°C")
+    humidity_3_days= fields.Float("Humidity %")
+
 
     avg_3_days_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -757,8 +541,8 @@ class CementPPC(models.Model):
     def _compute_avg_3_days_conformity(self):
         for record in self:
             record.avg_3_days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','147frrt012-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','147frrt012-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36905ff2-60e5-4e3f-a003-4f12cf03ebe9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36905ff2-60e5-4e3f-a003-4f12cf03ebe9')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -778,8 +562,8 @@ class CementPPC(models.Model):
         
         for record in self:
             record.avg_3_days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','147frrt012-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','147frrt012-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36905ff2-60e5-4e3f-a003-4f12cf03ebe9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36905ff2-60e5-4e3f-a003-4f12cf03ebe9')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -794,6 +578,9 @@ class CementPPC(models.Model):
                 record.avg_3_days_nabl = 'fail'
 
     avg_7_days = fields.Float(string="Avg Strength (7 Days)", compute="_compute_avg_strengths", store=True)
+
+    temp_7_days = fields.Float("Temp.°C")
+    humidity_7_days= fields.Float("Humidity %")
 
     avg_7_days_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -810,8 +597,8 @@ class CementPPC(models.Model):
     def _compute_avg_7_days_conformity(self):
         for record in self:
             record.avg_7_days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1236547ffv-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1236547ffv-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e2e1d8e6-d831-4b2b-8cb2-aa074dce7fc6')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e2e1d8e6-d831-4b2b-8cb2-aa074dce7fc6')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -831,8 +618,8 @@ class CementPPC(models.Model):
         
         for record in self:
             record.avg_7_days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1236547ffv-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1236547ffv-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e2e1d8e6-d831-4b2b-8cb2-aa074dce7fc6')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e2e1d8e6-d831-4b2b-8cb2-aa074dce7fc6')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -849,6 +636,9 @@ class CementPPC(models.Model):
 
     avg_28_days = fields.Float(string="Avg Strength (28 Days)", compute="_compute_avg_strengths", store=True)
 
+    temp_28_days = fields.Float("Temp.°C")
+    humidity_28_days= fields.Float("Humidity %")
+
     avg_28_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -864,8 +654,8 @@ class CementPPC(models.Model):
     def _compute_avg_28_days_conformity(self):
         for record in self:
             record.avg_28_days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00rrrttt887-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00rrrttt887-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fd34def6-d5cf-47c5-87e2-72c7b59dd2c3')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fd34def6-d5cf-47c5-87e2-72c7b59dd2c3')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
@@ -885,8 +675,8 @@ class CementPPC(models.Model):
         
         for record in self:
             record.avg_28_days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00rrrttt887-372f-4775-9bcb-e9dd723547htui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00rrrttt887-372f-4775-9bcb-e9dd723547htui')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fd34def6-d5cf-47c5-87e2-72c7b59dd2c3')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fd34def6-d5cf-47c5-87e2-72c7b59dd2c3')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
@@ -900,158 +690,260 @@ class CementPPC(models.Model):
             else:
                 record.avg_28_days_nabl = 'fail'
 
-    @api.depends('compressive_lines.days', 'compressive_lines.strenght')
+    @api.depends('ppc_compressive_ids.days', 'ppc_compressive_ids.avg_compressive_strength')
     def _compute_avg_strengths(self):
         for rec in self:
-            strengths_3 = [line.strenght for line in rec.compressive_lines if line.days == 3 and line.strenght]
-            strengths_7 = [line.strenght for line in rec.compressive_lines if line.days == 7 and line.strenght]
-            strengths_28 = [line.strenght for line in rec.compressive_lines if line.days == 28 and line.strenght]
+            strengths_3 = [line.avg_compressive_strength for line in rec.ppc_compressive_ids if line.days == 3 and line.avg_compressive_strength]
+            strengths_7 = [line.avg_compressive_strength for line in rec.ppc_compressive_ids if line.days == 7 and line.avg_compressive_strength]
+            strengths_28 = [line.avg_compressive_strength for line in rec.ppc_compressive_ids if line.days == 28 and line.avg_compressive_strength]
 
             rec.avg_3_days = mean(strengths_3) if strengths_3 else 0.0
             rec.avg_7_days = mean(strengths_7) if strengths_7 else 0.0
             rec.avg_28_days = mean(strengths_28) if strengths_28 else 0.0
 
+      ## Soundness by Autoclave Test
+
+    soundness_autoclave_name = fields.Char("Name",default="Soundness by Autoclave Test")
+    soundness_autoclave_visible = fields.Boolean("Soundness by Autoclave Test Visible",compute="_compute_visible")
+
+    temp_soundness_autoclave = fields.Float("Temp.°C")
+    humidity_soundness_autoclave= fields.Float("Humidity %")
+
+    ppc_autoclave_ids = fields.One2many("mechanical.ppc.autoclave.line", "parent_id", string="Test Readings")
+
+    avg_expantion = fields.Float("Average Expansion %",compute="_compute_avg_expansion",store=True,digits=(12,4))
+
+    @api.depends('ppc_autoclave_ids.autoclave')
+    def _compute_avg_expansion(self):
+        for rec in self:
+            if rec.ppc_autoclave_ids:
+                total = sum(line.autoclave for line in rec.ppc_autoclave_ids)
+                count = len(rec.ppc_autoclave_ids)
+                rec.avg_expantion = total / count if count else 0
+            else:
+                rec.avg_expantion = 0
+
+
+    avg_expantion_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_avg_expantion_conformity")
+
+    avg_expantion_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_avg_expantion_nabl")
+
+
+    @api.depends('avg_expantion','eln_ref','grade')
+    def _compute_avg_expantion_conformity(self):
+        for record in self:
+            record.avg_expantion_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bf78dd87-02e2-4c6d-9463-a04f434d25c6')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bf78dd87-02e2-4c6d-9463-a04f434d25c6')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.avg_expantion - record.avg_expantion*mu_value
+                    upper = record.avg_expantion + record.avg_expantion*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_expantion_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_expantion_conformity = 'fail'
+
+    @api.depends('avg_expantion','eln_ref','grade')
+    def _compute_avg_expantion_nabl(self):
+        
+        for record in self:
+            record.avg_expantion_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bf78dd87-02e2-4c6d-9463-a04f434d25c6')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bf78dd87-02e2-4c6d-9463-a04f434d25c6')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_expantion - record.avg_expantion*mu_value
+            upper = record.avg_expantion + record.avg_expantion*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_expantion_nabl = 'pass'
+                break
+            else:
+                record.avg_expantion_nabl = 'fail'
+
+    #  Soundness of Cement By Le-Chattelier Method
+    soundness_le_method_name = fields.Char("Name",default="Soundness of Cement By Le-Chattelier Method")
+    soundness_le_method_visible = fields.Boolean("Soundness of Cement By Le-Chattelier Method Visible",compute="_compute_visible")
+
+    temp_soundness_le_method = fields.Float("Temp.°C")
+    humidity_soundness_le_method= fields.Float("Humidity %")
+
+    ppc_le_method_ids = fields.One2many("mechanical.ppc.lemethod.line", "parent_id", string="Test Readings")
+
+    avg_expantion1 = fields.Float("Average Expansion %",compute="_compute_avg_expansion1",store=True,digits=(12,4))
+
+    @api.depends('ppc_le_method_ids.avg_expansion')
+    def _compute_avg_expansion1(self):
+        for rec in self:
+            if rec.ppc_le_method_ids:
+                total = sum(line.avg_expansion for line in rec.ppc_le_method_ids)
+                count = len(rec.ppc_le_method_ids)
+                rec.avg_expantion1 = total / count if count else 0
+            else:
+                rec.avg_expantion1 = 0
+
+    def action_calculate_avg_expansion(self):
+        for rec in self:
+            lines = rec.ppc_le_method_ids.sorted(key=lambda l: l.serial_no)  # serial_no ने sort करायचं
+            group_size = 2
+
+            for i in range(0, len(lines), group_size):
+                group = lines[i:i + group_size]
+                strength = [l.expansion for l in group if l.expansion > 0]
+                avg = sum(strength) / len(strength) if strength else 0.0
+
+                if group:
+                    group[0].avg_expansion = avg
+
+            for line in lines:
+                if line not in [lines[i] for i in range(0, len(lines), group_size)]:
+                    line.avg_expansion = 0.0
+
+    avg_expantion1_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='Conformity', default='fail',compute="_compute_avg_expantion1_conformity")
+
+    avg_expantion1_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_avg_expantion1_nabl")
+
+
+    @api.depends('avg_expantion1','eln_ref','grade')
+    def _compute_avg_expantion1_conformity(self):
+        for record in self:
+            record.avg_expantion1_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d72cba69-a44e-406a-b621-8344c3716275')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d72cba69-a44e-406a-b621-8344c3716275')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.avg_expantion1 - record.avg_expantion1*mu_value
+                    upper = record.avg_expantion1 + record.avg_expantion1*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_expantion1_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_expantion1_conformity = 'fail'
+
+    @api.depends('avg_expantion1','eln_ref','grade')
+    def _compute_avg_expantion1_nabl(self):
+        
+        for record in self:
+            record.avg_expantion1_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d72cba69-a44e-406a-b621-8344c3716275')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d72cba69-a44e-406a-b621-8344c3716275')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_expantion1 - record.avg_expantion1*mu_value
+            upper = record.avg_expantion1 + record.avg_expantion1*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_expantion1_nabl = 'pass'
+                break
+            else:
+                record.avg_expantion1_nabl = 'fail'
 
 
 
-  
+   
+      
 
             
     ### Compute Visible
     @api.depends('eln_ref','sample_parameters')
     def _compute_visible(self):
         for record in self:
-            record.fineness_cement_visible = False
-            record.density_cement_visible = False
-            record.fineness_blaine_visible = False
-            record.soundness_cement_visible = False
-            record.consistency_cement_visible = False
-            record.final_setting_time_visible = False
-            record.compressive_visible = False
-            record.initial_setting_time_visible = False
-            record.specific_gravity_visible = False
 
+
+            record.density_cement_visible = False
+            record.consistency_cement_visible = False
+            record.initial_setting_time_visible = False
+            record.fineness_visible = False
+            record.compressive_visible = False
+            record.soundness_autoclave_visible = False
+            record.soundness_le_method_visible = False
          
             
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
-                if sample.internal_id == '32145hjy14-372f-4775-9bcb-e9dd70e6e6df':
-                    record.fineness_cement_visible = True
 
-                if sample.internal_id == '30124578hy-372f-4775-9bcb-e9dd70e6e601h':
+                if sample.internal_id == 'be88a13b-8bc0-4d32-b8c0-43032c0cdd86':
                     record.density_cement_visible = True
 
-                if sample.internal_id == '210456321t-372f-4775-9bcb-e9dd70214578r':
-                    record.density_cement_visible = True
-                    record.fineness_blaine_visible = True
-
-                if sample.internal_id == '301245vfrt77-372f-4775-9bcb-e9dd723547htui':
-                    record.soundness_cement_visible = True
-
-                if sample.internal_id == '30124578hhh-372f-4775-9bcb-e9dd723547htui':
+            
+                if sample.internal_id == '64616a30-801e-40aa-abba-32dcd71b7c37':
                     record.consistency_cement_visible = True
 
-                if sample.internal_id == '3214ght-5e9c-4335-9ea2-2d87624c3061':
-                    record.consistency_cement_visible = True
-                    record.final_setting_time_visible = True
 
-                if sample.internal_id == '6987456-30fe-4043-b518-015f5c60d916':
-                    record.consistency_cement_visible = True
+
+
+
+                if sample.internal_id == '08c223af-a906-47c5-a15c-176ff5c9332d':
                     record.initial_setting_time_visible = True
 
-                if sample.internal_id == '32014587frt-372f-4775-9bcb-e9dd723547htui':
+
+
+
+
+                if sample.internal_id == '7797b1a6-d753-41ea-85f3-eaa37aebf08b':
+                    record.fineness_visible = True
+
+
+
+
+
+                if sample.internal_id == '99d735e6-2076-4770-b5e1-f5b8399e5a27':
                     record.compressive_visible = True
-                
-                if sample.internal_id == '3214578ty10i-372f-4775-9bcb-e9dd723547htui':
-                    record.specific_gravity_visible = True
+
+
+
+
+                if sample.internal_id == 'bf78dd87-02e2-4c6d-9463-a04f434d25c6':
+                    record.soundness_autoclave_visible = True
+
+                if sample.internal_id == 'd72cba69-a44e-406a-b621-8344c3716275':
+                    record.soundness_le_method_visible = True
+
+               
+
+             
              
 
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
         for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == '32145hjy14-372f-4775-9bcb-e9dd70e6e6df':
-                result.result_char = round(self.avg_cement,2)
-                if self.avg_cement_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            if result.parameter.internal_id == '30124578hy-372f-4775-9bcb-e9dd70e6e601h':
+         
+            if result.parameter.internal_id == '254gt2547-372f-4775-9bcb-e9dd70e3587g':
                 result.result_char = round(self.avg_density,2)
                 if self.avg_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '210456321t-372f-4775-9bcb-e9dd70214578r':
-                result.result_char = round(self.avg_fineness_blaine,2)
-                if self.avg_fineness_blaine_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            if result.parameter.internal_id == '301245vfrt77-372f-4775-9bcb-e9dd723547htui':
-                result.result_char = round(self.avg_soundness_cement,2)
-                if self.avg_soundness_cement_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            if result.parameter.internal_id == '30124578hhh-372f-4775-9bcb-e9dd723547htui':
-                result.result_char = round(self.consitency_of_cement,2)
-                if self.consitency_of_cement_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
           
-            if result.parameter.internal_id == '147frrt012-372f-4775-9bcb-e9dd723547htui':
-                result.result_char = round(self.avg_3_days,2)
-                if self.avg_3_days_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            if result.parameter.internal_id == '1236547ffv-372f-4775-9bcb-e9dd723547htui':
-                result.result_char = round(self.avg_7_days,2)
-                if self.avg_7_days_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            if result.parameter.internal_id == '00rrrttt887-372f-4775-9bcb-e9dd723547htui':
-                result.result_char = round(self.avg_28_days,2)
-                if self.avg_28_days_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            if result.parameter.internal_id == '6987456-30fe-4043-b518-015f5c60d916':
-                result.result_char = self.initial_setting_time_minutes_unrounded
-                if self.initial_setting_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            if result.parameter.internal_id == '3214ght-5e9c-4335-9ea2-2d87624c3061':
-                result.result_char = self.final_setting_time_minutes_unrounded
-                if self.final_setting_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            if result.parameter.internal_id == '3214578ty10i-372f-4775-9bcb-e9dd723547htui':
-                result.result_char = self.avg_specific_gravity
-                if self.avg_specific_gravity_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            
-
+        
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",
@@ -1065,23 +957,15 @@ class CementPPC(models.Model):
 
     @api.model
     def create(self, vals):
-        # import wdb;wdb.set_trace()
-        record = super(CementPPC, self).create(vals)
-        # record.get_all_fields()
+      
+        record = super(PPCCementNormalConsistency, self).create(vals)
         record.eln_ref.write({'model_id':record.id})
         return record
 
-    # @api.model 
-    # def write(self, values):
-    #     # Perform additional actions or validations before update
-    #     result = super(CementNormalConsistency, self).write(values)
-    #     # Perform additional actions or validations after update
-    #     return result
+   
     @api.depends('eln_ref')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+     
         for record in self:
             records = record.eln_ref.parameters_result.parameter.ids
             record.sample_parameters = records
@@ -1096,197 +980,36 @@ class CementPPC(models.Model):
         return field_values
 
 
-class FinenessCementLine(models.Model):
-    _name = "fineness.cement.ppc.line"
-    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
-
-    serial_no = fields.Integer(string="Wt of Sample", readonly=True, copy=False, default=1)
-
-   
-    wt_of_taken = fields.Float(string=" Wt of Sample taken")
-    wt_of_residue = fields.Float(string="Wt of residue")
-    total_passed = fields.Float(string="Total wt Passed" ,compute="_compute_total_passed")
-
-    @api.depends('wt_of_taken', 'wt_of_residue')
-    def _compute_total_passed(self):
-        for record in self:
-            record.total_passed = record.wt_of_taken - record.wt_of_residue
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(FinenessCementLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-class DensityCementLine(models.Model):
-    _name = "density.cement.ppc.line"
-    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
-
-    serial_no = fields.Integer(string="Trail No.", readonly=True, copy=False, default=1)
-
-   
-    wt_of_cement = fields.Float(string="Wt of Cement (g)")
-    displaced_volume = fields.Float(string="Displaced Volume (cm3)")
-    density = fields.Float(string="Density in g/cm3",compute="_compute_density",digits=(12,3))
-
-    @api.depends('wt_of_cement', 'displaced_volume')
-    def _compute_density(self):
-        for rec in self:
-            if rec.displaced_volume:  # Avoid division by zero
-                rec.density = rec.wt_of_cement / rec.displaced_volume
-            else:
-                rec.density = 0.0
-
-
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(DensityCementLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-class FinenessBlaineLine(models.Model):
-    _name = "fineness.blaine.ppc.line"
-    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
-
-    serial_no = fields.Integer(string="Trail No.", readonly=True, copy=False, default=1)
-
-   
-    wt_of_cement1 = fields.Float(string="Wt of Cement (g)",digits=(12,3))
-    time_sec = fields.Float(string="Time in Sec")
-    fineness = fields.Float(string="Fineness m2/kg",compute="_compute_fineness")
-
-    @api.depends('time_sec', 'parent_id.specific_gravity', 'parent_id.k', 'parent_id.e')
-    def _compute_fineness(self):
-        for rec in self:
-            k = rec.parent_id.k
-            e = rec.parent_id.e
-            t = rec.time_sec
-            s = rec.parent_id.specific_gravity
-
-            if s and (1 - e) != 0 and t > 0:
-                try:
-                    part1 = (k / s)
-                    part2 = math.sqrt(e ** 3) / (1 - e)
-                    part3 = math.sqrt(t) / 0.001357
-                    rec.fineness = part1 * part2 * part3
-                except Exception:
-                    rec.fineness = 0.0
-            else:
-                rec.fineness = 0.0
-
-   
-
-
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(FinenessBlaineLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-
-class soundnessCementLine(models.Model):
-    _name = "soundness.cement.ppc.line"
-    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
-
-    serial_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
-
-   
-    initial_distance = fields.Float(string="Initial Distance in mm")
-    final_distance = fields.Float(string="Final distance in mm")
-    difference = fields.Float(string="Difference in mm",compute="_compute_difference")
-
-
-    @api.depends('initial_distance', 'final_distance')
-    def _compute_difference(self):
-        for rec in self:
-            rec.difference = rec.final_distance - rec.initial_distance
-
-   
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(soundnessCementLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
 
 
 
 
 
-class ConsistencyCementLine(models.Model):
-    _name = "consistensy.cement.ppc.line"
+
+class PPCConsistencyCementLine(models.Model):
+    _name = "ppc.consistensy.cement.line"
     parent_id = fields.Many2one('cement.ppc',string="Parent Id")
 
     serial_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
+    lab_id = fields.Char(string="Lab ID ")
+
+    # trial_no = fields.Integer(string="Trial No.")
+
    
     
-    wt_of_cement1 = fields.Float(string="Wt of cement in gms")
-    wt_of_water = fields.Float(string="wt of water in ml" ,compute="_compute_wt_of_water")
-    water_mix = fields.Float(string="% of water mix")
-    needle_penitration = fields.Float(string="Needle penetration in mm")
-    duration = fields.Char(string="Duration of time in minutes")
+    mass_of_cement = fields.Float(string="Mass of Cement Taken gms.")
+    water_added = fields.Float(string="Water Added ml")
+    water_mix = fields.Float(string="% Water",compute="_compute_water_mix",store=True)
+    needle_penitration = fields.Float(string="Penetration from Bottom of Mould mm")
 
-    @api.depends('wt_of_cement1', 'water_mix')
-    def _compute_wt_of_water(self):
+    @api.depends('mass_of_cement', 'water_added')
+    def _compute_water_mix(self):
         for rec in self:
-            if rec.wt_of_cement1 and rec.water_mix:
-                rec.wt_of_water = rec.wt_of_cement1 * rec.water_mix / 100
+            if rec.mass_of_cement:
+                rec.water_mix = (rec.water_added / rec.mass_of_cement) * 100
             else:
-                rec.wt_of_water = 0.0
+                rec.water_mix = 0.0
 
 
     
@@ -1303,7 +1026,7 @@ class ConsistencyCementLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(ConsistencyCementLine, self).create(vals)
+        return super(PPCConsistencyCementLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -1311,147 +1034,48 @@ class ConsistencyCementLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
-# class SettingTimetLine(models.Model):
-#     _name = "setting.time.ppc.ssl.line"
-#     parent_id = fields.Many2one('cement.ppc',string="Parent Id")
-
-#     serial_no = fields.Char(string="Test NO")
-
-   
-    
-#     wt_of_cements1 = fields.Float(string="Wt of cement in gms")
-#     wt_of_water1 = fields.Float(string="wt of water in ml" ,compute="_compute_wt_of_water1")
-#     water_mix1 = fields.Char(string="% of water mix")
-#     needle_penitration1 = fields.Char(string="Needle penetration in mm")
-#     duration1 = fields.Float(string="Duration of time in minutes")
-
-   
-
-    # @api.depends('wt_of_cements1', 'parent_id.consitency_of_cement')
-    # def _compute_wt_of_water1(self):
-    #     for rec in self:
-    #         if rec.wt_of_cements1 and rec.parent_id.consitency_of_cement:
-    #             rec.wt_of_water1 = rec.wt_of_cements1 * 0.85 * rec.parent_id.consitency_of_cement / 100
-    #         else:
-    #             rec.wt_of_water1 = 0.0
 
 
 
-class CompressiveCementLine(models.Model):
-    _name = "compressive.ppc.line"
-    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
-
-    serial_no = fields.Integer(string="Specimen No", readonly=True, copy=False, default=1)
-
-   
-    
-    dt_of_casting = fields.Date(string="Date of Casting ")
-    days = fields.Integer(string="Days")
-    dt_of_testing = fields.Date(string="Date of Testing")
-    wt_of_cube = fields.Float(string="Wt of cube")
-    area = fields.Float(string="Area",compute="_compute_area",store=True)
-    load = fields.Float(string="Load in KN")
-    strenght = fields.Float(string="Strength N/mm2",compute="_compute_strength")
-
-    # @api.onchange('parent_id')
-    # def _onchange_set_dt_of_casting(self):
-    #     if self.parent_id and self.parent_id.start_date:
-    #         self.dt_of_casting = self.parent_id.start_date
 
 
-    @api.onchange('days')
-    def _onchange_days_set_testing_date(self):
-        if self.dt_of_casting and self.days:
-            self.dt_of_testing = self.dt_of_casting + timedelta(days=self.days)
-        else:
-            self.dt_of_testing = False
-
-    @api.depends('parent_id')
-    def _compute_area(self):
-        for rec in self:
-            rec.area = 70.6 * 70.6
-
-    @api.depends('load', 'area')
-    def _compute_strength(self):
-        for rec in self:
-            if rec.area:
-                rec.strenght = (rec.load * 1000) / rec.area
-            else:
-                rec.strenght = 0.0
-
-    
-
-
-    
-
-   
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(CompressiveCementLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-    
-
-class InitialTimeLine(models.Model):
-    _name = "initial.time.ppc.line"
+class PPCInitialTimeLine(models.Model):
+    _name = "ppc.initial.time.line"
     parent_id = fields.Many2one('cement.ppc',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
 
-   
-    
-    clock_time = fields.Datetime(string="Date & Time")
-    penetration_intial = fields.Float(string="Penetration Of Needle")
-
-    
-
-
-    
-
-   
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(InitialTimeLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-class FinalTimeLine(models.Model):
-    _name = "final.time.ppc.line"
-    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
-
-    serial_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
+    lab_id = fields.Char(string="LAB ID")
 
    
     
-    clock_time1 = fields.Datetime(string="Date & Time")
-    impression_intial1 = fields.Float(string="Impression Of Needle")
+    time_water_t1 = fields.Datetime(string="Time at which water is first added to cement, t1, mins")
+    time_needle_t2 = fields.Datetime(string="Time when needle fails to penetrate 5 +/-0.5 mm from bottom of the mould, t2 ,mins")
+    time_needle_t3 = fields.Datetime(string="Time when the needle makes an impression but the attachment fails to do so, t3, mins")
+    initial = fields.Float(string="Initial setting time, min (t2-t1)",compute="_compute_setting_times",store=True)
+    final = fields.Float(string="Final setting time, min (t3-t1)",compute="_compute_setting_times",store=True)
+
+
+    @api.depends('time_water_t1', 'time_needle_t2', 'time_needle_t3')
+    def _compute_setting_times(self):
+        for rec in self:
+            rec.initial = 0.0
+            rec.final = 0.0
+            if rec.time_water_t1 and rec.time_needle_t2:
+                t1 = rec.time_water_t1
+                t2 = rec.time_needle_t2
+                # Handle midnight crossover
+                if t1 > t2:
+                    t2 = t2.replace(day=t2.day + 1)
+                rec.initial = (t2 - t1).total_seconds() / 60  # Convert seconds to minutes
+
+            if rec.time_water_t1 and rec.time_needle_t3:
+                t1 = rec.time_water_t1
+                t3 = rec.time_needle_t3
+                # Handle midnight crossover
+                if t1 > t3:
+                    t3 = t3.replace(day=t3.day + 1)
+                rec.final = (t3 - t1).total_seconds() / 60
 
     
 
@@ -1470,10 +1094,196 @@ class FinalTimeLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(FinalTimeLine, self).create(vals)
+        return super(PPCInitialTimeLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class PPCCementCompressiveLine(models.Model):
+    _name = "mechanical.ppc.compressive.line"
+
+    parent_id = fields.Many2one('cement.ppc')
+
+    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+
+
+    lab_id = fields.Char("Lab Id")
+    testing_period = fields.Char("Testing Period")
+    casting_details = fields.Date("Casting Details Date",compute="_compute_dt_of_casting")
+    days = fields.Integer(string="No.of Days",store=True)
+    testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
+    cube_im = fields.Integer("Cube I/M")
+
+    length1 = fields.Float("Length (L)")
+    
+    width1 = fields.Float("Width")
+   
+
+   
+
+    load_failure = fields.Float("Load at Failure (P) kN")
+    compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength",store=True,digits=(12,1))
+    avg_compressive_strength = fields.Float("Avg. Strength Mpa",digits=(12,1))
+
+    @api.depends('load_failure', 'length1', 'width1')
+    def _compute_compressive_strength(self):
+        for rec in self:
+            if rec.load_failure and rec.length1 and rec.width1:
+                rec.compressive_strength = round((rec.load_failure * 1000) / (rec.length1 * rec.width1), 1)
+            else:
+                rec.compressive_strength = 0
+
+
+    
+
+
+    @api.depends('casting_details', 'parent_id')
+    def _compute_testing_details(self):
+        for rec in self:
+            if rec.casting_details and rec.parent_id:
+                # Find all lines of this parent ordered by ID (creation order)
+                all_lines = self.search(
+                    [('parent_id', '=', rec.parent_id.id)],
+                    order='id asc'
+                )
+                # Get position (1-based index)
+                position = all_lines.ids.index(rec.id) + 1 if rec.id in all_lines.ids else len(all_lines) + 1
+
+                # Apply day rule
+                if position <= 3:
+                    rec.testing_details = rec.casting_details + timedelta(days=7)
+                else:
+                    rec.testing_details = rec.casting_details + timedelta(days=28)
+            else:
+                rec.testing_details = False
+
+    @api.depends('parent_id.date_of_casting')
+    def _compute_dt_of_casting(self):
+        for record in self:
+            record.casting_details = record.parent_id.date_of_casting
+
+    @api.depends('casting_details', 'days')
+    def _compute_dt_of_testing(self):
+        for record in self:
+            if record.casting_details and record.days:
+                record.testing_details = record.casting_details + timedelta(days=record.days)
+            else:
+                record.testing_details = False
+
+    
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(PPCCementCompressiveLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in ppc_compressive_ids
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class PPCSoundnessAutocalveLine(models.Model):
+    _name = "mechanical.ppc.autoclave.line"
+
+    parent_id = fields.Many2one('cement.ppc')
+
+    serial_no = fields.Integer(string="Mould No",readonly=True, copy=False, default=1)
+
+
+    # mould_no = fields.Integer("Mould No")
+    intial_ref = fields.Float("Initial Reference Bar Reading (R1)",digits=(12,3))
+    initial_reading = fields.Float("Initial Reading (Ri)",digits=(12,3))
+    intial_a = fields.Float(string="Initial A (Ri – R1)" ,compute="_compute_values",store=True,digits=(12,3))
+    final_ref = fields.Float("Final Reference Bar Reading (R2)",digits=(12,3))
+    final_reading = fields.Float("Final Reading (Rf)",digits=(12,3))
+
+    final_b = fields.Float("Final B (Rf – R2)",compute="_compute_values",store=True,digits=(12,3))
+    
+    autoclave = fields.Float("Autoclave Expansion (B-A)/250 x 100 %",compute="_compute_values",store=True,digits=(12,4))
+
+    @api.depends('intial_ref', 'initial_reading', 'final_ref', 'final_reading')
+    def _compute_values(self):
+        for rec in self:
+            rec.intial_a = (rec.initial_reading or 0) - (rec.intial_ref or 0)
+            rec.final_b = (rec.final_reading or 0) - (rec.final_ref or 0)
+            rec.autoclave = ((rec.final_b - rec.intial_a) / 250) * 100 if rec.final_b and rec.intial_a else 0
+  
+   
+   
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(PPCSoundnessAutocalveLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in ppc_compressive_ids
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class PPCSoundnessLeMethodLine(models.Model):
+    _name = "mechanical.ppc.lemethod.line"
+
+    parent_id = fields.Many2one('cement.ppc')
+
+    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+
+
+    lab_id = fields.Char("Lab ID No.")
+    mould_no = fields.Char("Mould No")
+    intial_ref = fields.Float("Initial Reading of Indicator Point Before Boiling (A) in mm)",digits=(12,3))
+    final_reading = fields.Float("Final Reading of Indicator Point After 3 Hrs. Boiling (B) in mm",digits=(12,3))
+    expansion = fields.Float(string="Expansion (B – A) mm" ,compute="_compute_values",store=True,digits=(12,3))
+
+    avg_expansion = fields.Float(string="Average Expansion mm" ,digits=(12,2))
+
+    @api.depends('intial_ref', 'final_reading')
+    def _compute_values(self):
+        for rec in self:
+            rec.expansion = (rec.final_reading or 0) - (rec.intial_ref or 0)
+
+
+   
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(PPCSoundnessLeMethodLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in ppc_compressive_ids
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
