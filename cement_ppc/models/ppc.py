@@ -358,8 +358,8 @@ class PPCCementNormalConsistency(models.Model):
     def _compute_avg_final_time_confirmity(self):
         for record in self:
             record.avg_final_time_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd654789nnghh')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd654789nnghh')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e87e5708-bead-453a-90d5-4ec142545c52')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e87e5708-bead-453a-90d5-4ec142545c52')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -378,8 +378,8 @@ class PPCCementNormalConsistency(models.Model):
         
         for record in self:
             record.avg_final_time_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd654789nnghh')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd654789nnghh')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e87e5708-bead-453a-90d5-4ec142545c52')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e87e5708-bead-453a-90d5-4ec142545c52')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
