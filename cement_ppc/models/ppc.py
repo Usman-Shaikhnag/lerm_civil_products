@@ -359,7 +359,7 @@ class PPCCementNormalConsistency(models.Model):
         for record in self:
             record.avg_final_time_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e87e5708-bead-453a-90d5-4ec142545c52')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e87e5708-bead-453a-90d5-4ec142545c52add')]).parameter_table
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e87e5708-bead-453a-90d5-4ec142545c52')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
