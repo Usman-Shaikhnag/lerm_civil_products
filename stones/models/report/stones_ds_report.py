@@ -54,7 +54,13 @@ class StonesReport1(models.AbstractModel):
         else:
             eln = self.env['lerm.eln'].sudo().browse(docids) 
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-        qr.add_data(eln.kes_no)
+        # qr.add_data(eln.kes_no)
+        url = self.env['ir.config_parameter'].sudo().search([('key','=','web.base.url')]).value
+        if nabl:
+            url = url +'/download_report/nabl/'+ str(eln.id)
+        else:
+            url = url +'/download_report/nonnabl/'+ str(eln.id)
+        qr.add_data(url)
         qr.make(fit=True)
         qr_image = qr.make_image()
 

@@ -81,19 +81,22 @@
 
         	<div t-attf-class="footer o_standard_footer">
             <div class="text-center" style="padding-top:45px; border-top: 1px solid black">					
-				<!-- <div class="footerQR" style="">
-					<div style="">
-						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
-					</div>
+				<div class="footerQR" style="">
+					
 					
 					<div style="">
-						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="height: 65px;" />
+						<!-- <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="height: 65px;" /> -->
+                        <!-- <img t-if="qrcode_static" t-att-src="'data:image/png;base64,'+str(qrcode_static)" style="width: 75px; height: 70px;"/> -->
 					</div>
 					<div style="">
-						<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 65px; height: 60px"/>
+						<!-- <img src="/lerm_civil/static/src/img/qr_image.png" style="width: 65px; height: 60px"/> -->
 					</div>
 
-				</div> -->
+                    <div style="">
+						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+					</div>
+
+				</div>
                 <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
                     Page: <span class="page"/> / <span class="topage"/>
                 </div>

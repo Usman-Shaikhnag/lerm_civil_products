@@ -72,6 +72,9 @@ class Stones(models.Model):
 
     compressive_dry_ids = fields.One2many("mechanical.compressive.dry.line", "parent_id", string="Test Readings")
 
+    factor_a = fields.Float(string="Constant Factor A",  digits=(12, 4))
+    factor_b = fields.Float(string="Constant Factor B",  digits=(12, 4))
+
     compressive_perpendiculer_avg = fields.Float(
         string="Average Compressive Strength Perpendicular Dry (N/mm²)",
         compute="_compute_average_strengths",
@@ -86,11 +89,11 @@ class Stones(models.Model):
         digits=(12, 2)
     )
 
-    @api.depends('compressive_dry_ids.compressive_perpendiculer', 'compressive_dry_ids.compressive_parallel')
+    @api.depends('compressive_dry_ids.compressive_perpendiculer1', 'compressive_dry_ids.compressive_parallel1')
     def _compute_average_strengths(self):
         for record in self:
-            perpend_vals = record.compressive_dry_ids.mapped('compressive_perpendiculer')
-            parallel_vals = record.compressive_dry_ids.mapped('compressive_parallel')
+            perpend_vals = record.compressive_dry_ids.mapped('compressive_perpendiculer1')
+            parallel_vals = record.compressive_dry_ids.mapped('compressive_parallel1')
 
             record.compressive_perpendiculer_avg = (
                 sum(perpend_vals) / len(perpend_vals)
@@ -107,6 +110,9 @@ class Stones(models.Model):
 
     compressive_wet_ids = fields.One2many("mechanical.compressive.wet.line", "parent_id", string="Test Readings")
 
+    wet_factor_a = fields.Float(string="Constant Factor A",  digits=(12, 4))
+    wet_factor_b = fields.Float(string="Constant Factor B",  digits=(12, 4))
+
     compressive_perpendiculer_wet_avg = fields.Float(
         string="Average Compressive Strength Perpendicular Wet (N/mm²)",
         compute="_compute_average_strengths_wet",
@@ -121,11 +127,11 @@ class Stones(models.Model):
         digits=(12, 2)
     )
 
-    @api.depends('compressive_wet_ids.compressive_perpendiculer', 'compressive_wet_ids.compressive_parallel')
+    @api.depends('compressive_wet_ids.compressive_perpendiculer1', 'compressive_wet_ids.compressive_parallel1')
     def _compute_average_strengths_wet(self):
         for record in self:
-            perpend_vals = record.compressive_wet_ids.mapped('compressive_perpendiculer')
-            parallel_vals = record.compressive_wet_ids.mapped('compressive_parallel')
+            perpend_vals = record.compressive_wet_ids.mapped('compressive_perpendiculer1')
+            parallel_vals = record.compressive_wet_ids.mapped('compressive_parallel1')
 
             record.compressive_perpendiculer_wet_avg = (
                 sum(perpend_vals) / len(perpend_vals)
@@ -141,6 +147,7 @@ class Stones(models.Model):
     water_absorption_visible = fields.Boolean(" Porosity,Water Absorption,App. Specific gravity,True Specific gravity",compute="_compute_visible")
     app_specific_visible = fields.Boolean(" Porosity,Water Absorption,App. Specific gravity,True Specific gravity",compute="_compute_visible")
     true_specific_visible = fields.Boolean(" Porosity,Water Absorption,App. Specific gravity,True Specific gravity",compute="_compute_visible")
+    true_porosity_visible = fields.Boolean(" Porosity,Water Absorption,App. Specific gravity,True Specific gravity",compute="_compute_visible")
 
     #    App. Porosity
     weight_oven_dried = fields.Float(
@@ -236,7 +243,7 @@ class Stones(models.Model):
             else:
                 record.true_specific_gravity = 0.0
 
-    true_porosity = fields.Float(string="True porosity",compute="_compute_true_porosity",digits=(12,2),store=True)
+    true_porosity = fields.Float(string="True porosity",compute="_compute_true_porosity",digits=(12,4),store=True)
 
     @api.depends('app_specific_gravity', 'true_specific_gravity')
     def _compute_true_porosity(self):
@@ -267,6 +274,7 @@ class Stones(models.Model):
             record.water_absorption_visible = False
             record.app_specific_visible = False
             record.true_specific_visible = False
+            record.true_porosity_visible = False
             
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
@@ -285,24 +293,36 @@ class Stones(models.Model):
                     record.water_absorption_visible = True
                     record.app_specific_visible = True
                     record.true_specific_visible = True
+                    record.true_porosity_visible = True
 
                 if sample.internal_id == "57r7896rg-41c5-4cb5-843a-e09590c74578trew8":
                     record.water_absorption_visible = True
                     record.porosity_visible = True
                     record.app_specific_visible = True
                     record.true_specific_visible = True
+                    record.true_porosity_visible = True
 
                 if sample.internal_id == "57r7896rg-41c5-4cb5-843a-e09590c7789rte143q":
                     record.app_specific_visible = True
                     record.water_absorption_visible = True
                     record.porosity_visible = True
                     record.true_specific_visible = True
+                    record.true_porosity_visible = True
 
                 if sample.internal_id == "57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv":
                     record.true_specific_visible = True
                     record.water_absorption_visible = True
                     record.porosity_visible = True
                     record.app_specific_visible = True
+                    record.true_porosity_visible = True
+
+                if sample.internal_id == "57r7896rg-41c5-4cb5-843a-e09590c7787954nmht2":
+                    record.true_porosity_visible = True
+                    record.true_specific_visible = True
+                    record.water_absorption_visible = True
+                    record.porosity_visible = True
+                    record.app_specific_visible = True
+                    
 
 
                     
@@ -410,7 +430,7 @@ class CompressiveDryLine(models.Model):
     shape_stone = fields.Char(string="Shape of test piece (Cube/Cylinder) ")
     height_shape = fields.Float(string="Height of sample(H), mm ", digits=(12,2))
     width_stone = fields.Float(string="Width/Diameter of sample(D), mm ", digits=(12,2))
-    test_conditin = fields.Char(string="Test condition (Dry/Saturated) ")
+    test_conditin = fields.Char(string="Test condition (Dry/Saturated) ",default="Dry")
     load_perpendiculer = fields.Float(string="Load Perpendicular to plane of Anisotropy KN", digits=(12,2))
     load_parallel = fields.Float(string="Load Parallel to plane of Anisotropy KN ", digits=(12,2))
     load_perpendiculer_n = fields.Float(string="Load  Perpendicular to plane of Anisotropy N ", digits=(12,2),compute="_compute_loads_in_newton",store=True)
@@ -423,6 +443,9 @@ class CompressiveDryLine(models.Model):
     compressive_parallel = fields.Float(string="Compressive Parallel to plane of Anisotropy (N/mm2)  ", digits=(12,2),compute="_compute_compressive_strength",store=True)
     stress_perpendiculer = fields.Float(string="Stress rate Perpendicular to plane of Anisotropy(MPa/s)  ",digits=(12,2),compute="_compute_stress_rate",store=True)
     stress_parallel = fields.Float(string="Stress rate Parallel to plane of Anisotropy(MPa/s)   ", digits=(12,2),compute="_compute_stress_rate",store=True)
+
+    compressive_perpendiculer1 = fields.Float(string="Compressive Strength Perpendicular to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
+    compressive_parallel1 = fields.Float(string="Compressive Parallel to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
 
 
     @api.depends('load_perpendiculer', 'load_parallel')
@@ -461,6 +484,32 @@ class CompressiveDryLine(models.Model):
             else:
                 record.stress_perpendiculer = 0.0
                 record.stress_parallel = 0.0
+
+
+    @api.depends(
+        'compressive_perpendiculer',
+        'compressive_parallel',
+        'hd_stone',
+        'width_stone',
+        'height_shape',
+        'parent_id.factor_a',
+        'parent_id.factor_b'
+    )
+    def _compute_corrected_strength(self):
+        for rec in self:
+            # सुरक्षितपणे parent factors घ्या
+            a = rec.parent_id.factor_a
+            b = rec.parent_id.factor_b
+
+            ratio = (a + b * (rec.width_stone / rec.height_shape)) if rec.height_shape else 1
+
+            if rec.hd_stone == 1:
+                rec.compressive_perpendiculer1 = rec.compressive_perpendiculer
+                rec.compressive_parallel1 = rec.compressive_parallel
+            else:
+                rec.compressive_perpendiculer1 = rec.compressive_perpendiculer / ratio if ratio else 0.0
+                rec.compressive_parallel1 = rec.compressive_parallel / ratio if ratio else 0.0
+
 
     
     
@@ -504,7 +553,7 @@ class CompressiveWetLine(models.Model):
     shape_stone = fields.Char(string="Shape of test piece (Cube/Cylinder) ")
     height_shape = fields.Float(string="Height of sample(H), mm ", digits=(12,2))
     width_stone = fields.Float(string="Width/Diameter of sample(D), mm ", digits=(12,2))
-    test_conditin = fields.Char(string="Test condition (Dry/Saturated) ")
+    test_conditin = fields.Char(string="Test condition (Dry/Saturated) ",default="Saturated")
     load_perpendiculer = fields.Float(string="Load Perpendicular to plane of Anisotropy KN", digits=(12,2))
     load_parallel = fields.Float(string="Load Parallel to plane of Anisotropy KN ", digits=(12,2))
     load_perpendiculer_n = fields.Float(string="Load  Perpendicular to plane of Anisotropy N ", digits=(12,2),compute="_compute_loads_in_newton",store=True)
@@ -517,6 +566,10 @@ class CompressiveWetLine(models.Model):
     compressive_parallel = fields.Float(string="Compressive Parallel to plane of Anisotropy (N/mm2)  ", digits=(12,2),compute="_compute_compressive_strength",store=True)
     stress_perpendiculer = fields.Float(string="Stress rate Perpendicular to plane of Anisotropy(MPa/s)  ",digits=(12,2),compute="_compute_stress_rate",store=True)
     stress_parallel = fields.Float(string="Stress rate Parallel to plane of Anisotropy(MPa/s)   ", digits=(12,2),compute="_compute_stress_rate",store=True)
+
+    compressive_perpendiculer1 = fields.Float(string="Compressive Strength Perpendicular to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
+    compressive_parallel1 = fields.Float(string="Compressive Parallel to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
+
 
 
     @api.depends('load_perpendiculer', 'load_parallel')
@@ -555,6 +608,30 @@ class CompressiveWetLine(models.Model):
             else:
                 record.stress_perpendiculer = 0.0
                 record.stress_parallel = 0.0
+
+    @api.depends(
+        'compressive_perpendiculer',
+        'compressive_parallel',
+        'hd_stone',
+        'width_stone',
+        'height_shape',
+        'parent_id.wet_factor_a',
+        'parent_id.wet_factor_b'
+    )
+    def _compute_corrected_strength(self):
+        for rec in self:
+            # सुरक्षितपणे parent factors घ्या
+            a = rec.parent_id.wet_factor_a
+            b = rec.parent_id.wet_factor_b
+
+            ratio = (a + b * (rec.width_stone / rec.height_shape)) if rec.height_shape else 1
+
+            if rec.hd_stone == 1:
+                rec.compressive_perpendiculer1 = rec.compressive_perpendiculer
+                rec.compressive_parallel1 = rec.compressive_parallel
+            else:
+                rec.compressive_perpendiculer1 = rec.compressive_perpendiculer / ratio if ratio else 0.0
+                rec.compressive_parallel1 = rec.compressive_parallel / ratio if ratio else 0.0
 
     
     
