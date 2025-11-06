@@ -30,6 +30,10 @@ class MechanicalRock(models.Model):
 
     rock_child_lines = fields.One2many('mechanical.rock.line','parent_id',string="Parameter")
     usc_visible = fields.Boolean("USC Visible",compute="_compute_visible")
+
+    point_load_constant = fields.Float(string="Point Load  Constant")
+    compressive_strength_constant = fields.Float(string="Compressive Strength  Constant")
+    compressive_strength_constant_hd = fields.Float(string="Compressive Strength HD  Constant",digits=(12,4))
     
 
 
@@ -142,8 +146,8 @@ class MechanicalRockLine(models.Model):
     wt_of_sample = fields.Float(string="Wt of sample in Water",digits=(16, 2))
     sp_gravity = fields.Float(string="Sp. Gravity",digits=(16, 2),store=True,compute="_compute_sp_gravity")
     bulk_density = fields.Float(string="Bulk Density",digits=(16, 2),store=True,compute="_compute_bulk_density")
-    sat_density = fields.Float(string="Sat Density",digits=(16, 2),store=True,compute="_compute_sat_density")
-    dry_density = fields.Float(string="Dry Density",digits=(16, 2),store=True,compute="_compute_dry_density")
+    sat_density = fields.Float(string="Sat Density",digits=(16, 4),store=True,compute="_compute_sat_density")
+    dry_density = fields.Float(string="Dry Density",digits=(16, 4),store=True,compute="_compute_dry_density")
     water_absorption = fields.Float(string="Water Absorption",digits=(16, 2),store=True,compute="_compute_water_absorption")
     porosity = fields.Float(string="Porosity",digits=(16, 2),store=True,compute="_compute_porosity")
     load_ucs = fields.Float(string="Load (UCS)",digits=(16, 2))
@@ -151,8 +155,8 @@ class MechanicalRockLine(models.Model):
     comp_strength1 = fields.Float(string="Compressive Strength qc ",digits=(16, 2),store=True,compute="_compute_comp_strength1")
     comp_strength2 = fields.Float(string="Compressive Strength  qc at H/D=2",digits=(16, 2),store=True,compute="_compute_comp_strength2")
     point_load = fields.Float(string="Point Load",digits=(16, 2))
-    point_load_strength = fields.Float(string="Point load strength index-Core",digits=(16, 2),store=True,compute="_compute_point_load_strength")
-    point_load_index = fields.Float(string="Point load strength index-Lump",digits=(16, 2),store=True,compute="_compute_point_load_index")
+    point_load_strength = fields.Float(string="Point load strength index-Core",digits=(16, 3),store=True,compute="_compute_point_load_strength")
+    point_load_index = fields.Float(string="Point load strength index-Lump",digits=(16, 3),store=True,compute="_compute_point_load_index")
     comp_strength4 = fields.Float(string="Compressive strength , qc from pt load",digits=(16, 2),store=True,compute="_compute_comp_strength4")
     comp_strength5 = fields.Float(string="Compressive strength , qc (H/D >1)",digits=(16, 2),store=True,compute="_compute_comp_strength5")
     duration_of_test = fields.Float(string="Duration of the test (Sec)",digits=(16, 2))
@@ -231,11 +235,23 @@ class MechanicalRockLine(models.Model):
             else:
                 rec.dry_density = 0.0
 
+    # @api.depends('sat_density', 'dry_density')
+    # def _compute_water_absorption(self):
+    #     for rec in self:
+    #         if rec.dry_density and rec.dry_density != 0:
+    #             rec.water_absorption = ((rec.sat_density - rec.dry_density) / rec.dry_density) * 100
+    #         else:
+    #             rec.water_absorption = 0.0
+
     @api.depends('sat_density', 'dry_density')
     def _compute_water_absorption(self):
         for rec in self:
             if rec.dry_density and rec.dry_density != 0:
-                rec.water_absorption = ((rec.sat_density - rec.dry_density) / rec.dry_density) * 100
+                # चार दशांश पर्यंत calculation साठी precision control
+                sat = float(f"{rec.sat_density:.4f}")
+                dry = float(f"{rec.dry_density:.4f}")
+
+                rec.water_absorption = ((sat - dry) / dry) * 100
             else:
                 rec.water_absorption = 0.0
 
@@ -265,42 +281,62 @@ class MechanicalRockLine(models.Model):
             else:
                 rec.comp_strength2 = 0.0
 
-    @api.depends('point_load', 'avg_dia')
+    # @api.depends('point_load', 'avg_dia','parent_id.point_load_constant')
+    # def _compute_point_load_strength(self):
+    #     for rec in self:
+    #         if rec.point_load and rec.avg_dia and rec.avg_dia > 0:
+    #             rec.point_load_strength = (1000 * rec.point_load) / (math.sqrt(rec.parent_id.point_load_constant) * (rec.avg_dia ** 1.5))
+    #         else:
+    #             rec.point_load_strength = 0.0
+    @api.depends('point_load', 'avg_dia', 'parent_id.point_load_constant')
     def _compute_point_load_strength(self):
         for rec in self:
-            if rec.point_load and rec.avg_dia and rec.avg_dia > 0:
-                rec.point_load_strength = (1000 * rec.point_load) / (math.sqrt(50) * (rec.avg_dia ** 1.5))
+            if (
+                rec.point_load
+                and rec.avg_dia
+                and rec.avg_dia > 0
+                and rec.parent_id.point_load_constant
+                and rec.parent_id.point_load_constant > 0
+            ):
+                rec.point_load_strength = (
+                    (1000 * rec.point_load)
+                    / (
+                        math.sqrt(rec.parent_id.point_load_constant)
+                        * (rec.avg_dia ** 1.5)
+                    )
+                )
             else:
                 rec.point_load_strength = 0.0
 
-    @api.depends('point_load', 'avg_dia', 'avg_height')
+
+    @api.depends('point_load', 'avg_dia', 'avg_height','parent_id.point_load_constant')
     def _compute_point_load_index(self):
         for rec in self:
             if rec.point_load and rec.avg_dia and rec.avg_height and rec.avg_dia*rec.avg_height > 0:
-                rec.point_load_index = (1000 * rec.point_load) / (math.sqrt(50) * ((rec.avg_dia * rec.avg_height) ** 0.75))
+                rec.point_load_index = (1000 * rec.point_load) / (math.sqrt(rec.parent_id.point_load_constant) * ((rec.avg_dia * rec.avg_height) ** 0.75))
             else:
                 rec.point_load_index = 0.0
 
-    @api.depends('point_load_strength')
+    @api.depends('point_load_strength','parent_id.compressive_strength_constant')
     def _compute_comp_strength4(self):
         for rec in self:
-            rec.comp_strength4 = 20 * rec.point_load_strength if rec.point_load_strength else 0.0
+            rec.comp_strength4 = rec.parent_id.compressive_strength_constant * rec.point_load_strength if rec.point_load_strength else 0.0
 
-    @api.depends('point_load_index')
+    @api.depends('point_load_index','parent_id.compressive_strength_constant')
     def _compute_comp_strength5(self):
         for rec in self:
-            rec.comp_strength5 = 20 * rec.point_load_index if rec.point_load_index else 0.0
+            rec.comp_strength5 = rec.parent_id.compressive_strength_constant * rec.point_load_index if rec.point_load_index else 0.0
 
 
-    @api.depends('comp_strength1')
+    @api.depends('comp_strength1','parent_id.compressive_strength_constant_hd')
     def _compute_comp_rock(self):
         for rec in self:
-            rec.comp_rock = 0.098 * rec.comp_strength1 if rec.comp_strength1 else 0.0
+            rec.comp_rock = rec.parent_id.compressive_strength_constant_hd * rec.comp_strength1 if rec.comp_strength1 else 0.0
 
-    @api.depends('comp_strength2')
+    @api.depends('comp_strength2','parent_id.compressive_strength_constant_hd')
     def _compute_comp_rock1(self):
         for rec in self:
-            rec.comp_rock1 = 0.098 * rec.comp_strength2 if rec.comp_strength2 else 0.0
+            rec.comp_rock1 = rec.parent_id.compressive_strength_constant_hd * rec.comp_strength2 if rec.comp_strength2 else 0.0
 
     @api.depends('comp_rock1', 'duration_of_test')
     def _compute_stress_rate(self):
