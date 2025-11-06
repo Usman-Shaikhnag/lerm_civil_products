@@ -309,11 +309,32 @@ class MechanicalRockLine(models.Model):
                 rec.point_load_strength = 0.0
 
 
-    @api.depends('point_load', 'avg_dia', 'avg_height','parent_id.point_load_constant')
+    # @api.depends('point_load', 'avg_dia', 'avg_height','parent_id.point_load_constant')
+    # def _compute_point_load_index(self):
+    #     for rec in self:
+    #         if rec.point_load and rec.avg_dia and rec.avg_height and rec.avg_dia*rec.avg_height > 0:
+    #             rec.point_load_index = (1000 * rec.point_load) / (math.sqrt(rec.parent_id.point_load_constant) * ((rec.avg_dia * rec.avg_height) ** 0.75))
+    #         else:
+    #             rec.point_load_index = 0.0
+
+    @api.depends('point_load', 'avg_dia', 'avg_height', 'parent_id.point_load_constant')
     def _compute_point_load_index(self):
         for rec in self:
-            if rec.point_load and rec.avg_dia and rec.avg_height and rec.avg_dia*rec.avg_height > 0:
-                rec.point_load_index = (1000 * rec.point_load) / (math.sqrt(rec.parent_id.point_load_constant) * ((rec.avg_dia * rec.avg_height) ** 0.75))
+            if (
+                rec.point_load 
+                and rec.avg_dia 
+                and rec.avg_height 
+                and rec.avg_dia * rec.avg_height > 0 
+                and rec.parent_id.point_load_constant 
+                and rec.parent_id.point_load_constant > 0
+            ):
+                rec.point_load_index = (
+                    (1000 * rec.point_load)
+                    / (
+                        math.sqrt(rec.parent_id.point_load_constant)
+                        * ((rec.avg_dia * rec.avg_height) ** 0.75)
+                    )
+                )
             else:
                 rec.point_load_index = 0.0
 
