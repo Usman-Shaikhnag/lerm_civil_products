@@ -244,7 +244,7 @@ import time
 from werkzeug.urls import url_decode
 from odoo.tools.safe_eval import safe_eval
 
-class ReportDownloadController(ReportController):
+class ReportDownloadController(http.Controller):
 
     @http.route(['/download_report/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
     def download_report_nabl(self, eln_id, **kw):
