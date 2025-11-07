@@ -236,129 +236,104 @@ from odoo.http import request
 
 from odoo import http
 from odoo.http import request, content_disposition
-import json, re, time, base64
+import base64, json, re, time, werkzeug
 from odoo.tools.safe_eval import safe_eval
-import werkzeug
+
 
 class ReportDownloadController(http.Controller):
 
-    # ---------- 1. DEFAULT REPORT DOWNLOAD ----------
+    # 🧩 1. Default Odoo Report Download
     @http.route(['/report/download'], type='http', auth="user", csrf=False)
     def report_download(self, data, context=None):
-        """Custom report download controller"""
         try:
             request_content = json.loads(data)
             url, report_type = request_content[0], request_content[1]
-            reportname = 'unknown'
 
-            if report_type in ['qweb-pdf', 'qweb-text']:
-                converter = 'pdf' if report_type == 'qweb-pdf' else 'text'
-                extension = 'pdf' if report_type == 'qweb-pdf' else 'txt'
-
-                pattern = '/report/pdf/' if report_type == 'qweb-pdf' else '/report/text/'
-                reportname = url.split(pattern)[1].split('?')[0]
-
-                docids = None
-                if '/' in reportname:
-                    reportname, docids = reportname.split('/')
-
-                report = request.env['ir.actions.report']._get_report_from_name(reportname)
-                if not report:
-                    return request.not_found()
-
-                # Generate the PDF
-                if docids:
-                    ids = [int(x) for x in docids.split(",")]
-                    pdf_data, _ = report._render_qweb_pdf(ids)
-                else:
-                    data_dict = dict(request.httprequest.args)
-                    pdf_data, _ = report._render_qweb_pdf([], data=data_dict)
-
-                filename = "%s.%s" % (report.name, extension)
-
-                # Rename filename if KES number available
-                if docids:
-                    ids = [int(x) for x in docids.split(",")]
-                    obj = request.env[report.model].browse(ids)
-                    if report.print_report_name and len(obj) == 1:
-                        report_name = safe_eval(report.print_report_name, {'object': obj, 'time': time})
-                        filename = "%s.%s" % (report_name, extension)
-
-                # Custom naming for LERM reports
-                if reportname in ['lerm_civil.eln_report_template', 'lerm_civil.general_report_template']:
-                    match = re.search(r'active_model%22%3A%22([^%]+)%22.*?active_id%22%3A(\d+)', url)
-                    if match:
-                        active_model = match.group(1)
-                        active_id = int(match.group(2))
-                        record = request.env[active_model].browse(active_id)
-                        if record and record.kes_no:
-                            filename = f"{record.kes_no}.{extension}"
-
-                headers = [
-                    ('Content-Type', 'application/pdf'),
-                    ('Content-Length', len(pdf_data)),
-                    ('Content-Disposition', content_disposition(filename)),
-                ]
-                return request.make_response(pdf_data, headers=headers)
-            else:
+            if report_type not in ['qweb-pdf', 'qweb-text']:
                 return request.not_found()
+
+            converter = 'pdf' if report_type == 'qweb-pdf' else 'text'
+            extension = 'pdf' if report_type == 'qweb-pdf' else 'txt'
+            pattern = '/report/pdf/' if report_type == 'qweb-pdf' else '/report/text/'
+
+            reportname = url.split(pattern)[1].split('?')[0]
+            docids = None
+            if '/' in reportname:
+                reportname, docids = reportname.split('/')
+
+            report = request.env['ir.actions.report']._get_report_from_name(reportname)
+            if not report:
+                return request.not_found()
+
+            if docids:
+                ids = [int(x) for x in docids.split(",")]
+                pdf_data, _ = report._render_qweb_pdf(ids)
+            else:
+                pdf_data, _ = report._render_qweb_pdf([], data=dict(request.httprequest.args))
+
+            filename = "%s.%s" % (report.name, extension)
+            if docids:
+                ids = [int(x) for x in docids.split(",")]
+                obj = request.env[report.model].browse(ids)
+                if report.print_report_name and len(obj) == 1:
+                    report_name = safe_eval(report.print_report_name, {'object': obj, 'time': time})
+                    filename = "%s.%s" % (report_name, extension)
+
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_data)),
+                ('Content-Disposition', content_disposition(filename)),
+            ]
+            return request.make_response(pdf_data, headers=headers)
 
         except Exception as e:
             error = {'code': 500, 'message': "Odoo Server Error", 'data': str(e)}
             return werkzeug.wrappers.Response(json.dumps(error), status=500, headers=[("Content-Type", "application/json")])
 
-    # ---------- 2. DIRECT NABL REPORT ----------
+    # 🧩 2. Direct NABL Report (QR)
     @http.route(['/download_report/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
     def download_report_nabl(self, eln_id, **kw):
-        """Direct NABL PDF download (public access)"""
         eln = request.env['lerm.eln'].sudo().browse(eln_id)
         if not eln.exists():
             return request.not_found()
 
-        # Report template शोधा
-        if eln.is_product_based_calculation and eln.material.product_based_calculation:
-            template_name = eln.material.product_based_calculation[0].main_report_template.report_name
-        elif eln.parameters_result.parameter:
-            template_name = eln.parameters_result.parameter[0].main_report_template.report_name
-        else:
+        template_name = self._get_template_name(eln)
+        if not template_name:
             return request.not_found()
 
         report = request.env['ir.actions.report']._get_report_from_name(template_name)
-        if not report:
-            return request.not_found()
-
-        pdf_content, _ = report._render_qweb_pdf([eln.id], data={'nabl': True})
+        pdf, _ = report._render_qweb_pdf([eln.id], data={'nabl': True})
         filename = f"{eln.kes_no or eln.name or 'Report'}.pdf"
 
-        return request.make_response(pdf_content, headers=[
+        return request.make_response(pdf, [
             ('Content-Type', 'application/pdf'),
-            ('Content-Disposition', content_disposition(filename))
+            ('Content-Disposition', content_disposition(filename)),
         ])
 
-    # ---------- 3. DIRECT NON-NABL REPORT ----------
+    # 🧩 3. Direct Non-NABL Report (QR)
     @http.route(['/download_report/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
     def download_report_nonnabl(self, eln_id, **kw):
-        """Direct Non-NABL PDF download (public access)"""
         eln = request.env['lerm.eln'].sudo().browse(eln_id)
         if not eln.exists():
             return request.not_found()
 
-        # Template शोधा
-        if eln.is_product_based_calculation and eln.material.product_based_calculation:
-            template_name = eln.material.product_based_calculation[0].main_report_template.report_name
-        elif eln.parameters_result.parameter:
-            template_name = eln.parameters_result.parameter[0].main_report_template.report_name
-        else:
+        template_name = self._get_template_name(eln)
+        if not template_name:
             return request.not_found()
 
         report = request.env['ir.actions.report']._get_report_from_name(template_name)
-        if not report:
-            return request.not_found()
-
-        pdf_content, _ = report._render_qweb_pdf([eln.id], data={'nabl': False})
+        pdf, _ = report._render_qweb_pdf([eln.id], data={'nabl': False})
         filename = f"{eln.kes_no or eln.name or 'Report'}.pdf"
 
-        return request.make_response(pdf_content, headers=[
+        return request.make_response(pdf, [
             ('Content-Type', 'application/pdf'),
-            ('Content-Disposition', content_disposition(filename))
+            ('Content-Disposition', content_disposition(filename)),
         ])
+
+    # 🧩 Helper: Template Name Fetch Logic
+    def _get_template_name(self, eln):
+        if eln.is_product_based_calculation and eln.material.product_based_calculation:
+            return eln.material.product_based_calculation[0].main_report_template.report_name
+        elif eln.parameters_result.parameter:
+            return eln.parameters_result.parameter[0].main_report_template.report_name
+        return False
