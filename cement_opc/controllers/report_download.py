@@ -10,7 +10,6 @@ class DownloadReportController(http.Controller):
         if not eln.exists():
             return request.not_found()
         try:
-            # ✅ Correct for Odoo 17: don't use docids=, just pass [eln_id]
             pdf_content, _ = request.env.ref('lerm_civil.opc_report_action')._render_qweb_pdf(
                 [eln_id], data={'nabl': True}
             )
@@ -21,10 +20,7 @@ class DownloadReportController(http.Controller):
             ]
             return request.make_response(pdf_content, headers=headers)
         except Exception as e:
-            return f"""
-                <h3 style='color:red'>⚠️ Error generating NABL report:</h3>
-                <pre>{str(e)}</pre>
-            """
+            return f"<h3 style='color:red'>⚠️ Error generating NABL report:</h3><pre>{str(e)}</pre>"
 
     @http.route('/download_report/nonnabl/<int:eln_id>', type='http', auth='public', website=True)
     def download_report_non_nabl(self, eln_id, **kw):
@@ -43,7 +39,4 @@ class DownloadReportController(http.Controller):
             ]
             return request.make_response(pdf_content, headers=headers)
         except Exception as e:
-            return f"""
-                <h3 style='color:red'>⚠️ Error generating Non-NABL report:</h3>
-                <pre>{str(e)}</pre>
-            """
+            return f"<h3 style='color:red'>⚠️ Error generating Non-NABL report:</h3><pre>{str(e)}</pre>"
