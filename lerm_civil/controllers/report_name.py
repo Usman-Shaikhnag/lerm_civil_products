@@ -234,11 +234,15 @@ from odoo.http import request
 #         return response
 
 
+
 from odoo import http
 from odoo.http import request, content_disposition
-import json, re, time, base64
-from odoo.tools.safe_eval import safe_eval
+import json
 import werkzeug
+import re
+import time
+from werkzeug.urls import url_decode
+from odoo.tools.safe_eval import safe_eval
 
 class ReportDownloadController(http.Controller):
 
@@ -250,22 +254,23 @@ class ReportDownloadController(http.Controller):
             if not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            # Identify correct report template (update as per your report)
-            report = request.env.ref('cement_opc.opc_report')
+            # ✅ Correctly get report reference (cement_opc.opc_report)
+            report_name = 'cement_opc.opc_report'
 
-            # Render report PDF with data
-            pdf, _ = report._render_qweb_pdf([eln.id], data={'nabl': True})
+            # ✅ Use ir.actions.report to render QWeb PDF
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name,
+                res_ids=[eln.id],
+                data={'nabl': True}
+            )
 
-            # File name from kes_no
-            filename = f"{eln.kes_no or 'report'}.pdf"
-
-            # Return as downloadable file
-            pdf_http_headers = [
+            filename = f"{eln.kes_no or 'report'}_NABL.pdf"
+            headers = [
                 ('Content-Type', 'application/pdf'),
-                ('Content-Length', len(pdf)),
+                ('Content-Length', len(pdf_content)),
                 ('Content-Disposition', content_disposition(filename))
             ]
-            return request.make_response(pdf, headers=pdf_http_headers)
+            return request.make_response(pdf_content, headers=headers)
 
         except Exception as e:
             return request.make_response(
@@ -273,7 +278,6 @@ class ReportDownloadController(http.Controller):
                 headers=[('Content-Type', 'text/plain')],
                 status=500
             )
-
 
     @http.route(['/download_report/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
     def download_report_nonnabl(self, eln_id, **kw):
@@ -283,22 +287,22 @@ class ReportDownloadController(http.Controller):
             if not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            # Identify correct report template (update if different)
-            report = request.env.ref('cement_opc.opc_report')
+            # ✅ Report name same for non-nabl also
+            report_name = 'cement_opc.opc_report'
 
-            # Render non-nabl report
-            pdf, _ = report._render_qweb_pdf([eln.id], data={'nabl': False})
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name,
+                res_ids=[eln.id],
+                data={'nabl': False}
+            )
 
-            # File name from kes_no
-            filename = f"{eln.kes_no or 'report'}.pdf"
-
-            # Return response
-            pdf_http_headers = [
+            filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
+            headers = [
                 ('Content-Type', 'application/pdf'),
-                ('Content-Length', len(pdf)),
+                ('Content-Length', len(pdf_content)),
                 ('Content-Disposition', content_disposition(filename))
             ]
-            return request.make_response(pdf, headers=pdf_http_headers)
+            return request.make_response(pdf_content, headers=headers)
 
         except Exception as e:
             return request.make_response(
@@ -307,10 +311,9 @@ class ReportDownloadController(http.Controller):
                 status=500
             )
 
-
     @http.route(['/report/download'], type='http', auth="user")
     def report_download(self, data, context=None):
-        """Standard Odoo report download handler (overridden for filename customization)"""
+        """Standard Odoo report download handler (for filename customization)"""
         requestcontent = json.loads(data)
         url, type = requestcontent[0], requestcontent[1]
         reportname = 'unknown'
@@ -345,7 +348,7 @@ class ReportDownloadController(http.Controller):
                         report_name = safe_eval(report.print_report_name, {'object': obj, 'time': time})
                         filename = f"{report_name}.{extension}"
 
-                # If report belongs to lerm_civil
+                # 🔹 Custom filename for lerm_civil reports
                 if reportname in ['lerm_civil.eln_report_template', 'lerm_civil.general_report_template']:
                     pattern = r'active_model%22%3A%22([^%]+)%22.*?active_id%22%3A(\d+)'
                     match = re.search(pattern, url)
