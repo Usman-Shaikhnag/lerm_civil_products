@@ -31,151 +31,366 @@
                             </tree>
                         </field>
                     </div>
-
-                 
-                    <table class="table o_form_table custom_table_borders">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th style="text-align: center;">L</th>
-                                <th style="text-align: center;">B</th>
-                                <th style="text-align: center;">H</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Size of the Brick :- (mm)</td>
-                                <td style="text-align: center;"><field name="length_in_mm" nolabel="1"/></td>
-                                <td style="text-align: center;"><field name="width_in_mm" nolabel="1"/></td>
-                                <td style="text-align: center;"><field name="height_in_mm" nolabel="1"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-         
-                        <!-- compressive Strength -->
-
-                    <div invisible="compressive_strength_visible == False" style="text-align:center">
-                      <h1>
-                          <field name="compressive_strength_name" readonly="1" nolabel="1"/>
-                          <field name="compressive_strength_visible" invisible='1'/>
-                      </h1>
-                    </div>
                     
+
+                    <!--  Compressive Strength  -->
+
+                    <div invisible=" not compressive_strength_visible">
+                        <h1 class="text-center">
+                            <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_strength_visible" invisible="1"/>
+                            
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not compressive_strength_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_compressive_strength">Temp.°C</label></td>
+                                    <td><field name="temp_compressive_strength"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_compressive_strength">Humidity %</label></td>
+                                    <td><field name="humidity_compressive_strength"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
+
                    
-                     <div invisible = "compressive_strength_visible == False"  >
-                    <field name="compressive_strength_lines" nolabel="1" >
-                            <tree editable="bottom"  class="custom_table_borders">
-                                <field name="serial_no" />
-                                <field name="identification_mark" />
+
+                    <div invisible="compressive_strength_visible == False" class="custom_table_borders">
+                        <field name="compressive_strength_child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="serial_no"/>
+                                <field name='sample1' style="width:100px;"/>
                                 <field name='length'/>
                                 <field name='width' />
-                                <field name='height' />
-                                <field name='area' />
-                                <field name='load' />
-                                <field name='comp_strength_1' />
+                                <field name='thickness' />
+                                <field name='area'/>
+                                <field name='load'/>
+                                <!-- <field name='correction_factor'/> -->
+                                <field name='compressive_strength'/>
                                 
                             </tree>
-                    </field>
+                        </field>
                     </div>
 
-                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not compressive_strength_visible">
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="not compressive_strength_visible" style="white-space:nowrap;">
                         <tbody>
-                            <tr>
-                                <td><strong>Average Compressive Strength</strong></td>
+                        <tr>
+                                <td><label class="fw-bold" for="avg_compressive_strength">Average Compressive Strength</label></td>
                                 <td>
-                                    <field name="avrg_compressive_strength"/>  <span><field name="compressive_strength_unit" readonly="1" nolabel="1"/></span>
+                                    <field name="avg_compressive_strength"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td><strong>Compressive Strength Conformity</strong></td>
+                                <td><label class="fw-bold" for="avg_compressive_strength_conformity">Conformity</label></td>
                                 <td>
-                                    <field name="comp_strength_confirmity"
-                                        decoration-success="comp_strength_confirmity == 'pass'"
-                                        decoration-danger="comp_strength_confirmity == 'fail'"
+                                    <field name="avg_compressive_strength_conformity"
+                                        decoration-success="avg_compressive_strength_conformity == 'pass'" 
+                                        decoration-danger="avg_compressive_strength_conformity == 'fail'" 
                                         readonly="1"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td><strong for="comp_strength_nabl">Compressive Strength NABL</strong></td>
+                                <td><label class="fw-bold" for="avg_compressive_strength_nabl">NABL Status</label></td>
                                 <td>
-                                    <field name="comp_strength_nabl"
-                                        decoration-success="comp_strength_nabl == 'pass'"
-                                        decoration-danger="comp_strength_nabl == 'fail'"
-                                        readonly="1"/>
+                                    <field name="avg_compressive_strength_nabl"
+                                        decoration-success="avg_compressive_strength_nabl == 'pass'" 
+                                        decoration-danger="avg_compressive_strength_nabl == 'fail'"/>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
-                  
-                    <div invisible="water_absorbtion_visible == False" style="text-align:center">
-                        <h1>
-                          <field name="wt_absorption_name" readonly="1" nolabel="1"/>
-                          <field name="water_absorbtion_visible" invisible='1'/>
+                    <group/>
+
+
+
+                 
+                   <!-- Water Absorption -->
+
+                    <div invisible=" not water_absorption_visible">
+                        <h1 class="text-center">
+                            <field name="water_absorption_name" readonly="1" nolabel="1"/>
+                            <field name="water_absorption_visible" invisible="1"/>
+                            
                         </h1>
                     </div>
-                                    
-                      <div invisible = "water_absorbtion_visible == False"  >
-                            <field name="water_absorption_lines" nolabel="1" >
-                                    <tree editable="bottom"  class="custom_table_borders">
-                                        <field name="serial_no" />
-                                        <field name="identification_mark" />
-                                        <field name='initial_wt'/>
-                                        <field name='final_wt' />
-                                        <field name='water_absorption' />
-                                    
-                                    </tree>
-                            </field>
-                            </div>
-                    
 
-                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not water_absorbtion_visible">
+                    <div class="d-flex gap-2" invisible="not water_absorption_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_water_absorption">Temp.°C</label></td>
+                                    <td><field name="temp_water_absorption"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_water_absorption">Humidity %</label></td>
+                                    <td><field name="humidity_water_absorption"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div invisible="water_absorption_visible == False" class="custom_table_borders">
+                        <field name="water_absorption_child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="serial_no"/>
+                                <field name='sample' style="width:100px;"/>
+                                <field name='dry_weight'/>
+                                <field name='sat_weight' />
+
+                                <field name='sat_dry_weight'/>
+                                <field name='water_absorption'/>
+                                
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="not water_absorption_visible" style="white-space:nowrap;">
                         <tbody>
-                            <tr>
-                                <td><strong>Average Water Absorption</strong></td>
+                        <tr>
+                                <td><label class="fw-bold" for="avg_water_absorption">Average Water Absorption</label></td>
                                 <td>
-                                    <field name="avrg_water_absorption"/>  <span><field name="water_absorption_unit" readonly="1" nolabel="1"/></span>
+                                    <field name="avg_water_absorption"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td><strong>Water Absorption Conformity</strong></td>
+                                <td><label class="fw-bold" for="avg_water_absorption_conformity">Conformity</label></td>
                                 <td>
-                                    <field name="water_absorption_confirmity"
-                                        decoration-success="water_absorption_confirmity == 'pass'"
-                                        decoration-danger="water_absorption_confirmity == 'fail'"
+                                    <field name="avg_water_absorption_conformity"
+                                        decoration-success="avg_water_absorption_conformity == 'pass'" 
+                                        decoration-danger="avg_water_absorption_conformity == 'fail'" 
                                         readonly="1"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td><strong>Water Absorption NABL</strong></td>
+                                <td><label class="fw-bold" for="avg_water_absorption_nabl">NABL Status</label></td>
                                 <td>
-                                    <field name="water_absorption_nabl"
-                                        decoration-success="water_absorption_nabl == 'pass'"
-                                        decoration-danger="water_absorption_nabl == 'fail'"
-                                        readonly="1"/>
+                                    <field name="avg_water_absorption_nabl"
+                                        decoration-success="avg_water_absorption_nabl == 'pass'" 
+                                        decoration-danger="avg_water_absorption_nabl == 'fail'"/>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
-                      <!-- visual_observation -->
-                    <div invisible="efflorescence_visible == False" style="text-align:center">
-                        <h1>
-                            <field name="visual_observation_name_efflorescence" readonly="1" nolabel="1"/>
-                            <field name="efflorescence_visible" invisible='1'/>
+                    <group/>
+
+                    <!-- Dimensions -->
+
+                     <div invisible=" not dimension_visible">
+                        <h1 class="text-center">
+                            <field name="dimension_name" readonly="1" nolabel="1"/>
+                            <field name="dimension_visible" invisible="1"/>
+                            <field name="length_visible" invisible="1"/>
+                            <field name="width_visible" invisible="1"/>
+                            <field name="height_visible" invisible="1"/>
+                            
                         </h1>
                     </div>
 
-                    <div invisible="efflorescence_visible == False" class="mb-3">
+                    <div class="d-flex gap-2" invisible="not dimension_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_dimension">Temp.°C</label></td>
+                                    <td><field name="temp_dimension"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_dimension">Humidity %</label></td>
+                                    <td><field name="humidity_dimension"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div invisible="not dimension_visible">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                       <tbody>
+                         <tr class="text-center" >
+                           <td >Sr No</td>
+                           <td >Observations</td>
+                           <td ><span> 1</span></td>
+                           <td ><span> 2</span></td>
+                           <td ><span> 3</span></td>
+                           <td ><span> Average </span></td>
+                         </tr>
+                         <tr class="text-center">
+                         <td ><span> 1</span></td>
+                           <td><label for="length1"></label></td>
+                           <td><field  name="length1"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="length2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="length3"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="avg_length"  colspan="1"  nolabel="1"/></td>
+                          </tr>
+                         <tr class="text-center">
+                         <td ><span> 2</span></td>
+                           <td><label for="width1"></label></td>
+                           <td><field  name="width1"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="width2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="width3"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="avg_width"  colspan="1"  nolabel="1"/></td>
+                         </tr>
+                         <tr class="text-center"> 
+                          <td ><span> 3</span></td>
+                           <td><label for="height1"></label></td>
+                           <td><field  name="height1"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="height2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="height3"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="avg_height"  colspan="1"  nolabel="1"/></td>
+                         </tr>
+
+                         
+                      
+                         
+                        
+
+                       </tbody>
+                     </table>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not dimension_visible">
+                        <table class="table table-sm o_form_table table-bordered flex-fill custom_table_borders" style="width:33%">
+                            <tbody>
+                                
+
+                                <tr>
+                                <td><label class="fw-bold" for="avg_length_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_length_conformity"
+                                        decoration-success="avg_length_conformity == 'pass'" 
+                                        decoration-danger="avg_length_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_length_nabl">NABL Status</label></td>
+                                <td>
+                                    <field name="avg_length_nabl"
+                                        decoration-success="avg_length_nabl == 'pass'" 
+                                        decoration-danger="avg_length_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered flex-fill custom_table_borders" style="width:33%">
+                            <tbody>
+                                
+
+                                <tr>
+                                <td><label class="fw-bold" for="avg_width_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_width_conformity"
+                                        decoration-success="avg_width_conformity == 'pass'" 
+                                        decoration-danger="avg_width_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_width_nabl">NABL Status</label></td>
+                                <td>
+                                    <field name="avg_width_nabl"
+                                        decoration-success="avg_width_nabl == 'pass'" 
+                                        decoration-danger="avg_width_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:33%">
+                            <tbody>
+                                
+
+                                <tr>
+                                <td><label class="fw-bold" for="avg_height_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_height_conformity"
+                                        decoration-success="avg_height_conformity == 'pass'" 
+                                        decoration-danger="avg_height_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_height_nabl">NABL Status</label></td>
+                                <td>
+                                    <field name="avg_height_nabl"
+                                        decoration-success="avg_height_nabl == 'pass'" 
+                                        decoration-danger="avg_height_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                      <!-- efforescence visual_observation -->
+                    <div invisible="efforescence_visible == False" style="text-align:center">
+                        <h1>
+                            <field name="visual_observation_name_efforescence" readonly="1" nolabel="1"/>
+                            <field name="efforescence_visible" invisible='1'/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not efforescence_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_efforescence">Temp.°C</label></td>
+                                    <td><field name="temp_efforescence"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_efforescence">Humidity %</label></td>
+                                    <td><field name="humidity_efforescence"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div invisible="efforescence_visible == False" class="mb-3">
                         <table class="table custom_table_borders o_form_table">
                             <thead>
                                 <tr>
                                     <th></th>
                                     <th>Observation 1</th>
-                                    <th>Observation 2</th>
-                                    <th>Observation 3</th>
-                                    <th>Observation 4</th>
-                                    <th>Observation 5</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -183,10 +398,6 @@
                              <tr>
                                     <td><strong>Observation</strong></td>
                                     <td><field name="visual_observation_1" nolabel="1"/></td>
-                                    <td><field name="visual_observation_2" nolabel="1"/></td>
-                                    <td><field name="visual_observation_3" nolabel="1"/></td>
-                                    <td><field name="visual_observation_4" nolabel="1"/></td>
-                                    <td><field name="visual_observation_5" nolabel="1"/></td>
                                 </tr>
 
                             </tbody>
