@@ -244,7 +244,7 @@ import time
 from werkzeug.urls import url_decode
 from odoo.tools.safe_eval import safe_eval
 
-class ReportDownloadController(http.Controller):
+class ReportDownloadController(ReportController):
 
     @http.route(['/download_report/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
     def download_report_nabl(self, eln_id, **kw):
@@ -441,3 +441,4 @@ class ReportDownloadController(http.Controller):
                 headers=[("Content-Type", "application/json")]
             )
             raise werkzeug.exceptions.InternalServerError(response=res) from e
+    
