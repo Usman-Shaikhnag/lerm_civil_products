@@ -311,6 +311,74 @@ class ReportDownloadController(http.Controller):
                 status=500
             )
 
+#  fly_ash.lerm_fly_report
+    @http.route(['/download_report/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nabl(self, eln_id, **kw):
+        """Download NABL Report PDF via QR Code"""
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            # ✅ Correctly get report reference (cement_opc.opc_report)
+            report_name = 'fly_ash.lerm_fly_report'
+
+            # ✅ Use ir.actions.report to render QWeb PDF
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name,
+                res_ids=[eln.id],
+                data={'nabl': True}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename))
+            ]
+            return request.make_response(pdf_content, headers=headers)
+
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500
+            )
+
+    @http.route(['/download_report/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nonnabl(self, eln_id, **kw):
+        """Download Non-NABL Report PDF via QR Code"""
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            # ✅ Report name same for non-nabl also
+            report_name = 'fly_ash.lerm_fly_report'
+
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name,
+                res_ids=[eln.id],
+                data={'nabl': False}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename))
+            ]
+            return request.make_response(pdf_content, headers=headers)
+
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (Non-NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500
+            )
+
+
+
     @http.route(['/report/download'], type='http', auth="user")
     def report_download(self, data, context=None):
         """Standard Odoo report download handler (for filename customization)"""
