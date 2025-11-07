@@ -82,8 +82,14 @@ class CementNormalConsistency(models.Model):
     final_kerosene1 = fields.Float("Final Level of Kerosene after one hour kept in water bath(B) – ml")
     final_kerosene2 = fields.Float("Final Level of Kerosene after one hour kept in water bath(B) – ml")
 
-    displaced1 = fields.Float("Displaced Volume after Adding Cement (V) = (B – A) – cm3", store=True, digits=(12, 2))
-    displaced2 = fields.Float("Displaced Volume after Adding Cement (V) = (B – A) – cm3", store=True, digits=(12, 2))
+    displaced1 = fields.Float("Displaced Volume after Adding Cement (V) = (B – A) – cm3", store=True, digits=(12, 2),compute="_compute_displaced_volume")
+    displaced2 = fields.Float("Displaced Volume after Adding Cement (V) = (B – A) – cm3", store=True, digits=(12, 2),compute="_compute_displaced_volume")
+
+    @api.depends('final_kerosene1', 'initial_kerosene1', 'final_kerosene2', 'initial_kerosene2')
+    def _compute_displaced_volume(self):
+        for rec in self:
+            rec.displaced1 = (rec.final_kerosene1 - rec.initial_kerosene1) if rec.final_kerosene1 and rec.initial_kerosene1 else 0.0
+            rec.displaced2 = (rec.final_kerosene2 - rec.initial_kerosene2) if rec.final_kerosene2 and rec.initial_kerosene2 else 0.0
 
     density1 = fields.Float("Density of Cement Sample (    ) – gms/ cm3", store=True, digits=(12, 2),compute="_compute_values")
     density2 = fields.Float("Density of Cement Sample (    ) – gms/ cm3", store=True, digits=(12, 2),compute="_compute_values")
@@ -124,7 +130,8 @@ class CementNormalConsistency(models.Model):
     avg_density_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_density_conformity")
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_avg_density_conformity")
 
     avg_density_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -135,6 +142,9 @@ class CementNormalConsistency(models.Model):
     @api.depends('avg_density','eln_ref','grade')
     def _compute_avg_density_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_density_conformity = 'na'
+                continue
             record.avg_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254gt2547-372f-4775-9bcb-e9dd70e3587g')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254gt2547-372f-4775-9bcb-e9dd70e3587g')]).parameter_table
@@ -151,6 +161,9 @@ class CementNormalConsistency(models.Model):
                         break
                     else:
                         record.avg_density_conformity = 'fail'
+
+
+
 
     @api.depends('avg_density','eln_ref','grade')
     def _compute_avg_density_nabl(self):
@@ -186,23 +199,22 @@ class CementNormalConsistency(models.Model):
 
     consistency_cement_lines = fields.One2many('consistensy.cement.line','parent_id',string="Consistency")
 
-    avg_consistency = fields.Float("Average consistency",compute="_compute_avg_consistency",store=True,digits=(12,4))
+    avg_consistency = fields.Float("Consistency of cement",compute="_compute_avg_consistency",store=True,digits=(12,2))
 
+    
     @api.depends('consistency_cement_lines.water_mix')
     def _compute_avg_consistency(self):
         for rec in self:
             if rec.consistency_cement_lines:
-                total = sum(line.water_mix for line in rec.consistency_cement_lines)
-                count = len(rec.consistency_cement_lines)
-                rec.avg_consistency = total / count if count else 0
+                rec.avg_consistency = max(line.water_mix for line in rec.consistency_cement_lines if line.water_mix is not None)
             else:
                 rec.avg_consistency = 0
 
     avg_consistency_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
-    ], string='Confirmity', default='fail',compute="_compute_avg_consistency_confirmity")
+        ('na', 'NA'),
+    ], string='Confirmity',compute="_compute_avg_consistency_confirmity")
     avg_consistency_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -212,6 +224,9 @@ class CementNormalConsistency(models.Model):
     @api.depends('avg_consistency','eln_ref','grade')
     def _compute_avg_consistency_confirmity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_consistency_confirmity = 'na'
+                continue
             record.avg_consistency_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')]).parameter_table
@@ -262,8 +277,8 @@ class CementNormalConsistency(models.Model):
     initial_setting_time_name = fields.Char("Name",default="Setting Time")
 
   
-    temp_time = fields.Float("Temp.°C")
-    humidity_time= fields.Float("Humidity %")
+    temp_time = fields.Float("Initial Time Temp.°C")
+    humidity_time= fields.Float("Initial Time Humidity %")
     avg_initial_time = fields.Float("Average Intial Time",compute="_compute_avg_initial_time",store=True,digits=(12,4))
 
     @api.depends('intial_time_lines.initial')
@@ -276,8 +291,8 @@ class CementNormalConsistency(models.Model):
             else:
                 rec.avg_initial_time = 0
 
-    temp_time_final = fields.Float("Temp.°C")
-    humidity_time_final = fields.Float("Humidity %")
+    temp_time_final = fields.Float("Final Time Temp.°C")
+    humidity_time_final = fields.Float("Final Time Humidity %")
 
     avg_final_time = fields.Float("Average Final Time",compute="_compute_avg_final_time",store=True,digits=(12,4))
 
@@ -450,8 +465,8 @@ class CementNormalConsistency(models.Model):
     fineness_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
-    ], string='Confirmity', default='fail',compute="_compute_fineness_confirmity")
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_fineness_confirmity")
     fineness_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -461,6 +476,9 @@ class CementNormalConsistency(models.Model):
     @api.depends('specific_surface_first','eln_ref','grade')
     def _compute_fineness_confirmity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.fineness_confirmity = 'na'
+                continue
             record.fineness_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','63te7425-30fe-4043-b518-0102147hhytr')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','63te7425-30fe-4043-b518-0102147hhytr')]).parameter_table
@@ -536,7 +554,8 @@ class CementNormalConsistency(models.Model):
     avg_3_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_3_days_conformity")
+        ('na', 'NA'),
+    ], string='Conformity', compute="_compute_avg_3_days_conformity")
 
     avg_3_days_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -547,6 +566,9 @@ class CementNormalConsistency(models.Model):
     @api.depends('avg_3_days','eln_ref','grade')
     def _compute_avg_3_days_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_3_days_conformity = 'na'
+                continue
             record.avg_3_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','147frrt012-372f-4775-9bcb-e9dd651478trew')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','147frrt012-372f-4775-9bcb-e9dd651478trew')]).parameter_table
@@ -592,7 +614,8 @@ class CementNormalConsistency(models.Model):
     avg_7_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_7_days_conformity")
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_avg_7_days_conformity")
 
     avg_7_days_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -603,6 +626,9 @@ class CementNormalConsistency(models.Model):
     @api.depends('avg_7_days','eln_ref','grade')
     def _compute_avg_7_days_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_7_days_conformity = 'na'
+                continue
             record.avg_7_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1236547ffv-372f-4775-9bcb-e9dd987ytre14g')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1236547ffv-372f-4775-9bcb-e9dd987ytre14g')]).parameter_table
@@ -649,7 +675,8 @@ class CementNormalConsistency(models.Model):
     avg_28_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_28_days_conformity")
+        ('na', 'NA'),
+    ], string='Conformity', compute="_compute_avg_28_days_conformity")
 
     avg_28_days_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -660,6 +687,9 @@ class CementNormalConsistency(models.Model):
     @api.depends('avg_28_days','eln_ref','grade')
     def _compute_avg_28_days_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_28_days_conformity = 'na'
+                continue
             record.avg_28_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00rrrttt887-372f-4775-9bcb-e9dd987nnhtre1')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00rrrttt887-372f-4775-9bcb-e9dd987nnhtre1')]).parameter_table
@@ -734,7 +764,8 @@ class CementNormalConsistency(models.Model):
     avg_expantion_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_expantion_conformity")
+        ('na', 'NA'),
+    ], string='Conformity', compute="_compute_avg_expantion_conformity")
 
     avg_expantion_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -745,6 +776,9 @@ class CementNormalConsistency(models.Model):
     @api.depends('avg_expantion','eln_ref','grade')
     def _compute_avg_expantion_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_expantion_conformity = 'na'
+                continue
             record.avg_expantion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','87ye7425-30fe-4043-b518-987456321r')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','87ye7425-30fe-4043-b518-987456321r')]).parameter_table
@@ -823,7 +857,8 @@ class CementNormalConsistency(models.Model):
     avg_expantion1_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_expantion1_conformity")
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_avg_expantion1_conformity")
 
     avg_expantion1_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -834,6 +869,9 @@ class CementNormalConsistency(models.Model):
     @api.depends('avg_expantion1','eln_ref','grade')
     def _compute_avg_expantion1_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_expantion1_conformity = 'na'
+                continue
             record.avg_expantion1_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','87ye7425-30fe-4043-b518-32145698jj')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','87ye7425-30fe-4043-b518-32145698jj')]).parameter_table
@@ -855,6 +893,7 @@ class CementNormalConsistency(models.Model):
     def _compute_avg_expantion1_nabl(self):
         
         for record in self:
+            
             record.avg_expantion1_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','87ye7425-30fe-4043-b518-32145698jj')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','87ye7425-30fe-4043-b518-32145698jj')]).parameter_table
@@ -931,6 +970,60 @@ class CementNormalConsistency(models.Model):
             if result.parameter.internal_id == '254gt2547-372f-4775-9bcb-e9dd70e3587g':
                 result.result_char = round(self.avg_density,2)
                 if self.avg_density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '3214578nbhgt2-372f-4775-9bcb-e9dd723547htui':
+                result.result_char = round(self.avg_consistency,2)
+                if self.avg_consistency_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '63te7425-30fe-4043-b518-0102147hhytr':
+                result.result_char = round(self.specific_surface_first,2)
+                if self.fineness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '147frrt012-372f-4775-9bcb-e9dd651478trew':
+                result.result_char = round(self.avg_3_days,2)
+                if self.avg_3_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '1236547ffv-372f-4775-9bcb-e9dd987ytre14g':
+                result.result_char = round(self.avg_7_days,2)
+                if self.avg_7_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '00rrrttt887-372f-4775-9bcb-e9dd987nnhtre1':
+                result.result_char = round(self.avg_28_days,2)
+                if self.avg_28_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '87ye7425-30fe-4043-b518-987456321r':
+                result.result_char = round(self.avg_expantion,2)
+                if self.avg_expantion_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '87ye7425-30fe-4043-b518-32145698jj':
+                result.result_char = round(self.avg_expantion1,2)
+                if self.avg_expantion1_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -1136,9 +1229,9 @@ class CementCompressiveLine(models.Model):
 
 
     lab_id = fields.Char("Lab Id")
-    testing_period = fields.Char("Testing Period")
+    # testing_period = fields.Char("Testing Period")
     casting_details = fields.Date("Casting Details Date",compute="_compute_dt_of_casting")
-    days = fields.Integer(string="No.of Days",store=True)
+    days = fields.Integer(string="Testing Period",store=True)
     testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
     cube_im = fields.Integer("Cube I/M")
 
@@ -1229,13 +1322,13 @@ class CementSoundnessAutocalveLine(models.Model):
 
 
     # mould_no = fields.Integer("Mould No")
-    intial_ref = fields.Float("Initial Reference Bar Reading (R1)",digits=(12,3))
-    initial_reading = fields.Float("Initial Reading (Ri)",digits=(12,3))
-    intial_a = fields.Float(string="Initial A (Ri – R1)" ,compute="_compute_values",store=True,digits=(12,3))
-    final_ref = fields.Float("Final Reference Bar Reading (R2)",digits=(12,3))
-    final_reading = fields.Float("Final Reading (Rf)",digits=(12,3))
+    intial_ref = fields.Float("Reference Bar Reading (R1)",digits=(12,3))
+    initial_reading = fields.Float("Reading (Ri)",digits=(12,3))
+    intial_a = fields.Float(string="A (Ri – R1)" ,compute="_compute_values",store=True,digits=(12,3))
+    final_ref = fields.Float("Reference Bar Reading (R2)",digits=(12,3))
+    final_reading = fields.Float("Reading (Rf)",digits=(12,3))
 
-    final_b = fields.Float("Final B (Rf – R2)",compute="_compute_values",store=True,digits=(12,3))
+    final_b = fields.Float("B (Rf – R2)",compute="_compute_values",store=True,digits=(12,3))
     
     autoclave = fields.Float("Autoclave Expansion (B-A)/250 x 100 %",compute="_compute_values",store=True,digits=(12,4))
 

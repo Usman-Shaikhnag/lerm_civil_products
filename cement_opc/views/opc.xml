@@ -277,12 +277,12 @@
                     <div class="d-flex gap-2" invisible="not initial_setting_time_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
-                           <tr>
+                           <!-- <tr>
                                 <td><label class="fw-bold" for="avg_initial_time"></label></td>
                                 <td>
                                     <field name="avg_initial_time" nolabel="1"/>
                                 </td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td><label class="fw-bold" for="temp_time"></label></td>
                                 <td>
@@ -296,7 +296,7 @@
                                     <field name="humidity_time" nolabel="1"/>
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td><label class="fw-bold" for="avg_initial_time_confirmity">Conformity</label></td>
                                 <td>
                                     <field name="avg_initial_time_confirmity"
@@ -313,7 +313,7 @@
                                         decoration-danger="avg_initial_time_nabl == 'fail'"
                                         readonly="1"/>
                                 </td>
-                            </tr>
+                            </tr> -->
                                 
                             </tbody>
                         </table>
@@ -321,12 +321,12 @@
                         
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
-                                <tr>
+                                <!-- <tr>
                                 <td><label class="fw-bold" for="avg_final_time"></label></td>
                                 <td>
                                     <field name="avg_final_time" nolabel="1"/>
                                 </td>
-                            </tr>
+                            </tr> -->
                              <tr>
                                 <td><label class="fw-bold" for="temp_time_final"></label></td>
                                 <td>
@@ -340,7 +340,7 @@
                                     <field name="humidity_time_final" nolabel="1"/>
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td><label class="fw-bold" for="avg_final_time_confirmity">Conformity</label></td>
                                 <td>
                                     <field name="avg_final_time_confirmity"
@@ -357,7 +357,7 @@
                                         decoration-danger="avg_final_time_nabl == 'fail'"
                                         readonly="1"/>
                                 </td>
-                            </tr>
+                            </tr> -->
                                 
                             </tbody>
                         </table>
@@ -513,9 +513,10 @@
                         <tree editable="bottom">
                           <field name="serial_no"/>
                           <field name="lab_id" width="120"/>
-                          <field name="testing_period" width="120"/>
+                          <!-- <field name="testing_period" width="120"/> -->
+                          <field name="days"/>
                           <field name="casting_details"/>
-                           <field name="days"/>
+                           
                           <field name="testing_details" />
                           <field name="cube_im" />
                            <field name="length1"/>
@@ -710,9 +711,32 @@
                         </table>
                     </div>
 
+
+               
+
+                        <div class="d-flex custom_table_borders" style="display:flex; margin-left:120px; margin-bottom:1px;">
+                        <table style="width:41%; border-collapse:collapse; text-align:center; margin:0; padding:0;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Initial Length Before Autoclaving in mm</th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                        <table style="width:41%; border-collapse:collapse; text-align:center; margin:0; padding:0;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Final Length After 3 Hrs. Autoclaving in mm</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+
              
 
                     <div class="custom_table_borders" invisible = "soundness_autoclave_visible == False">
+                     
                       <field name="opc_autoclave_ids" nolabel="1" colspan="2">
                         <tree editable="bottom">
                           <field name="serial_no"/>
