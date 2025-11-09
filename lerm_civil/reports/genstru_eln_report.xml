@@ -61,14 +61,27 @@
                                 <td style="text-align:right; width:30%;">
                                     <img t-att-src="'/lerm_civil/static/src/img/qr_logo.png'" style="height:40px; width:auto;"/>
                                 </td>
+
+                              
                             </tr>
                         </table>
                     </td>
 
 
-                    <td style="width:40%; vertical-align:middle; text-align:left;">
+                    <!-- <td style="width:40%; vertical-align:middle; text-align:left;">
                         <img t-att-src="'/lerm_civil/static/src/img/nabl_logo.png'" style="height:100px; width:auto;"/>
-                    </td>
+                    </td> -->
+                      <t t-if="eln.sample_id.lab_location">
+                                <td t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" style="text-align:right; width:30%;">
+                                    <!-- <img t-att-src="'/lerm_civil/static/src/img/qr_logo.png'" style="height:40px; width:auto;"/> -->
+                                    <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')" style="height:100px; width:auto;"/>
+                                </td>
+                                
+                                <td t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer"  style="text-align:right; width:30%;">
+                                    <!-- <img t-att-src="'/lerm_civil/static/src/img/qr_logo.png'" style="height:40px; width:auto;"/> -->
+                                    <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')" style="height:100px; width:auto;"/>
+                                </td>
+                            </t>
                 </tr>
             </table>
         </div>

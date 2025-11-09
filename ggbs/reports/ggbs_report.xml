@@ -407,7 +407,20 @@
 						    <tr style="height:100px;">
 							
 							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
-								<b style="font-size:13px;">Assistant Technical Manager</b><br/>
+							<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								 <b>
+										<span t-esc="eln.technician.name"/>
+									</b><br/>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b><br/>
 								<span style="font-size:12px;">Prepared By</span>
 							</td>
 
@@ -416,7 +429,20 @@
 							</td>
 
 							<td style="width:33.33%; vertical-align:bottom; padding-bottom:5px;text-align:center;">
-								<b style="font-size:13px;">Technical Manager: </b><br/>
+							<div style="height: 40px;">
+											<t t-if="eln.sample_id.approveby_signature_required">
+												<div t-if="eln.sample_id.approved_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
+								<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b><br/>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b><br/>
 								<span style="font-size:12px;">Reviewed &amp; Issued By</span>
 							</td>
 						</tr>
