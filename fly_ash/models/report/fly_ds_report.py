@@ -55,142 +55,56 @@ class FlyashDatasheet(models.AbstractModel):
 
 
 
-# class FlyashReport(models.AbstractModel):
-#     _name = 'report.fly_ash.lerm_fly_report'
-#     _description = 'Fly Ash Report'
-    
-#     @api.model
-#     def _get_report_values(self, docids, data):
-#         # eln = self.env['lerm.eln'].sudo().browse(docids)
-#         fromEln = data.get('fromEln')
-#         if data.get('report_wizard') == True:
-#             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['sample'])])
-#         elif fromEln == False:
-#             if 'active_id' in data.get('context',{}):
-#                 eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
-#             else:
-#                 eln = self.env['lerm.eln'].sudo().browse(docids)
-#         else:
-#             if 'active_id' in data.get('context',{}):
-#                 eln = self.env['lerm.eln'].sudo().search([('id','=',data['context']['active_id'])])
-#             else:
-#                 eln = self.env['lerm.eln'].sudo().browse(docids)
-        
-#         # qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-#         # qr.add_data(eln.kes_no)
-#         # qr.make(fit=True)
-#         # qr_image = qr.make_image()
-
-#         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-#         # qr.add_data(eln.kes_no)
-#         url = self.env['ir.config_parameter'].sudo().search([('key','=','web.base.url')]).value
-#         nabl = data.get('nabl')
-#         # import wdb;wdb.set_trace()
-
-#         if nabl:
-#             url = url +'/download_report/nabl/'+ str(eln.id)
-#         else:
-#             url = url +'/download_report/nonnabl/'+ str(eln.id)
-#         qr.add_data(url)
-#         qr.make(fit=True)
-#         qr_image = qr.make_image()
-
-#         # Convert the QR code image to base64 string
-#         buffered = BytesIO()
-#         qr_image.save(buffered, format="PNG")
-#         qr_image_base64 = base64.b64encode(buffered.getvalue()).decode()
-
-#         # Assign the base64 string to a field in the 'srf' object
-#         qr_code = qr_image_base64
-            
-#         data = {
-#             "material_id":eln.material.id,
-#             "grade_id":eln.grade_id.id
-#         }
-#         model = eln.get_product_base_calc_line(data).ir_model.model
-#         flyash_data = self.env[model].search([("id","=",eln.model_id)])
-#         # print(flyash_data.normal_consistency_fly_1)
-#         return {
-#             'eln': eln,
-#             'flyash': flyash_data,
-#             'qrcode': qr_code,
-#             'fromEln':fromEln,
-#             'nabl':nabl
-#         }
-
 class FlyashReport(models.AbstractModel):
     _name = 'report.fly_ash.lerm_fly_report'
     _description = 'Fly Ash Report'
-
+    
     @api.model
-    def _get_report_values(self, docids, data):
-        fromEln = data.get('fromEln')
+    def _get_report_values(self, docids, data=None):
+        data = data or {}
         nabl = data.get('nabl', False)
 
-        # -----------------------
-        # GET ELN BASED ON SOURCE
-        # -----------------------
-        if data.get('report_wizard') == True:
-            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data['sample'])])
-        elif fromEln == False:
-            active = data.get('context', {}).get('active_id')
-            if active:
-                eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', active)])
-            else:
-                eln = self.env['lerm.eln'].sudo().browse(docids)
+        # 🧩 ELN Record मिळवा
+        if data.get('report_wizard'):
+            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data.get('sample'))])
+        elif 'active_id' in data.get('context', {}):
+            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data['context']['active_id'])])
         else:
-            active = data.get('context', {}).get('active_id')
-            if active:
-                eln = self.env['lerm.eln'].sudo().browse(active)
-            else:
-                eln = self.env['lerm.eln'].sudo().browse(docids)
+            eln = self.env['lerm.eln'].sudo().browse(docids)
 
-        # Safety check
         if not eln:
-            return {"error": "ELN not found"}
+            raise ValueError("ELN record not found")
 
-        # -----------------------
-        # QR CODE GENERATION
-        # -----------------------
+        # 🧩 QR Code तयार करा
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
             box_size=10,
-            border=4
+            border=4,
         )
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        report_url = f"{base_url}/download_report/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
 
-        base_url = self.env['ir.config_parameter'].sudo().search([('key', '=', 'web.base.url')]).value
-
-        if nabl:
-            url = f"{base_url}/download_report/nabl/{eln.id}"
-        else:
-            url = f"{base_url}/download_report/nonnabl/{eln.id}"
-
-        qr.add_data(url)
+        qr.add_data(report_url)
         qr.make(fit=True)
         qr_image = qr.make_image()
-
-        buffer = BytesIO()
-        qr_image.save(buffer, format="PNG")
-        qr_code_base64 = base64.b64encode(buffer.getvalue()).decode()
-
-        # -----------------------
-        # GET FLYASH MODEL DYNAMICALLY
-        # -----------------------
-        calc_data = {
-            "material_id": eln.material.id,
-            "grade_id": eln.grade_id.id
+        buffered = BytesIO()
+        qr_image.save(buffered, format="PNG")
+        qr_code = base64.b64encode(buffered.getvalue()).decode()
+            
+        data = {
+            "material_id":eln.material.id,
+            "grade_id":eln.grade_id.id
         }
-
-        dynamic_model = eln.get_product_base_calc_line(calc_data).ir_model.model
-
-        # FIX: eln.model_id is a record → take model_id.id
-        flyash_record = self.env[dynamic_model].sudo().browse(eln.model_id.id)
-
+        model = eln.get_product_base_calc_line(data).ir_model.model
+        flyash_data = self.env[model].search([("id","=",eln.model_id)])
+        # print(flyash_data.normal_consistency_fly_1)
         return {
             'eln': eln,
-            'flyash': flyash_record,
-            'qrcode': qr_code_base64,
-            'fromEln': fromEln,
-            'nabl': nabl
+            'flyash': flyash_data,
+            'qrcode': qr_code,
+            # 'fromEln':fromEln,
+            'nabl':nabl
         }
+
+
