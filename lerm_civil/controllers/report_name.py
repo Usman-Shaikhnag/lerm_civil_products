@@ -245,90 +245,114 @@ from werkzeug.urls import url_decode
 from odoo.tools.safe_eval import safe_eval
 
 
-class ReportDownloadController(http.Controller):
-    @http.route(['/download_report/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
-    def download_report_nabl(self, eln_id, **kw):
-        try:
-            eln = request.env['lerm.eln'].sudo().browse(eln_id)
-            if not eln.exists():
-                return werkzeug.exceptions.NotFound("ELN record not found")
+# class ReportDownloadController(http.Controller):
+#     @http.route(['/download_report/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+#     def download_report_nabl(self, eln_id, **kw):
+#         try:
+#             eln = request.env['lerm.eln'].sudo().browse(eln_id)
+#             if not eln.exists():
+#                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report_name = 'cement_opc.opc_report'
-            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
-                report_name, res_ids=[eln.id], data={'nabl': True}
-            )
+#             report_name = 'cement_opc.opc_report'
+#             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+#                 report_name, res_ids=[eln.id], data={'nabl': True}
+#             )
 
-            filename = f"{eln.kes_no or 'report'}_NABL.pdf"
-            headers = [
-                ('Content-Type', 'application/pdf'),
-                ('Content-Length', len(pdf_content)),
-                ('Content-Disposition', content_disposition(filename)),
-            ]
-            return request.make_response(pdf_content, headers=headers)
-        except Exception as e:
-            return request.make_response(
-                f"Internal Server Error (NABL): {str(e)}",
-                headers=[('Content-Type', 'text/plain')],
-                status=500,
-            )
+#             filename = f"{eln.kes_no or 'report'}_NABL.pdf"
+#             headers = [
+#                 ('Content-Type', 'application/pdf'),
+#                 ('Content-Length', len(pdf_content)),
+#                 ('Content-Disposition', content_disposition(filename)),
+#             ]
+#             return request.make_response(pdf_content, headers=headers)
+#         except Exception as e:
+#             return request.make_response(
+#                 f"Internal Server Error (NABL): {str(e)}",
+#                 headers=[('Content-Type', 'text/plain')],
+#                 status=500,
+#             )
 
-    @http.route(['/download_report/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
-    def download_report_nonnabl(self, eln_id, **kw):
-        try:
-            eln = request.env['lerm.eln'].sudo().browse(eln_id)
-            if not eln.exists():
-                return werkzeug.exceptions.NotFound("ELN record not found")
+#     @http.route(['/download_report/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+#     def download_report_nonnabl(self, eln_id, **kw):
+#         try:
+#             eln = request.env['lerm.eln'].sudo().browse(eln_id)
+#             if not eln.exists():
+#                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report_name = 'cement_opc.opc_report'
-            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
-                report_name, res_ids=[eln.id], data={'nabl': False}
-            )
+#             report_name = 'cement_opc.opc_report'
+#             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+#                 report_name, res_ids=[eln.id], data={'nabl': False}
+#             )
 
-            filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
-            headers = [
-                ('Content-Type', 'application/pdf'),
-                ('Content-Length', len(pdf_content)),
-                ('Content-Disposition', content_disposition(filename)),
-            ]
-            return request.make_response(pdf_content, headers=headers)
-        except Exception as e:
-            return request.make_response(
-                f"Internal Server Error (Non-NABL): {str(e)}",
-                headers=[('Content-Type', 'text/plain')],
-                status=500,
-            )
+#             filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
+#             headers = [
+#                 ('Content-Type', 'application/pdf'),
+#                 ('Content-Length', len(pdf_content)),
+#                 ('Content-Disposition', content_disposition(filename)),
+#             ]
+#             return request.make_response(pdf_content, headers=headers)
+#         except Exception as e:
+#             return request.make_response(
+#                 f"Internal Server Error (Non-NABL): {str(e)}",
+#                 headers=[('Content-Type', 'text/plain')],
+#                 status=500,
+#             )
 
 
+class ReportDownloadDynamicController(http.Controller):
 
-class ReportDownloadFlyAshController(http.Controller):
+    def _get_dynamic_report_name(self, eln):
+        """
+        Decide report_name based on material/product
+        """
+        # जर ELN मध्ये report_name ठरलेले असेल तर direct use करा
+        if eln.report_name:
+            return eln.report_name
 
+        # PRODUCT-BASED LOGIC
+        product_code = eln.material.product_based_calculation.code
+
+        mapping = {
+            'OPC': 'cement_opc.opc_report', 
+            'FLY_ASH': 'fly_ash.lerm_fly_report',
+            'STONE': 'stones.stones_report',
+           
+        }
+
+        # जर key सापडला नाही तर default opc वापरा
+        return mapping.get(product_code, 'cement_opc.opc_report')
+
+    # ------------------ COMMON HANDLER ------------------
+    def _generate(self, eln_id, is_nabl):
+        eln = request.env['lerm.eln'].sudo().browse(eln_id)
+
+        if not eln.exists():
+            return werkzeug.exceptions.NotFound("ELN record not found")
+
+        report_name = self._get_dynamic_report_name(eln)
+
+        pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+            report_name,
+            res_ids=[eln.id],
+            data={'nabl': is_nabl}
+        )
+
+        filename = f"{eln.kes_no or 'report'}_{'NABL' if is_nabl else 'NonNABL'}.pdf"
+
+        headers = [
+            ('Content-Type', 'application/pdf'),
+            ('Content-Length', str(len(pdf_content))),
+            ('Content-Disposition', content_disposition(filename)),
+        ]
+
+        return request.make_response(pdf_content, headers=headers)
+
+    # ------------------ ROUTE 1 (NABL) ------------------
     @http.route(['/download_report/nabl/<int:eln_id>'],
                 type='http', auth='public', website=True, csrf=False)
-    def download_report_nabl1(self, eln_id, **kw):
+    def download_nabl(self, eln_id, **kw):
         try:
-            eln = request.env['lerm.eln'].sudo().browse(eln_id)
-
-            if not eln.exists():
-                return werkzeug.exceptions.NotFound("ELN record not found")
-
-            report_name = 'fly_ash.lerm_fly_report'
-
-            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
-                report_name,
-                res_ids=[eln.id],
-                data={'nabl': True}
-            )
-
-            filename = f"{eln.kes_no or 'report'}_NABL.pdf"
-
-            headers = [
-                ('Content-Type', 'application/pdf'),
-                ('Content-Length', str(len(pdf_content))),
-                ('Content-Disposition', content_disposition(filename)),
-            ]
-
-            return request.make_response(pdf_content, headers=headers)
-
+            return self._generate(eln_id, True)
         except Exception as e:
             return request.make_response(
                 f"Internal Server Error (NABL): {str(e)}",
@@ -336,36 +360,17 @@ class ReportDownloadFlyAshController(http.Controller):
                 status=500,
             )
 
+    # ------------------ ROUTE 2 (NON-NABL) ------------------
     @http.route(['/download_report/nonnabl/<int:eln_id>'],
                 type='http', auth='public', website=True, csrf=False)
-    def download_report_nonnabl1(self, eln_id, **kw):
+    def download_nonnabl(self, eln_id, **kw):
         try:
-            eln = request.env['lerm.eln'].sudo().browse(eln_id)
-
-            if not eln.exists():
-                return werkzeug.exceptions.NotFound("ELN record not found")
-
-            report_name = 'fly_ash.lerm_fly_report'
-
-            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
-                report_name,
-                res_ids=[eln.id],
-                data={'nabl': False}
-            )
-
-            filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
-
-            headers = [
-                ('Content-Type', 'application/pdf'),
-                ('Content-Length', str(len(pdf_content))),
-                ('Content-Disposition', content_disposition(filename)),
-            ]
-
-            return request.make_response(pdf_content, headers=headers)
-
+            return self._generate(eln_id, False)
         except Exception as e:
             return request.make_response(
                 f"Internal Server Error (Non-NABL): {str(e)}",
                 [('Content-Type', 'text/plain')],
                 status=500,
             )
+
+
