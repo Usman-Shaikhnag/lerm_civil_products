@@ -298,7 +298,7 @@ from odoo.tools.safe_eval import safe_eval
 #                 status=500,
 #             )
 
-cclass ReportDownloadControllerOPC(http.Controller):
+class ReportDownloadControllerOPC(http.Controller):
 
     @http.route(['/download_report/opcc/nabl/<int:eln_id>'], type='http', auth='public', csrf=False)
     def download_report_nabl_opc(self, eln_id, **kw):
