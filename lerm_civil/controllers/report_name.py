@@ -460,7 +460,72 @@ class ReportDownloadControllerRock(http.Controller):
             )
 
 
+# class ReportDownloadControllerGGBS(http.Controller):
+#     @http.route(['/download_report/ggbs/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+#     def download_report_nabl_ggbs(self, eln_id, **kw):
+#         try:
+#             eln = request.env['lerm.eln'].sudo().browse(eln_id)
+#             if not eln.exists():
+#                 return werkzeug.exceptions.NotFound("ELN record not found")
+
+#             report_name = 'ggbs.lerm_ggbs_report'
+#             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+#                 report_name, res_ids=[eln.id], data={'nabl': True}
+#             )
+
+#             filename = f"{eln.kes_no or 'report'}_NABL.pdf"
+#             headers = [
+#                 ('Content-Type', 'application/pdf'),
+#                 ('Content-Length', len(pdf_content)),
+#                 ('Content-Disposition', content_disposition(filename)),
+#             ]
+#             return request.make_response(pdf_content, headers=headers)
+#         except Exception as e:
+#             return request.make_response(
+#                 f"Internal Server Error (NABL): {str(e)}",
+#                 headers=[('Content-Type', 'text/plain')],
+#                 status=500,
+#             )
+
+#     @http.route(['/download_report/ggbs/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+#     def download_report_nonnabl_ggbs(self, eln_id, **kw):
+#         try:
+#             eln = request.env['lerm.eln'].sudo().browse(eln_id)
+#             if not eln.exists():
+#                 return werkzeug.exceptions.NotFound("ELN record not found")
+
+#             report_name = 'ggbs.lerm_ggbs_report'
+#             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+#                 report_name, res_ids=[eln.id], data={'nabl': False}
+#             )
+
+#             filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
+#             headers = [
+#                 ('Content-Type', 'application/pdf'),
+#                 ('Content-Length', len(pdf_content)),
+#                 ('Content-Disposition', content_disposition(filename)),
+#             ]
+#             return request.make_response(pdf_content, headers=headers)
+#         except Exception as e:
+#             return request.make_response(
+#                 f"Internal Server Error (Non-NABL): {str(e)}",
+#                 headers=[('Content-Type', 'text/plain')],
+#                 status=500,
+#             )
+
 class ReportDownloadControllerGGBS(http.Controller):
+
+    def _render_pdf_sudo(self, report_name, eln_id, nabl):
+        """Force sudo env for PDF rendering"""
+        env = request.env(user=1)  # SUPERUSER
+        report = env['ir.actions.report']._get_report_from_name(report_name)
+
+        pdf_content, _ = report._render_qweb_pdf(
+            [eln_id],
+            data={'nabl': nabl}
+        )
+        return pdf_content
+
     @http.route(['/download_report/ggbs/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
     def download_report_nabl_ggbs(self, eln_id, **kw):
         try:
@@ -468,23 +533,27 @@ class ReportDownloadControllerGGBS(http.Controller):
             if not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report_name = 'ggbs.lerm_ggbs_report'
-            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
-                report_name, res_ids=[eln.id], data={'nabl': True}
+            pdf_content = self._render_pdf_sudo(
+                report_name='ggbs.lerm_ggbs_report',
+                eln_id=eln.id,
+                nabl=True
             )
 
             filename = f"{eln.kes_no or 'report'}_NABL.pdf"
-            headers = [
-                ('Content-Type', 'application/pdf'),
-                ('Content-Length', len(pdf_content)),
-                ('Content-Disposition', content_disposition(filename)),
-            ]
-            return request.make_response(pdf_content, headers=headers)
+
+            return request.make_response(
+                pdf_content,
+                headers=[
+                    ('Content-Type', 'application/pdf'),
+                    ('Content-Length', len(pdf_content)),
+                    ('Content-Disposition', content_disposition(filename)),
+                ]
+            )
         except Exception as e:
             return request.make_response(
                 f"Internal Server Error (NABL): {str(e)}",
                 headers=[('Content-Type', 'text/plain')],
-                status=500,
+                status=500
             )
 
     @http.route(['/download_report/ggbs/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
@@ -494,24 +563,29 @@ class ReportDownloadControllerGGBS(http.Controller):
             if not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report_name = 'ggbs.lerm_ggbs_report'
-            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
-                report_name, res_ids=[eln.id], data={'nabl': False}
+            pdf_content = self._render_pdf_sudo(
+                report_name='ggbs.lerm_ggbs_report',
+                eln_id=eln.id,
+                nabl=False
             )
 
             filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
-            headers = [
-                ('Content-Type', 'application/pdf'),
-                ('Content-Length', len(pdf_content)),
-                ('Content-Disposition', content_disposition(filename)),
-            ]
-            return request.make_response(pdf_content, headers=headers)
+
+            return request.make_response(
+                pdf_content,
+                headers=[
+                    ('Content-Type', 'application/pdf'),
+                    ('Content-Length', len(pdf_content)),
+                    ('Content-Disposition', content_disposition(filename)),
+                ]
+            )
         except Exception as e:
             return request.make_response(
                 f"Internal Server Error (Non-NABL): {str(e)}",
                 headers=[('Content-Type', 'text/plain')],
-                status=500,
+                status=500
             )
+
 
 class ReportDownloadControllerPPC(http.Controller):
     @http.route(['/download_report/ppc/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
