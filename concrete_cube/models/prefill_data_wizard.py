@@ -8,7 +8,7 @@ class ProductGradeWizard(models.TransientModel):
     _description = 'Prefill Data'
 
     product_id = fields.Many2one('product.template',string="Product")
-    sample_id = fields.Many2one('lerm.srf.sample',domain="[('material_id', '=', product_id)]", string="Sample")
+    sample_id = fields.Many2one('lerm.srf.sample',domain="[('material_id', '=', product_id), ('id', '!=', context.get('exclude_sample_id'))]", string="Sample")
     
 
 

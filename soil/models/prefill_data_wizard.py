@@ -8,7 +8,7 @@ class SoilPrefillWizard(models.TransientModel):
     _description = 'Prefill Data'
 
     product_id = fields.Many2one('product.template',string="Product")
-    sample_id = fields.Many2one('lerm.srf.sample',domain="[('material_id', '=', product_id)]", string="Sample")
+    sample_id = fields.Many2one('lerm.srf.sample',domain="[('material_id', '=', product_id), ('id', '!=', context.get('exclude_sample_id'))]", string="Sample")
     
 
 
@@ -17,6 +17,39 @@ class SoilPrefillWizard(models.TransientModel):
         copy_product = self.env['mechanical.soil'].sudo().search([
             ('eln_ref.sample_id.id', '=', self.sample_id.id)
         ], limit=1)
+
+        normal_fields = [
+            'wt_of_sample',
+            'observations',
+            'diameter_triaxial',
+            'length_triaxial',
+            'pt_2mm',
+            'pt_5mm',
+            'wt_sample',
+            'valume_water',
+            'valime_kerosen',
+            'dia_burette',
+            'dia_specimen',
+            'area_burrette',
+            'area_specimen',
+            'lenght_specimen',
+            'initial_height',
+            'final_height',
+            'permeability',
+            'm1',
+            'm2',
+            'm3',
+            'm4',
+            'initial_diameter',
+            'initial_length',
+            'initial_density',
+            'proving_ring_constant',
+            'initial_diameter',
+            'initial_height_pc',
+            'diameter_pc',
+            'initial_void_ratio_pc'
+        
+        ]
 
         # List of One2many fields to always copy
         one2many_fields = [
@@ -44,6 +77,10 @@ class SoilPrefillWizard(models.TransientModel):
 
         update_vals = {}
 
+        for field in normal_fields:
+            if hasattr(copy_product, field):
+                update_vals[field] = getattr(copy_product, field)
+
         for field in one2many_fields:
             # only copy if the record has values
             lines = getattr(copy_product, field)
@@ -68,6 +105,25 @@ class SoilPrefillWizard(models.TransientModel):
         
         if not current_product.triaxial_visible:
             update_vals.pop('triaxial_table', None)
+
+        if not current_product.soil_visible:
+            update_vals.pop('soil_table', None)
+        
+        if not current_product.shrinkage_limit_visible:
+            update_vals.pop('shrinkage_limit_table', None)
+
+        if not current_product.direct_shear_visible:
+            update_vals.pop('direct_shear_ids', None)
+
+        if not current_product.ucs_visible:
+            update_vals.pop('ucs_ids', None)
+
+        if not current_product.consolidation_visible:
+            update_vals.pop('consolidation_name_ids', None)
+
+        if not current_product.consolidation_pc_visible:
+            update_vals.pop('consolidation_pc_ids', None)
+        
 
 
         # Write once, not many times

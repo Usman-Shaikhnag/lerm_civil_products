@@ -53,7 +53,10 @@ class MechanicalConcreteCube(models.Model):
             'res_model': 'concrete.cube.prefill.data',
             'view_mode': 'form',
             'target': 'new',
-            'context': {'default_product_id': self.eln_ref.sample_id.material_id.id},
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
         }
     
     @api.depends('child_lines.compressive_strength')

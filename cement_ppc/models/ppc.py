@@ -27,7 +27,10 @@ class CementPPC(models.Model):
             'res_model': 'cement.ppc.prefill.data',
             'view_mode': 'form',
             'target': 'new',
-            'context': {'default_product_id': self.eln_ref.sample_id.material_id.id},
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
         }
 
     @api.depends('eln_ref')
