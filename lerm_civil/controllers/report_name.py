@@ -304,7 +304,7 @@ class ReportDownloadControllerOPC(http.Controller):
     def download_report_nabl_opc(self, eln_id, **kw):
         try:
             # ✅ Force sudo access
-            env = request.env(user=1).sudo()
+            env = request.env.sudo()
 
             # ✅ Force language so res.lang access error won't happen
             request.context = dict(request.context, lang='en_US')
@@ -342,7 +342,7 @@ class ReportDownloadControllerOPC(http.Controller):
     def download_report_nonnabl_opc(self, eln_id, **kw):
         try:
             # ✅ Force sudo access
-            env = request.env(user=1).sudo()
+            env = request.env.sudo()
 
             # ✅ Force language
             request.context = dict(request.context, lang='en_US')
