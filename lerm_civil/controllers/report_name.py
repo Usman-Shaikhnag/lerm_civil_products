@@ -298,74 +298,92 @@ from odoo.tools.safe_eval import safe_eval
 #                 status=500,
 #             )
 
-class ReportDownloadControllerOPC(http.Controller):
+cclass ReportDownloadControllerOPC(http.Controller):
 
     @http.route(['/download_report/opcc/nabl/<int:eln_id>'], type='http', auth='public', csrf=False)
     def download_report_nabl_opc(self, eln_id, **kw):
         try:
-            # ✅ Create new env with proper context + sudo
-            env = request.env['lerm.eln'].sudo().env(context=dict(request.env.context, lang='en_US'))
+            env = request.env.sudo()
 
             eln = env['lerm.eln'].search([('id', '=', eln_id)], limit=1)
             if not eln:
                 return request.not_found()
 
-            report = env.ref('cement_opc.opc_report').sudo()
+            # ✅ correctly fetch the report action object
+            report_obj = env['ir.actions.report']._get_report_from_name('cement_opc.opc_report')
 
-            pdf_content, _ = report._render_qweb_pdf(
+            if not report_obj:
+                return request.make_response(
+                    f"Report action not found for cement_opc.opc_report",
+                    headers=[('Content-Type', 'text/plain')],
+                    status=500,
+                )
+
+            # ✅ render using report object
+            pdf_content, _ = env['ir.actions.report']._render_qweb_pdf(
+                report_obj.id,
                 [eln.id],
-                data={'nabl': True},
-                report_sudo=True
+                data={'nabl': True}
             )
 
             filename = f"{eln.kes_no or 'report'}_NABL.pdf"
-            headers = [
-                ('Content-Type', 'application/pdf'),
-                ('Content-Length', len(pdf_content)),
-                ('Content-Disposition', content_disposition(filename)),
-            ]
 
-            return request.make_response(pdf_content, headers)
+            return request.make_response(
+                pdf_content,
+                headers=[
+                    ('Content-Type', 'application/pdf'),
+                    ('Content-Disposition', content_disposition(filename)),
+                ]
+            )
 
         except Exception as e:
             return request.make_response(
-                f"Internal Server Error (NABL): {str(e)}",
+                f"Internal Server Error: {str(e)}",
                 headers=[('Content-Type', 'text/plain')],
                 status=500,
             )
     @http.route(['/download_report/opcc/nonnabl/<int:eln_id>'], type='http', auth='public', csrf=False)
     def download_report_nonnabl_opc(self, eln_id, **kw):
         try:
-            # ✅ Correct env creation with context
-            env = request.env['lerm.eln'].sudo().env(context=dict(request.env.context, lang='en_US'))
+            env = request.env.sudo()
 
             eln = env['lerm.eln'].search([('id', '=', eln_id)], limit=1)
             if not eln:
                 return request.not_found()
 
-            report = env.ref('cement_opc.opc_report').sudo()
+            # ✅ get report action
+            report_obj = env['ir.actions.report']._get_report_from_name('cement_opc.opc_report')
 
-            pdf_content, _ = report._render_qweb_pdf(
+            if not report_obj:
+                return request.make_response(
+                    f"Report action not found for cement_opc.opc_report",
+                    headers=[('Content-Type', 'text/plain')],
+                    status=500,
+                )
+
+            pdf_content, _ = env['ir.actions.report']._render_qweb_pdf(
+                report_obj.id,
                 [eln.id],
-                data={'nabl': False},
-                report_sudo=True
+                data={'nabl': False}
             )
 
             filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
-            headers = [
-                ('Content-Type', 'application/pdf'),
-                ('Content-Length', len(pdf_content)),
-                ('Content-Disposition', content_disposition(filename)),
-            ]
 
-            return request.make_response(pdf_content, headers)
+            return request.make_response(
+                pdf_content,
+                headers=[
+                    ('Content-Type', 'application/pdf'),
+                    ('Content-Disposition', content_disposition(filename)),
+                ]
+            )
 
         except Exception as e:
             return request.make_response(
-                f"Internal Server Error (Non-NABL): {str(e)}",
+                f"Internal Server Error: {str(e)}",
                 headers=[('Content-Type', 'text/plain')],
                 status=500,
             )
+
 
 
 class ReportDownloadControllerFlyAsh(http.Controller):
