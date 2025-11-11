@@ -303,11 +303,12 @@ class ReportDownloadControllerOPC(http.Controller):
     @http.route(['/download_report/opcc/nabl/<int:eln_id>'], type='http', auth='public', csrf=False)
     def download_report_nabl_opc(self, eln_id, **kw):
         try:
-            env = request.env.with_context(lang='en_US').sudo()
+            # ✅ Create new env with proper context + sudo
+            env = request.env['lerm.eln'].sudo().env(context=dict(request.env.context, lang='en_US'))
 
-            eln = env['lerm.eln'].browse(eln_id)
-            if not eln.exists():
-                return werkzeug.exceptions.NotFound("ELN record not found")
+            eln = env['lerm.eln'].search([('id', '=', eln_id)], limit=1)
+            if not eln:
+                return request.not_found()
 
             report = env.ref('cement_opc.opc_report').sudo()
 
@@ -332,16 +333,15 @@ class ReportDownloadControllerOPC(http.Controller):
                 headers=[('Content-Type', 'text/plain')],
                 status=500,
             )
-
-
     @http.route(['/download_report/opcc/nonnabl/<int:eln_id>'], type='http', auth='public', csrf=False)
     def download_report_nonnabl_opc(self, eln_id, **kw):
         try:
-            env = request.env.with_context(lang='en_US').sudo()
+            # ✅ Correct env creation with context
+            env = request.env['lerm.eln'].sudo().env(context=dict(request.env.context, lang='en_US'))
 
-            eln = env['lerm.eln'].browse(eln_id)
-            if not eln.exists():
-                return werkzeug.exceptions.NotFound("ELN record not found")
+            eln = env['lerm.eln'].search([('id', '=', eln_id)], limit=1)
+            if not eln:
+                return request.not_found()
 
             report = env.ref('cement_opc.opc_report').sudo()
 
