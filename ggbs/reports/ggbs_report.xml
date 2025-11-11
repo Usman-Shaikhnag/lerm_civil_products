@@ -151,7 +151,7 @@
 						<tbody >
 			
 
-							<tr  t-if="ggbs.specific_gravity_visible and (ggbs.specific_gravity_nabl == 'pass' and nabl or (ggbs.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<!-- <tr  t-if="ggbs.specific_gravity_visible and (ggbs.specific_gravity_nabl == 'pass' and nabl or (ggbs.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
@@ -162,9 +162,9 @@
 								</td>
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										<!-- </t> -->
+										</t>
 									</t>
 								</td>	
 
@@ -192,9 +192,9 @@
 
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.permissable_limit"/>
-										<!-- </t> -->
+										</t>
 									</t>
 								</td>
 								
@@ -204,14 +204,13 @@
 									<span t-field="ggbs.specific_gravity_confirmity"/>
 								</td>
 								
-							</tr>
+							</tr> -->
 
 						
-							<!-- Fineness  -->
 
 				
 
-							<tr   t-if="ggbs.fineness_visible and (ggbs.fineness_nabl == 'pass' and nabl or (ggbs.fineness_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<!-- <tr   t-if="ggbs.fineness_visible and (ggbs.fineness_nabl == 'pass' and nabl or (ggbs.fineness_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
@@ -222,9 +221,9 @@
 								</td>
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										<!-- </t> -->
+										</t>
 									</t>
 								</td>
 
@@ -251,9 +250,9 @@
 
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.permissable_limit"/>
-										<!-- </t> -->
+										</t>
 									</t>
 								</td>
 								
@@ -283,13 +282,12 @@
 
 								<td  >
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')]).parameter_name"/>
-									<!-- 7 Days  -->
 								</td>
 								<td rowspan="2" style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-										<!-- </t> -->
+										</t>
 									</t>
 								</td>
 
@@ -316,9 +314,9 @@
 
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.permissable_limit"/>
-										<!-- </t> -->
+										</t>
 									</t>
 								</td>
 								
@@ -337,7 +335,6 @@
 
 								<td  >
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')]).parameter_name"/>
-									<!-- 28 Days  -->
 								</td>
 								
 
@@ -364,9 +361,9 @@
 
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.permissable_limit"/>
-										<!-- </t> -->
+										</t>
 									</t>
 								</td>
 								
@@ -376,7 +373,7 @@
 								<td style="text-align: center;" t-if="eln.conformity">
 									<span t-field="ggbs.day_28_confirmity"/>
 								</td>
-							</tr>
+							</tr> -->
 
 							
 						
