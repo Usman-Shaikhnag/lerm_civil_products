@@ -300,19 +300,21 @@ from odoo.tools.safe_eval import safe_eval
 
 class ReportDownloadControllerOPC(http.Controller):
 
-    @http.route(['/download_report/opcc/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    @http.route(['/download_report/opcc/nabl/<int:eln_id>'], type='http', auth='public', csrf=False)
     def download_report_nabl_opc(self, eln_id, **kw):
         try:
-            # ✅ Fetch record using search + sudo
-            eln = request.env['lerm.eln'].sudo().search([('id', '=', eln_id)], limit=1)
-            if not eln:
-                return request.not_found()
+            env = request.env.with_context(lang='en_US').sudo()
 
-            report_name = 'cement_opc.opc_report'
+            eln = env['lerm.eln'].browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
 
-            # ✅ Render PDF
-            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
-                report_name, res_ids=[eln.id], data={'nabl': True}
+            report = env.ref('cement_opc.opc_report').sudo()
+
+            pdf_content, _ = report._render_qweb_pdf(
+                [eln.id],
+                data={'nabl': True},
+                report_sudo=True
             )
 
             filename = f"{eln.kes_no or 'report'}_NABL.pdf"
@@ -322,7 +324,7 @@ class ReportDownloadControllerOPC(http.Controller):
                 ('Content-Disposition', content_disposition(filename)),
             ]
 
-            return request.make_response(pdf_content, headers=headers)
+            return request.make_response(pdf_content, headers)
 
         except Exception as e:
             return request.make_response(
@@ -330,19 +332,23 @@ class ReportDownloadControllerOPC(http.Controller):
                 headers=[('Content-Type', 'text/plain')],
                 status=500,
             )
-    @http.route(['/download_report/opcc/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+
+
+    @http.route(['/download_report/opcc/nonnabl/<int:eln_id>'], type='http', auth='public', csrf=False)
     def download_report_nonnabl_opc(self, eln_id, **kw):
         try:
-            # ✅ Fetch record using search + sudo
-            eln = request.env['lerm.eln'].sudo().search([('id', '=', eln_id)], limit=1)
-            if not eln:
-                return request.not_found()
+            env = request.env.with_context(lang='en_US').sudo()
 
-            report_name = 'cement_opc.opc_report'
+            eln = env['lerm.eln'].browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
 
-            # ✅ Render PDF
-            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
-                report_name, res_ids=[eln.id], data={'nabl': False}
+            report = env.ref('cement_opc.opc_report').sudo()
+
+            pdf_content, _ = report._render_qweb_pdf(
+                [eln.id],
+                data={'nabl': False},
+                report_sudo=True
             )
 
             filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
@@ -352,7 +358,7 @@ class ReportDownloadControllerOPC(http.Controller):
                 ('Content-Disposition', content_disposition(filename)),
             ]
 
-            return request.make_response(pdf_content, headers=headers)
+            return request.make_response(pdf_content, headers)
 
         except Exception as e:
             return request.make_response(
