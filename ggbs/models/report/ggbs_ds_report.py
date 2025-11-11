@@ -83,17 +83,17 @@ class GgbsReport(models.AbstractModel):
         qr_image.save(buffered, format="PNG")
         qr_code = base64.b64encode(buffered.getvalue()).decode()
             
-        data = {
-            "material_id":eln.material.id,
-            "grade_id":eln.grade_id.id
-        }
-        model = eln.get_product_base_calc_line(data).ir_model.model
-        ggbs_data = self.env[model].search([("id","=",eln.model_id)])
-        # import wdb;wdb.set_trace();
+        model_id = eln.model_id
+        # differnt location for product based
+        model_name = eln.material.product_based_calculation[0].ir_model.name 
+        if model_name:
+            general_data = self.env[model_name].sudo().browse(model_id)
+        else:
+            general_data = self.env['lerm.eln'].sudo().browse(docids)
 
         return {
             'eln': eln,
-            'ggbs': ggbs_data,
+            'ggbs': general_data,
             'qrcode': qr_code,
             'nabl':nabl,
         }
