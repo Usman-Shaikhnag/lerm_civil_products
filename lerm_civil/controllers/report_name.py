@@ -309,7 +309,7 @@ class ReportDownloadControllerOPC(http.Controller):
             if not eln or not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report = env.ref('cement_opc.opc_report_action').sudo()
+            report = env.ref('cement_opc.opc_report').sudo()
 
             pdf_content, _ = report._render_qweb_pdf(
                 [eln_id],
@@ -342,7 +342,7 @@ class ReportDownloadControllerOPC(http.Controller):
             if not eln or not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report = env.ref('cement_opc.opc_report_action').sudo()
+            report = env.ref('cement_opc.opc_report').sudo()
 
             pdf_content, _ = report._render_qweb_pdf(
                 [eln_id],
