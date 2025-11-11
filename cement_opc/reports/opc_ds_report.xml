@@ -1605,7 +1605,7 @@
 							
 								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
 									<b>Remarks:</b><br/><br/>
-									    * Refer to Annexure- I to know NABL accredited scope, range and uncertainty of measurement for test parameter
+									    * Refer to Annexure- I to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
 
 									<b>Notes:-</b><br/><br/>
 								    	a. The information marked with an # received from customer<br/><br/>
@@ -1616,7 +1616,7 @@
 							</tr>
 							</table  >
 						</div>
-						<div class="signatureContainer girdgird">
+						<!-- <div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
@@ -1640,7 +1640,6 @@
 
 							<div>
 						<div>
-							<!-- <img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/> -->
 						</div>
 
 						<div>
@@ -1674,16 +1673,59 @@
 									</b>
 								</div>
 								
-								<!-- <div>
+							
+							</div> -->
+							<div class="signatureContainer girdgird">
+							<table style="width:100%; border:1px solid black; border-collapse:collapse; font-family:Arial; font-size:12px; text-align:center;">
+						    <tr style="height:100px;">
+							
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+							<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								 <b>
+										<span t-esc="eln.technician.name"/>
+									</b><br/>
 									<b>
-										(Authorized Signatory)
-									</b>
-								</div> -->
-							</div>
-						</div>
-						<!-- <div style="text-align:center;margin-top:10px">
-							......End of Report......
-						</div> -->
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b><br/>
+								<span style="font-size:12px;">Prepared By</span>
+							</td>
+
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Stamp</b>
+							</td>
+
+							<td style="width:33.33%; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+							<div style="height: 40px;">
+											<t t-if="eln.sample_id.approveby_signature_required">
+												<div t-if="eln.sample_id.approved_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
+								<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b><br/>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b><br/>
+								<span style="font-size:12px;">Reviewed &amp; Issued By</span>
+							</td>
+						</tr>
+
+					</table>
+						
+				
+					</div>
+						<!-- </div> -->
+						
 					</div>
 				
 			</t>

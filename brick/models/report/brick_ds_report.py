@@ -44,28 +44,37 @@ class BrickReport1(models.AbstractModel):
     _description = 'Brick Report'
     
     @api.model
-    def _get_report_values(self, docids, data):
-        # eln = self.env['lerm.eln'].sudo().browse(docids)
-        nabl = data.get('nabl')
-        if data.get('report_wizard') == True:
-            eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['sample'])])
-        elif 'active_id' in data['context']:
-            eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
+    def _get_report_values(self, docids, data=None):
+        data = data or {}
+        nabl = data.get('nabl', False)
+
+        # 🧩 ELN Record मिळवा
+        if data.get('report_wizard'):
+            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data.get('sample'))])
+        elif 'active_id' in data.get('context', {}):
+            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data['context']['active_id'])])
         else:
             eln = self.env['lerm.eln'].sudo().browse(docids)
-        
-        qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-        qr.add_data(eln.kes_no)
+
+        if not eln:
+            raise ValueError("ELN record not found")
+
+        # 🧩 QR Code तयार करा
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        report_url = f"{base_url}/download_report/brick/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
+
+        qr.add_data(report_url)
         qr.make(fit=True)
         qr_image = qr.make_image()
-
-        # Convert the QR code image to base64 string
         buffered = BytesIO()
         qr_image.save(buffered, format="PNG")
-        qr_image_base64 = base64.b64encode(buffered.getvalue()).decode()
-
-        # Assign the base64 string to a field in the 'srf' object
-        qr_code = qr_image_base64
+        qr_code = base64.b64encode(buffered.getvalue()).decode()
             
         data = {
             "material_id":eln.material.id,
