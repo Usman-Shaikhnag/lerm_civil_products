@@ -318,37 +318,37 @@ class FineAggregate(models.Model):
     temp_specific_gravity_water_absorption = fields.Char(string="Temp.°C")
     humidity_temp_specific_gravity_water_absorption= fields.Char(string="Humidity %")
 
-    wt_basket_and_sample = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm")
-    wt_empty_basket= fields.Float(string="Weight of empty basket in water (A2) gm")
+    # wt_basket_and_sample = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm")
+    # wt_empty_basket= fields.Float(string="Weight of empty basket in water (A2) gm")
 
     wt_surface_dry = fields.Float(string="Weight of surface dried aggregate (B) gm")
-    wt_sample_inwater = fields.Float(string="Weight of Saturated Aggregate  in Water (A) = (A1 – A2) – gms", compute="_compute_wt_sample_inwater")
+    wt_sample_inwater = fields.Float(string="Weight of Saturated Aggregate  in Water (A) = (A1 – A2) – gms")
     oven_dried_wt = fields.Float(string="Weight of  oven dried aggregates (C) gm")
 
     # Trial 2 (new)
-    wt_basket_and_sample_2 = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm  [Trial 2]")
-    wt_empty_basket_2= fields.Float(string="Weight of empty basket in water (A2) gm  [Trial 2]")
+    # wt_basket_and_sample_2 = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm  [Trial 2]")
+    # wt_empty_basket_2= fields.Float(string="Weight of empty basket in water (A2) gm  [Trial 2]")
 
     wt_surface_dry_2 = fields.Float(string="Weight of surface dried aggregate (B) gm [Trial 2]")
-    wt_sample_inwater_2 = fields.Float(string="Weight of Saturated Aggregate  in Water (A) = (A1 – A2) – gms [Trial 2]", compute="_compute_wt_sample_inwater_2")
+    wt_sample_inwater_2 = fields.Float(string="Weight of Saturated Aggregate  in Water (A) = (A1 – A2) – gms [Trial 2]")
     oven_dried_wt_2 = fields.Float(string="Weight of  oven dried aggregates (C) gm [Trial 2]")
 
 
-    @api.depends('wt_basket_and_sample', 'wt_empty_basket')
-    def _compute_wt_sample_inwater(self):
-        for line in self:
-            if line.wt_basket_and_sample and line.wt_empty_basket:
-                line.wt_sample_inwater = line.wt_basket_and_sample - line.wt_empty_basket
-            else:
-              line.wt_sample_inwater = 0
+    # @api.depends('wt_basket_and_sample', 'wt_empty_basket')
+    # def _compute_wt_sample_inwater_2(self):
+    #     for line in self:
+    #         if line.wt_basket_and_sample and line.wt_empty_basket:
+    #             line.wt_sample_inwater_2 = line.wt_basket_and_sample - line.wt_empty_basket
+    #         else:
+    #           line.wt_sample_inwater_2 = 0
 
-    @api.depends('wt_basket_and_sample_2', 'wt_empty_basket_2')
-    def _compute_wt_sample_inwater_2(self):
-        for line in self:
-            if line.wt_basket_and_sample_2 and line.wt_empty_basket_2:
-                line.wt_sample_inwater_2 = line.wt_basket_and_sample_2 - line.wt_empty_basket_2
-            else:
-               line.wt_sample_inwater_2 = 0
+    # @api.depends('wt_basket_and_sample_2', 'wt_empty_basket_2')
+    # def _compute_wt_sample_inwater_2(self):
+    #     for line in self:
+    #         if line.wt_basket_and_sample_2 and line.wt_empty_basket_2:
+    #             line.wt_sample_inwater_2 = line.wt_basket_and_sample_2 - line.wt_empty_basket_2
+    #         else:
+    #            line.wt_sample_inwater_2 = 0
 
     # result_wt_surface_dry = fields.Float(string="Wt of Saturated surface dry  Aggregate in Air:- (B)",compute="_compute_result")
     # result_wt_sample_inwater = fields.Float(string="Wt of Saturated Aggregate in Water:- (A)",compute="_compute_result")
@@ -362,11 +362,11 @@ class FineAggregate(models.Model):
     water_absorption_1 = fields.Float(string="Water absorption  %",compute="_compute_water_absorption_1")
 
 
-    @api.depends('wt_surface_dry', 'wt_sample_inwater', 'oven_dried_wt')
+    @api.depends('wt_surface_dry', 'wt_sample_inwater_2', 'oven_dried_wt')
     def _compute_specific_gravity_1(self):
         for line in self:
-            if line.wt_surface_dry - line.wt_sample_inwater != 0:
-                line.specific_gravity_1  = line.oven_dried_wt / (line.wt_surface_dry - line.wt_sample_inwater)
+            if line.wt_surface_dry - line.wt_sample_inwater_2 != 0:
+                line.specific_gravity_1  = line.oven_dried_wt / (line.wt_surface_dry - line.wt_sample_inwater_2)
             else:
                 line.specific_gravity_1 = 0
 
@@ -640,6 +640,8 @@ class FineAggregate(models.Model):
     content_height_sand_a = fields.Float(string="Height of Sand + Silt in the glass Cylinder:- (A)", compute="_compute_avg_content_lines")
     content_height_sand_b = fields.Float(string="Height of Sand:- (B)", compute="_compute_avg_content_lines")
     content_slit_c = fields.Float(string="Height of Silt:- (A-B)", compute="_compute_avg_content_lines")
+
+   
 
    
     @api.depends('site_content_child_lines')

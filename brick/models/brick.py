@@ -317,6 +317,9 @@ class MechanicalBricks(models.Model):
         ('pass', 'NABL'),
         ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_width_nabl", store=True)
 
+
+
+
     @api.depends('avg_width','eln_ref','grade')
     def _compute_avg_width_nabl(self):
         
