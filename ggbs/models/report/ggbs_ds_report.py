@@ -165,22 +165,26 @@ class GgbsReport(models.AbstractModel):
 
         # ✅ ELN Record मिळवा
         if data.get('report_wizard'):
-            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data.get('sample'))])
+            eln = self.env['lerm.eln'].sudo().search([
+                ('sample_id', '=', data.get('sample'))
+            ])
         elif 'active_id' in data.get('context', {}):
-            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data['context']['active_id'])])
+            eln = self.env['lerm.eln'].sudo().search([
+                ('sample_id', '=', data['context']['active_id'])
+            ])
         else:
             eln = self.env['lerm.eln'].sudo().browse(docids)
 
         if not eln:
             raise ValueError("ELN record not found")
 
-        # ✅ Unique internal_ids define करा (सगळे इथे एकदाच)
+        # ✅ सर्व unique internal_ids एकदाच define करा
         internal_ids = [
-            '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a',  # fineness
-            '1452fgr0-8e67-4e94-86ea-98d9472f5c71',  # slag activity (header)
-            '5214hgtb-c526-4092-a3a7-321478658',     # 7-day activity
-            '5214hgtb-c526-4092-a3a7-3214855pp',     # 28-day activity
-            '210bgf54-baa4-466f-a6a7-044da708f265',  # extra param (तुझ्या कोडमध्ये आधी होता)
+            '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a',  # Fineness
+            '1452fgr0-8e67-4e94-86ea-98d9472f5c71',  # Slag Activity (Header)
+            '5214hgtb-c526-4092-a3a7-321478658',     # 7-day Activity
+            '5214hgtb-c526-4092-a3a7-3214855pp',     # 28-day Activity
+            '210bgf54-baa4-466f-a6a7-044da708f265',  # Extra Parameter
         ]
 
         # ✅ सर्व parameter.master records dictionary मध्ये साठवा
@@ -208,7 +212,10 @@ class GgbsReport(models.AbstractModel):
 
         # ✅ General Data मिळवा
         model_id = eln.model_id
-        model_name = eln.material.product_based_calculation[0].ir_model.name if eln.material.product_based_calculation else False
+        model_name = (
+            eln.material.product_based_calculation[0].ir_model.name
+            if eln.material.product_based_calculation else False
+        )
         if model_name:
             general_data = self.env[model_name].sudo().browse(model_id)
         else:
@@ -220,7 +227,6 @@ class GgbsReport(models.AbstractModel):
             'ggbs': general_data,
             'qrcode': qr_code,
             'nabl': nabl,
-            'parameters': parameters,  # ← इथे dictionary पास केला आहे
+            'parameters': parameters,  # ← dictionary QWeb मध्ये वापरण्यासाठी
         }
-
 
