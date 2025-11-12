@@ -14,54 +14,187 @@ from scipy.optimize import minimize_scalar
 
 
 
+# class OPCReport(models.AbstractModel):
+#     _name = 'report.cement_opc.opc_report'
+#     _description = 'Opc Cement Report'
+    
+#     @api.model
+#     def _get_report_values(self, docids, data):
+#         # eln = self.env['lerm.eln'].sudo().browse(docids)
+#         nabl = data.get('nabl')
+#         if data.get('report_wizard') == True:
+#             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['sample'])])
+#         # elif 'active_id' in data['context']:
+#         elif 'active_id' in data.get('context', {}):
+#             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
+#         else:
+#             eln = self.env['lerm.eln'].sudo().browse(docids)
+        
+#         qr = qrcode.QRCode(
+#             version=1,
+#             error_correction=qrcode.constants.ERROR_CORRECT_L,
+#             box_size=10,
+#             border=4
+#         )
+
+#         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+#         if nabl:
+#             url = f"{base_url}/download_report/nabl/{eln.id}"
+#         else:
+#             url = f"{base_url}/download_report/nonnabl/{eln.id}"
+
+#         qr.add_data(url)
+#         qr.make(fit=True)
+#         qr_image = qr.make_image()
+
+#         buffered = BytesIO()
+#         qr_image.save(buffered, format="PNG")
+#         qr_code = base64.b64encode(buffered.getvalue()).decode()
+
+            
+#         data = {
+#             "material_id":eln.material.id,
+#             "grade_id":eln.grade_id.id
+#         }
+#         model = eln.get_product_base_calc_line(data).ir_model.model
+#         cement_data = self.env[model].search([("id","=",eln.model_id)])
+#         return {
+#             'eln': eln,
+#            'cement': cement_data,
+#             'qrcode': qr_code,
+#             'nabl' : nabl
+#         }
+
+
+
+
+# class OPCReport(models.AbstractModel):
+#     _name = 'report.cement_opc.opc_report'
+#     _description = 'OPC Cement Report'
+
+#     @api.model
+#     def _get_report_values(self, docids, data=None):
+#         data = data or {}
+#         nabl = data.get('nabl', False)
+
+#         # 🧩 ELN Record मिळवा
+#         if data.get('report_wizard'):
+#             eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data.get('sample'))])
+#         elif 'active_id' in data.get('context', {}):
+#             eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data['context']['active_id'])])
+#         else:
+#             eln = self.env['lerm.eln'].sudo().browse(docids)
+
+#         if not eln:
+#             raise ValueError("ELN record not found")
+
+#         # 🧩 QR Code तयार करा
+#         qr = qrcode.QRCode(
+#             version=1,
+#             error_correction=qrcode.constants.ERROR_CORRECT_L,
+#             box_size=10,
+#             border=4,
+#         )
+#         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+#         report_url = f"{base_url}/download_report/opcc/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
+
+#         qr.add_data(report_url)
+#         qr.make(fit=True)
+#         qr_image = qr.make_image()
+#         buffered = BytesIO()
+#         qr_image.save(buffered, format="PNG")
+#         qr_code = base64.b64encode(buffered.getvalue()).decode()
+
+#         # 🧩 Product Based Model मिळवा
+#         product_data = {
+#             "material_id": eln.material.id,
+#             "grade_id": eln.grade_id.id,
+#         }
+#         model_name = eln.get_product_base_calc_line(product_data).ir_model.model
+#         cement_data = self.env[model_name].sudo().browse(eln.model_id)
+
+#         return {
+#             'eln': eln,
+#             'cement': cement_data,
+#             'qrcode': qr_code,
+#             'nabl': nabl,
+#         }
+
 class OPCReport(models.AbstractModel):
     _name = 'report.cement_opc.opc_report'
-    _description = 'Opc Cement Report'
-    
+    _description = 'OPC Cement Report'
+
     @api.model
-    def _get_report_values(self, docids, data):
-        # eln = self.env['lerm.eln'].sudo().browse(docids)
-        nabl = data.get('nabl')
-        if data.get('report_wizard') == True:
-            eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['sample'])])
-        # elif 'active_id' in data['context']:
+    def _get_report_values(self, docids, data=None):
+        data = data or {}
+        nabl = data.get('nabl', False)
+
+        # 🧩 ELN Record मिळवा
+        if data.get('report_wizard'):
+            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data.get('sample'))])
         elif 'active_id' in data.get('context', {}):
-            eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
+            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data['context']['active_id'])])
         else:
             eln = self.env['lerm.eln'].sudo().browse(docids)
-        
-        qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-        # qr.add_data(eln.kes_no)
-        url = self.env['ir.config_parameter'].sudo().search([('key','=','web.base.url')]).value
-        if nabl:
-            url = url +'/download_report/nabl/'+ str(eln.id)
-        else:
-            url = url +'/download_report/nonnabl/'+ str(eln.id)
-        qr.add_data(url)
+
+        if not eln:
+            raise ValueError("ELN record not found")
+
+        # 🧩 QR Code तयार करा
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        report_url = f"{base_url}/download_report/opcc/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
+        qr.add_data(report_url)
         qr.make(fit=True)
         qr_image = qr.make_image()
-        
-
-        # Convert the QR code image to base64 string
         buffered = BytesIO()
         qr_image.save(buffered, format="PNG")
-        qr_image_base64 = base64.b64encode(buffered.getvalue()).decode()
+        qr_code = base64.b64encode(buffered.getvalue()).decode()
 
-        # Assign the base64 string to a field in the 'srf' object
-        qr_code = qr_image_base64
-            
-        data = {
-            "material_id":eln.material.id,
-            "grade_id":eln.grade_id.id
+        # 🧩 Product Based Model मिळवा
+        product_data = {
+            "material_id": eln.material.id,
+            "grade_id": eln.grade_id.id,
         }
-        model = eln.get_product_base_calc_line(data).ir_model.model
-        cement_data = self.env[model].search([("id","=",eln.model_id)])
+        model_name = eln.get_product_base_calc_line(product_data).ir_model.model
+        cement_data = self.env[model_name].sudo().browse(eln.model_id)
+
+        # 🧩 Parameters dict तयार करा
+        internal_ids = [
+            '3214578nbhgt2-372f-4775-9bcb-e9dd723547htui',  # consistency
+            '3214578nbhgt2-372f-4775-9bcb-e9dd321456yytr',  # initial setting
+            '3214578nbhgt2-372f-4775-9bcb-e9dd654789nnghh',  # final setting
+            '254gt2547-372f-4775-9bcb-e9dd70e3587g',        # density
+            '87ye7425-30fe-4043-b518-987456321r',           # autoclave
+            '87ye7425-30fe-4043-b518-32145698jj',           # le-chatelier
+            '63te7425-30fe-4043-b518-0102147hhytr',         # fineness
+            '87ye7425-30fe-4043-b518-4578tyre0',            # compressive header
+            '147frrt012-372f-4775-9bcb-e9dd651478trew',     # 3 days
+            '1236547ffv-372f-4775-9bcb-e9dd987ytre14g',     # 7 days
+            '00rrrttt887-372f-4775-9bcb-e9dd987nnhtre1',    # 28 days
+        ]
+
+        parameters = {}
+        for pid in internal_ids:
+            param = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', pid)], limit=1)
+            parameters[pid] = param
+
         return {
             'eln': eln,
-           'cement': cement_data,
+            'cement': cement_data,
             'qrcode': qr_code,
-            'nabl' : nabl
+            'nabl': nabl,
+            'parameters': parameters,
         }
+
+
+
+
 
 
 

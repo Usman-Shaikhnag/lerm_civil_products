@@ -29,140 +29,215 @@ class PaverBlock(models.Model):
 
     # tests = fields.Many2many("mechanical.pever.block.test",string="Tests")
 
-    
 
-    paver_name = fields.Char("Name",default=" Plan Area")
-    paver_visible = fields.Boolean("Plan Area Visible",compute="_compute_visible")
+    # Dimension Test
+    dimension_name = fields.Char("Name",default="Dimension Test")
+    dimension_visible = fields.Boolean("Dimension Test",compute="_compute_visible")
 
-    thickness2 = fields.Float(string="Thickness of Paver Block:",compute="_compute_thickness2")
+    length_name = fields.Char("Name",default="Length")
+    length_visible = fields.Boolean("Length",compute="_compute_visible")
 
-    @api.depends('size_id')
-    def _compute_thickness2(self):
-        for rec in self:
-            rec.thickness2 = rec.size_id.size if rec.size_id and rec.size_id.size else 0.0
+    width_name = fields.Char("Name",default="Width")
+    width_visible = fields.Boolean("Width",compute="_compute_visible")
 
-    gms1 = fields.Float(string="Gms:")
-    n1 = fields.Float(string="N:",digits=(12,6))
-    gms2 = fields.Float(string="Gms:")
-    n2 = fields.Float(string="N:",digits=(12,6))
+    thickness_name = fields.Char("Name",default="Thickness")
+    thickness_visible = fields.Boolean("Thickness",compute="_compute_visible")
 
-    @api.onchange('gms1')
-    def _onchange_gms1(self):
-        for rec in self:
-            rec.n1 = rec.gms1 * 0.00981 if rec.gms1 else 0.0
+    temp_dimension = fields.Char("Temp °c")
+    humidity_dimension = fields.Char("Humidity %")
 
-    @api.onchange('gms2')
-    def _onchange_gms2(self):
-        for rec in self:
-            rec.n2 = rec.gms2 * 0.00981 if rec.gms2 else 0.0
+    dimension_child_lines = fields.One2many('paver.dimension.line','parent_id',string="Dimension Test")
 
+    average_length = fields.Float(string="Average Length ",compute="_compute_average")
+    average_width = fields.Float(string="Average Width ",compute="_compute_average")
+    average_thickness = fields.Float(string="Average Thickness ",compute="_compute_average")
 
-    mass_specimen = fields.Float(string=" Mass of the Specimen Shaped Cardboard Sheet, Msp ",compute="_compute_mass_values",digits=(12,6))
-    mass_size = fields.Float(string="Mass of the 200 X 100 mm size shaped Cardboard Sheet, Mst:",compute="_compute_mass_values",digits=(12,6))
-    area_paver = fields.Float(string="Plan Area of Paver Block, Asp",compute="_compute_area_paver")
+    @api.depends('dimension_child_lines.avg_length','dimension_child_lines.avg_width','dimension_child_lines.avg_thickness')
+    def _compute_average(self):
+        for record in self:
+            if record.dimension_child_lines:
+              record.average_length = sum(record.dimension_child_lines.mapped('avg_length'))/ len(record.dimension_child_lines)
+              record.average_width = sum(record.dimension_child_lines.mapped('avg_width'))/ len(record.dimension_child_lines)
+              record.average_thickness = sum(record.dimension_child_lines.mapped('avg_thickness'))/ len(record.dimension_child_lines)
+            else:
+                record.average_length = 0.0
+                record.average_width = 0.0
+                record.average_thickness = 0.0
 
-    area_paver_conformity = fields.Selection([
+    average_length_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_area_paver_conformity", store=True)
+            ('fail', 'Fail')], string="Conformity", compute="_compute_average_length_conformity", store=True)
 
-    @api.depends('area_paver','eln_ref','grade')
-    def _compute_area_paver_conformity(self):
+    @api.depends('average_length','eln_ref','grade')
+    def _compute_average_length_conformity(self):
         
         for record in self:
-            record.area_paver_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table
+            record.average_length_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4609c439-2ee4-4e3e-b40c-334e95b2bbda')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4609c439-2ee4-4e3e-b40c-334e95b2bbda')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
+                # if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.area_paver - record.area_paver*mu_value
-                    upper = record.area_paver + record.area_paver*mu_value
+                    lower = record.average_length - record.average_length*mu_value
+                    upper = record.average_length + record.average_length*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.area_paver_conformity = 'pass'
+                        record.average_length_conformity = 'pass'
                         break
                     else:
-                        record.area_paver_conformity = 'fail'
+                        record.average_length_conformity = 'fail'
 
-    area_paver_nabl = fields.Selection([
+    average_length_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_area_paver_nabl", store=True)
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_length_nabl", store=True)
 
-    @api.depends('area_paver','eln_ref','grade')
-    def _compute_area_paver_nabl(self):
+    @api.depends('average_length','eln_ref','grade')
+    def _compute_average_length_nabl(self):
         
         for record in self:
-            record.area_paver_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23547trew-199c-497a-b3a7-45023c604673')]).parameter_table
+            record.average_length_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4609c439-2ee4-4e3e-b40c-334e95b2bbda')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4609c439-2ee4-4e3e-b40c-334e95b2bbda')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
+                # if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = record.area_paver - record.area_paver*mu_value
-                    upper = record.area_paver + record.area_paver*mu_value
+                    lower = record.average_length - record.average_length*mu_value
+                    upper = record.average_length + record.average_length*mu_value
                     if lower >= lab_min and upper <= lab_max:
-                        record.area_paver_nabl = 'pass'
+                        record.average_length_nabl = 'pass'
                         break
                     else:
-                        record.area_paver_nabl = 'fail'
+                        record.average_length_nabl = 'fail'
 
-    thickness_child_lines = fields.One2many('paver.thickness.line','parent_id',string="Thickness",default=lambda self: self._default_thickness_child_lines())
+    average_width_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_average_width_conformity", store=True)
+
+    @api.depends('average_width','eln_ref','grade')
+    def _compute_average_width_conformity(self):
+        
+        for record in self:
+            record.average_width_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f079957b-608f-40c0-aebd-0db011ab0f2c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f079957b-608f-40c0-aebd-0db011ab0f2c')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_width - record.average_width*mu_value
+                    upper = record.average_width + record.average_width*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.average_width_conformity = 'pass'
+                        break
+                    else:
+                        record.average_length_conformity = 'fail'
+
+    average_width_nabl1 = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_width_nabl1", store=True)
+
+    @api.depends('average_width','eln_ref','grade')
+    def _compute_average_width_nabl1(self):
+        
+        for record in self:
+            record.average_width_nabl1 = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','549532ef-08e1-46f7-9565-bf034ce334f4')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','549532ef-08e1-46f7-9565-bf034ce334f4')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_width - record.average_width*mu_value
+                    upper = record.average_width + record.average_width*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.average_width_nabl1 = 'pass'
+                        break
+                    else:
+                        record.average_width_nabl1 = 'fail'
 
 
-    @api.model
-    def _default_thickness_child_lines(self):
-        default_lines = [
-            (0, 0, {'thickness1': 50, 'Correction_factore': 1.03}),
-            (0, 0, {'thickness1': 60, 'Correction_factore': 1.06}),
-            (0, 0, {'thickness1': 80, 'Correction_factore': 1.18}),
-            (0, 0, {'thickness1': 100, 'Correction_factore': 1.24}),
-            (0, 0, {'thickness1': 120, 'Correction_factore': 1.34}),
-        ]
-        return default_lines
 
-    @api.depends('gms1', 'gms2')
-    def _compute_mass_values(self):
-        for rec in self:
-            rec.n1 = rec.gms1 * 0.00981 if rec.gms1 else 0.0
-            rec.n2 = rec.gms2 * 0.00981 if rec.gms2 else 0.0
-            rec.mass_specimen = rec.n1
-            rec.mass_size = rec.n2
+    average_thickness_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_average_thickness_conformity", store=True)
 
-    @api.depends('mass_specimen', 'mass_size')
-    def _compute_area_paver(self):
-        for rec in self:
-            if rec.mass_specimen and rec.mass_size:
-                rec.area_paver = (20000 * rec.mass_specimen) / rec.mass_size
-            else:
-                rec.area_paver = 0.0
+    @api.depends('average_thickness','eln_ref','grade')
+    def _compute_average_thickness_conformity(self):
+        
+        for record in self:
+            record.average_thickness_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','549532ef-08e1-46f7-9565-bf034ce334f4')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','549532ef-08e1-46f7-9565-bf034ce334f4')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_thickness - record.average_thickness*mu_value
+                    upper = record.average_thickness + record.average_thickness*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.average_thickness_conformity = 'pass'
+                        break
+                    else:
+                        record.average_thickness_conformity = 'fail'
+
+    average_thickness_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_thickness_nabl", store=True)
+
+    @api.depends('average_thickness','eln_ref','grade')
+    def _compute_average_thickness_nabl(self):
+        
+        for record in self:
+            record.average_thickness_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','549532ef-08e1-46f7-9565-bf034ce334f4')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','549532ef-08e1-46f7-9565-bf034ce334f4')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_thickness - record.average_thickness*mu_value
+                    upper = record.average_thickness + record.average_thickness*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.average_thickness_nabl = 'pass'
+                        break
+                    else:
+                        record.average_thickness_nabl = 'fail'
 
 
-       # 3. Water Absorption
 
-    water_absorption_name = fields.Char("Name",default="Water Absorption ")
-    water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
+    # Water Absorption
 
-    water_absorption_child_lines = fields.One2many('paver.water.absorption.line','parent_id',string="Water Line")
+    water_absorption_name = fields.Char("Name",default=" Water Absorption")
+    water_absorption_visible = fields.Boolean("Water Absorption",compute="_compute_visible")
 
-    avg_water_absorption = fields.Float(
-        string="Avg. Water Absorption (%)",
-        compute="_compute_avg_water_absorption", store=True
-    )
+    temp_water_absorption = fields.Char("Temp °c")
+    humidity_water_absorption = fields.Char("Humidity %")
+
+    water_absorption_child_lines = fields.One2many('paver.water.absorption.line','parent_id',string="Water Absorption Test")
+
+    avg_water_absorption = fields.Float(string="Average Water Absorption ",compute="_compute_avg_water_absorption")
+
 
     @api.depends('water_absorption_child_lines.water_absorption')
     def _compute_avg_water_absorption(self):
-        for rec in self:
-            lines = rec.water_absorption_child_lines
-            if lines:
-                total = sum(line.water_absorption for line in lines)
-                rec.avg_water_absorption = round(total / len(lines), 2)
+        for record in self:
+            if record.water_absorption_child_lines:
+              record.avg_water_absorption = sum(record.water_absorption_child_lines.mapped('water_absorption'))/ len(record.water_absorption_child_lines)
             else:
-                rec.avg_water_absorption = 0.0
+                record.avg_water_absorption = 0.0
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -176,7 +251,7 @@ class PaverBlock(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
+                # if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -201,7 +276,7 @@ class PaverBlock(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
+                # if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
@@ -215,140 +290,129 @@ class PaverBlock(models.Model):
                         record.avg_water_absorption_nabl = 'fail'
 
 
+    # Compressive Strength
+    compressive_strength_name = fields.Char("Name",default=" Compressive Strength")
+    compressive_strength_visible = fields.Boolean("Compressive Strength",compute="_compute_visible")
+
+    temp_compressive_strength = fields.Char("Temp °c")
+    humidity_compressive_strength = fields.Char("Humidity %")
+
+    # correction_factore = fields.Float(string=" Correction Factor")
+
+    thickness2 = fields.Float(string="Thickness of Paver Block:",compute="_compute_thickness2")
+    @api.depends('size_id')
+    def _compute_thickness2(self):
+        for rec in self:
+            rec.thickness2 = rec.size_id.size if rec.size_id and rec.size_id.size else 0.0
+
+    block_type = fields.Selection(
+        [('plain', 'Plain'), ('arrised', 'Arrised')],
+        string="Block Type",
+        required=True
+    )
+    plain_factor = fields.Float("Plain Correction Factor")
+    arrised_factor = fields.Float("Arrised Correction Factor")
+    correction_factore = fields.Float(string=" Correction Factor", compute='_compute_correction_factor')
+
+    @api.depends('block_type', 'plain_factor', 'arrised_factor')
+    def _compute_correction_factor(self):
+        for rec in self:
+            if rec.block_type == 'plain':
+                rec.correction_factore = rec.plain_factor
+            elif rec.block_type == 'arrised':
+                rec.correction_factore = rec.arrised_factor
+            else:
+                rec.correction_factore = 0.0
+
+    @api.depends('size_id')
+    def _compute_thickness2(self):
+        for rec in self:
+            rec.thickness2 = rec.size_id.size if rec.size_id and rec.size_id.size else 0.0
+
+    
+
+    compressive_strength_child_lines = fields.One2many('paver.compressive.line','parent_id',string="Compressive Strength Test" )
 
 
-        
+    
 
-    commpressive_name = fields.Char("Name",default="Compressive Strength")
-    commpressive_visible = fields.Boolean("Plan Area Visible",compute="_compute_visible")
 
-    commpressive_child_lines = fields.One2many('paver.compressive.line','parent_id',string="Compressive Line")
+    
+    avg_compressive_strength = fields.Float(string="Average Compressive Strength ",compute="_compute_avg_compressive_strength")
 
-    avg_commpressive = fields.Float(
-        string="Avg. Compressive Strength (N/mm2)",compute="_compute_avg_commpressive")
+    @api.depends('compressive_strength_child_lines.compressive_strength')
+    def _compute_avg_compressive_strength(self):
+        for record in self:
+            if record.compressive_strength_child_lines:
+              record.avg_compressive_strength = sum(record.compressive_strength_child_lines.mapped('compressive_strength'))/ len(record.compressive_strength_child_lines)
+            else:
+                record.avg_compressive_strength = 0.0
 
-    avg_commpressive_conformity = fields.Selection([
+    avg_compressive_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Compressive Strength Conformity", compute="_compute_avg_commpressive_conformity", store=True)
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_compressive_strength_conformity", store=True)
 
-    @api.depends('avg_commpressive','eln_ref','grade')
-    def _compute_avg_commpressive_conformity(self):
+    @api.depends('avg_compressive_strength','eln_ref','grade')
+    def _compute_avg_compressive_strength_conformity(self):
         
         for record in self:
-            record.avg_commpressive_conformity = 'fail'
+            record.avg_compressive_strength_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
+                # if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.avg_commpressive - record.avg_commpressive*mu_value
-                    upper = record.avg_commpressive + record.avg_commpressive*mu_value
+                    lower = record.avg_compressive_strength - record.avg_compressive_strength*mu_value
+                    upper = record.avg_compressive_strength + record.avg_compressive_strength*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.avg_commpressive_conformity = 'pass'
+                        record.avg_compressive_strength_conformity = 'pass'
                         break
                     else:
-                        record.avg_commpressive_conformity = 'fail'
+                        record.avg_compressive_strength_conformity = 'fail'
 
-    avg_commpressive_nabl = fields.Selection([
+    avg_compressive_strength_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Compressive Strength NABL", compute="_compute_avg_commpressive_nabl", store=True)
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_compressive_strength_nabl", store=True)
 
-    @api.depends('avg_commpressive','eln_ref','grade')
-    def _compute_avg_commpressive_nabl(self):
+    @api.depends('avg_compressive_strength','eln_ref','grade')
+    def _compute_avg_compressive_strength_nabl(self):
         
         for record in self:
-            record.avg_commpressive_nabl = 'fail'
+            record.avg_compressive_strength_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
+                # if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = record.avg_commpressive - record.avg_commpressive*mu_value
-                    upper = record.avg_commpressive + record.avg_commpressive*mu_value
+                    lower = record.avg_compressive_strength - record.avg_compressive_strength*mu_value
+                    upper = record.avg_compressive_strength + record.avg_compressive_strength*mu_value
                     if lower >= lab_min and upper <= lab_max:
-                        record.avg_commpressive_nabl = 'pass'
+                        record.avg_compressive_strength_nabl = 'pass'
                         break
                     else:
-                        record.avg_commpressive_nabl = 'fail'
+                        record.avg_compressive_strength_nabl = 'fail'
 
-    @api.depends('commpressive_child_lines.compressive_strenght')
-    def _compute_avg_commpressive(self):
-        for rec in self:
-            lines = rec.commpressive_child_lines
-            if lines:
-                total = sum(line.compressive_strenght for line in lines)
-                rec.avg_commpressive = round(total / len(lines), 2)
-            else:
-                rec.avg_commpressive = 0.0
 
-    avg_thickness = fields.Float(
-        string="Avg Thickness",compute="_compute_avg_thickness")
 
-    @api.depends('commpressive_child_lines.thickness')
-    def _compute_avg_thickness(self):
-        for rec in self:
-            lines = rec.commpressive_child_lines
-            if lines:
-                total = sum(line.thickness for line in lines)
-                rec.avg_thickness = round(total / len(lines), 2)
-            else:
-                rec.avg_thickness = 0.0
 
-    avg_thickness_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Thickness Conformity", compute="_compute_avg_thickness_conformity", store=True)
 
-    @api.depends('avg_thickness','eln_ref','grade')
-    def _compute_avg_thickness_conformity(self):
-        
-        for record in self:
-            record.avg_thickness_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-121045278hty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-121045278hty')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_thickness - record.avg_thickness*mu_value
-                    upper = record.avg_thickness + record.avg_thickness*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_thickness_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_thickness_conformity = 'fail'
+	
 
-    avg_thickness_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Thickness NABL", compute="_compute_avg_thickness_nabl", store=True)
 
-    @api.depends('avg_thickness','eln_ref','grade')
-    def _compute_avg_thickness_nabl(self):
-        
-        for record in self:
-            record.avg_thickness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-121045278hty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-121045278hty')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_thickness - record.avg_thickness*mu_value
-                    upper = record.avg_thickness + record.avg_thickness*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_thickness_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_thickness_nabl = 'fail'
+
+
+
+
+
+
+
+
 
 
 
@@ -362,21 +426,33 @@ class PaverBlock(models.Model):
     def _compute_visible(self):
         
         for record in self:
-            record.paver_visible = False
-            record.commpressive_visible = False
+            record.dimension_visible = False
+            record.length_visible = False
+            record.width_visible = False
+            record.thickness_visible = False
             record.water_absorption_visible = False
+            record.compressive_strength_visible = False
+            
             
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
 
                 if sample.internal_id == "23547trew-199c-497a-b3a7-45023c604673":
-                    record.paver_visible = True
+                    record.dimension_visible = True
+                    record.length_visible = True
+                    record.width_visible = True
+                    record.thickness_visible = True
 
-                if sample.internal_id == "1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11":
-                    record.commpressive_visible = True
-                
                 if sample.internal_id == "2147fgrr-eba3-4f15-b33d-679b39f7372e":
                     record.water_absorption_visible = True
+
+
+
+
+                if sample.internal_id == "1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11":
+                    record.compressive_strength_visible = True
+                
+                
 
                
 
@@ -397,30 +473,48 @@ class PaverBlock(models.Model):
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
         for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == '23547trew-199c-497a-b3a7-45023c604673':
-                result.result_char = round(self.area_paver,2)
-                if self.area_paver_nabl == 'pass':
+
+            
+
+
+            # Dimension Test 
+            if result.parameter.internal_id == '4609c439-2ee4-4e3e-b40c-334e95b2bbda':
+                result.result_char = round(self.average_length,2)
+                if self.average_length_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '2147fgrr-eba3-4f15-b33d-679b39f7372e':
-                result.result_char = round(self.avg_water_absorption,2)
-                if self.avg_water_absorption_nabl == 'pass':
+
+            if result.parameter.internal_id == 'f079957b-608f-40c0-aebd-0db011ab0f2c':
+                result.result_char = round(self.average_width,2)
+                if self.average_width_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '549532ef-08e1-46f7-9565-bf034ce334f4':
+                result.result_char = round(self.average_thickness,2)
+                if self.average_thickness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Water Absorption
+            if result.parameter.internal_id == '549532ef-08e1-46f7-9565-bf034ce334f4':
+                result.result_char = round(self.average_thickness,2)
+                if self.average_thickness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Compressive Strength
             if result.parameter.internal_id == '1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11':
-                result.result_char = round(self.avg_commpressive,2)
-                if self.avg_commpressive_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            if result.parameter.internal_id == '1457fgrtt-5dc9-4a2a-8bf0-121045278hty':
-                result.result_char = round(self.avg_thickness,2)
-                if self.avg_thickness_nabl == 'pass':
+                result.result_char = round(self.avg_compressive_strength,2)
+                if self.avg_compressive_strength_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -484,27 +578,32 @@ class PaverBlock(models.Model):
 
 
 
-
-
-class WaterLine(models.Model):
-    _name = "paver.water.absorption.line"
+class PaverDimensionLine(models.Model):
+    _name = "paver.dimension.line"
     parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    sample_identification = fields.Float(string="Sample Identification")
-    dry_wt_w1 = fields.Float(string="Dry wt (W1)")
-    wet_w2 = fields.Float(string="Wet wt (W2)")
-    water_absorption = fields.Float(string="  Water Absorption %",compute="_compute_water_absorption")
+    sample = fields.Char(string="Sample Identification")
+    length1= fields.Float(string="Length 1")
+    length2= fields.Float(string="Length 2")
+    avg_length = fields.Float(string="Average Length ",compute="_compute_avg")
+    width1= fields.Float(string="Width 1")
+    width2= fields.Float(string="Width 2")
+    width3= fields.Float(string="Width 3")
+    avg_width = fields.Float(string="Average Width ",compute="_compute_avg")
 
-    @api.depends('dry_wt_w1', 'wet_w2')
-    def _compute_water_absorption(self):
+    thickness1= fields.Float(string="Thickness 1")
+    thickness2= fields.Float(string="Thickness 2")
+    thickness3= fields.Float(string="Thickness 3")
+    thickness4= fields.Float(string="Thickness 4")
+    avg_thickness = fields.Float(string="Average Thickness ",compute="_compute_avg")
+    
+    @api.depends('length1','length2','width1','width2','width3','thickness1','thickness2','thickness3','thickness4')
+    def _compute_avg(self):
         for rec in self:
-            if rec.dry_wt_w1:  # avoid division by zero
-                rec.water_absorption = round(((rec.wet_w2 - rec.dry_wt_w1) / rec.dry_wt_w1) * 100, 2)
-            else:
-                rec.water_absorption = 0.0
-
-   
+            rec.avg_length = (rec.length1 + rec.length2 ) / 2 
+            rec.avg_width = (rec.width1 + rec.width2 +  rec.width3) / 3
+            rec.avg_thickness = (rec.thickness1 + rec.thickness2 +  rec.thickness3 + rec.thickness4) / 4
 
     @api.model
     def create(self, vals):
@@ -515,7 +614,116 @@ class WaterLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(WaterLine, self).create(vals)
+        return super(PaverDimensionLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class PaverWaterObsorptionLine(models.Model):
+    _name = "paver.water.absorption.line"
+    parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample = fields.Char(string="Sample Identification")
+    dry_weight= fields.Float(string="Dry Weight")
+    sat_weight= fields.Float(string="Saturated Weight")
+    sat_dry_weight = fields.Float(string="Saturated Weight-Dry Weight ",compute="_compute_sat_dry_weight")
+    
+    water_absorption = fields.Float(string="Saturated Weight-Dry Weight/Dry Weight*100	",compute="_compute_water_absorption")
+    
+    @api.depends('sat_weight','dry_weight')
+    def _compute_sat_dry_weight(self):
+        for rec in self:
+            rec.sat_dry_weight = (rec.sat_weight - rec.dry_weight )
+
+    @api.depends('sat_dry_weight','dry_weight')
+    def _compute_water_absorption(self):
+        for rec in self:
+            if rec.dry_weight != 0:
+                rec.water_absorption = (rec.sat_dry_weight / rec.dry_weight ) *100 
+            else:
+                rec.water_absorption = 0.0
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(PaverWaterObsorptionLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class PaverCompressiveLine(models.Model):
+    _name = "paver.compressive.line"
+    parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
+
+   
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample1 = fields.Char(string="Sample Identification")
+    length = fields.Float(string="Length")
+    width = fields.Float(string="Width")
+    thickness = fields.Float(string="Thickness")
+    area = fields.Float(string="Area (mm2)",compute="_compute_area",store=True)
+    load = fields.Float(string=" Load at Failure (kN)")
+    correction_factor = fields.Float(string="Correction Factor",store=True)
+    
+    
+    compressive_strength = fields.Float(string="Compressive Strength  N/mm2",compute="_compute_compressive_strength",store=True)
+    block_type = fields.Selection(related="parent_id.block_type", string="Block Type")  # gets parent's choice
+
+    @api.depends('length','width')
+    def _compute_area(self):
+        for rec in self:
+            rec.area = (rec.length * rec.width )
+
+    @api.depends('load','area','correction_factor')
+    def _compute_compressive_strength(self):
+        for rec in self:
+            if rec.area != 0:
+                rec.compressive_strength = ((rec.load * 1000) / rec.area ) * rec.correction_factor 
+            else:
+                rec.compressive_strength = 0.0
+
+
+
+    @api.onchange('parent_id')
+    def _onchange_parent_id(self):
+        if self.parent_id:
+            self.correction_factor = self.parent_id.correction_factore            
+
+
+               
+
+
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(PaverCompressiveLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -525,17 +733,22 @@ class WaterLine(models.Model):
 
 
 
-class CompressiveLine(models.Model):
-    _name = "paver.compressive.line"
-    parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
 
-    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    sample_identification_com = fields.Float(string="Sample Identification")
-    wt_block = fields.Float(string="Weight of Block (gms)")
-    correction_factor = fields.Float(string="Correction Factor",compute="_compute_correction_factor",store=True)
-    load = fields.Float(string=" Load (kN)")
-    compressive_strenght = fields.Float(string=" Compressive Strength (N/mm2)",compute="_compute_compressive_strength")
-    thickness = fields.Float(string=" Thickness mm")
+
+
+
+
+# class CompressiveLine(models.Model):
+#     _name = "paver.compressive.line"
+#     parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
+
+#     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+#     sample_identification_com = fields.Float(string="Sample Identification")
+#     wt_block = fields.Float(string="Weight of Block (gms)")
+#     correction_factor = fields.Float(string="Correction Factor",compute="_compute_correction_factor",store=True)
+#     load = fields.Float(string=" Load (kN)")
+#     compressive_strenght = fields.Float(string=" Compressive Strength (N/mm2)",compute="_compute_compressive_strength")
+#     thickness = fields.Float(string=" Thickness mm")
 
     # @api.depends('parent_id.thickness_child_lines')
     # def _compute_correction_factor(self):
@@ -545,14 +758,14 @@ class CompressiveLine(models.Model):
     #         else:
     #             line.correction_factor = 0.0
 
-    @api.depends('load', 'correction_factor', 'parent_id.area_paver')
-    def _compute_compressive_strength(self):
-        for line in self:
-            area = line.parent_id.area_paver
-            if area > 0:
-                line.compressive_strenght = (line.load * line.correction_factor * 1000) / area
-            else:
-                line.compressive_strenght = 0.0
+    # @api.depends('load', 'correction_factor', 'parent_id.area_paver')
+    # def _compute_compressive_strength(self):
+    #     for line in self:
+    #         area = line.parent_id.area_paver
+    #         if area > 0:
+    #             line.compressive_strenght = (line.load * line.correction_factor * 1000) / area
+    #         else:
+    #             line.compressive_strenght = 0.0
 
 
     # @api.depends('parent_id.thickness2', 'parent_id.thickness_child_lines')
@@ -566,18 +779,18 @@ class CompressiveLine(models.Model):
     #                 correction = matched_line[0].Correction_factore
     #         line.correction_factor = correction
 
-    @api.depends('parent_id.thickness2', 'parent_id.thickness_child_lines')
-    def _compute_correction_factor(self):
-        for line in self:
-            correction = 0.0
-            core_dia_value = line.parent_id.thickness2
-            if core_dia_value and line.parent_id.thickness_child_lines:
-                matched_line = line.parent_id.thickness_child_lines.filtered(
-                    lambda l: float(l.thickness1) == float(core_dia_value)
-                )
-                if matched_line:
-                    correction = matched_line[0].Correction_factore
-            line.correction_factor = correction
+    # @api.depends('parent_id.thickness2', 'parent_id.thickness_child_lines')
+    # def _compute_correction_factor(self):
+    #     for line in self:
+    #         correction = 0.0
+    #         core_dia_value = line.parent_id.thickness2
+    #         if core_dia_value and line.parent_id.thickness_child_lines:
+    #             matched_line = line.parent_id.thickness_child_lines.filtered(
+    #                 lambda l: float(l.thickness1) == float(core_dia_value)
+    #             )
+    #             if matched_line:
+    #                 correction = matched_line[0].Correction_factore
+    #         line.correction_factor = correction
 
     
 
@@ -587,32 +800,32 @@ class CompressiveLine(models.Model):
    
    
 
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
+    # @api.model
+    # def create(self, vals):
+    #     # Set the serial_no based on the existing records for the same parent
+    #     if vals.get('parent_id'):
+    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+    #         if existing_records:
+    #             max_serial_no = max(existing_records.mapped('serial_no'))
+    #             vals['serial_no'] = max_serial_no + 1
 
-        return super(CompressiveLine, self).create(vals)
+    #     return super(CompressiveLine, self).create(vals)
 
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
+    # def _reorder_serial_numbers(self):
+    #     # Reorder the serial numbers based on the positions of the records in child_lines
+    #     records = self.sorted('id')
+    #     for index, record in enumerate(records):
+    #         record.serial_no = index + 1
 
 
 
-class ThicknesscorrectionLine(models.Model):
-    _name = "paver.thickness.line"
-    parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
+# class ThicknesscorrectionLine(models.Model):
+#     _name = "paver.thickness.line"
+#     parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
 
    
-    Correction_factore = fields.Float(string=" Correction Factor")
-    thickness1 = fields.Float(string="Thickness")
+#     Correction_factore = fields.Float(string=" Correction Factor")
+#     thickness1 = fields.Float(string="Thickness")
 
 
 

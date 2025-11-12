@@ -61,14 +61,27 @@
                                 <td style="text-align:right; width:30%;">
                                     <img t-att-src="'/lerm_civil/static/src/img/qr_logo.png'" style="height:40px; width:auto;"/>
                                 </td>
+
+                              
                             </tr>
                         </table>
                     </td>
 
 
-                    <td style="width:40%; vertical-align:middle; text-align:left;">
+                    <!-- <td style="width:40%; vertical-align:middle; text-align:left;">
                         <img t-att-src="'/lerm_civil/static/src/img/nabl_logo.png'" style="height:100px; width:auto;"/>
-                    </td>
+                    </td> -->
+                      <t t-if="eln.sample_id.lab_location">
+                                <td t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" style="text-align:right; width:30%;">
+                                    <!-- <img t-att-src="'/lerm_civil/static/src/img/qr_logo.png'" style="height:40px; width:auto;"/> -->
+                                    <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')" style="height:100px; width:auto;"/>
+                                </td>
+                                
+                                <td t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer"  style="text-align:right; width:30%;">
+                                    <!-- <img t-att-src="'/lerm_civil/static/src/img/qr_logo.png'" style="height:40px; width:auto;"/> -->
+                                    <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')" style="height:100px; width:auto;"/>
+                                </td>
+                            </t>
                 </tr>
             </table>
         </div>
@@ -81,19 +94,22 @@
 
         	<div t-attf-class="footer o_standard_footer">
             <div class="text-center" style="padding-top:45px; border-top: 1px solid black">					
-				<!-- <div class="footerQR" style="">
-					<div style="">
-						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
-					</div>
+				<div class="footerQR" style="">
+					
 					
 					<div style="">
-						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="height: 65px;" />
+						<!-- <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="height: 65px;" /> -->
+                        <!-- <img t-if="qrcode_static" t-att-src="'data:image/png;base64,'+str(qrcode_static)" style="width: 75px; height: 70px;"/> -->
 					</div>
 					<div style="">
-						<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 65px; height: 60px"/>
+						<!-- <img src="/lerm_civil/static/src/img/qr_image.png" style="width: 65px; height: 60px"/> -->
 					</div>
 
-				</div> -->
+                    <div style="">
+						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+					</div>
+
+				</div>
                 <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
                     Page: <span class="page"/> / <span class="topage"/>
                 </div>
