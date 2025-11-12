@@ -151,14 +151,14 @@
 						<tbody >
 			
 
-							<tr  t-if="ggbs.specific_gravity_visible and (ggbs.specific_gravity_nabl == 'pass' and nabl or (ggbs.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<!-- <tr  t-if="ggbs.specific_gravity_visible and (ggbs.specific_gravity_nabl == 'pass' and nabl or (ggbs.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 								</td>
 
 								<td >
-									<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_name"/> -->
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_name"/>
 									<span t-field="parameter_record.parameter_name"/>
 
 								</td>
@@ -206,13 +206,13 @@
 									<span t-field="ggbs.specific_gravity_confirmity"/>
 								</td>
 								
-							</tr>
+							</tr> -->
 
 						
 
 				
 
-							<!-- <tr   t-if="ggbs.fineness_visible and (ggbs.fineness_nabl == 'pass' and nabl or (ggbs.fineness_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr   t-if="ggbs.fineness_visible and (ggbs.fineness_nabl == 'pass' and nabl or (ggbs.fineness_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
@@ -375,7 +375,7 @@
 								<td style="text-align: center;" t-if="eln.conformity">
 									<span t-field="ggbs.day_28_confirmity"/>
 								</td>
-							</tr> -->
+							</tr>
 
 							
 						

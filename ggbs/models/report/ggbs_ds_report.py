@@ -98,16 +98,72 @@ class GgbsDataSheet(models.AbstractModel):
 #             'nabl':nabl,
 #         }
 
+# class GgbsReport(models.AbstractModel):
+#     _name = 'report.ggbs.lerm_ggbs_report'
+#     _description = 'GGBS Report '
+
+#     @api.model
+#     def _get_report_values(self, docids, data=None):
+#         data = data or {}
+#         nabl = data.get('nabl', False)
+
+#         # ELN Record मिळवा
+#         if data.get('report_wizard'):
+#             eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data.get('sample'))])
+#         elif 'active_id' in data.get('context', {}):
+#             eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data['context']['active_id'])])
+#         else:
+#             eln = self.env['lerm.eln'].sudo().browse(docids)
+
+#         if not eln:
+#             raise ValueError("ELN record not found")
+
+#         # ✅ sudo वापरून parameter fetch
+#         parameter_record = self.env['lerm.parameter.master'].sudo().search([
+#             ('internal_id', '=', '210bgf54-baa4-466f-a6a7-044da708f265')
+#         ], limit=1)
+
+#         # QR Code
+#         qr = qrcode.QRCode(
+#             version=1,
+#             error_correction=qrcode.constants.ERROR_CORRECT_L,
+#             box_size=10,
+#             border=4,
+#         )
+#         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+#         report_url = f"{base_url}/download_report/ggbs/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
+#         qr.add_data(report_url)
+#         qr.make(fit=True)
+
+#         buffered = BytesIO()
+#         qr.make_image().save(buffered, format="PNG")
+#         qr_code = base64.b64encode(buffered.getvalue()).decode()
+
+#         model_id = eln.model_id
+#         model_name = eln.material.product_based_calculation[0].ir_model.name 
+#         if model_name:
+#             general_data = self.env[model_name].sudo().browse(model_id)
+#         else:
+#             general_data = self.env['lerm.eln'].sudo().browse(docids)
+
+#         return {
+#             'eln': eln,
+#             'ggbs': general_data,
+#             'qrcode': qr_code,
+#             'nabl': nabl,
+#             'parameter_record': parameter_record,  # ✅ safe access
+#         }
+
 class GgbsReport(models.AbstractModel):
     _name = 'report.ggbs.lerm_ggbs_report'
-    _description = 'GGBS Report '
+    _description = 'GGBS Report'
 
     @api.model
     def _get_report_values(self, docids, data=None):
         data = data or {}
         nabl = data.get('nabl', False)
 
-        # ELN Record मिळवा
+        # ✅ ELN Record मिळवा
         if data.get('report_wizard'):
             eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data.get('sample'))])
         elif 'active_id' in data.get('context', {}):
@@ -118,12 +174,23 @@ class GgbsReport(models.AbstractModel):
         if not eln:
             raise ValueError("ELN record not found")
 
-        # ✅ sudo वापरून parameter fetch
-        parameter_record = self.env['lerm.parameter.master'].sudo().search([
-            ('internal_id', '=', '210bgf54-baa4-466f-a6a7-044da708f265')
-        ], limit=1)
+        # ✅ Unique internal_ids define करा (सगळे इथे एकदाच)
+        internal_ids = [
+            '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a',  # fineness
+            '1452fgr0-8e67-4e94-86ea-98d9472f5c71',  # slag activity (header)
+            '5214hgtb-c526-4092-a3a7-321478658',     # 7-day activity
+            '5214hgtb-c526-4092-a3a7-3214855pp',     # 28-day activity
+            '210bgf54-baa4-466f-a6a7-044da708f265',  # extra param (तुझ्या कोडमध्ये आधी होता)
+        ]
 
-        # QR Code
+        # ✅ सर्व parameter.master records dictionary मध्ये साठवा
+        ParamMaster = self.env['lerm.parameter.master'].sudo()
+        parameters = {}
+        for iid in internal_ids:
+            record = ParamMaster.search([('internal_id', '=', iid)], limit=1)
+            parameters[iid] = record
+
+        # ✅ QR Code तयार करा
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -139,19 +206,21 @@ class GgbsReport(models.AbstractModel):
         qr.make_image().save(buffered, format="PNG")
         qr_code = base64.b64encode(buffered.getvalue()).decode()
 
+        # ✅ General Data मिळवा
         model_id = eln.model_id
-        model_name = eln.material.product_based_calculation[0].ir_model.name 
+        model_name = eln.material.product_based_calculation[0].ir_model.name if eln.material.product_based_calculation else False
         if model_name:
             general_data = self.env[model_name].sudo().browse(model_id)
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
 
+        # ✅ सर्व data return करा
         return {
             'eln': eln,
             'ggbs': general_data,
             'qrcode': qr_code,
             'nabl': nabl,
-            'parameter_record': parameter_record,  # ✅ safe access
+            'parameters': parameters,  # ← इथे dictionary पास केला आहे
         }
 
 
