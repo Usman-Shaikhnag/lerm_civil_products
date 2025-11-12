@@ -69,7 +69,7 @@
                     </div>
                     
 
-
+                    
                     <!-- Test Results Table -->
                    <table style="margin-top:10px;margin-bottom:0px;">
 					<t t-set="i" t-value="0"/>
@@ -133,6 +133,7 @@
 							</tr>
 						</thead>
                             <tbody>
+                            
 
                             <tr  t-if="data.sieve_visible" style="text-align: center; font-weight: bold;" >
 								<td rowspan="10" style="text-align: center;">
@@ -261,60 +262,6 @@
 							</tr>
 
 
-                             <!-- Sieve Analysis Table -->
-                                <!-- <tr>
-                                    <td rowspan="9" style ="text-align: center; padding: 8px;">1</td>
-                                    <td style="font-weight: bold; padding: 8px;">Sieve Analysis Table</td>
-
-                             <td  rowspan="9" style="text-align: center; padding-top: 120px;">IS : 2386 (P1) 1963(RA 2021)</td>
-
-                                    <td  rowspan="9" style="text-align: center; padding-top: 120px;">
-
-                                     <span t-field="data.temp_sieve_analysis"/>
-                                    </td>
-                                    <td  rowspan="9" style="text-align: center; padding-top: 120px;">
-                                        <span t-field="data.humidity_sieve_analysis"/>
-                                     <span t-field="data.temp_sieve_analysis"/>
-                                    </td>
-
-
-                                    <td  rowspan="9" style="text-align: center; padding-top: 120px;">
-                                        <span t-field="data.humidity_sieve_analysis"/>
-                                    </td>
-
-
-                                    
-                                    <td style="text-align: center; padding: 8px;">
-                                        <t t-if="fine_aggregate">
-                                            <table style="width:100%; border:none;">
-                                                <tr> -->
-                                                    <!-- <td><b>Trial 1:</b> <span t-field="fine_aggregate.specific_gravity_1" t-options='{"widget": "float", "precision": 2}'/></td>
-                                                    <td><b>Trial 2:</b> <span t-field="fine_aggregate.specific_gravity_2" t-options='{"widget": "float", "precision": 2}'/></td>
-                                                    <td><b>Average:</b> <span t-field="fine_aggregate.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td> -->
-                                                <!-- </tr>
-                                            </table>
-                                        </t>
-                                    </td>
-                                    <td style="text-align: center; padding: 8px;">As per IS 383</td> -->
-                                    <!-- <td style="text-align: center; padding: 8px;">
-                                        <t t-if="fine_aggregate">
-                                            <span t-field="fine_aggregate.avg_specific_gravity_conformity"/>
-                                        </t>
-                                    </td> -->
-                                <!-- </tr>
-
-
-
-                              <t t-set="k" t-value="0"/>
-								<tr t-foreach="data.sieve_analysis_child_lines" t-as="r" style="text-align: center;">
-									
-									<td style="border: 1px solid black; padding: 6px;" colspan="1">
-										<span t-esc="r['sieve_size']"/>
-									</td>
-                                  </tr> -->
-
-
-
                                 <!-- Specific Gravity -->
                                 <tr>
                                     <td style="text-align: center; padding: 8px;">2</td>
@@ -404,11 +351,7 @@
                                         </t>
                                     </td>
                                     <td style="text-align: center; padding: 8px;">IS : 2386 (P1) 1963 (RA 2021)</td>
-                                    <!-- <td style="text-align: center; padding: 8px;">
-                                        <t t-if="fine_aggregate">
-                                            <span t-field="fine_aggregate.material_finer75_conformity"/>
-                                        </t>
-                                    </td> -->
+
                                 </tr>
 
                                 <!-- Bulk Density Compacted -->
@@ -466,11 +409,7 @@
                                         </t>
                                     </td>
                                     <td style="text-align: center; padding: 8px;">-</td>
-                                    <!-- <td style="text-align: center; padding: 8px;">
-                                        <t t-if="fine_aggregate">
-                                            <span t-field="fine_aggregate.loose_density_conformity"/>
-                                        </t>
-                                    </td> -->
+                                    
                                 </tr>
 
                                 <!-- Voids in Compacted Density -->
@@ -617,7 +556,7 @@
                             <div><b>(<span t-esc="eln.sample_id.approved_by.job_title"/>)</b></div>
                         </div>
                     </div>
-               
+
             </t>
         </t>
     </template>
