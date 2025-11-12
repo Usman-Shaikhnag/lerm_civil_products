@@ -3,7 +3,7 @@ from odoo.exceptions import UserError
 
 
 
-class OpcCementPrefillWizard(models.TransientModel):
+class FineAggregatePrefillWizard(models.TransientModel):
     _name = 'fine.aggregate.prefill.data'
     _description = 'Prefill Data'
 
