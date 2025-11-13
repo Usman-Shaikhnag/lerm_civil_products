@@ -104,6 +104,7 @@ class ELN(models.Model):
 
     
     active = fields.Boolean(string="Active",default=True)
+    tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature")
     
     quantity = fields.Integer(string="Quantity")
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
@@ -399,7 +400,7 @@ class ELN(models.Model):
             })
             # if not result.calculated:
             #     raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
-        
+        self.tested_by_signature_datasheet = True   
         sample_id = self.sample_id.sudo()
         sample_id.write({
             'state':'3-pending_verification',
@@ -407,7 +408,8 @@ class ELN(models.Model):
             'uom_id':self.uom_id.id,
             'quantity_received':self.quantity_received,
             'quantity_consumed':self.quantity_consumed,
-            'quantity_balance':self.quantity_balance
+            'quantity_balance':self.quantity_balance,
+            'tested_by_signature_datasheet':True
             })
         sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.sample_id.id)])
         sample_register.write({
@@ -415,7 +417,8 @@ class ELN(models.Model):
             'uom_id':self.uom_id.id,
             'quantity_received':self.quantity_received,
             'quantity_consumed':self.quantity_consumed,
-            'quantity_balance':self.quantity_balance
+            'quantity_balance':self.quantity_balance,
+            # 'tested_by_signature_datasheet':True
         })
         sample_id.parameters_result.unlink()
         
@@ -429,6 +432,10 @@ class ELN(models.Model):
                 'test_method':result.test_method.id
             })
         self.write({'state': '2-confirm'})
+
+
+        
+
 
 
     def reupdate_result(self):

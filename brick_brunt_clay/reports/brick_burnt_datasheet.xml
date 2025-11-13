@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 <template id="lerm_brick_clay_datasheet">
@@ -417,3 +418,429 @@
         </t>
     </template>
 </odoo>
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="lerm_brick_clay_datasheet">
+    <t t-call="web.html_container">
+			<t t-call="lerm_civil.genstru_data_sheet_header">
+				<div style="text-align:center;font-size:18px;font-weight: bold">
+                    Paver Block
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+                    <table style="margin-top:20px">
+                        <tr cols="12">
+                            
+                            <td colspan="6">Job No :
+                                <![CDATA[&nbsp;]]>		
+                                <span t-field="eln.kes_no"></span>
+                            </td>
+                            <td colspan="6">Test Start Date: 
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.start_date"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            </td>
+                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td colspan="6">Age at Test: <span t-field="data.age_of_days"></span>
+                            </td>
+                            <td colspan="6">Sample Conditioning: <span t-field="data.sample_condition"></span>
+                            </td>
+                        </tr> -->
+                    </table>
+					
+					<table>
+						<tr style="height:50px" cols="12">
+                            <td colspan="4">Performed By :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.technician.name"/>
+                            </td>
+                            <td colspan="4">Witness Name :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.witness_name"/>
+                            </td>
+                            <td colspan="4">Witness Signature :
+                                <![CDATA[&nbsp;]]>
+                                <span style='padding:20px'></span>
+                            </td>
+                        </tr>
+					</table>
+
+
+
+                    <!--  Compressive Strength -->
+
+                       <div t-if="data.compressive_strength_visible" style="margin-top:10px">
+						<div style="text-align:center;font-size:18px;font-weight: bold; margin-bottom: 15px;">
+							Compressive Strength
+						</div>
+
+						
+						
+						
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;margin-top:10px">
+						 <thead>
+
+							<tr  style="background-color:#f9f9f9; text-align: center;">
+							    <th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Sr No</th>
+								
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Sample Identification</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Length
+								</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Width
+								</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Thickness
+								</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Area (mm2)
+								</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Load at Failure (kN)
+								</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Compressive Strength  N/mm2
+								</th>
+								
+							</tr>
+							</thead>
+							<tbody>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.compressive_strength_child_lines" t-as="r" style="text-align: center;">
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+								</td>
+								<!-- <td colspan="3">
+									<span t-esc="r['trial_no']"/>
+								</td> -->
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['sample1']"/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['length']"/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['width']" />
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['thickness']"/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['area']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['load']"/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+
+
+							<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr cols="12" style="font-weight: bold; background-color: #f9f9f9;">
+								
+								<td style="text-align: left; padding: 8px; border: 1px solid black;" colspan="6">Average Compressive Strength :
+									<![CDATA[&nbsp;]]>
+									</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black;">
+									<span t-field="data.avg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+                    <!--  Water Absorption -->
+
+
+				<div t-if="data.water_absorption_visible" style="margin-top:10px">
+						<div style="text-align:center;font-size:18px;font-weight: bold; margin-bottom: 15px;">
+							Water Absorption
+						</div>
+						
+						
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;margin-top:10px">
+						 <thead>
+
+							<tr  style="background-color:#f9f9f9; text-align: center;">
+							    <th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Sr No</th>
+								
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Sample Identification</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Dry Weight
+								</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Saturated Weight
+								</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Saturated Weight-Dry Weight
+								</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Saturated Weight-Dry Weight/Dry Weight*100
+								</th>
+								
+							</tr>
+							</thead>
+							<tbody>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.water_absorption_child_lines" t-as="r" style="text-align: center;">
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+								</td>
+								<!-- <td colspan="3">
+									<span t-esc="r['trial_no']"/>
+								</td> -->
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['sample']"/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['dry_weight']"/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['sat_weight']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['sat_dry_weight']"/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+
+
+							<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr cols="12" style="font-weight: bold; background-color: #f9f9f9;">
+								
+								<td style="text-align: left; padding: 8px; border: 1px solid black;" colspan="6">Average Water Absorption :
+									<![CDATA[&nbsp;]]>
+									</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black;">
+									<span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+                
+                
+                <!-- Dimensions -->
+                <div t-if="data.dimension_visible " style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Dimensions Test
+					</div>
+
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+
+						
+                        <tr style="background-color: #f9f9f9;">
+                        <td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Sr.No
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Observations
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								 1
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								 2
+							</td>
+                            <td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								 3
+							</td>
+                            <td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								 Average
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								1
+							</td>
+                            <td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Length 
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.length1"/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.length2"/>
+							</td>
+                            <td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.length3"/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.avg_length" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+                        <tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								2
+							</td>
+                            <td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Width 
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.width1"/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.width2"/>
+							</td>
+                            <td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.width3"/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.avg_width" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+                        <tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								3
+							</td>
+                            <td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Height 
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.height1"/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.height2"/>
+							</td>
+                            <td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.height3"/>
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px;">
+								<span t-field="data.avg_height" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+						</tr>
+						
+						
+						
+					</table>
+
+					</div>
+
+
+                    
+
+                    <!-- efforescence -->
+                <div t-if="data.efforescence_visible " style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Efforescence
+					</div>
+
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+
+						
+                        <tr style="background-color: #f9f9f9;">
+                        <td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								
+							</td>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Observations
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								Observations
+							</td>
+                            <td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
+								<span t-field="data.visual_observation_1"/>
+							</td>
+						</tr>
+                       
+						
+						
+						
+					</table>
+
+					</div>
+
+
+
+
+
+                
+				<!-- authorizeRowDataSheet -->
+				
+			
+           <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+								<!-- <div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div> -->
+							<!-- </div> -->
+						</div>
+                    
+                </div>
+				</div>
+
+            </t>
+        </t>
+    </template>
+</odoo>
+>>>>>>> b398e82 (ADD)
