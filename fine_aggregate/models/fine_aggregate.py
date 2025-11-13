@@ -251,12 +251,21 @@ class FineAggregate(models.Model):
 
     material_finer75_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_material_finer75_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+        
+           ],string="Conformity", compute="_compute_material_finer75_conformity", store=True)
 
     @api.depends('material_finer75','eln_ref','grade')
     def _compute_material_finer75_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.material_finer75_conformity = 'na'
+                continue
+
+            
             record.material_finer75_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')]).parameter_table
@@ -423,16 +432,23 @@ class FineAggregate(models.Model):
 
     avg_specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Specific Gravity Conformity", compute="_compute_avg_specific_gravity_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),], string="Specific Gravity Conformity", compute="_compute_avg_specific_gravity_conformity", store=True)
 
     @api.depends('avg_specific_gravity','eln_ref','grade')
     def _compute_avg_specific_gravity_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_specific_gravity_conformity = 'na'
+                continue
+
+
             record.avg_specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')]).parameter_table
             for material in materials:
+                    
                 # if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
@@ -474,12 +490,22 @@ class FineAggregate(models.Model):
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Water Absorption Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+        
+          ], string="Water Absorption Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
+
+        
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_expantion_conformity = 'na'
+                continue
+
+
             record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4dbde30b-0cdc-4641-abdd-68a574fd7e1f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4dbde30b-0cdc-4641-abdd-68a574fd7e1f')]).parameter_table
@@ -781,7 +807,8 @@ class FineAggregate(models.Model):
 
     avg_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_moisture_conformity", store=True)
+            ('fail', 'Fail')], 
+            string="Conformity", compute="_compute_avg_moisture_conformity", store=True)
 
     @api.depends('avg_moisture','eln_ref','grade')
     def _compute_avg_moisture_conformity(self):
@@ -868,12 +895,22 @@ class FineAggregate(models.Model):
 
     compacted_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_compacted_density_conformity", store=True)
+            ('fail', 'Fail'),
+             ('na', 'NA'),
+        
+           ], string="Conformity", compute="_compute_compacted_density_conformity", store=True)
 
     @api.depends('compacted_density','eln_ref','grade')
     def _compute_compacted_density_conformity(self):
         
         for record in self:
+
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.compacted_density_conformity = 'na'
+                continue
+             
+             
             record.compacted_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')]).parameter_table
@@ -949,12 +986,21 @@ class FineAggregate(models.Model):
 
     loose_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_loose_density_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+        
+    ], string="Conformity", compute="_compute_loose_density_conformity", store=True)
 
     @api.depends('loose_density','eln_ref','grade')
     def _compute_loose_density_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.loose_density_conformity = 'na'
+                continue
+              
+
             record.loose_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8a944a9b-4d7d-44a3-a82c-6d8bacc07846')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8a944a9b-4d7d-44a3-a82c-6d8bacc07846')]).parameter_table
@@ -1046,12 +1092,19 @@ class FineAggregate(models.Model):
 
     voids_compacted_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Void In Compacted Density Conformity", compute="_compute_voids_compacted_density_conformity", store=True)
+            ('fail', 'Fail'),
+             ('na', 'NA'),
+        
+    ],string="Void In Compacted Density Conformity", compute="_compute_voids_compacted_density_conformity", store=True)
 
     @api.depends('voids_compacted_density','eln_ref','grade')
     def _compute_voids_compacted_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.voids_compacted_density_conformity = 'na'
+                continue
+              
             record.voids_compacted_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')]).parameter_table
@@ -1096,12 +1149,21 @@ class FineAggregate(models.Model):
 
     voids_loose_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Void In Loose Density Conformity", compute="_compute_voids_loose_density_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        
+    ],string="Void In Loose Density Conformity", compute="_compute_voids_loose_density_conformity", store=True)
 
     @api.depends('voids_loose_density','eln_ref','grade')
     def _compute_voids_loose_density_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.voids_loose_density_conformity = 'na'
+                continue
+
+
             record.voids_loose_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')]).parameter_table
@@ -1161,7 +1223,7 @@ class FineAggregate(models.Model):
 
 
 
-    sieve_name = fields.Char("Name",default="Sieve Analysis")
+    sieve_name = fields.Char("Name",default="Gradation of Sample")
     # sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
     wt_of_sample = fields.Float(string="Wt. Of Sample Taken For Analysis (gms) = ", digits=(8,3))
@@ -1327,12 +1389,19 @@ class FineAggregate(models.Model):
 
     total_avg_sulphae_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_total_avg_sulphae_conformity", store=True)
+            ('fail', 'Fail'),
+             ('na', 'NA'),
+        
+    ], string="Conformity", compute="_compute_total_avg_sulphae_conformity", store=True)
 
     @api.depends('total_avg_sulphae','eln_ref','grade')
     def _compute_total_avg_sulphae_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.total_avg_sulphae_conformity = 'na'
+                continue
+            
             record.total_avg_sulphae_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')]).parameter_table
@@ -1352,12 +1421,16 @@ class FineAggregate(models.Model):
 
     total_avg_sulphae_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_total_avg_sulphae_nabl", store=True)
+        ('fail', 'Non-NABL')],
+        
+    string="NABL", compute="_compute_total_avg_sulphae_nabl", store=True)
 
     @api.depends('total_avg_sulphae','eln_ref','grade')
     def _compute_total_avg_sulphae_nabl(self):
         
         for record in self:
+
+            
             record.total_avg_sulphae_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')]).parameter_table
@@ -1422,7 +1495,7 @@ class FineAggregate(models.Model):
                 if sample.internal_id == "1457htyu1245-3fa3-4b83-ae31-9d281457457hy":
                     record.moisture_content_visible = True
 
-                if sample.internal_id == '2047739e-9941-4bc0-af9b-839767be6e1c':
+                if sample.internal_id == '988f5bf6-c865-453c-9cd6-993a5a59ad95':
                     record.finer75_visible = True
                 
                 if sample.internal_id == 'd961c78a-9f5c-4e7f-9f03-86ab65740161':
@@ -2243,7 +2316,7 @@ class QuantitativelyExaminationLine(models.Model):
     passing = fields.Char(string="Sieve Size-mm Passing")
     retained = fields.Char(string="Sieve Size-mm Retained")
     grading_sulphate = fields.Float(string="Grading of Original Sample  (%)s.Sodium Sulphate", digits=(8,2),compute="_compute_grading_sulphate",store=True)
-    sieve_magnesiu = fields.Float(string="Sieve Used For Loss  Determination.Magnesium ", digits=(8,3))
+    sieve_magnesium = fields.Char(string="Sieve Used For Loss  Determination.Magnesium ")
     wt_fraction_sulhate = fields.Float(string="Weight of test Fraction  (retained) after test (gm) Sodium Sulphate",compute="_compute_wt_fraction_sulhate",store=True)
     wt_fraction_manesium = fields.Float(string="Weight of test Fraction  (retained) after test  (gm) Magnesium ")
     finalloss_sulphae = fields.Float(string="Final loss (%) Sulphate",compute="_compute_finalloss_sulphae",store="_compute_finalloss_sulphae")
@@ -2257,30 +2330,106 @@ class QuantitativelyExaminationLine(models.Model):
         for rec in self:
             rec.avg_sulphae = (rec.finalloss_sulphae * rec.grading_sulphate) / 100 if rec.grading_sulphate else 0.0
 
+    # @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
+    # def _compute_finalloss_sulphae(self):
+    #  for idx, rec in enumerate(self):
+    #     sieve_lines = rec.parent_id.sieve_analysis_soundness_lines.sorted('serial_no')
+    #     quant_lines = rec.parent_id.ouantitative_soundness_lines.sorted('serial_no')
+    #     percent_ret = 0.0
+    #     loss_sulphae_val = 0.0
+
+    #     # Find the matching sieve and quantitative line
+    #     sieve_line = next((l for l in sieve_lines if l.serial_no == rec.serial_no), None)
+    #     if sieve_line:
+    #         percent_ret = sieve_line.percent_retained
+
+    #     quant_line = next((l for l in quant_lines if l.serial_no == rec.serial_no), None)
+    #     if quant_line:
+    #         loss_sulphae_val = quant_line.loss_sulphae
+
+    #     # Boundary logic
+    #     if idx == 0:  # First item
+    #         next_loss_val = quant_lines[idx+1].loss_sulphae if len(quant_lines) > idx+1 else loss_sulphae_val
+    #         avg_val = next_loss_val  # Use next value only
+    #     elif idx == len(self)-1:  # Last item
+    #         prev_loss_val = quant_lines[idx-1].loss_sulphae if idx > 0 else loss_sulphae_val
+    #         avg_val = prev_loss_val  # Use previous value only
+    #     else:  # Middle items
+    #         prev_loss_val = quant_lines[idx-1].loss_sulphae
+    #         next_loss_val = quant_lines[idx+1].loss_sulphae
+    #         avg_val = (prev_loss_val + next_loss_val) / 2 if (prev_loss_val is not None and next_loss_val is not None) else loss_sulphae_val
+
+    #     if 0 < percent_ret < 5:
+    #         rec.finalloss_sulphae = avg_val
+    #     else:
+    #         rec.finalloss_sulphae = loss_sulphae_val
+
     @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
     def _compute_finalloss_sulphae(self):
-        for rec in self:
-            rec.finalloss_sulphae = 0.0
-            if not rec.parent_id or not rec.serial_no:
-                continue
+      for rec in self:
+        sieve_lines = rec.parent_id.sieve_analysis_soundness_lines.sorted('serial_no')
+        quant_lines = rec.parent_id.ouantitative_soundness_lines.sorted('serial_no')
+        percent_ret = 0.0
+        loss_sulphae_val = 0.0
 
-            # 1️⃣ Get the matching sieve analysis line
-            sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
-                lambda l: l.serial_no == rec.serial_no
-            )
-            percent_ret = sieve_line[0].percent_retained if sieve_line else 0.0
+        # Find matching line based on serial_no
+        sieve_line = next((l for l in sieve_lines if l.serial_no == rec.serial_no), None)
+        quant_line = next((l for l in quant_lines if l.serial_no == rec.serial_no), None)
 
-            # 2️⃣ Get the matching quantitative line
-            ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(
-                lambda l: l.serial_no == rec.serial_no
-            )
-            loss_sulphae_val = ou_line[0].loss_sulphae if ou_line else 0.0
+        if sieve_line:
+            percent_ret = sieve_line.percent_retained
+        if quant_line:
+            loss_sulphae_val = quant_line.loss_sulphae
 
-            # 3️⃣ Apply logic
-            if 0 < percent_ret < 5:
-                rec.finalloss_sulphae = 0.0  # किंवा आधीची value ठेवू शकता
-            else:
-                rec.finalloss_sulphae = loss_sulphae_val
+        # Determine index of current line in quant_lines (if exists)
+        quant_index = next((i for i, l in enumerate(quant_lines) if l.serial_no == rec.serial_no), None)
+
+        if quant_index is not None:
+            prev_loss_val = quant_lines[quant_index - 1].loss_sulphae if quant_index > 0 else None
+            next_loss_val = quant_lines[quant_index + 1].loss_sulphae if quant_index + 1 < len(quant_lines) else None
+
+            if quant_index == 0:  # First item
+                avg_val = next_loss_val or loss_sulphae_val
+            elif quant_index == len(quant_lines) - 1:  # Last item
+                avg_val = prev_loss_val or loss_sulphae_val
+            else:  # Middle
+                if prev_loss_val is not None and next_loss_val is not None:
+                    avg_val = (prev_loss_val + next_loss_val) / 2
+                else:
+                    avg_val = loss_sulphae_val
+        else:
+            avg_val = loss_sulphae_val
+
+        # Apply condition
+        rec.finalloss_sulphae = avg_val if 0 < percent_ret < 5 else loss_sulphae_val
+
+
+
+
+    # @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
+    # def _compute_finalloss_sulphae(self):
+    #     for rec in self:
+    #         rec.finalloss_sulphae = 0.0
+    #         if not rec.parent_id or not rec.serial_no:
+    #             continue
+
+    #         # 1️⃣ Get the matching sieve analysis line
+    #         sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
+    #             lambda l: l.serial_no == rec.serial_no
+    #         )
+    #         percent_ret = sieve_line[0].percent_retained if sieve_line else 0.0
+
+    #         # 2️⃣ Get the matching quantitative line
+    #         ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(
+    #             lambda l: l.serial_no == rec.serial_no
+    #         )
+    #         loss_sulphae_val = ou_line[0].loss_sulphae if ou_line else 0.0
+
+    #         # 3️⃣ Apply logic
+    #         if 0 < percent_ret < 5:
+    #             rec.finalloss_sulphae = 0.0  # किंवा आधीची value ठेवू शकता
+    #         else:
+    #             rec.finalloss_sulphae = loss_sulphae_val
 
     @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
     def _compute_grading_sulphate(self):
