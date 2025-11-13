@@ -32,28 +32,18 @@ class FineAggregate(models.Model):
         # ---- compute fields (unit बदलल्यावर update)
     def _compute_units(self):
         for rec in self:
-            # rec.average_crushing_value_unit = rec._get_unit("ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71")
-            # rec.average_impact_value_unit = rec._get_unit("2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2")
+            
             rec.avg_compacted_unit     = rec._get_unit("357f579d-a310-4015-bc11-28a85c53ac83")
-            # rec.avg_bulk_density_unit   = rec._get_unit("65a41d1f-d557-438e-8fd1-2c619a334d02")
-            # rec.aggregate_elongation_unit   = rec._get_unit("9effe915-e5a3-45a7-aaeb-10caababd667")
-            # rec.aggregate_flakiness_unit   = rec._get_unit("be7a60bc-bb2c-410d-b91a-4f8730a4ac6f")
-            # rec.avg_specific_gravity_unit   = rec._get_unit("3114db41-cfa7-49ad-9324-fcdbc9661038")
-            # rec.avg_water_absorption_unit   = rec._get_unit("22ee804f-41a3-4fd1-a301-a8d9180fba10")
+          
 
     # ---- default values (create mode मध्ये दिसण्यासाठी)
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
         res.update({
-            # 'average_crushing_value_unit':   self._get_unit("ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71"),
-            # 'average_impact_value_unit': self._get_unit("2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2"),
+         
             'avg_compacted_unit':     self._get_unit("357f579d-a310-4015-bc11-28a85c53ac83"),
-            # 'avg_bulk_density_unit':   self._get_unit("65a41d1f-d557-438e-8fd1-2c619a334d02"),
-            # 'aggregate_elongation_unit':   self._get_unit("9effe915-e5a3-45a7-aaeb-10caababd667"),
-            # 'aggregate_flakiness_unit':   self._get_unit("be7a60bc-bb2c-410d-b91a-4f8730a4ac6f"),
-            # 'avg_specific_gravity_unit':   self._get_unit("3114db41-cfa7-49ad-9324-fcdbc9661038"),
-            # 'avg_water_absorption_unit':   self._get_unit("22ee804f-41a3-4fd1-a301-a8d9180fba10"),
+          
         })
         return res
 
@@ -102,11 +92,7 @@ class FineAggregate(models.Model):
 
 
 
-    # @api.depends('sieve_analysis_child_lines.cumulative_retained')
-    # def _compute_fineness_modulus(self):
-    #     for record in self:
-    #         fineness_modulus = sum(line.cumulative_retained for line in record.sieve_analysis_child_lines)/100
-    #         record.fineness_modulus = fineness_modulus
+  
 
     @api.depends('sieve_analysis_child_lines.cumulative_retained')
     def _compute_fineness_modulus(self):
@@ -186,6 +172,7 @@ class FineAggregate(models.Model):
 
 
 
+
     @api.onchange('sieve_analysis_child_lines')
     def _onchange_sieve_analysis_child_lines(self):
         for rec in self:
@@ -204,7 +191,7 @@ class FineAggregate(models.Model):
 
 
     # corrected(added)
-    def calculate_sieve(self): 
+    def calculate_sieve1(self): 
         for record in self:
             previous_cumulative = 0  
             for line in record.sieve_analysis_child_lines:
@@ -246,21 +233,14 @@ class FineAggregate(models.Model):
 
 
 
-
-
-
 # Deleterious Content Material Finer than 75 Micron
 
     name_finer75 = fields.Char("Name",default="Material Finer than 75 Micron")
     finer75_visible = fields.Boolean("Finer 75 Visible",compute="_compute_visible")
 
-
-
       
     temp_finer75_visible = fields.Char(string="Temp.°C")
     humidity_finer75_visible = fields.Char(string="Humidity %")
-
-
 
     water_absorption_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
@@ -328,13 +308,6 @@ class FineAggregate(models.Model):
                 record.material_finer75 = 0
 
 
-
-
-
-
-
-
-
     # Specific Gravety 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
@@ -342,96 +315,90 @@ class FineAggregate(models.Model):
     water_absorption_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
 
-
     temp_specific_gravity_water_absorption = fields.Char(string="Temp.°C")
     humidity_temp_specific_gravity_water_absorption= fields.Char(string="Humidity %")
 
-
-
-
-    wt_basket_and_sample = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm")
-    wt_empty_basket= fields.Float(string="Weight of empty basket in water (A2) gm")
-
+    # wt_basket_and_sample = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm")
+    
+    wt_sample_inwater = fields.Float(string="Weight of saturated surface dry sample (gm) A")
     wt_surface_dry = fields.Float(string="Weight of surface dried aggregate (B) gm")
-    wt_sample_inwater = fields.Float(string="Weight of Saturated Aggregate  in Water (A) = (A1 – A2) – gms", compute="_compute_wt_sample_inwater")
+    
     oven_dried_wt = fields.Float(string="Weight of  oven dried aggregates (C) gm")
+    wt_oven_dry_d= fields.Float(string="Weight of Oven dry sample (gm) D")
 
     # Trial 2 (new)
-    wt_basket_and_sample_2 = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm  [Trial 2]")
-    wt_empty_basket_2= fields.Float(string="Weight of empty basket in water (A2) gm  [Trial 2]")
+    # wt_basket_and_sample_2 = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm  [Trial 2]")
+    # wt_empty_basket_2= fields.Float(string="Weight of empty basket in water (A2) gm  [Trial 2]")
 
     wt_surface_dry_2 = fields.Float(string="Weight of surface dried aggregate (B) gm [Trial 2]")
-    wt_sample_inwater_2 = fields.Float(string="Weight of Saturated Aggregate  in Water (A) = (A1 – A2) – gms [Trial 2]", compute="_compute_wt_sample_inwater_2")
+    wt_sample_inwater_2 = fields.Float(string="Weight of Saturated Aggregate  in Water (A) = (A1 – A2) – gms [Trial 2]")
     oven_dried_wt_2 = fields.Float(string="Weight of  oven dried aggregates (C) gm [Trial 2]")
+    wt_oven_dry_d_2= fields.Float(string="Weight of Oven dry sample (gm) D")
 
 
-    @api.depends('wt_basket_and_sample', 'wt_empty_basket')
-    def _compute_wt_sample_inwater(self):
-        for line in self:
-            if line.wt_basket_and_sample and line.wt_empty_basket:
-                line.wt_sample_inwater = line.wt_basket_and_sample - line.wt_empty_basket
-            else:
-              line.wt_sample_inwater = 0
-
-    @api.depends('wt_basket_and_sample_2', 'wt_empty_basket_2')
-    def _compute_wt_sample_inwater_2(self):
-        for line in self:
-            if line.wt_basket_and_sample_2 and line.wt_empty_basket_2:
-                line.wt_sample_inwater_2 = line.wt_basket_and_sample_2 - line.wt_empty_basket_2
-            else:
-               line.wt_sample_inwater_2 = 0
-
-    # result_wt_surface_dry = fields.Float(string="Wt of Saturated surface dry  Aggregate in Air:- (B)",compute="_compute_result")
-    # result_wt_sample_inwater = fields.Float(string="Wt of Saturated Aggregate in Water:- (A)",compute="_compute_result")
-    # result_oven_dried_wt = fields.Float(string="Wt of Oven Dried Aggregate in Air :- (C)",compute="_compute_result")
-
+    
     specific_gravity = fields.Float(string="Specific Gravity")
     water_absorption = fields.Float(string="Water absorption  %",compute="_compute_water_absorption")
 
 
-    specific_gravity_1 = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity_1")
+    specific_gravity_1 = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity_1",digits=(12,3))
     water_absorption_1 = fields.Float(string="Water absorption  %",compute="_compute_water_absorption_1")
 
 
-    @api.depends('wt_surface_dry', 'wt_sample_inwater', 'oven_dried_wt')
+    @api.depends('wt_oven_dry_d', 'wt_sample_inwater', 'wt_surface_dry', 'oven_dried_wt')
     def _compute_specific_gravity_1(self):
-        for line in self:
-            if line.wt_surface_dry - line.wt_sample_inwater != 0:
-                line.specific_gravity_1  = line.oven_dried_wt / (line.wt_surface_dry - line.wt_sample_inwater)
-            else:
-                line.specific_gravity_1 = 0
-
+        for record in self:
+            try:
+                denominator = record.wt_sample_inwater - (record.wt_surface_dry - record.oven_dried_wt)
+                if denominator != 0:
+                    value = record.wt_oven_dry_d / denominator
+                    record.specific_gravity_1 = round(value, 3)
+                else:
+                    record.specific_gravity_1 = 0.0
+            except Exception:
+                record.specific_gravity_1 = 0.0
             # line.specific_gravity_1 = round(sg1, 2)
 
-    @api.depends('wt_surface_dry', 'oven_dried_wt','wt_surface_dry_2', 'oven_dried_wt_2')
+    @api.depends('wt_sample_inwater', 'wt_oven_dry_d')
     def _compute_water_absorption_1(self):
-        for line in self:
-            if line.oven_dried_wt != 0:
-                line.water_absorption_1 = ((line.wt_surface_dry - line.oven_dried_wt) / line.oven_dried_wt) * 100
-            else:
-                line.water_absorption_1 = 0
-            # line.water_absorption = round(wa1, 2)
+        for record in self:
+            try:
+                if record.wt_oven_dry_d != 0:
+                    value = 100 * ((record.wt_sample_inwater - record.wt_oven_dry_d) / record.wt_oven_dry_d)
+                    record.water_absorption_1 = round(value, 3)
+                else:
+                    record.water_absorption_1 = 0.0
+            except Exception:
+                record.water_absorption_1 = 0.0
 
-    specific_gravity_2 = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity_2")
+    specific_gravity_2 = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity_2",digits=(12,3))
     water_absorption_2 = fields.Float(string="Water absorption  %",compute="_compute_water_absorption_2")
 
-    @api.depends('wt_surface_dry_2', 'wt_sample_inwater_2', 'oven_dried_wt_2')
+    @api.depends('wt_oven_dry_d_2', 'wt_sample_inwater_2', 'wt_surface_dry_2', 'oven_dried_wt_2')
     def _compute_specific_gravity_2(self):
-        for line in self:
-            if line.wt_surface_dry_2 - line.wt_sample_inwater_2 != 0:
-                line.specific_gravity_2 = line.oven_dried_wt_2 / (line.wt_surface_dry_2 - line.wt_sample_inwater_2)
-            else:
-                line.specific_gravity_2 = 0
-            # line.specific_gravity_2 = round(sg1, 2)
+        for record in self:
+            try:
+                denominator = record.wt_sample_inwater_2 - (record.wt_surface_dry_2 - record.oven_dried_wt_2)
+                if denominator != 0:
+                    value = record.wt_oven_dry_d_2 / denominator
+                    record.specific_gravity_2 = round(value, 3)
+                else:
+                    record.specific_gravity_2 = 0.0
+            except Exception:
+                record.specific_gravity_2 = 0.0
+            # line.specific_gravity_1 = round(sg1, 2)
 
-    @api.depends('wt_surface_dry_2', 'oven_dried_wt_2')
+    @api.depends('wt_sample_inwater_2', 'wt_oven_dry_d_2')
     def _compute_water_absorption_2(self):
-        for line in self:
-            if line.oven_dried_wt_2 != 0:
-                line.water_absorption_2 = ((line.wt_surface_dry_2 - line.oven_dried_wt_2) / line.oven_dried_wt_2) * 100
-            else:
-                line.water_absorption_2 = 0
-            # line.water_absorption = round(wa1, 2)
+        for record in self:
+            try:
+                if record.wt_oven_dry_d_2 != 0:
+                    value = 100 * ((record.wt_sample_inwater_2 - record.wt_oven_dry_d_2) / record.wt_oven_dry_d_2)
+                    record.water_absorption_2 = round(value, 3)
+                else:
+                    record.water_absorption_2 = 0.0
+            except Exception:
+                record.water_absorption_2 = 0.0
 
 
     avg_specific_gravity= fields.Float(string="Average Specific Gravity",compute="_compute_avg_specific_gravity")
@@ -557,12 +524,6 @@ class FineAggregate(models.Model):
 
 
 
-          
-    
-
-
-
-
       # 4. Bulking of Sand
 
     bulking_sand_name = fields.Char("Name",default="Bulking of Sand")
@@ -600,8 +561,6 @@ class FineAggregate(models.Model):
 
 
   
-                
-
     avg_bulking_of_sand = fields.Float(
         string="Average Bulking of Sand (%)",
         compute="_compute_avg_bulking_percent",
@@ -616,7 +575,6 @@ class FineAggregate(models.Model):
                 rec.avg_bulking_of_sand = 0.0
 
    
-
 
     avg_bulking_of_sand_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -667,11 +625,7 @@ class FineAggregate(models.Model):
                         break
                     else:
                         record.avg_bulking_of_sand_nabl = 'fail'
-     
-
-
-
-        
+      
         
 
     # 5. Silt Content
@@ -684,6 +638,8 @@ class FineAggregate(models.Model):
     content_height_sand_a = fields.Float(string="Height of Sand + Silt in the glass Cylinder:- (A)", compute="_compute_avg_content_lines")
     content_height_sand_b = fields.Float(string="Height of Sand:- (B)", compute="_compute_avg_content_lines")
     content_slit_c = fields.Float(string="Height of Silt:- (A-B)", compute="_compute_avg_content_lines")
+
+   
 
    
     @api.depends('site_content_child_lines')
@@ -873,10 +829,6 @@ class FineAggregate(models.Model):
                     else:
                         record.avg_moisture_nabl = 'fail'
 
-
- 
-
-# 
 
 
 # Compacted  Or Rodded Density
@@ -1197,12 +1149,6 @@ class FineAggregate(models.Model):
 
 
 
-
-
-
-
-
-
     #  Soudness Test 
     soudness_name = fields.Char("Name",default="Soudness Test ")
     soudness_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
@@ -1250,24 +1196,6 @@ class FineAggregate(models.Model):
         return default_lines
 
 
-    # @api.onchange('sieve_analysis_child_lines')
-    # def _onchange_sieve_analysis_child_lines(self):
-    #     for rec in self:
-    #         pan_line = None
-    #         total_retained = 0.0
-    #         target_sieves = ['80mm','40mm','20mm','16mm', '10mm', '4.75mm', '2.36mm','1.18mm','600 µ','425 µ','300µ','212µ','150µ','75µ']
-
-    #         for line in rec.sieve_analysis_child_lines:
-    #             if line.sieve_size and line.sieve_size.lower() == 'pan':
-    #                 pan_line = line
-    #             elif line.sieve_size in target_sieves:
-    #                 total_retained += line.wt_retained or 0.0
-
-    #         if pan_line:
-    #             pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
-
-
-
 
     def calculate_sieve(self): 
         for record in self:
@@ -1277,7 +1205,6 @@ class FineAggregate(models.Model):
                 previous_line = line.serial_no - 1
 
                
-
                 # Normal sieve calculation
                 if previous_line == 0:
                     cumulative_retained = line.percent_retained
@@ -1306,9 +1233,7 @@ class FineAggregate(models.Model):
 
 
     ouantitative_name = fields.Char("Name",default="Quantitatively Examination :-")
-    # sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
- 
     ouantitative_soundness_lines = fields.One2many('fine.ouantitative.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_ouantitative_soundness_lines())
 
     
@@ -1320,7 +1245,6 @@ class FineAggregate(models.Model):
             (0, 0, {'size': '2.36mm to 1.18mm'}),
             (0, 0, {'size': '1.18mm to 0.6mm'}),
             (0, 0, {'size': '0.6mm to 0.3mm'})
-            
             
         ]
         return default_lines
@@ -1453,11 +1377,6 @@ class FineAggregate(models.Model):
 
 
 
-
-
-    
-    
-
      ### Compute Visible
     @api.depends('sample_parameters')
     def _compute_visible(self):
@@ -1520,30 +1439,11 @@ class FineAggregate(models.Model):
 
               
 
-        
-              
-    # def open_eln_page(self):
-    #     # import wdb; wdb.set_trace()
-
-    #     return {
-    #             'view_mode': 'form',
-    #             'res_model': "lerm.eln",
-    #             'type': 'ir.actions.act_window',
-    #             'target': 'current',
-    #             'res_id': self.eln_ref.id,
-                
-    #         }
 
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
+  
         for result in self.eln_ref.parameters_result:
-            # if result.parameter.internal_id == '45875ght-7188-4086-b132-62b50e63f1245gt':
-            #     result.result_char = round(self.specific_gravity,2)
-            #     if self.specific_gravity_nabl == 'pass':
-            #         result.nabl_status = 'nabl'
-            #     else:
-            #         result.nabl_status = 'non-nabl'
-            #     continue
+          
 
             # water absorbtion
             if result.parameter.internal_id == '4dbde30b-0cdc-4641-abdd-68a574fd7e1f':
@@ -1586,15 +1486,14 @@ class FineAggregate(models.Model):
 
             # Compacted density
             if result.parameter.internal_id == 'd961c78a-9f5c-4e7f-9f03-86ab65740161':
-                result.result_char = round(self.avg_compacted,2)
-                if self.avg_compacted_nabl == 'pass':
+                result.result_char = round(self.compacted_density,2)
+                if self.compacted_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
             
 
-            
             # % void Compacted density
             if result.parameter.internal_id == 'a699d9fd-57f5-4044-97ea-2bea87bf9c44':
                 result.result_char = round(self.avg_void_compacted_density,2)
@@ -2432,7 +2331,6 @@ class QuantitativelyExaminationLine(models.Model):
 
 
             
-
 
 
 

@@ -1,385 +1,437 @@
 from odoo import api, fields, models
-from odoo.exceptions import UserError,ValidationError
-import math
 
 
 class MechanicalBricks(models.Model):
     _name = "mechanical.bricks"
+    # _description = "Mechanical Bricks"
     _inherit = "lerm.eln"
     _description = 'mechanical.bricks'
     _rec_name = "name"
 
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-    name = fields.Char("Name",default="Clay Bricks")
+   
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
-    # child_lines = fields.One2many('mechanical.water.absorption.bricks.line','parent_id',string="Parameter")
-    # test_start_date = fields.Date("Test Start Date")
-    # test_end_date = fields.Date("Test End Date")
-   
-    length_in_mm = fields.Float(string="Length in mm")
-    width_in_mm = fields.Float(string="Width in mm")
-    height_in_mm = fields.Float(string="Height in mm")
-        #1------------ Compressive Strength
 
-    compressive_strength_visible = fields.Boolean("Compressive Strengt Visible",compute="_compute_visible")
-    compressive_strength_name = fields.Char("Name",default="Compressive Strength")
-    length = fields.Float(string="Length mm")
-    length_2 = fields.Float(string="Length mm")
-    length_3 = fields.Float(string="Length mm")
-    length_4 = fields.Float(string="Length mm")
-    length_5 = fields.Float(string="Length mm")
-    width = fields.Float(string="Width mm")
-    width_2 = fields.Float(string="Width mm")
-    width_3 = fields.Float(string="Width mm")
-    width_4 = fields.Float(string="Width mm")
-    width_5 = fields.Float(string="Width mm")
-    height = fields.Float(string="Height mm")
-    height_2 = fields.Float(string="Height mm")
-    height_3 = fields.Float(string="Height mm")
-    height_4 = fields.Float(string="Height mm")
-    height_5 = fields.Float(string="Height mm")
-    area = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area")
-    area_2 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_2")
-    area_3 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_3")
-    area_4 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_4")
-    area_5 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_5")
-    load = fields.Float(string=" Load in, Kn", digits=(12,1))
-    load_2 = fields.Float(string=" Load in, Kn", digits=(12,1))
-    load_3 = fields.Float(string=" Load in, Kn", digits=(12,1))
-    load_4 = fields.Float(string=" Load in, Kn", digits=(12,1))
-    load_5 = fields.Float(string=" Load in, Kn", digits=(12,1))
-    comp_strength_1 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_1")
-    comp_strength_2 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_2")
-    comp_strength_3 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_3")
-    comp_strength_4 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_4")
-    comp_strength_5 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_5")
+    name = fields.Char(string="Name", default="Fly Ash Bricks")
     
-    avrg_compressive_strength = fields.Float(string="Average Compressive Strength",compute="_compute_avrg_compressive_strength", digits=(16, 3))
 
-    comp_strength_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_comp_strength_conformity")
 
-    comp_strength_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')],string="NABL",compute="_compute_comp_strength_nabl",store=True)
+   # Compressive Strength
+    compressive_strength_name = fields.Char("Name",default=" Compressive Strength")
+    compressive_strength_visible = fields.Boolean("Compressive Strength",compute="_compute_visible")
 
-    @api.depends('avrg_compressive_strength','eln_ref')
-    def _compute_comp_strength_conformity(self):
+    temp_compressive_strength = fields.Char("Temp °c")
+    humidity_compressive_strength = fields.Char("Humidity %")
+
+    compressive_strength_child_lines = fields.One2many('mechanical.bricks.compressive.line','parent_id',string="Compressive Strength Test" )
+
+    
+    avg_compressive_strength = fields.Float(string="Average Compressive Strength ",compute="_compute_avg_compressive_strength")
+
+    @api.depends('compressive_strength_child_lines.compressive_strength')
+    def _compute_avg_compressive_strength(self):
         for record in self:
-            record.comp_strength_confirmity = 'fail'
+            if record.compressive_strength_child_lines:
+              record.avg_compressive_strength = sum(record.compressive_strength_child_lines.mapped('compressive_strength'))/ len(record.compressive_strength_child_lines)
+            else:
+                record.avg_compressive_strength = 0.0
+
+    avg_compressive_strength_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_compressive_strength_conformity", store=True)
+
+    @api.depends('avg_compressive_strength','eln_ref','grade')
+    def _compute_avg_compressive_strength_conformity(self):
+        
+        for record in self:
+            record.avg_compressive_strength_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).parameter_table
             for material in materials:
-                
+                # if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.avrg_compressive_strength - record.avrg_compressive_strength*mu_value
-                    upper = record.avrg_compressive_strength + record.avrg_compressive_strength*mu_value
+                    lower = record.avg_compressive_strength - record.avg_compressive_strength*mu_value
+                    upper = record.avg_compressive_strength + record.avg_compressive_strength*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.comp_strength_confirmity = 'pass'
+                        record.avg_compressive_strength_conformity = 'pass'
                         break
                     else:
-                        record.comp_strength_confirmity = 'fail'
+                        record.avg_compressive_strength_conformity = 'fail'
 
-    @api.depends('avrg_compressive_strength','eln_ref')
-    def _compute_comp_strength_nabl(self):
+    avg_compressive_strength_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_compressive_strength_nabl", store=True)
+
+    @api.depends('avg_compressive_strength','eln_ref','grade')
+    def _compute_avg_compressive_strength_nabl(self):
         
         for record in self:
-            record.comp_strength_nabl = 'fail'
+            record.avg_compressive_strength_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avrg_compressive_strength - record.avrg_compressive_strength*mu_value
-            upper = record.avrg_compressive_strength + record.avrg_compressive_strength*mu_value
-            # import wdb;wdb.set_trace()
-            if lower >= lab_min and upper <= lab_max:
-                record.comp_strength_nabl = 'pass'
-                break
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_compressive_strength - record.avg_compressive_strength*mu_value
+                    upper = record.avg_compressive_strength + record.avg_compressive_strength*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_compressive_strength_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_compressive_strength_nabl = 'fail'
+
+
+
+
+                        # Water Absorption
+
+    water_absorption_name = fields.Char("Name",default=" Water Absorption")
+    water_absorption_visible = fields.Boolean("Water Absorption",compute="_compute_visible")
+
+    temp_water_absorption = fields.Char("Temp °c")
+    humidity_water_absorption = fields.Char("Humidity %")
+
+    water_absorption_child_lines = fields.One2many('mechanical.bricks.water.absorption.line','parent_id',string="Water Absorption Test")
+
+    avg_water_absorption = fields.Float(string="Average Water Absorption ",compute="_compute_avg_water_absorption")
+
+
+    @api.depends('water_absorption_child_lines.water_absorption')
+    def _compute_avg_water_absorption(self):
+        for record in self:
+            if record.water_absorption_child_lines:
+              record.avg_water_absorption = sum(record.water_absorption_child_lines.mapped('water_absorption'))/ len(record.water_absorption_child_lines)
             else:
-                record.comp_strength_nabl = 'fail'
+                record.avg_water_absorption = 0.0
 
-    
+    avg_water_absorption_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
-    
-
-    @api.depends('comp_strength_1', 'comp_strength_2', 'comp_strength_3', 'comp_strength_4', 'comp_strength_5')
-    def _compute_avrg_compressive_strength(self):
+    @api.depends('avg_water_absorption','eln_ref','grade')
+    def _compute_avg_water_absorption_conformity(self):
+        
         for record in self:
-            comp_strength_1 = [
-                record.comp_strength_1,
-                record.comp_strength_2,
-                record.comp_strength_3,
-                record.comp_strength_4,
-                record.comp_strength_5,
-            ]
-            # Filter out None values and calculate the average
-            non_empty_strengths = [strength for strength in comp_strength_1 if strength is not None]
-            if non_empty_strengths:
-                average_strength = sum(non_empty_strengths) / len(non_empty_strengths)
-            else:
-                average_strength = 0.0
-            record.avrg_compressive_strength = average_strength
-
-      
-    @api.depends('length', 'width')
-    def _compute_area(self):
-        for record in self:
-            record.area = record.length * record.width
-
-    @api.depends('length_2', 'width_2')
-    def _compute_area_2(self):
-        for record in self:
-            record.area_2 = record.length_2 * record.width_2
-
-    @api.depends('length_3', 'width_3')
-    def _compute_area_3(self):
-        for record in self:
-            record.area_3 = record.length_3 * record.width_3
-
-    @api.depends('length_4', 'width_4')
-    def _compute_area_4(self):
-        for record in self:
-            record.area_4 = record.length_4 * record.width_4
-
-    @api.depends('length_5', 'width_5')
-    def _compute_area_5(self):
-        for record in self:
-            record.area_5 = record.length_5 * record.width_5
-
-    @api.depends('load', 'area')
-    def _compute_comp_strength_1(self):
-        for record in self:
-            if record.area != 0:
-                record.comp_strength_1 = record.load / record.area * 1000
-            else:
-                record.comp_strength_1 = 0.0
-    
-    @api.depends('load_2', 'area_2')
-    def _compute_comp_strength_2(self):
-        for record in self:
-            if record.area_2 != 0:
-                record.comp_strength_2 = record.load_2 / record.area_2 * 1000
-            else:
-                record.comp_strength_2 = 0.0
-
-    @api.depends('load_3', 'area_3')
-    def _compute_comp_strength_3(self):
-        for record in self:
-            if record.area_3 != 0:
-                record.comp_strength_3 = record.load_3 / record.area_3 * 1000
-            else:
-                record.comp_strength_3 = 0.0
-
-    @api.depends('load_4', 'area_4')
-    def _compute_comp_strength_4(self):
-        for record in self:
-            if record.area_4 != 0:
-                record.comp_strength_4 = record.load_4 / record.area_4 * 1000
-            else:
-                record.comp_strength_4 = 0.0
-
-    @api.depends('load_5', 'area_5')
-    def _compute_comp_strength_5(self):
-        for record in self:
-            if record.area_5 != 0:
-                record.comp_strength_5 = record.load_5 / record.area_5 * 1000
-            else:
-                record.comp_strength_5 = 0.0
-
-    
-
-
-        #-2----------Efflorescence Visual Observation 
-    efflorescence_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
-    visual_observation_name_efflorescence = fields.Char("Name",default="Efflorescence")
-    visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_2 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_3 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_4 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_5 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-
-
-         #-3----------  Dimension As per IS: IS : 1077 -1992 
-
-    dimension_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
-    dimension_name1 = fields.Char("Name",default="Dimension (mm)")
-    avrg_length = fields.Float(string="Average length")
-    avrg_width = fields.Float(string="Average Width")
-    avrg_height = fields.Float(string="Average Height")
-
-    
-
-    #-4--------------  Water Absorption
-
-    water_absorbtion_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
-    wt_absorption_name = fields.Char("Name",default="Water Absorption")
-    initial_wt = fields.Float(string="Dry wt (W1)")
-    initial_wt_2 = fields.Float(string="Dry wt (W1)")
-    initial_wt_3 = fields.Float(string="Dry wt (W1)")
-    initial_wt_4 = fields.Float(string="Dry wt (W1)")
-    initial_wt_5 = fields.Float(string="Dry wt (W1)")
-    final_wt = fields.Float(string="Wet wt (W2)")
-    final_wt_2 = fields.Float(string="Wet wt (W2)")
-    final_wt_3 = fields.Float(string="Wet wt (W2)")
-    final_wt_4 = fields.Float(string="Wet wt (W2)")
-    final_wt_5 = fields.Float(string="Wet wt (W2)")
-    water_absorption = fields.Float(string="Water Absorption %", compute="_compute_water_absorption")
-    water_absorption_2 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_2")
-    water_absorption_3 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_3")
-    water_absorption_4 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_4")
-    water_absorption_5 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_5")
-    avrg_water_absorption = fields.Float(string="Average Water Absorption, %", compute="_compute_avrg_water_absorption", digits=(16, 3))
-
-    water_absorption_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_water_absorption_confirmity")
-
-    water_absorption_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')],string="NABL",compute="_compute_water_absorption_nabl",store=True)
-
-
-    @api.depends('avrg_water_absorption','eln_ref')
-    def _compute_water_absorption_confirmity(self):
-        for record in self:
-            record.water_absorption_confirmity = 'fail'
+            record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).parameter_table
             for material in materials:
-                
+                # if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.avrg_water_absorption - record.avrg_water_absorption*mu_value
-                    upper = record.avrg_water_absorption + record.avrg_water_absorption*mu_value
+                    lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
+                    upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.water_absorption_confirmity = 'pass'
+                        record.avg_water_absorption_conformity = 'pass'
                         break
                     else:
-                        record.water_absorption_confirmity = 'fail'
+                        record.avg_water_absorption_conformity = 'fail'
 
-    @api.depends('avrg_water_absorption','eln_ref')
-    def _compute_water_absorption_nabl(self):
+    avg_water_absorption_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_water_absorption_nabl", store=True)
+
+    @api.depends('avg_water_absorption','eln_ref','grade')
+    def _compute_avg_water_absorption_nabl(self):
         
         for record in self:
-            record.water_absorption_nabl = 'fail'
+            record.avg_water_absorption_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avrg_water_absorption - record.avrg_water_absorption*mu_value
-            upper = record.avrg_water_absorption + record.avrg_water_absorption*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.water_absorption_nabl = 'pass'
-                break
-            else:
-                record.water_absorption_nabl = 'fail'
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
+                    upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_water_absorption_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_water_absorption_nabl = 'fail'
 
-    @api.depends('water_absorption', 'water_absorption_2', 'water_absorption_3', 'water_absorption_4', 'water_absorption_5')
-    def _compute_avrg_water_absorption(self):
+
+
+ # Dimensions
+    dimension_name = fields.Char("Name",default="Dimension Test")
+    dimension_visible = fields.Boolean("Dimension Test",compute="_compute_visible")
+
+    length_name = fields.Char("Name",default="Length")
+    length_visible = fields.Boolean("Length",compute="_compute_visible")
+
+    width_name = fields.Char("Name",default="Width")
+    width_visible = fields.Boolean("Width",compute="_compute_visible")
+
+    height_name = fields.Char("Name",default="height")
+    height_visible = fields.Boolean("height",compute="_compute_visible")
+
+    temp_dimension = fields.Char("Temp °c")
+    humidity_dimension = fields.Char("Humidity %")
+
+    
+    length1 = fields.Float(string="Length  ")
+    length2 = fields.Float(string="Length 2 ")
+    length3 = fields.Float(string="Length 3 ")
+    avg_length = fields.Float(string="Average Length ",compute="_compute_average")
+
+    width1 = fields.Float(string="Width  ")
+    width2 = fields.Float(string="Width 2 ")
+    width3 = fields.Float(string="Width 3 ")
+    avg_width = fields.Float(string="Average Width ",compute="_compute_average")
+
+    height1 = fields.Float(string="height  ")
+    height2 = fields.Float(string="height 2 ")
+    height3 = fields.Float(string="height 3 ")
+    avg_height = fields.Float(string="Average height ",compute="_compute_average")
+
+
+    @api.depends('length1','length2','length3','width1','width2','width3','height1','height2','height3')
+    def _compute_average(self):
         for record in self:
-            total_absorption = (
-                record.water_absorption +
-                record.water_absorption_2 +
-                record.water_absorption_3 +
-                record.water_absorption_4 +
-                record.water_absorption_5
-            )
-            num_entries = sum(1 for field in [
-                record.water_absorption,
-                record.water_absorption_2,
-                record.water_absorption_3,
-                record.water_absorption_4,
-                record.water_absorption_5
+            length = (record.length1 + record.length2 + record.length3)
+            width = (record.width1 + record.width2 + record.width3)
+            height = (record.height1 + record.height2 + record.height3)
+
+            len_entries = sum(1 for field in [
+                record.length1,
+                record.length2,
+                record.length3
             ] if field)
-            if num_entries > 0:
-                record.avrg_water_absorption = total_absorption / num_entries
+            if len_entries > 0:
+                record.avg_length = length / len_entries
             else:
-                record.avrg_water_absorption = 0.0
+                record.avg_length = 0.0
 
-    @api.depends('initial_wt' , 'final_wt')
-    def _compute_water_absorption(self):
+
+            width_entries = sum(1 for field in [
+                record.width1,
+                record.width2,
+                record.length3
+            ] if field)
+            if width_entries > 0:
+                record.avg_width = width / width_entries
+            else:
+                record.avg_width = 0.0
+
+
+            height_entries = sum(1 for field in [
+                record.height1,
+                record.height2,
+                record.height3
+            ] if field)
+
+            if height_entries > 0:
+                record.avg_height = height / height_entries
+            else:
+                record.avg_height = 0.0
+
+
+    avg_length_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_length_conformity", store=True)
+
+    @api.depends('avg_length','eln_ref','grade')
+    def _compute_avg_length_conformity(self):
+        
         for record in self:
-            if record.final_wt != 0:
-                record.water_absorption = (record.final_wt - record.initial_wt) / record.initial_wt * 100
-            else:
-                record.water_absorption = 0
+            record.avg_length_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ea445305-117e-4e49-82b1-f876b0a34d26')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ea445305-117e-4e49-82b1-f876b0a34d26')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_length - record.avg_length*mu_value
+                    upper = record.avg_length + record.avg_length*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_length_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_length_conformity = 'fail'
 
-    @api.depends('initial_wt_2' , 'final_wt_2')
-    def _compute_water_absorption_2(self):
+    avg_length_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_length_nabl", store=True)
+
+    @api.depends('avg_length','eln_ref','grade')
+    def _compute_avg_length_nabl(self):
+        
         for record in self:
-            if record.final_wt_2 != 0:
-                record.water_absorption_2 = (record.final_wt_2 - record.initial_wt_2) / record.initial_wt_2 * 100
-            else:
-                record.water_absorption_2 = 0
+            record.avg_length_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ea445305-117e-4e49-82b1-f876b0a34d26')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ea445305-117e-4e49-82b1-f876b0a34d26')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_length - record.avg_length*mu_value
+                    upper = record.avg_length + record.avg_length*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_length_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_length_nabl = 'fail'
 
-    @api.depends('initial_wt_3' , 'final_wt_3')
-    def _compute_water_absorption_3(self):
+    avg_width_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_width_conformity", store=True)
+
+    @api.depends('avg_width','eln_ref','grade')
+    def _compute_avg_width_conformity(self):
+        
         for record in self:
-            if record.final_wt_3 != 0:
-                record.water_absorption_3 = (record.final_wt_3 - record.initial_wt_3) / record.initial_wt_3 * 100
-            else:
-                record.water_absorption_3 = 0
+            record.avg_width_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d29d2505-a5ea-4c8f-a644-8df0a5377a27')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d29d2505-a5ea-4c8f-a644-8df0a5377a27')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_width - record.avg_width*mu_value
+                    upper = record.avg_width + record.avg_width*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_width_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_width_conformity = 'fail'
 
-    @api.depends('initial_wt_4' , 'final_wt_4')
-    def _compute_water_absorption_4(self):
+    avg_width_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_width_nabl", store=True)
+
+
+
+
+    @api.depends('avg_width','eln_ref','grade')
+    def _compute_avg_width_nabl(self):
+        
         for record in self:
-            if record.final_wt_4 != 0:
-                record.water_absorption_4 = (record.final_wt_4 - record.initial_wt_4) / record.initial_wt_4 * 100
-            else:
-                record.water_absorption_4 = 0
+            record.avg_width_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d29d2505-a5ea-4c8f-a644-8df0a5377a27')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d29d2505-a5ea-4c8f-a644-8df0a5377a27')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_width - record.avg_width*mu_value
+                    upper = record.avg_width + record.avg_width*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_width_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_width_nabl = 'fail'  
 
-    @api.depends('initial_wt_5' , 'final_wt_5')
-    def _compute_water_absorption_5(self):
+    
+    avg_height_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_height_conformity", store=True)
+
+    @api.depends('avg_height','eln_ref','grade')
+    def _compute_avg_height_conformity(self):
+        
         for record in self:
-            if record.final_wt_5 != 0:
-                record.water_absorption_5 = (record.final_wt_5 - record.initial_wt_5) / record.initial_wt_5 * 100
-            else:
-                record.water_absorption_5 = 0
+            record.avg_height_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ec5ffecb-2f38-4a7f-93e0-9626feb08139')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ec5ffecb-2f38-4a7f-93e0-9626feb08139')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_height - record.avg_height*mu_value
+                    upper = record.avg_height + record.avg_height*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_height_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_height_conformity = 'fail'
 
-    confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Confirmity', default='fail')
+    avg_height_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_height_nabl", store=True)
+
+    @api.depends('avg_height','eln_ref','grade')
+    def _compute_avg_height_nabl(self):
+        
+        for record in self:
+            record.avg_height_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ec5ffecb-2f38-4a7f-93e0-9626feb08139')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ec5ffecb-2f38-4a7f-93e0-9626feb08139')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_height - record.avg_height*mu_value
+                    upper = record.avg_height + record.avg_height*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_height_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_height_nabl = 'fail'  
 
 
-    ### Compute Visible
+
+   
+
+
+
+   ### Compute Visible
     @api.depends('sample_parameters')
     def _compute_visible(self):
         
         for record in self:
             record.compressive_strength_visible = False
-            record.water_absorbtion_visible = False
-            record.efflorescence_visible = False
+            record.water_absorption_visible = False
             record.dimension_visible = False
+            record.length_visible = False
+            record.width_visible = False
+            record.height_visible = False
+
+           
 
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
                 if sample.internal_id == "31478fghht-9287-48c7-a607-bf1b64a8115d":
                     record.compressive_strength_visible = True
                 if sample.internal_id == "321475gfet1-f3ab-4b19-af25-91a4671baf5f":
-                    record.water_absorbtion_visible = True
-                if sample.internal_id == "3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac":
-                    record.efflorescence_visible = True
-                if sample.internal_id == "125478bvf3-8d5d-4f45-8afb-b911f9cafe41":
-                    record.dimension_visible = True 
+                    record.water_absorption_visible = True
+
+
+
+                if sample.internal_id == "9f1689be-107d-4e30-9d3d-2aff6292264d":
+                    record.dimension_visible = True
+                    record.length_visible = True 
+                    record.width_visible = True
+                    record.height_visible = True  
+
+
+                # if sample.internal_id == "3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac":
+                #     record.efflorescence_visible = True
+                # if sample.internal_id == "125478bvf3-8d5d-4f45-8afb-b911f9cafe41":
+                #     record.dimension_visible = True 
      
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
@@ -387,8 +439,8 @@ class MechanicalBricks(models.Model):
             
             # crushing 
             if result.parameter.internal_id == '31478fghht-9287-48c7-a607-bf1b64a8115d':
-                result.result_char = round(self.avrg_compressive_strength,2)
-                if self.comp_strength_nabl == 'pass':
+                result.result_char = round(self.avg_compressive_strength,2)
+                if self.avg_compressive_strength_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -396,8 +448,8 @@ class MechanicalBricks(models.Model):
 
             # water absorbtion
             if result.parameter.internal_id == '321475gfet1-f3ab-4b19-af25-91a4671baf5f':
-                result.result_char = round(self.avrg_water_absorption,2)
-                if self.water_absorption_nabl == 'pass':
+                result.result_char = round(self.avg_water_absorption,2)
+                if self.avg_water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -444,3 +496,103 @@ class MechanicalBricks(models.Model):
             field_values[field_name] = field_value
 
         return field_values
+    
+
+
+
+
+
+class BrickCompressiveLine(models.Model):
+    _name = "mechanical.bricks.compressive.line"
+    parent_id = fields.Many2one('mechanical.bricks',string="Parent Id")
+
+   
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample1 = fields.Char(string="Sample Identification")
+    length = fields.Float(string="Length")
+    width = fields.Float(string="Width")
+    thickness = fields.Float(string="Thickness")
+    area = fields.Float(string="Area (mm2)",compute="_compute_area",store=True)
+    load = fields.Float(string=" Load at Failure (kN)")
+    compressive_strength = fields.Float(string="Compressive Strength  N/mm2",compute="_compute_compressive_strength",store=True)
+    
+
+    @api.depends('length','width')
+    def _compute_area(self):
+        for rec in self:
+            rec.area = (rec.length * rec.width )
+
+    @api.depends('load','area')
+    def _compute_compressive_strength(self):
+        for rec in self:
+            if rec.area != 0:
+                rec.compressive_strength = ((rec.load * 1000) / rec.area )
+            else:
+                rec.compressive_strength = 0.0
+
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(BrickCompressiveLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+class BrickWaterAbsorptionLine(models.Model):
+    _name = "mechanical.bricks.water.absorption.line"
+    parent_id = fields.Many2one('mechanical.bricks',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample = fields.Char(string="Sample Identification")
+    dry_weight= fields.Float(string="Dry Weight")
+    sat_weight= fields.Float(string="Saturated Weight")
+    sat_dry_weight = fields.Float(string="Saturated Weight-Dry Weight ",compute="_compute_sat_dry_weight")
+    
+    water_absorption = fields.Float(string="Saturated Weight-Dry Weight/Dry Weight*100	",compute="_compute_water_absorption")
+    
+    @api.depends('sat_weight','dry_weight')
+    def _compute_sat_dry_weight(self):
+        for rec in self:
+            rec.sat_dry_weight = (rec.sat_weight - rec.dry_weight )
+
+    @api.depends('sat_dry_weight','dry_weight')
+    def _compute_water_absorption(self):
+        for rec in self:
+            if rec.dry_weight != 0:
+                rec.water_absorption = (rec.sat_dry_weight / rec.dry_weight ) *100 
+            else:
+                rec.water_absorption = 0.0
+    
+
+
+
+   
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(BrickWaterAbsorptionLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1

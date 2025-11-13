@@ -89,13 +89,13 @@
                                 <field class="" name='percent_retained' string="% Retained"/>
                                 <field class="" name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
                                 <field class="" name='passing_percent' string="Passing %" readonly="1"/>
-                                <!-- <field class=" oe_center" name='specific_limt' string="Specified Limits"/> -->
+                                <field class=" oe_center" name='specific_limt' string="Specified Limits"/>
                                 
                             </tree>
                         </field>
                     </div>
                     <div invisible="sieve_visible == False">
-                        <button string="Calculate" type="object" name="calculate_sieve" class="oe_highlight">
+                        <button string="Calculate" type="object" name="calculate_sieve1" class="oe_highlight">
                             <i class="fa fa-calculator"/> Calculate
                         </button>
                     </div>
@@ -153,6 +153,8 @@
                                     <td><field name="humidity_temp_specific_gravity_water_absorption"/></td>
                                 </tr>
                                 
+
+
                             </tbody>
                         </table>
                     </div>
@@ -168,16 +170,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><span class="fw-bold">Weight of basket and the sample while suspended in water (A1) gm</span></td>
-                                <td><field name="wt_basket_and_sample"/></td>
-                                <td><field name="wt_basket_and_sample_2"/></td>
-                            </tr>
-                            <tr>
-                                <td><span class="fw-bold">Weight of empty basket in water (A2) gm</span></td>
-                                <td><field name="wt_empty_basket"/></td>
-                                <td><field name="wt_empty_basket_2"/></td>
-                            </tr>
+                            
                             <tr>
                                 <td><span class="fw-bold">Weight of Saturated Aggregate  in Water (A) = (A1 – A2) – gms</span></td>
                                 <td><field name="wt_sample_inwater"/></td>
@@ -194,6 +187,12 @@
                                 <td><field name="oven_dried_wt_2"/></td>
                             </tr>
                             <tr>
+                                <td><span class="fw-bold">Weight of Oven dry sample (gm) D</span></td>
+                                <td><field name="wt_oven_dry_d"/></td>
+                                <td><field name="wt_oven_dry_d_2"/></td>
+                            </tr>
+                           
+                            <tr>
                                 <td><span class="fw-bold">Specific Gravity of Fine aggregates [C/(B-A)]</span></td>
                                 <td><field name="specific_gravity_1"/></td>
                                 <td><field name="specific_gravity_2"/></td>
@@ -202,6 +201,14 @@
                                 <td><span class="fw-bold">Water absorption [100(B-C)/C]</span></td>
                                 <td><field name="water_absorption_1"/></td>
                                 <td><field name="water_absorption_2"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Average Specific Gravity</span></td>
+                                <td style="text-align:center;" colspan="2"><field name="avg_specific_gravity"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Average Water Absorption - % </span></td>
+                                <td style="text-align:center;" colspan="2"><field name="avg_water_absorption"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -428,7 +435,7 @@
                                 <td><field name="mass_of_loose_aggregate"/></td>
                             </tr>
                             <tr>
-                                <td><span class="fw-bold">Compacted Density (Ƴ1) = (A/V) Kg/lit</span></td>
+                                <td><span class="fw-bold">Loose Density (Ƴ1) = (A/V) Kg/lit</span></td>
                                 <td><field name="loose_density"/></td>
                             </tr>
                         </tbody>

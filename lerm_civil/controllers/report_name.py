@@ -192,46 +192,46 @@ from odoo.http import request
 #         return response
     
 
-#     @http.route(['/download_report/nonnabl/<int:eln_id>'], type='http', auth="public", website=True)
-#     def report_nonnabl_download_eln(self, eln_id):
+    # @http.route(['/download_report/nonnabl/<int:eln_id>'], type='http', auth="public", website=True)
+    # def report_nonnabl_download_eln(self, eln_id):
 
-#         # Fetch the ELN record
-#         eln = request.env['lerm.eln'].sudo().search([('id', '=', eln_id)], limit=1)
-#         if not eln:
-#             return request.not_found()
+    #     # Fetch the ELN record
+    #     eln = request.env['lerm.eln'].sudo().search([('id', '=', eln_id)], limit=1)
+    #     if not eln:
+    #         return request.not_found()
 
-#         is_product_based = eln.is_product_based_calculation
-#         if is_product_based:
-#             template_name = eln.material.product_based_calculation[0].main_report_template.report_name
-#         else:
-#             template_name = eln.parameters_result.parameter[0].main_report_template.report_name
+    #     is_product_based = eln.is_product_based_calculation
+    #     if is_product_based:
+    #         template_name = eln.material.product_based_calculation[0].main_report_template.report_name
+    #     else:
+    #         template_name = eln.parameters_result.parameter[0].main_report_template.report_name
 
-#         # Get the correct report action
-#         report_action = request.env['ir.actions.report']._get_report_from_name(template_name)
-#         if report_action:
-#             report_xml_id = request.env['ir.model.data'].sudo().search([
-#                 ('model', '=', 'ir.actions.report'),
-#                 ('res_id', '=', report_action.id)
-#             ], limit=1).name
+    #     # Get the correct report action
+    #     report_action = request.env['ir.actions.report']._get_report_from_name(template_name)
+    #     if report_action:
+    #         report_xml_id = request.env['ir.model.data'].sudo().search([
+    #             ('model', '=', 'ir.actions.report'),
+    #             ('res_id', '=', report_action.id)
+    #         ], limit=1).name
 
-#         report = request.env.ref('lerm_civil.' + report_xml_id)
-#         if not report:
-#             return request.not_found()
-#         # import wdb; wdb.set_trace()
+    #     report = request.env.ref('lerm_civil.' + report_xml_id)
+    #     if not report:
+    #         return request.not_found()
+    #     # import wdb; wdb.set_trace()
 
-#         # Pass additional `nabl` data
-#         report_data = {
-#             'nabl': False,  # Modify this based on your condition
-#             'context': request.env.context,
-#         }
+    #     # Pass additional `nabl` data
+    #     report_data = {
+    #         'nabl': False,  # Modify this based on your condition
+    #         'context': request.env.context,
+    #     }
 
-#         pdf_data = report.sudo()._render_qweb_pdf([eln.id], data=report_data)[0]
+    #     pdf_data = report.sudo()._render_qweb_pdf([eln.id], data=report_data)[0]
 
-#         response = request.make_response(pdf_data, headers=[
-#             ('Content-Type', 'application/pdf'),
-#             ('Content-Disposition', 'attachment; filename="Report.pdf"')
-#         ])
-#         return response
+    #     response = request.make_response(pdf_data, headers=[
+    #         ('Content-Type', 'application/pdf'),
+    #         ('Content-Disposition', 'attachment; filename="Report.pdf"')
+    #     ])
+    #     return response
 
 
 
@@ -297,6 +297,9 @@ class ReportDownloadControllerOPC(http.Controller):
                 headers=[('Content-Type', 'text/plain')],
                 status=500,
             )
+
+
+
 
 class ReportDownloadControllerFlyAsh(http.Controller):
     @http.route(['/download_report/fly/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
@@ -512,6 +515,8 @@ class ReportDownloadControllerGGBS(http.Controller):
                 headers=[('Content-Type', 'text/plain')],
                 status=500,
             )
+
+
 
 class ReportDownloadControllerPPC(http.Controller):
     @http.route(['/download_report/ppc/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
