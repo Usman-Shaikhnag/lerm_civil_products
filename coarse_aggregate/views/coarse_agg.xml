@@ -866,15 +866,15 @@
                         <tbody>
                             <tr>
                                 <td><span class="fw-bold">Sp. Gravity of Material (Gs)</span></td>
-                                <td><field name="specific_gravity_voids"/></td>
+                                <td style="width:400px;"><field name="avg_specific_gravity"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Percent Voids in Compacted Density = (Gs - Ƴ1 )/Gs x 100</span></td>
-                                <td><field name="voids_compacted_density"/></td>
+                                <td style="width:400px;"><field name="voids_compacted_density"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Percent Voids in Loose Density = (Gs – Ƴ2 )/Gs x 100</span></td>
-                                <td><field name="voids_loose_density"/></td>
+                                <td style="width:400px;"><field name="voids_loose_density"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -1064,6 +1064,19 @@
                         </field>
                     </div>
 
+                    <div invisible="elongation_visible == False">
+                        <button type="object" name="action_compute_elongation_index" class="btn btn-primary">
+                            <i class="fa fa-calculator mr-1"/> Calculate
+                        </button>
+                    </div>
+                    <group/>
+
+                    
+
+
+                    
+
+
                     <div style="display:flex;">
                         
                     <div style="width:50%;">
@@ -1207,6 +1220,13 @@
                             </tree>
                         </field>
                     </div>
+
+                    <div invisible="flakiness_visible == False">
+                        <button type="object" name="action_compute_flakiness_index" class="btn btn-primary">
+                            <i class="fa fa-calculator mr-1"/> Calculate
+                        </button>
+                    </div>
+                    <group/>
 
                     <div style="display:flex;">
                         
@@ -1571,7 +1591,7 @@
                             <field name="retained"/>
                             <field name="grading_sulphate"/>
                            
-                            <field name="sieve_magnesiu"/>
+                            <field name="sieve_magnesium"/>
                               <field name="wt_fraction_sulhate"/>
                               <field name="wt_fraction_manesium"/>
                             <field name="finalloss_sulphae"/>

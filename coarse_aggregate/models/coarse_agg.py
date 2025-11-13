@@ -13,6 +13,9 @@ from io import BytesIO
 from scipy.interpolate import make_interp_spline
 from matplotlib.ticker import LogLocator, MultipleLocator
 import re
+from scipy.interpolate import PchipInterpolator
+
+
 
 class CoarseAggregateMechanical(models.Model):
     _name = "mechanical.coarse.aggregate"
@@ -162,12 +165,16 @@ class CoarseAggregateMechanical(models.Model):
 
     average_crushing_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_crushing_value_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),], string="Conformity", compute="_compute_average_crushing_value_conformity", store=True)
 
     @api.depends('average_crushing_value','eln_ref','grade')
     def _compute_average_crushing_value_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_crushing_value_conformity = 'na'
+                continue
             record.average_crushing_value_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71')]).parameter_table
@@ -266,7 +273,7 @@ class CoarseAggregateMechanical(models.Model):
     water_absorption = fields.Float(string="Water absorption  %",compute="_compute_water_absorption")
 
 
-    specific_gravity_1 = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity_1")
+    specific_gravity_1 = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity_1",digits=(16, 3))
     water_absorption_1 = fields.Float(string="Water absorption  %",compute="_compute_water_absorption_1")
 
 
@@ -289,7 +296,7 @@ class CoarseAggregateMechanical(models.Model):
                 line.water_absorption_1 = 0
             # line.water_absorption = round(wa1, 2)
 
-    specific_gravity_2 = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity_2")
+    specific_gravity_2 = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity_2" ,digits=(16, 3))
     water_absorption_2 = fields.Float(string="Water absorption  %",compute="_compute_water_absorption_2")
 
     @api.depends('wt_surface_dry_2', 'wt_sample_inwater_2', 'oven_dried_wt_2')
@@ -317,7 +324,7 @@ class CoarseAggregateMechanical(models.Model):
     @api.depends('specific_gravity_1','specific_gravity_2')
     def _compute_avg_specific_gravity(self):
         for line in self:
-            line.avg_specific_gravity = (line.specific_gravity_1 + line.specific_gravity_1)/2
+            line.avg_specific_gravity = (line.specific_gravity_1 + line.specific_gravity_2)/2
     
     @api.depends('water_absorption_1','water_absorption_2')
     def _compute_avg_water_absorption(self):
@@ -333,12 +340,17 @@ class CoarseAggregateMechanical(models.Model):
 
     avg_specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Specific Gravity Conformity", compute="_compute_avg_specific_gravity_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Specific Gravity Conformity", compute="_compute_avg_specific_gravity_conformity", store=True)
 
     @api.depends('avg_specific_gravity','eln_ref','grade')
     def _compute_avg_specific_gravity_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_specific_gravity_conformity = 'na'
+                continue
             record.avg_specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table
@@ -384,12 +396,16 @@ class CoarseAggregateMechanical(models.Model):
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Water Absorption Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),
+            ], string="Water Absorption Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_water_absorption_conformity = 'na'
+                continue
             record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','22ee804f-41a3-4fd1-a301-a8d9180fba10')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','22ee804f-41a3-4fd1-a301-a8d9180fba10')]).parameter_table
@@ -532,12 +548,17 @@ class CoarseAggregateMechanical(models.Model):
 
     average_impact_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
 
     @api.depends('average_impact_value','eln_ref','grade')
     def _compute_average_impact_value_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_impact_value_conformity = 'na'
+                continue
             record.average_impact_value_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2')]).parameter_table
@@ -623,10 +644,25 @@ class CoarseAggregateMechanical(models.Model):
             record.load_for_penetration_tonnes =round (record.load_for_penetration_kn * 0.10197,2)
 
 
-    @api.depends('wt_of_aggregate_passing_sieve_10fine', 'wt_of_aggregate_crush_10fine')
+    # @api.depends('wt_of_aggregate_passing_sieve_10fine', 'wt_of_aggregate_crush_10fine')
+    # def _compute_load_for_10fine(self):
+    #     for rec in self:
+    #         if (rec.percent_fine_passing_sieve + 4) != 0:
+    #             rec.load_for_10fine = round( ((14 * rec.load_for_penetration_tonnes )/ (rec.percent_fine_passing_sieve + 4)) ,2)
+ 
+    #         else:
+    #             rec.load_for_10fine = 0.0
+
+    @api.depends('load_for_penetration_kn', 'percent_fine_passing_sieve')
     def _compute_load_for_10fine(self):
-        for rec in self:
-              rec.load_for_10fine = round( ((14 * rec.load_for_penetration_tonnes )/ (rec.percent_fine_passing_sieve + 4)) ,2)
+      for rec in self:
+        # use tonnes (but calculate live from kN to avoid lag)
+        tonnes = rec.load_for_penetration_kn * 0.10197
+        if (rec.percent_fine_passing_sieve + 4) != 0:
+            rec.load_for_10fine = round((14 * tonnes) / (rec.percent_fine_passing_sieve + 4), 2)
+        else:
+            rec.load_for_10fine = 0.0
+
 
 
 
@@ -662,10 +698,24 @@ class CoarseAggregateMechanical(models.Model):
             record.load_for_penetration_tonnes_2 =round (record.load_for_penetration_kn_2 * 0.10197,2)
 
 
-    @api.depends('wt_of_aggregate_passing_sieve_10fine_2', 'wt_of_aggregate_crush_10fine_2')
+    # @api.depends('wt_of_aggregate_passing_sieve_10fine_2', 'wt_of_aggregate_crush_10fine_2')
+    # def _compute_load_for_10fine_2(self):
+    #     for rec in self:
+    #         if (rec.percent_fine_passing_sieve_2 + 4) != 0:
+    #           rec.load_for_10fine_2 = round( ((14 * rec.load_for_penetration_tonnes_2 )/ (rec.percent_fine_passing_sieve_2 + 4)) ,2)
+
+    #         else:
+    #             rec.load_for_10fine_2 = 0.0     
+
+    @api.depends('load_for_penetration_kn_2', 'percent_fine_passing_sieve_2')
     def _compute_load_for_10fine_2(self):
-        for rec in self:
-              rec.load_for_10fine_2 = round( ((14 * rec.load_for_penetration_tonnes_2 )/ (rec.percent_fine_passing_sieve_2 + 4)) ,2)   
+     for rec in self:
+        tonnes_2 = rec.load_for_penetration_kn_2 * 0.10197
+        if (rec.percent_fine_passing_sieve_2 + 4) != 0:
+            rec.load_for_10fine_2 = round((14 * tonnes_2) / (rec.percent_fine_passing_sieve_2 + 4), 2)
+        else:
+            rec.load_for_10fine_2 = 0.0
+
 
 
 
@@ -693,12 +743,17 @@ class CoarseAggregateMechanical(models.Model):
 
     avg_load_for_10fine_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_load_for_10fine_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_load_for_10fine_conformity", store=True)
 
     @api.depends('avg_load_for_10fine','eln_ref','grade')
     def _compute_avg_load_for_10fine_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_load_for_10fine_conformity = 'na'
+                continue
             record.avg_load_for_10fine_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5f506c08-4369-491d-93a6-030514c29661')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5f506c08-4369-491d-93a6-030514c29661')]).parameter_table
@@ -813,19 +868,33 @@ class CoarseAggregateMechanical(models.Model):
         for record in self:
             record.total_total_percent_retained_el = sum(record.elongation_table.mapped('total_percent_retained_el'))
 
+    
+
     @api.depends('total_total_percent_retained_el')
     def _compute_elongation_index(self):
         for record in self:
             record.elongation_index = round(record.total_total_percent_retained_el / 100,2)
+
+    def action_compute_elongation_index(self):
+     for record in self:
+        if record.total_total_percent_retained_el:
+            record.elongation_index = round(record.total_total_percent_retained_el / 100, 2)
+        else:
+            record.elongation_index = 0.0
     
     elongation_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_elongation_index_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_elongation_index_conformity", store=True)
 
     @api.depends('elongation_index','eln_ref','grade')
     def _compute_elongation_index_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.elongation_index_conformity = 'na'
+                continue
             record.elongation_index_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
@@ -935,19 +1004,33 @@ class CoarseAggregateMechanical(models.Model):
         for record in self:
             record.total_total_percent_retained_fl = sum(record.flakiness_table.mapped('total_percent_retained_fl'))
 
+            
+
     @api.depends('total_total_percent_retained_fl')
     def _compute_flakiness_index(self):
         for record in self:
             record.flakiness_index = round(record.total_total_percent_retained_fl / 100,2)
+
+    def action_compute_flakiness_index(self):
+     for record in self:
+        if record.total_total_percent_retained_fl:
+            record.flakiness_index = round(record.total_total_percent_retained_fl / 100, 2)
+        else:
+            record.elongation_index = 0.0
     
     flakiness_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_flakiness_index_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_flakiness_index_conformity", store=True)
 
     @api.depends('flakiness_index','eln_ref','grade')
     def _compute_flakiness_index_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.flakiness_index_conformity = 'na'
+                continue
             record.flakiness_index_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be7a60bc-bb2c-410d-b91a-4f8730a4ac6f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be7a60bc-bb2c-410d-b91a-4f8730a4ac6f')]).parameter_table
@@ -1031,12 +1114,17 @@ class CoarseAggregateMechanical(models.Model):
 
     compacted_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_compacted_density_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_compacted_density_conformity", store=True)
 
     @api.depends('compacted_density','eln_ref','grade')
     def _compute_compacted_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.compacted_density_conformity = 'na'
+                continue
             record.compacted_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')]).parameter_table
@@ -1109,12 +1197,17 @@ class CoarseAggregateMechanical(models.Model):
 
     loose_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_loose_density_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_loose_density_conformity", store=True)
 
     @api.depends('loose_density','eln_ref','grade')
     def _compute_loose_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.loose_density_conformity = 'na'
+                continue
             record.loose_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')]).parameter_table
@@ -1177,32 +1270,37 @@ class CoarseAggregateMechanical(models.Model):
     voids_loose_density = fields.Float(string="Percent Voids in Loose Density = (Gs – Ƴ2 )/Gs x 100",compute="_compute_voids_loose_density")
 
 
-    @api.depends('specific_gravity_voids', 'compacted_density')
+    @api.depends('avg_specific_gravity', 'compacted_density')
     def _compute_voids_compacted_density(self):
         for rec in self:
-            if rec.specific_gravity_voids !=0:
-              rec.voids_compacted_density = round(((rec.specific_gravity_voids - rec.compacted_density)/rec.specific_gravity_voids * 100),2)
+            if rec.avg_specific_gravity:
+              rec.voids_compacted_density = round(((rec.avg_specific_gravity - rec.compacted_density)/rec.avg_specific_gravity * 100),2)
             else:
              rec.voids_compacted_density = 0.0
              
 
-    @api.depends('specific_gravity_voids', 'loose_density')
+    @api.depends('avg_specific_gravity', 'loose_density')
     def _compute_voids_loose_density(self):
         for rec in self:
-            if rec.specific_gravity_voids !=0:
-              rec.voids_loose_density = round(((rec.specific_gravity_voids - rec.loose_density)/rec.specific_gravity_voids * 100),2)
+            if rec.avg_specific_gravity:
+              rec.voids_loose_density = round((((rec.avg_specific_gravity - rec.loose_density)/rec.avg_specific_gravity) * 100),2)
             else:
              rec.voids_loose_density = 0.0  
 
 
     voids_compacted_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Void In Compacted Density Conformity", compute="_compute_voids_compacted_density_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Void In Compacted Density Conformity", compute="_compute_voids_compacted_density_conformity", store=True)
 
     @api.depends('voids_compacted_density','eln_ref','grade')
     def _compute_voids_compacted_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.voids_compacted_density_conformity = 'na'
+                continue
             record.voids_compacted_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')]).parameter_table
@@ -1247,12 +1345,17 @@ class CoarseAggregateMechanical(models.Model):
 
     voids_loose_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Void In Loose Density Conformity", compute="_compute_voids_loose_density_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Void In Loose Density Conformity", compute="_compute_voids_loose_density_conformity", store=True)
 
     @api.depends('voids_loose_density','eln_ref','grade')
     def _compute_voids_loose_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.voids_loose_density_conformity = 'na'
+                continue
             record.voids_loose_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')]).parameter_table
@@ -1321,12 +1424,16 @@ class CoarseAggregateMechanical(models.Model):
 
     avg_rate_evaporation_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_rate_evaporation_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),], string="Conformity", compute="_compute_avg_rate_evaporation_conformity", store=True)
 
     @api.depends('avg_rate_evaporation','eln_ref','grade')
     def _compute_avg_rate_evaporation_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_rate_evaporation_conformity = 'na'
+                continue
             record.avg_rate_evaporation_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e9d9c62-e634-47a2-a689-2c6c8538493c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e9d9c62-e634-47a2-a689-2c6c8538493c')]).parameter_table
@@ -1474,12 +1581,17 @@ class CoarseAggregateMechanical(models.Model):
 
     avg_abrasion_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_abrasion_value_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_abrasion_value_conformity", store=True)
 
     @api.depends('avg_abrasion_value','eln_ref','grade')
     def _compute_avg_abrasion_value_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_abrasion_value_conformity = 'na'
+                continue
             record.avg_abrasion_value_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')]).parameter_table
@@ -1699,6 +1811,7 @@ class CoarseAggregateMechanical(models.Model):
                                 'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
                     
                     # print("Previous Cumulative",previous_line_record)
+            
 
 
     # def calculate_sieve(self): 
@@ -1764,83 +1877,171 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
-    def generate_line_chart_slive(self):
+    # def generate_line_chart_slive(self):
    
-        x_value = []
-        y_value = []
-        x_labels = []
+    #     x_value = []
+    #     y_value = []
+    #     x_labels = []
 
-        for line in self.sieve_analysis_child_lines:
-            if line.sieve_size and line.passing_percent is not None:
-                sieve_str = str(line.sieve_size).strip().lower()
-                try:
-                    if 'mm' in sieve_str:
-                        sieve_val = float(sieve_str.replace('mm', '').strip())
-                        label = f"{int(sieve_val)} mm"
-                    elif 'µ' in sieve_str or 'micron' in sieve_str:
-                        sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
-                        label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
-                    else:
-                        sieve_val = float(sieve_str)
-                        label = f"{sieve_val} mm"
+    #     for line in self.sieve_analysis_child_lines:
+    #         if line.sieve_size and line.passing_percent is not None:
+    #             sieve_str = str(line.sieve_size).strip().lower()
+    #             try:
+    #                 if 'mm' in sieve_str:
+    #                     sieve_val = float(sieve_str.replace('mm', '').strip())
+    #                     label = f"{int(sieve_val)} mm"
+    #                 elif 'µ' in sieve_str or 'micron' in sieve_str:
+    #                     sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
+    #                     label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
+    #                 else:
+    #                     sieve_val = float(sieve_str)
+    #                     label = f"{sieve_val} mm"
 
-                    x_value.append(sieve_val)
-                    y_value.append(float(line.passing_percent))
-                    x_labels.append(label)
-                except ValueError:
-                    continue
+    #                 x_value.append(sieve_val)
+    #                 y_value.append(float(line.passing_percent))
+    #                 x_labels.append(label)
+    #             except ValueError:
+    #                 continue
 
-        if not x_value or not y_value:
-            return False
+    #     if not x_value or not y_value:
+    #         return False
 
-        # Sort ascending
-        sorted_data = sorted(zip(x_value, y_value, x_labels))
-        x_value, y_value, x_labels = zip(*sorted_data)
+    #     # Sort ascending
+    #     sorted_data = sorted(zip(x_value, y_value, x_labels))
+    #     x_value, y_value, x_labels = zip(*sorted_data)
 
-        plt.figure(figsize=(12, 5))
-        plt.xscale('log')
+    #     plt.figure(figsize=(12, 5))
+    #     plt.xscale('log')
 
-        # Main curve
-        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2)
-        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
+    #     # Main curve
+    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2)
+    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
 
-        plt.xlabel('Sieve Size', fontsize=12)
-        plt.ylabel('Passing %', fontsize=12)
-        plt.title('Grain Size Analysis', fontsize=14)
+    #     plt.xlabel('Sieve Size', fontsize=12)
+    #     plt.ylabel('Passing %', fontsize=12)
+    #     plt.title('Grain Size Analysis', fontsize=14)
 
-        ax = plt.gca()
-        plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
-        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
-        ax.yaxis.set_minor_locator(MultipleLocator(2))
-        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+    #     ax = plt.gca()
+    #     plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
+    #     ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
+    #     ax.yaxis.set_minor_locator(MultipleLocator(2))
+    #     plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
-        plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
-        plt.ylim(bottom=0, top=120)
-        plt.yticks([0, 20, 40, 60, 80, 100, 120])
+    #     plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
+    #     plt.ylim(bottom=0, top=120)
+    #     plt.yticks([0, 20, 40, 60, 80, 100, 120])
 
-        # --- D-points: D10, D30, D60 ---
-        d_points = [
-            (getattr(self, 'd10', None), 10, 'black'),
-            (getattr(self, 'd30', None), 30, 'yellow'),
-            (getattr(self, 'd60', None), 60, 'orange')
+    #     # --- D-points: D10, D30, D60 ---
+    #     d_points = [
+    #         (getattr(self, 'd10', None), 10, 'black'),
+    #         (getattr(self, 'd30', None), 30, 'yellow'),
+    #         (getattr(self, 'd60', None), 60, 'orange')
+    #     ]
+
+    #     for dx, dy, color in d_points:
+    #         if dx:
+    #             # Solid point
+    #             plt.scatter(dx, dy, color=color, s=80, zorder=10)
+    #             # Draw X and Y guide lines only to intersection
+    #             plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
+    #             plt.plot([0, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
+
+    #     # Save figure
+    #     buffer = io.BytesIO()
+    #     plt.tight_layout()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
+
+    #     return base64.b64encode(buffer.read())
+
+
+
+    def generate_line_chart_slive(self):
+      x_value = []
+      y_value = []
+      x_labels = []
+
+      for line in self.sieve_analysis_child_lines:
+         if line.sieve_size and line.passing_percent is not None:
+            sieve_str = str(line.sieve_size).strip().lower()
+            try:
+                  if 'mm' in sieve_str:
+                    sieve_val = float(sieve_str.replace('mm', '').strip())
+                    label = f"{int(sieve_val)} mm"
+                  elif 'µ' in sieve_str or 'micron' in sieve_str:
+                    sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
+                    label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
+                  else:
+                    sieve_val = float(sieve_str)
+                    label = f"{sieve_val} mm"
+
+                  x_value.append(sieve_val)
+                  y_value.append(float(line.passing_percent))
+                  x_labels.append(label)
+            except ValueError:
+                  continue
+
+         if not x_value or not y_value:
+           return False
+
+      # Sort ascending
+      sorted_data = sorted(zip(x_value, y_value, x_labels))
+      x_value, y_value, x_labels = zip(*sorted_data)
+      x_value = np.array(x_value)
+      y_value = np.array(y_value)
+
+       # --- Smooth interpolation ---
+    #   x_smooth = np.logspace(np.log10(min(x_value)), np.log10(max(x_value)), 500)  # 500 points for smoothness
+    #   spline = make_interp_spline(np.log10(x_value), y_value, k=2)  # cubic spline in log-space
+    #   y_smooth = spline(np.log10(x_smooth))
+
+      x_smooth = np.logspace(np.log10(min(x_value)), np.log10(max(x_value)), 500)
+      pchip = PchipInterpolator(np.log10(x_value), y_value)
+      y_smooth = pchip(np.log10(x_smooth))
+
+      plt.figure(figsize=(13, 5))
+      plt.xscale('log')
+
+      # Smooth curve
+      plt.plot(x_smooth, y_smooth, color='blue', linestyle='-', linewidth=2)
+      # Original points
+      plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
+
+      plt.xlabel('Sieve Size', fontsize=12)
+      plt.ylabel('Passing %', fontsize=12)
+      plt.title('Grain Size Analysis', fontsize=14)
+
+      ax = plt.gca()
+      plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
+      ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
+      ax.yaxis.set_minor_locator(MultipleLocator(2))
+      plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+      plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
+      plt.ylim(bottom=0, top=120)
+      plt.yticks([0, 20, 40, 60, 80, 100, 120])
+
+      # --- D-points: D10, D30, D60 ---
+      d_points = [
+         (getattr(self, 'd10', None), 10, 'black'),
+         (getattr(self, 'd30', None), 30, 'yellow'),
+         (getattr(self, 'd60', None), 60, 'orange')
         ]
 
-        for dx, dy, color in d_points:
-            if dx:
-                # Solid point
-                plt.scatter(dx, dy, color=color, s=80, zorder=10)
-                # Draw X and Y guide lines only to intersection
-                plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
-                plt.plot([0, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
+      for dx, dy, color in d_points:
+        if dx:
+            plt.scatter(dx, dy, color=color, s=80, zorder=10)
+            plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
+            plt.plot([min(x_value)/1.5, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
 
-        # Save figure
-        buffer = io.BytesIO()
-        plt.tight_layout()
-        plt.savefig(buffer, format='png')
-        plt.close()
-        buffer.seek(0)
+      buffer = io.BytesIO()
+      plt.tight_layout()
+      plt.savefig(buffer, format='png')
+      plt.close()
+      buffer.seek(0)
+      return base64.b64encode(buffer.read())
 
-        return base64.b64encode(buffer.read())
     
 
 
@@ -1849,11 +2050,11 @@ class CoarseAggregateMechanical(models.Model):
     temp_soudness = fields.Char(string="Temp.°C")
     humidity_soudness= fields.Char(string="Humidity %")
 
-    soudness_name = fields.Char("Name",default="Soudness Test ")
-    soudness_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
+    soudness_name = fields.Char("Name",default="Soundness Test ")
+    soudness_visible = fields.Boolean("Soundness Test",compute="_compute_visible")
 
-    soudness_magnesium_name = fields.Char("Name",default="Soudness Magnesium Test ")
-    soudness_magnesium_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
+    soudness_magnesium_name = fields.Char("Name",default="Soundness Magnesium Test ")
+    soudness_magnesium_visible = fields.Boolean("Soundness Test",compute="_compute_visible")
 
     soudness_child_lines = fields.One2many('coarse.soudness.line','parent_id',string="Parameter")
 
@@ -1861,7 +2062,7 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
-    sieve_name = fields.Char("Name",default="Sieve Analysis")
+    sieve_name = fields.Char("Name",default="Gradation Of Original Sample")
     # sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
     wt_of_sample = fields.Float(string="Wt. Of Sample Taken For Analysis (gms) = ", digits=(8,3))
@@ -1914,8 +2115,9 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
-    def calculate_sieve(self): 
+    def calculate_sound_sieve(self): 
         for record in self:
+            # import wdb; wdb.set_trace()
             previous_cumulative = 0  
             for line in record.sieve_analysis_soundness_lines:
                 print("Rows", str(line.percent_retained))
@@ -2048,12 +2250,17 @@ class CoarseAggregateMechanical(models.Model):
 
     total_avg_sulphae_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_total_avg_sulphae_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_total_avg_sulphae_conformity", store=True)
 
     @api.depends('total_avg_sulphae','eln_ref','grade')
     def _compute_total_avg_sulphae_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.total_avg_sulphae_conformity = 'na'
+                continue
             record.total_avg_sulphae_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')]).parameter_table
@@ -3028,7 +3235,7 @@ class OuantitativelyExaminationLine(models.Model):
     original_magnesiu = fields.Float(string="Original wt. of Sample-gms.Magnesium ", digits=(8,3))
     wt_sulhate = fields.Float(string="Weight Retained After  5 Cycle-gms Sodium Sulphate")
     wt_manesium = fields.Float(string="Weight Retained After  5 Cycle-gms Magnesium ")
-    loss_sulphae = fields.Float(string="% Loss Sodium Sulphate",compute="_compute_loss_sulphae",digits=(12,1))
+    loss_sulphae = fields.Float(string="% Loss Sodium Sulphate",compute="_compute_loss_sulphae",digits=(12,2))
     loss_manesium = fields.Float(string="% Loss Magnesium ")
 
     @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
@@ -3080,7 +3287,7 @@ class QuantitativelyExaminationLine(models.Model):
     passing = fields.Char(string="Sieve Size-mm Passing")
     retained = fields.Char(string="Sieve Size-mm Retained")
     grading_sulphate = fields.Float(string="Grading of Original Sample  (%)s.Sodium Sulphate", digits=(8,2),compute="_compute_grading_sulphate",store=True)
-    sieve_magnesiu = fields.Float(string="Sieve Used For Loss  Determination.Magnesium ", digits=(8,3))
+    sieve_magnesium = fields.Char(string="Sieve Used For Loss  Determination.Magnesium ")
     wt_fraction_sulhate = fields.Float(string="Weight of test Fraction  (retained) after test (gm) Sodium Sulphate",compute="_compute_wt_fraction_sulhate",store=True)
     wt_fraction_manesium = fields.Float(string="Weight of test Fraction  (retained) after test  (gm) Magnesium ")
     finalloss_sulphae = fields.Float(string="Final loss (%) Sulphate",compute="_compute_finalloss_sulphae",store="_compute_finalloss_sulphae")
@@ -3094,21 +3301,55 @@ class QuantitativelyExaminationLine(models.Model):
         for rec in self:
             rec.avg_sulphae = (rec.finalloss_sulphae * rec.grading_sulphate) / 100 if rec.grading_sulphate else 0.0
 
+    # @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
+    # def _compute_finalloss_sulphae(self):
+    #     for rec in self:
+    #         # percent_retained from sieve_analysis_soundness_lines
+    #         sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)[:1]
+    #         percent_ret = sieve_line.percent_retained if sieve_line else 0.0
+
+    #         # loss_sulphae from ouantitative_soundness_lines
+    #         ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)[:1]
+    #         loss_sulphae_val = ou_line.loss_sulphae if ou_line else 0.0
+
+    #         if 0 < percent_ret < 5:
+    #             rec.finalloss_sulphae = 0.0  # किंवा आधीची value
+    #         else:
+    #             rec.finalloss_sulphae = loss_sulphae_val
+
     @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
     def _compute_finalloss_sulphae(self):
-        for rec in self:
-            # percent_retained from sieve_analysis_soundness_lines
-            sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)[:1]
-            percent_ret = sieve_line.percent_retained if sieve_line else 0.0
+     for idx, rec in enumerate(self):
+        sieve_lines = rec.parent_id.sieve_analysis_soundness_lines.sorted('serial_no')
+        quant_lines = rec.parent_id.ouantitative_soundness_lines.sorted('serial_no')
+        percent_ret = 0.0
+        loss_sulphae_val = 0.0
 
-            # loss_sulphae from ouantitative_soundness_lines
-            ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)[:1]
-            loss_sulphae_val = ou_line.loss_sulphae if ou_line else 0.0
+        # Find the matching sieve and quantitative line
+        sieve_line = next((l for l in sieve_lines if l.serial_no == rec.serial_no), None)
+        if sieve_line:
+            percent_ret = sieve_line.percent_retained
 
-            if 0 < percent_ret < 5:
-                rec.finalloss_sulphae = 0.0  # किंवा आधीची value
-            else:
-                rec.finalloss_sulphae = loss_sulphae_val
+        quant_line = next((l for l in quant_lines if l.serial_no == rec.serial_no), None)
+        if quant_line:
+            loss_sulphae_val = quant_line.loss_sulphae
+
+        # Boundary logic
+        if idx == 0:  # First item
+            next_loss_val = quant_lines[idx+1].loss_sulphae if len(quant_lines) > idx+1 else loss_sulphae_val
+            avg_val = next_loss_val  # Use next value only
+        elif idx == len(self)-1:  # Last item
+            prev_loss_val = quant_lines[idx-1].loss_sulphae if idx > 0 else loss_sulphae_val
+            avg_val = prev_loss_val  # Use previous value only
+        else:  # Middle items
+            prev_loss_val = quant_lines[idx-1].loss_sulphae
+            next_loss_val = quant_lines[idx+1].loss_sulphae
+            avg_val = (prev_loss_val + next_loss_val) / 2 if (prev_loss_val is not None and next_loss_val is not None) else loss_sulphae_val
+
+        if 0 < percent_ret < 5:
+            rec.finalloss_sulphae = avg_val
+        else:
+            rec.finalloss_sulphae = loss_sulphae_val
 
             
 

@@ -488,7 +488,7 @@ class PaverBlock(models.Model):
 
             if result.parameter.internal_id == 'f079957b-608f-40c0-aebd-0db011ab0f2c':
                 result.result_char = round(self.average_width,2)
-                if self.average_width_nabl == 'pass':
+                if self.average_width_nabl1 == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
