@@ -165,12 +165,16 @@ class CoarseAggregateMechanical(models.Model):
 
     average_crushing_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_crushing_value_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),], string="Conformity", compute="_compute_average_crushing_value_conformity", store=True)
 
     @api.depends('average_crushing_value','eln_ref','grade')
     def _compute_average_crushing_value_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_crushing_value_conformity = 'na'
+                continue
             record.average_crushing_value_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71')]).parameter_table
@@ -336,12 +340,17 @@ class CoarseAggregateMechanical(models.Model):
 
     avg_specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Specific Gravity Conformity", compute="_compute_avg_specific_gravity_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Specific Gravity Conformity", compute="_compute_avg_specific_gravity_conformity", store=True)
 
     @api.depends('avg_specific_gravity','eln_ref','grade')
     def _compute_avg_specific_gravity_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_specific_gravity_conformity = 'na'
+                continue
             record.avg_specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table
@@ -387,12 +396,16 @@ class CoarseAggregateMechanical(models.Model):
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Water Absorption Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),
+            ], string="Water Absorption Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_water_absorption_conformity = 'na'
+                continue
             record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','22ee804f-41a3-4fd1-a301-a8d9180fba10')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','22ee804f-41a3-4fd1-a301-a8d9180fba10')]).parameter_table
@@ -535,12 +548,17 @@ class CoarseAggregateMechanical(models.Model):
 
     average_impact_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
 
     @api.depends('average_impact_value','eln_ref','grade')
     def _compute_average_impact_value_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_impact_value_conformity = 'na'
+                continue
             record.average_impact_value_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2')]).parameter_table
@@ -725,12 +743,17 @@ class CoarseAggregateMechanical(models.Model):
 
     avg_load_for_10fine_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_load_for_10fine_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_load_for_10fine_conformity", store=True)
 
     @api.depends('avg_load_for_10fine','eln_ref','grade')
     def _compute_avg_load_for_10fine_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_load_for_10fine_conformity = 'na'
+                continue
             record.avg_load_for_10fine_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5f506c08-4369-491d-93a6-030514c29661')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5f506c08-4369-491d-93a6-030514c29661')]).parameter_table
@@ -861,12 +884,17 @@ class CoarseAggregateMechanical(models.Model):
     
     elongation_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_elongation_index_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_elongation_index_conformity", store=True)
 
     @api.depends('elongation_index','eln_ref','grade')
     def _compute_elongation_index_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.elongation_index_conformity = 'na'
+                continue
             record.elongation_index_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
@@ -992,12 +1020,17 @@ class CoarseAggregateMechanical(models.Model):
     
     flakiness_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_flakiness_index_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_flakiness_index_conformity", store=True)
 
     @api.depends('flakiness_index','eln_ref','grade')
     def _compute_flakiness_index_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.flakiness_index_conformity = 'na'
+                continue
             record.flakiness_index_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be7a60bc-bb2c-410d-b91a-4f8730a4ac6f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be7a60bc-bb2c-410d-b91a-4f8730a4ac6f')]).parameter_table
@@ -1081,12 +1114,17 @@ class CoarseAggregateMechanical(models.Model):
 
     compacted_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_compacted_density_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_compacted_density_conformity", store=True)
 
     @api.depends('compacted_density','eln_ref','grade')
     def _compute_compacted_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.compacted_density_conformity = 'na'
+                continue
             record.compacted_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')]).parameter_table
@@ -1159,12 +1197,17 @@ class CoarseAggregateMechanical(models.Model):
 
     loose_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_loose_density_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_loose_density_conformity", store=True)
 
     @api.depends('loose_density','eln_ref','grade')
     def _compute_loose_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.loose_density_conformity = 'na'
+                continue
             record.loose_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')]).parameter_table
@@ -1247,12 +1290,17 @@ class CoarseAggregateMechanical(models.Model):
 
     voids_compacted_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Void In Compacted Density Conformity", compute="_compute_voids_compacted_density_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Void In Compacted Density Conformity", compute="_compute_voids_compacted_density_conformity", store=True)
 
     @api.depends('voids_compacted_density','eln_ref','grade')
     def _compute_voids_compacted_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.voids_compacted_density_conformity = 'na'
+                continue
             record.voids_compacted_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')]).parameter_table
@@ -1297,12 +1345,17 @@ class CoarseAggregateMechanical(models.Model):
 
     voids_loose_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Void In Loose Density Conformity", compute="_compute_voids_loose_density_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Void In Loose Density Conformity", compute="_compute_voids_loose_density_conformity", store=True)
 
     @api.depends('voids_loose_density','eln_ref','grade')
     def _compute_voids_loose_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.voids_loose_density_conformity = 'na'
+                continue
             record.voids_loose_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')]).parameter_table
@@ -1371,12 +1424,16 @@ class CoarseAggregateMechanical(models.Model):
 
     avg_rate_evaporation_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_rate_evaporation_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),], string="Conformity", compute="_compute_avg_rate_evaporation_conformity", store=True)
 
     @api.depends('avg_rate_evaporation','eln_ref','grade')
     def _compute_avg_rate_evaporation_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_rate_evaporation_conformity = 'na'
+                continue
             record.avg_rate_evaporation_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e9d9c62-e634-47a2-a689-2c6c8538493c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8e9d9c62-e634-47a2-a689-2c6c8538493c')]).parameter_table
@@ -1524,12 +1581,17 @@ class CoarseAggregateMechanical(models.Model):
 
     avg_abrasion_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_abrasion_value_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_abrasion_value_conformity", store=True)
 
     @api.depends('avg_abrasion_value','eln_ref','grade')
     def _compute_avg_abrasion_value_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_abrasion_value_conformity = 'na'
+                continue
             record.avg_abrasion_value_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','37f2161e-5cc0-413f-b76c-10478c65baf9')]).parameter_table
@@ -2188,12 +2250,17 @@ class CoarseAggregateMechanical(models.Model):
 
     total_avg_sulphae_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_total_avg_sulphae_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_total_avg_sulphae_conformity", store=True)
 
     @api.depends('total_avg_sulphae','eln_ref','grade')
     def _compute_total_avg_sulphae_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.total_avg_sulphae_conformity = 'na'
+                continue
             record.total_avg_sulphae_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c8cd69bd-1f89-4f22-bae6-b81de73e6c2')]).parameter_table
@@ -3252,22 +3319,32 @@ class QuantitativelyExaminationLine(models.Model):
 
     @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
     def _compute_finalloss_sulphae(self):
-     for rec in self:
-        sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)[:1]
-        percent_ret = sieve_line.percent_retained if sieve_line else 0.0
+     for idx, rec in enumerate(self):
+        sieve_lines = rec.parent_id.sieve_analysis_soundness_lines.sorted('serial_no')
+        quant_lines = rec.parent_id.ouantitative_soundness_lines.sorted('serial_no')
+        percent_ret = 0.0
+        loss_sulphae_val = 0.0
 
-        ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)[:1]
-        loss_sulphae_val = ou_line.loss_sulphae if ou_line else 0.0
+        # Find the matching sieve and quantitative line
+        sieve_line = next((l for l in sieve_lines if l.serial_no == rec.serial_no), None)
+        if sieve_line:
+            percent_ret = sieve_line.percent_retained
 
-        # For example, getting two loss values for average
-        loss_values = [loss_sulphae_val]
-        # Append another value as appropriate
-        # Example: previous line with lower serial_no
-        prev_line = rec.parent_id.ouantitative_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no - 1)[:1]
-        if prev_line:
-            loss_values.append(prev_line.loss_sulphae)
+        quant_line = next((l for l in quant_lines if l.serial_no == rec.serial_no), None)
+        if quant_line:
+            loss_sulphae_val = quant_line.loss_sulphae
 
-        avg_val = sum(loss_values) / len(loss_values) if loss_values else 0.0
+        # Boundary logic
+        if idx == 0:  # First item
+            next_loss_val = quant_lines[idx+1].loss_sulphae if len(quant_lines) > idx+1 else loss_sulphae_val
+            avg_val = next_loss_val  # Use next value only
+        elif idx == len(self)-1:  # Last item
+            prev_loss_val = quant_lines[idx-1].loss_sulphae if idx > 0 else loss_sulphae_val
+            avg_val = prev_loss_val  # Use previous value only
+        else:  # Middle items
+            prev_loss_val = quant_lines[idx-1].loss_sulphae
+            next_loss_val = quant_lines[idx+1].loss_sulphae
+            avg_val = (prev_loss_val + next_loss_val) / 2 if (prev_loss_val is not None and next_loss_val is not None) else loss_sulphae_val
 
         if 0 < percent_ret < 5:
             rec.finalloss_sulphae = avg_val
