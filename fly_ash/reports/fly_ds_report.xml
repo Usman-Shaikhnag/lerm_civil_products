@@ -690,8 +690,12 @@
 									<span t-esc="r['lab_id']"/>
 								</td>
 								<td style="border: 1px solid black; padding: 6px;" colspan="1">
-									<span t-esc="r['testing_period']"/>
+									<t t-if="r.testing_period == 'day7'">168±2 hr (7 Days)</t>
+									<t t-elif="r.testing_period == 'day28'">672±4 hr (28 Days)</t>
 								</td>
+								<!-- <td style="border: 1px solid black; padding: 6px;" colspan="1">
+									<span t-esc="r['testing_period']"/>
+								</td> -->
 								<td style="border: 1px solid black; padding: 6px;" colspan="1">
 									<span t-esc="r['casting_details']"/>
 								</td>
@@ -808,8 +812,12 @@
 								<td style="border: 1px solid black; padding: 6px;" colspan="1">
 									<span t-esc="r['lab_id']"/>
 								</td>
-								<td style="border: 1px solid black; padding: 6px;" colspan="1">
+								<!-- <td style="border: 1px solid black; padding: 6px;" colspan="1">
 									<span t-esc="r['testing_period']"/>
+								</td> -->
+								<td style="border: 1px solid black; padding: 6px;" colspan="1">
+									<t t-if="r.testing_period == 'day7'">168±2 hr (7 Days)</t>
+									<t t-elif="r.testing_period == 'day28'">672±4 hr (28 Days)</t>
 								</td>
 								<td style="border: 1px solid black; padding: 6px;" colspan="1">
 									<span t-esc="r['casting_details']"/>
@@ -1186,7 +1194,7 @@
 								<td rowspan="2"  style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 
 								<td><strong>Report No.</strong>: </td>
-								<td></td>
+								<td style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
 							</tr>
 								
 							<tr>
@@ -1218,11 +1226,9 @@
 								
 
 								<td><strong>Date Sample Received</strong>:</td>
-								<td>
-									<!-- <t t-if="ggbs.rock_child_lines">
-										<span t-field="data.rock_child_lines[0].date_received"/>
-									</t> -->
-								</td>
+								<td >
+								<span t-field="o.sample_id.sample_received_date"/>
+								</td >
 							</tr>
 							<tr>
 
@@ -1763,6 +1769,68 @@
 								</td>
 								
 							</tr>
+
+
+							<tr  t-if="flyash.compressive_strength7_visible and (flyash.average_7_days_nabl == 'pass' and nabl or (flyash.average_7_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+
+								<td >
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','4c16fe35-cd02-4d12-ba13-aa95bf000d73')]).parameter_name"/>
+								</td>
+								<td style="text-align: center;">
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','4c16fe35-cd02-4d12-ba13-aa95bf000d73')]).test_method"/>
+								</td>
+								<!-- <td style="text-align: center;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','4c16fe35-cd02-4d12-ba13-aa95bf000d73')]).parameter_table" t-as="parameter">
+										
+											<span t-field="parameter.specification"/>
+										
+									</t>
+								</td>	 -->
+
+								<td  style="text-align: center" >
+									<span>
+										<span t-field="flyash.temp_compressive_strength"/>
+									</span>									
+								</td>	
+									<td  style="text-align: center;" >
+									<span>
+										<span t-field="flyash.humidity_compressive_strength"/>
+									</span>									
+								</td>	
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','4c16fe35-cd02-4d12-ba13-aa95bf000d73')]).unit.name"/>
+									</span>
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<span t-field="flyash.average_7_days" t-options='{"widget": "float", "precision": 4}'/>
+									</span>									
+								</td>
+
+								<td style="text-align: center;">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','4c16fe35-cd02-4d12-ba13-aa95bf000d73')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+											<span t-field="parameter.permissable_limit"/>
+										<!-- </t> -->
+									</t>
+								</td>
+
+								<td style="text-align: center;" t-if="eln.conformity">
+									<!-- <span t-field="coarse_aggregate.avg_specific_gravity_conformity"/> -->
+								</td>
+								
+							</tr>
+
+
+
+
+
 
 							<tr  t-if="flyash.compressive_strength_visible and (flyash.average_28_days_nabl == 'pass' and nabl or (flyash.average_28_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">

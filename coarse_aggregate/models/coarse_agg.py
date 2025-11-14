@@ -2086,12 +2086,12 @@ class CoarseAggregateMechanical(models.Model):
     @api.model
     def _default_sieve_analysis_soundness_lines(self):
         default_lines = [
-            (0, 0, {'sieve_size': 'Above 80mm', 'particle_size': '4.80mm'}),
+            (0, 0, {'sieve_size': 'Above 80mm', 'particle_size': '80mm'}),
             (0, 0, {'sieve_size': '80mm', 'particle_size': '63mm'}),
             (0, 0, {'sieve_size': '63mm', 'particle_size': '40mm'}),
             (0, 0, {'sieve_size': '40mm', 'particle_size': '20mm'}),
             (0, 0, {'sieve_size': '20mm', 'particle_size': '10mm'}),
-            (0, 0, {'sieve_size': '10mm', 'particle_size': 'Pan'}),
+            (0, 0, {'sieve_size': '10mm', 'particle_size': '4.75mm'}),
         ]
         return default_lines
 
@@ -2182,12 +2182,12 @@ class CoarseAggregateMechanical(models.Model):
     @api.model
     def _default_quantitative_soundness_lines(self):
         default_lines = [
-            (0, 0, {'passing': 'Above 80mm', 'retained': '80mm'}),
-            (0, 0, {'passing': '80mm', 'retained': '63mm'}),
-            (0, 0, {'passing': '63mm', 'retained': '40mm'}),
-            (0, 0, {'passing': '40mm', 'retained': '20mm'}),
-            (0, 0, {'passing': '20mm', 'retained': '10mm'}),
-            (0, 0, {'passing': '10mm', 'retained': '4.75mm'}),
+            (0, 0, {'passing': 'Above 80mm', 'retained': '80mm', 'sieve_magnesium': '80mm'}),
+            (0, 0, {'passing': '80mm', 'retained': '63mm', 'sieve_magnesium': '63mm'}),
+            (0, 0, {'passing': '63mm', 'retained': '40mm', 'sieve_magnesium': '31.5mm'}),
+            (0, 0, {'passing': '40mm', 'retained': '20mm', 'sieve_magnesium': '16.0mm'}),
+            (0, 0, {'passing': '20mm', 'retained': '10mm', 'sieve_magnesium': '8mm'}),
+            (0, 0, {'passing': '10mm', 'retained': '4.75mm', 'sieve_magnesium': '4mm'}),
         ]
         return default_lines
     
