@@ -25,6 +25,20 @@ class StainlessSteel(models.Model):
         
     bar_test_line_ids = fields.One2many('stainless.tmt.bar.line','parent_id',string='TMT Bar Test Lines')
 
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'stainless.steel.tmt.bar.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)

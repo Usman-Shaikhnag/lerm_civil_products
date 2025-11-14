@@ -68,7 +68,7 @@ class OPCReport(models.AbstractModel):
         cement_data = self.env[model].search([("id","=",eln.model_id)])
         return {
             'eln': eln,
-           'cement': cement_data,
+            'cement': cement_data,
             'qrcode': qr_code,
             'qrcode_static': qr_static_b64,
             'nabl' : nabl

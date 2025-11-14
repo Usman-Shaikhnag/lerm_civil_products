@@ -19,6 +19,20 @@ class CementPPC(models.Model):
     start_date = fields.Date(string="Start Date", compute="_compute_start_date", store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'cement.ppc.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
     @api.depends('eln_ref')
     def _compute_size_id(self):
         if self.eln_ref:

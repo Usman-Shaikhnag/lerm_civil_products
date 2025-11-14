@@ -55,6 +55,22 @@ class RCMT(models.Model):
 
 
     specimen1_ov2 = fields.Float(string="Average Value of anolye solution °C ,T",compute="_compute_specimen1_ov2")
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'rcmt.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
+
     @api.depends('initial_temprrature1', 'final_tempreture1')
     def _compute_specimen1_ov2(self):
         for record in self:
