@@ -94,12 +94,17 @@ class FlyaschNormalConsistency(models.Model):
 
     normal_consistency_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_normal_consistency_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_normal_consistency_conformity", store=True)
 
     @api.depends('consistency_percent','eln_ref','grade')
     def _compute_normal_consistency_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.normal_consistency_conformity = 'na'
+                continue
             record.normal_consistency_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124fgrt3-1b3c-43ae-9c20-5421b6d6edf9')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124fgrt3-1b3c-43ae-9c20-5421b6d6edf9')]).parameter_table
@@ -315,12 +320,17 @@ class FlyaschNormalConsistency(models.Model):
 
     avg_expansion_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_expansion_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_expansion_conformity", store=True)
 
     @api.depends('avg_expansion','eln_ref','grade')
     def _compute_avg_expansion_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_expansion_conformity = 'na'
+                continue
             record.avg_expansion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')]).parameter_table
@@ -392,12 +402,17 @@ class FlyaschNormalConsistency(models.Model):
 
     avg_autoclave_expansion_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_autoclave_expansion_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_autoclave_expansion_conformity", store=True)
 
     @api.depends('avg_autoclave_expansion','eln_ref','grade')
     def _compute_avg_autoclave_expansion_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_autoclave_expansion_conformity = 'na'
+                continue
             record.avg_autoclave_expansion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0e2437d-514b-4875-9f3a-203d5fad1d83')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0e2437d-514b-4875-9f3a-203d5fad1d83')]).parameter_table
@@ -475,8 +490,8 @@ class FlyaschNormalConsistency(models.Model):
     final_kerosene_1 = fields.Float("Final Level of Kerosene after one hour kept in water bath(B) – ml")
     final_kerosene_2 = fields.Float("Final Level of Kerosene after one hour kept in water bath(B) – ml")
 
-    displaced_vol_1 = fields.Float("Displaced Volume after Adding Flyash (V) = (B – A) – cm3", store=True, digits=(12, 2),compute="_compute_values")
-    displaced_vol_2 = fields.Float("Displaced Volume after Adding Flyash (V) = (B – A) – cm3", store=True, digits=(12, 2),compute="_compute_values")
+    displaced_vol_1 = fields.Float("Displaced Volume after Adding Flyash (V) = (B – A) – cm3", store=True, digits=(12, 1),compute="_compute_values")
+    displaced_vol_2 = fields.Float("Displaced Volume after Adding Flyash (V) = (B – A) – cm3", store=True, digits=(12, 1),compute="_compute_values")
 
     density_fly_l = fields.Float("Density of Flyash Sample (    ) – gms/ cm3", store=True, digits=(12, 2),compute="_compute_values")
     density_fly_2 = fields.Float("Density of Flyash Sample (    ) – gms/ cm3", store=True, digits=(12, 2),compute="_compute_values")
@@ -500,29 +515,59 @@ class FlyaschNormalConsistency(models.Model):
 
     avg_density_fly = fields.Float("Average Density of Flyash Sample – gms/ cm3", store=True, digits=(12, 2),compute="_compute_avg_density_fly")
 
+    # @api.depends('density_fly_l', 'density_fly_2')
+    # def _compute_avg_density_fly(self):
+    #     for rec in self:
+    #         # ensure no division by zero
+    #         d1 = rec.density_fly_l or 0.0
+    #         d2 = rec.density_fly_2 or 0.0
+
+    #         # compute average only if at least one density exists
+    #         if d1 and d2:
+    #             rec.avg_density_fly = (d1 + d2) / 2
+    #         else:
+    #             rec.avg_density_fly = 0.0
+
     @api.depends('density_fly_l', 'density_fly_2')
     def _compute_avg_density_fly(self):
-        for rec in self:
-            # ensure no division by zero
-            d1 = rec.density_fly_l or 0.0
-            d2 = rec.density_fly_2 or 0.0
+     for rec in self:
+        d1 = rec.density_fly_l
+        d2 = rec.density_fly_2
+        def truncate(f, n):
+         s = str(f)
+         if '.' in s:
+            integer_part, decimal_part = s.split('.')
+            truncated_decimal = decimal_part[:n]
+            return float(f"{integer_part}.{truncated_decimal}")
+         else:
+            return f
+        
+     for rec in self:
+        d1 = rec.density_fly_l
+        d2 = rec.density_fly_2
+        values = [v for v in (d1, d2) if v is not None]
 
-            # compute average only if at least one density exists
-            if d1 and d2:
-                rec.avg_density_fly = (d1 + d2) / 2
-            else:
-                rec.avg_density_fly = 0.0
+        if values:
+            avg = sum(values) / len(values)
+            rec.avg_density_fly = truncate(avg, 2)
+        else:
+            rec.avg_density_fly = 0.0
     
 
 										
     avg_density_fly_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_density_fly_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_density_fly_conformity", store=True)
 
     @api.depends('avg_density_fly','eln_ref','grade')
     def _compute_avg_density_fly_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_density_fly_conformity = 'na'
+                continue
             record.avg_density_fly_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214fgrt-1d2c-4d3b-9ebe-ecb0b5e1221e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214fgrt-1d2c-4d3b-9ebe-ecb0b5e1221e')]).parameter_table
@@ -593,9 +638,9 @@ class FlyaschNormalConsistency(models.Model):
                 rec.first_bed_reading1, rec.first_bed_reading2, rec.second_bed_reading1, rec.second_bed_reading2
             ]) else 0.0
 
-    specific_surface = fields.Float(string="Specific Surface at (S)– cm2/gm",compute="_compute_specific_surface_m2kg", store=True ,digits=(12, 1))
+    specific_surface = fields.Float(string="Specific Surface at (S)– cm2/gm",compute="_compute_specific_surface_m2kg", store=True ,digits=(12, 0))
 
-    specific_surface_m2kg = fields.Float(string="Specific Surface at (S)– m2/kg",compute="_compute_specific_surface_m2kg", store=True, digits=(12, 1))
+    specific_surface_m2kg = fields.Float(string="Specific Surface at (S)– m2/kg",compute="_compute_specific_surface_m2kg", store=True, digits=(12, 0))
 
     @api.depends('avg_time_first', 'density_pozzolana')
     def _compute_specific_surface_m2kg(self):
@@ -628,12 +673,17 @@ class FlyaschNormalConsistency(models.Model):
 
     specific_surface_m2kg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_specific_surface_m2kg_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_specific_surface_m2kg_conformity", store=True)
 
     @api.depends('specific_surface_m2kg','eln_ref','grade')
     def _compute_specific_surface_m2kg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.specific_surface_m2kg_conformity = 'na'
+                continue
             record.specific_surface_m2kg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','03c1a445-e599-4ba9-ac67-f186a7c6dd61')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','03c1a445-e599-4ba9-ac67-f186a7c6dd61')]).parameter_table
@@ -708,12 +758,17 @@ class FlyaschNormalConsistency(models.Model):
 
     avg_particle_retained_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_particle_retained_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_particle_retained_conformity", store=True)
 
     @api.depends('avg_particle_retained','eln_ref','grade')
     def _compute_avg_particle_retained_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_particle_retained_conformity = 'na'
+                continue
             record.avg_particle_retained_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2104fvdr-6047-4781-9885-0b8b29050fda')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2104fvdr-6047-4781-9885-0b8b29050fda')]).parameter_table
@@ -761,6 +816,9 @@ class FlyaschNormalConsistency(models.Model):
     compressive_strength_visible = fields.Boolean("Compressive Strength Fly Ash",compute="_compute_visible")
     compressive_strength_name = fields.Char("Name",default="Compressive Strength Fly Ash")
     compressive_cement_name = fields.Char("Name",default="Compressive Strength Of Cement")
+
+    compressive_strength7_visible = fields.Boolean("Compressive Strength Fly Ash",compute="_compute_visible")
+    compressive_strength7_name = fields.Char("Name",default="Compressive Strength Fly Ash")
 
 
     temp_compressive_strength = fields.Char("Temp °c")
@@ -855,11 +913,78 @@ class FlyaschNormalConsistency(models.Model):
             else:
                 record.average_28_days = 0.0
 
+    average_7_days = fields.Float(string="Avg. Strength Mpa (7 Days)", compute="_compute_average_7_days", store=True)
+
+    @api.depends('avg_7_days1','avg_7_days2')
+    def _compute_average_7_days(self):
+        for record in self:
+            if record.avg_7_days2 != 0:
+                record.average_7_days = (record.avg_7_days1 / record.avg_7_days2)  * 100
+            else:
+                record.average_7_days = 0.0   
+
+
+    average_7_days_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity', default='fail',compute="_compute_average_7_days_conformity")
+
+    average_7_days_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_7_days_nabl")
+
+
+    @api.depends('average_7_days','eln_ref','grade')
+    def _compute_average_7_days_conformity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_7_days_conformity = 'na'
+                continue
+            record.average_7_days_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4c16fe35-cd02-4d12-ba13-aa95bf000d73')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4c16fe35-cd02-4d12-ba13-aa95bf000d73')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.average_7_days - record.average_7_days*mu_value
+                    upper = record.average_7_days + record.average_7_days*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.average_7_days_conformity = 'pass'
+                        break
+                    else:
+                        record.average_7_days_conformity = 'fail'
+
+    @api.depends('average_7_days','eln_ref','grade')
+    def _compute_average_7_days_nabl(self):
+        
+        for record in self:
+            record.average_7_days_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4c16fe35-cd02-4d12-ba13-aa95bf000d73')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4c16fe35-cd02-4d12-ba13-aa95bf000d73')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_7_days - record.average_7_days*mu_value
+            upper = record.average_7_days + record.average_7_days*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_7_days_nabl = 'pass'
+                break
+            else:
+                record.average_7_days_nabl = 'fail'                    
+
 
 
     average_28_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_average_28_days_conformity")
 
     average_28_days_nabl = fields.Selection([
@@ -871,6 +996,9 @@ class FlyaschNormalConsistency(models.Model):
     @api.depends('average_28_days','eln_ref','grade')
     def _compute_average_28_days_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_28_days_conformity = 'na'
+                continue
             record.average_28_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3201vfg-98f0-419e-94cd-1844af4393f5')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3201vfg-98f0-419e-94cd-1844af4393f5')]).parameter_table
@@ -953,6 +1081,7 @@ class FlyaschNormalConsistency(models.Model):
     avg_10_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_10_days_conformity")
 
     avg_10_days_nabl = fields.Selection([
@@ -964,6 +1093,9 @@ class FlyaschNormalConsistency(models.Model):
     @api.depends('avg_10_days','eln_ref','grade')
     def _compute_avg_10_days_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_10_days_conformity = 'na'
+                continue
             record.avg_10_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','320147vbfd-c97d-4d83-a9f2-2eb112eae116')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','320147vbfd-c97d-4d83-a9f2-2eb112eae116')]).parameter_table
@@ -1034,12 +1166,16 @@ class FlyaschNormalConsistency(models.Model):
 
     avg_dry_autoclave_expansion_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_dry_autoclave_expansion_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),], string="Conformity", compute="_compute_avg_dry_autoclave_expansion_conformity", store=True)
 
     @api.depends('avg_dry_autoclave_expansion','eln_ref','grade')
     def _compute_avg_dry_autoclave_expansion_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_dry_autoclave_expansion_conformity = 'na'
+                continue
             record.avg_dry_autoclave_expansion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')]).parameter_table
@@ -1111,6 +1247,7 @@ class FlyaschNormalConsistency(models.Model):
             record.fineness_visible = False
             record.drying_shrinkage_visible = False
             record.compressive_strength_visible = False
+            record.compressive_strength7_visible = False
             record.lime_visible = False
             record.fineness_blain_visible = False
 
@@ -1153,9 +1290,15 @@ class FlyaschNormalConsistency(models.Model):
                     record.drying_shrinkage_visible = True
 
 
+                # compressive strength 7 days
+                if sample.internal_id == '4c16fe35-cd02-4d12-ba13-aa95bf000d73':
+                    record.compressive_strength7_visible = True
+                
                 # compressive strength
                 if sample.internal_id == '3201vfg-98f0-419e-94cd-1844af4393f5':
                     record.compressive_strength_visible = True
+
+
 
                 
                 # lime reactivity
@@ -1183,23 +1326,23 @@ class FlyaschNormalConsistency(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            # # Initial Setting
-            # if result.parameter.internal_id == '2014fgr32-6bbe-4fdf-9571-a5a099be0293':
-            #     result.result_char = round(self.initial_time_set,2)
-            #     if self.initial_time_set_nabl == 'pass':
-            #         result.nabl_status = 'nabl'
-            #     else:
-            #         result.nabl_status = 'non-nabl'
-            #     continue
+            # Initial Setting
+            if result.parameter.internal_id == '2014fgr32-6bbe-4fdf-9571-a5a099be0293':
+                result.result_char = round(self.initial_time_set,2)
+                # if self.initial_time_set_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
 
-            # # Final Setting
-            # if result.parameter.internal_id == '32145grte8-6526-4fcc-a5ec-18cc1ae10857':
-            #     result.result_char = round(self.final_time_set,2)
-            #     if self.final_time_set_nabl == 'pass':
-            #         result.nabl_status = 'nabl'
-            #     else:
-            #         result.nabl_status = 'non-nabl'
-            #     continue
+            # Final Setting
+            if result.parameter.internal_id == '32145grte8-6526-4fcc-a5ec-18cc1ae10857':
+                result.result_char = round(self.final_time_set,2)
+                # if self.final_time_set_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
 
             # Soundness By Le-Chatelier Test
             if result.parameter.internal_id == '3210ght7-91b0-4153-87ef-11b6954a9837':
@@ -1272,6 +1415,7 @@ class FlyaschNormalConsistency(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+            
 
 
 
@@ -1339,8 +1483,8 @@ class ConsistencyLine(models.Model):
     _name= "consistency.line"
     parent_id = fields.Many2one('mechanical.flyasch.normalconsistency',string="Parent Id")
 
-    sr_no = fields.Integer(string="Trail No", readonly=True, copy=False, default=1)
-    # trail_no = fields.Integer(string="Trail No")
+    sr_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
+    # trail_no = fields.Integer(string="Trial No")
     mass_cement = fields.Float("Mass of Cement Taken (gms)")
     water_added = fields.Float("Water Added (ml)")
     water_percent = fields.Float("Water (%)",compute="_compute_water_percent")
@@ -1378,8 +1522,8 @@ class SettingTimeLine(models.Model):
     _name= "setting.time.line"
     parent_id = fields.Many2one('mechanical.flyasch.normalconsistency',string="Parent Id")
 
-    sr_no = fields.Integer(string="Trail NO", readonly=True, copy=False, default=1)
-    # trail_no = fields.Integer(string="Trail No")
+    sr_no = fields.Integer(string="Trial NO", readonly=True, copy=False, default=1)
+    # trail_no = fields.Integer(string="Trial No")
 
     # room_temp = fields.Float("Room Temperature")
     # humidity = fields.Float("Humidity (%)")
@@ -1538,7 +1682,7 @@ class ParticlesRetainedLine(models.Model):
     _name= "particles.retained.line"
     parent_id = fields.Many2one('mechanical.flyasch.normalconsistency',string="Parent Id")
 
-    sr_no = fields.Integer(string="Trail No", readonly=True, copy=False, default=1)
+    sr_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
     sample_taken = fields.Float("Sample Taken (gm)")
     sieve_size = fields.Float("Sieve Size (µ)")
     weight_retained = fields.Float("Weight Retained (gm)")
@@ -1629,7 +1773,12 @@ class FlyashCompressiveStrengthLine(models.Model):
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
     lab_id = fields.Char("Lab Id")
-    testing_period = fields.Char("Testing Period")
+    testing_period = fields.Selection([
+        ('day7', '168±2 hr (7 Days)'),
+        ('day28', '672±4 hr (28 Days)'),
+        
+    ], string='Testing Period')
+    # testing_period = fields.Char("Testing Period")
     casting_details = fields.Date("Casting Details Date",compute="_compute_dt_of_casting")
     days = fields.Integer(string="No.of Days",store=True)
 
@@ -1645,7 +1794,7 @@ class FlyashCompressiveStrengthLine(models.Model):
 
    
 
-    load_failure = fields.Float("Load at Failure (P) kN",digits=(12,4))
+    load_failure = fields.Float("Load at Failure (P) kN",digits=(12,3))
     compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength",store=True,digits=(12,1))
     avg_compressive_strength = fields.Float("Avg. Strength Mpa",digits=(12,1))
 
@@ -1724,7 +1873,12 @@ class FlyashCompressiveCementLine(models.Model):
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
     lab_id = fields.Char("Lab Id")
-    testing_period = fields.Char("Testing Period")
+    testing_period = fields.Selection([
+        ('day7', '168±2 hr (7 Days)'),
+        ('day28', '672±4 hr (28 Days)'),
+        
+    ], string='Testing Period')
+    # testing_period = fields.Char("Testing Period")
     casting_details = fields.Date("Casting Details Date",compute="_compute_dt_of_casting")
     days = fields.Integer(string="No.of Days",store=True)
 
@@ -1740,7 +1894,7 @@ class FlyashCompressiveCementLine(models.Model):
 
    
 
-    load_failure = fields.Float("Load at Failure (P) kN",digits=(12,4))
+    load_failure = fields.Float("Load at Failure (P) kN",digits=(12,3))
     compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength",store=True,digits=(12,1))
     avg_compressive_strength = fields.Float("Avg. Strength Mpa",digits=(12,1))
 
@@ -1835,7 +1989,7 @@ class FlyashLimeLine(models.Model):
 
    
 
-    load_failure = fields.Float("Load at Failure (P) kN",digits=(12,4))
+    load_failure = fields.Float("Load at Failure (P) kN",digits=(12,3))
     compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength",store=True,digits=(12,1))
     avg_compressive_strength = fields.Float("Avg. Strength Mpa",digits=(12,1))
 
