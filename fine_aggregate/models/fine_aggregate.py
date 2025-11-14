@@ -1320,13 +1320,13 @@ class FineAggregate(models.Model):
     @api.model
     def _default_quantitative_soundness_lines(self):
         default_lines = [
-            (0, 0, {'passing': '10mm', 'retained': '4.75mm'}),
-            (0, 0, {'passing': '4.75mm', 'retained': '2.36mm'}),
-            (0, 0, {'passing': '2.36mm', 'retained': '1.18mm'}),
-            (0, 0, {'passing': '1.18mm', 'retained': '0.6mm'}),
-            (0, 0, {'passing': '0.6mm', 'retained': '0.3mm'}),
-            (0, 0, {'passing': '0.3mm', 'retained': '0.15mm'}),
-            (0, 0, {'passing': '0.15mm', 'retained': 'Pan'}),
+            (0, 0, {'passing': '10mm', 'retained': '4.75mm', 'sieve_magnesium':'4.75mm'}),
+            (0, 0, {'passing': '4.75mm', 'retained': '2.36mm' , 'sieve_magnesium':'2.36mm'}),
+            (0, 0, {'passing': '2.36mm', 'retained': '1.18mm', 'sieve_magnesium':'1.18mm'}),
+            (0, 0, {'passing': '1.18mm', 'retained': '0.6mm', 'sieve_magnesium':'0.6mm'}),
+            (0, 0, {'passing': '0.6mm', 'retained': '0.3mm', 'sieve_magnesium':'0.3mm'}),
+            (0, 0, {'passing': '0.3mm', 'retained': '0.15mm', 'sieve_magnesium':'0.15mm'}),
+            (0, 0, {'passing': '0.15mm', 'retained': 'Pan', 'sieve_magnesium':'pan'}),
         ]
         return default_lines
 
