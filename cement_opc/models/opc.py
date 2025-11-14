@@ -761,6 +761,7 @@ class CementNormalConsistency(models.Model):
                 rec.avg_expantion = 0
 
 
+
     avg_expantion_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),

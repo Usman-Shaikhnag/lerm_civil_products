@@ -98,6 +98,7 @@ class MechanicalConcreteCube(models.Model):
 
     days_7_kmm = fields.Float(string="7 Days", compute="_compute_days_7_kmm")
     days_7_n = fields.Float(string="7 Days", compute="_compute_days_7_n")
+    
 
     @api.depends('days_28_kmm')
     def _compute_days_7_kmm(self):

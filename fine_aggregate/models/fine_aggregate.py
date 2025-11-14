@@ -495,14 +495,14 @@ class FineAggregate(models.Model):
         
           ], string="Water Absorption Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
-    @api.depends('avg_water_absorption','eln_ref','grade')
+    @api.depends('avg_water_absorption_conformity','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
 
         
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_expantion_conformity = 'na'
+                record.avg_water_absorption = 'na'
                 continue
 
 
