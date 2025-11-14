@@ -22,8 +22,8 @@ class GgbsMechanical(models.Model):
     tests = fields.Many2many("mechanical.ggbs.test",string="Tests")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
-    def action_open_prefill_wizard(self):
-        self.ensure_one()
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
         return {
             'name': 'Prefill Data',
             'type': 'ir.actions.act_window',
@@ -31,10 +31,9 @@ class GgbsMechanical(models.Model):
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'active_id': self.id,   # <<< IMPORTANT FIX
                 'default_product_id': self.eln_ref.sample_id.material_id.id,
                 'exclude_sample_id': self.eln_ref.sample_id.id,
-            }
+                },
         }
 
 
