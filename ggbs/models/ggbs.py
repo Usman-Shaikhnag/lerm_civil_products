@@ -4,6 +4,7 @@ from datetime import datetime , timedelta
 import math
 from math import sqrt
 from decimal import Decimal, ROUND_HALF_UP
+from statistics import mean
 
 
 class GgbsMechanical(models.Model):
@@ -20,6 +21,23 @@ class GgbsMechanical(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     tests = fields.Many2many("mechanical.ggbs.test",string="Tests")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+
+    def action_open_prefill_wizard(self):
+        self.ensure_one()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'ggbs.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_id': self.id,   # <<< IMPORTANT FIX
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+            }
+        }
+
+
 
 
     @api.depends('eln_ref')
@@ -640,7 +658,12 @@ class GgbsCementMotorLine(models.Model):
 
 
     lab_id = fields.Char("Lab Id")
-    testing_period = fields.Char("Testing Period")
+    # testing_period = fields.Char("Testing Period")
+    testing_period = fields.Selection([
+        ('day7', '168±2 hr (7 Days)'),
+        ('day28', '672±4 hr (28 Days)'),
+        
+    ], string='Testing Period')
     casting_details = fields.Date("Casting Details Date",compute="_compute_dt_of_casting")
     days = fields.Integer(string="No.of Days",store=True)
     testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
@@ -753,7 +776,12 @@ class GgbsCementLine(models.Model):
 
 
     lab_id = fields.Char("Lab Id")
-    testing_period = fields.Char("Testing Period")
+    # testing_period = fields.Char("Testing Period")
+    testing_period = fields.Selection([
+        ('day7', '168±2 hr (7 Days)'),
+        ('day28', '672±4 hr (28 Days)'),
+        
+    ], string='Testing Period')
     casting_details = fields.Date("Casting Details Date",compute="_compute_dt_of_casting")
     days = fields.Integer(string="No.of Days",store=True)
     testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
@@ -763,6 +791,8 @@ class GgbsCementLine(models.Model):
     length2 = fields.Float("Length (L)")
 
     avg_length = fields.Float("Avg. Length (L)",compute="_compute_avg_length")
+
+   
 
     @api.depends('length1', 'length2')
     def _compute_avg_length(self):

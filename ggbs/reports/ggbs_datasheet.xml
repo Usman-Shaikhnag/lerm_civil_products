@@ -254,7 +254,8 @@
 									<span t-esc="r.lab_id"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.testing_period"/>
+									<t t-if="r.testing_period == 'day7'">168±2 hr (7 Days)</t>
+									<t t-elif="r.testing_period == 'day28'">672±4 hr (28 Days)</t>
 								</td>
 								<td style="text-align: center;">
 									<span t-esc="r.casting_details"/>
@@ -389,7 +390,8 @@
 									<span t-esc="r.lab_id"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.testing_period"/>
+									<t t-if="r.testing_period == 'day7'">168±2 hr (7 Days)</t>
+									<t t-elif="r.testing_period == 'day28'">672±4 hr (28 Days)</t>
 								</td>
 								<td style="text-align: center;">
 									<span t-esc="r.casting_details"/>

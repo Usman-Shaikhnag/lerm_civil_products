@@ -60,6 +60,21 @@ class PaverBlockReport1(models.AbstractModel):
         if not eln:
             raise ValueError("ELN record not found")
 
+        internal_ids = [
+            '23547trew-199c-497a-b3a7-45023c604673',  # Fineness
+            '4609c439-2ee4-4e3e-b40c-334e95b2bbda',  # Slag Activity (Header)
+            'f079957b-608f-40c0-aebd-0db011ab0f2c',     # 7-day Activity
+            '549532ef-08e1-46f7-9565-bf034ce334f4',     # 28-day Activity
+            '2147fgrr-eba3-4f15-b33d-679b39f7372e',  # Extra Parameter
+        ]
+
+        # ✅ सर्व parameter.master records dictionary मध्ये साठवा
+        ParamMaster = self.env['lerm.parameter.master'].sudo()
+        parameters = {}
+        for iid in internal_ids:
+            record = ParamMaster.search([('internal_id', '=', iid)], limit=1)
+            parameters[iid] = record
+
         # 🧩 QR Code तयार करा
         qr = qrcode.QRCode(
             version=1,
@@ -87,5 +102,6 @@ class PaverBlockReport1(models.AbstractModel):
             'eln': eln,
             'data' : general_data,
             'qrcode': qr_code,
-            'nabl' : nabl
+            'nabl' : nabl,
+            'parameters': parameters,  # ← dictionary QWeb 
         }
