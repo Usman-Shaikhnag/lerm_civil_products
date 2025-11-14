@@ -777,10 +777,12 @@ class CementNormalConsistency(models.Model):
 
     @api.depends('avg_expantion','eln_ref','grade')
     def _compute_avg_expantion_conformity(self):
+        
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.avg_expantion_conformity = 'na'
                 continue
+
             record.avg_expantion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','87ye7425-30fe-4043-b518-987456321r')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','87ye7425-30fe-4043-b518-987456321r')]).parameter_table
