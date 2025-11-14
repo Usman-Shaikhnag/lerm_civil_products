@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
+from datetime import date
 
 class Equipment(models.Model):
     # _name = 'lerm.equipment'
@@ -47,6 +48,16 @@ class CalibrationLines(models.Model):
         ('no', 'No'),
     ],string='Fit for Use', default='yes')
 
+    due_in_days_int  = fields.Integer(string="Due in Day(s)",compute="_compute_due_in_days",store=True)
+
+    @api.depends('calibration_due_date')
+    def _compute_due_in_days(self):
+        today_date = date.today()
+        for record in self:
+            if record.calibration_due_date:
+                record.due_in_days_int  = (record.calibration_due_date - today_date).days
+            else:
+                record.due_in_days_int  = False
 
     @api.model
     def create(self, vals):
@@ -90,6 +101,7 @@ class CalibrationLines(models.Model):
                 'accuracy_status_defined': line.accuracy_status_defined,
                 'accuracy_status_reported': line.accuracy_status_reported,
                 'fit_for_use': line.fit_for_use,
+                'due_in_days_int': line.due_in_days_int,
             }
 
             if register:
@@ -155,7 +167,7 @@ class EquipmentRegister(models.Model):
         ('yes', 'Yes'),
         ('no', 'No'),
     ],string='Fit for Use', default='yes')
-
+    due_in_days_int  = fields.Integer(string="Due in Day(s)")
 
     _sql_constraints = [
         ('unique_category_code', 'unique(equipment)', 'The equipment must be unique!'),
