@@ -1,0 +1,78 @@
+<templates>
+<t t-name="document_filestore.DriveApp" owl="1">
+
+<t t-if="state.dataLoading">
+  <div class="o_drive_loading_state">
+    <i class="fa fa-spinner fa-pulse fa-3x"/>
+    <p>Loading your drive contents...</p>
+  </div>
+</t>
+
+<t t-else="">
+  <div class="o-drive">
+
+    <div class="o-drive__sidebar">
+      <DriveSidebar 
+        onFolderClick="handleFolderClick"
+        currentFolderId="state.currentFolderId"
+        onViewAllFolders="handleViewAllFolders"
+        viewAllFolders="state.viewAllFolders"
+        folders="state.folders"
+      />
+    </div>
+
+    <div class="o-drive__container">
+      <DriveHeader 
+        folderName="currentFolderName"
+        onUploadClick="() => state.isUploadModalOpen = true"
+        onCreateFolder="handleCreateFolder"
+      />
+      
+      <Breadcrumbs breadcrumbs="breadcrumbs" onFolderClick="handleFolderClick" />
+
+      <DriveContainer 
+        items="currentItems"
+        onFolderClick="handleFolderClick"
+        onFileClick="handleFileClick"
+        currentFolderId="state.currentFolderId"
+        folders="state.folders"
+        onRenameFolder="handleRenameFolder"
+        onDeleteFolder="handleDeleteFolder"
+        onUserRights="handleUserRights"
+        onRenameFile="handleRenameFile"
+        onDeleteFile="handleDeleteFile"
+      />
+      <FilePreview
+          t-if="state.selectedFile"
+          file="state.selectedFile"
+          onClose="closePreview"
+      />
+
+      <UploadModal 
+        isOpen="state.isUploadModalOpen"
+        onClose="() => state.isUploadModalOpen = false"
+        currentFolderId="state.currentFolderId"
+        currentFolderName="currentFolderName"
+        onUploadComplete="handleUploadComplete"
+      />
+
+      <t t-if="state.activeItem">
+        <UserRightsModal
+            itemId="state.activeItem.id"
+            itemName="state.activeItem.name"
+            isFolder="state.activeItem.isFolder"
+            onClose="() => { state.activeItem = null; }"
+        />
+      </t>
+
+
+
+
+
+    </div>
+
+  </div>
+</t>
+
+</t>
+</templates>

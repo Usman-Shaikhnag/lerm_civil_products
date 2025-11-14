@@ -1,0 +1,62 @@
+<templates>
+  <t t-name="document_filestore.DriveSidebar" owl="1">
+    <aside class="o_drive_sidebar">
+      
+      <!-- Header -->
+      <div class="sidebar-header">
+        <p class="text-sm fw-semibold">My Drive</p>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav">
+
+        <!-- My Drive -->
+        <button
+          class="btn btn-link w-100 justify-content-start gap-3 mb-2"
+          t-att-class="(props.currentFolderId === 'root' &amp;&amp; !props.viewAllFolders) ? 'sidebar-active' : ''"
+          t-on-click="handleMyDriveClick"
+        >
+          <i class="fa fa-home" /> <span>My Drive</span>
+        </button>
+
+        <!-- Future sections can be enabled later -->
+        <button class="btn btn-link w-100 justify-content-start gap-3 mb-2">
+          <i class="fa fa-star" /> <span>Starred</span>
+        </button>
+
+        <button class="btn btn-link w-100 justify-content-start gap-3 mb-4">
+          <i class="fa fa-clock-o" /> <span>Recent</span>
+        </button>
+
+        <!-- FOLDER LIST -->
+        <p class="folders-label">FOLDERS</p>
+
+        <t t-foreach="rootFolders" t-as="folder" t-key="folder.id">
+          <button
+            class="btn btn-link w-100 justify-content-start gap-3 text-sm"
+            t-att-class="(props.currentFolderId === folder.id &amp;&amp; !props.viewAllFolders) ? 'sidebar-active' : ''"
+            t-on-click="() => props.onFolderClick(folder.id)"
+          >
+            <i class="fa fa-folder"></i> <span t-esc="folder.name" />
+          </button>
+        </t>
+
+      </nav>
+
+      <!-- Footer -->
+      <div class="sidebar-footer">
+        <button class="btn btn-link w-100 justify-content-start gap-3">
+          <i class="fa fa-trash-o" /> <span>Trash</span>
+        </button>
+
+        <!-- ✅ Connected Logout -->
+        <button class="btn btn-link w-100 justify-content-start gap-3"
+          t-on-click="handleSignOut"
+        >
+          <i class="fa fa-sign-out" /> <span>Logout</span>
+        </button>
+      </div>
+
+    </aside>
+  </t>
+</templates>

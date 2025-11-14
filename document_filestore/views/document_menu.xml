@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <menuitem 
+            id="menu_document_drive_root"
+            name="My Drive"
+            sequence="100" 
+        />
+
+        <record id="action_document_drive_client" model="ir.actions.client">
+            <field name="name">Drive Application</field>
+            <field name="tag">document_filestore</field>
+        </record>
+
+        <menuitem
+            id="menu_document_drive_app"
+            name="My Files"
+            parent="menu_document_drive_root"
+            action="action_document_drive_client"
+            sequence="10"
+        />
+
+        <!-- <record id="document_folder_action" model="ir.actions.act_window">
+            <field name="name">Document Folders</field>
+            <field name="res_model">document.folder</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem
+            id="menu_document_folder_management"
+            name="Folders (Admin)"
+            parent="menu_document_drive_root"
+            action="document_folder_action"
+            sequence="20"
+        /> -->
+        
+    </data>
+</odoo>

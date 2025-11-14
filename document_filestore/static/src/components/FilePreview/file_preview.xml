@@ -1,0 +1,41 @@
+<templates>
+  <t t-name="document_filestore.FilePreview" owl="1">
+    <div class="file-preview-overlay" t-on-click="props.onClose">
+      <div class="file-preview-box" t-on-click.stop="">
+        <div class="file-preview-header">
+          <span t-esc="props.file.name" />
+          <button class="btn btn-sm btn-light" t-on-click="props.onClose">
+            <i class="fa fa-close" />
+          </button>
+        </div>
+
+        <!-- Image Preview -->
+        <t t-if="props.file.type === 'image'">
+            <img t-att-src="props.file.previewUrl" class="file-preview-image" />
+            Link for file - <span t-esc="props.file.previewUrl" />
+        </t>
+
+        <!-- PDF -->
+        <t t-elif="props.file.type === 'pdf'">
+            <iframe t-att-src="props.file.previewUrl" class="file-preview-pdf"></iframe>
+            Link for file - <span t-esc="props.file.previewUrl" />
+        </t>
+
+        <!-- Other Files (show icon + download button) -->
+        <t t-else="">
+            <div class="file-preview-generic">
+                <i class="fa fa-file-o fa-4x text-muted"></i>
+                <p>No preview available</p>
+                <span t-esc="props.file.previewUrl" />
+            </div>
+        </t>
+
+        <div class="file-preview-footer">
+          <a class="btn btn-primary" t-att-href="props.file.downloadUrl">
+            <i class="fa fa-download" /> Download
+          </a>
+        </div>
+      </div>
+    </div>
+  </t>
+</templates>
