@@ -439,6 +439,7 @@ class MechanicalConcreteCube(models.Model):
                             result.nabl_status = 'non-nabl'
                         continue
                   
+                  
 
         return {
                 'view_mode': 'form',
