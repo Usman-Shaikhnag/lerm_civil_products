@@ -172,6 +172,8 @@
     <td style="border: 1px solid black; padding: 6px;"> <span t-esc="'%.2f' % r['compressive_strength']"/></td>
 
     
+
+    
     <t t-if="(line_count + 3) % 3 == 0">
         <td style="border: 1px solid black; padding: 6px; text-align: center; vertical-align: middle;" t-att-rowspan="4">
             <span t-esc="r['avg_compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>

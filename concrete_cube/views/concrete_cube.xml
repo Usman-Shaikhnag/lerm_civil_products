@@ -30,11 +30,18 @@
                         </div>
 
                         <!-- Test Header -->
-                        <group style="white-space: nowrap; width:80%;">
+                        <!-- <group style="white-space: nowrap; width:80%;">
                             <h1>
                                 <field name="name" readonly="1" nolabel="1"/>
                             </h1>
-                        </group>
+                        </group> -->
+
+                        <div style="text-align: center;" invisible="not cube_visible">
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                            <field name="cube_visible" invisible="1"/>
+                        </h1>
+                    </div>
 
                         <!-- Test Configuration -->
                         <div class="d-flex gap-2">
@@ -127,6 +134,7 @@
                             </tree>
                         </field> 
                         
+                        
                         <!-- Calculate Average Button -->
                         <!-- <button type="object" name="action_calculate_avg_strength" class="btn btn-primary mb-2">
                             <i class="fa fa-calculator mr-1"/> Calculate Average
@@ -141,6 +149,31 @@
                                 <field name='sd' />                        
                             </tree>
                         </field> 
+
+
+
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                  <tr>
+                                <td><label for="average_strength_conformity"></label></td>
+                                <td><field  name="average_strength_conformity"
+                                            decoration-success="average_strength_conformity == 'pass'" 
+                                            decoration-danger="average_strength_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="average_strength_nabl"></label></td>
+                                <td><field name="average_strength_nabl"
+                                            decoration-success="average_strength_nabl == 'pass'" 
+                                            decoration-danger="average_strength_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                                
+                            </tbody>
+                        </table>
+
+
 
                         <!-- Submit Button -->
                         <group style="margin-top: 20px;">

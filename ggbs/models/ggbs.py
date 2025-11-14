@@ -4,12 +4,14 @@ from datetime import datetime , timedelta
 import math
 from math import sqrt
 from decimal import Decimal, ROUND_HALF_UP
+from statistics import mean
 
 
 class GgbsMechanical(models.Model):
     _name = "mechanical.ggbs"
     _inherit = "lerm.eln"
     _rec_name = "name"
+
 
 
     name = fields.Char("Name",default="GGBS")
@@ -19,6 +21,23 @@ class GgbsMechanical(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     tests = fields.Many2many("mechanical.ggbs.test",string="Tests")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+
+    def action_open_prefill_wizard(self):
+        self.ensure_one()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'ggbs.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_id': self.id,   # <<< IMPORTANT FIX
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+            }
+        }
+
+
 
 
     @api.depends('eln_ref')
@@ -115,7 +134,10 @@ class GgbsMechanical(models.Model):
     specific_gravity_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('na', 'NA'),
+        
+   
+
     ], string='Confirmity', default='fail',compute="_compute_specific_gravity_confirmity")
     specific_gravity_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -125,7 +147,12 @@ class GgbsMechanical(models.Model):
 
     @api.depends('average_density','eln_ref','grade')
     def _compute_specific_gravity_confirmity(self):
-        for record in self:
+       
+       for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.specific_gravity_confirmity = 'na'
+                continue
+
             record.specific_gravity_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table
@@ -233,7 +260,8 @@ class GgbsMechanical(models.Model):
     day_7_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('na', 'NA'),
+        
     ], string='7 Days Confirmity', default='fail',compute="_compute_day_7_confirmity")
     day_7_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -243,7 +271,11 @@ class GgbsMechanical(models.Model):
 
     @api.depends('sai1','eln_ref','grade')
     def _compute_day_7_confirmity(self):
-        for record in self:
+         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.day_7_confirmity = 'na'
+                continue
+
             record.day_7_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')]).parameter_table
@@ -288,7 +320,8 @@ class GgbsMechanical(models.Model):
     day_28_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('na', 'NA'),
+        
     ], string='28 Days Confirmity', default='fail',compute="_compute_day_28_confirmity")
     day_28_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -298,7 +331,12 @@ class GgbsMechanical(models.Model):
 
     @api.depends('sai2','eln_ref','grade')
     def _compute_day_28_confirmity(self):
-        for record in self:
+         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.day_28_confirmity = 'na'
+                continue
+
+
             record.day_28_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')]).parameter_table
@@ -457,8 +495,9 @@ class GgbsMechanical(models.Model):
     fineness_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
-    ], string='Confirmity', default='fail',compute="_compute_fineness_confirmity")
+        ('na', 'NA'),
+        
+    ],  string='Confirmity', default='fail',compute="_compute_fineness_confirmity")
     fineness_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -467,7 +506,12 @@ class GgbsMechanical(models.Model):
 
     @api.depends('specific_surface_first','eln_ref','grade')
     def _compute_fineness_confirmity(self):
-        for record in self:
+          
+          for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.fineness_confirmity = 'na'
+                continue
+
             record.fineness_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
@@ -614,7 +658,12 @@ class GgbsCementMotorLine(models.Model):
 
 
     lab_id = fields.Char("Lab Id")
-    testing_period = fields.Char("Testing Period")
+    # testing_period = fields.Char("Testing Period")
+    testing_period = fields.Selection([
+        ('day7', '168±2 hr (7 Days)'),
+        ('day28', '672±4 hr (28 Days)'),
+        
+    ], string='Testing Period')
     casting_details = fields.Date("Casting Details Date",compute="_compute_dt_of_casting")
     days = fields.Integer(string="No.of Days",store=True)
     testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
@@ -727,7 +776,12 @@ class GgbsCementLine(models.Model):
 
 
     lab_id = fields.Char("Lab Id")
-    testing_period = fields.Char("Testing Period")
+    # testing_period = fields.Char("Testing Period")
+    testing_period = fields.Selection([
+        ('day7', '168±2 hr (7 Days)'),
+        ('day28', '672±4 hr (28 Days)'),
+        
+    ], string='Testing Period')
     casting_details = fields.Date("Casting Details Date",compute="_compute_dt_of_casting")
     days = fields.Integer(string="No.of Days",store=True)
     testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
@@ -737,6 +791,8 @@ class GgbsCementLine(models.Model):
     length2 = fields.Float("Length (L)")
 
     avg_length = fields.Float("Avg. Length (L)",compute="_compute_avg_length")
+
+   
 
     @api.depends('length1', 'length2')
     def _compute_avg_length(self):

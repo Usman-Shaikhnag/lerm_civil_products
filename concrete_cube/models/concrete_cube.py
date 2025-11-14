@@ -14,6 +14,7 @@ class MechanicalConcreteCube(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name", default="Compressive Strength of Concrete Cube")
+    cube_visible = fields.Boolean("Compressive Strength of Concrete Cube",compute="_compute_visible")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master', string="Parameters", compute="_compute_sample_parameters", store=True)
     child_lines = fields.One2many('mechanical.concrete.cube.line','parent_id',string="Parameter")
@@ -25,7 +26,7 @@ class MechanicalConcreteCube(models.Model):
     # Project Information
     project_name = fields.Char(string="Project Name")
     customer_address = fields.Char(string="Name and Address of Customer")
-    report_no = fields.Char(string="Report No.", default="GCPL/LAB/YYYY/000")
+    report_no = fields.Char(string="Report No.")
     type_of_sample = fields.Selection([
         ('cube', 'Cast Concrete Cube'),
         ('cylinder', 'Cast Concrete Cylinder'),
@@ -79,6 +80,7 @@ class MechanicalConcreteCube(models.Model):
                 record.size_id = record.eln_ref.size_id.id
             else:
                 record.size_id = False
+                
 
     area_of_cube = fields.Float(string="Area of Cube", compute="_compute_area_cube", store=True)
 
@@ -98,6 +100,7 @@ class MechanicalConcreteCube(models.Model):
 
     days_7_kmm = fields.Float(string="7 Days", compute="_compute_days_7_kmm")
     days_7_n = fields.Float(string="7 Days", compute="_compute_days_7_n")
+    
 
     @api.depends('days_28_kmm')
     def _compute_days_7_kmm(self):
@@ -185,8 +188,10 @@ class MechanicalConcreteCube(models.Model):
     confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
-    ], string='Conformity', default='fail', compute="_compute_confirmity")
+        ('na', 'NA'),
+        
+    ], 
+   string='Conformity', default='fail', compute="_compute_confirmity")
     
     age_of_test = fields.Integer("Age of Test, days", compute="_compute_age_of_test")
     difference = fields.Integer("Difference", compute="_compute_difference")
@@ -195,6 +200,66 @@ class MechanicalConcreteCube(models.Model):
         ('pass', 'Pass'),
         ('fail', 'Fail'),
     ], string='NABL', default='fail', compute="_compute_nabl")
+
+
+
+    average_strength_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        
+    ], string='Conformity', compute="_compute_average_strength_conformity")
+
+    average_strength_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_strength_nabl")
+
+
+    @api.depends('average_strength','eln_ref','grade')
+    def _compute_average_strength_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_strength_conformity = 'na'
+                continue
+
+            record.average_strength_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.average_strength - record.average_strength*mu_value
+                    upper = record.average_strength + record.average_strength*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.average_strength_conformity = 'pass'
+                        break
+                    else:
+                        record.average_strength_conformity = 'fail'
+
+    @api.depends('average_strength','eln_ref','grade')
+    def _compute_average_strength_nabl(self):
+        
+        for record in self:
+            record.average_strength_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_strength - record.average_strength*mu_value
+            upper = record.average_strength + record.average_strength*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_strength_nabl = 'pass'
+                break
+            else:
+                record.average_strength_nabl = 'fail'
 
     @api.depends('age_of_test', 'age_of_days')
     def _compute_difference(self):
@@ -297,6 +362,12 @@ class MechanicalConcreteCube(models.Model):
     @api.depends('average_strength', 'eln_ref', 'grade', 'age_of_days', 'difference')
     def _compute_confirmity(self):
         for record in self:
+
+            for record in self:
+             if not record.eln_ref or not record.eln_ref.conformity:
+                record.confirmity = 'na'
+                continue
+
             record.confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', 'd6c89613-885c-4af1-bf19-f523bb56e0d9')])
             if line:
@@ -331,28 +402,80 @@ class MechanicalConcreteCube(models.Model):
                         else:
                             record.confirmity = 'not_applicable'
 
+     ### Compute Visible
+    @api.depends('eln_ref','sample_parameters')
+    def _compute_visible(self):
+        
+
+        for record in self:
+            record.cube_visible = False
+            # record.slag_activity_7_visible = False
+
+            # record.fineness_visible = False
+
+            
+            
+            for sample in record.sample_parameters:
+                print("Samples internal id",sample.internal_id)
+                
+                if sample.internal_id == 'd6c89613-885c-4af1-bf19-f523bb56e0d9':
+                    record.cube_visible = True
+                # if sample.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
+                #     record.slag_activity_7_visible = True
+                # if sample.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
+                #     record.fineness_visible = True
+               
+
+
+    def open_eln_page(self):
+        # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+                   
+                    if result.parameter.internal_id == 'd6c89613-885c-4af1-bf19-f523bb56e0d9':
+                        result.result_char = self.average_strength
+                        if self._compute_average_strength_nabl == 'pass':
+                            result.nabl_status = 'nabl'
+                        else:
+                            result.nabl_status = 'non-nabl'
+                        continue
+                  
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }       
+
     @api.model
     def create(self, vals):
+        # import wdb;wdb.set_trace()
         record = super(MechanicalConcreteCube, self).create(vals)
-        record.eln_ref.write({'model_id': record.id})
+        # record.get_all_fields()
+        record.eln_ref.write({'model_id':record.id})
         return record
+
 
     @api.depends('eln_ref')
     def _compute_sample_parameters(self):
         for record in self:
-            if record.eln_ref:
-                records = record.eln_ref.parameters_result.parameter.ids
-                record.sample_parameters = records
-            else:
-                record.sample_parameters = False
+            records = record.eln_ref.parameters_result.parameter.ids
+            record.sample_parameters = records
+            print("Records",records)
 
+        
     def get_all_fields(self):
-        record = self.env['mechanical.concrete.cube'].browse(self.ids[0])
+        record = self.env['mechanical.ggbs'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
             field_values[field_name] = field_value
+
         return field_values
+    
+
 
 class MechanicalConcreteCubeLine(models.Model):
     _name = "mechanical.concrete.cube.line"

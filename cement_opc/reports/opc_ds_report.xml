@@ -11,6 +11,7 @@
 
 
 
+
 				<div t-if="data.density_cement_visible" style="margin-top:10px">
 						<div style="text-align:center;font-size:18px">
 							Specific Gravity of Cement
@@ -956,14 +957,12 @@
 
 								<td><strong>Date Sample Received</strong>:</td>
 								<td>
-									<!-- <t t-if="cement.rock_child_lines">
-										<span t-field="data.rock_child_lines[0].date_received"/>
-									</t> -->
+									<span t-field="o.sample_id.sample_received_date"/>
 								</td>
 							</tr>
 							<tr>
 								<td><strong>Report No.</strong>: </td>
-								<td></td>
+								<td style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
 
 								<td><strong>Starting Date</strong>: </td>
 								<td>
