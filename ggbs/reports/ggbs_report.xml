@@ -168,21 +168,30 @@
 									</t>
 								</td>	 -->
 								<td style="text-align: center;">
-									<t t-set="found" t-value="False"/>
 
-									<!-- First Loop : Check for matching grade -->
+								
+								<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('210bgf54-baa4-466f-a6a7-044da708f265').test_method.test_method"/>
+								</t>
+
+							
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
 									<t t-foreach="parameters.get('210bgf54-baa4-466f-a6a7-044da708f265').parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-											<t t-set="found" t-value="True"/>
+											<t t-set="printed" t-value="True"/>
 										</t>
 									</t>
 
-									<!-- If no grade matched → show test_method -->
-									<t  t-if="not found">
-									<span t-esc="parameters.get('210bgf54-baa4-466f-a6a7-044da708f265').test_method.test_method"/>
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('210bgf54-baa4-466f-a6a7-044da708f265').test_method.test_method"/>
+									</t>
 								</t>
-								</td>
+
+							</td>
 
 								<td style="text-align: center;" >
 									<span>
@@ -239,21 +248,34 @@
 							</td>
 
 							
+							
+
 							<td style="text-align: center;">
 
-								<t t-set="found" t-value="False"/>
+								
+								<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-6b0ff7e69c0a').test_method.test_method"/>
+								</t>
 
-								<t t-foreach="parameters.get('5214hgtb-c526-4092-a3a7-6b0ff7e69c0a').parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-										<t t-set="found" t-value="True"/>
+							
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
+									<t t-foreach="parameters.get('5214hgtb-c526-4092-a3a7-6b0ff7e69c0a').parameter_table" t-as="parameter">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+											<t t-set="printed" t-value="True"/>
+										</t>
+									</t>
+
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-6b0ff7e69c0a').test_method.test_method"/>
 									</t>
 								</t>
 
-								<t t-if="not found">
-									<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-6b0ff7e69c0a').test_method.test_method"/>
-								</t>
 							</td>
+
 
 								
 
@@ -311,24 +333,31 @@
 								</t>
 							</td> -->
 
-							<td style="text-align: center;" rowspan="2" >
-									<t t-set="found" t-value="False"/>
+							<td style="text-align: center;" rowspan="2">
 
-									<!-- First Loop : Check for matching grade -->
+								
+								<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-321478658').test_method.test_method"/>
+								</t>
+
+								
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
 									<t t-foreach="parameters.get('5214hgtb-c526-4092-a3a7-321478658').parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
-											<t t-set="found" t-value="True"/>
+											<t t-set="printed" t-value="True"/>
 										</t>
 									</t>
 
-									<!-- If no grade matched → show test_method -->
-									
-										<t  t-if="not found">
-											<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-321478658').test_method.test_method"/>
-										</t>
 								
-								</td>
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-321478658').test_method.test_method"/>
+									</t>
+								</t>
+
+							</td>
 
 							<td style="text-align: center;">
 								<span t-field="ggbs.temp_7day"/>
