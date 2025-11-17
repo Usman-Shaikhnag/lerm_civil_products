@@ -1247,13 +1247,13 @@ class FineAggregate(models.Model):
 
 
             # % void Loose density
-            if result.parameter.internal_id == '8a944a9b-4d7d-44a3-a82c-6d8bacc07846':
-                result.result_char = round(self.avg_void_loose_density,2)
-                if self.avg_void_loose_density_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+            # if result.parameter.internal_id == '8a944a9b-4d7d-44a3-a82c-6d8bacc07846':
+            #     result.result_char = round(self.avg_void_loose_density,2)
+            #     if self.avg_void_loose_density_nabl == 'pass':
+            #         result.nabl_status = 'nabl'
+            #     else:
+            #         result.nabl_status = 'non-nabl'
+            #     continue
 
 
         return {
