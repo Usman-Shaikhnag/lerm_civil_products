@@ -52,14 +52,12 @@
 
 								<td><strong>Date Sample Received</strong>:</td>
 								<td>
-									<!-- <t t-if="data.rock_child_lines">
-										<span t-field="data.rock_child_lines[0].date_received"/>
-									</t> -->
+									<span t-field="o.sample_id.sample_received_date"/>
 								</td>
 							</tr>
 							<tr>
 								<td><strong>Report No.</strong>: </td>
-								<td></td>
+								<td style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
 
 								<td><strong>Starting Date</strong>: </td>
 								<td>
