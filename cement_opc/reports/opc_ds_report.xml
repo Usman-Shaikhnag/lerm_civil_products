@@ -1064,13 +1064,40 @@
 								<td >
 									<span t-field="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd723547htui').parameter_name"/>
 								</td>
+
 								<td style="text-align: center;">
+
+								
+								<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd723547htui').test_method.test_method"/>
+								</t>
+
+							
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
+									<t t-foreach="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd723547htui').parameter_table" t-as="parameter">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+											<t t-set="printed" t-value="True"/>
+										</t>
+									</t>
+
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd723547htui').test_method.test_method"/>
+									</t>
+								</t>
+
+							</td>
+
+								<!-- <td style="text-align: center;">
 									<t t-foreach="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd723547htui').parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
 										</t>
 									</t>
-								</td>	
+								</td>	 -->
 
 								<td style="text-align: center;" >
 									<span>
@@ -1122,11 +1149,32 @@
 									<span t-field="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd321456yytr').parameter_name"/>
 								</td>
 								<td rowspan="2" style="text-align: center;">
+									<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd321456yytr').test_method.test_method"/>
+								</t>
+
+							
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
 									<t t-foreach="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd321456yytr').parameter_table" t-as="parameter">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+											<t t-set="printed" t-value="True"/>
+										</t>
+									</t>
+
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd321456yytr').test_method.test_method"/>
+									</t>
+								</t>
+								
+								<!-- <t t-foreach="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd321456yytr').parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
 										</t>
-									</t>
+									</t> -->
 								</td>	
 
 								<td style="text-align: center;" >
@@ -1229,11 +1277,32 @@
 									<span t-field="parameters.get('254gt2547-372f-4775-9bcb-e9dd70e3587g').parameter_name"/>
 								</td>
 								<td style="text-align: center;">
+									<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('254gt2547-372f-4775-9bcb-e9dd70e3587g').test_method.test_method"/>
+								</t>
+
+							
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
 									<t t-foreach="parameters.get('254gt2547-372f-4775-9bcb-e9dd70e3587g').parameter_table" t-as="parameter">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+											<t t-set="printed" t-value="True"/>
+										</t>
+									</t>
+
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('254gt2547-372f-4775-9bcb-e9dd70e3587g').test_method.test_method"/>
+									</t>
+								</t>
+								
+								<!-- <t t-foreach="parameters.get('254gt2547-372f-4775-9bcb-e9dd70e3587g').parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
 										</t>
-									</t>
+									</t> -->
 								</td>	
 
 								<td style="text-align: center;" >
@@ -1285,11 +1354,32 @@
 									<span t-field="parameters.get('87ye7425-30fe-4043-b518-987456321r').parameter_name"/>
 								</td>
 								<td style="text-align: center;">
+									<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('87ye7425-30fe-4043-b518-987456321r').test_method.test_method"/>
+								</t>
+
+							
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
 									<t t-foreach="parameters.get('87ye7425-30fe-4043-b518-987456321r').parameter_table" t-as="parameter">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+											<t t-set="printed" t-value="True"/>
+										</t>
+									</t>
+
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('87ye7425-30fe-4043-b518-987456321r').test_method.test_method"/>
+									</t>
+								</t>
+								
+								<!-- <t t-foreach="parameters.get('87ye7425-30fe-4043-b518-987456321r').parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
 										</t>
-									</t>
+									</t> -->
 								</td>	
 
 								<td style="text-align: center;" >
@@ -1342,11 +1432,32 @@
 									<span t-field="parameters.get('87ye7425-30fe-4043-b518-32145698jj').parameter_name"/>
 								</td>
 								<td style="text-align: center;">
+									<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('87ye7425-30fe-4043-b518-32145698jj').test_method.test_method"/>
+								</t>
+
+							
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
 									<t t-foreach="parameters.get('87ye7425-30fe-4043-b518-32145698jj').parameter_table" t-as="parameter">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+											<t t-set="printed" t-value="True"/>
+										</t>
+									</t>
+
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('87ye7425-30fe-4043-b518-32145698jj').test_method.test_method"/>
+									</t>
+								</t>
+								
+								<!-- <t t-foreach="parameters.get('87ye7425-30fe-4043-b518-32145698jj').parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
 										</t>
-									</t>
+									</t> -->
 								</td>	
 
 								<td style="text-align: center;" >
@@ -1400,11 +1511,31 @@
 									<span t-field="parameters.get('63te7425-30fe-4043-b518-0102147hhytr').parameter_name"/>
 								</td>
 								<td style="text-align: center;">
+									<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('63te7425-30fe-4043-b518-0102147hhytr').test_method.test_method"/>
+								</t>
+
+							
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
 									<t t-foreach="parameters.get('63te7425-30fe-4043-b518-0102147hhytr').parameter_table" t-as="parameter">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+											<t t-set="printed" t-value="True"/>
+										</t>
+									</t>
+
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('63te7425-30fe-4043-b518-0102147hhytr').test_method.test_method"/>
+									</t>
+								</t>
+								<!-- <t t-foreach="parameters.get('63te7425-30fe-4043-b518-0102147hhytr').parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
 										</t>
-									</t>
+									</t> -->
 								</td>	
 
 								<td style="text-align: center;" >
@@ -1467,11 +1598,32 @@
 									<span t-field="parameters.get('147frrt012-372f-4775-9bcb-e9dd651478trew').parameter_name"/>
 								</td>
 								<td rowspan="3" style="text-align: center;">
+									<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('147frrt012-372f-4775-9bcb-e9dd651478trew').test_method.test_method"/>
+								</t>
+
+							
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
 									<t t-foreach="parameters.get('147frrt012-372f-4775-9bcb-e9dd651478trew').parameter_table" t-as="parameter">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+											<t t-set="printed" t-value="True"/>
+										</t>
+									</t>
+
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('147frrt012-372f-4775-9bcb-e9dd651478trew').test_method.test_method"/>
+									</t>
+								</t>
+								
+								<!-- <t t-foreach="parameters.get('147frrt012-372f-4775-9bcb-e9dd651478trew').parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
 										</t>
-									</t>
+									</t> -->
 								</td>
 
 								<td style="text-align: center;" >
