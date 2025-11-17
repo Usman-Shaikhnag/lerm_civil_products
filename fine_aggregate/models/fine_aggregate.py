@@ -1237,23 +1237,23 @@ class FineAggregate(models.Model):
             
 
             # % void Compacted density
-            if result.parameter.internal_id == 'a699d9fd-57f5-4044-97ea-2bea87bf9c44':
-                result.result_char = round(self.avg_void_compacted_density,2)
-                if self.avg_void_compacted_density_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+            # if result.parameter.internal_id == 'a699d9fd-57f5-4044-97ea-2bea87bf9c44':
+            #     result.result_char = round(self.avg_void_compacted_density,2)
+            #     if self.avg_void_compacted_density_nabl == 'pass':
+            #         result.nabl_status = 'nabl'
+            #     else:
+            #         result.nabl_status = 'non-nabl'
+            #     continue
 
 
             # % void Loose density
-            if result.parameter.internal_id == '8a944a9b-4d7d-44a3-a82c-6d8bacc07846':
-                result.result_char = round(self.avg_void_loose_density,2)
-                if self.avg_void_loose_density_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+            # if result.parameter.internal_id == '8a944a9b-4d7d-44a3-a82c-6d8bacc07846':
+            #     result.result_char = round(self.avg_void_loose_density,2)
+            #     if self.avg_void_loose_density_nabl == 'pass':
+            #         result.nabl_status = 'nabl'
+            #     else:
+            #         result.nabl_status = 'non-nabl'
+            #     continue
 
 
         return {
