@@ -7,6 +7,7 @@ from math import sqrt
 from decimal import Decimal, ROUND_HALF_UP
 
 
+
 class PPCCementNormalConsistency(models.Model):
     _name = "cement.ppc"
     _inherit = "lerm.eln"
@@ -125,7 +126,8 @@ class PPCCementNormalConsistency(models.Model):
     avg_density_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_density_conformity")
+        ('na', 'NA'),
+    ],  string='Conformity', default='fail',compute="_compute_avg_density_conformity")
 
     avg_density_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -136,6 +138,10 @@ class PPCCementNormalConsistency(models.Model):
     @api.depends('avg_density','eln_ref','grade')
     def _compute_avg_density_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_density_conformity = 'na'
+                continue
+             
             record.avg_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be88a13b-8bc0-4d32-b8c0-43032c0cdd86')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','be88a13b-8bc0-4d32-b8c0-43032c0cdd86')]).parameter_table
@@ -202,8 +208,8 @@ class PPCCementNormalConsistency(models.Model):
     avg_consistency_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
-    ], string='Confirmity', default='fail',compute="_compute_avg_consistency_confirmity")
+        ('na', 'NA'),
+    ],  string='Confirmity', default='fail',compute="_compute_avg_consistency_confirmity")
     avg_consistency_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -213,6 +219,9 @@ class PPCCementNormalConsistency(models.Model):
     @api.depends('avg_consistency','eln_ref','grade')
     def _compute_avg_consistency_confirmity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_consistency_confirmity = 'na'
+                continue
             record.avg_consistency_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','64616a30-801e-40aa-abba-32dcd71b7c37')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','64616a30-801e-40aa-abba-32dcd71b7c37')]).parameter_table
@@ -295,7 +304,7 @@ class PPCCementNormalConsistency(models.Model):
     avg_initial_time_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('na', 'NA'),
     ], string='Initial Time Confirmity', default='fail',compute="_compute_avg_initial_time_confirmity")
     avg_initial_time_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -306,6 +315,10 @@ class PPCCementNormalConsistency(models.Model):
     @api.depends('avg_initial_time','eln_ref','grade')
     def _compute_avg_initial_time_confirmity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_initial_time_confirmity = 'na'
+                continue
+             
             record.avg_initial_time_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d1fcbd33-f315-4290-a309-74acc90bc3f8')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d1fcbd33-f315-4290-a309-74acc90bc3f8')]).parameter_table
@@ -346,7 +359,7 @@ class PPCCementNormalConsistency(models.Model):
     avg_final_time_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('na', 'NA'),
     ], string='Final Time Confirmity', default='fail',compute="_compute_avg_final_time_confirmity")
     avg_final_time_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -357,6 +370,9 @@ class PPCCementNormalConsistency(models.Model):
     @api.depends('avg_final_time','eln_ref','grade')
     def _compute_avg_final_time_confirmity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_final_time_confirmity = 'na'
+                continue
             record.avg_final_time_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e87e5708-bead-453a-90d5-4ec142545c52')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e87e5708-bead-453a-90d5-4ec142545c52')]).parameter_table
@@ -443,8 +459,8 @@ class PPCCementNormalConsistency(models.Model):
     fineness_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
-    ], string='Confirmity', default='fail',compute="_compute_fineness_confirmity")
+        ('na', 'NA'),
+    ],  string='Confirmity', default='fail',compute="_compute_fineness_confirmity")
     fineness_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -454,6 +470,11 @@ class PPCCementNormalConsistency(models.Model):
     @api.depends('specific_surface_first','eln_ref','grade')
     def _compute_fineness_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.fineness_confirmity = 'na'
+                continue
+              
             record.fineness_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7797b1a6-d753-41ea-85f3-eaa37aebf08b')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7797b1a6-d753-41ea-85f3-eaa37aebf08b')]).parameter_table
@@ -529,7 +550,8 @@ class PPCCementNormalConsistency(models.Model):
     avg_3_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_3_days_conformity")
+        ('na', 'NA'),
+    ],  string='Conformity', default='fail',compute="_compute_avg_3_days_conformity")
 
     avg_3_days_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -540,6 +562,12 @@ class PPCCementNormalConsistency(models.Model):
     @api.depends('avg_3_days','eln_ref','grade')
     def _compute_avg_3_days_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_3_days_conformity = 'na'
+                continue
+
+
             record.avg_3_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36905ff2-60e5-4e3f-a003-4f12cf03ebe9')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36905ff2-60e5-4e3f-a003-4f12cf03ebe9')]).parameter_table
@@ -585,7 +613,8 @@ class PPCCementNormalConsistency(models.Model):
     avg_7_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_avg_7_days_conformity")
+        ('na', 'NA'),
+    ],  string='Conformity', default='fail',compute="_compute_avg_7_days_conformity")
 
     avg_7_days_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -596,6 +625,10 @@ class PPCCementNormalConsistency(models.Model):
     @api.depends('avg_7_days','eln_ref','grade')
     def _compute_avg_7_days_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_7_days_conformity = 'na'
+                continue
+
             record.avg_7_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e2e1d8e6-d831-4b2b-8cb2-aa074dce7fc6')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e2e1d8e6-d831-4b2b-8cb2-aa074dce7fc6')]).parameter_table
@@ -642,6 +675,7 @@ class PPCCementNormalConsistency(models.Model):
     avg_28_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_28_days_conformity")
 
     avg_28_days_nabl = fields.Selection([
@@ -653,6 +687,10 @@ class PPCCementNormalConsistency(models.Model):
     @api.depends('avg_28_days','eln_ref','grade')
     def _compute_avg_28_days_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_28_days_conformity = 'na'
+                continue
+
             record.avg_28_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fd34def6-d5cf-47c5-87e2-72c7b59dd2c3')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fd34def6-d5cf-47c5-87e2-72c7b59dd2c3')]).parameter_table
@@ -727,6 +765,7 @@ class PPCCementNormalConsistency(models.Model):
     avg_expantion_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_expantion_conformity")
 
     avg_expantion_nabl = fields.Selection([
@@ -738,6 +777,12 @@ class PPCCementNormalConsistency(models.Model):
     @api.depends('avg_expantion','eln_ref','grade')
     def _compute_avg_expantion_conformity(self):
         for record in self:
+
+            
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_expantion_conformity = 'na'
+                continue
+
             record.avg_expantion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bf78dd87-02e2-4c6d-9463-a04f434d25c6')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bf78dd87-02e2-4c6d-9463-a04f434d25c6')]).parameter_table
@@ -816,6 +861,7 @@ class PPCCementNormalConsistency(models.Model):
     avg_expantion1_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_expantion1_conformity")
 
     avg_expantion1_nabl = fields.Selection([
@@ -827,6 +873,11 @@ class PPCCementNormalConsistency(models.Model):
     @api.depends('avg_expantion1','eln_ref','grade')
     def _compute_avg_expantion1_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_expantion1_conformity = 'na'
+                continue
+            
             record.avg_expantion1_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d72cba69-a44e-406a-b621-8344c3716275')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d72cba69-a44e-406a-b621-8344c3716275')]).parameter_table

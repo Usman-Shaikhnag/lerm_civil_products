@@ -142,9 +142,11 @@ class CementNormalConsistency(models.Model):
     @api.depends('avg_density','eln_ref','grade')
     def _compute_avg_density_conformity(self):
         for record in self:
+
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.avg_density_conformity = 'na'
                 continue
+            
             record.avg_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254gt2547-372f-4775-9bcb-e9dd70e3587g')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254gt2547-372f-4775-9bcb-e9dd70e3587g')]).parameter_table
@@ -161,6 +163,7 @@ class CementNormalConsistency(models.Model):
                         break
                     else:
                         record.avg_density_conformity = 'fail'
+
 
 
 
@@ -819,6 +822,7 @@ class CementNormalConsistency(models.Model):
                 break
             else:
                 record.avg_expantion_nabl = 'fail'
+
 
     #  Soundness of Cement By Le-Chattelier Method
     soundness_le_method_name = fields.Char("Name",default="Soundness of Cement By Le-Chattelier Method")
