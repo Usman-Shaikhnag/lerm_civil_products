@@ -548,6 +548,7 @@ class MechanicalConcreteCubeLine(models.Model):
             else:
                 record.days = 0
 
+
     @api.depends('dt_of_casting', 'days')
     def _compute_dt_of_testing(self):
         for record in self:

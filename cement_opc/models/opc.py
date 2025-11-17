@@ -125,6 +125,7 @@ class CementNormalConsistency(models.Model):
             else:
                 rec.avg_density = 0.0
                 
+                
 
     # specific_gravity = fields.Float(string="Specific Gravity of Cement",compute="_compute_cement_specific")
 
