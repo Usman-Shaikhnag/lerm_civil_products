@@ -440,6 +440,7 @@ class MechanicalConcreteCube(models.Model):
                         continue
                   
                   
+                  
 
         return {
                 'view_mode': 'form',
@@ -483,7 +484,7 @@ class MechanicalConcreteCubeLine(models.Model):
     parent_id = fields.Many2one('mechanical.concrete.cube', string="Parent Id")
 
     sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
-    id_mark = fields.Char(string="Sample Identification", compute="_compute_id_mark", store=True)
+    id_mark = fields.Char(string="Sample Identification", compute="_compute_id_mark",inverse="_inverse_id_mark", store=True)
     wt_sample = fields.Float(string="Weight of Cube (gms)", digits=(16, 3))
     
     # Dimensions
@@ -562,6 +563,11 @@ class MechanicalConcreteCubeLine(models.Model):
                 record.id_mark = record.parent_id.eln_ref.sample_id.client_sample_id
             else:
                 record.id_mark = ""
+    def _inverse_id_mark(self):
+    # This allows manual editing
+      for record in self:
+        record.id_mark = record.id_mark
+           
 
     @api.model
     def create(self, vals):

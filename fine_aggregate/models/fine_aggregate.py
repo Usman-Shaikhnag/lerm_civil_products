@@ -1369,14 +1369,7 @@ class SieveAnalysisLine(models.Model):
 
         return res
 
-# wt_of_sample
-    # @api.depends('wt_retained', 'parent_id.total_sieve_analysis')
-    # def _compute_percent_retained(self):
-    #     for record in self:
-    #         try:
-    #             record.percent_retained = record.wt_retained / self.parent_id.total_sieve_analysis * 100
-    #         except ZeroDivisionError:
-    #             record.percent_retained = 0 
+
 
     @api.depends('wt_retained', 'parent_id.wt_of_sample')
     def _compute_percent_retained(self):
@@ -1388,9 +1381,7 @@ class SieveAnalysisLine(models.Model):
 
 
 
-    # @api.depends('cumulative_retained')
-    # def _compute_cum_retained(self):
-    #     self.cumulative_retained=0
+
 
     @api.depends('percent_retained', 'parent_id.sieve_analysis_child_lines.percent_retained')
     def _compute_cum_retained(self):
@@ -1408,122 +1399,15 @@ class SieveAnalysisLine(models.Model):
             if not found:
                 record.cumulative_retained = 0.0
 
-        
-    
+
 
 
     def get_previous_record(self):
         for record in self:
-            # import wdb; wdb.set_trace()
+           
             sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
-            # index = sorted_lines.index(record)
-            # print("Working")
+      
 
-
-
-
-
-
-# class SieveAnalysisLine(models.Model):
-#     _name = "mechanical.fine.agg.sieve.analysis.line"
-#     parent_id = fields.Many2one('mechanical.fine.aggregate', string="Parent Id")
-    
-#     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-#     sieve_size = fields.Char(string="IS Sieve Size")
-#     wt_retained = fields.Float(string="Wt. Retained in gms")
-#     percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained",digits=(12,1))
-#     cumulative_retained = fields.Float(string="Cum. Retained %", compute="_compute_cum_retained", store=True,digits=(12,1))
-#     passing_percent = fields.Float(string="Passing %",digits=(12,1))
-#     specific_limt = fields.Char(string="Specified Limits")
-
-
-
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('serial_no'))
-#                 vals['serial_no'] = max_serial_no + 1
-
-#         return super(SieveAnalysisLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.serial_no = index + 1
-
-#     def write(self, vals):
-#         # Handle row deletions and adjust serial numbers
-#         if 'parent_id' in vals or 'wt_retained' in vals:
-#             for record in self:
-#                 if record.parent_id and record.parent_id == vals.get('parent_id') and 'wt_retained' in vals:
-#                     record.percent_retained = vals['wt_retained'] / record.parent_id.total * 100 if record.parent_id.total else 0
-
-#             new_self = super(SieveAnalysisLine, self).write(vals)
-
-#             if 'wt_retained' in vals:
-#                 for record in self:
-#                     # record.parent_id._compute_total()
-#                     pass
-
-#             return new_self
-
-#         return super(SieveAnalysisLine, self).write(vals)
-
-#     def unlink(self):
-#         # Get the parent_id before the deletion
-#         parent_id = self[0].parent_id
-
-#         res = super(SieveAnalysisLine, self).unlink()
-
-#         if parent_id:
-#             parent_id.sieve_analysis_child_lines._reorder_serial_numbers()
-
-#         return res
-
-
-#     @api.depends('wt_retained', 'parent_id.wt_of_sample')
-#     def _compute_percent_retained(self):
-#         for record in self:
-#             try:
-#                 # import wdb;wdb.set_trace()
-#                 record.percent_retained = (record.wt_retained / record.parent_id.wt_of_sample) * 100 
-#             except ZeroDivisionError:
-#                  record.percent_retained = 0.0
-
-#     @api.depends('cumulative_retained')
-#     def _compute_cum_retained(self):
-#         self.cumulative_retained=0
-
-#     @api.depends('percent_retained', 'parent_id.sieve_analysis_child_lines.percent_retained')
-#     def _compute_cum_retained(self):
-#         for record in self:
-#             cumulative = 0.0
-#             found = False
-
-#             for line in sorted(record.parent_id.sieve_analysis_child_lines, key=lambda l: l.serial_no):
-#                 cumulative += line.percent_retained or 0.0
-#                 if line.id == record.id:
-#                     found = True
-#                     record.cumulative_retained = cumulative
-#                     break
-
-#             if not found:
-#                 record.cumulative_retained = 0.0
-
-        
-    
-
-
-#     def get_previous_record(self):
-#         for record in self:
-#             # import wdb; wdb.set_trace()
-#             sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
-#             # index = sorted_lines.index(record)
-#             # print("Working")
 
 
 class SpecificAndWaterLine(models.Model):
@@ -1555,17 +1439,6 @@ class SpecificAndWaterLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
-
-
-
-    
-
-   
-
-
-
-
-    
 
 
 
@@ -1684,10 +1557,7 @@ class SieveAnalysisSoudnesLine(models.Model):
     cumulative_retained = fields.Float(string="Cum. Retained %",compute="_compute_cum_retained" , store=True)
     passing_percent = fields.Float(string="% Passing ")
 
-    # @api.onchange('cumulative_retained')
-    # def _compute_passing_percent(self):
-    #     for record in self:
-    #         record.passing_percent = 100 - record.cumulative_retained
+
 
     @api.depends('percent_retained')
     def _compute_wt_sample_testing_display(self):
@@ -1865,39 +1735,9 @@ class QuantitativelyExaminationLine(models.Model):
         for rec in self:
             rec.avg_sulphae = (rec.finalloss_sulphae * rec.grading_sulphate) / 100 if rec.grading_sulphate else 0.0
 
-    # @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
-    # def _compute_finalloss_sulphae(self):
-    #  for idx, rec in enumerate(self):
-    #     sieve_lines = rec.parent_id.sieve_analysis_soundness_lines.sorted('serial_no')
-    #     quant_lines = rec.parent_id.ouantitative_soundness_lines.sorted('serial_no')
-    #     percent_ret = 0.0
-    #     loss_sulphae_val = 0.0
 
-    #     # Find the matching sieve and quantitative line
-    #     sieve_line = next((l for l in sieve_lines if l.serial_no == rec.serial_no), None)
-    #     if sieve_line:
-    #         percent_ret = sieve_line.percent_retained
 
-    #     quant_line = next((l for l in quant_lines if l.serial_no == rec.serial_no), None)
-    #     if quant_line:
-    #         loss_sulphae_val = quant_line.loss_sulphae
 
-    #     # Boundary logic
-    #     if idx == 0:  # First item
-    #         next_loss_val = quant_lines[idx+1].loss_sulphae if len(quant_lines) > idx+1 else loss_sulphae_val
-    #         avg_val = next_loss_val  # Use next value only
-    #     elif idx == len(self)-1:  # Last item
-    #         prev_loss_val = quant_lines[idx-1].loss_sulphae if idx > 0 else loss_sulphae_val
-    #         avg_val = prev_loss_val  # Use previous value only
-    #     else:  # Middle items
-    #         prev_loss_val = quant_lines[idx-1].loss_sulphae
-    #         next_loss_val = quant_lines[idx+1].loss_sulphae
-    #         avg_val = (prev_loss_val + next_loss_val) / 2 if (prev_loss_val is not None and next_loss_val is not None) else loss_sulphae_val
-
-    #     if 0 < percent_ret < 5:
-    #         rec.finalloss_sulphae = avg_val
-    #     else:
-    #         rec.finalloss_sulphae = loss_sulphae_val
 
     @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
     def _compute_finalloss_sulphae(self):
@@ -1941,30 +1781,7 @@ class QuantitativelyExaminationLine(models.Model):
 
 
 
-    # @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
-    # def _compute_finalloss_sulphae(self):
-    #     for rec in self:
-    #         rec.finalloss_sulphae = 0.0
-    #         if not rec.parent_id or not rec.serial_no:
-    #             continue
-
-    #         # 1️⃣ Get the matching sieve analysis line
-    #         sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(
-    #             lambda l: l.serial_no == rec.serial_no
-    #         )
-    #         percent_ret = sieve_line[0].percent_retained if sieve_line else 0.0
-
-    #         # 2️⃣ Get the matching quantitative line
-    #         ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(
-    #             lambda l: l.serial_no == rec.serial_no
-    #         )
-    #         loss_sulphae_val = ou_line[0].loss_sulphae if ou_line else 0.0
-
-    #         # 3️⃣ Apply logic
-    #         if 0 < percent_ret < 5:
-    #             rec.finalloss_sulphae = 0.0  # किंवा आधीची value ठेवू शकता
-    #         else:
-    #             rec.finalloss_sulphae = loss_sulphae_val
+    
 
     @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
     def _compute_grading_sulphate(self):
