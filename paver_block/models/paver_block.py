@@ -66,12 +66,17 @@ class PaverBlock(models.Model):
 
     average_length_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_length_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_average_length_conformity", store=True)
 
     @api.depends('average_length','eln_ref','grade')
     def _compute_average_length_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_length_conformity = 'na'
+                continue
             record.average_length_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4609c439-2ee4-4e3e-b40c-334e95b2bbda')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4609c439-2ee4-4e3e-b40c-334e95b2bbda')]).parameter_table
@@ -116,12 +121,17 @@ class PaverBlock(models.Model):
 
     average_width_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_width_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_average_width_conformity", store=True)
 
     @api.depends('average_width','eln_ref','grade')
     def _compute_average_width_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_width_conformity = 'na'
+                continue
             record.average_width_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f079957b-608f-40c0-aebd-0db011ab0f2c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f079957b-608f-40c0-aebd-0db011ab0f2c')]).parameter_table
@@ -168,12 +178,17 @@ class PaverBlock(models.Model):
 
     average_thickness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_thickness_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_average_thickness_conformity", store=True)
 
     @api.depends('average_thickness','eln_ref','grade')
     def _compute_average_thickness_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_thickness_conformity = 'na'
+                continue
             record.average_thickness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','549532ef-08e1-46f7-9565-bf034ce334f4')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','549532ef-08e1-46f7-9565-bf034ce334f4')]).parameter_table
@@ -241,12 +256,17 @@ class PaverBlock(models.Model):
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_water_absorption_conformity = 'na'
+                continue
             record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147fgrr-eba3-4f15-b33d-679b39f7372e')]).parameter_table
@@ -350,12 +370,17 @@ class PaverBlock(models.Model):
 
     avg_compressive_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_compressive_strength_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_compressive_strength_conformity", store=True)
 
     @api.depends('avg_compressive_strength','eln_ref','grade')
     def _compute_avg_compressive_strength_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_compressive_strength_conformity = 'na'
+                continue
             record.avg_compressive_strength_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11')]).parameter_table
@@ -503,9 +528,9 @@ class PaverBlock(models.Model):
                 continue
 
             # Water Absorption
-            if result.parameter.internal_id == '549532ef-08e1-46f7-9565-bf034ce334f4':
-                result.result_char = round(self.average_thickness,2)
-                if self.average_thickness_nabl == 'pass':
+            if result.parameter.internal_id == '2147fgrr-eba3-4f15-b33d-679b39f7372e':
+                result.result_char = round(self.avg_water_absorption,2)
+                if self.avg_water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'

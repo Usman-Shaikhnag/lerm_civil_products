@@ -22,7 +22,7 @@
 								<td rowspan="2"  style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 
 								<td><strong>Report No.</strong>: </td>
-								<td></td>
+								<td style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
 							</tr>
 								
 							<tr>
@@ -54,11 +54,9 @@
 								
 
 								<td><strong>Date Sample Received</strong>:</td>
-								<td>
-									<!-- <t t-if="ggbs.rock_child_lines">
-										<span t-field="brick.rock_child_lines[0].date_received"/>
-									</t> -->
-								</td>
+								<td >
+								<span t-field="o.sample_id.sample_received_date"/>
+								</td >
 							</tr>
 							<tr>
 

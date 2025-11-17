@@ -160,13 +160,38 @@
 									<span t-field="parameters.get('210bgf54-baa4-466f-a6a7-044da708f265').parameter_name"/>
 
 								</td>
-								<td style="text-align: center;">
+								<!-- <td style="text-align: center;">
 									<t t-foreach="parameters.get('210bgf54-baa4-466f-a6a7-044da708f265').parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.specification"/>
 										</t>
 									</t>
-								</td>	
+								</td>	 -->
+								<td style="text-align: center;">
+
+								
+								<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('210bgf54-baa4-466f-a6a7-044da708f265').test_method.test_method"/>
+								</t>
+
+							
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
+									<t t-foreach="parameters.get('210bgf54-baa4-466f-a6a7-044da708f265').parameter_table" t-as="parameter">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+											<t t-set="printed" t-value="True"/>
+										</t>
+									</t>
+
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('210bgf54-baa4-466f-a6a7-044da708f265').test_method.test_method"/>
+									</t>
+								</t>
+
+							</td>
 
 								<td style="text-align: center;" >
 									<span>
@@ -197,6 +222,7 @@
 										</t>
 									</t>
 								</td>
+
 								
 									
 
@@ -221,13 +247,37 @@
 								<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-6b0ff7e69c0a').parameter_name"/>
 							</td>
 
+							
+							
+
 							<td style="text-align: center;">
-								<t t-foreach="parameters.get('5214hgtb-c526-4092-a3a7-6b0ff7e69c0a').parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-esc="parameter.specification"/>
+
+								
+								<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-6b0ff7e69c0a').test_method.test_method"/>
+								</t>
+
+							
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
+									<t t-foreach="parameters.get('5214hgtb-c526-4092-a3a7-6b0ff7e69c0a').parameter_table" t-as="parameter">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+											<t t-set="printed" t-value="True"/>
+										</t>
+									</t>
+
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-6b0ff7e69c0a').test_method.test_method"/>
 									</t>
 								</t>
+
 							</td>
+
+
+								
 
 							<td style="text-align: center;">
 								<span t-field="ggbs.temp_fineness"/>
@@ -275,12 +325,38 @@
 								<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-321478658').parameter_name"/>
 							</td>
 
-							<td rowspan="2" style="text-align: center;">
+							<!-- <td rowspan="2" style="text-align: center;">
 								<t t-foreach="parameters.get('5214hgtb-c526-4092-a3a7-321478658').parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-esc="parameter.specification"/>
 									</t>
 								</t>
+							</td> -->
+
+							<td style="text-align: center;" rowspan="2">
+
+								
+								<t t-if="not eln.grade_id">
+									<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-321478658').test_method.test_method"/>
+								</t>
+
+								
+								<t t-if="eln.grade_id">
+									<t t-set="printed" t-value="False"/>
+
+									<t t-foreach="parameters.get('5214hgtb-c526-4092-a3a7-321478658').parameter_table" t-as="parameter">
+										<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+											<t t-set="printed" t-value="True"/>
+										</t>
+									</t>
+
+								
+									<t t-if="printed == False">
+										<span t-esc="parameters.get('5214hgtb-c526-4092-a3a7-321478658').test_method.test_method"/>
+									</t>
+								</t>
+
 							</td>
 
 							<td style="text-align: center;">

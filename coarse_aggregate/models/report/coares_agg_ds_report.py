@@ -27,6 +27,36 @@ class CoarseAggregateReport(models.AbstractModel):
 
         if not eln:
             raise ValueError("ELN record not found")
+        
+        # Define All unique internal_ids At Once
+        internal_ids = [
+            'c2168fff-e47c-4155-99ff-9d7dc223e768',  # Sieve Analysis
+            'ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71',  # Crushing Value
+            '37f2161e-5cc0-413f-b76c-10478c65baf9',  # Abrasion Value 
+            '3114db41-cfa7-49ad-9324-fcdbc9661038',     # Specific Gravity
+            '22ee804f-41a3-4fd1-a301-a8d9180fba10',     # Water Absorption
+            '2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2',  # Impact Value
+            '5f506c08-4369-491d-93a6-030514c29661',  # Fine10 Load
+            '8b80bc59-f49e-483e-8ccd-2fb4b076620e',  # Soundness Magnesium
+            '9effe915-e5a3-45a7-aaeb-10caababd667',  # Elongation Table
+            'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f',  # Flakiness Table
+            '65a41d1f-d557-438e-8fd1-2c619a334d02',  # Loose Density
+            '357f579d-a310-4015-bc11-28a85c53ac83',  # Compacted Density
+            '04a95dc1-4b45-4817-a9b2-dd722bbe6281',  # Void Compacted Density
+            '919587f2-5b45-4da1-bb73-10164b861833',  # Void Loose Density
+            '8e9d9c62-e634-47a2-a689-2c6c8538493c',  # Rate Of Evaporation
+            'c8cd69bd-1f89-4f22-bae6-b81de73e6c2',  # Soundness Sodium
+
+
+
+        ]
+
+        # ✅ सर्व parameter.master records dictionary मध्ये साठवा
+        ParamMaster = self.env['lerm.parameter.master'].sudo()
+        parameters = {}
+        for iid in internal_ids:
+            record = ParamMaster.search([('internal_id', '=', iid)], limit=1)
+            parameters[iid] = record
 
         # 🧩 QR Code तयार करा
         qr = qrcode.QRCode(
@@ -45,18 +75,23 @@ class CoarseAggregateReport(models.AbstractModel):
         qr_image.save(buffered, format="PNG")
         qr_code = base64.b64encode(buffered.getvalue()).decode()
             
-        data = {
-            "material_id":eln.material.id,
-            "grade_id":eln.grade_id.id
-        }
-        model = eln.get_product_base_calc_line(data).ir_model.model
-        coarse_data = self.env[model].search([("id","=",eln.model_id)])
-        # import wdb; wdb.set_trace()
+        # ✅ General Data मिळवा
+        model_id = eln.model_id
+        model_name = (
+            eln.material.product_based_calculation[0].ir_model.name
+            if eln.material.product_based_calculation else False
+        )
+        if model_name:
+            general_data = self.env[model_name].sudo().browse(model_id)
+        else:
+            general_data = self.env['lerm.eln'].sudo().browse(docids)
+
         return {
             'eln': eln,
-            'data': coarse_data,
+            'data': general_data,
             'qrcode': qr_code,
-            'nabl':nabl
+            'nabl':nabl,
+            'parameters': parameters,  
         }
 
 

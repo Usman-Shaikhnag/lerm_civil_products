@@ -49,16 +49,20 @@ class CementReportOpc43(models.AbstractModel):
         qr_image.save(buffered, format="PNG")
         qr_code = base64.b64encode(buffered.getvalue()).decode()
             
-        data = {
-            "material_id":eln.material.id,
-            "grade_id":eln.grade_id.id
-        }
-        model = eln.get_product_base_calc_line(data).ir_model.model
-        cement_data = self.env[model].search([("id","=",eln.model_id)])
-        # print(cement_data.normal_consistency_trial1)
+        # ✅ General Data मिळवा
+        model_id = eln.model_id
+        model_name = (
+            eln.material.product_based_calculation[0].ir_model.name
+            if eln.material.product_based_calculation else False
+        )
+        if model_name:
+            general_data = self.env[model_name].sudo().browse(model_id)
+        else:
+            general_data = self.env['lerm.eln'].sudo().browse(docids)
+
         return {
             'eln': eln,
-            'cement': cement_data,
+            'cement': general_data,
             'qrcode': qr_code,
             'nabl':nabl
         }

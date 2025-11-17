@@ -61,12 +61,17 @@ class MechanicalBricksBurntClay(models.Model):
 
     avg_compressive_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_compressive_strength_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_compressive_strength_conformity", store=True)
 
     @api.depends('avg_compressive_strength','eln_ref','grade')
     def _compute_avg_compressive_strength_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_compressive_strength_conformity = 'na'
+                continue
             record.avg_compressive_strength_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).parameter_table
@@ -133,12 +138,17 @@ class MechanicalBricksBurntClay(models.Model):
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_water_absorption_conformity = 'na'
+                continue
             record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).parameter_table
@@ -202,17 +212,17 @@ class MechanicalBricksBurntClay(models.Model):
     length1 = fields.Float(string="Length  ")
     length2 = fields.Float(string="Length 2 ")
     length3 = fields.Float(string="Length 3 ")
-    avg_length = fields.Float(string="Average Length ",compute="_compute_average")
+    avg_length = fields.Float(string="Average Length ",compute="_compute_average",digits=(12,0))
 
     width1 = fields.Float(string="Width  ")
     width2 = fields.Float(string="Width 2 ")
     width3 = fields.Float(string="Width 3 ")
-    avg_width = fields.Float(string="Average Width ",compute="_compute_average")
+    avg_width = fields.Float(string="Average Width ",compute="_compute_average",digits=(12,0))
 
     height1 = fields.Float(string="height  ")
     height2 = fields.Float(string="height 2 ")
     height3 = fields.Float(string="height 3 ")
-    avg_height = fields.Float(string="Average height ",compute="_compute_average")
+    avg_height = fields.Float(string="Average height ",compute="_compute_average",digits=(12,0))
 
 
     @api.depends('length1','length2','length3','width1','width2','width3','height1','height2','height3')
@@ -258,12 +268,17 @@ class MechanicalBricksBurntClay(models.Model):
 
     avg_length_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_length_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_length_conformity", store=True)
 
     @api.depends('avg_length','eln_ref','grade')
     def _compute_avg_length_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_length_conformity = 'na'
+                continue
             record.avg_length_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','457360db-e033-49ed-9c93-11e3bf87548d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','457360db-e033-49ed-9c93-11e3bf87548d')]).parameter_table
@@ -308,12 +323,17 @@ class MechanicalBricksBurntClay(models.Model):
 
     avg_width_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_width_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_width_conformity", store=True)
 
     @api.depends('avg_width','eln_ref','grade')
     def _compute_avg_width_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_width_conformity = 'na'
+                continue
             record.avg_width_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c41c2f45-dc62-4d9b-a08f-607a05b87115')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c41c2f45-dc62-4d9b-a08f-607a05b87115')]).parameter_table
@@ -359,12 +379,17 @@ class MechanicalBricksBurntClay(models.Model):
     
     avg_height_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_height_conformity", store=True)
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_height_conformity", store=True)
 
     @api.depends('avg_height','eln_ref','grade')
     def _compute_avg_height_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_height_conformity = 'na'
+                continue
             record.avg_height_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b88e1360-4bdf-4170-b3bc-913bdbc467f6')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b88e1360-4bdf-4170-b3bc-913bdbc467f6')]).parameter_table
@@ -501,6 +526,59 @@ class MechanicalBricksBurntClay(models.Model):
      
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+
+        # Dimension Test 
+            if result.parameter.internal_id == '457360db-e033-49ed-9c93-11e3bf87548d':
+                result.result_char = round(self.avg_length,2)
+                if self.avg_length_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'c41c2f45-dc62-4d9b-a08f-607a05b87115':
+                result.result_char = round(self.avg_width,2)
+                if self.avg_width_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'b88e1360-4bdf-4170-b3bc-913bdbc467f6':
+                result.result_char = round(self.avg_height,2)
+                if self.avg_height_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Water Absorption
+            if result.parameter.internal_id == '1ddc7095-da2d-44a2-a70a-ab97216aee77':
+                result.result_char = round(self.avg_water_absorption,2)
+                if self.avg_water_absorption_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Compressive Strength
+            if result.parameter.internal_id == '97928829-9b1f-4091-aa7f-4b76f98eb47f':
+                result.result_char = round(self.avg_compressive_strength,2)
+                if self.avg_compressive_strength_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+             #  Efforescence
+            if result.parameter.internal_id == '3e9d3877-e657-4409-8e7c-12c066f3cf26':
+                result.result_char = (self.visual_observation_1).upper()
+                # if self.avg_compressive_strength_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
 
         return {
                 'view_mode': 'form',
