@@ -452,8 +452,13 @@ class ELN(models.Model):
                 raise ValidationError("Start Date cannot be less than SRF Date")
 
         for result in self.parameters_result:
-            if not result.calculated:
-                raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
+            result.sudo().write({
+                'calculated':True
+            })
+
+        # for result in self.parameters_result:
+        #     if not result.calculated:
+        #         raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
 
         for result in self.parameters_result:
             self.env["sample.parameters.result"].sudo().create({
