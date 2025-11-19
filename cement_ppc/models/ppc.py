@@ -135,6 +135,7 @@ class PPCCementNormalConsistency(models.Model):
     ], string='NABL', default='fail',compute="_compute_avg_density_nabl")
 
 
+
     @api.depends('avg_density','eln_ref','grade')
     def _compute_avg_density_conformity(self):
         for record in self:
