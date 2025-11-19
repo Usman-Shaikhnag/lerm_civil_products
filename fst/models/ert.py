@@ -46,7 +46,7 @@ class LermErtParent(models.Model):
         filename = f"{self.name or 'ERT'}"
         return report.report_action(self, config={'report_name': filename})
     
-    
+
     
     def copy_data(self, default=None):
         """Prevent automatic copying of One2many lines"""
@@ -133,6 +133,7 @@ class SoilBoreholeParent(models.Model):
     name = fields.Char("Project Name")
     borehole_lines = fields.One2many('soil.borehole.lines', 'parent_id', string="Borehole Lines", copy=False)
     rec_date = fields.Date("Date")
+
 
     # Optional computed field
     combined_images = fields.One2many(
@@ -229,6 +230,27 @@ class SoilBoreholeParent(models.Model):
         report = self.env.ref('fst.borehole_report_py3o')
         filename = f"{self.name or 'ERT'}"
         return report.report_action(self, config={'report_name': filename})
+    
+    def print_cross_hatching(self):
+        report = self.env.ref('fst.cross_hatching_report_py3o')
+        filename = f"{self.name or 'Cross Hatching'}"
+        return report.report_action(self, config={'report_name': filename})
+    
+    def print_corrected_spt(self):
+        report = self.env.ref('fst.corrected_spt_report_py3o')
+        filename = f"{self.name or 'Corrected N value'}"
+        return report.report_action(self, config={'report_name': filename})
+    
+    def print_grain_size(self):
+        report = self.env.ref('fst.grain_size_report_py3o')
+        filename = f"{self.name or 'Grain Size'}"
+        return report.report_action(self, config={'report_name': filename})
+    
+    def print_direct_shear(self):
+        report = self.env.ref('fst.direct_shear_report_py3o')
+        filename = f"{self.name or 'Direct Shear'}"
+        return report.report_action(self, config={'report_name': filename})
+    
     
     @api.depends('borehole_lines.soil_borehole_id.graph_image')
     def _compute_combined_images(self):

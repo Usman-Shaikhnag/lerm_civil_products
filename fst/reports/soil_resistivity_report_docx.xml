@@ -24,6 +24,7 @@
         <field name="binding_model_id" ref="model_lerm_ert_parent"/>
     </record>
 
+
 	<record id="soil_resistivity_report_single_py3o" model="ir.actions.report">
         <field name="name">Soil Resistivity Report New</field>
         <field name="model">ert.soil.resistivity</field>
@@ -46,6 +47,58 @@
         <field name="module">fst</field>
         <field name="py3o_template_fallback">reports/borehole.odt</field>
         <field name="print_report_name">'Borehole Report'</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_soil_borehole_parent"/>
+    </record>
+
+	<record id="cross_hatching_report_py3o" model="ir.actions.report">
+        <field name="name">Cross Section Report</field>
+        <field name="model">soil.borehole.parent</field>
+        <field name="report_name">fst.cross_hatching</field>
+        <field name="report_type">py3o</field>
+        <field name="py3o_filetype">docx</field>
+        <field name="module">fst</field>
+        <field name="py3o_template_fallback">reports/cross_hatching.odt</field>
+        <field name="print_report_name">'Cross Hatching Report'</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_soil_borehole_parent"/>
+    </record>
+	
+    <record id="corrected_spt_report_py3o" model="ir.actions.report">
+        <field name="name">Corrected SPT Report</field>
+        <field name="model">soil.borehole.parent</field>
+        <field name="report_name">fst.corrected_spt</field>
+        <field name="report_type">py3o</field>
+        <field name="py3o_filetype">docx</field>
+        <field name="module">fst</field>
+        <field name="py3o_template_fallback">reports/corrected_n_value.odt</field>
+        <field name="print_report_name">'Corrected Spt Report'</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_soil_borehole_parent"/>
+    </record>
+	
+    <record id="grain_size_report_py3o" model="ir.actions.report">
+        <field name="name">Grain Size Report</field>
+        <field name="model">soil.borehole.parent</field>
+        <field name="report_name">fst.grain_size</field>
+        <field name="report_type">py3o</field>
+        <field name="py3o_filetype">docx</field>
+        <field name="module">fst</field>
+        <field name="py3o_template_fallback">reports/grain_size.odt</field>
+        <field name="print_report_name">'Grain Size Report'</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_soil_borehole_parent"/>
+    </record>
+    
+    <record id="direct_shear_report_py3o" model="ir.actions.report">
+        <field name="name">Direct Shear Report</field>
+        <field name="model">soil.borehole.parent</field>
+        <field name="report_name">fst.direct_shear</field>
+        <field name="report_type">py3o</field>
+        <field name="py3o_filetype">docx</field>
+        <field name="module">fst</field>
+        <field name="py3o_template_fallback">reports/direct_shear.odt</field>
+        <field name="print_report_name">'Direct Shear Report'</field>
         <field name="binding_type">report</field>
         <field name="binding_model_id" ref="model_soil_borehole_parent"/>
     </record>

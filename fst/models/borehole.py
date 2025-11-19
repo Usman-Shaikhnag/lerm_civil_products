@@ -23,7 +23,12 @@ class ERTBorehole(models.Model):
 
     name = fields.Char(string="Name", required=True)
     parent_id = fields.Many2one('soil.borehole.parent')
-
+    location = fields.Char(string="Location")
+    client = fields.Char(string="Client")
+    type_of_boring = fields.Char(string="Type of Boring")
+    dia_of_boring = fields.Char(string="Diameter of Boring")
+    date_started = fields.Date(string="Date Started")
+    date_completed = fields.Char(string="Date Completed")
     # line_ids = fields.One2many("soil.borehole.line", "borehole_id", string="SBC Lines")
     nvalue_ids = fields.One2many("soil.borehole.nvalue", "borehole_id", string="N-Vlaues",copy=False)
     graph_image = fields.Binary("Borehole Graph")
@@ -44,6 +49,23 @@ class ERTBorehole(models.Model):
     grain_size_graph = fields.Binary("Grain Size Graph", store=True)
     weight = fields.Integer("Weight")
     
+    @api.onchange('date_started')
+    def _onchange_date_started(self):
+        if self.date_started:
+            try:
+                self.date_started = self.date_started.strftime('%d-%m-%y')
+            except:
+                pass
+
+    @api.onchange('date_completed')
+    def _onchange_date_completed(self):
+        if self.date_completed:
+            try:
+                d = fields.Date.to_date(self.date_completed)
+                self.date_completed = d.strftime('%d-%m-%y')
+            except:
+                pass
+
     @api.model
     def create(self, vals):
         record = super().create(vals)
@@ -782,11 +804,23 @@ class CorrectedSptNValue(models.Model):
     def _compute_overburden_correction_factor(self):
         for record in self:
             record.overburden_correction_factor = "0.000"
+
             v = Decimal(str(record.effective_overburden_pressure_kg or '0.000'))
             if v <= 0:
                 continue
+
             val = Decimal('0.77') * Decimal(math.log10(20.0 / float(v)))
-            record.overburden_correction_factor = str(val.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
+
+            # Round to 3 decimals
+            val = val.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)
+
+            # 🔥 Hard cap at 2.000
+            capped_val = min(val, Decimal('2.000'))
+
+            record.overburden_correction_factor = str(
+                capped_val.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)
+            )
+
 
     
     

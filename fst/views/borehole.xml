@@ -11,6 +11,55 @@
                     <h1>
                         <field name="name" nolabel="1"/>
                     </h1>
+                    <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="location"></label></td>
+                                <td style="width: 50%;">
+                                    <field name="location" style="width: 100%;"/>
+                                </td>
+
+                                <td><label for="client"></label></td>
+                                <td style="width: 50%;">
+                                    <field name="client" style="width: 100%;"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="type_of_boring"></label></td>
+                                    <td>
+                                        <field name="type_of_boring"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dia_of_boring"></label></td>
+                                    <td>
+                                        <field name="dia_of_boring"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="date_started"></label></td>
+                                    <td>
+                                        <field name="date_started"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label for="date_completed"></label></td>
+                                    <td>
+                                        <field name="date_completed"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <div>
                         <field name="nvalue_ids" class="custom_table_borders" nolabel="1">
                             <tree editable="bottom">
