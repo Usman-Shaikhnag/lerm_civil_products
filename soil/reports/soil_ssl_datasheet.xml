@@ -238,31 +238,27 @@
 						<div style="margin-top:10px" t-if="data.sieve_visible">
 							<table>
 								<tr> 
-									<td colspan="12">Total Weight :<![CDATA[&nbsp;]]>
-										<span t-esc="data.total_sieve_analysis" t-options='{"widget": "float", "precision": 2}'/>
+									<td colspan="12">% Boulders :<![CDATA[&nbsp;]]>
+										<span t-esc="data.boulder" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
 
 									<tr> 
-									<td colspan="12">Gravel :<![CDATA[&nbsp;]]>
+									<td colspan="12">% Gravels :<![CDATA[&nbsp;]]>
 										<span t-esc="data.gravel" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
 									<tr> 
-									<td colspan="12">Sand :<![CDATA[&nbsp;]]>
+									<td colspan="12">% Sand :<![CDATA[&nbsp;]]>
 										<span t-esc="data.sand" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
 									<tr> 
-									<td colspan="12">Silt + Clay :<![CDATA[&nbsp;]]>
+									<td colspan="12">% Silt + Clay :<![CDATA[&nbsp;]]>
 										<span t-esc="data.silt_clay" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
-									<tr> 
-									<td colspan="12">Total :<![CDATA[&nbsp;]]>
-										<span t-esc="data.total" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-								</tr>
+								
 							</table>
 						</div>
 					</div>
@@ -271,7 +267,7 @@
 								<img t-att-src="'data:image/png;base64,' + data.graph_image_slive.decode('utf-8')" style="max-width: 100%;"/>
 					</div>
 
-						<div t-if="data.heavy_visible" style="page-break-before: always;margin-top:5px;padding-top:50px;">
+												<div t-if="data.heavy_visible" style="page-break-before: always;margin-top:5px;padding-top:50px;">
 							<div style="text-align:center;">
 								<p style="font-size:15px"><b><span t-field="data.heavy_name"/></b></p>
 								<span>
@@ -725,100 +721,6 @@
 						<div t-if="data.graph_image_liquid" style="margin-top: 20px;">
 								<img t-att-src="'data:image/png;base64,' + data.graph_image_liquid.decode('utf-8')" style="max-width: 100%;"/>
 						</div>
-
-
-						<!-- <div t-if="data.water_content_visible">
-						
-							<div style="text-align:center;margin-top: 20px;">
-								<p style="font-size:15px"><b><span t-field="data.water_content_name"/></b></p>
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')]).parameter_table" t-as="parameter">
-										
-									</t>
-								</span>
-							</div>
-							
-					
-						<table style="margin-top:30px;">
-							<thead>
-								<tr>
-									<th>
-										<span>
-											Sr. No
-										</span>
-									</th>
-									<th>
-										<span>
-											Container No.
-										</span>
-									</th>
-									<th>
-										<span>
-											Wt.of container (gm)=Wc
-										</span>
-									</th>
-									<th>
-										<span>
-											Wt.of container +Wet Soil(gm) =W1
-										</span>
-									</th>
-									<th>
-										<span>
-										Wt.of container +dry Soil(gm) =W2
-										</span>
-									</th>
-									<th>
-										<span>
-											Mass of dry soil
-										</span>
-									</th>
-									<th>
-										<span>
-											Water content (W)=(W1-W2)(W1-Wc)/100%
-										</span>
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								<t t-set="m" t-value="0"/>
-								<tr t-foreach="data.child_linesss" t-as="r">
-									<td>
-										<div>
-											<span t-esc="m + 1" />
-											<t t-set="m" t-value="m+1"/>
-										</div>
-									</td>
-									<td>
-										<span t-esc="r.container_noo" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td>
-										<span t-esc="r.wt_of_cont" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td>
-										<span t-esc="r.wet_sample_cont" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td>
-										<span t-esc="r.dry_sample_cont"  t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td>
-										<span t-esc="r.mass_dry_soil"  t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td>
-										<span t-esc="r.water_contentss"  t-options='{"widget": "float", "precision": 2}' />
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<div style="margin-top:20px" t-if="data.water_content_visible">
-							<table>
-								<tr cols="12">
-									<td colspan="6">Water Content :
-										<![CDATA[&nbsp;]]>
-										<span t-field="data.water_contents"  t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-								</tr>
-							</table>
-						</div> -->
  
 
 					<div t-if="data.plastic_limit_visible">
@@ -934,6 +836,7 @@
 						
 						</div>
 					</div>
+
 
 					<div t-if="data.triaxial_visible">
 						
