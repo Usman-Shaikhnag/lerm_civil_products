@@ -38,8 +38,10 @@ class MechanicalConcreteCube(models.Model):
     calibration_date = fields.Date(string="Calibration Date", default=fields.Date.today())
     
     # Environmental Conditions
-    room_temperature = fields.Float(string="Room Temperature (°C)")
+    room_temperature = fields.Float(string="Room Temperature (°C)" )
     relative_humidity = fields.Float(string="Relative Humidity (%)")
+
+    
     curing_condition = fields.Selection([
         ('wet', 'Wet'),
         ('accelerated', 'Accelerated'),
@@ -490,14 +492,18 @@ class MechanicalConcreteCubeLine(models.Model):
     # Dimensions
     length = fields.Float(string="Length (mm)")
     diameter = fields.Float(string="Diameter (mm)")
+    width = fields.Float(string="width (mm)")
     
+
+
+
     dt_of_casting = fields.Date(string="Date of casting", compute="_compute_dt_of_casting", store=True)
     days = fields.Integer(string="No.of Days", compute="_compute_days", store=True)
     dt_of_testing1 = fields.Date(string="Date of Testing", compute="_compute_dt_of_testing", store=True)
     
     # Environmental conditions per sample
-    room_temp = fields.Float(string="Room Temperature (°C)")
-    relative_humidity = fields.Float(string="Relative Humidity (%)")
+    room_temp = fields.Float(string="Room Temperature (°C)",compute = "_compute_room_temp")
+    relative_humidity = fields.Float(string="Relative Humidity (%)" ,compute = "_compute_relative_humidity")
     
     load = fields.Float(string="Load (kN)")
     cross_sectional_area = fields.Float(string="Cross Sectional Area (mm²)", compute="_compute_cross_sectional_area")
@@ -510,18 +516,53 @@ class MechanicalConcreteCubeLine(models.Model):
         ('unsatisfactory', 'Unsatisfactory'),
     ], string="Type of Failure", default='satisfactory')
 
-    @api.depends('length', 'diameter', 'parent_id.type_of_sample')
+    @api.depends('parent_id.room_temperature')
+    def _compute_room_temp(self):
+        for rec in self:
+           rec.room_temp = rec.parent_id.room_temperature
+
+    @api.depends('parent_id.relative_humidity')
+    def _compute_relative_humidity(self):
+        for rec in self:
+           rec.relative_humidity = rec.parent_id.relative_humidity
+
+
+           
+    @api.depends('length', 'width', 'diameter', 'parent_id.type_of_sample')
     def _compute_cross_sectional_area(self):
-        for record in self:
-            if record.parent_id.type_of_sample == 'cube':
-                # For cube: area = length * length (assuming square cross-section)
-                record.cross_sectional_area = record.length * record.length
+     for record in self:
+
+        # Identify sample type safely
+        sample_type = record.parent_id.type_of_sample if record.parent_id else False
+
+        # CASE 1: CUBE → Area = Length × Width
+        if sample_type == 'cube':
+            record.cross_sectional_area = (record.length or 0.0) * (record.width or 0.0)
+
+        # CASE 2: CYLINDER → Area = π × (Diameter/2)^2
+        elif sample_type == 'cylinder':
+            if record.diameter and record.diameter > 0:
+                record.cross_sectional_area = math.pi * ((record.diameter / 2) ** 2)
             else:
-                # For cylinder: area = π * (diameter/2)^2
-                if record.diameter:
-                    record.cross_sectional_area = math.pi * (record.diameter / 2) ** 2
-                else:
-                    record.cross_sectional_area = 0.0
+                record.cross_sectional_area = 0.0
+
+        # If type not selected or unknown
+        else:
+            record.cross_sectional_area = 0.0
+
+
+    # @api.depends('length', 'diameter',  'parent_id.type_of_sample')
+    # def _compute_cross_sectional_area(self):
+    #     for record in self:
+    #         if record.parent_id.type_of_sample == 'cube':
+    #             # For cube: area = length * length (assuming square cross-section)
+    #             record.cross_sectional_area = record.length * record.length
+    #         else:
+    #             # For cylinder: area = π * (diameter/2)^2
+    #             if record.diameter:
+    #                 record.cross_sectional_area = math.pi * (record.diameter / 2) ** 2
+    #             else:
+    #                 record.cross_sectional_area = 0.0
 
     @api.depends('load', 'cross_sectional_area')
     def _compute_strength(self):
