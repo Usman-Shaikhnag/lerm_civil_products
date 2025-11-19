@@ -1690,41 +1690,51 @@ class CoarseAggregateMechanical(models.Model):
             # Define mappings
             if grade_str == 'single sized aggregate':
                 sieve_mapping = {
-                    63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
-                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-                    10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+                    '63': ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+                    '40': ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+                    '20': ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
+                    '16': ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+                    '12': ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                    '10': ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+                    '31.5': ['37.5 mm', '31.5 mm', '16mm' , '4.75 mm', 'pan'],
+                    '19': ['22.4 mm', '19 mm','13.2 mm', '4.75 mm',  'pan'],
                 }
                 specific_limits_mapping = {
-                    63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
-                    40: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    20: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    16: ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
-                    12: ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
-                    10: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '63': ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
+                    '40': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '20': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '16': ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
+                    '12': ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
+                    '10': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
                 }
             elif grade_str == 'graded aggregate':
                 sieve_mapping = {
-                    40: ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
-                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
-                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                    '40': ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
+                    '20': ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
+                    '16': ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+                    '12': ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                    '31.5': ['37.5 mm', '31.5 mm', '16mm' , '4.75 mm', 'pan'],
+                    '19': ['22.4 mm', '19 mm','13.2 mm', '4.75 mm',  'pan'],
                 }
                 specific_limits_mapping = {
-                    40: ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
-                    20: ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
-                    16: ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
-                    12: ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+                    '40': ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
+                    '20': ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
+                    '16': ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
+                    '12': ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+                    '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
                 }
             else:
                 return res
 
             # Extract numeric part
-            match = re.search(r'\d+', size_str)
+            # match = re.search(r'\d+', size_str)
+            match = re.search(r'\d+(\.\d+)?', size_str)
             if match:
-                number = int(match.group())
+                # number = int(match.group())
+                number = match.group().strip()
                 sieve_list = sieve_mapping.get(number, [])
                 specific_limits = specific_limits_mapping.get(number, [])
                 
@@ -1757,26 +1767,32 @@ class CoarseAggregateMechanical(models.Model):
 
         if grade_str == 'single sized aggregate':
             specific_limits_mapping = {
-                63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
-                40: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                20: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                16: ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
-                12: ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
-                10: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '63': ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
+                '40': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '20': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '16': ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
+                '12': ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
+                '10': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
             }
         elif grade_str == 'graded aggregate':
             specific_limits_mapping = {
-                40: ['100', '95 - 100', '30 - 70', '10 - 35', '0 - 5', '0'],
-                20: ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
-                16: ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
-                12: ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+                '40': ['100', '95 - 100', '30 - 70', '10 - 35', '0 - 5', '0'],
+                '20': ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
+                '16': ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
+                '12': ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+                '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
             }
         else:
             return
 
-        match = re.search(r'\d+', size_str)
+        # match = re.search(r'\d+', size_str)
+        match = re.search(r'\d+(\.\d+)?', size_str)
         if match:
-            number = int(match.group())
+            # number = int(match.group())
+            number = match.group().strip()
             specific_limits = specific_limits_mapping.get(number, [])
 
             # Only update specific_limits of existing lines
@@ -1809,8 +1825,12 @@ class CoarseAggregateMechanical(models.Model):
                     previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
                     line.write({'cumulative_retained': previous_line_record + line.percent_retained,
                                 'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
+                
                     
                     # print("Previous Cumulative",previous_line_record)
+
+    
+   
             
 
 
