@@ -30,6 +30,20 @@ class CoarseAggregateMechanical(models.Model):
     size_id = fields.Many2one('lerm.size.line',compute="_compute_size_id")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'coarse.aggregate.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
     
 
 
@@ -532,6 +546,7 @@ class CoarseAggregateMechanical(models.Model):
               rec.aggregate_impact_value_2 = (rec.wt_of_aggregate_passing_2 / rec.wt_of_aggregate_2) * 100
             else:
                 rec.aggregate_impact_value_2 = 0.0
+
     average_impact_value = fields.Float(string="Average Impact Value - %", compute="_compute_average_impact_value")
 
 
@@ -1687,41 +1702,51 @@ class CoarseAggregateMechanical(models.Model):
             # Define mappings
             if grade_str == 'single sized aggregate':
                 sieve_mapping = {
-                    63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
-                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-                    10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+                    '63': ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+                    '40': ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+                    '20': ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
+                    '16': ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+                    '12': ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                    '10': ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+                    '31.5': ['37.5 mm', '31.5 mm', '16mm' , '4.75 mm', 'pan'],
+                    '19': ['22.4 mm', '19 mm','13.2 mm', '4.75 mm',  'pan'],
                 }
                 specific_limits_mapping = {
-                    63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
-                    40: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    20: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    16: ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
-                    12: ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
-                    10: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '63': ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
+                    '40': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '20': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '16': ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
+                    '12': ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
+                    '10': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
                 }
             elif grade_str == 'graded aggregate':
                 sieve_mapping = {
-                    40: ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
-                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
-                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                    '40': ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
+                    '20': ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
+                    '16': ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+                    '12': ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                    '31.5': ['37.5 mm', '31.5 mm', '16mm' , '4.75 mm', 'pan'],
+                    '19': ['22.4 mm', '19 mm','13.2 mm', '4.75 mm',  'pan'],
                 }
                 specific_limits_mapping = {
-                    40: ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
-                    20: ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
-                    16: ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
-                    12: ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+                    '40': ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
+                    '20': ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
+                    '16': ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
+                    '12': ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+                    '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                    '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
                 }
             else:
                 return res
 
             # Extract numeric part
-            match = re.search(r'\d+', size_str)
+            # match = re.search(r'\d+', size_str)
+            match = re.search(r'\d+(\.\d+)?', size_str)
             if match:
-                number = int(match.group())
+                # number = int(match.group())
+                number = match.group().strip()
                 sieve_list = sieve_mapping.get(number, [])
                 specific_limits = specific_limits_mapping.get(number, [])
                 
@@ -1754,26 +1779,32 @@ class CoarseAggregateMechanical(models.Model):
 
         if grade_str == 'single sized aggregate':
             specific_limits_mapping = {
-                63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
-                40: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                20: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                16: ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
-                12: ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
-                10: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '63': ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
+                '40': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '20': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '16': ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
+                '12': ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
+                '10': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
             }
         elif grade_str == 'graded aggregate':
             specific_limits_mapping = {
-                40: ['100', '95 - 100', '30 - 70', '10 - 35', '0 - 5', '0'],
-                20: ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
-                16: ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
-                12: ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+                '40': ['100', '95 - 100', '30 - 70', '10 - 35', '0 - 5', '0'],
+                '20': ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
+                '16': ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
+                '12': ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+                '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
             }
         else:
             return
 
-        match = re.search(r'\d+', size_str)
+        # match = re.search(r'\d+', size_str)
+        match = re.search(r'\d+(\.\d+)?', size_str)
         if match:
-            number = int(match.group())
+            # number = int(match.group())
+            number = match.group().strip()
             specific_limits = specific_limits_mapping.get(number, [])
 
             # Only update specific_limits of existing lines
@@ -1806,8 +1837,12 @@ class CoarseAggregateMechanical(models.Model):
                     previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
                     line.write({'cumulative_retained': previous_line_record + line.percent_retained,
                                 'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
+                
                     
                     # print("Previous Cumulative",previous_line_record)
+
+    
+   
             
 
 
@@ -1954,55 +1989,178 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
+    # def generate_line_chart_slive(self):
+    #   x_value = []
+    #   y_value = []
+    #   x_labels = []
+
+    #   for line in self.sieve_analysis_child_lines:
+    #      if line.sieve_size and line.passing_percent is not None:
+    #         sieve_str = str(line.sieve_size).strip().lower()
+    #         try:
+    #               if 'mm' in sieve_str:
+    #                 sieve_val = float(sieve_str.replace('mm', '').strip())
+    #                 label = f"{int(sieve_val)} mm"
+    #               elif 'µ' in sieve_str or 'micron' in sieve_str:
+    #                 sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
+    #                 label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
+    #               else:
+    #                 sieve_val = float(sieve_str)
+    #                 label = f"{sieve_val} mm"
+
+    #               x_value.append(sieve_val)
+    #               y_value.append(float(line.passing_percent))
+    #               x_labels.append(label)
+    #         except ValueError:
+    #               continue
+
+    #      if not x_value or not y_value:
+    #        return False
+
+    #   # Sort ascending
+    #   sorted_data = sorted(zip(x_value, y_value, x_labels))
+    #   x_value, y_value, x_labels = zip(*sorted_data)
+    #   x_value = np.array(x_value)
+    #   y_value = np.array(y_value)
+
+      
+
+    #   x_smooth = np.logspace(np.log10(min(x_value)), np.log10(max(x_value)), 500)
+    #   pchip = PchipInterpolator(np.log10(x_value), y_value)
+    #   y_smooth = pchip(np.log10(x_smooth))
+
+    #   plt.figure(figsize=(13, 5))
+    #   plt.xscale('log')
+
+    #   # Smooth curve
+    #   plt.plot(x_smooth, y_smooth, color='blue', linestyle='-', linewidth=2)
+    #   # Original points
+    #   plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
+
+    #   plt.xlabel('Sieve Size', fontsize=12)
+    #   plt.ylabel('Passing %', fontsize=12)
+    #   plt.title('Grain Size Analysis', fontsize=14)
+
+    #   ax = plt.gca()
+    #   plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
+    #   ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
+    #   ax.yaxis.set_minor_locator(MultipleLocator(2))
+    #   plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+    #   plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
+    #   plt.ylim(bottom=0, top=120)
+    #   plt.yticks([0, 20, 40, 60, 80, 100, 120])
+
+    #   # --- D-points: D10, D30, D60 ---
+    #   d_points = [
+    #      (getattr(self, 'd10', None), 10, 'black'),
+    #      (getattr(self, 'd30', None), 30, 'yellow'),
+    #      (getattr(self, 'd60', None), 60, 'orange')
+    #     ]
+
+    #   for dx, dy, color in d_points:
+    #     if dx:
+    #         plt.scatter(dx, dy, color=color, s=80, zorder=10)
+    #         plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
+    #         plt.plot([min(x_value)/1.5, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
+
+    #   buffer = io.BytesIO()
+    #   plt.tight_layout()
+    #   plt.savefig(buffer, format='png')
+    #   plt.close()
+    #   buffer.seek(0)
+    #   return base64.b64encode(buffer.read())
+
     def generate_line_chart_slive(self):
       x_value = []
       y_value = []
       x_labels = []
 
+     # -----------------------------
+     # Extract and normalize data
+     # -----------------------------
       for line in self.sieve_analysis_child_lines:
          if line.sieve_size and line.passing_percent is not None:
             sieve_str = str(line.sieve_size).strip().lower()
             try:
-                  if 'mm' in sieve_str:
+                # mm
+                if 'mm' in sieve_str:
                     sieve_val = float(sieve_str.replace('mm', '').strip())
                     label = f"{int(sieve_val)} mm"
-                  elif 'µ' in sieve_str or 'micron' in sieve_str:
-                    sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
-                    label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
-                  else:
+
+                # micron or µm
+                elif 'µ' in sieve_str or 'micron' in sieve_str:
+                    raw = float(sieve_str.replace('µ', '').replace('micron', '').strip())
+                    sieve_val = raw / 1000.0  # µm → mm
+                    label = f"{int(raw)} µm"
+
+                # numbers only
+                else:
                     sieve_val = float(sieve_str)
                     label = f"{sieve_val} mm"
 
-                  x_value.append(sieve_val)
-                  y_value.append(float(line.passing_percent))
-                  x_labels.append(label)
+                if sieve_val > 0:     # *** IMPORTANT for log10 ***
+                    x_value.append(sieve_val)
+                    y_value.append(float(line.passing_percent))
+                    x_labels.append(label)
+
             except ValueError:
-                  continue
+                continue
 
-         if not x_value or not y_value:
-           return False
+      # No data? Stop safely.
+      if len(x_value) < 2:
+        return False
 
-      # Sort ascending
+     # -----------------------------
+     # Sort
+     # -----------------------------
       sorted_data = sorted(zip(x_value, y_value, x_labels))
       x_value, y_value, x_labels = zip(*sorted_data)
-      x_value = np.array(x_value)
-      y_value = np.array(y_value)
 
-       # --- Smooth interpolation ---
-    #   x_smooth = np.logspace(np.log10(min(x_value)), np.log10(max(x_value)), 500)  # 500 points for smoothness
-    #   spline = make_interp_spline(np.log10(x_value), y_value, k=2)  # cubic spline in log-space
-    #   y_smooth = spline(np.log10(x_smooth))
+      x_value = np.array(x_value, dtype=float)
+      y_value = np.array(y_value, dtype=float)
 
-      x_smooth = np.logspace(np.log10(min(x_value)), np.log10(max(x_value)), 500)
-      pchip = PchipInterpolator(np.log10(x_value), y_value)
+     # -----------------------------
+     # Ensure unique X values
+     # -----------------------------
+      x_unique, idx = np.unique(x_value, return_index=True)
+      x_value = x_unique
+      y_value = y_value[idx]
+      x_labels = [x_labels[i] for i in idx]
+
+      # Need at least 2 distinct points
+      if len(x_value) < 2:
+        return False
+
+    # -----------------------------
+    # Compute log10(x)
+    # -----------------------------
+      log_x = np.log10(x_value)
+
+     # Must be strictly increasing
+      if not np.all(np.diff(log_x) > 0):
+        return False  # avoid crash
+
+    # -----------------------------
+    # Interpolation
+    # -----------------------------
+      try:
+         pchip = PchipInterpolator(log_x, y_value)
+      except Exception:
+        return False
+
+      x_smooth = np.logspace(np.log10(min(x_value)),
+                           np.log10(max(x_value)),
+                           500)
       y_smooth = pchip(np.log10(x_smooth))
 
+     # -----------------------------
+     # Plot
+     # -----------------------------
       plt.figure(figsize=(13, 5))
       plt.xscale('log')
 
-      # Smooth curve
-      plt.plot(x_smooth, y_smooth, color='blue', linestyle='-', linewidth=2)
-      # Original points
+      plt.plot(x_smooth, y_smooth, color='blue', linestyle='-',  linewidth=2)
       plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
 
       plt.xlabel('Sieve Size', fontsize=12)
@@ -2011,33 +2169,39 @@ class CoarseAggregateMechanical(models.Model):
 
       ax = plt.gca()
       plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
-      ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
+      ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1,10)*0.1))
       ax.yaxis.set_minor_locator(MultipleLocator(2))
-      plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
+      plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
       plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
       plt.ylim(bottom=0, top=120)
       plt.yticks([0, 20, 40, 60, 80, 100, 120])
 
-      # --- D-points: D10, D30, D60 ---
+    # -----------------------------
+    # D10, D30, D60 annotations
+    # -----------------------------
       d_points = [
-         (getattr(self, 'd10', None), 10, 'black'),
-         (getattr(self, 'd30', None), 30, 'yellow'),
-         (getattr(self, 'd60', None), 60, 'orange')
-        ]
+        (getattr(self, 'd10', None), 10, 'black'),
+        (getattr(self, 'd30', None), 30, 'yellow'),
+        (getattr(self, 'd60', None), 60, 'orange')
+      ]
 
       for dx, dy, color in d_points:
-        if dx:
+          if dx:
             plt.scatter(dx, dy, color=color, s=80, zorder=10)
-            plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
-            plt.plot([min(x_value)/1.5, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
+            plt.plot([dx, dx], [0, dy], color=color, linewidth=1.2)
+            plt.plot([min(x_value)/1.5, dx], [dy, dy], color=color, linewidth=1.2)
 
+      # -----------------------------
+      # Save to base64
+      # -----------------------------
       buffer = io.BytesIO()
       plt.tight_layout()
       plt.savefig(buffer, format='png')
       plt.close()
       buffer.seek(0)
       return base64.b64encode(buffer.read())
+
 
     
 

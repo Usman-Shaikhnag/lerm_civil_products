@@ -13,6 +13,9 @@
                             <field name="name_fly" readonly="1" nolabel="1"/>
                         </h1>
                     </div>
+                     <div>
+                        <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+                        </div>
                     <group>
                     <field name="grade"/>
                     </group>
@@ -1061,6 +1064,34 @@
             </form>
         </field>
         </record>
+
+        <record id="view_flyash_prefill_data_form" model="ir.ui.view">
+            <field name="name">flyash.prefill.data.form</field>
+            <field name="model">flyash.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_flyash_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">flyash.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_flyash_prefill_data_form"/>
+            <field name="target">new</field>
+        </record>
+
 
     </data>
 </odoo>
