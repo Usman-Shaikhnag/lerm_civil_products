@@ -54,12 +54,20 @@ class MechanicalBricks(models.Model):
 
     avg_compressive_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_compressive_strength_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+    ],  string="Conformity", compute="_compute_avg_compressive_strength_conformity", store=True)
 
     @api.depends('avg_compressive_strength','eln_ref','grade')
     def _compute_avg_compressive_strength_conformity(self):
         
         for record in self:
+
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_compressive_strength_conformity = 'na'
+                continue
+            
             record.avg_compressive_strength_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).parameter_table
@@ -128,12 +136,20 @@ class MechanicalBricks(models.Model):
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+             ('na', 'NA'),
+    ],  string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_water_absorption_conformity = 'na'
+                continue
+              
+
             record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).parameter_table
@@ -254,12 +270,20 @@ class MechanicalBricks(models.Model):
 
     avg_length_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_length_conformity", store=True)
+            ('fail', 'Fail'),
+              ('na', 'NA'),
+    ],  string="Conformity", compute="_compute_avg_length_conformity", store=True)
 
     @api.depends('avg_length','eln_ref','grade')
     def _compute_avg_length_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_length_conformity = 'na'
+                continue
+
+
             record.avg_length_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ea445305-117e-4e49-82b1-f876b0a34d26')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ea445305-117e-4e49-82b1-f876b0a34d26')]).parameter_table
@@ -304,12 +328,21 @@ class MechanicalBricks(models.Model):
 
     avg_width_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_width_conformity", store=True)
+            ('fail', 'Fail'),
+               ('na', 'NA'),
+    ], string="Conformity", compute="_compute_avg_width_conformity", store=True)
 
     @api.depends('avg_width','eln_ref','grade')
     def _compute_avg_width_conformity(self):
         
         for record in self:
+
+            
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_width_conformity = 'na'
+                continue
+
+
             record.avg_width_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d29d2505-a5ea-4c8f-a644-8df0a5377a27')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d29d2505-a5ea-4c8f-a644-8df0a5377a27')]).parameter_table
@@ -358,12 +391,21 @@ class MechanicalBricks(models.Model):
     
     avg_height_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_height_conformity", store=True)
+            ('fail', 'Fail'),
+              ('na', 'NA'),
+    ],  string="Conformity", compute="_compute_avg_height_conformity", store=True)
 
     @api.depends('avg_height','eln_ref','grade')
     def _compute_avg_height_conformity(self):
         
         for record in self:
+
+            
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_height_conformity = 'na'
+                continue
+
+
             record.avg_height_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ec5ffecb-2f38-4a7f-93e0-9626feb08139')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ec5ffecb-2f38-4a7f-93e0-9626feb08139')]).parameter_table
@@ -442,11 +484,8 @@ class MechanicalBricks(models.Model):
                     record.height_visible = True  
 
 
-                # if sample.internal_id == "3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac":
-                #     record.efflorescence_visible = True
-                # if sample.internal_id == "125478bvf3-8d5d-4f45-8afb-b911f9cafe41":
-                #     record.dimension_visible = True 
-     
+
+
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
         for result in self.eln_ref.parameters_result:
@@ -475,14 +514,14 @@ class MechanicalBricks(models.Model):
                 'type': 'ir.actions.act_window',
                 'target': 'current',
                 'res_id': self.eln_ref.id,
-                
+
             }
 
     @api.model
     def create(self, vals):
-        # import wdb;wdb.set_trace()
+    
         record = super(MechanicalBricks, self).create(vals)
-        # record.get_all_fields()
+
         record.eln_ref.write({'model_id':record.id})
         return record
 
@@ -494,9 +533,7 @@ class MechanicalBricks(models.Model):
 
     @api.depends('eln_ref')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        
         for record in self:
             records = record.eln_ref.parameters_result.parameter.ids
             record.sample_parameters = records
