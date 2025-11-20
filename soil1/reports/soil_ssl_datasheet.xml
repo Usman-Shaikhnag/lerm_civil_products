@@ -3,52 +3,53 @@
 
 <template id="soil_datasheet">
 		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
-			 <t t-call="lerm_civil.mechanical_data_sheet_header">
-				<!-- <div style="text-align:center;">
-					<p style="font-size:15px"><b>Test Data Sheet</b></p>
-				</div> -->
+			<t t-call="lerm_civil.genstru_data_sheet_header">
 				<div style="text-align:center;font-size:18px;font-weight: bold">
-					Soil Datasheet
-				</div>
+                    Soil Datasheet
+                </div>
 				<div class="container_eln" style="margin-top:5px">
-					<div t-if="data.soil_visible">
-						<div>
-							
-							<table style="margin-top:20px">
-							<tr cols="12">
-								
-								<td colspan="6">Job No :
-									<![CDATA[&nbsp;]]>
-									<span t-field="eln.kes_no"></span>
-								</td>
-								<td colspan="6">Test Start Date: 
-									<![CDATA[&nbsp;]]>
-									<span t-field="eln.start_date"></span>
-								</td>
-							</tr>
-							<tr>
-							<td colspan="6">Material: <span t-field="eln.material"></span>
-							</td>
-							<td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
-							</td>
-							</tr>
-							<tr style="height:50px" cols="12">
-								<td colspan="4">Performed By :
-									<![CDATA[&nbsp;]]>
-									<span t-field="eln.technician.name"/>
-								</td>
-								<td colspan="4">Witness Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="eln.witness_name"/>
-								</td>
-								<td colspan="4">Witness Signature :
-									<![CDATA[&nbsp;]]>
-									<span style='padding:20px'></span>
-								</td>
-							</tr>
-						</table>
-						</div>
+                    <table style="margin-top:20px">
+                        <tr cols="12">
+                            
+                            <td colspan="6">Job No :
+                                <![CDATA[&nbsp;]]>		
+                                <span t-field="eln.kes_no"></span>
+                            </td>
+                            <td colspan="6">Test Start Date: 
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.start_date"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            </td>
+                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                            <td colspan="6">Age at Test: <span t-field="data.age_of_days"></span>
+                            </td>
+                            <td colspan="6">Sample Conditioning: <span t-field="data.sample_condition"></span>
+                            </td>
+                        </tr> -->
+                    </table>
+					
+					<table>
+						<tr style="height:50px" cols="12">
+                            <td colspan="4">Performed By :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.technician.name"/>
+                            </td>
+                            <td colspan="4">Witness Name :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.witness_name"/>
+                            </td>
+                            <td colspan="4">Witness Signature :
+                                <![CDATA[&nbsp;]]>
+                                <span style='padding:20px'></span>
+                            </td>
+                        </tr>
+					</table>
 						<div style="text-align:center;margin-top: 20px;" t-if="data.soil_visible">
 								<p style="font-size:15px"><b><span t-field="data.soil_name"/></b></p>
 								<span>
@@ -2306,60 +2307,70 @@
 
                     <!-- authorizeRowDataSheet -->
                     
-                     <div class="authorizeRowDataSheet">
+                     <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.technician.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+
+							<div>
 						<div>
-                            <div>
-                                <b>
-                                    Tested By 
-                                </b>
-                                
-                            </div>
-                            <div style="height:40px">
-
-                            </div>
-                            <div>
-                                <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
-                                </b>
-                            </div>
+							<!-- <img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/> -->
 						</div>
-						<div style="margin-left:500px">
-							
-							<div>
-								<b>
-									Checked By
-								</b>
-							</div>
-							<div style="height:40px">
-
-							</div>
-							<div>
-								<b>
-								<span t-esc="eln.sample_id.check_by.name"/>
-								</b>
-							</div>
-							
-							<div>
-								<b>
-									(<span t-esc="eln.sample_id.check_by.job_title"/>)
-								</b>
-							</div>
-						</div>
-					</div>
-
-					<!-- <div style="text-align:center;margin-top:25px">
-						......End of Report......
-					</div> -->
-
-				</div>
 				
-			</t>
-		</t>
+					</div>
+							
+							<div>
+								<div>
+									<b>
+										Reviewed &amp; Issued By
+									</b>
+									
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+								<!-- <div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div> -->
+							<!-- </div> -->
+						</div>
+                    
+                </div>
+				<!-- </div> -->
+
+            </t>
+        </t>
 	</template>
 
 </odoo>
