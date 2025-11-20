@@ -81,6 +81,8 @@
                             </table>
                         </div>
 
+
+
                         <!-- Environmental Conditions -->
                         <div class="d-flex gap-2">
                             <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -126,9 +128,9 @@
                                 <field name='relative_humidity' string="Relative Humidity (RH) (%)"/>
                                 <field name='wt_sample' string="Weight (gms)"/>
                                 <field name='length' string="Length (mm)"/>
-                                <field name='diameter' string="Diameter (mm)"/>
-
-
+                                <field name='diameter'   string="Diameter (mm)"/>
+                                <field name='width'  string="width (mm)"/>
+                                
                                 <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]"/>
                                 <field name="load" string="Load (kN)"/>
                                 <field name='compressive_strength' string="Strength (N/mm²)" readonly="1" digits ="[16,2]"/>
@@ -138,23 +140,7 @@
                                 </field> 
 
 
-                                <!-- <field name='wt_sample' string="Weight (gms)"/> -->
-                                <!-- <field name='length' string="Length (mm)"/>
-                                <field name='diameter' string="Diameter (mm)"/> -->
-                                <!-- <field name='dt_of_casting' string="Date of Casting" widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/> -->
-                                <!-- <field name='days' string="Age (days)"/> -->
-                                <!-- <field name='dt_of_testing1' string="Date of Testing" widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/> -->
-                                <!-- <field name='room_temp' string="Room Temp (°C)"/> -->
-                                <!-- <field name='relative_humidity' string="RH (%)"/> -->
-                                <!-- <field name="load" string="Load (kN)"/> -->
-                                <!-- <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]"/> -->
-                                <!-- <field name='compressive_strength' string="Strength (N/mm²)" readonly="1" digits ="[16,2]"/> -->
-                                <!-- <field name='avg_compressive_strength' string="Avg Strength (N/mm²)" readonly="1"/> -->
-                                <!-- <field name='type_of_failure' string="Type of Failure"/> -->
-                            <!-- </tree>
-                        </field>  -->
-                        
-                        
+                                
                         <!-- Calculate Average Button -->
                         <button type="object" name="action_calculate_avg_strength" class="btn btn-primary mb-2">
                             <i class="fa fa-calculator mr-1"/> Calculate Average
@@ -211,6 +197,7 @@
                 </form>
             </field>
         </record>
+
 
         <!-- Tree View -->
         <record id="mechanical_concrete_cube_tree" model="ir.ui.view">

@@ -435,7 +435,7 @@ class MechanicalBricks(models.Model):
 
 
 
-                if sample.internal_id == "9f1689be-107d-4e30-9d3d-2aff6292264d":
+                if sample.internal_id == "b8d83f94-3e58-4760-acc9-512499f563dc":
                     record.dimension_visible = True
                     record.length_visible = True 
                     record.width_visible = True

@@ -6,6 +6,7 @@
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
 			
+
 			<!-- <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln_general"> -->
 			<t t-call="lerm_civil.genstru_layout_header_footer_lerm_eln">
 				<!-- <div style="text-align:center;margin-top:10px">
@@ -115,7 +116,7 @@
                     </div>
 
                     <!-- ADDED TABLE FROM IMAGE -->
-                    <div style="margin-top: 30px;">
+                <div style="margin-top: 30px;">
                         <!-- Main Test Results Table -->
                        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
                             <thead>
@@ -124,67 +125,72 @@
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Identification Mark</th>
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Casting</th>
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Testing</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Age Age of Specimen (days)</th>
-                                    <th   style="border: 1px solid black; padding: 8px;" rowspan="2">Room temperature (&amp;deg;C)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Age of Specimen (days)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Room temperature (&amp;deg;C)</th>
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Relative Humidity (%)</th>
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Weight of cube (gms)</th>
-                                    <th   style="border: 1px solid black; padding: 8px;" colspan="2"> Plan Dimensions of Testing Faces (mm)</th>
-                                             
-                                    
-                                 
-                                    <th   style="border: 1px solid black; padding: 8px;" rowspan="2">Cross sectional area (mm&amp;sup2;)</th>
+
+                                    <th  style="border: 1px solid black; padding: 8px;" t-att-colspan="data.type_of_sample == 'cube' and 2 or 2"> Plan Dimensions of Testing Faces (mm)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Cross sectional area (mm&amp;sup2;)</th>
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Maximum Load (kN)</th>
-                                    <!-- <th style="border: 1px solid black; padding: 8px;" rowspan="2">Type of Failure</th> -->
-                                    <th   style="border: 1px solid black; padding: 8px;" rowspan="2">Compressive strength (N/mm&amp;sup2;)</th>
+                                   
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Compressive strength (N/mm&amp;sup2;)</th>
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2"> Average Compressive strength (N/mm&amp;sup2;)</th>
 
                                     <th style="border: 1px solid black; padding: 8px;" rowspan="2">Type of Failure</th>
                                 </tr>
                                 <tr>
 
-                                  <th   style="border: 1px solid black; padding: 8px;" colspan="1">Length (mm)</th>
-                                 <th  style="border: 1px solid black; padding: 8px;" colspan="1">Diameter (mm)</th>
+                                  <th style="border: 1px solid black; padding: 8px;" colspan="1">Length (mm)</th>
+                                 <th t-if="data.type_of_sample == 'cylinder'"  style="border: 1px solid black; padding: 8px;" colspan="1">Diameter (mm)</th>
+                                 <th t-if="data.type_of_sample == 'cube'" style="border: 1px solid black; padding: 8px;" colspan="1">Width (mm)</th>
                                 </tr>
                             </thead>
                             <tbody>
                         
 
 
-                                <t t-set="line_count" t-value="0"/>
+                     <t t-set="line_count" t-value="0"/>
 
-<tr  t-if="data.cube_visible and (data.average_strength_nabl == 'pass' and nabl or (data.average_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)" t-foreach="data.child_lines" t-as="r" style="text-align: center;">
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['sr_no']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['id_mark']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['wt_sample']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['length']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['diameter']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_casting']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['days']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_testing1']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['room_temp']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['relative_humidity']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['load']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="'%.2f' % r['cross_sectional_area']"/></td>
-    <!-- <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td> -->
-    <td style="border: 1px solid black; padding: 6px;"> <span t-esc="'%.2f' % r['compressive_strength']"/></td>
+
+                    <tr  t-if="data.cube_visible and (data.average_strength_nabl == 'pass' and nabl or (data.average_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)" t-foreach="data.child_lines" t-as="r" style="text-align: center;">
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['sr_no']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['id_mark']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_casting']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_testing1']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['days']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['room_temp']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['relative_humidity']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['wt_sample']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['length']"/></td>
+                    <td t-if="data.type_of_sample == 'cylinder'" style="border: 1px solid black; padding: 6px;"><span t-esc="r['diameter']"/></td>
+                    <td t-if="data.type_of_sample == 'cube'"  style="border: 1px solid black; padding: 6px;"><span t-esc="r['width']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="'%.2f' % r['cross_sectional_area']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['load']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"> <span t-esc="'%.2f' % r['compressive_strength']"/></td>
 
     
-    <t t-if="(line_count + 3) % 3 == 0">
-        <td style="border: 1px solid black; padding: 6px; text-align: center; vertical-align: middle;" t-att-rowspan="4">
-            <span t-esc="r['avg_compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
-        </td>
-    </t>
+                 <t t-if="(line_count + 3) % 3 == 0">
+                        <td style="border: 1px solid black; padding: 6px; text-align: center; vertical-align: middle;" t-att-rowspan="4">
+                            <span t-esc="r['avg_compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+                        </td>
+                     </t>
 
-    <t t-set="line_count" t-value="line_count + 1"/>
+                    <t t-set="line_count" t-value="line_count + 1"/>
 
 
-     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td>
-   </tr>
+                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td>
+                     </tr>
+                     
 
-   </tbody>
-      </table>            
-          </div>
+                </tbody>
+            </table>            
+            </div>
+
+
                    
+
+
                     <!-- Machine Details -->
                     <group>
                         <group>
@@ -195,6 +201,8 @@
                             <label for="calibration_date" string="Calibration date:"/>
                             <field name="calibration_date"/>
                         </group>
+
+                        
                         <group>
                             <label for="structure_details" string="Details of the structure:"/>
                             <field name="structure_details"/>
