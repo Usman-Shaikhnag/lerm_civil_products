@@ -1636,9 +1636,6 @@ class CoarseAggregateMechanical(models.Model):
     
 
 
-
-
-
     # Sieve Analysis 
     temp_sieve_analysis = fields.Char(string="Temp.°C")
     humidity_sieve_analysis= fields.Char(string="Humidity %")
