@@ -130,7 +130,7 @@
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Relative Humidity (%)</th>
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Weight of cube (gms)</th>
 
-                                    <th  style="border: 1px solid black; padding: 8px;" colspan="3"> Plan Dimensions of Testing Faces (mm)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" t-att-colspan="data.type_of_sample == 'cube' and 2 or 2"> Plan Dimensions of Testing Faces (mm)</th>
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Cross sectional area (mm&amp;sup2;)</th>
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Maximum Load (kN)</th>
                                    
@@ -142,8 +142,8 @@
                                 <tr>
 
                                   <th style="border: 1px solid black; padding: 8px;" colspan="1">Length (mm)</th>
-                                 <th  style="border: 1px solid black; padding: 8px;" colspan="1">Diameter (mm)</th>
-                                 <th  style="border: 1px solid black; padding: 8px;" colspan="1">Width (mm)</th>
+                                 <th t-if="data.type_of_sample == 'cylinder'"  style="border: 1px solid black; padding: 8px;" colspan="1">Diameter (mm)</th>
+                                 <th t-if="data.type_of_sample == 'cube'" style="border: 1px solid black; padding: 8px;" colspan="1">Width (mm)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -163,8 +163,8 @@
                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['relative_humidity']"/></td>
                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['wt_sample']"/></td>
                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['length']"/></td>
-                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['diameter']"/></td>
-                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['diameter']"/></td>
+                    <td t-if="data.type_of_sample == 'cylinder'" style="border: 1px solid black; padding: 6px;"><span t-esc="r['diameter']"/></td>
+                    <td t-if="data.type_of_sample == 'cube'"  style="border: 1px solid black; padding: 6px;"><span t-esc="r['width']"/></td>
                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="'%.2f' % r['cross_sectional_area']"/></td>
                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['load']"/></td>
                     <td style="border: 1px solid black; padding: 6px;"> <span t-esc="'%.2f' % r['compressive_strength']"/></td>
