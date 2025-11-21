@@ -659,15 +659,7 @@ class CoarseAggregateMechanical(models.Model):
             record.load_for_penetration_tonnes =round (record.load_for_penetration_kn * 0.10197,2)
 
 
-    # @api.depends('wt_of_aggregate_passing_sieve_10fine', 'wt_of_aggregate_crush_10fine')
-    # def _compute_load_for_10fine(self):
-    #     for rec in self:
-    #         if (rec.percent_fine_passing_sieve + 4) != 0:
-    #             rec.load_for_10fine = round( ((14 * rec.load_for_penetration_tonnes )/ (rec.percent_fine_passing_sieve + 4)) ,2)
- 
-    #         else:
-    #             rec.load_for_10fine = 0.0
-
+  
     @api.depends('load_for_penetration_kn', 'percent_fine_passing_sieve')
     def _compute_load_for_10fine(self):
       for rec in self:
@@ -713,14 +705,7 @@ class CoarseAggregateMechanical(models.Model):
             record.load_for_penetration_tonnes_2 =round (record.load_for_penetration_kn_2 * 0.10197,2)
 
 
-    # @api.depends('wt_of_aggregate_passing_sieve_10fine_2', 'wt_of_aggregate_crush_10fine_2')
-    # def _compute_load_for_10fine_2(self):
-    #     for rec in self:
-    #         if (rec.percent_fine_passing_sieve_2 + 4) != 0:
-    #           rec.load_for_10fine_2 = round( ((14 * rec.load_for_penetration_tonnes_2 )/ (rec.percent_fine_passing_sieve_2 + 4)) ,2)
-
-    #         else:
-    #             rec.load_for_10fine_2 = 0.0     
+    
 
     @api.depends('load_for_penetration_kn_2', 'percent_fine_passing_sieve_2')
     def _compute_load_for_10fine_2(self):
@@ -742,18 +727,6 @@ class CoarseAggregateMechanical(models.Model):
         for rec in self:
               rec.avg_load_for_10fine = (rec.load_for_10fine + rec.load_for_10fine_2) /2
 
-
-
-
-
-
-    # @api.depends('percent_of_fines','load_applied_10fine')
-    # def _compute_load_10percent_fine_values(self):
-    #     for record in self:
-    #         if record.percent_of_fines != 0:
-    #             record.load_10percent_fine_values = (14 * record.load_applied_10fine)/(record.percent_of_fines + 4)
-    #         else:
-    #             record.load_10percent_fine_values = 0
 
 
     avg_load_for_10fine_conformity = fields.Selection([
@@ -1750,10 +1723,7 @@ class CoarseAggregateMechanical(models.Model):
                 sieve_list = sieve_mapping.get(number, [])
                 specific_limits = specific_limits_mapping.get(number, [])
                 
-                # Check if lists have same length
-                # if len(sieve_list) != len(specific_limits):
-                #     _logger.warning(f"Mismatch in sieve sizes and limits for size {number}")
-                #     return res
+              
                     
                 # Create sieve analysis lines
                 for sieve_size, specific_limit in zip(sieve_list, specific_limits):
@@ -1827,33 +1797,13 @@ class CoarseAggregateMechanical(models.Model):
                 # print("Rows",str(line.percent_retained))
                 previous_line = line.serial_no - 1
                 if previous_line == 0:
-                #     if line.percent_retained == 0:
-                #         line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                #                     'passing_percent': 100 ,})
-                #     else:
-                #         line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                #                     'passing_percent': round(100 -line.percent_retained - line.percent_retained,2),})
-                # else:
+                
                     previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
                     line.write({'cumulative_retained': previous_line_record + line.percent_retained,
                                 'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
                 
                     
-                    # print("Previous Cumulative",previous_line_record)
-
-    
-   
-            
-
-
-    # def calculate_sieve(self): 
-    #     for record in self:
-    #         record.populate_sieve_analysis_lines()  # replace default_get call
-            
-
-            
-
-                    
+              
 
     
     @api.depends('sieve_analysis_child_lines.wt_retained')
@@ -1885,13 +1835,7 @@ class CoarseAggregateMechanical(models.Model):
                 pan_line.wt_retained = rec.weight_of_sample - total_retained
 
 
-    # @api.depends('sieve_analysis_child_lines.wt_retained')
-    # def _compute_cumulative_sieve(self):
-    #     for record in self:
-    #         print("recordd",record)
-    #         record.cumulative = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
-
-
+   
 
     graph_image_slive = fields.Binary("Sieve Graph", compute="_compute_graph_image_slive", store=True)
 
@@ -1905,171 +1849,6 @@ class CoarseAggregateMechanical(models.Model):
 
     
 
-
-
-
-
-    # def generate_line_chart_slive(self):
-   
-    #     x_value = []
-    #     y_value = []
-    #     x_labels = []
-
-    #     for line in self.sieve_analysis_child_lines:
-    #         if line.sieve_size and line.passing_percent is not None:
-    #             sieve_str = str(line.sieve_size).strip().lower()
-    #             try:
-    #                 if 'mm' in sieve_str:
-    #                     sieve_val = float(sieve_str.replace('mm', '').strip())
-    #                     label = f"{int(sieve_val)} mm"
-    #                 elif 'µ' in sieve_str or 'micron' in sieve_str:
-    #                     sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
-    #                     label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
-    #                 else:
-    #                     sieve_val = float(sieve_str)
-    #                     label = f"{sieve_val} mm"
-
-    #                 x_value.append(sieve_val)
-    #                 y_value.append(float(line.passing_percent))
-    #                 x_labels.append(label)
-    #             except ValueError:
-    #                 continue
-
-    #     if not x_value or not y_value:
-    #         return False
-
-    #     # Sort ascending
-    #     sorted_data = sorted(zip(x_value, y_value, x_labels))
-    #     x_value, y_value, x_labels = zip(*sorted_data)
-
-    #     plt.figure(figsize=(12, 5))
-    #     plt.xscale('log')
-
-    #     # Main curve
-    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2)
-    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
-
-    #     plt.xlabel('Sieve Size', fontsize=12)
-    #     plt.ylabel('Passing %', fontsize=12)
-    #     plt.title('Grain Size Analysis', fontsize=14)
-
-    #     ax = plt.gca()
-    #     plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
-    #     ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(2))
-    #     plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
-
-    #     plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
-    #     plt.ylim(bottom=0, top=120)
-    #     plt.yticks([0, 20, 40, 60, 80, 100, 120])
-
-    #     # --- D-points: D10, D30, D60 ---
-    #     d_points = [
-    #         (getattr(self, 'd10', None), 10, 'black'),
-    #         (getattr(self, 'd30', None), 30, 'yellow'),
-    #         (getattr(self, 'd60', None), 60, 'orange')
-    #     ]
-
-    #     for dx, dy, color in d_points:
-    #         if dx:
-    #             # Solid point
-    #             plt.scatter(dx, dy, color=color, s=80, zorder=10)
-    #             # Draw X and Y guide lines only to intersection
-    #             plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
-    #             plt.plot([0, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
-
-    #     # Save figure
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
-
-    #     return base64.b64encode(buffer.read())
-
-
-
-    # def generate_line_chart_slive(self):
-    #   x_value = []
-    #   y_value = []
-    #   x_labels = []
-
-    #   for line in self.sieve_analysis_child_lines:
-    #      if line.sieve_size and line.passing_percent is not None:
-    #         sieve_str = str(line.sieve_size).strip().lower()
-    #         try:
-    #               if 'mm' in sieve_str:
-    #                 sieve_val = float(sieve_str.replace('mm', '').strip())
-    #                 label = f"{int(sieve_val)} mm"
-    #               elif 'µ' in sieve_str or 'micron' in sieve_str:
-    #                 sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
-    #                 label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
-    #               else:
-    #                 sieve_val = float(sieve_str)
-    #                 label = f"{sieve_val} mm"
-
-    #               x_value.append(sieve_val)
-    #               y_value.append(float(line.passing_percent))
-    #               x_labels.append(label)
-    #         except ValueError:
-    #               continue
-
-    #      if not x_value or not y_value:
-    #        return False
-
-    #   # Sort ascending
-    #   sorted_data = sorted(zip(x_value, y_value, x_labels))
-    #   x_value, y_value, x_labels = zip(*sorted_data)
-    #   x_value = np.array(x_value)
-    #   y_value = np.array(y_value)
-
-      
-
-    #   x_smooth = np.logspace(np.log10(min(x_value)), np.log10(max(x_value)), 500)
-    #   pchip = PchipInterpolator(np.log10(x_value), y_value)
-    #   y_smooth = pchip(np.log10(x_smooth))
-
-    #   plt.figure(figsize=(13, 5))
-    #   plt.xscale('log')
-
-    #   # Smooth curve
-    #   plt.plot(x_smooth, y_smooth, color='blue', linestyle='-', linewidth=2)
-    #   # Original points
-    #   plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
-
-    #   plt.xlabel('Sieve Size', fontsize=12)
-    #   plt.ylabel('Passing %', fontsize=12)
-    #   plt.title('Grain Size Analysis', fontsize=14)
-
-    #   ax = plt.gca()
-    #   plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
-    #   ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
-    #   ax.yaxis.set_minor_locator(MultipleLocator(2))
-    #   plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
-
-    #   plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
-    #   plt.ylim(bottom=0, top=120)
-    #   plt.yticks([0, 20, 40, 60, 80, 100, 120])
-
-    #   # --- D-points: D10, D30, D60 ---
-    #   d_points = [
-    #      (getattr(self, 'd10', None), 10, 'black'),
-    #      (getattr(self, 'd30', None), 30, 'yellow'),
-    #      (getattr(self, 'd60', None), 60, 'orange')
-    #     ]
-
-    #   for dx, dy, color in d_points:
-    #     if dx:
-    #         plt.scatter(dx, dy, color=color, s=80, zorder=10)
-    #         plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
-    #         plt.plot([min(x_value)/1.5, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
-
-    #   buffer = io.BytesIO()
-    #   plt.tight_layout()
-    #   plt.savefig(buffer, format='png')
-    #   plt.close()
-    #   buffer.seek(0)
-    #   return base64.b64encode(buffer.read())
 
     def generate_line_chart_slive(self):
       x_value = []
@@ -2257,23 +2036,7 @@ class CoarseAggregateMechanical(models.Model):
         return default_lines
 
 
-    # @api.onchange('sieve_analysis_child_lines')
-    # def _onchange_sieve_analysis_child_lines(self):
-    #     for rec in self:
-    #         pan_line = None
-    #         total_retained = 0.0
-    #         target_sieves = ['80mm','40mm','20mm','16mm', '10mm', '4.75mm', '2.36mm','1.18mm','600 µ','425 µ','300µ','212µ','150µ','75µ']
-
-    #         for line in rec.sieve_analysis_child_lines:
-    #             if line.sieve_size and line.sieve_size.lower() == 'pan':
-    #                 pan_line = line
-    #             elif line.sieve_size in target_sieves:
-    #                 total_retained += line.wt_retained or 0.0
-
-    #         if pan_line:
-    #             pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
-
-
+   
 
 
     def calculate_sound_sieve(self): 
@@ -2483,13 +2246,10 @@ class CoarseAggregateMechanical(models.Model):
             record.water_absorption_visible = False
             record.impact_visible = False
             record.fine10_visible = False
-            # record.soundness_na2so4_visible = False
-            # record.soundness_mgso4_visible = False
+          
             record.elongation_visible = False
             record.flakiness_visible = False
-            # record.finer75_visible = False
-            # record.clay_lump_visible = False
-            # record.light_weight_visible = False
+            
             record.loose_density_visible = False
             record.sieve_visible = False
             record.compacted_density_visible = False
@@ -2515,24 +2275,16 @@ class CoarseAggregateMechanical(models.Model):
                     record.impact_visible = True
                 if sample.internal_id == '5f506c08-4369-491d-93a6-030514c29661':
                     record.fine10_visible = True
-                # if sample.internal_id == '153f3c8b-6ccb-4db0-b89d-02db61f61e81':
-                #     record.soundness_na2so4_visible = True
+               
                 if sample.internal_id == '8b80bc59-f49e-483e-8ccd-2fb4b076620e':
                     record.soudness_magnesium_visible = True
                     
                 if sample.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
                     record.elongation_visible = True
-                    # record.flakiness_visible = True
-
+                   
                 if sample.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
                     record.flakiness_visible = True
-                    # record.elongation_visible = True
-                # if sample.internal_id == '988f5bf6-c865-453c-9cd6-993a5a59ad95':
-                #     record.finer75_visible = True
-                # if sample.internal_id == 'd7e389bc-21ad-41eb-a602-f448f996eb2f':
-                #     record.clay_lump_visible = True
-                # if sample.internal_id == 'e7cc6b68-2550-4e1e-a28e-8526295e733f':
-                #     record.light_weight_visible = True
+                   
                 if sample.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
                     record.loose_density_visible = True
                 if sample.internal_id == 'c2168fff-e47c-4155-99ff-9d7dc223e768':
@@ -2809,26 +2561,6 @@ class SieveAnalysisLine(models.Model):
 
 
 
-
-
-    # @api.depends('wt_retained', 'parent_id.weight_of_sample')
-    # def _compute_percent_retained(self):
-    #     for record in self:
-    #         try:
-    #             record.percent_retained = (record.wt_retained / record.parent_id.weight_of_sample) * 100
-    #         except ZeroDivisionError:
-    #             record.percent_retained = 0
-
-
-    # @api.depends('wt_retained')
-    # def _compute_percent_retained(self):
-    #     cumulative = 0
-    #     for record in self:
-    #         # Get all previous records with an ID less than or equal to this one (or in the same group)
-    #         records_to_sum = self.search([('id', '<=', record.id)])
-    #         cumulative = sum(r.wt_retained for r in records_to_sum)
-    #         record.percent_retained = cumulative
-
     @api.depends('percent_retained', 'parent_id.weight_of_sample')
     def _compute_cumulative__retained(self):
         for record in self:
@@ -2885,10 +2617,9 @@ class SieveAnalysisLine(models.Model):
 
     def get_previous_record(self):
         for record in self:
-            # import wdb; wdb.set_trace()
+            
             sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
-            # index = sorted_lines.index(record)
-            # print("Working")
+           
 
 
 class RateOfEvaporation(models.Model):
@@ -2954,16 +2685,13 @@ class ElongationIndexLine(models.Model):
     percent_retained_material =  fields.Float(string="% Retained Material Y’n = (P’n/W’n)x100",compute="_compute_percent_retained_material")
     percent_retained_material_cha = fields.Char(string="% Retained Material Y’n")
     total_percent_retained_el = fields.Float(string="(X’n x Y’n)",compute="_compute_total_percent_retained_el")
-    # wt_retained = fields.Integer(string="Wt Retained (in gms)")
-    # elongated_retain = fields.Float(string="Elongated Retained (in gms)")
-    # flaky_passing = fields.Float(string="Flaky Passing (in gms)")
     
 
 
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -2973,7 +2701,7 @@ class ElongationIndexLine(models.Model):
         return super(ElongationIndexLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+       
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
@@ -3029,9 +2757,6 @@ class FlakinessIndexLine(models.Model):
     percent_retained_material_fl_char = fields.Char(string="% Passing through Gauge Yn = (Pn/Wn)x100")
 
     total_percent_retained_fl = fields.Float(string="(X’n x Y’n)",compute="_compute_total_percent_retained_fl")
-    # wt_retained = fields.Integer(string="Wt Retained (in gms)")
-    # elongated_retain = fields.Float(string="Elongated Retained (in gms)")
-    # flaky_passing = fields.Float(string="Flaky Passing (in gms)")
     
 
 
@@ -3282,10 +3007,7 @@ class SieveAnalysisSoudnesLine(models.Model):
     cumulative_retained = fields.Float(string="Cum. Retained %",compute="_compute_cum_retained" , store=True)
     passing_percent = fields.Float(string="% Passing ")
 
-    # @api.onchange('cumulative_retained')
-    # def _compute_passing_percent(self):
-    #     for record in self:
-    #         record.passing_percent = 100 - record.cumulative_retained
+  
 
     @api.depends('percent_retained')
     def _compute_wt_sample_testing_display(self):
@@ -3352,10 +3074,6 @@ class SieveAnalysisSoudnesLine(models.Model):
                 record.percent_retained = 0.0
 
 
-
-    # @api.depends('cumulative_retained')
-    # def _compute_cum_retained(self):
-    #     self.cumulative_retained=0
 
     @api.depends('percent_retained', 'parent_id.sieve_analysis_soundness_lines.percent_retained')
     def _compute_cum_retained(self):
@@ -3462,21 +3180,7 @@ class QuantitativelyExaminationLine(models.Model):
         for rec in self:
             rec.avg_sulphae = (rec.finalloss_sulphae * rec.grading_sulphate) / 100 if rec.grading_sulphate else 0.0
 
-    # @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
-    # def _compute_finalloss_sulphae(self):
-    #     for rec in self:
-    #         # percent_retained from sieve_analysis_soundness_lines
-    #         sieve_line = rec.parent_id.sieve_analysis_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)[:1]
-    #         percent_ret = sieve_line.percent_retained if sieve_line else 0.0
-
-    #         # loss_sulphae from ouantitative_soundness_lines
-    #         ou_line = rec.parent_id.ouantitative_soundness_lines.filtered(lambda l: l.serial_no == rec.serial_no)[:1]
-    #         loss_sulphae_val = ou_line.loss_sulphae if ou_line else 0.0
-
-    #         if 0 < percent_ret < 5:
-    #             rec.finalloss_sulphae = 0.0  # किंवा आधीची value
-    #         else:
-    #             rec.finalloss_sulphae = loss_sulphae_val
+   
 
     @api.depends('parent_id.sieve_analysis_soundness_lines', 'parent_id.ouantitative_soundness_lines')
     def _compute_finalloss_sulphae(self):
