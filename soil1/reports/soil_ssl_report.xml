@@ -1516,7 +1516,7 @@
 									<div>
 										Maximum Dry Density (Light Compaction) : Test Method 
 										<span> 
-											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','987456hhjyt-b27e-48c6-81b8-90052144677j')]).parameter_table" t-as="parameter">
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','987456hhjyt-b27e-48c6-81b8-90052144677j')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
 												<span t-field="parameter.specification"/>
 											</t>
