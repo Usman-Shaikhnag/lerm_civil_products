@@ -411,9 +411,7 @@ class MechanicalConcreteCube(models.Model):
 
         for record in self:
             record.cube_visible = False
-            # record.slag_activity_7_visible = False
-
-            # record.fineness_visible = False
+         
 
             
             
@@ -422,10 +420,7 @@ class MechanicalConcreteCube(models.Model):
                 
                 if sample.internal_id == 'd6c89613-885c-4af1-bf19-f523bb56e0d9':
                     record.cube_visible = True
-                # if sample.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
-                #     record.slag_activity_7_visible = True
-                # if sample.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
-                #     record.fineness_visible = True
+              
                
 
 
@@ -527,6 +522,7 @@ class MechanicalConcreteCubeLine(models.Model):
            rec.relative_humidity = rec.parent_id.relative_humidity
 
 
+
            
     @api.depends('length', 'width', 'diameter', 'parent_id.type_of_sample')
     def _compute_cross_sectional_area(self):
@@ -551,18 +547,7 @@ class MechanicalConcreteCubeLine(models.Model):
             record.cross_sectional_area = 0.0
 
 
-    # @api.depends('length', 'diameter',  'parent_id.type_of_sample')
-    # def _compute_cross_sectional_area(self):
-    #     for record in self:
-    #         if record.parent_id.type_of_sample == 'cube':
-    #             # For cube: area = length * length (assuming square cross-section)
-    #             record.cross_sectional_area = record.length * record.length
-    #         else:
-    #             # For cylinder: area = π * (diameter/2)^2
-    #             if record.diameter:
-    #                 record.cross_sectional_area = math.pi * (record.diameter / 2) ** 2
-    #             else:
-    #                 record.cross_sectional_area = 0.0
+   
 
     @api.depends('load', 'cross_sectional_area')
     def _compute_strength(self):

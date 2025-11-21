@@ -24,6 +24,22 @@ class PPCCementNormalConsistency(models.Model):
 
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
 
+
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'ppc.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
     @api.onchange('eln_ref')
     def compute_date_of_casting(self):
         for record in self:
