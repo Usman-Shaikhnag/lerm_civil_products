@@ -100,6 +100,7 @@ class ELN(models.Model):
 
     
     active = fields.Boolean(string="Active",default=True)
+    tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature")
 
     
    
@@ -459,7 +460,11 @@ class ELN(models.Model):
         # for result in self.parameters_result:
         #     if not result.calculated:
         #         raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
-
+        self.tested_by_signature_datasheet = True
+        sample_id = self.sample_id.sudo()
+        sample_id.write({
+            'tested_by_signature_datasheet':True
+            })
         for result in self.parameters_result:
             self.env["sample.parameters.result"].sudo().create({
                 'sample_id':self.sample_id.id,
@@ -467,7 +472,8 @@ class ELN(models.Model):
                 'result': result.result,
                 'unit':result.unit.id,
                 'specification':result.specification,
-                'test_method':result.test_method.id
+                'test_method':result.test_method.id,
+                # 'tested_by_signature_datasheet':True
             })
         self.write({'state': '2-confirm'})
 
