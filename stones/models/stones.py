@@ -22,6 +22,36 @@ class Stones(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+
+    notes_id = fields.One2many('stone.notes','parent_id',string="Notes")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(Stones, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
     @api.depends('eln_ref')
     def _compute_size_id(self):
         if self.eln_ref:
@@ -85,6 +115,11 @@ class Stones(models.Model):
     compressive_dry_visible = fields.Boolean("Compressive Strength in dry condition   Visible",compute="_compute_visible")
 
     compressive_dry_ids = fields.One2many("mechanical.compressive.dry.line", "parent_id", string="Test Readings")
+    
+    @api.onchange('compressive_dry_ids')
+    def _onchange_limit_lines(self):
+        if len(self.compressive_dry_ids) > 5:
+            raise ValidationError("You cannot add more than 5 Test Reading lines.")
 
     factor_a = fields.Float(string="Constant Factor A",  digits=(12, 4))
     factor_b = fields.Float(string="Constant Factor B",  digits=(12, 4))
@@ -461,6 +496,8 @@ class CompressiveDryLine(models.Model):
     compressive_perpendiculer1 = fields.Float(string="Compressive Strength Perpendicular to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
     compressive_parallel1 = fields.Float(string="Compressive Parallel to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
 
+   
+
 
     @api.depends('load_perpendiculer', 'load_parallel')
     def _compute_loads_in_newton(self):
@@ -670,6 +707,14 @@ class CompressiveWetLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class StoneNotes(models.Model):
+    _name = "stone.notes"
+
+    parent_id = fields.Many2one('mechanical.stones',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 

@@ -3,13 +3,13 @@
 
 
 <template id="genstru_layout_header_footer_lerm_eln">
-        <div t-attf-class="header article" t-att-style="report_header_style">
+        <div t-attf-class="header article" t-att-style="report_header_style" style="padding:70px;">
             <table style="width:100%;border-collapse:collapse;font-family:'Arial';font-size:11px;">
                 <tr style="height:100px;">
                     <!-- LEFT: Logo -->
                     <td style="width:20%;vertical-align:middle;text-align:left;">
                         <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'" style="height:40px;"/>
-                        <div style="font-size:9px;">Consultants Pvt. Ltd.</div>
+                        <!-- <div style="font-size:9px;">Consultants Pvt. Ltd.</div> -->
                     </td>
 
                     <!-- CENTER: Title -->
@@ -24,14 +24,16 @@
                                 <td style="text-align:left;">
                                   <t t-foreach="o.material.report_header_ids" t-as="hdr">
                                         <t t-if="hdr.is_active">
-                                            Issue No. and Date: (<span t-esc="hdr.issue_no"/>) and <span t-esc="hdr.issue_date.strftime('%d/%m/%y') if hdr.issue_date else ''"/>
+                                            Issue No : (<span t-esc="hdr.issue_no"/>) <br></br>
+                                            Date : <span t-esc="hdr.issue_date.strftime('%d/%m/%y') if hdr.issue_date else ''"/>
                                         </t>
                                     </t>
                                 </td>
-                                <td style="text-align:right;">
+                                <td style="text-align:left;">
                                  <t t-foreach="o.material.report_header_ids" t-as="hdr">
                                         <t t-if="hdr.is_active">
-                                            Revision No. and Date: (<span t-esc="hdr.revision_no"/>) and <span t-esc="hdr.revision_date.strftime('%d/%m/%y') if hdr.revision_date else ''"/>
+                                            Revision No : (<span t-esc="hdr.revision_no"/>) <br></br>
+                                            Date : <span t-esc="hdr.revision_date.strftime('%d/%m/%y') if hdr.revision_date else ''"/>
                                         </t>
                                     </t>
                                     
@@ -85,13 +87,37 @@
                             </t>
                 </tr>
             </table>
+
+            <div class="container_eln" style="margin-top:5px; margin-bottom:10px;">
+			
+					<table >
+						<tr colspan="12">
+							<td colspan="3">Report no :
+							</td>
+							
+							<td colspan="3">
+								<span t-field="o.kes_no"/>
+							</td>
+							
+							<td colspan="3"  >ULR NO :
+							</td>
+							<td colspan="3" >
+								<span t-field="o.sample_id.ulr_no"/>
+							</td>
+						</tr>
+					</table>
+			</div>
         </div>
+
+        
 
          <div t-attf-class="article" t-att-style="report_header_style">
 			
             <t t-out="0"/>
 				
         </div>
+
+        
 
         	<div t-attf-class="footer o_standard_footer">
             <div class="text-center" style="padding-top:45px; border-top: 1px solid black">					
