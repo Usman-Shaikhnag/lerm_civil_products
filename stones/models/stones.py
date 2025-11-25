@@ -160,6 +160,11 @@ class Stones(models.Model):
 
     compressive_wet_ids = fields.One2many("mechanical.compressive.wet.line", "parent_id", string="Test Readings")
 
+    @api.onchange('compressive_wet_ids')
+    def _onchange_limits_lines(self):
+        if len(self.compressive_wet_ids) > 5:
+            raise ValidationError("You cannot add more than 5 Test Reading lines.")
+
     wet_factor_a = fields.Float(string="Constant Factor A",  digits=(12, 4))
     wet_factor_b = fields.Float(string="Constant Factor B",  digits=(12, 4))
 
