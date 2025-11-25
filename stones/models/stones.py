@@ -2,10 +2,10 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 from datetime import timedelta
 import math
+from decimal import Decimal, ROUND_UP
 
 # import logging
 # _logger = logging.getLogger(__name__)
-
 
 
 class Stones(models.Model):
@@ -21,6 +21,36 @@ class Stones(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+
+
+    notes_id = fields.One2many('stone.notes','parent_id',string="Notes")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(Stones, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
 
     @api.depends('eln_ref')
     def _compute_size_id(self):
@@ -85,6 +115,11 @@ class Stones(models.Model):
     compressive_dry_visible = fields.Boolean("Compressive Strength in dry condition   Visible",compute="_compute_visible")
 
     compressive_dry_ids = fields.One2many("mechanical.compressive.dry.line", "parent_id", string="Test Readings")
+    
+    @api.onchange('compressive_dry_ids')
+    def _onchange_limit_lines(self):
+        if len(self.compressive_dry_ids) > 5:
+            raise ValidationError("You cannot add more than 5 Test Reading lines.")
 
     factor_a = fields.Float(string="Constant Factor A",  digits=(12, 4))
     factor_b = fields.Float(string="Constant Factor B",  digits=(12, 4))
@@ -123,6 +158,11 @@ class Stones(models.Model):
     compressive_wet_visible = fields.Boolean(" Compressive Strength in Satuarted Condition Visible",compute="_compute_visible")
 
     compressive_wet_ids = fields.One2many("mechanical.compressive.wet.line", "parent_id", string="Test Readings")
+
+    @api.onchange('compressive_wet_ids')
+    def _onchange_limits_lines(self):
+        if len(self.compressive_wet_ids) > 5:
+            raise ValidationError("You cannot add more than 5 Test Reading lines.")
 
     wet_factor_a = fields.Float(string="Constant Factor A",  digits=(12, 4))
     wet_factor_b = fields.Float(string="Constant Factor B",  digits=(12, 4))
@@ -166,15 +206,15 @@ class Stones(models.Model):
     #    App. Porosity
     weight_oven_dried = fields.Float(
         string="Weight of Oven Dried Test Piece (gm)",
-        digits=(12, 2)
+        digits=(12, 1)
     )
     weight_saturated_surface_dry = fields.Float(
         string="Weight of Saturated Surface Dry Test Piece (gm)",
-        digits=(12, 2)
+        digits=(12, 1)
     )
     water_added = fields.Float(
         string="Quantity of Water Added in 1000 ml Jar Containing Test Piece (gm)",
-        digits=(12, 2)
+        digits=(12, 1)
     )
 
     app_porosity = fields.Float(
@@ -199,8 +239,8 @@ class Stones(models.Model):
 
     # Water Absorption
 
-    wet_of_oven_water = fields.Float(string="Weight of oven dried test piece in gm) ", digits=(12,2),compute="_compute_wet_values",store=True)
-    wet_of_satureted_water = fields.Float(string="Weight of saturated surface dry test piece gm", digits=(12,2),compute="_compute_wet_values",store=True)
+    wet_of_oven_water = fields.Float(string="Weight of oven dried test piece in gm) ", digits=(12,4),compute="_compute_wet_values",store=True)
+    wet_of_satureted_water = fields.Float(string="Weight of saturated surface dry test piece gm", digits=(12,4),compute="_compute_wet_values",store=True)
     water_absorption = fields.Float(string="Water Absorption", digits=(12,2),compute="_compute_water_absorption",store=True)
 
     @api.depends('weight_oven_dried', 'weight_saturated_surface_dry')
@@ -209,21 +249,37 @@ class Stones(models.Model):
             rec.wet_of_oven_water = rec.weight_oven_dried
             rec.wet_of_satureted_water = rec.weight_saturated_surface_dry
 
+    # @api.depends('wet_of_oven_water', 'wet_of_satureted_water')
+    # def _compute_water_absorption(self):
+    #     for rec in self:
+    #         wet_oven = rec.wet_of_oven_water or 0.0
+    #         wet_sat = rec.wet_of_satureted_water or 0.0
+    #         if wet_sat != 0:
+    #             rec.water_absorption = ((wet_sat - wet_oven) / wet_sat) * 100
+    #         else:
+    #             rec.water_absorption = 0.0
+
     @api.depends('wet_of_oven_water', 'wet_of_satureted_water')
     def _compute_water_absorption(self):
         for rec in self:
             wet_oven = rec.wet_of_oven_water or 0.0
             wet_sat = rec.wet_of_satureted_water or 0.0
+
             if wet_sat != 0:
-                rec.water_absorption = ((wet_sat - wet_oven) / wet_sat) * 100
+                result = ((wet_sat - wet_oven) / wet_sat) * 100
+                # Always round UP to 2 decimals
+                rec.water_absorption = float(
+                    Decimal(str(result)).quantize(Decimal("0.01"), rounding=ROUND_UP)
+                )
             else:
                 rec.water_absorption = 0.0
 
+
      # App. Specific gravity
 
-    wet_of_oven_specific = fields.Float(string="Weight of oven dried test piece in gm ", digits=(12,2),compute="_compute_specific_values",store=True)
-    water_addes_specifc = fields.Float(string="Quantity of water added in 1000 ml jar containing tets piece in gm", digits=(12,2),compute="_compute_specific_values",store=True)
-    app_specific_gravity = fields.Float(string="App. Specific gravity", compute="_compute_specific_gravity",digits=(12,2),store=True)
+    wet_of_oven_specific = fields.Float(string="Weight of oven dried test piece in gm ", digits=(12,4),compute="_compute_specific_values",store=True)
+    water_addes_specifc = fields.Float(string="Quantity of water added in 1000 ml jar containing tets piece in gm", digits=(12,4),compute="_compute_specific_values",store=True)
+    app_specific_gravity = fields.Float(string="App. Specific gravity", compute="_compute_specific_gravity",digits=(12,5),store=True)
 
     @api.depends('weight_oven_dried', 'water_added')
     def _compute_specific_values(self):
@@ -241,11 +297,11 @@ class Stones(models.Model):
 
     # True Specific gravity
 
-    wet_true_specific = fields.Float(string="Weight of empty Sp. Gravity bottle with stopper  in gms ", digits=(12,3))
-    wt_stop_true_specifc = fields.Float(string="Wt. of bottle with stopper and powder in gms", digits=(12,3))
-    wt_bottle_true_specifc = fields.Float(string="Wt. of bottle with stopper, powder and distilled water at room temp. in gms", digits=(12,3))
-    wt_bottle_stope_true_specifc = fields.Float(string="Wt. of bottle with stopper filled with distilled water at room temp. in gms", digits=(12,3))
-    true_specific_gravity = fields.Float(string="True Specific gravity",digits=(12,2),compute="_compute_true_specific_gravity",store=True)
+    wet_true_specific = fields.Float(string="Weight of empty Sp. Gravity bottle with stopper  in gms ", digits=(12,4))
+    wt_stop_true_specifc = fields.Float(string="Wt. of bottle with stopper and powder in gms", digits=(12,4))
+    wt_bottle_true_specifc = fields.Float(string="Wt. of bottle with stopper, powder and distilled water at room temp. in gms", digits=(12,4))
+    wt_bottle_stope_true_specifc = fields.Float(string="Wt. of bottle with stopper filled with distilled water at room temp. in gms", digits=(12,4))
+    true_specific_gravity = fields.Float(string="True Specific gravity",digits=(12,6),compute="_compute_true_specific_gravity",store=True)
 
     @api.depends('wet_true_specific', 'wt_stop_true_specifc', 'wt_bottle_true_specifc', 'wt_bottle_stope_true_specifc')
     def _compute_true_specific_gravity(self):
@@ -259,11 +315,21 @@ class Stones(models.Model):
 
     true_porosity = fields.Float(string="True porosity",compute="_compute_true_porosity",digits=(12,4),store=True)
 
+    # @api.depends('app_specific_gravity', 'true_specific_gravity')
+    # def _compute_true_porosity(self):
+    #     for record in self:
+    #         if record.true_specific_gravity and record.true_specific_gravity != 0:
+    #             record.true_porosity = ((record.true_specific_gravity - record.app_specific_gravity) / record.true_specific_gravity) * 100
+    #         else:
+    #             record.true_porosity = 0.0
     @api.depends('app_specific_gravity', 'true_specific_gravity')
     def _compute_true_porosity(self):
         for record in self:
-            if record.true_specific_gravity and record.true_specific_gravity != 0:
-                record.true_porosity = ((record.true_specific_gravity - record.app_specific_gravity) / record.true_specific_gravity) * 100
+            if record.true_specific_gravity:
+                record.true_porosity = (
+                    (record.true_specific_gravity - record.app_specific_gravity)
+                    / record.true_specific_gravity
+                ) * 100
             else:
                 record.true_porosity = 0.0
 
@@ -460,6 +526,8 @@ class CompressiveDryLine(models.Model):
 
     compressive_perpendiculer1 = fields.Float(string="Compressive Strength Perpendicular to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
     compressive_parallel1 = fields.Float(string="Compressive Parallel to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
+
+   
 
 
     @api.depends('load_perpendiculer', 'load_parallel')
@@ -670,6 +738,14 @@ class CompressiveWetLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class StoneNotes(models.Model):
+    _name = "stone.notes"
+
+    parent_id = fields.Many2one('mechanical.stones',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 

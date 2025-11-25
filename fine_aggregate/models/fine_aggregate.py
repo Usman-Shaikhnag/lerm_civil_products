@@ -347,10 +347,7 @@ class FineAggregate(models.Model):
     oven_dried_wt = fields.Float(string="Weight of  oven dried aggregates (C) gm")
     wt_oven_dry_d= fields.Float(string="Weight of Oven dry sample (gm) D")
 
-    # Trial 2 (new)
-    # wt_basket_and_sample_2 = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm  [Trial 2]")
-    # wt_empty_basket_2= fields.Float(string="Weight of empty basket in water (A2) gm  [Trial 2]")
-
+ 
     wt_surface_dry_2 = fields.Float(string="Weight of surface dried aggregate (B) gm [Trial 2]")
     wt_sample_inwater_2 = fields.Float(string="Weight of Saturated Aggregate  in Water (A) = (A1 – A2) – gms [Trial 2]")
     oven_dried_wt_2 = fields.Float(string="Weight of  oven dried aggregates (C) gm [Trial 2]")
@@ -1189,10 +1186,7 @@ class FineAggregate(models.Model):
 
                 if sample.internal_id == "4587tyhloos-3fa3-4b83-ae31-9d281767188c":
                     record.loose_density_visible = True
-
-             
-              
-              
+                    
 
                 if sample.internal_id == '988f5bf6-c865-453c-9cd6-993a5a59ad95':
                     record.finer75_visible = True

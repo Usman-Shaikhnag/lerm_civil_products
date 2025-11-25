@@ -21,7 +21,12 @@ class MechanicalConcreteCube(models.Model):
     
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+
+
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
+
+
+    notes_id = fields.One2many('cube.notes','parent_id',string="Notes")
 
     # Project Information
     project_name = fields.Char(string="Project Name")
@@ -634,3 +639,11 @@ class MechanicalConcreteCubeGradeLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+class CubeNotes(models.Model):
+    _name = "cube.notes"
+
+    parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
