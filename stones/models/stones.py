@@ -2,6 +2,7 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 from datetime import timedelta
 import math
+from decimal import Decimal, ROUND_UP
 
 # import logging
 # _logger = logging.getLogger(__name__)
@@ -201,15 +202,15 @@ class Stones(models.Model):
     #    App. Porosity
     weight_oven_dried = fields.Float(
         string="Weight of Oven Dried Test Piece (gm)",
-        digits=(12, 2)
+        digits=(12, 1)
     )
     weight_saturated_surface_dry = fields.Float(
         string="Weight of Saturated Surface Dry Test Piece (gm)",
-        digits=(12, 2)
+        digits=(12, 1)
     )
     water_added = fields.Float(
         string="Quantity of Water Added in 1000 ml Jar Containing Test Piece (gm)",
-        digits=(12, 2)
+        digits=(12, 1)
     )
 
     app_porosity = fields.Float(
@@ -234,8 +235,8 @@ class Stones(models.Model):
 
     # Water Absorption
 
-    wet_of_oven_water = fields.Float(string="Weight of oven dried test piece in gm) ", digits=(12,2),compute="_compute_wet_values",store=True)
-    wet_of_satureted_water = fields.Float(string="Weight of saturated surface dry test piece gm", digits=(12,2),compute="_compute_wet_values",store=True)
+    wet_of_oven_water = fields.Float(string="Weight of oven dried test piece in gm) ", digits=(12,4),compute="_compute_wet_values",store=True)
+    wet_of_satureted_water = fields.Float(string="Weight of saturated surface dry test piece gm", digits=(12,4),compute="_compute_wet_values",store=True)
     water_absorption = fields.Float(string="Water Absorption", digits=(12,2),compute="_compute_water_absorption",store=True)
 
     @api.depends('weight_oven_dried', 'weight_saturated_surface_dry')
@@ -244,21 +245,37 @@ class Stones(models.Model):
             rec.wet_of_oven_water = rec.weight_oven_dried
             rec.wet_of_satureted_water = rec.weight_saturated_surface_dry
 
+    # @api.depends('wet_of_oven_water', 'wet_of_satureted_water')
+    # def _compute_water_absorption(self):
+    #     for rec in self:
+    #         wet_oven = rec.wet_of_oven_water or 0.0
+    #         wet_sat = rec.wet_of_satureted_water or 0.0
+    #         if wet_sat != 0:
+    #             rec.water_absorption = ((wet_sat - wet_oven) / wet_sat) * 100
+    #         else:
+    #             rec.water_absorption = 0.0
+
     @api.depends('wet_of_oven_water', 'wet_of_satureted_water')
     def _compute_water_absorption(self):
         for rec in self:
             wet_oven = rec.wet_of_oven_water or 0.0
             wet_sat = rec.wet_of_satureted_water or 0.0
+
             if wet_sat != 0:
-                rec.water_absorption = ((wet_sat - wet_oven) / wet_sat) * 100
+                result = ((wet_sat - wet_oven) / wet_sat) * 100
+                # Always round UP to 2 decimals
+                rec.water_absorption = float(
+                    Decimal(str(result)).quantize(Decimal("0.01"), rounding=ROUND_UP)
+                )
             else:
                 rec.water_absorption = 0.0
 
+
      # App. Specific gravity
 
-    wet_of_oven_specific = fields.Float(string="Weight of oven dried test piece in gm ", digits=(12,2),compute="_compute_specific_values",store=True)
-    water_addes_specifc = fields.Float(string="Quantity of water added in 1000 ml jar containing tets piece in gm", digits=(12,2),compute="_compute_specific_values",store=True)
-    app_specific_gravity = fields.Float(string="App. Specific gravity", compute="_compute_specific_gravity",digits=(12,2),store=True)
+    wet_of_oven_specific = fields.Float(string="Weight of oven dried test piece in gm ", digits=(12,4),compute="_compute_specific_values",store=True)
+    water_addes_specifc = fields.Float(string="Quantity of water added in 1000 ml jar containing tets piece in gm", digits=(12,4),compute="_compute_specific_values",store=True)
+    app_specific_gravity = fields.Float(string="App. Specific gravity", compute="_compute_specific_gravity",digits=(12,5),store=True)
 
     @api.depends('weight_oven_dried', 'water_added')
     def _compute_specific_values(self):
@@ -276,11 +293,11 @@ class Stones(models.Model):
 
     # True Specific gravity
 
-    wet_true_specific = fields.Float(string="Weight of empty Sp. Gravity bottle with stopper  in gms ", digits=(12,3))
-    wt_stop_true_specifc = fields.Float(string="Wt. of bottle with stopper and powder in gms", digits=(12,3))
-    wt_bottle_true_specifc = fields.Float(string="Wt. of bottle with stopper, powder and distilled water at room temp. in gms", digits=(12,3))
-    wt_bottle_stope_true_specifc = fields.Float(string="Wt. of bottle with stopper filled with distilled water at room temp. in gms", digits=(12,3))
-    true_specific_gravity = fields.Float(string="True Specific gravity",digits=(12,2),compute="_compute_true_specific_gravity",store=True)
+    wet_true_specific = fields.Float(string="Weight of empty Sp. Gravity bottle with stopper  in gms ", digits=(12,4))
+    wt_stop_true_specifc = fields.Float(string="Wt. of bottle with stopper and powder in gms", digits=(12,4))
+    wt_bottle_true_specifc = fields.Float(string="Wt. of bottle with stopper, powder and distilled water at room temp. in gms", digits=(12,4))
+    wt_bottle_stope_true_specifc = fields.Float(string="Wt. of bottle with stopper filled with distilled water at room temp. in gms", digits=(12,4))
+    true_specific_gravity = fields.Float(string="True Specific gravity",digits=(12,6),compute="_compute_true_specific_gravity",store=True)
 
     @api.depends('wet_true_specific', 'wt_stop_true_specifc', 'wt_bottle_true_specifc', 'wt_bottle_stope_true_specifc')
     def _compute_true_specific_gravity(self):
@@ -294,11 +311,21 @@ class Stones(models.Model):
 
     true_porosity = fields.Float(string="True porosity",compute="_compute_true_porosity",digits=(12,4),store=True)
 
+    # @api.depends('app_specific_gravity', 'true_specific_gravity')
+    # def _compute_true_porosity(self):
+    #     for record in self:
+    #         if record.true_specific_gravity and record.true_specific_gravity != 0:
+    #             record.true_porosity = ((record.true_specific_gravity - record.app_specific_gravity) / record.true_specific_gravity) * 100
+    #         else:
+    #             record.true_porosity = 0.0
     @api.depends('app_specific_gravity', 'true_specific_gravity')
     def _compute_true_porosity(self):
         for record in self:
-            if record.true_specific_gravity and record.true_specific_gravity != 0:
-                record.true_porosity = ((record.true_specific_gravity - record.app_specific_gravity) / record.true_specific_gravity) * 100
+            if record.true_specific_gravity:
+                record.true_porosity = (
+                    (record.true_specific_gravity - record.app_specific_gravity)
+                    / record.true_specific_gravity
+                ) * 100
             else:
                 record.true_porosity = 0.0
 
