@@ -518,10 +518,11 @@
 
 
                                <td>
-
+							   
 								<t t-if="not eln.grade_id">
 									<span t-esc="env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')]).test_method.test_method"/>
 								</t>
+
 								<t t-if="eln.grade_id">
 									<t t-set="printed" t-value="False"/>
 

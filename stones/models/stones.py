@@ -7,7 +7,6 @@ import math
 # _logger = logging.getLogger(__name__)
 
 
-
 class Stones(models.Model):
     _name = "mechanical.stones"
     _inherit = "lerm.eln"
