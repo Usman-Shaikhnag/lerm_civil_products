@@ -43,10 +43,16 @@ class BitumenMixPrefillWizard(models.TransientModel):
                 update_vals[field] = getattr(copy_product, field)
 
         # Copy one2many fields
+        # for field in one2many_fields:
+        #     lines = getattr(copy_product, field)
+        #     if lines:
+        #         update_vals[field] = [(0, 0, line.copy_data()[0]) for line in lines]
+
         for field in one2many_fields:
-            lines = getattr(copy_product, field)
-            if lines:
-                update_vals[field] = [(0, 0, line.copy_data()[0]) for line in lines]
+             lines = getattr(copy_product, field)
+             if lines:
+               update_vals[field] = [(5, 0, 0)]  # clear
+               update_vals[field] += [(0, 0, line.copy_data()[0]) for line in lines]
 
         # Check visibility and remove fields if not visible
         if not current_product.sieve_visible:
