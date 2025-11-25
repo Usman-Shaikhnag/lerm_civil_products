@@ -162,6 +162,9 @@ class LermSampleForm(models.Model):
     ])
     other_cancellation_reason = fields.Text("Cancellation Reason")
 
+    tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature Datasheet")
+    checked_by_signature_datasheet = fields.Boolean(string="Checked By Signature Datasheet")
+
     quantity = fields.Integer(string="Quantity")
     
     
@@ -422,7 +425,9 @@ class LermSampleForm(models.Model):
             self.check_by = self.env.user
             if not result.verified:
                 raise ValidationError("Not all parameters are verified. Please ensure all parameters are verified before proceeding.")
-        self.write({'state': '5-pending_approval'})
+        self.write({'state': '5-pending_approval',
+                              'checked_by_signature_datasheet':True
+                              })
         # eln = self.env['lerm.eln'].search([('sample_id','=',self.id)])
         # eln.write({'state':'3-approved'})
 
