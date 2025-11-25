@@ -12,6 +12,10 @@
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
 
+                <div>
+                        <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+                </div>
+
                     <group>
                        <field name="grade"/>
                     </group>
@@ -32,10 +36,7 @@
                             </tree>
                         </field>
                     </div>
-                    <!-- <group>
-                      <field name="test_start_date"/>
-                      <field name="test_end_date"/>
-                    </group> -->
+                  
 
                     <table class="table o_form_table custom_table_borders">
                         <thead>
@@ -64,71 +65,7 @@
                       </h1>
                     </div>
                     
-                     <!-- <group invisible="compressive_strength_visible == False"> -->
-                    <!-- <div invisible="compressive_strength_visible == False" class="mb-3">
-                        <table class="table custom_table_borders o_form_table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Sample 1</th>
-                                    <th>Sample 2</th>
-                                    <th>Sample 3</th>
-                                    <th>Sample 4</th>
-                                    <th>Sample 5</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Length (mm)</strong></td>
-                                    <td><field name="length" nolabel="1"/></td>
-                                    <td><field name="length_2" nolabel="1"/></td>
-                                    <td><field name="length_3" nolabel="1"/></td>
-                                    <td><field name="length_4" nolabel="1"/></td>
-                                    <td><field name="length_5" nolabel="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Width (mm)</strong></td>
-                                    <td><field name="width" nolabel="1"/></td>
-                                    <td><field name="width_2" nolabel="1"/></td>
-                                    <td><field name="width_3" nolabel="1"/></td>
-                                    <td><field name="width_4" nolabel="1"/></td>
-                                    <td><field name="width_5" nolabel="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Height (mm)</strong></td>
-                                    <td><field name="height" nolabel="1"/></td>
-                                    <td><field name="height_2" nolabel="1"/></td>
-                                    <td><field name="height_3" nolabel="1"/></td>
-                                    <td><field name="height_4" nolabel="1"/></td>
-                                    <td><field name="height_5" nolabel="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Area (mm²)</strong></td>
-                                    <td><field name="area" nolabel="1"/></td>
-                                    <td><field name="area_2" nolabel="1"/></td>
-                                    <td><field name="area_3" nolabel="1"/></td>
-                                    <td><field name="area_4" nolabel="1"/></td>
-                                    <td><field name="area_5" nolabel="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Load (Kn)</strong></td>
-                                    <td><field name="load" nolabel="1"/></td>
-                                    <td><field name="load_2" nolabel="1"/></td>
-                                    <td><field name="load_3" nolabel="1"/></td>
-                                    <td><field name="load_4" nolabel="1"/></td>
-                                    <td><field name="load_5" nolabel="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Compressive Strength (MPa)</strong></td>
-                                    <td><field name="comp_strength_1" nolabel="1"/></td>
-                                    <td><field name="comp_strength_2" nolabel="1"/></td>
-                                    <td><field name="comp_strength_3" nolabel="1"/></td>
-                                    <td><field name="comp_strength_4" nolabel="1"/></td>
-                                    <td><field name="comp_strength_5" nolabel="1"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> -->
+                   
 
                     <div invisible = "compressive_strength_visible == False"  >
                     <field name="compressive_strength_lines" nolabel="1" >
@@ -180,40 +117,7 @@
 
                    
 
-                    <!--Dimension -->
-
-                    <!-- <div invisible="dimension_visible == False" style="text-align:center">
-                        <h1>
-                          <field name="dimension_name1" readonly="1" nolabel="1"/>
-                          20 Bricks
-                        </h1>
-                        <field name="dimension_visible" invisible='1'/>
-                    </div>
-
-                    <div invisible="dimension_visible == False" class="mb-3">
-                        <table class="table custom_table_borders o_form_table">
-                            <thead>
-                                <tr>
-                                    <th>Dimension Type</th>
-                                    <th>Value (mm)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Length</strong></td>
-                                    <td><field name="avrg_length" nolabel="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Width</strong></td>
-                                    <td><field name="avrg_width" nolabel="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Height</strong></td>
-                                    <td><field name="avrg_height" nolabel="1"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> -->
+                  
 
                     <!-- Water Absorbtion -->                      
                     <div invisible="water_absorbtion_visible == False" style="text-align:center">
@@ -308,6 +212,34 @@
                 </sheet>
             </form>
         </field>
+        </record>
+
+
+        <record id="view_brick_prefill_data_form" model="ir.ui.view">
+            <field name="name">brick.prefill.data.form</field>
+            <field name="model">brick.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_brick_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">brick.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_brick_prefill_data_form"/>
+            <field name="target">new</field>
         </record>
 
     </data>

@@ -17,10 +17,29 @@ class MechanicalConcreteCube(models.Model):
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     child_lines = fields.One2many('mechanical.concrete.cube.line','parent_id',string="Parameter")
+    concrete_visible = fields.Boolean("Compressive Strength of Concrete Cube",compute="_compute_visible")
+
     
+
+
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
-    eln_ref = fields.Many2one('lerm.eln',string="ELN")
+    eln_ref = fields.Many2one('lerm.eln',string="ELN")   
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'concrete.cube.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
 
 
 
@@ -137,6 +156,9 @@ class MechanicalConcreteCube(models.Model):
 
 
     grade_child_lines = fields.One2many('mechanical.concrete.cube.grade.line','parent_id',string="Parameter",default=lambda self: self._default_grade_child_lines())
+    
+
+
 
     # @api.model
     # def _default_grade_child_lines(self):
@@ -189,9 +211,8 @@ class MechanicalConcreteCube(models.Model):
     confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
-
-    ], string='Confirmity', default='fail',compute="_compute_confirmity")
+        ('na', 'NA'),
+    ],  string='Confirmity', default='fail',compute="_compute_confirmity")
     age_of_test = fields.Integer("Age of Test, days",compute="compute_age_of_test")
     difference = fields.Integer("Difference",compute="compute_difference")
 
@@ -206,6 +227,9 @@ class MechanicalConcreteCube(models.Model):
     @api.depends('age_of_test','age_of_days')
     def compute_difference(self):
         for record in self:
+
+            
+            
             age_of_days = 0
             if record.age_of_days == '3days':
                 age_of_days = 3
@@ -278,6 +302,16 @@ class MechanicalConcreteCube(models.Model):
             else:
                 record.age_of_days = None
 
+    
+    @api.depends('sample_parameters')
+    def _compute_visible(self):
+        
+        for record in self:
+      
+            record.concrete_visible = False
+    
+    
+    
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
         for result in self.eln_ref.parameters_result:
@@ -332,6 +366,12 @@ class MechanicalConcreteCube(models.Model):
     @api.depends('average_strength','eln_ref','grade','age_of_days','difference')
     def _compute_confirmity(self):
         for record in self:
+
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.confirmity = 'na'
+                continue
+            
             record.confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23545tur-17c1-48ac-8462-9671e4d3d09f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23545tur-17c1-48ac-8462-9671e4d3d09f')]).parameter_table
@@ -421,15 +461,8 @@ class MechanicalConcreteCubeLine(models.Model):
 
     avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (N/mm2)")
 
-    # @api.depends('parent_id', 'parent_id.child_lines.compressive_strength')
-    # def _compute_avg_strength(self):
-    #     for rec in self:
-    #         if rec.parent_id and rec.parent_id.child_lines:
-    #             strengths = rec.parent_id.child_lines.mapped('compressive_strength')
-    #             values = [s for s in strengths if s > 0]
-    #             rec.avg_compressive_strength = sum(values) / len(values) if values else 0.0
-    #         else:
-    #             rec.avg_compressive_strength = 0.0
+ 
+    
 
     @api.depends('load', 'parent_id.area_of_cube')
     def _compute_strength(self):
