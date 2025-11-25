@@ -436,6 +436,27 @@ class Stones(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '5478ttr5-41c5-4cb5-843a-e09590c7c5789hh':
+                result.result_char = round(self.compressive_perpendiculer_avg,2)
+            
+            if result.parameter.internal_id == '547896rg-41c5-4cb5-843a-e09590c7c57878tt':
+                result.result_char = round(self.compressive_perpendiculer_wet_avg,2)
+            
+            if result.parameter.internal_id == '5787896rg-41c5-4cb5-843a-e09590c7c5578rte':
+                result.result_char = round(self.true_porosity,2)
+
+            if result.parameter.internal_id == '57r7896rg-41c5-4cb5-843a-e09590c74578trew8':
+                result.result_char = round(self.water_absorption,2)
+
+            if result.parameter.internal_id == '57r7896rg-41c5-4cb5-843a-e09590c7789rte143q':
+                result.result_char = round(self.app_specific_gravity,2)
+
+            if result.parameter.internal_id == '57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv':
+                result.result_char = round(self.true_specific_gravity,2)
+
+            if result.parameter.internal_id == 'cecda256-41c5-4cb5-843a-e09590c7c587':
+                result.result_char = round(self.scratch_hardness_avg,2)
             
 
         return {
