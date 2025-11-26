@@ -35,6 +35,13 @@
                       </field>
                     </div>
                     <group/>
+                       <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */
+                            
+                        }
+                    </style>
 
                      <!-- <group > -->
                      <div>
@@ -63,7 +70,7 @@
                             <tbody>
                             <tr>
                                 <td><span>Point Load  Constant</span></td>
-                                <td><field name='point_load_constant' col="1"/></td>
+                                <td><field name='point_load_constant' col="1" class="blue-input"/></td>
                             </tr>
                             
                             
@@ -75,7 +82,7 @@
                             <tbody>
                             <tr>
                                 <td><span>Compressive Strength  Constant</span></td>
-                                <td><field name='compressive_strength_constant' col="1"/></td>
+                                <td><field name='compressive_strength_constant' col="1" class="blue-input"/></td>
                             </tr>
                            
                             </tbody>
@@ -85,7 +92,7 @@
                             <tbody>
                             <tr>
                                 <td><span>Compressive Strength HD  Constant</span></td>
-                                <td><field name='compressive_strength_constant_hd' col="1"/></td>
+                                <td><field name='compressive_strength_constant_hd' col="1" class="blue-input"/></td>
                             </tr>
                            
                             </tbody>
@@ -98,50 +105,52 @@
                     <div invisible = "usc_visible == False">
                         <field name="rock_child_lines">
                             <tree editable="bottom" class="custom_table_borders">
+                             <field name="blue_input" invisible="1"/>
                                 <field name='sr_no'/>
-                                <field name='date_received'  />
-                                <field name='date_testing'/>
-                                <field name='lab_id' width="120"/>
-                                <field name='bh_no' width="120"/>
-                                <field name='depth' width="120"/>
-                                <field name='piece_no'  width="120"/>
-                                <field name='lithological' width="120"/>
-                                <field name='room_temp'/>
-                                <field name='relative_humidity'/>
-                                <field name='water_temperature'/>
-                                <field name='dia_rock1'/>
-                                <field name='dia_rock2'  />
-                                <field name='dia_rock3'/>
-                                <field name='avg_dia'/>
-                                <field name='height_rock1'/>
-                                <field name='height_rock2'/>
-                                <field name='height_rock3'  />
-                                <field name='avg_height'/>
+                                <field name='date_received'  decoration-info="blue_input"/>
+                                <field name='date_testing' decoration-info="blue_input"/>
+                                <field name='lab_id' width="120" decoration-info="blue_input"/>
+                                <field name='bh_no' width="120" decoration-info="blue_input"/>
+                                <field name='depth' width="120" decoration-info="blue_input"/>
+                                <field name='piece_no'  width="120" decoration-info="blue_input"/>
+                                <field name='lithological' width="120" decoration-info="blue_input"/>
+                                <field name='room_temp' decoration-info="blue_input"/>
+                                <field name='relative_humidity' decoration-info="blue_input"/>
+                                <field name='water_temperature' decoration-info="blue_input"/>
+                                <field name='dia_rock1' decoration-info="blue_input"/>
+                                <field name='dia_rock2'  decoration-info="blue_input"/>
+                                <field name='dia_rock3' decoration-info="blue_input"/>
+                                <field name='avg_dia' />
+                                <field name='height_rock1' decoration-info="blue_input"/>
+                                <field name='height_rock2' decoration-info="blue_input"/>
+                                <field name='height_rock3'  decoration-info="blue_input"/>
+                                <field name='avg_height' />
                                 <field name='hd'/>
                                 <field name='volume_of_sample'/>
-                                <field name='volume_of_sample1'/>
-                                <field name='initial_wt'/>
-                                <field name='dry_wet'  />
-                                <field name='saturated_wet'/>
+                                <field name='volume_of_sample1' decoration-info="blue_input"/>
+                                <field name='initial_wt' decoration-info="blue_input"/>
+                                <field name='dry_wet'   decoration-info="blue_input"/>
+                                  <field name='saturated_wet'   decoration-info="blue_input"/>
+                                
                                 <field name='volume_of_void'/>
-                                <field name='wt_of_sample'/>
+                                <field name='wt_of_sample' decoration-info="blue_input"/>
                                 <field name='sp_gravity'/>
                                 <field name='bulk_density'  />
                                 <field name='sat_density'/>
                                 <field name='dry_density'/>
                                 <field name='water_absorption'/>
                                 <field name='porosity'/>
-                                <field name='load_ucs'  />
+                                <field name='load_ucs'   decoration-info="blue_input"/>
                                 <field name='load'/>
                                 <field name='comp_strength1'/>
                                 <field name='comp_strength2'/>
-                                <field name='point_load'/>
+                                <field name='point_load' decoration-info="blue_input"/>
                                 <field name='point_load_strength'/>
                                  <field name='point_load_index'/>
                                 <field name='comp_strength4'/>
                                 <field name='comp_strength5'/>
-                                <field name='duration_of_test'/>
-                                <field name='mode_of_failure' width="120"/>
+                                <field name='duration_of_test' decoration-info="blue_input"/>
+                                <field name='mode_of_failure' width="120" decoration-info="blue_input"/>
                                 <field name='comp_rock'/>
                                 <field name='comp_rock1'/>
                                 <field name='stress_rate'/>
@@ -154,6 +163,22 @@
                             </tree>
                         </field>
                     </div>
+
+                       <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
 
 
 

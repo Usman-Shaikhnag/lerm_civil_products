@@ -24,6 +24,7 @@ class Stones(models.Model):
 
 
     notes_id = fields.One2many('stone.notes','parent_id',string="Notes")
+    
 
     @api.model
     def default_get(self, fields):
@@ -341,6 +342,7 @@ class Stones(models.Model):
     
 
 
+ 
 
  ### Compute Visible
     @api.depends('sample_parameters')
@@ -522,6 +524,7 @@ class CompressiveDryLine(models.Model):
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
     # sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
+    blue_input = fields.Boolean(default=True,invisible=True)
     date = fields.Date(string="Date")
     lab_id = fields.Char(string="Lab ID No.) ")
     room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2))
@@ -645,6 +648,7 @@ class CompressiveWetLine(models.Model):
     parent_id = fields.Many2one('mechanical.stones',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+    blue_input = fields.Boolean(default=True,invisible=True)
 
     # sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
     date = fields.Date(string="Date")

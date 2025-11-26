@@ -39,6 +39,16 @@
                     </div>
                     <group/>
 
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */
+                            
+                        }
+                    </style>
+
+                   
+
 
                      <div class="d-flex gap-2">
                         
@@ -47,15 +57,15 @@
                             <tbody>
                             <tr>
                                 <td><span>Location  </span></td>
-                                <td><field name='lab_id1' col="1"/></td>
+                                <td><field name='lab_id1' col="1" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span>Temperature during test</span></td>
-                                <td> <field name='room_temp1' col="1"/></td>
+                                <td> <field name='room_temp1' col="1" class="blue-input"/></td>
                             </tr>
                              <tr>
                                 <td><span>Relative humidity during test </span></td>
-                                <td> <field name='relative_humidity1' col="1"/></td>
+                                <td> <field name='relative_humidity1' col="1" class="blue-input"/></td>
                             </tr>
 
                             
@@ -67,11 +77,11 @@
                             <tbody>
                             <tr>
                                 <td><span>Depth</span></td>
-                                <td><field name='depth' col="1"/></td>
+                                <td><field name='depth' col="1" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span>Type of Stone</span></td>
-                                <td> <field name='stone_type1' col="1"/></td>
+                                <td> <field name='stone_type1' col="1" class="blue-input"/></td>
                             </tr>
                             
                             </tbody>
@@ -107,11 +117,11 @@
                       </tr>
                       <tr>
                         <td></td>
-                        <td><field  name="observations1"  colspan="1"  nolabel="1"/></td>
-                        <td><field  name="observations2"  colspan="1"  nolabel="1"/></td>
-                        <td><field  name="observations3"  colspan="1"  nolabel="1"/></td>
-                        <td><field  name="observations4"  colspan="1"  nolabel="1"/></td>
-                        <td> <field  name="observations5"  colspan="1"  nolabel="1"/></td>
+                        <td><field  name="observations1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                        <td><field  name="observations2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                        <td><field  name="observations3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                        <td><field  name="observations4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                        <td> <field  name="observations5"  colspan="1"  nolabel="1" class="blue-input"/></td>
                       </tr>
                       </tbody>
                     </table>
@@ -123,7 +133,7 @@
                     <tbody>
                       <tr>
                         <td><span>Scratch hardness According to Moh's Scale</span></td>
-                        <td><field name='scratch_hardness_avg' col="1"/></td>
+                        <td><field name='scratch_hardness_avg' col="1" class="blue-input"/></td>
                       </tr>
                      
                       </tbody>
@@ -150,7 +160,7 @@
                             <tbody>
                             <tr>
                                 <td><span>Constant Factor A</span></td>
-                                <td><field name='factor_a' col="1"/></td>
+                                <td><field name='factor_a' col="1" class="blue-input"/></td>
                             </tr>
                             
                             
@@ -162,7 +172,7 @@
                             <tbody>
                             <tr>
                                 <td><span>Constant Factor B</span></td>
-                                <td><field name='factor_b' col="1"/></td>
+                                <td><field name='factor_b' col="1" class="blue-input"/></td>
                             </tr>
                            
                             </tbody>
@@ -170,32 +180,37 @@
                     </div>
 
 
-        
 
+
+                     <!-- <field name="blue_input" invisible="1"/> -->
+                        
                      <div invisible = "compressive_dry_visible == False">
+                        
                         <field name="compressive_dry_ids">
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name="serial_no" />
-                                    <field name="date" />
-                                    <field name="lab_id" width="120"/>
-                                    <field name="room_temp" width="100"/>
-                                    <field name="relative_humidity" width="100"/>
+
+                                <field name="blue_input" invisible="1"/>
+                                <field name="serial_no"  />
+                                    <field name="date"  decoration-info="blue_input"/>
+                                    <field name="lab_id" width="120"  decoration-info="blue_input"/>
+                                    <field name="room_temp" width="100"  decoration-info="blue_input"/>
+                                    <field name="relative_humidity" width="100" decoration-info="blue_input"/>
                                     
                                     <!-- ✅ Wrap long text fields -->
-                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;"/>
-                                    <field name="stone_type" width="150" style="white-space: normal;"/>
-                                    <field name="shape_stone" width="160" style="white-space: normal;"/>
+                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;" decoration-info="blue_input"/>
+                                    <field name="stone_type" width="150" style="white-space: normal;" decoration-info="blue_input"/>
+                                    <field name="shape_stone" width="160" style="white-space: normal;" decoration-info="blue_input"/>
                                    
 
-                                    <field name="height_shape" width="100"/>
-                                    <field name="width_stone" width="100"/>
-                                     <field name="test_conditin" width="150" style="white-space: normal;"/>
-                                    <field name="load_perpendiculer" width="150"/>
-                                    <field name="load_parallel" width="150"/>
-                                    <field name="load_perpendiculer_n" width="150"/>
-                                    <field name="load_parallel_n" width="150"/>
-                                    <field name="duration_test" width="120"/>
-                                    <field name="appearance_stone" width="180"/>
+                                    <field name="height_shape" width="100"  decoration-info="blue_input"/>
+                                    <field name="width_stone" width="100"  decoration-info="blue_input"/>
+                                     <field name="test_conditin" width="150" style="white-space: normal;" decoration-info="blue_input"/>
+                                    <field name="load_perpendiculer" width="150" decoration-info="blue_input"/>
+                                    <field name="load_parallel" width="150" decoration-info="blue_input"/>
+                                    <field name="load_perpendiculer_n" width="150" decoration-info="blue_input"/>
+                                    <field name="load_parallel_n" width="150" />
+                                    <field name="duration_test" width="120" decoration-info="blue_input"/>
+                                    <field name="appearance_stone" width="180" decoration-info="blue_input"/>
                                     <field name="hd_stone" width="100"/>
                                     <field name="area_stone" width="120"/>
                                     <field name="compressive_perpendiculer" width="200"/>
@@ -244,7 +259,7 @@
                             <tbody>
                             <tr>
                                 <td><span>Constant Factor A</span></td>
-                                <td><field name='wet_factor_a' col="1"/></td>
+                                <td><field name='wet_factor_a' col="1" class="blue-input"/></td>
                             </tr>
                             
                             
@@ -256,40 +271,43 @@
                             <tbody>
                             <tr>
                                 <td><span>Constant Factor B</span></td>
-                                <td><field name='wet_factor_b' col="1"/></td>
+                                <td><field name='wet_factor_b' col="1" class="blue-input"/></td>
                             </tr>
                            
                             </tbody>
                         </table>
                     </div>
 
+                 
+
 
         
-
+                      
                      <div invisible="compressive_wet_visible == False">
                             <field name="compressive_wet_ids">
                                 <tree editable="bottom" class="custom_table_borders" string="Compressive Wet Test Readings">
+                                <field name="blue_input" invisible="1"/>
                                     <field name="serial_no"/>
-                                    <field name="date" />
-                                    <field name="lab_id" width="120"/>
-                                    <field name="room_temp" width="100"/>
-                                    <field name="relative_humidity" width="100"/>
+                                    <field name="date"   decoration-info="blue_input"/>
+                                    <field name="lab_id" width="120" cdecoration-info="blue_input"/>
+                                    <field name="room_temp" width="100" decoration-info="blue_input"/>
+                                    <field name="relative_humidity" width="100" decoration-info="blue_input"/>
                                     
                                     <!-- ✅ Wrap long text fields -->
-                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;"/>
-                                    <field name="stone_type" width="150" style="white-space: normal;"/>
-                                    <field name="shape_stone" width="160" style="white-space: normal;"/>
+                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;" decoration-info="blue_input"/>
+                                    <field name="stone_type" width="150" style="white-space: normal;" decoration-info="blue_input"/>
+                                    <field name="shape_stone" width="160" style="white-space: normal;" decoration-info="blue_input"/>
                                     
 
-                                    <field name="height_shape" width="100"/>
-                                    <field name="width_stone" width="100"/>
-                                    <field name="test_conditin" width="150" style="white-space: normal;"/>
-                                    <field name="load_perpendiculer" width="150"/>
-                                    <field name="load_parallel" width="150"/>
+                                    <field name="height_shape" width="100" decoration-info="blue_input"/>
+                                    <field name="width_stone" width="100" decoration-info="blue_input"/>
+                                    <field name="test_conditin" width="150" style="white-space: normal;" decoration-info="blue_input"/>
+                                    <field name="load_perpendiculer" width="150" decoration-info="blue_input"/>
+                                    <field name="load_parallel" width="150" decoration-info="blue_input"/>
                                     <field name="load_perpendiculer_n" width="150"/>
                                     <field name="load_parallel_n" width="150"/>
-                                    <field name="duration_test" width="120"/>
-                                    <field name="appearance_stone" width="180"/>
+                                    <field name="duration_test" width="120" decoration-info="blue_input"/>
+                                    <field name="appearance_stone" width="180" decoration-info="blue_input"/>
                                     <field name="hd_stone" width="100"/>
                                     <field name="area_stone" width="120"/>
                                     <field name="compressive_perpendiculer" width="200"/>
@@ -331,6 +349,8 @@
                         </h1>
                     </div>
 
+            
+
 
                 <div invisible="not (porosity_visible or water_absorption_visible or app_specific_visible or true_specific_visible)">
 
@@ -341,20 +361,20 @@
                             <tbody>
                             <tr>
                                 <td><span>Weight of oven dried test piece in gm</span></td>
-                                <td><field name='weight_oven_dried' col="1"/></td>
+                                <td><field name='weight_oven_dried' col="1" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span>Weight of saturated surface dry test piece gm</span></td>
-                                <td> <field name='weight_saturated_surface_dry' col="1"/></td>
+                                <td> <field name='weight_saturated_surface_dry' col="1" class="blue-input"/></td>
                             </tr>
                              <tr>
                                 <td><span>Quantity of water added in 1000 ml jar containing tets piece in gm</span></td>
-                                <td> <field name='water_added' col="1"/></td>
+                                <td> <field name='water_added' col="1" class="blue-input"/></td>
                             </tr>
 
                              <tr>
                                 <td><span>App. Porosity</span></td>
-                                <td> <field name='app_porosity' col="1"/></td>
+                                <td> <field name='app_porosity' col="1" class="blue-input"/></td>
                             </tr>
                             </tbody>
                         </table>
@@ -363,15 +383,15 @@
                             <tbody>
                             <tr>
                                 <td><span>Weight of oven dried test piece in gm</span></td>
-                                <td><field name='wet_of_oven_water' col="1"/></td>
+                                <td><field name='wet_of_oven_water' col="1" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span>Weight of saturated surface dry test piece gm</span></td>
-                                <td> <field name='wet_of_satureted_water' col="1"/></td>
+                                <td> <field name='wet_of_satureted_water' col="1" class="blue-input"/></td>
                             </tr>
                              <tr>
                                 <td><span>Water Absorption</span></td>
-                                <td> <field name='water_absorption' col="1"/></td>
+                                <td> <field name='water_absorption' col="1" class="blue-input"/></td>
                             </tr>
 
                             
@@ -388,7 +408,7 @@
                             <tbody>
                             <tr>
                                 <td><span>Weight of oven dried test piece in gm</span></td>
-                                <td><field name='wet_of_oven_specific' col="1"/></td>
+                                <td><field name='wet_of_oven_specific' col="1" /></td>
                             </tr>
                             <tr>
                                 <td><span>Quantity of water added in 1000 ml jar containing tets piece in gm</span></td>
@@ -408,20 +428,20 @@
                             <tbody>
                             <tr>
                                 <td><span>Weight of empty Sp. Gravity bottle with stopper  in gms</span></td>
-                                <td><field name='wet_true_specific' col="1"/></td>
+                                <td><field name='wet_true_specific' col="1" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span>Wt. of bottle with stopper and powder in gms</span></td>
-                                <td> <field name='wt_stop_true_specifc' col="1"/></td>
+                                <td> <field name='wt_stop_true_specifc' col="1" class="blue-input"/></td>
                             </tr>
                              <tr>
                                 <td><span>Wt. of bottle with stopper, powder and distilled water at room temp. in gms</span></td>
-                                <td> <field name='wt_bottle_true_specifc' col="1"/></td>
+                                <td> <field name='wt_bottle_true_specifc' col="1" class="blue-input"/></td>
                             </tr>
 
                              <tr>
                                 <td><span>Wt. of bottle with stopper filled with distilled water at room temp. in gms</span></td>
-                                <td> <field name='wt_bottle_stope_true_specifc' col="1"/></td>
+                                <td> <field name='wt_bottle_stope_true_specifc' col="1" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span>True Specific gravity</span></td>
@@ -508,6 +528,13 @@
             <field name="view_id" ref="view_stone_prefill_data_form"/>
             <field name="target">new</field>
         </record>
+
+
+
+
+
+
+       
    
 
     </data>
