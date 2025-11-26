@@ -24,6 +24,7 @@ class Stones(models.Model):
 
 
     notes_id = fields.One2many('stone.notes','parent_id',string="Notes")
+    
 
     @api.model
     def default_get(self, fields):
@@ -83,11 +84,7 @@ class Stones(models.Model):
 
    
 #  Scratch hardness According to Moh's Scale
-
-   
-
-
-    
+ 
     scratch_hardness_name = fields.Char("Name",default="Scratch hardness According to Moh's Scale")
     scratch_hardness_visible = fields.Boolean("Surface Quality",compute="_compute_visible") 
 
@@ -249,15 +246,7 @@ class Stones(models.Model):
             rec.wet_of_oven_water = rec.weight_oven_dried
             rec.wet_of_satureted_water = rec.weight_saturated_surface_dry
 
-    # @api.depends('wet_of_oven_water', 'wet_of_satureted_water')
-    # def _compute_water_absorption(self):
-    #     for rec in self:
-    #         wet_oven = rec.wet_of_oven_water or 0.0
-    #         wet_sat = rec.wet_of_satureted_water or 0.0
-    #         if wet_sat != 0:
-    #             rec.water_absorption = ((wet_sat - wet_oven) / wet_sat) * 100
-    #         else:
-    #             rec.water_absorption = 0.0
+   
 
     @api.depends('wet_of_oven_water', 'wet_of_satureted_water')
     def _compute_water_absorption(self):
@@ -315,13 +304,7 @@ class Stones(models.Model):
 
     true_porosity = fields.Float(string="True porosity",compute="_compute_true_porosity",digits=(12,4),store=True)
 
-    # @api.depends('app_specific_gravity', 'true_specific_gravity')
-    # def _compute_true_porosity(self):
-    #     for record in self:
-    #         if record.true_specific_gravity and record.true_specific_gravity != 0:
-    #             record.true_porosity = ((record.true_specific_gravity - record.app_specific_gravity) / record.true_specific_gravity) * 100
-    #         else:
-    #             record.true_porosity = 0.0
+  
     @api.depends('app_specific_gravity', 'true_specific_gravity')
     def _compute_true_porosity(self):
         for record in self:
@@ -332,14 +315,6 @@ class Stones(models.Model):
                 ) * 100
             else:
                 record.true_porosity = 0.0
-
-
-
-
-        
-
-    
-
 
 
  ### Compute Visible
@@ -403,28 +378,7 @@ class Stones(models.Model):
                     record.porosity_visible = True
                     record.app_specific_visible = True
                     
-
-
-                    
-
-               
-##########################
-
-
-    # def open_eln_page(self):
-    #     # import wdb; wdb.set_trace()
-
-    #     return {
-    #             'view_mode': 'form',
-    #             'res_model': "lerm.eln",
-    #             'type': 'ir.actions.act_window',
-    #             'target': 'current',
-    #             'res_id': self.eln_ref.id,
-                
-    #         }   
-    # 
-    # 
-    # #################################        
+       
 
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
@@ -522,6 +476,7 @@ class CompressiveDryLine(models.Model):
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
     # sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
+    blue_input = fields.Boolean(default=True,invisible=True)
     date = fields.Date(string="Date")
     lab_id = fields.Char(string="Lab ID No.) ")
     room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2))
@@ -645,6 +600,7 @@ class CompressiveWetLine(models.Model):
     parent_id = fields.Many2one('mechanical.stones',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+    blue_input = fields.Boolean(default=True,invisible=True)
 
     # sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
     date = fields.Date(string="Date")

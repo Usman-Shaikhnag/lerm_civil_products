@@ -18,6 +18,7 @@ This module contains all the common features of Stones.
                  'report/stone_report.xml'
     ],
    
+   
     'installable': True,
     'auto_install': False,
    

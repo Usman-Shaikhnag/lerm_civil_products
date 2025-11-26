@@ -16,6 +16,9 @@ class MechanicalBricks(models.Model):
 
     name = fields.Char(string="Name", default="Fly Ash Bricks")
 
+
+    notes_id = fields.One2many('brick.notes','parent_id',string="Notes")
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -647,3 +650,12 @@ class BrickWaterAbsorptionLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+class brickNotes(models.Model):
+    _name = "brick.notes"
+
+    parent_id = fields.Many2one('mechanical.bricks',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
