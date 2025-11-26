@@ -20,6 +20,9 @@ class FineAggregate(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
 
+    notes_id = fields.One2many('fine.notes','parent_id',string="Notes")
+
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -1816,7 +1819,12 @@ class QuantitativelyExaminationLine(models.Model):
 
 
 
+class fineNotes(models.Model):
+    _name = "fine.notes"
 
+    parent_id = fields.Many2one('mechanical.fine.aggregate',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 
