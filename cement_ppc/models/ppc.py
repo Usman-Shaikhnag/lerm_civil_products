@@ -1358,7 +1358,7 @@ class PPCSoundnessLeMethodLine(models.Model):
 
 
 
-class brickNotes(models.Model):
+class cementppcNotes(models.Model):
     _name = "cement.ppc.notes"
 
     parent_id = fields.Many2one('cement.ppc',string="Parent Id")

@@ -19,6 +19,9 @@ class CementNormalConsistency(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+
+    notes_id = fields.One2many('cement.opc.notes','parent_id',string="Notes")
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()
@@ -34,7 +37,7 @@ class CementNormalConsistency(models.Model):
                 },
         }
 
-    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+   
 
     @api.onchange('eln_ref')
     def compute_date_of_casting(self):
@@ -460,15 +463,7 @@ class CementNormalConsistency(models.Model):
     specific_surface_first = fields.Float(string="Specific Surface (First)",compute="_compute_specific_surface_first", store=True, digits=(12, 3))
 
   
-    # @api.depends('avg_time_first', 'apparatus_constant_first', 'density_cement')
-    # def _compute_specific_surface_first(self):
-    #     for rec in self:
-    #         if rec.avg_time_first and rec.apparatus_constant_first and rec.density_cement:
-    #             value = (521.08 * rec.apparatus_constant_first * sqrt(rec.avg_time_first)) / rec.density_cement / 10
-    #             # Round to nearest integer with ROUND_HALF_UP
-    #             rec.specific_surface_first = int(Decimal(value).quantize(Decimal('1'), rounding=ROUND_HALF_UP))
-    #         else:
-    #             rec.specific_surface_first = 0
+  
 
     @api.depends('avg_time_first', 'apparatus_constant_first', 'density_cement')
     def _compute_specific_surface_first(self):
@@ -1073,17 +1068,10 @@ class CementNormalConsistency(models.Model):
         record.eln_ref.write({'model_id':record.id})
         return record
 
-    # @api.model 
-    # def write(self, values):
-    #     # Perform additional actions or validations before update
-    #     result = super(CementNormalConsistency, self).write(values)
-    #     # Perform additional actions or validations after update
-    #     return result
+  
     @api.depends('eln_ref')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        
         for record in self:
             records = record.eln_ref.parameters_result.parameter.ids
             record.sample_parameters = records
@@ -1152,29 +1140,6 @@ class ConsistencyCementLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
-# class SettingTimetLine(models.Model):
-#     _name = "setting.time.ssl.line"
-#     parent_id = fields.Many2one('cement.opc',string="Parent Id")
-
-#     serial_no = fields.Char(string="Test NO")
-
-   
-    
-#     wt_of_cements1 = fields.Float(string="Wt of cement in gms")
-#     wt_of_water1 = fields.Float(string="wt of water in ml" ,compute="_compute_wt_of_water1")
-#     water_mix1 = fields.Char(string="% of water mix")
-#     needle_penitration1 = fields.Char(string="Needle penetration in mm")
-#     duration1 = fields.Float(string="Duration of time in minutes")
-
-   
-
-#     @api.depends('wt_of_cements1', 'parent_id.consitency_of_cement')
-#     def _compute_wt_of_water1(self):
-#         for rec in self:
-#             if rec.wt_of_cements1 and rec.parent_id.consitency_of_cement:
-#                 rec.wt_of_water1 = rec.wt_of_cements1 * 0.85 * rec.parent_id.consitency_of_cement / 100
-#             else:
-#                 rec.wt_of_water1 = 0.0
 
 
 
@@ -1427,6 +1392,16 @@ class CementSoundnessLeMethodLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+class cementopcNotes(models.Model):
+    _name = "cement.opc.notes"
+
+    parent_id = fields.Many2one('cement.opc',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
+
 
 
 
