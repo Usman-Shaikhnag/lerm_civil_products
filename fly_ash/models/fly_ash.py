@@ -25,6 +25,34 @@ class FlyaschNormalConsistency(models.Model):
 
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
 
+    notes_id = fields.One2many('flyash.notes','parent_id',string="Notes")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(FlyaschNormalConsistency, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -918,7 +946,7 @@ class FlyaschNormalConsistency(models.Model):
             rec.avg_28_days2 = mean(strengths_28) if strengths_28 else 0.0
 
 
-    average_28_days = fields.Float(string="Avg. Strength Mpa (28 Days)", compute="_compute_average_28_days", store=True)
+    average_28_days = fields.Float(string="Avg. Strength MPa (28 Days)", compute="_compute_average_28_days", store=True)
 
     @api.depends('avg_28_days1','avg_28_days2')
     def _compute_average_28_days(self):
@@ -928,7 +956,7 @@ class FlyaschNormalConsistency(models.Model):
             else:
                 record.average_28_days = 0.0
 
-    average_7_days = fields.Float(string="Avg. Strength Mpa (7 Days)", compute="_compute_average_7_days", store=True)
+    average_7_days = fields.Float(string="Avg. Strength MPa (7 Days)", compute="_compute_average_7_days", store=True)
 
     @api.depends('avg_7_days1','avg_7_days2')
     def _compute_average_7_days(self):
@@ -1811,7 +1839,7 @@ class FlyashCompressiveStrengthLine(models.Model):
 
     load_failure = fields.Float("Load at Failure (P) kN",digits=(12,3))
     compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength",store=True,digits=(12,1))
-    avg_compressive_strength = fields.Float("Avg. Strength Mpa",digits=(12,1))
+    avg_compressive_strength = fields.Float("Avg. Strength MPa",digits=(12,1))
 
     @api.depends('load_failure', 'length1', 'width1')
     def _compute_compressive_strength(self):
@@ -1911,7 +1939,7 @@ class FlyashCompressiveCementLine(models.Model):
 
     load_failure = fields.Float("Load at Failure (P) kN",digits=(12,3))
     compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength",store=True,digits=(12,1))
-    avg_compressive_strength = fields.Float("Avg. Strength Mpa",digits=(12,1))
+    avg_compressive_strength = fields.Float("Avg. Strength MPa",digits=(12,1))
 
     @api.depends('load_failure', 'length1', 'width1')
     def _compute_compressive_strength(self):
@@ -2006,7 +2034,7 @@ class FlyashLimeLine(models.Model):
 
     load_failure = fields.Float("Load at Failure (P) kN",digits=(12,3))
     compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength",store=True,digits=(12,1))
-    avg_compressive_strength = fields.Float("Avg. Strength Mpa",digits=(12,1))
+    avg_compressive_strength = fields.Float("Avg. Strength MPa",digits=(12,1))
 
     @api.depends('load_failure', 'length1', 'width1')
     def _compute_compressive_strength(self):
@@ -2068,6 +2096,13 @@ class FlyashLimeLine(models.Model):
 
         return super(FlyashLimeLine, self).create(vals)
 
+
+class FlyashNotes(models.Model):
+    _name = "flyash.notes"
+
+    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 

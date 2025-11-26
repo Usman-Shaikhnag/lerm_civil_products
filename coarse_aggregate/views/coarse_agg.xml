@@ -35,6 +35,13 @@
                         </field>
                     </div>
 
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+                    </style>
+
                     <!-- Sieve Alanysis  -->
                     <div invisible="sieve_visible == False">
                         <h1 style="text-align: center;">
@@ -48,7 +55,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_sieve_analysis">Temp.°C</label></td>
-                                    <td><field name="temp_sieve_analysis"/></td>
+                                    <td class="blue-input"><field name="temp_sieve_analysis" /></td>
                                 </tr>
                                 
                             </tbody>
@@ -58,7 +65,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_sieve_analysis">Humidity %</label></td>
-                                    <td><field name="humidity_sieve_analysis"/></td>
+                                    <td><field name="humidity_sieve_analysis" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1663,6 +1670,24 @@
                             </tr>
                         </tbody>
                     </table>
+
+
+
+                    <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
 
 
 

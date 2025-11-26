@@ -14,6 +14,34 @@ class MechanicalBricksBurntClay(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
+    notes_id = fields.One2many('brick.burnt.clay.notes','parent_id',string="Notes")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalBricksBurntClay, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -732,3 +760,11 @@ class WaterAbsorptionLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class BrickBurntClayNotes(models.Model):
+    _name = "brick.burnt.clay.notes"
+
+    parent_id = fields.Many2one('mechanical.bricks.burnt.clay',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
