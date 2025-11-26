@@ -22,6 +22,34 @@ class PaverBlock(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    notes_id = fields.One2many('paver.block.notes','parent_id',string="Notes")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(PaverBlock, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -775,114 +803,9 @@ class PaverCompressiveLine(models.Model):
 
 
 
+class PaverBlockNotes(models.Model):
+    _name = "paver.block.notes"
 
-
-# class CompressiveLine(models.Model):
-#     _name = "paver.compressive.line"
-#     parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
-
-#     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-#     sample_identification_com = fields.Float(string="Sample Identification")
-#     wt_block = fields.Float(string="Weight of Block (gms)")
-#     correction_factor = fields.Float(string="Correction Factor",compute="_compute_correction_factor",store=True)
-#     load = fields.Float(string=" Load (kN)")
-#     compressive_strenght = fields.Float(string=" Compressive Strength (N/mm2)",compute="_compute_compressive_strength")
-#     thickness = fields.Float(string=" Thickness mm")
-
-    # @api.depends('parent_id.thickness_child_lines')
-    # def _compute_correction_factor(self):
-    #     for line in self:
-    #         if line.parent_id.thickness_child_lines:
-    #             line.correction_factor = line.parent_id.thickness_child_lines[0].Correction_factore
-    #         else:
-    #             line.correction_factor = 0.0
-
-    # @api.depends('load', 'correction_factor', 'parent_id.area_paver')
-    # def _compute_compressive_strength(self):
-    #     for line in self:
-    #         area = line.parent_id.area_paver
-    #         if area > 0:
-    #             line.compressive_strenght = (line.load * line.correction_factor * 1000) / area
-    #         else:
-    #             line.compressive_strenght = 0.0
-
-
-    # @api.depends('parent_id.thickness2', 'parent_id.thickness_child_lines')
-    # def _compute_correction_factor(self):
-    #     for line in self:
-    #         correction = ''
-    #         core_dia_value = line.parent_id.thickness2
-    #         if core_dia_value and line.parent_id.thickness_child_lines:
-    #             matched_line = line.parent_id.thickness_child_lines.filtered(lambda l: float(l.thickness1) == core_dia_value)
-    #             if matched_line:
-    #                 correction = matched_line[0].Correction_factore
-    #         line.correction_factor = correction
-
-    # @api.depends('parent_id.thickness2', 'parent_id.thickness_child_lines')
-    # def _compute_correction_factor(self):
-    #     for line in self:
-    #         correction = 0.0
-    #         core_dia_value = line.parent_id.thickness2
-    #         if core_dia_value and line.parent_id.thickness_child_lines:
-    #             matched_line = line.parent_id.thickness_child_lines.filtered(
-    #                 lambda l: float(l.thickness1) == float(core_dia_value)
-    #             )
-    #             if matched_line:
-    #                 correction = matched_line[0].Correction_factore
-    #         line.correction_factor = correction
-
-    
-
-   
-    
-
-   
-   
-
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('serial_no'))
-    #             vals['serial_no'] = max_serial_no + 1
-
-    #     return super(CompressiveLine, self).create(vals)
-
-    # def _reorder_serial_numbers(self):
-    #     # Reorder the serial numbers based on the positions of the records in child_lines
-    #     records = self.sorted('id')
-    #     for index, record in enumerate(records):
-    #         record.serial_no = index + 1
-
-
-
-# class ThicknesscorrectionLine(models.Model):
-#     _name = "paver.thickness.line"
-#     parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
-
-   
-#     Correction_factore = fields.Float(string=" Correction Factor")
-#     thickness1 = fields.Float(string="Thickness")
-
-
-
-
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('serial_no'))
-    #             vals['serial_no'] = max_serial_no + 1
-
-    #     return super(ThicknesscorrectionLine, self).create(vals)
-
-    # def _reorder_serial_numbers(self):
-    #     # Reorder the serial numbers based on the positions of the records in child_lines
-    #     records = self.sorted('id')
-    #     for index, record in enumerate(records):
-    #         record.serial_no = index + 1
-
+    parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

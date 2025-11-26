@@ -468,39 +468,36 @@
 		<t t-call="web.html_container">
 			
 			 <t t-call="lerm_civil.genstru_layout_header_footer_lerm_eln">
-				<div class="container_eln">
-					<div t-foreach="eln" t-as="o">
+				<div class="container_eln" style="padding-top:0px;">
+					<div class="" t-foreach="eln" t-as="o">
+						
 					
 						 <table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
 							<tr>
-								<td ><strong>Mechanical Testing</strong>: </td>
-								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
-								<td ><strong>URL NO</strong>: </td>
-								<td style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td>
+								<!-- <td ><strong>Mechanical Testing</strong>: </td>
+								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td> -->
+								<!-- <td colspan="3"><strong>Report No</strong>: </td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
+								<td colspan="3" ><strong>URL NO</strong>: </td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td> -->
 							</tr>
 
 							<tr>
-								<td rowspan="2"><strong>Project Name</strong>: </td>
-								<td rowspan="2"  style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								<td colspan="3"><strong>Project Name</strong>: </td>
+								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 
-								<td><strong>Report No.</strong>: </td>
-								<td style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
-							</tr>
-								
-							<tr>
-
-							  <td><strong>Date of Report</strong>: </td>
+								<!-- <td><strong>Date of Report</strong>: </td>
 									
-								 <td >
-								  <span t-field="o.start_date" style="margin-right:10px;"/> 		
-								 </td>
+								<td >
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								</td> -->
 							</tr>
 						
 							
 						
 							<tr>
-							<td rowspan="2" style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
-							<td rowspan="2"  style="padding-left: 10px;width:25%;">
+							<td colspan="3" style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
+							<td colspan="3" style="padding-left: 10px;width:25%;">
 										<span t-field="o.srf_id.customer.name"/>
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
@@ -515,28 +512,48 @@
 								</td > -->
 								
 
-								<td><strong>Date Sample Received</strong>:</td>
-								<td >
-								<span t-field="o.sample_id.sample_received_date"/>
-								</td >
+								<td colspan="3"><strong>Date Sample Received</strong>:</td>
+								<td colspan="3">
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
 							</tr>
 							<tr>
+								
+								<td colspan="3" ><strong>Mechanical Testing</strong>: </td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.material.name"/></td>
 
-								<td><strong>Starting Date</strong>: </td>
-								<td>
-									 <span t-field="o.start_date" style="margin-right:10px;"/>
+								<td colspan="3"><strong>Location</strong>: </td>
+								<td colspan="3">
+								Permanent facility
+							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
+								</td>
+							
+							</tr>
+
+							<tr>
+								
+								
+								<td colspan="3"><strong>Date of Report</strong>: </td>
+									
+								<td colspan="3">
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								</td>
+
+								<td colspan="3"><strong>Starting Date</strong>: </td>
+								<td colspan="3">
+							        <span t-field="o.start_date" style="margin-right:10px;"/>
 								</td>
 							
 							</tr>
 							
 							<tr>
 
-								<td><strong>Sample Description</strong>: </td>
-								<td style="padding-left: 10px;"><span t-field="o.size_id.size"/></td>
+								<td colspan="3"><strong>Type of Sample &amp; Condition</strong>: </td>
+								<td colspan="3"><span t-field="o.material.name"/></td>
 
-							<td><strong>Completion Date</strong>: </td>
-								<td>
-									<span t-field="o.end_date" />
+							<td colspan="3"><strong>Completion Date</strong>: </td>
+								<td colspan="3">
+								<span t-field="o.end_date" />
 								</td>
 						</tr>
 
@@ -544,7 +561,8 @@
 
 							
 						</table>
-					</div>
+
+						</div>
 
 					<table style="margin-top:10px;margin-bottom:0px;">
 					<t t-set="i" t-value="0"/>
@@ -1054,16 +1072,22 @@
 						<table >
 							<tr>
 							
-								<td style="padding: 5px; font-size:13px; line-height: 12px;">
+								<td style="padding: 5px; font-style: italic; font-size: 14px; line-height: 13px;">
 									<b>Remarks:</b><br/><br/>
-									    
+									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
 									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
 
 									<b>Notes:-</b><br/><br/>
-								    	a. The information marked with an # received from customer<br/><br/>
+								    	<!-- a. The information marked with an # received from customer<br/><br/>
 							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
 							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
-							        	d. This document shall not be reproduced in part or full without the approval of Genstru.
+							        	d. This document shall not be reproduced in part or full without the approval of Genstru. -->
+
+										<t t-if="data.notes_id">
+										<t t-foreach="data.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+										</t>
+									</t>
 								</td>
 							</tr>
 							</table  >
