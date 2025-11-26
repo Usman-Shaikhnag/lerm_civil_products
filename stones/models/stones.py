@@ -27,30 +27,25 @@ class Stones(models.Model):
     
 
     @api.model
-    def default_get(self, fields):
-        res = super(Stones, self).default_get(fields)
+    def create(self, vals):
+        record = super(MechanicalCoarseAggregate, self).create(vals)
 
-        default_notes = [
-            (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
-            }),
-            (0, 0, {
-                'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
-            }),
-        ]
+        if not record.notes_id:
+            default_notes = [
+                {'sr_no': 'a', 'notes': 'The information marked with an # received from customer'},
+                {'sr_no': 'b', 'notes': 'The results listed refer only to tested parameter and sample as received'},
+                {'sr_no': 'c', 'notes': 'Samples will be discarded after 15 days unless otherwise specified.'},
+                {'sr_no': 'd', 'notes': 'This document shall not be reproduced without approval.'},
+            ]
 
-        res['notes_id'] = default_notes
-        return res
+            for note in default_notes:
+                self.env['coarse.aggregate.notes'].create({
+                    'parent_id': record.id,
+                    'sr_no': note['sr_no'],
+                    'notes': note['notes'],
+                })
+
+        return record
 
 
     @api.depends('eln_ref')

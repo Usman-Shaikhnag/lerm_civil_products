@@ -31,13 +31,18 @@ class CoarseAggregateMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
 
-    notes_id = fields.One2many('coarse.aggregate.notes','parent_id',string="Notes")
+    notes_id = fields.One2many(
+    'coarse.aggregate.notes',
+    'parent_id',
+    string="Notes",
+    default=lambda self: self._default_notes_lines()
+)
+
+
 
     @api.model
-    def default_get(self, fields):
-        res = super(CoarseAggregateMechanical, self).default_get(fields)
-
-        default_notes = [
+    def _default_notes_lines(self):
+        return [
             (0, 0, {
                 'sr_no': 'a',
                 'notes': 'The information marked with an # received from customer',
@@ -48,16 +53,14 @@ class CoarseAggregateMechanical(models.Model):
             }),
             (0, 0, {
                 'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+                'notes': 'The balance samples if any will be discarded after 15 days unless otherwise specified.',
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': 'This document shall not be reproduced without approval.',
             }),
         ]
 
-        res['notes_id'] = default_notes
-        return res
 
     
 
