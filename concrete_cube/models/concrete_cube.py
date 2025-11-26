@@ -7,6 +7,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+
 class MechanicalConcreteCube(models.Model):
     _name = "mechanical.concrete.cube"
     _inherit = "lerm.eln"
@@ -22,11 +23,41 @@ class MechanicalConcreteCube(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
-
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
 
-
     notes_id = fields.One2many('cube.notes','parent_id',string="Notes")
+
+
+
+
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalConcreteCube, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
+
 
     # Project Information
     project_name = fields.Char(string="Project Name")
@@ -434,8 +465,8 @@ class MechanicalConcreteCube(models.Model):
         for result in self.eln_ref.parameters_result:
                    
                     if result.parameter.internal_id == 'd6c89613-885c-4af1-bf19-f523bb56e0d9':
-                        result.result_char = self.average_strength
-                        if self._compute_average_strength_nabl == 'pass':
+                        result.result_char = round(self.average_strength,2)
+                        if self.average_strength_nabl == 'pass':
                             result.nabl_status = 'nabl'
                         else:
                             result.nabl_status = 'non-nabl'

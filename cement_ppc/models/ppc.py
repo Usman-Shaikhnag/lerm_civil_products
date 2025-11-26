@@ -25,6 +25,32 @@ class PPCCementNormalConsistency(models.Model):
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
     notes_id = fields.One2many('cement.ppc.notes','parent_id',string="Notes")
 
+    @api.model
+    def default_get(self, fields):
+        res = super(PPCCementNormalConsistency, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()

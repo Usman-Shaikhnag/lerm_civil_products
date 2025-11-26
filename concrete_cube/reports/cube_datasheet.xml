@@ -43,6 +43,10 @@
                             </td>
                         </tr>
                     </table>
+                    
+
+
+
 
                     <!-- Test Configuration -->
                     <div style="margin-top: 30px;">
@@ -120,6 +124,8 @@
                         </table>
                     </div>
 
+
+
                     <!-- Test Results Table -->
                     <div style="margin-top: 30px;">
                         <div style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 15px;">
@@ -158,17 +164,19 @@
 <tr t-foreach="data.child_lines" t-as="r" style="text-align: center;">
     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['sr_no']"/></td>
     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['id_mark']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['wt_sample']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['length']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['diameter']"/></td>
+    
     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_casting']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['days']"/></td>
+
     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_testing1']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['days']"/></td>
     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['room_temp']"/></td>
     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['relative_humidity']"/></td>
-    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['load']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['wt_sample']"/></td>
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['length']"/></td>
+    <td t-if="data.type_of_sample == 'cylinder'" style="border: 1px solid black; padding: 6px;"><span t-esc="r['diameter']"/></td>
+    <td t-if="data.type_of_sample == 'cube'"  style="border: 1px solid black; padding: 6px;"><span t-esc="r['width']"/></td>
     <td style="border: 1px solid black; padding: 6px;"><span t-esc="'%.2f' % r['cross_sectional_area']"/></td>
-    <!-- <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td> -->
+    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['load']"/></td>
     <td style="border: 1px solid black; padding: 6px;"> <span t-esc="'%.2f' % r['compressive_strength']"/></td>
 
     
