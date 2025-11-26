@@ -23,7 +23,7 @@ class PPCCementNormalConsistency(models.Model):
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
-
+    notes_id = fields.One2many('cement.ppc.notes','parent_id',string="Notes")
 
 
     def prefill_data(self):
@@ -123,6 +123,7 @@ class PPCCementNormalConsistency(models.Model):
             # --- Density calculations ---
             rec.density1 = (rec.mass1 / rec.displaced1) if rec.displaced1 else 0.0
             rec.density2 = (rec.mass2 / rec.displaced2) if rec.displaced2 else 0.0
+
 
     @api.depends('density1', 'density2')
     def _compute_avg_density(self):
@@ -1354,4 +1355,13 @@ class PPCSoundnessLeMethodLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+class brickNotes(models.Model):
+    _name = "cement.ppc.notes"
+
+    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
