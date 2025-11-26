@@ -13,7 +13,7 @@ class MechanicalConcreteCube(models.Model):
     _description = 'mechanical.concrete.cube'
     _rec_name = "name"
 
-    name = fields.Char("Name", default="Compressive Strength of Concrete Cube")
+name = fields.Char("Name", default="Compressive Strength of Concrete Cube")
     cube_visible = fields.Boolean("Compressive Strength of Concrete Cube",compute="_compute_visible")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master', string="Parameters", compute="_compute_sample_parameters", store=True)
