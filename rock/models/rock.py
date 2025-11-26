@@ -16,6 +16,42 @@ class MechanicalRock(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    notes_id = fields.One2many('rock.notes','parent_id',string="Notes")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalRock, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an #  received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+              (0, 0, {
+                'sr_no': 'e',
+                'notes': '^ represents unsoaked test',
+            }),
+              (0, 0, {
+                'sr_no': 'd',
+                'notes': '$ represents crumbled in water',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
     @api.depends('eln_ref')
     def _compute_grade_id(self):
         if self.eln_ref:
@@ -130,6 +166,8 @@ class MechanicalRock(models.Model):
 class MechanicalRockLine(models.Model):
     _name = "mechanical.rock.line"
     parent_id = fields.Many2one('mechanical.rock',string="Parent Id")
+
+    blue_input = fields.Boolean(default=True,invisible=True)
    
     sr_no = fields.Integer(string="Specimen NO.", readonly=True, copy=False, default=1)
     date_received = fields.Date(string="Date of Received")
@@ -413,6 +451,14 @@ class MechanicalRockLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+class RockNotes(models.Model):
+    _name = "rock.notes"
+
+    parent_id = fields.Many2one('mechanical.rock',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 

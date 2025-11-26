@@ -24,6 +24,7 @@ class Stones(models.Model):
 
 
     notes_id = fields.One2many('stone.notes','parent_id',string="Notes")
+    
 
     @api.model
     def default_get(self, fields):
@@ -341,6 +342,7 @@ class Stones(models.Model):
     
 
 
+ 
 
  ### Compute Visible
     @api.depends('sample_parameters')
@@ -436,6 +438,27 @@ class Stones(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '5478ttr5-41c5-4cb5-843a-e09590c7c5789hh':
+                result.result_char = round(self.compressive_perpendiculer_avg,2)
+            
+            if result.parameter.internal_id == '547896rg-41c5-4cb5-843a-e09590c7c57878tt':
+                result.result_char = round(self.compressive_perpendiculer_wet_avg,2)
+            
+            if result.parameter.internal_id == '5787896rg-41c5-4cb5-843a-e09590c7c5578rte':
+                result.result_char = round(self.true_porosity,2)
+
+            if result.parameter.internal_id == '57r7896rg-41c5-4cb5-843a-e09590c74578trew8':
+                result.result_char = round(self.water_absorption,2)
+
+            if result.parameter.internal_id == '57r7896rg-41c5-4cb5-843a-e09590c7789rte143q':
+                result.result_char = round(self.app_specific_gravity,2)
+
+            if result.parameter.internal_id == '57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv':
+                result.result_char = round(self.true_specific_gravity,2)
+
+            if result.parameter.internal_id == 'cecda256-41c5-4cb5-843a-e09590c7c587':
+                result.result_char = round(self.scratch_hardness_avg,2)
             
 
         return {
@@ -501,6 +524,7 @@ class CompressiveDryLine(models.Model):
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
     # sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
+    blue_input = fields.Boolean(default=True,invisible=True)
     date = fields.Date(string="Date")
     lab_id = fields.Char(string="Lab ID No.) ")
     room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2))
@@ -624,6 +648,7 @@ class CompressiveWetLine(models.Model):
     parent_id = fields.Many2one('mechanical.stones',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+    blue_input = fields.Boolean(default=True,invisible=True)
 
     # sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
     date = fields.Date(string="Date")

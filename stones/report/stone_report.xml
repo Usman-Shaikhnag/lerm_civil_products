@@ -13,14 +13,13 @@
 						
 					
 						 <table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
-							<tr>
-								<!-- <td ><strong>Mechanical Testing</strong>: </td>
-								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td> -->
+							<!-- <tr>
+							
 								<td colspan="3"><strong>Report No</strong>: </td>
 								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
 								<td colspan="3" ><strong>URL NO</strong>: </td>
 								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td>
-							</tr>
+							</tr> -->
 
 							<tr>
 								<td colspan="3"><strong>Project Name</strong>: </td>
@@ -300,14 +299,14 @@
                             </tr>
 
                             <t t-set="f" t-value="0"/>
-                            <tr t-foreach="data.compressive_dry_ids" t-as="r">
+                            <!-- <tr t-foreach="data.compressive_dry_ids" t-as="r">
                                 <td   style="text-align: center;">
                                     <div>
                                         <span t-esc="f + 1" />
                                         <t t-set="f" t-value="f + 1"/>
                                     </div>
                                 </td>
-								<td   style="text-align: center;">
+								<td   style="text-align: center;"> 
                                     <span t-esc="r['date']"/>
                                 </td>
 								
@@ -349,7 +348,93 @@
                                 </td>    
 								
                                 
-                            </tr>
+                            </tr> -->
+
+							<tr t-foreach="data.compressive_dry_ids" t-as="r">
+							<td style="text-align: center;">
+								<div>
+									<span t-esc="f + 1"/>
+									<t t-set="f" t-value="f + 1"/>
+								</div>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['date']">
+									<span t-esc="r['date']"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['room_temp'] != 0">
+									<span t-esc="r['room_temp']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['relative_humidity'] != 0">
+									<span t-esc="r['relative_humidity']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['stone_type']">
+									<span t-esc="r['stone_type']"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['shape_stone']">
+									<span t-esc="r['shape_stone']"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['height_shape'] != 0">
+									<span t-esc="r['height_shape']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['width_stone'] != 0">
+									<span t-esc="r['width_stone']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['compressive_perpendiculer'] != 0">
+									<span t-esc="r['compressive_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['compressive_parallel'] != 0">
+									<span t-esc="r['compressive_parallel']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['stress_perpendiculer'] != 0">
+									<span t-esc="r['stress_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['stress_parallel'] != 0">
+									<span t-esc="r['stress_parallel']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+						</tr>
                         </table>
 
 						  <table   style="margin-top:20px;">
@@ -402,7 +487,7 @@
 							
 
                             <t t-set="f" t-value="0"/>
-                            <tr t-foreach="data.compressive_wet_ids" t-as="r">
+                            <!-- <tr t-foreach="data.compressive_wet_ids" t-as="r">
                                 <td   style="text-align: center;">
                                     <div>
                                         <span t-esc="f + 1" />
@@ -451,7 +536,93 @@
                                 </td>    
 								
                                 
-                            </tr>
+                            </tr> -->
+							<tr t-foreach="data.compressive_wet_ids" t-as="r">
+							<td style="text-align: center;">
+								<div>
+									<span t-esc="f + 1"/>
+									<t t-set="f" t-value="f + 1"/>
+								</div>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['date']">
+									<span t-esc="r['date']"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['room_temp'] != 0">
+									<span t-esc="r['room_temp']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['relative_humidity'] != 0">
+									<span t-esc="r['relative_humidity']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['stone_type']">
+									<span t-esc="r['stone_type']"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['shape_stone']">
+									<span t-esc="r['shape_stone']"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['height_shape'] != 0">
+									<span t-esc="r['height_shape']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['width_stone'] != 0">
+									<span t-esc="r['width_stone']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['compressive_perpendiculer'] != 0">
+									<span t-esc="r['compressive_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['compressive_parallel'] != 0">
+									<span t-esc="r['compressive_parallel']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['stress_perpendiculer'] != 0">
+									<span t-esc="r['stress_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+							<td style="text-align: center;">
+								<t t-if="r['stress_parallel'] != 0">
+									<span t-esc="r['stress_parallel']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+						</tr>
+
                         </table>
 
 						<table>
@@ -471,101 +642,7 @@
                         </table>
 
 					</div>
-
-
-					<div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								<div style="height:20px">
-
-								</div>
-								<div>
-									<b>
-										<span t-esc="eln.technician.name"/>
-									</b>
-								</div>
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.check_by.job_title"/>)
-									</b>
-								</div>
-							</div>
-
-						
-							
-							<div>
-								<div>
-									<b>
-										Reviewed &amp; Issued By
-									</b>
-									
-								</div>
-								<div style="height:20px">
-
-								</div>
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-								<!-- <div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div> -->
-							</div>
-
-
-						<div>
-								<div>
-									<b>
-									Approved By:
-									</b>
-									
-								</div>
-								<div style="height:20px">
-
-								</div>
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-								<!-- <div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div> -->
-							</div>
-						<!-- <div style="text-align:center;margin-top:10px">
-							......End of Report......
-						</div> -->
-					</div>
-
-
-
-					
-
-
-                        
+ 
 
 					</t>
 
