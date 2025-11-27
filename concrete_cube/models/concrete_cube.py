@@ -27,6 +27,22 @@ class MechanicalConcreteCube(models.Model):
 
     notes_id = fields.One2many('cube.notes','parent_id',string="Notes")
 
+    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+
+    @api.onchange('eln_ref')
+    def compute_date_of_casting(self):
+        for record in self:
+            if record.eln_ref.sample_id:
+                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).date_casting
+                record.date_of_casting = sample_record
+            else:
+
+                record.date_of_casting = None
+
+
+    
+
+
 
 
 
@@ -74,8 +90,8 @@ class MechanicalConcreteCube(models.Model):
     calibration_date = fields.Date(string="Calibration Date", default=fields.Date.today())
     
     # Environmental Conditions
-    room_temperature = fields.Float(string="Room Temperature (°C)" )
-    relative_humidity = fields.Float(string="Relative Humidity (%)")
+    room_temperature = fields.Char(string="Room Temperature (°C)",digits = (3,0) )
+    relative_humidity = fields.Char(string="Relative Humidity (%)",digits = (3,0))
 
     
     curing_condition = fields.Selection([
@@ -205,15 +221,15 @@ class MechanicalConcreteCube(models.Model):
         ]
         return default_lines
 
-    age_of_days = fields.Selection([
-        ('3days', '3 Days'),
-        ('7days', '7 Days'),
-        ('14days', '14 Days'),
-        ('28days', '28 Days'),
-    ], string='Age', default='28days', required=True, compute="_compute_age_of_days")
+    # age_of_days = fields.Selection([
+    #     ('3days', '3 Days'),
+    #     ('7days', '7 Days'),
+    #     ('14days', '14 Days'),
+    #     ('28days', '28 Days'),
+    # ], string='Age', default='28days', required=True, compute="_compute_age_of_days")
     
-    date_of_casting = fields.Date(string="Date of Casting", compute="_compute_date_of_casting")
-    date_of_testing = fields.Date(string="Date of Testing", compute="_compute_date_testing")
+    # date_of_casting = fields.Date(string="Date of Casting", compute="_compute_date_of_casting")
+    # date_of_testing = fields.Date(string="Date of Testing", compute="_compute_date_testing")
 
     @api.depends('eln_ref')
     def _compute_date_testing(self):
@@ -231,8 +247,8 @@ class MechanicalConcreteCube(models.Model):
     ], 
    string='Conformity', default='fail', compute="_compute_confirmity")
     
-    age_of_test = fields.Integer("Age of Test, days", compute="_compute_age_of_test")
-    difference = fields.Integer("Difference", compute="_compute_difference")
+    # age_of_test = fields.Integer("Age of Test, days", compute="_compute_age_of_test")
+    # difference = fields.Integer("Difference", compute="_compute_difference")
 
     nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -299,60 +315,63 @@ class MechanicalConcreteCube(models.Model):
             else:
                 record.average_strength_nabl = 'fail'
 
-    @api.depends('age_of_test', 'age_of_days')
-    def _compute_difference(self):
-        for record in self:
-            age_of_days = 0
-            if record.age_of_days == '3days':
-                age_of_days = 3
-            elif record.age_of_days == '7days':
-                age_of_days = 7
-            elif record.age_of_days == '14days':
-                age_of_days = 14
-            elif record.age_of_days == '28days':
-                age_of_days = 28
-            else:
-                age_of_days = 0
-            record.difference = record.age_of_test - age_of_days
+    # @api.depends('age_of_test', 'age_of_days')
+    # def _compute_difference(self):
+    #     for record in self:
+    #         age_of_days = 0
+    #         if record.age_of_days == '3days':
+    #             age_of_days = 3
+    #         elif record.age_of_days == '7days':
+    #             age_of_days = 7
+    #         elif record.age_of_days == '14days':
+    #             age_of_days = 14
+    #         elif record.age_of_days == '28days':
+    #             age_of_days = 28
+    #         else:
+    #             age_of_days = 0
+    #         record.difference = record.age_of_test - age_of_days
 
-    @api.depends('date_of_testing', 'date_of_casting')
-    def _compute_age_of_test(self):
-        for record in self:
-            if record.date_of_casting and record.date_of_testing:
-                date1 = fields.Date.from_string(record.date_of_casting)
-                date2 = fields.Date.from_string(record.date_of_testing)
-                date_difference = (date2 - date1).days
-                record.age_of_test = date_difference
-            else:
-                record.age_of_test = 0
+    
+    
 
-    @api.depends('eln_ref')
-    def _compute_date_of_casting(self):
-        for record in self:
-            if record.eln_ref and record.eln_ref.sample_id:
-                sample_record = self.env['lerm.srf.sample'].sudo().search([('id', '=', record.eln_ref.sample_id.id)])
-                record.date_of_casting = sample_record.date_casting
-            else:
-                record.date_of_casting = False
+    # @api.depends('date_of_testing', 'date_of_casting')
+    # def _compute_age_of_test(self):
+    #     for record in self:
+    #         if record.date_of_casting and record.date_of_testing:
+    #             date1 = fields.Date.from_string(record.date_of_casting)
+    #             date2 = fields.Date.from_string(record.date_of_testing)
+    #             date_difference = (date2 - date1).days
+    #             record.age_of_test = date_difference
+    #         else:
+    #             record.age_of_test = 0
 
-    @api.depends('eln_ref')
-    def _compute_age_of_days(self):
-        for record in self:
-            if record.eln_ref and record.eln_ref.sample_id:
-                sample_record = self.env['lerm.srf.sample'].sudo().search([('id', '=', record.eln_ref.sample_id.id)])
-                days_casting = sample_record.days_casting
-                if days_casting == '3':
-                    record.age_of_days = '3days'
-                elif days_casting == '7':
-                    record.age_of_days = '7days'
-                elif days_casting == '14':
-                    record.age_of_days = '14days'
-                elif days_casting == '28':
-                    record.age_of_days = '28days'
-                else:
-                    record.age_of_days = '28days'  # default
-            else:
-                record.age_of_days = '28days'  # default
+    # @api.depends('eln_ref')
+    # def _compute_date_of_casting(self):
+    #     for record in self:
+    #         if record.eln_ref and record.eln_ref.sample_id:
+    #             sample_record = self.env['lerm.srf.sample'].sudo().search([('id', '=', record.eln_ref.sample_id.id)])
+    #             record.date_of_casting = sample_record.date_casting
+    #         else:
+    #             record.date_of_casting = False
+
+    # @api.depends('eln_ref')
+    # def _compute_age_of_days(self):
+    #     for record in self:
+    #         if record.eln_ref and record.eln_ref.sample_id:
+    #             sample_record = self.env['lerm.srf.sample'].sudo().search([('id', '=', record.eln_ref.sample_id.id)])
+    #             days_casting = sample_record.days_casting
+    #             if days_casting == '3':
+    #                 record.age_of_days = '3days'
+    #             elif days_casting == '7':
+    #                 record.age_of_days = '7days'
+    #             elif days_casting == '14':
+    #                 record.age_of_days = '14days'
+    #             elif days_casting == '28':
+    #                 record.age_of_days = '28days'
+    #             else:
+    #                 record.age_of_days = '28days'  # default
+    #         else:
+    #             record.age_of_days = '28days'  # default
 
     def open_eln_page(self):
         for result in self.eln_ref.parameters_result:
@@ -397,7 +416,7 @@ class MechanicalConcreteCube(models.Model):
                 else:
                     record.nabl = 'fail'
 
-    @api.depends('average_strength', 'eln_ref', 'grade', 'age_of_days', 'difference')
+    @api.depends('average_strength', 'eln_ref', 'grade', )
     def _compute_confirmity(self):
         for record in self:
 
@@ -417,28 +436,28 @@ class MechanicalConcreteCube(models.Model):
                         mu_value = line.mu_value
                         
                         # Adjust requirements based on age
-                        if record.age_of_days == "3days":
-                            req_min = req_min * 0.5
-                            req_max = req_max * 0.5
-                        elif record.age_of_days == "7days":
-                            req_min = req_min * 0.7
-                            req_max = req_max * 0.7
-                        elif record.age_of_days == "14days":
-                            req_min = req_min * 0.9
-                            req_max = req_max * 0.9
+                        # if record.age_of_days == "3days":
+                        #     req_min = req_min * 0.5
+                        #     req_max = req_max * 0.5
+                        # elif record.age_of_days == "7days":
+                        #     req_min = req_min * 0.7
+                        #     req_max = req_max * 0.7
+                        # elif record.age_of_days == "14days":
+                        #     req_min = req_min * 0.9
+                        #     req_max = req_max * 0.9
                         # 28 days uses full values
                         
                         lower = record.average_strength - record.average_strength * mu_value
                         upper = record.average_strength + record.average_strength * mu_value
                         
-                        if record.difference == 0:
-                            if lower >= req_min and upper <= req_max:
+                        # if record.difference == 0:
+                        if lower >= req_min and upper <= req_max:
                                 record.confirmity = 'pass'
                                 break
-                            else:
-                                record.confirmity = 'fail'
                         else:
-                            record.confirmity = 'not_applicable'
+                                record.confirmity = 'fail'
+                        # else:
+                        #     record.confirmity = 'not_applicable'
 
      ### Compute Visible
     @api.depends('eln_ref','sample_parameters')
@@ -529,8 +548,60 @@ class MechanicalConcreteCubeLine(models.Model):
 
 
     dt_of_casting = fields.Date(string="Date of casting", compute="_compute_dt_of_casting", store=True)
-    days = fields.Integer(string="No.of Days", compute="_compute_days", store=True)
+    dt_of_casting_formatted = fields.Char(string="Casting Date (DD-MM-YYYY)", compute="_compute_dt_of_casting_formatted")
+
+    @api.depends('dt_of_casting')
+    def _compute_dt_of_casting_formatted(self):
+        for rec in self:
+            if rec.dt_of_casting:
+                rec.dt_of_casting_formatted = rec.dt_of_casting.strftime('%d-%m-%Y')
+            else:
+                rec.dt_of_casting_formatted = ''
+    days = fields.Integer(string="No.of Days", store=True)
     dt_of_testing1 = fields.Date(string="Date of Testing", compute="_compute_dt_of_testing", store=True)
+    dt_of_testing1_formatted = fields.Char(string="Date (DD-MM-YYYY)", compute="_compute_dt_of_testing1_formatted")
+
+    @api.depends('dt_of_testing1')
+    def _compute_dt_of_testing1_formatted(self):
+        for rec in self:
+            if rec.dt_of_testing1:
+                rec.dt_of_testing1_formatted = rec.dt_of_testing1.strftime('%d-%m-%Y')
+            else:
+                rec.dt_of_testing1_formatted = ''
+
+
+    @api.depends('dt_of_casting', 'parent_id')
+    def _compute_dt_of_testing(self):
+        for rec in self:
+            if rec.dt_of_casting and rec.parent_id:
+                # Find all lines of this parent ordered by ID (creation order)
+                all_lines = self.search(
+                    [('parent_id', '=', rec.parent_id.id)],
+                    order='id asc'
+                )
+                # Get position (1-based index)
+                position = all_lines.ids.index(rec.id) + 1 if rec.id in all_lines.ids else len(all_lines) + 1
+
+                # Apply day rule
+                if position <= 3:
+                    rec.dt_of_testing1 = rec.dt_of_casting + timedelta(days=7)
+                else:
+                    rec.dt_of_testing1 = rec.dt_of_casting + timedelta(days=28)
+            else:
+                rec.dt_of_testing1 = False
+
+    @api.depends('parent_id.date_of_casting')
+    def _compute_dt_of_casting(self):
+        for record in self:
+            record.dt_of_casting = record.parent_id.date_of_casting
+
+    @api.depends('dt_of_casting', 'days')
+    def _compute_dt_of_testing(self):
+        for record in self:
+            if record.dt_of_casting and record.days:
+                record.dt_of_testing1 = record.dt_of_casting + timedelta(days=record.days)
+            else:
+                record.dt_of_testing1 = False
     
     # Environmental conditions per sample
     room_temp = fields.Float(string="Room Temperature (°C)",compute = "_compute_room_temp")
@@ -594,30 +665,30 @@ class MechanicalConcreteCubeLine(models.Model):
             else:
                 record.compressive_strength = 0.0
 
-    @api.depends('parent_id.date_of_casting')
-    def _compute_dt_of_casting(self):
-        for record in self:
-            record.dt_of_casting = record.parent_id.date_of_casting
+    # @api.depends('parent_id.date_of_casting')
+    # def _compute_dt_of_casting(self):
+    #     for record in self:
+    #         record.dt_of_casting = record.parent_id.date_of_casting
 
-    @api.depends('parent_id.age_of_days')
-    def _compute_days(self):
-        for record in self:
-            if record.parent_id.age_of_days:
-                try:
-                    record.days = int(''.join(filter(str.isdigit, record.parent_id.age_of_days)))
-                except Exception:
-                    record.days = 0
-            else:
-                record.days = 0
+    # @api.depends('parent_id.age_of_days')
+    # def _compute_days(self):
+    #     for record in self:
+    #         if record.parent_id.age_of_days:
+    #             try:
+    #                 record.days = int(''.join(filter(str.isdigit, record.parent_id.age_of_days)))
+    #             except Exception:
+    #                 record.days = 0
+    #         else:
+    #             record.days = 0
 
 
-    @api.depends('dt_of_casting', 'days')
-    def _compute_dt_of_testing(self):
-        for record in self:
-            if record.dt_of_casting and record.days:
-                record.dt_of_testing1 = record.dt_of_casting + timedelta(days=record.days)
-            else:
-                record.dt_of_testing1 = False
+    # @api.depends('dt_of_casting', 'days')
+    # def _compute_dt_of_testing(self):
+    #     for record in self:
+    #         if record.dt_of_casting and record.days:
+    #             record.dt_of_testing1 = record.dt_of_casting + timedelta(days=record.days)
+    #         else:
+    #             record.dt_of_testing1 = False
 
     @api.depends('parent_id.eln_ref.sample_id.client_sample_id')
     def _compute_id_mark(self):

@@ -79,53 +79,45 @@
 
 
                         <!-- Environmental Conditions -->
-                        <div class="d-flex gap-2">
-                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="room_temperature">Room Temperature</label></td>
-                                        <td><field name="room_temperature"/> °C</td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="relative_humidity">Relative Humidity</label></td>
-                                        <td><field name="relative_humidity"/> %</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            
-                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="date_of_casting">Date of Casting</label></td>
-                                        <td><field name="date_of_casting"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="date_of_testing">Date of Testing</label></td>
-                                        <td><field name="date_of_testing"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="age_of_test">Age of Test, days</label></td>
-                                        <td><field name="age_of_test"/></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
 
+                        <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="room_temperature">Room Temperature</label></td>
+                                    <td><field name="room_temperature"/>°C</td>
+                                </tr> 
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="relative_humidity">Relative Humidity</label></td>
+                                    <td><field name="relative_humidity" /> %</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                        
+                            
+                       
                         <!-- Sample Test Results -->
                         <field name="child_lines" nolabel="1" class="custom_table_borders">
                             <tree editable="bottom">
                                 <field name='sr_no' string="Sr. NO"/>
                                 <field name='id_mark' string="Identification Mark"/>
-                                <field name='dt_of_casting' string="Date of Casting" widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/>
-                                <field name='dt_of_testing1' string="Date of Testing" widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/>
+                                <field name="dt_of_casting_formatted" string="Date of Casting"/>
                                 <field name='days' string="Age (days)"/>
+                                <field name="dt_of_testing1_formatted" string="Date of Testing"/>
                                 <field name='room_temp' string="Room Temp (°C)"/>
                                 <field name='relative_humidity' string="Relative Humidity (RH) (%)"/>
                                 <field name='wt_sample' string="Weight (gms)"/>
                                 <field name='length' string="Length (mm)"/>
                                 <field name='diameter'   string="Diameter (mm)"/>
                                 <field name='width'  string="width (mm)"/>
-                                
+
                                 <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]"/>
                                 <field name="load" string="Load (kN)"/>
                                 <field name='compressive_strength' string="Strength (N/mm²)" readonly="1" digits ="[16,2]"/>
