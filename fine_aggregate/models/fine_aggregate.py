@@ -81,15 +81,15 @@ class FineAggregate(models.Model):
           
 
     # ---- default values (create mode मध्ये दिसण्यासाठी)
-    @api.model
-    def default_get(self, fields_list):
-        res = super().default_get(fields_list)
-        res.update({
+    # @api.model
+    # def default_get(self, fields_list):
+    #     res = super().default_get(fields_list)
+    #     res.update({
          
-            'avg_compacted_unit':     self._get_unit("357f579d-a310-4015-bc11-28a85c53ac83"),
+    #         'avg_compacted_unit':     self._get_unit("357f579d-a310-4015-bc11-28a85c53ac83"),
           
-        })
-        return res
+    #     })
+    #     return res
 
   
 
