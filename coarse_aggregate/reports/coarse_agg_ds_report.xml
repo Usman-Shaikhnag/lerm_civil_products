@@ -1806,18 +1806,22 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
+									
 										<!-- <span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/> -->
 									</span>	
 
 								</td>
 
 								<td rowspan="2" style="text-align: center;padding-top:10px;">
-								    
-									 <t t-foreach="parameters.get('c2168fff-e47c-4155-99ff-9d7dc223e768').parameter_table" t-as="parameter">
+
+								<t t-esc="dict(data._fields['standard_type'].selection).get(data.standard_type)"/>
+
+								 
+									 <!-- <t t-foreach="parameters.get('c2168fff-e47c-4155-99ff-9d7dc223e768').parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.permissable_limit"/>
 										</t>
-									</t>
+									</t> -->
 								</td>
 								
 									

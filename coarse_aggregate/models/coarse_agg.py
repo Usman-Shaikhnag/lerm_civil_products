@@ -31,13 +31,18 @@ class CoarseAggregateMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
 
-    notes_id = fields.One2many('coarse.aggregate.notes','parent_id',string="Notes")
+    notes_id = fields.One2many(
+    'coarse.aggregate.notes',
+    'parent_id',
+    string="Notes",
+    default=lambda self: self._default_notes_lines()
+)
+
+
 
     @api.model
-    def default_get(self, fields):
-        res = super(CoarseAggregateMechanical, self).default_get(fields)
-
-        default_notes = [
+    def _default_notes_lines(self):
+        return [
             (0, 0, {
                 'sr_no': 'a',
                 'notes': 'The information marked with an # received from customer',
@@ -48,16 +53,14 @@ class CoarseAggregateMechanical(models.Model):
             }),
             (0, 0, {
                 'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+                'notes': 'The balance samples if any will be discarded after 15 days unless otherwise specified.',
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': 'This document shall not be reproduced without approval.',
             }),
         ]
 
-        res['notes_id'] = default_notes
-        return res
 
     
 
@@ -1664,6 +1667,13 @@ class CoarseAggregateMechanical(models.Model):
 
     sieve_analysis_child_lines = fields.One2many('mechanical.coarse.aggregate.sieve.analysis.line','parent_id',string="Parameter",default=lambda self: self._default_sieve_analysis_child_lines())
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
+    # ,default=lambda self: self._default_sieve_analysis_child_lines()
+
+    standard_type = fields.Selection([
+    ('is_383_2016', 'IS 383:2016'),
+    ('irc_15_2017', 'IRC:15-2017'),
+         ], string="Test Method",)
+
 
 
     @api.model
@@ -1686,86 +1696,184 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
+    # def default_get(self, fields):
+    #     print("From Default Value")
+    #     res = super(CoarseAggregateMechanical, self).default_get(fields)
+    #     default_sieve_sizes = []
+        
+    #     # Safely get eln_ref with default None if not exists
+    #     eln_ref = res.get('eln_ref') 
+        
+    #     if eln_ref:
+    #         eln = self.env['lerm.eln'].sudo().browse(eln_ref)
+    #         if not eln.exists():
+    #             return res
+                
+    #         size_str = eln.size_id.size or ''
+    #         grade_str = (eln.grade_id.grade or '').lower()
+            
+    #         # Define mappings
+    #         if grade_str == 'single sized aggregate':
+    #             sieve_mapping = {
+                   
+    #                 '20': ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
+    #                 '16': ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+    #                 '12': ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+    #                 '10': ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+    #                 '31.5': ['37.5 mm', '31.5 mm', '26.5 mm' , '19 mm', 'pan'],
+    #                 '19': ['37.5 mm', '31.5 mm', '26.5 mm' , '19 mm', 'pan'],
+    #             }
+                
+    #         # elif grade_str == 'graded aggregate':
+    #         #     sieve_mapping = {
+    #         #         '40': ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
+    #         #         '20': ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
+    #         #         '16': ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+    #         #         '12': ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+    #         #         '31.5': ['37.5 mm', '31.5 mm', '16mm' , '4.75 mm', 'pan'],
+    #         #         '19': ['22.4 mm', '19 mm','13.2 mm', '4.75 mm',  'pan'],
+    #         #     }
+    #         #     specific_limits_mapping = {
+    #         #         '40': ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
+    #         #         '20': ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
+    #         #         '16': ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
+    #         #         '12': ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+    #         #         '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+    #         #         '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+    #         #     }
+    #         else:
+    #             return res
+
+    #         # Extract numeric part
+    #         # match = re.search(r'\d+', size_str)
+    #         match = re.search(r'\d+(\.\d+)?', size_str)
+    #         if match:
+    #             # number = int(match.group())
+    #             number = match.group().strip()
+    #             sieve_list = sieve_mapping.get(number, [])
+    #             specific_limits = specific_limits_mapping.get(number, [])
+                
+              
+                    
+    #             # Create sieve analysis lines
+    #             for sieve_size, specific_limit in zip(sieve_list, specific_limits):
+    #                 size = {
+    #                     'sieve_size': sieve_size,
+    #                     'specific_limits': specific_limit,
+    #                 }
+    #                 default_sieve_sizes.append((0, 0, size))
+                
+    #             res['sieve_analysis_child_lines'] = default_sieve_sizes
+
+    #     return res
+
+
+
     def default_get(self, fields):
         print("From Default Value")
         res = super(CoarseAggregateMechanical, self).default_get(fields)
         default_sieve_sizes = []
         
-        # Safely get eln_ref with default None if not exists
-        eln_ref = res.get('eln_ref') 
-        
+        eln_ref = res.get('eln_ref')
         if eln_ref:
             eln = self.env['lerm.eln'].sudo().browse(eln_ref)
             if not eln.exists():
                 return res
-                
-            size_str = eln.size_id.size or ''
-            grade_str = (eln.grade_id.grade or '').lower()
-            
-            # Define mappings
-            if grade_str == 'single sized aggregate':
-                sieve_mapping = {
-                    '63': ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    '40': ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    '20': ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
-                    '16': ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-                    '12': ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-                    '10': ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
-                    '31.5': ['37.5 mm', '31.5 mm', '16mm' , '4.75 mm', 'pan'],
-                    '19': ['22.4 mm', '19 mm','13.2 mm', '4.75 mm',  'pan'],
-                }
-                specific_limits_mapping = {
-                    '63': ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
-                    '40': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    '20': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    '16': ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
-                    '12': ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
-                    '10': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                }
-            elif grade_str == 'graded aggregate':
-                sieve_mapping = {
-                    '40': ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
-                    '20': ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
-                    '16': ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-                    '12': ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-                    '31.5': ['37.5 mm', '31.5 mm', '16mm' , '4.75 mm', 'pan'],
-                    '19': ['22.4 mm', '19 mm','13.2 mm', '4.75 mm',  'pan'],
-                }
-                specific_limits_mapping = {
-                    '40': ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
-                    '20': ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
-                    '16': ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
-                    '12': ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
-                    '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                }
-            else:
-                return res
 
-            # Extract numeric part
-            # match = re.search(r'\d+', size_str)
+            size_str = eln.size_id.size or ''
+
+            sieve_mapping = {
+                '20':  ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
+                '16':  ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+                '12':  ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                '10':  ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+                '31.5':['37.5 mm', '31.5 mm', '26.5 mm', '19 mm', 'pan'],
+                '19':  ['37.5 mm', '31.5 mm', '26.5 mm', '19 mm', 'pan'],
+            }
+
             match = re.search(r'\d+(\.\d+)?', size_str)
             if match:
-                # number = int(match.group())
                 number = match.group().strip()
                 sieve_list = sieve_mapping.get(number, [])
-                specific_limits = specific_limits_mapping.get(number, [])
-                
-              
-                    
-                # Create sieve analysis lines
-                for sieve_size, specific_limit in zip(sieve_list, specific_limits):
+
+                # फक्त sieve sizes One2many मध्ये push करायच्या
+                for sieve_size in sieve_list:
                     size = {
                         'sieve_size': sieve_size,
-                        'specific_limits': specific_limit,
                     }
                     default_sieve_sizes.append((0, 0, size))
-                
+
                 res['sieve_analysis_child_lines'] = default_sieve_sizes
 
         return res
+
+    def _get_limits(self):
+
+        # IS:383 – 2016
+        is_383_2016 = {
+            '10': ['100', '85-100', '0-20', '0-5', '0'],
+            '20': ['100', '85-100', '0-20', '0-5', '0'],
+        }
+
+        # IRC:15 – 2017
+        irc_15_2017 = {
+            '31.5': ['100', '90-100', '85-95', '68-88', '0'],
+            '19':   ['100', '100', '100', '90-100', '0'],
+        }
+
+        limits_dict = {
+            'is_383_2016': is_383_2016,
+            'irc_15_2017': irc_15_2017,
+        }.get(self.standard_type, {})
+
+        # Extract number from size (like "20 mm" → "20")
+        selected_size = None
+        if self.size_id and self.size_id.size:
+            m = re.search(r'\d+(\.\d+)?', self.size_id.size)
+            if m:
+                selected_size = m.group()
+
+        return limits_dict.get(selected_size, [])
+
+    # ------------------------------------------------
+    # ONCHANGE — UI update only (NOT permanent save)
+    # ------------------------------------------------
+    @api.onchange('standard_type')
+    def _onchange_standard_type(self):
+
+        limit_values = self._get_limits()
+
+        # UI update only
+        for line, limit in zip(self.sieve_analysis_child_lines, limit_values):
+            line.specific_limits = limit
+
+    # ------------------------------------------------
+    # WRITE → Permanent Save (DB SAVE FIX)
+    # ------------------------------------------------
+    def write(self, vals):
+        result = super().write(vals)
+
+        for record in self:
+            limit_values = record._get_limits()
+
+            for line, limit in zip(record.sieve_analysis_child_lines, limit_values):
+                line.write({'specific_limits': limit})
+
+        return result
+
+
+
+
+
+      
+
+    
+
+    
+    
+    
+
+
     
     def populate_sieve_analysis_lines(self):
         self.ensure_one()
