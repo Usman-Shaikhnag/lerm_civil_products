@@ -435,9 +435,7 @@ class Stones(models.Model):
 
     @api.depends('eln_ref')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+       
         for record in self:
             records = record.eln_ref.parameters_result.parameter.ids
             record.sample_parameters = records
@@ -687,12 +685,6 @@ class CompressiveWetLine(models.Model):
                 rec.compressive_perpendiculer1 = rec.compressive_perpendiculer / ratio if ratio else 0.0
                 rec.compressive_parallel1 = rec.compressive_parallel / ratio if ratio else 0.0
 
-    
-    
-    
-
-
-   
 
     @api.model
     def create(self, vals):

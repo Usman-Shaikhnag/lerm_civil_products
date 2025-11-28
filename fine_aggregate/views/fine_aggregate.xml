@@ -27,6 +27,18 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
+
+
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;       /* Blue border */
+                            
+                        }
+                    </style>
+
+
                     <div class="custom_table_borders" style="margin-top: 15px;">
                         <field name="sample_parameters" nolabel="1">
                             <tree>
@@ -51,7 +63,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_sieve_analysis">Temp.°C</label></td>
-                                    <td><field name="temp_sieve_analysis"/></td>
+                                    <td><field name="temp_sieve_analysis" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -61,7 +73,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_sieve_analysis">Humidity %</label></td>
-                                    <td><field name="humidity_sieve_analysis"/></td>
+                                    <td><field name="humidity_sieve_analysis" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -134,7 +146,7 @@
 
                 <div class="text-center" invisible="specific_gravity_visible == False">
                         <h1>
-                            <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_name" readonly="1" nolabel="1" />
                             <field name="specific_gravity_visible" invisible="1"/>
                             <field name="water_absorption_visible" invisible="1"/>
 
@@ -147,7 +159,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_specific_gravity_water_absorption">Temp.°C</label></td>
-                                    <td><field name="temp_specific_gravity_water_absorption"/></td>
+                                    <td><field name="temp_specific_gravity_water_absorption" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -157,7 +169,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_temp_specific_gravity_water_absorption">Humidity %</label></td>
-                                    <td><field name="humidity_temp_specific_gravity_water_absorption"/></td>
+                                    <td><field name="humidity_temp_specific_gravity_water_absorption" class="blue-input"/></td>
                                 </tr>
                                 
 
@@ -181,23 +193,23 @@
 
                             <tr>
                                 <td><span class="fw-bold">Weight of Saturated Aggregate  in Water (A) = (A1 – A2) – gms</span></td>
-                                <td><field name="wt_sample_inwater"/></td>
-                                <td><field name="wt_sample_inwater_2"/></td>
+                                <td><field name="wt_sample_inwater" class="blue-input"/></td>
+                                <td><field name="wt_sample_inwater_2" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Weight of surface dried aggregate (B) gm</span></td>
-                                <td><field name="wt_surface_dry"/></td>
-                                <td><field name="wt_surface_dry_2"/></td>
+                                <td><field name="wt_surface_dry" class="blue-input"/></td>
+                                <td><field name="wt_surface_dry_2" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Weight of  oven dried aggregates (C) gm</span></td>
-                                <td><field name="oven_dried_wt"/></td>
-                                <td><field name="oven_dried_wt_2"/></td>
+                                <td><field name="oven_dried_wt" class="blue-input"/></td>
+                                <td><field name="oven_dried_wt_2" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Weight of Oven dry sample (gm) D</span></td>
-                                <td><field name="wt_oven_dry_d"/></td>
-                                <td><field name="wt_oven_dry_d_2"/></td>
+                                <td><field name="wt_oven_dry_d" class="blue-input"/></td>
+                                <td><field name="wt_oven_dry_d_2" class="blue-input"/></td>
                             </tr>
                            
                             <tr>
@@ -318,7 +330,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_density">Temp.°C</label></td>
-                                    <td><field name="temp_density"/></td>
+                                    <td><field name="temp_density" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -328,7 +340,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_density">Humidity %</label></td>
-                                    <td><field name="humidity_density"/></td>
+                                    <td><field name="humidity_density" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -341,15 +353,15 @@
                         <tbody>
                             <tr>
                                 <td><span class="fw-bold">Capacity of Cylinder Use for Test in litre (V)</span></td>
-                                <td><field name="capacity_of_cylinderr"/></td>
+                                <td><field name="capacity_of_cylinderr" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Weight of empty cylinder (kg)</span></td>
-                                <td><field name="wtt_of_empty_cylinder_compacted"/></td>
+                                <td><field name="wtt_of_empty_cylinder_compacted" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Weight of cylinder + aggregate (kg)</span></td>
-                                <td><field name="wtt_cylinder_aggregate_compacted"/></td>
+                                <td><field name="wtt_cylinder_aggregate_compacted" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Mass of Compacted Aggregate in Cylinder (A) – Kg</span></td>
@@ -406,7 +418,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_density">Temp.°C</label></td>
-                                    <td><field name="temp_density"/></td>
+                                    <td><field name="temp_density" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -416,7 +428,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_density">Humidity %</label></td>
-                                    <td><field name="humidity_density"/></td>
+                                    <td><field name="humidity_density" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -428,15 +440,15 @@
                         <tbody>
                             <tr>
                                 <td><span class="fw-bold">Capacity of Cylinder Use for Test in litre (V)</span></td>
-                                <td><field name="capacity_of_cylinder_loose"/></td>
+                                <td><field name="capacity_of_cylinder_loose" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Weight of empty cylinder (kg)</span></td>
-                                <td><field name="wtt_of_empty_cylinder_loose"/></td>
+                                <td><field name="wtt_of_empty_cylinder_loose" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Weight of cylinder + aggregate (kg)</span></td>
-                                <td><field name="wtt_cylinder_aggregate_loose"/></td>
+                                <td><field name="wtt_cylinder_aggregate_loose" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Mass of Compacted Aggregate in Cylinder (A) – Kg</span></td>
@@ -496,7 +508,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_density">Temp.°C</label></td>
-                                    <td><field name="temp_density"/></td>
+                                    <td><field name="temp_density" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -506,7 +518,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_density">Humidity %</label></td>
-                                    <td><field name="humidity_density"/></td>
+                                    <td><field name="humidity_density" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -518,7 +530,7 @@
                         <tbody>
                             <tr>
                                 <td><span class="fw-bold">Sp. Gravity of Material (Gs)</span></td>
-                                <td><field name="specific_gravity_voids"/></td>
+                                <td><field name="specific_gravity_voids" class="blue-input"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Percent Voids in Compacted Density = (Gs - Ƴ1 )/Gs x 100</span></td>
@@ -604,7 +616,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soudness">Temp.°C</label></td>
-                                    <td><field name="temp_soudness"/></td>
+                                    <td><field name="temp_soudness" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -614,7 +626,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soudness">Humidity %</label></td>
-                                    <td><field name="humidity_soudness"/></td>
+                                    <td><field name="humidity_soudness" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>

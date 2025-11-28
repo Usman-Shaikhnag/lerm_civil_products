@@ -16,6 +16,16 @@
                                 <field name="grade" string="Grade" identity="extra"/>   
                                 <field name="size_id" readonly="1"/>
                             </group>
+
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;       /* Blue border */
+                            
+                        }
+                    </style>
+
                        
 
                         <!-- Sample Parameters -->
@@ -76,6 +86,7 @@
                             </table>
                         </div>
 
+                    
 
 
                         <!-- Environmental Conditions -->
@@ -85,7 +96,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="room_temperature">Room Temperature</label></td>
-                                    <td><field name="room_temperature"/>°C</td>
+                                    <td><field name="room_temperature" class="blue-input"/>°C</td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -94,7 +105,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="relative_humidity">Relative Humidity</label></td>
-                                    <td><field name="relative_humidity" /> %</td>
+                                    <td><field name="relative_humidity" class="blue-input"/> %</td>
                                 </tr>
                                 
                             </tbody>
