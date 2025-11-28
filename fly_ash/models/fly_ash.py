@@ -1828,7 +1828,7 @@ class FlyashCompressiveStrengthLine(models.Model):
     testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
     cube_im = fields.Char("Cube I/M")
 
-    length1 = fields.Float("Length (L)")
+    length1 = fields.Float("Length")
     
     width1 = fields.Float("Width")
 

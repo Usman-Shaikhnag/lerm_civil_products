@@ -1807,70 +1807,113 @@ class CoarseAggregateMechanical(models.Model):
 
         return res
 
+    # def _get_limits(self):
+
+    #     # IS:383 – 2016
+    #     is_383_2016 = {
+    #         '10': ['100', '85-100', '0-20', '0-5', '0'],
+    #         '20': ['100', '85-100', '0-20', '0-5', '0'],
+    #     }
+
+    #     # IRC:15 – 2017
+    #     irc_15_2017 = {
+    #         '31.5': ['100', '90-100', '85-95', '68-88', '0'],
+    #         '19':   ['100', '100', '100', '90-100', '0'],
+    #     }
+
+    #     limits_dict = {
+    #         'is_383_2016': is_383_2016,
+    #         'irc_15_2017': irc_15_2017,
+    #     }.get(self.standard_type, {})
+
+    #     # Extract number from size (like "20 mm" → "20")
+    #     selected_size = None
+    #     if self.size_id and self.size_id.size:
+    #         m = re.search(r'\d+(\.\d+)?', self.size_id.size)
+    #         if m:
+    #             selected_size = m.group()
+
+    #     return limits_dict.get(selected_size, [])
+
+    # # ------------------------------------------------
+    # # ONCHANGE — UI update only (NOT permanent save)
+    # # ------------------------------------------------
+    # @api.onchange('standard_type')
+    # def _onchange_standard_type(self):
+
+    #     limit_values = self._get_limits()
+
+    #     # UI update only
+    #     for line, limit in zip(self.sieve_analysis_child_lines, limit_values):
+    #         line.specific_limits = limit
+
+    # # ------------------------------------------------
+    # # WRITE → Permanent Save (DB SAVE FIX)
+    # # ------------------------------------------------
+    # def write(self, vals):
+    #     result = super().write(vals)
+
+    #     for record in self:
+    #         limit_values = record._get_limits()
+
+    #         for line, limit in zip(record.sieve_analysis_child_lines, limit_values):
+    #             line.write({'specific_limits': limit})
+
+    #     return result
+
+
+
     def _get_limits(self):
+     is_383_2016 = {
+        '10': ['100', '85-100', '0-20', '0-5', '0'],
+        '20': ['100', '85-100', '0-20', '0-5', '0'],
+     }
+     irc_15_2017 = {
+        '31.5': ['100', '90-100', '85-95', '68-88', '0'],
+        '19':   ['100', '100', '100', '90-100', '0'],
+     }
 
-        # IS:383 – 2016
-        is_383_2016 = {
-            '10': ['100', '85-100', '0-20', '0-5', '0'],
-            '20': ['100', '85-100', '0-20', '0-5', '0'],
-        }
+     limits_dict = {}
+     if self.standard_type == 'is_383_2016':
+        limits_dict = is_383_2016
+     elif self.standard_type == 'irc_15_2017':
+        # For 2017, return empty list to show blank limits
+        limits_dict = irc_15_2017
 
-        # IRC:15 – 2017
-        irc_15_2017 = {
-            '31.5': ['100', '90-100', '85-95', '68-88', '0'],
-            '19':   ['100', '100', '100', '90-100', '0'],
-        }
+     selected_size = None
+     if self.size_id and self.size_id.size:
+        m = re.search(r'\d+(\.\d+)?', self.size_id.size)
+        if m:
+            selected_size = m.group()
 
-        limits_dict = {
-            'is_383_2016': is_383_2016,
-            'irc_15_2017': irc_15_2017,
-        }.get(self.standard_type, {})
+     return limits_dict.get(selected_size, [])
+    
 
-        # Extract number from size (like "20 mm" → "20")
-        selected_size = None
-        if self.size_id and self.size_id.size:
-            m = re.search(r'\d+(\.\d+)?', self.size_id.size)
-            if m:
-                selected_size = m.group()
-
-        return limits_dict.get(selected_size, [])
-
-    # ------------------------------------------------
-    # ONCHANGE — UI update only (NOT permanent save)
-    # ------------------------------------------------
     @api.onchange('standard_type')
     def _onchange_standard_type(self):
-
-        limit_values = self._get_limits()
-
-        # UI update only
-        for line, limit in zip(self.sieve_analysis_child_lines, limit_values):
+       limit_values = self._get_limits()
+       if limit_values:
+           for line, limit in zip(self.sieve_analysis_child_lines, limit_values):
             line.specific_limits = limit
+       else:
+           for line in self.sieve_analysis_child_lines:
+            line.specific_limits = False
 
-    # ------------------------------------------------
-    # WRITE → Permanent Save (DB SAVE FIX)
-    # ------------------------------------------------
     def write(self, vals):
-        result = super().write(vals)
+       result = super().write(vals)
+       for record in self:
+           limit_values = record._get_limits()
+           if limit_values:
+               for line, limit in zip(record.sieve_analysis_child_lines, limit_values):
+                   line.write({'specific_limits': limit})
+           else:
+               for line in record.sieve_analysis_child_lines:
+                   line.write({'specific_limits': False})
+       return result
 
-        for record in self:
-            limit_values = record._get_limits()
-
-            for line, limit in zip(record.sieve_analysis_child_lines, limit_values):
-                line.write({'specific_limits': limit})
-
-        return result
+ 
 
 
-
-
-
-      
-
-    
-
-    
-    
     
 
 
@@ -1920,11 +1963,7 @@ class CoarseAggregateMechanical(models.Model):
                 line.specific_limits = specific_limit
 
 
-    
-    
-
-
-
+   
 
 
     def calculate_sieve(self): 
