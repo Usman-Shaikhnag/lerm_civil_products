@@ -1599,12 +1599,18 @@
 
 							<tr>
 								<td colspan="3"><strong>Project Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 
-								<!-- <td><strong>Date of Report</strong>: </td>
+								<td colspan="3"><strong>Date of Report</strong>: </td>
 									
-								<td >
+								<td colspan="3">
 								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								</td>
+
+								<!-- <td colspan="3"><strong>Sample Description</strong>: </td>
+									
+								<td colspan="3" style="padding-left: 10px;">
+								<span t-field="o.sample_id.size_id"/> 		
 								</td> -->
 							</tr>
 						
@@ -1648,10 +1654,15 @@
 							<tr>
 								
 								
-								<td colspan="3"><strong>Date of Report</strong>: </td>
+								<!-- <td colspan="3"><strong>Date of Report</strong>: </td>
 									
 								<td colspan="3">
 								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								</td> -->
+								<td colspan="3"><strong>Sample Description</strong>: </td>
+									
+								<td colspan="3" style="padding-left: 10px;">
+								<span t-field="o.sample_id.size_id"/> 		
 								</td>
 
 								<td colspan="3"><strong>Starting Date</strong>: </td>
