@@ -15,7 +15,7 @@ import numpy as np
 import io, base64
 from math import sqrt, pi
 import math
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_HALF_UP,InvalidOperation
 from scipy.interpolate import interp1d
 # from grainpy import Sample
 class ERTBorehole(models.Model):
@@ -465,6 +465,7 @@ class ERTBorehole(models.Model):
 
             # Ensure D-values are precomputed
             borehole.grain_size_ids._compute_d_values()
+            borehole.grain_size_ids._onchange_sample_name_link_nvalue()
 
             plt.style.use('seaborn-v0_8-whitegrid')
             fig, ax = plt.subplots(figsize=(12, 9.5))
@@ -649,18 +650,38 @@ class SoilBoreholeNValue(models.Model):
 
     top_depth = fields.Float("Top Depth (m)")
     bottom_depth = fields.Float("Bottom Depth (m)")
-    n15 = fields.Integer("N @ 15 cm")
-    n30 = fields.Integer("N @ 30 cm")
-    n45 = fields.Integer("N @ 45 cm")
-    # This field is now computed automatically
-    n_value = fields.Integer("Total N Value", compute="_compute_n_value", store=True)
+    n15 = fields.Char("N @ 15 cm")
+    n30 = fields.Char("N @ 30 cm")
+    n45 = fields.Char("N @ 45 cm")
+    n_value = fields.Char("Total N Value", compute="_compute_n_value", store=True)
+
     core_recovery = fields.Char("Core recovery",default="--")
     rqd = fields.Char("RQD",default="--")
 
-    @api.depends('n30', 'n45')
+    @api.depends('n15', 'n30', 'n45')
     def _compute_n_value(self):
-        for record in self:
-            record.n_value = record.n30 + record.n45
+        for rec in self:
+            n15 = (rec.n15 or '').strip()
+
+            # Case 1: refusal / high value at 15 cm  (e.g. "105", ">100")
+            # -> n30 = "--", n45 = "--", n_value = n15
+            if n15.startswith('>') or (n15.isdigit() and int(n15) >= 100):
+                rec.n30 = "--"
+                rec.n45 = "--"
+                rec.n_value = n15
+                continue
+
+            # Case 2: normal case -> n_value = n30 + n45 (numeric)
+            def to_int(val):
+                val = (val or '').strip()
+                return int(val) if val.isdigit() else 0
+
+            n30_int = to_int(rec.n30)
+            n45_int = to_int(rec.n45)
+            total = n30_int + n45_int
+
+            rec.n_value = str(total) if total else ''
+
 
 
 
@@ -683,8 +704,8 @@ class CorrectedSptNValue(models.Model):
     effective_overburden_pressure_kg = fields.Char(string='Effective Overburden Pressure (kg/cm2)', compute="_compute_effective_overburden_pressure_kg", store=True)
     overburden_correction_factor = fields.Char(string="OVERBURDEN CORRECTION FACTOR", compute="_compute_overburden_correction_factor", store=True)
     hammer_energy = fields.Integer("HAMMER ENERGY Ne",related="borehole_id.hammer_energy")
-    observed_n_value = fields.Integer(string='Observed SPT N Value',compute="_compute_observed_n_value")
-    corrected_n_value = fields.Integer(string='Corrected SPT (N\') Value',compute="_compute_corrected_n_value")
+    observed_n_value = fields.Char(string='Observed SPT N Value',compute="_compute_observed_n_value",readonly=False)
+    corrected_n_value = fields.Char(string='Corrected SPT (N\') Value',compute="_compute_corrected_n_value",readonly=False)
     spt_n_dilatancy = fields.Float(string="SPT (N') Value After Dilatancy Correction ('N')",compute="_compute_spt_n_dilatancy",store=True,readonly=False,)
     
 
@@ -792,12 +813,30 @@ class CorrectedSptNValue(models.Model):
             eff_kg = eff / Decimal('10')
             record.effective_overburden_pressure_kg = str(eff_kg.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
 
-    
-    @api.depends('borehole_id')
+        
+    @api.depends('borehole_id', 'depth')
     def _compute_observed_n_value(self):
-        for record in self:
-            borehole_records = self.env["soil.borehole.nvalue"].search([('borehole_id', '=', record.borehole_id.id),("top_depth","=",record.depth)],limit=1)
-            record.observed_n_value = borehole_records.n_value
+        for rec in self:
+            value = ''
+            if rec.borehole_id and rec.depth:
+                borehole_record = self.env['soil.borehole.nvalue'].search([
+                    ('borehole_id', '=', rec.borehole_id.id),
+                    ('top_depth', '=', rec.depth),
+                ], limit=1)
+
+                raw_val = (borehole_record.n_value or '').strip()
+
+                # Convert ">100" → 100
+                if raw_val.startswith('>'):
+                    raw_val = raw_val[1:]  # remove ">"
+                
+                # Replace non-digit values (like "--") with "0"
+                if not raw_val.isdigit():
+                    raw_val = "0"
+
+                value = raw_val
+
+            rec.observed_n_value = value
     
     
     @api.depends('effective_overburden_pressure_kg')
