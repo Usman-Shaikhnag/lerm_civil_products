@@ -29,6 +29,17 @@
                         <field name="parameter_id" invisible="1"/>
                     </group>
 
+
+
+                      <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;       /* Blue border */
+                            
+                        }
+                    </style>
+
+
                     <div class="custom_table_borders" style="margin-top: 15px;">
                         <field name="sample_parameters" nolabel="1">
                             <tree>
@@ -52,7 +63,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_specific">Temp.°C</label></td>
-                                    <td><field name="temp_specific"/></td>
+                                    <td><field name="temp_specific" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -62,7 +73,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_specific">Humidity %</label></td>
-                                    <td><field name="humidity_specific"/></td>
+                                    <td><field name="humidity_specific" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -80,45 +91,45 @@
                          </tr>
                          <tr>
                            <td><label for="temp_water1">Temperature of Water Bath  when Flask kept in bath – 0C</label></td>
-                           <td><field  name="temp_water1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="temp_water2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="temp_water1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_water2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                           </tr>
                          <tr>
                            <td><label for="temp_water_after1">Temperature of Water Bath  after One Hour when Flask kept in bath – 0C  </label></td>
-                           <td><field  name="temp_water_after1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="temp_water_after2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="temp_water_after1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_water_after2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>
                          <tr> 
                            <td><label for="initial_kerosene1">Initial Level of Kerosene after one hour kept in Water Bath(A) – ml</label></td>
-                           <td><field  name="initial_kerosene1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="initial_kerosene2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="initial_kerosene1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="initial_kerosene2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>
                       
                          <tr>
                            <td><label for="mass1">Mass of Cement Sample Added in Flask (M) – gms</label></td>
-                           <td><field  name="mass1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="mass2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="mass1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="mass2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>      
 
                          <tr>
                            <td><label for="temp_water_flask1">Temperature of water bath  when Flask kept in bath after Adding Cement – 0C</label></td>
-                           <td><field  name="temp_water_flask1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="temp_water_flask2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="temp_water_flask1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_water_flask2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>      
                          <tr>
                            <td><label for="temp_water_one1">Temperature of water bath  after one hour when Flask kept in bath after Adding Cement – 0C</label></td>
-                           <td><field  name="temp_water_one1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="temp_water_one2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="temp_water_one1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_water_one2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>      
                          <tr>
                            <td><label for="final_kerosene1">Final Level of Kerosene after one hour kept in water bath(B) – ml</label></td>
-                           <td><field  name="final_kerosene1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="final_kerosene2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="final_kerosene1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="final_kerosene2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>      
                          <tr>
                            <td><label for="displaced1">Displaced Volume after Adding Cement (V) = (B – A) – cm3</label></td>
-                           <td><field  name="displaced1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="displaced2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="displaced1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="displaced2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>      
                          <tr>
                            <td><label for="density1">Density of Cement Sample (    ) – gms/ cm3</label></td>
@@ -188,7 +199,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_consistency">Temp.°C</label></td>
-                                    <td><field name="temp_consistency"/></td>
+                                    <td><field name="temp_consistency" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -198,7 +209,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_consistency">Humidity %</label></td>
-                                    <td><field name="humidity_consistency"/></td>
+                                    <td><field name="humidity_consistency" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -382,7 +393,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_fineness">Temp.°C</label></td>
-                                    <td><field name="temp_fineness"/></td>
+                                    <td><field name="temp_fineness" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -392,7 +403,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_fineness">Humidity %</label></td>
-                                    <td><field name="humidity_fineness"/></td>
+                                    <td><field name="humidity_fineness" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -410,7 +421,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="apparatus_constant_first">Apparatus Constant (K) (From Calibration Certificate of Blains Apparatus)</label></td>
-                                    <td><field name="apparatus_constant_first"/></td>
+                                    <td><field name="apparatus_constant_first" class="blue-input"/></td>
                                 </tr>
                                
                             </tbody>
@@ -439,17 +450,17 @@
                                   <th style="border: 1px solid black; text-align: center; padding: 8px 10px;" >
                                    Density of Cement (ƍ) – gm/cc
                                   </th>
-                                  <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;" colspan="4"> <field name="density_cement" nolabel="1"/></th>
+                                  <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;" colspan="4"> <field name="density_cement" nolabel="1" class="blue-input"/></th>
                               </tr>
 
                                 <tr>
                                         <th style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            Time Required For Manometer Drop (t) – sec
                                         </th>
-                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="first_bed_reading1" nolabel="1"/></th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="first_bed_reading2" nolabel="1"/></th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="second_bed_reading1" nolabel="1"/></th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="second_bed_reading2" nolabel="1"/></th>
+                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="first_bed_reading1" nolabel="1" class="blue-input"/></th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="first_bed_reading2" nolabel="1" class="blue-input"/></th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="second_bed_reading1" nolabel="1" class="blue-input"/></th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="second_bed_reading2" nolabel="1" class="blue-input"/></th>
                                 </tr>
 
                                 <tr>
@@ -463,24 +474,18 @@
                                   <th style="border: 1px solid black; text-align: center; padding: 8px 10px;" >
                                      Apparatus Constant (K) (From Calibration Certificate of Blains Apparatus)
                                   </th>
-                                  <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;" colspan="4"> <field name="apparatus_constant_first" nolabel="1"/></th>
+                                  <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;" colspan="4"> <field name="apparatus_constant_first" nolabel="1" class="blue-input"/></th>
                               </tr>
 
                               <tr>
                                   <th style="border: 1px solid black; text-align: center; padding: 8px 10px;" >
                                    Specific Surface at 27±2 0C (S) =  – m2/kg
                                   </th>
-                                  <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;" colspan="4"> <field name="specific_surface_first" nolabel="1"/></th>
+                                  <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;" colspan="4"> <field name="specific_surface_first" nolabel="1" /></th>
                               </tr>
-                              
-
-                                    
-                                    
-                                </tbody>
+                               </tbody>
                             </table>
 
-
-                        
                           </div>
 
                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not fineness_visible" style="margin-top: 20px;">
@@ -698,7 +703,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soundness_autoclave">Temp.°C</label></td>
-                                    <td><field name="temp_soundness_autoclave"/></td>
+                                    <td><field name="temp_soundness_autoclave" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -708,7 +713,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soundness_autoclave">Humidity %</label></td>
-                                    <td><field name="humidity_soundness_autoclave"/></td>
+                                    <td><field name="humidity_soundness_autoclave" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -782,7 +787,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soundness_le_method">Temp.°C</label></td>
-                                    <td><field name="temp_soundness_le_method"/></td>
+                                    <td><field name="temp_soundness_le_method" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -792,7 +797,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soundness_le_method">Humidity %</label></td>
-                                    <td><field name="humidity_soundness_le_method"/></td>
+                                    <td><field name="humidity_soundness_le_method" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>

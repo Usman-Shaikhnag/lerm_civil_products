@@ -19,6 +19,242 @@ class MechanicalConcreteCube(models.Model):
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master', string="Parameters", compute="_compute_sample_parameters", store=True)
     child_lines = fields.One2many('mechanical.concrete.cube.line','parent_id',string="Parameter")
+
+    casting_7_name = fields.Char("Name",default="7 Days")
+    # casting_28_visible = fields.Boolean("28 days Visible",compute="_compute_visible")
+
+    casting_date_7days = fields.Date(string="Date of Casting")
+    testing_date_7days = fields.Date(string="Date of Testing",compute="_compute_testing_date_7days")
+    status_7days = fields.Boolean("Done")
+
+    @api.depends('casting_date_7days')
+    def _compute_testing_date_7days(self):
+        for record in self:
+            if record.casting_date_7days:
+                cast_date = fields.Datetime.from_string(record.casting_date_7days)
+                testing_date = cast_date + timedelta(days=7)
+                record.testing_date_7days = fields.Datetime.to_string(testing_date)
+            else:
+                record.testing_date_7days = False
+
+    child_lines14day = fields.One2many('mechanical.concrete.cube.line14','parent_id',string="Parameter")
+
+
+    casting_14_name = fields.Char("Name",default="14 Days")
+    # casting_28_visible = fields.Boolean("28 days Visible",compute="_compute_visible")
+
+    casting_date_14days = fields.Date(string="Date of Casting")
+    testing_date_14days = fields.Date(string="Date of Testing",compute="_compute_testing_date_14days")
+    status_14days = fields.Boolean("Done")
+
+    room_temperature14 = fields.Integer(string="Room Temperature (°C)")
+    relative_humidity14 = fields.Integer(string="Relative Humidity (%)")
+
+    @api.depends('casting_date_14days')
+    def _compute_testing_date_14days(self):
+        for record in self:
+            if record.casting_date_14days:
+                cast_date = fields.Datetime.from_string(record.casting_date_14days)
+                testing_date = cast_date + timedelta(days=14)
+                record.testing_date_14days = fields.Datetime.to_string(testing_date)
+            else:
+                record.testing_date_14days = False
+
+    def action_calculate_avg_strength14(self):
+        for rec in self:
+            lines = rec.child_lines14day.sorted(key=lambda l: l.sr_no)
+            group_size = 3
+
+            for i in range(0, len(lines), group_size):
+                group = lines[i:i + group_size]
+                strengths = [l.compressive_strength14 for l in group if l.compressive_strength14 > 0]
+                avg = sum(strengths) / len(strengths) if strengths else 0.0
+
+                # Set average for first line in each group
+                if group:
+                    group[0].average_strength14 = avg
+                # Reset average for other lines in group
+                for j in range(1, len(group)):
+                    group[j].average_strength14 = 0.0
+
+    average_strength14 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength14", digits=(12,2))
+
+    @api.depends('child_lines14day.compressive_strength14')
+    def _compute_average_strength14(self):
+        for rec in self:
+            strengths = [line.compressive_strength14 for line in rec.child_lines14day if line.compressive_strength14]
+            rec.average_strength14 = sum(strengths) / len(strengths) if strengths else 0.0
+
+    average_strength14_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        
+    ], string='Conformity', compute="_compute_average_strength14_conformity")
+
+    average_strength14_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_strength14_nabl")
+
+
+    @api.depends('average_strength14','eln_ref','grade')
+    def _compute_average_strength14_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_strength14_conformity = 'na'
+                continue
+
+            record.average_strength14_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.average_strength14 - record.average_strength14*mu_value
+                    upper = record.average_strength14 + record.average_strength14*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.average_strength14_conformity = 'pass'
+                        break
+                    else:
+                        record.average_strength14_conformity = 'fail'
+
+    @api.depends('average_strength14','eln_ref','grade')
+    def _compute_average_strength14_nabl(self):
+        
+        for record in self:
+            record.average_strength14_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_strength14 - record.average_strength14*mu_value
+            upper = record.average_strength14 + record.average_strength14*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_strength14_nabl = 'pass'
+                break
+            else:
+                record.average_strength14_nabl = 'fail'
+
+
+
+    child_lines28day = fields.One2many('mechanical.concrete.cube.line28','parent_id',string="Parameter")
+
+
+    casting_28_name = fields.Char("Name",default="28 Days")
+    # casting_28_visible = fields.Boolean("28 days Visible",compute="_compute_visible")
+
+    casting_date_28days = fields.Date(string="Date of Casting")
+    testing_date_28days = fields.Date(string="Date of Testing",compute="_compute_testing_date_28days")
+    status_28days = fields.Boolean("Done")
+
+    room_temperature28 = fields.Integer(string="Room Temperature (°C)")
+    relative_humidity28 = fields.Integer(string="Relative Humidity (%)")
+
+    @api.depends('casting_date_28days')
+    def _compute_testing_date_28days(self):
+        for record in self:
+            if record.casting_date_28days:
+                cast_date = fields.Datetime.from_string(record.casting_date_28days)
+                testing_date = cast_date + timedelta(days=28)
+                record.testing_date_28days = fields.Datetime.to_string(testing_date)
+            else:
+                record.testing_date_28days = False
+
+    def action_calculate_avg_strength28(self):
+        for rec in self:
+            lines = rec.child_lines28day.sorted(key=lambda l: l.sr_no)
+            group_size = 3
+
+            for i in range(0, len(lines), group_size):
+                group = lines[i:i + group_size]
+                strengths = [l.compressive_strength28 for l in group if l.compressive_strength28 > 0]
+                avg = sum(strengths) / len(strengths) if strengths else 0.0
+
+                # Set average for first line in each group
+                if group:
+                    group[0].average_strength28 = avg
+                # Reset average for other lines in group
+                for j in range(1, len(group)):
+                    group[j].average_strength28 = 0.0
+
+    average_strength28 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength28", digits=(12,2))
+
+    @api.depends('child_lines28day.compressive_strength28')
+    def _compute_average_strength28(self):
+        for rec in self:
+            strengths = [line.compressive_strength28 for line in rec.child_lines28day if line.compressive_strength28]
+            rec.average_strength28 = sum(strengths) / len(strengths) if strengths else 0.0
+
+   
+
+
+
+    average_strength28_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        
+    ], string='Conformity', compute="_compute_average_strength28_conformity")
+
+    average_strength28_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_strength28_nabl")
+
+
+    @api.depends('average_strength28','eln_ref','grade')
+    def _compute_average_strength28_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_strength28_conformity = 'na'
+                continue
+
+            record.average_strength28_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.average_strength28 - record.average_strength28*mu_value
+                    upper = record.average_strength28 + record.average_strength28*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.average_strength28_conformity = 'pass'
+                        break
+                    else:
+                        record.average_strength28_conformity = 'fail'
+
+    @api.depends('average_strength28','eln_ref','grade')
+    def _compute_average_strength28_nabl(self):
+        
+        for record in self:
+            record.average_strength28_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6c89613-885c-4af1-bf19-f523bb56e0d9')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_strength28 - record.average_strength28*mu_value
+            upper = record.average_strength28 + record.average_strength28*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_strength28_nabl = 'pass'
+                break
+            else:
+                record.average_strength28_nabl = 'fail'
+
     
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
@@ -90,8 +326,8 @@ class MechanicalConcreteCube(models.Model):
     calibration_date = fields.Date(string="Calibration Date", default=fields.Date.today())
     
     # Environmental Conditions
-    room_temperature = fields.Char(string="Room Temperature (°C)",digits = (3,0) )
-    relative_humidity = fields.Char(string="Relative Humidity (%)",digits = (3,0))
+    room_temperature = fields.Char(string="Room Temperature (°C)")
+    relative_humidity = fields.Char(string="Relative Humidity (%)")
 
     
     curing_condition = fields.Selection([
@@ -221,16 +457,7 @@ class MechanicalConcreteCube(models.Model):
         ]
         return default_lines
 
-    # age_of_days = fields.Selection([
-    #     ('3days', '3 Days'),
-    #     ('7days', '7 Days'),
-    #     ('14days', '14 Days'),
-    #     ('28days', '28 Days'),
-    # ], string='Age', default='28days', required=True, compute="_compute_age_of_days")
     
-    # date_of_casting = fields.Date(string="Date of Casting", compute="_compute_date_of_casting")
-    # date_of_testing = fields.Date(string="Date of Testing", compute="_compute_date_testing")
-
     @api.depends('eln_ref')
     def _compute_date_testing(self):
         for record in self:
@@ -315,64 +542,7 @@ class MechanicalConcreteCube(models.Model):
             else:
                 record.average_strength_nabl = 'fail'
 
-    # @api.depends('age_of_test', 'age_of_days')
-    # def _compute_difference(self):
-    #     for record in self:
-    #         age_of_days = 0
-    #         if record.age_of_days == '3days':
-    #             age_of_days = 3
-    #         elif record.age_of_days == '7days':
-    #             age_of_days = 7
-    #         elif record.age_of_days == '14days':
-    #             age_of_days = 14
-    #         elif record.age_of_days == '28days':
-    #             age_of_days = 28
-    #         else:
-    #             age_of_days = 0
-    #         record.difference = record.age_of_test - age_of_days
-
-    
-    
-
-    # @api.depends('date_of_testing', 'date_of_casting')
-    # def _compute_age_of_test(self):
-    #     for record in self:
-    #         if record.date_of_casting and record.date_of_testing:
-    #             date1 = fields.Date.from_string(record.date_of_casting)
-    #             date2 = fields.Date.from_string(record.date_of_testing)
-    #             date_difference = (date2 - date1).days
-    #             record.age_of_test = date_difference
-    #         else:
-    #             record.age_of_test = 0
-
-    # @api.depends('eln_ref')
-    # def _compute_date_of_casting(self):
-    #     for record in self:
-    #         if record.eln_ref and record.eln_ref.sample_id:
-    #             sample_record = self.env['lerm.srf.sample'].sudo().search([('id', '=', record.eln_ref.sample_id.id)])
-    #             record.date_of_casting = sample_record.date_casting
-    #         else:
-    #             record.date_of_casting = False
-
-    # @api.depends('eln_ref')
-    # def _compute_age_of_days(self):
-    #     for record in self:
-    #         if record.eln_ref and record.eln_ref.sample_id:
-    #             sample_record = self.env['lerm.srf.sample'].sudo().search([('id', '=', record.eln_ref.sample_id.id)])
-    #             days_casting = sample_record.days_casting
-    #             if days_casting == '3':
-    #                 record.age_of_days = '3days'
-    #             elif days_casting == '7':
-    #                 record.age_of_days = '7days'
-    #             elif days_casting == '14':
-    #                 record.age_of_days = '14days'
-    #             elif days_casting == '28':
-    #                 record.age_of_days = '28days'
-    #             else:
-    #                 record.age_of_days = '28days'  # default
-    #         else:
-    #             record.age_of_days = '28days'  # default
-
+  
     def open_eln_page(self):
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == 'd6c89613-885c-4af1-bf19-f523bb56e0d9':
@@ -557,7 +727,7 @@ class MechanicalConcreteCubeLine(models.Model):
                 rec.dt_of_casting_formatted = rec.dt_of_casting.strftime('%d-%m-%Y')
             else:
                 rec.dt_of_casting_formatted = ''
-    days = fields.Integer(string="No.of Days", store=True)
+    days = fields.Integer(string="No.of Days",compute="_compute_days_difference", store=True)
     dt_of_testing1 = fields.Date(string="Date of Testing", compute="_compute_dt_of_testing", store=True)
     dt_of_testing1_formatted = fields.Char(string="Date (DD-MM-YYYY)", compute="_compute_dt_of_testing1_formatted")
 
@@ -590,18 +760,31 @@ class MechanicalConcreteCubeLine(models.Model):
             else:
                 rec.dt_of_testing1 = False
 
-    @api.depends('parent_id.date_of_casting')
+    @api.depends('parent_id.casting_date_7days')
     def _compute_dt_of_casting(self):
         for record in self:
-            record.dt_of_casting = record.parent_id.date_of_casting
+            record.dt_of_casting = record.parent_id.casting_date_7days
 
-    @api.depends('dt_of_casting', 'days')
+    @api.depends('parent_id.testing_date_7days')
     def _compute_dt_of_testing(self):
         for record in self:
-            if record.dt_of_casting and record.days:
-                record.dt_of_testing1 = record.dt_of_casting + timedelta(days=record.days)
+            record.dt_of_testing1 = record.parent_id.testing_date_7days
+
+    @api.depends('dt_of_casting', 'dt_of_testing1')
+    def _compute_days_difference(self):
+        for record in self:
+            if record.dt_of_casting and record.dt_of_testing1:
+                record.days = (record.dt_of_testing1 - record.dt_of_casting).days
             else:
-                record.dt_of_testing1 = False
+                record.days = 0
+
+    # @api.depends('dt_of_casting', 'days')
+    # def _compute_dt_of_testing(self):
+    #     for record in self:
+    #         if record.dt_of_casting and record.days:
+    #             record.dt_of_testing1 = record.dt_of_casting + timedelta(days=record.days)
+    #         else:
+    #             record.dt_of_testing1 = False
     
     # Environmental conditions per sample
     room_temp = fields.Float(string="Room Temperature (°C)",compute = "_compute_room_temp")
@@ -665,30 +848,7 @@ class MechanicalConcreteCubeLine(models.Model):
             else:
                 record.compressive_strength = 0.0
 
-    # @api.depends('parent_id.date_of_casting')
-    # def _compute_dt_of_casting(self):
-    #     for record in self:
-    #         record.dt_of_casting = record.parent_id.date_of_casting
-
-    # @api.depends('parent_id.age_of_days')
-    # def _compute_days(self):
-    #     for record in self:
-    #         if record.parent_id.age_of_days:
-    #             try:
-    #                 record.days = int(''.join(filter(str.isdigit, record.parent_id.age_of_days)))
-    #             except Exception:
-    #                 record.days = 0
-    #         else:
-    #             record.days = 0
-
-
-    # @api.depends('dt_of_casting', 'days')
-    # def _compute_dt_of_testing(self):
-    #     for record in self:
-    #         if record.dt_of_casting and record.days:
-    #             record.dt_of_testing1 = record.dt_of_casting + timedelta(days=record.days)
-    #         else:
-    #             record.dt_of_testing1 = False
+    
 
     @api.depends('parent_id.eln_ref.sample_id.client_sample_id')
     def _compute_id_mark(self):
@@ -718,6 +878,353 @@ class MechanicalConcreteCubeLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+class MechanicalConcreteCubeLine14(models.Model):
+    _name = "mechanical.concrete.cube.line14"
+    parent_id = fields.Many2one('mechanical.concrete.cube', string="Parent Id")
+
+    sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
+    id_mark = fields.Char(string="Sample Identification", compute="_compute_id_mark",inverse="_inverse_id_mark", store=True)
+    wt_sample = fields.Float(string="Weight of Cube (gms)", digits=(16, 3))
+    
+    # Dimensions
+    length = fields.Float(string="Length (mm)")
+    diameter = fields.Float(string="Diameter (mm)")
+    width = fields.Float(string="width (mm)")
+    
+
+
+
+    dt_of_casting = fields.Date(string="Date of casting", compute="_compute_dt_of_casting", store=True)
+    dt_of_casting_formatted = fields.Char(string="Casting Date (DD-MM-YYYY)", compute="_compute_dt_of_casting_formatted")
+
+    @api.depends('dt_of_casting')
+    def _compute_dt_of_casting_formatted(self):
+        for rec in self:
+            if rec.dt_of_casting:
+                rec.dt_of_casting_formatted = rec.dt_of_casting.strftime('%d-%m-%Y')
+            else:
+                rec.dt_of_casting_formatted = ''
+    days = fields.Integer(string="No.of Days",compute="_compute_days_difference", store=True)
+    dt_of_testing1 = fields.Date(string="Date of Testing", compute="_compute_dt_of_testing", store=True)
+    dt_of_testing1_formatted = fields.Char(string="Date (DD-MM-YYYY)", compute="_compute_dt_of_testing1_formatted")
+
+    @api.depends('dt_of_testing1')
+    def _compute_dt_of_testing1_formatted(self):
+        for rec in self:
+            if rec.dt_of_testing1:
+                rec.dt_of_testing1_formatted = rec.dt_of_testing1.strftime('%d-%m-%Y')
+            else:
+                rec.dt_of_testing1_formatted = ''
+
+
+    @api.depends('dt_of_casting', 'parent_id')
+    def _compute_dt_of_testing(self):
+        for rec in self:
+            if rec.dt_of_casting and rec.parent_id:
+                # Find all lines of this parent ordered by ID (creation order)
+                all_lines = self.search(
+                    [('parent_id', '=', rec.parent_id.id)],
+                    order='id asc'
+                )
+                # Get position (1-based index)
+                position = all_lines.ids.index(rec.id) + 1 if rec.id in all_lines.ids else len(all_lines) + 1
+
+                # Apply day rule
+                if position <= 3:
+                    rec.dt_of_testing1 = rec.dt_of_casting + timedelta(days=7)
+                else:
+                    rec.dt_of_testing1 = rec.dt_of_casting + timedelta(days=28)
+            else:
+                rec.dt_of_testing1 = False
+
+    @api.depends('parent_id.casting_date_14days')
+    def _compute_dt_of_casting(self):
+        for record in self:
+            record.dt_of_casting = record.parent_id.casting_date_14days
+
+    @api.depends('parent_id.testing_date_14days')
+    def _compute_dt_of_testing(self):
+        for record in self:
+            record.dt_of_testing1 = record.parent_id.testing_date_14days
+
+    @api.depends('dt_of_casting', 'dt_of_testing1')
+    def _compute_days_difference(self):
+        for record in self:
+            if record.dt_of_casting and record.dt_of_testing1:
+                record.days = (record.dt_of_testing1 - record.dt_of_casting).days
+            else:
+                record.days = 0
+
+    
+    
+    # Environmental conditions per sample
+    room_temp = fields.Float(string="Room Temperature (°C)",compute = "_compute_room_temp")
+    relative_humidity = fields.Float(string="Relative Humidity (%)" ,compute = "_compute_relative_humidity")
+    
+    load = fields.Float(string="Load (kN)")
+    cross_sectional_area = fields.Float(string="Cross Sectional Area (mm²)", compute="_compute_cross_sectional_area")
+    compressive_strength14 = fields.Float(string="Compressive Strength (N/mm²)", compute="_compute_strength", store=True)
+    average_strength14 = fields.Float(string="Avg. Compressive Strength (N/mm²)")
+    
+    # Type of Failure
+    type_of_failure = fields.Selection([
+        ('satisfactory', 'Satisfactory'),
+        ('unsatisfactory', 'Unsatisfactory'),
+    ], string="Type of Failure", default='satisfactory')
+
+    @api.depends('parent_id.room_temperature14')
+    def _compute_room_temp(self):
+        for rec in self:
+           rec.room_temp = rec.parent_id.room_temperature14
+
+    @api.depends('parent_id.relative_humidity14')
+    def _compute_relative_humidity(self):
+        for rec in self:
+           rec.relative_humidity = rec.parent_id.relative_humidity14
+
+
+
+           
+    @api.depends('length', 'width', 'diameter', 'parent_id.type_of_sample')
+    def _compute_cross_sectional_area(self):
+     for record in self:
+
+        # Identify sample type safely
+        sample_type = record.parent_id.type_of_sample if record.parent_id else False
+
+        # CASE 1: CUBE → Area = Length × Width
+        if sample_type == 'cube':
+            record.cross_sectional_area = (record.length or 0.0) * (record.width or 0.0)
+
+        # CASE 2: CYLINDER → Area = π × (Diameter/2)^2
+        elif sample_type == 'cylinder':
+            if record.diameter and record.diameter > 0:
+                record.cross_sectional_area = math.pi * ((record.diameter / 2) ** 2)
+            else:
+                record.cross_sectional_area = 0.0
+
+        # If type not selected or unknown
+        else:
+            record.cross_sectional_area = 0.0
+
+
+   
+
+    @api.depends('load', 'cross_sectional_area')
+    def _compute_strength(self):
+        for record in self:
+            if record.cross_sectional_area and record.load:
+                # Compressive strength = (Load in kN * 1000) / Area in mm² = N/mm²
+                record.compressive_strength14 = (record.load * 1000) / record.cross_sectional_area
+            else:
+                record.compressive_strength14 = 0.0
+
+    
+
+    @api.depends('parent_id.eln_ref.sample_id.client_sample_id')
+    def _compute_id_mark(self):
+        for record in self:
+            if record.parent_id and record.parent_id.eln_ref and record.parent_id.eln_ref.sample_id:
+                record.id_mark = record.parent_id.eln_ref.sample_id.client_sample_id
+            else:
+                record.id_mark = ""
+    def _inverse_id_mark(self):
+    # This allows manual editing
+      for record in self:
+        record.id_mark = record.id_mark
+           
+
+    @api.model
+    def create(self, vals):
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+            else:
+                vals['sr_no'] = 1
+        return super(MechanicalConcreteCubeLine14, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
+
+
+class MechanicalConcreteCubeLine28(models.Model):
+    _name = "mechanical.concrete.cube.line28"
+    parent_id = fields.Many2one('mechanical.concrete.cube', string="Parent Id")
+
+    sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
+    id_mark = fields.Char(string="Sample Identification", compute="_compute_id_mark",inverse="_inverse_id_mark", store=True)
+    wt_sample = fields.Float(string="Weight of Cube (gms)", digits=(16, 3))
+    
+    # Dimensions
+    length = fields.Float(string="Length (mm)")
+    diameter = fields.Float(string="Diameter (mm)")
+    width = fields.Float(string="width (mm)")
+    
+
+
+
+    dt_of_casting = fields.Date(string="Date of casting", compute="_compute_dt_of_casting", store=True)
+    dt_of_casting_formatted = fields.Char(string="Casting Date (DD-MM-YYYY)", compute="_compute_dt_of_casting_formatted")
+
+    @api.depends('dt_of_casting')
+    def _compute_dt_of_casting_formatted(self):
+        for rec in self:
+            if rec.dt_of_casting:
+                rec.dt_of_casting_formatted = rec.dt_of_casting.strftime('%d-%m-%Y')
+            else:
+                rec.dt_of_casting_formatted = ''
+    days = fields.Integer(string="No.of Days",compute="_compute_days_difference", store=True)
+    dt_of_testing1 = fields.Date(string="Date of Testing", compute="_compute_dt_of_testing", store=True)
+    dt_of_testing1_formatted = fields.Char(string="Date (DD-MM-YYYY)", compute="_compute_dt_of_testing1_formatted")
+
+    @api.depends('dt_of_testing1')
+    def _compute_dt_of_testing1_formatted(self):
+        for rec in self:
+            if rec.dt_of_testing1:
+                rec.dt_of_testing1_formatted = rec.dt_of_testing1.strftime('%d-%m-%Y')
+            else:
+                rec.dt_of_testing1_formatted = ''
+
+
+    @api.depends('dt_of_casting', 'parent_id')
+    def _compute_dt_of_testing(self):
+        for rec in self:
+            if rec.dt_of_casting and rec.parent_id:
+                # Find all lines of this parent ordered by ID (creation order)
+                all_lines = self.search(
+                    [('parent_id', '=', rec.parent_id.id)],
+                    order='id asc'
+                )
+                # Get position (1-based index)
+                position = all_lines.ids.index(rec.id) + 1 if rec.id in all_lines.ids else len(all_lines) + 1
+
+                # Apply day rule
+                if position <= 3:
+                    rec.dt_of_testing1 = rec.dt_of_casting + timedelta(days=7)
+                else:
+                    rec.dt_of_testing1 = rec.dt_of_casting + timedelta(days=28)
+            else:
+                rec.dt_of_testing1 = False
+
+    @api.depends('parent_id.casting_date_28days')
+    def _compute_dt_of_casting(self):
+        for record in self:
+            record.dt_of_casting = record.parent_id.casting_date_28days
+
+    @api.depends('parent_id.testing_date_28days')
+    def _compute_dt_of_testing(self):
+        for record in self:
+            record.dt_of_testing1 = record.parent_id.testing_date_28days
+
+    @api.depends('dt_of_casting', 'dt_of_testing1')
+    def _compute_days_difference(self):
+        for record in self:
+            if record.dt_of_casting and record.dt_of_testing1:
+                record.days = (record.dt_of_testing1 - record.dt_of_casting).days
+            else:
+                record.days = 0
+
+    
+    
+    # Environmental conditions per sample
+    room_temp = fields.Float(string="Room Temperature (°C)",compute = "_compute_room_temp")
+    relative_humidity = fields.Float(string="Relative Humidity (%)" ,compute = "_compute_relative_humidity")
+    
+    load = fields.Float(string="Load (kN)")
+    cross_sectional_area = fields.Float(string="Cross Sectional Area (mm²)", compute="_compute_cross_sectional_area")
+    compressive_strength28 = fields.Float(string="Compressive Strength (N/mm²)", compute="_compute_strength", store=True)
+    average_strength28 = fields.Float(string="Avg. Compressive Strength (N/mm²)")
+    
+    # Type of Failure
+    type_of_failure = fields.Selection([
+        ('satisfactory', 'Satisfactory'),
+        ('unsatisfactory', 'Unsatisfactory'),
+    ], string="Type of Failure", default='satisfactory')
+
+    @api.depends('parent_id.room_temperature28')
+    def _compute_room_temp(self):
+        for rec in self:
+           rec.room_temp = rec.parent_id.room_temperature28
+
+    @api.depends('parent_id.relative_humidity28')
+    def _compute_relative_humidity(self):
+        for rec in self:
+           rec.relative_humidity = rec.parent_id.relative_humidity28
+
+
+
+           
+    @api.depends('length', 'width', 'diameter', 'parent_id.type_of_sample')
+    def _compute_cross_sectional_area(self):
+     for record in self:
+
+        # Identify sample type safely
+        sample_type = record.parent_id.type_of_sample if record.parent_id else False
+
+        # CASE 1: CUBE → Area = Length × Width
+        if sample_type == 'cube':
+            record.cross_sectional_area = (record.length or 0.0) * (record.width or 0.0)
+
+        # CASE 2: CYLINDER → Area = π × (Diameter/2)^2
+        elif sample_type == 'cylinder':
+            if record.diameter and record.diameter > 0:
+                record.cross_sectional_area = math.pi * ((record.diameter / 2) ** 2)
+            else:
+                record.cross_sectional_area = 0.0
+
+        # If type not selected or unknown
+        else:
+            record.cross_sectional_area = 0.0
+
+
+   
+
+    @api.depends('load', 'cross_sectional_area')
+    def _compute_strength(self):
+        for record in self:
+            if record.cross_sectional_area and record.load:
+                # Compressive strength = (Load in kN * 1000) / Area in mm² = N/mm²
+                record.compressive_strength28 = (record.load * 1000) / record.cross_sectional_area
+            else:
+                record.compressive_strength28 = 0.0
+
+    
+
+    @api.depends('parent_id.eln_ref.sample_id.client_sample_id')
+    def _compute_id_mark(self):
+        for record in self:
+            if record.parent_id and record.parent_id.eln_ref and record.parent_id.eln_ref.sample_id:
+                record.id_mark = record.parent_id.eln_ref.sample_id.client_sample_id
+            else:
+                record.id_mark = ""
+    def _inverse_id_mark(self):
+    # This allows manual editing
+      for record in self:
+        record.id_mark = record.id_mark
+           
+
+    @api.model
+    def create(self, vals):
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+            else:
+                vals['sr_no'] = 1
+        return super(MechanicalConcreteCubeLine28, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
 
 class MechanicalConcreteCubeGradeLine(models.Model):
     _name = "mechanical.concrete.cube.grade.line"

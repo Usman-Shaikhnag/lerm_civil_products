@@ -2686,7 +2686,7 @@ class SieveAnalysisLine(models.Model):
     percent_retained = fields.Float(string='Cummulative Weight Retained in (gms)', compute="_compute_percent_retained",digits=(16,2))
     cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained ", compute="_compute_cumulative__retained",  store=True,digits=(16,2))
     passing_percent = fields.Float(string="% of wt passing",compute="_compute_passing_percent",digits=(16,2))
-    specific_limits = fields.Char(string="Specified Limits",store=True)
+    specific_limits = fields.Char(string="Specified Limits")
 
 
 
