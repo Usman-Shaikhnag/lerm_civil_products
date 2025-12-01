@@ -9,7 +9,6 @@
     "category":"Lerm Civil",
     "depends": ["web","base","lerm_civil" ,'contacts','product'],
     "data": [
-        "views/menu.xml",
         "security/ir.model.access.csv",
         "views/lab_report_views.xml",
         "views/lab_report_wizard_views.xml",
