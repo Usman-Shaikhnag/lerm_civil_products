@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Action & Menu -->
+    <record id="action_lab_report" model="ir.actions.act_window">
+        <field name="name">Lab Reports</field>
+        <field name="res_model">lab.report</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Create and manage lab reports with QR codes.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_lab_report_root" name="Lab Reports" sequence="10"/>
+    <menuitem id="menu_lab_report" name="Reports"
+              parent="menu_lab_report_root" action="action_lab_report" sequence="10"/>
+
+    <!-- Tree View -->
+    <record id="view_lab_report_tree" model="ir.ui.view">
+        <field name="name">lab.report.tree</field>
+        <field name="model">lab.report</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="material"/>
+                <field name="ulr"/>
+                <field name="state"/>
+                <button name="action_download_pdf"
+                        string="Download"
+                        type="object"
+                        icon="fa-download"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View (basic, for debugging) -->
+    <record id="view_lab_report_form" model="ir.ui.view">
+        <field name="name">lab.report.form</field>
+        <field name="model">lab.report</field>
+        <field name="arch" type="xml">
+            <form string="Lab Report">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="partner_id"/>
+                        <field name="material"/>
+                        <field name="ulr"/>
+                        <field name="nabl_scope_id"/>
+                        <field name="qr_position"/>
+                        <field name="state"/>
+                    </group>
+                    <group string="Files">
+                        <field name="original_pdf" filename="original_pdf_filename"/>
+                        <field name="final_pdf" filename="final_pdf_filename"/>
+                    </group>
+                    <group string="QR URLs">
+                        <field name="qr_left_url"/>
+                        <field name="qr_right_url"/>
+                    </group>
+                </sheet>
+
+                <footer>
+                    <button name="action_generate_qr_pdf"
+                            string="Generate QR PDF"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

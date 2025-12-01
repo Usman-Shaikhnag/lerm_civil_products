@@ -1,6 +1,6 @@
 # controllers/drive_controller.py
 from odoo import http
-from odoo.http import request
+from odoo.http import request,Response
 import requests
 import json
 import logging
@@ -357,3 +357,16 @@ class DriveController(http.Controller):
             })
 
         return True
+
+    @http.route('/api/products', auth='public', type='json', csrf=False, cors='*')
+    def get_products(self, **kwargs):
+        products = request.env['product.product'].sudo().search_read(
+            [], ['name', 'list_price']
+        )
+        users = request.env['res.users'].sudo().search_read(
+            [], ['name', 'login']
+        )
+        return {
+            "products": products,
+            "users": users,
+        }

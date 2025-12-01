@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Wizard view -->
+    <record id="view_lab_report_wizard_form" model="ir.ui.view">
+        <field name="name">lab.report.wizard.form</field>
+        <field name="model">lab.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="New Lab Report" version="7.0">
+                <group>
+                    <field name="date"/>
+                    <field name="partner_id"/>
+                    <field name="material"/>
+                    <field name="ulr"/>
+                    <field name="nabl_scope_id"/>
+                    <field name="qr_position"/>
+                    <field name="original_pdf" filename="original_pdf_filename"/>
+                </group>
+                <footer>
+                    <button name="action_create_report"
+                            string="Create Report"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel"
+                            special="cancel"
+                            class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open wizard -->
+    <record id="action_lab_report_wizard" model="ir.actions.act_window">
+        <field name="name">New Lab Report</field>
+        <field name="res_model">lab.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Add button in action toolbar of tree -->
+    <record id="lab_report_tree_action_inherit" model="ir.ui.view">
+        <field name="name">lab.report.tree.inherit.button</field>
+        <field name="model">lab.report</field>
+        <field name="inherit_id" ref="report_qr.view_lab_report_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <header>
+                    <button name="%(action_lab_report_wizard)d"
+                            type="action"
+                            string="Add New Report"
+                            class="btn-primary"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>
