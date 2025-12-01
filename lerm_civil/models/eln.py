@@ -84,6 +84,7 @@ class ELN(models.Model):
     temperature = fields.Float("Temperature")
     instrument = fields.Many2one('maintenance.equipment',string="Instrument")
     sop = fields.Html(string='SOP',compute="comput_sop")
+    casting = fields.Boolean(string="Casting",compute="_casting_required")
     date_testing = fields.Date("Date of Testing",compute="_compute_date_testing")
     days_casting = fields.Selection([
         ('1', '1 Days'),
@@ -95,7 +96,7 @@ class ELN(models.Model):
         ('45', '45 Days'),
         ('56', '56 Days'),
         ('112', '112 Days'),
-    ], string='Days of casting', default='3')
+    ], string='Days of casting')
     # data_sheet = fields.Binary(string="Data Sheet", attachment=True)
 
     # file_upload = fields.Many2many(
@@ -132,6 +133,11 @@ class ELN(models.Model):
     #     string='Report Upload',
     #     help='Attach multiple images to the sample',
     # )
+
+    @api.depends('sample_id')
+    def _casting_required(self):
+        for record in self:
+            record.casting = record.sample_id.casting
 
 
     @api.depends('sample_id')

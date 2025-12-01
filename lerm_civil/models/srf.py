@@ -1324,6 +1324,7 @@ class CreateSampleWizard(models.TransientModel):
                         'grade_id':sample.grade_id.id,
                         'department_id':sample.department_id,
                         'casting_date':sample.casting_date,
+                        'days_casting':sample.days_casting,
                         'quantity':sample.quantity,
                         'uom_id':sample.uom_id.id,
                         'quantity_received':sample.quantity_received,
