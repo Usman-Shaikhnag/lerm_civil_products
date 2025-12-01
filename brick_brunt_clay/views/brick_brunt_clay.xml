@@ -37,6 +37,23 @@
                             </tree>
                         </field>
                     </div>
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
                     
 
                     <!--  Compressive Strength  -->
@@ -54,7 +71,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_compressive_strength">Temp.°C</label></td>
-                                    <td><field name="temp_compressive_strength"/></td>
+                                    <td><field name="temp_compressive_strength" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -64,7 +81,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_compressive_strength">Humidity %</label></td>
-                                    <td><field name="humidity_compressive_strength"/></td>
+                                    <td><field name="humidity_compressive_strength" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -78,12 +95,12 @@
                         <field name="compressive_strength_child_lines" nolabel="1">
                             <tree editable="bottom">
                                 <field name="serial_no"/>
-                                <field name='sample1' width="100px"/>
-                                <field name='length'/>
-                                <field name='width' />
-                                <field name='thickness' />
+                                <field name='sample1' width="100px" class="blue-input" decoration-info="sample1 != 0"/>
+                                <field name='length' class="blue-input" decoration-info="length != 0"/>
+                                <field name='width'  class="blue-input" decoration-info="width != 0"/>
+                                <field name='thickness' class="blue-input" decoration-info="thickness != 0"/>
                                 <field name='area'/>
-                                <field name='load'/>
+                                <field name='load' class="blue-input" decoration-info="load != 0"/>
                                 <!-- <field name='correction_factor'/> -->
                                 <field name='compressive_strength'/>
                                 
@@ -139,7 +156,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_water_absorption">Temp.°C</label></td>
-                                    <td><field name="temp_water_absorption"/></td>
+                                    <td><field name="temp_water_absorption" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -149,7 +166,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_water_absorption">Humidity %</label></td>
-                                    <td><field name="humidity_water_absorption"/></td>
+                                    <td><field name="humidity_water_absorption" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -161,9 +178,9 @@
                         <field name="water_absorption_child_lines" nolabel="1">
                             <tree editable="bottom">
                                 <field name="serial_no" width="30px" />
-                                <field name='sample' width="100px"/>
-                                <field name='dry_weight'/>
-                                <field name='sat_weight' />
+                                <field name='sample' width="100px" class="blue-input" decoration-info="sample != 0"/>
+                                <field name='dry_weight' class="blue-input" decoration-info="dry_weight != 0"/>
+                                <field name='sat_weight' class="blue-input" decoration-info="sat_weight != 0"/>
 
                                 <field name='sat_dry_weight'/>
                                 <field name='water_absorption'/>
@@ -220,7 +237,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_dimension">Temp.°C</label></td>
-                                    <td><field name="temp_dimension"/></td>
+                                    <td><field name="temp_dimension" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -230,7 +247,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_dimension">Humidity %</label></td>
-                                    <td><field name="humidity_dimension"/></td>
+                                    <td><field name="humidity_dimension" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -251,25 +268,25 @@
                          <tr class="text-center">
                          <td ><span> 1</span></td>
                            <td><label for="length1"></label></td>
-                           <td><field  name="length1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="length2"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="length3"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="length1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="length2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="length3"  colspan="1"  nolabel="1" class="blue-input"/></td>
                            <td><field  name="avg_length"  colspan="1"  nolabel="1"/></td>
                           </tr>
                          <tr class="text-center">
                          <td ><span> 2</span></td>
                            <td><label for="width1"></label></td>
-                           <td><field  name="width1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="width2"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="width3"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="width1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="width2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="width3"  colspan="1"  nolabel="1" class="blue-input"/></td>
                            <td><field  name="avg_width"  colspan="1"  nolabel="1"/></td>
                          </tr>
                          <tr class="text-center"> 
                           <td ><span> 3</span></td>
                            <td><label for="height1"></label></td>
-                           <td><field  name="height1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="height2"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="height3"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="height1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="height2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="height3"  colspan="1"  nolabel="1" class="blue-input"/></td>
                            <td><field  name="avg_height"  colspan="1"  nolabel="1"/></td>
                          </tr>
 
@@ -374,7 +391,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_efforescence">Temp.°C</label></td>
-                                    <td><field name="temp_efforescence"/></td>
+                                    <td><field name="temp_efforescence" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -384,7 +401,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_efforescence">Humidity %</label></td>
-                                    <td><field name="humidity_efforescence"/></td>
+                                    <td><field name="humidity_efforescence" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -403,7 +420,7 @@
                             
                              <tr>
                                     <td><strong>Observation</strong></td>
-                                    <td><field name="visual_observation_1" nolabel="1"/></td>
+                                    <td><field name="visual_observation_1" nolabel="1" class="blue-input"/></td>
                                 </tr>
 
                             </tbody>

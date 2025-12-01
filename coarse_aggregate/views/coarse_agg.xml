@@ -40,6 +40,17 @@
                             background-color: #d8ecff !important;   /* हलका Blue background */
                             border-color: #3b82f6 !important;        /* Blue border */ 
                         }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
                     </style>
 
                     <!-- Sieve Alanysis  -->
@@ -65,7 +76,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_sieve_analysis">Humidity %</label></td>
-                                    <td><field name="humidity_sieve_analysis" class="blue-input"/></td>
+                                    <td><field name="humidity_sieve_analysis" class="blue-input" /></td>
                                 </tr>
                                 
                             </tbody>
@@ -101,7 +112,7 @@
                             <tree editable="bottom">
                                 <!-- <field name="serial_no" string="Sr.No"/> -->
                                 <field name='sieve_size'/>
-                                <field name='wt_retained' class="blue-input"/>
+                                <field name='wt_retained' class="blue-input" decoration-info="wt_retained != 0"/>
                                 <field name='percent_retained' readonly="1"/>
                                 <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1"/>
                                 <field name='passing_percent' readonly="1"/>
@@ -876,8 +887,8 @@
                         <field name="rate_of_evaporation_table" nolabel="1">
                             <tree editable="bottom">
                                 <field name="sr_no" string="Beaker"/>
-                                <field name='W1' class="blue-input"/>
-                                <field name='W2' class="blue-input"/>
+                                <field name='W1' class="blue-input" decoration-info="W1 != 0"/>
+                                <field name='W2' class="blue-input" decoration-info="W2 != 0"/>
                                 <field name='W3' readonly="1"/>
                                 <field name='rate_evaporation' readonly="1"/>
                             </tree>
@@ -960,11 +971,11 @@
                                 <field name="sieve_size_retained"/>
                                 <field name="length_gauge"/>
                                 <field name="weight_retained_el_char"/>
-                                <field name="weight_retained_el" class="blue-input"/>
+                                <field name="weight_retained_el" class="blue-input" decoration-info="weight_retained_el != 0"/>
                                <field name="percent_retained_el_char"/>
                                 <field name="percent_retained_el"/>
                                  <field name="weight_retained_mat_elongated_char"/>
-                                <field name="weight_retained_mat_elongated" class="blue-input"/>
+                                <field name="weight_retained_mat_elongated" class="blue-input" decoration-info="weight_retained_mat_elongated != 0"/>
                                  <field name="percent_retained_material_cha"/>
                                 <field name="percent_retained_material"/>
                                 <field name="total_percent_retained_el"/>
@@ -1117,11 +1128,11 @@
                                 <field name="sieve_size_retained_fl"/>
                                 <field name="length_gauge_fl"/>
                                 <field name="weight_retained_fl_char"/>
-                                <field name="weight_retained_fl" class="blue-input"/>
+                                <field name="weight_retained_fl" class="blue-input" decoration-info="weight_retained_fl != 0"/>
                                <field name="percent_retained_fl_char"/>
                                 <field name="percent_retained_fl"/>
                                  <field name="weight_retained_mat_fl_char"/>
-                                <field name="weight_retained_mat_fl" class="blue-input"/>
+                                <field name="weight_retained_mat_fl" class="blue-input" decoration-info="weight_retained_mat_fl != 0"/>
                                  <field name="percent_retained_material_fl_char"/>
                                 <field name="percent_retained_material_fl"/>
                                 <field name="total_percent_retained_fl"/>
@@ -1386,11 +1397,11 @@
                     <field name="soudness_child_lines" nolabel="1"  style="width:100%" >
                         <tree editable="bottom"  class="custom_table_borders">
                             <field name="serial_no"/>
-                            <field name="immersed_datetime" class="blue-input"/>
-                            <field name="temp_solution" class="blue-input" />
-                            <field name="specific_gravity_solution" class="blue-input"/>
-                            <field name="removed_datetime" class="blue-input"/>
-                             <field name="oven_datetime" class="blue-input"/>
+                            <field name="immersed_datetime" class="blue-input" decoration-info="immersed_datetime != 0"/>
+                            <field name="temp_solution" class="blue-input" decoration-info="temp_solution != 0" />
+                            <field name="specific_gravity_solution" class="blue-input" decoration-info="specific_gravity_solution != 0"/>
+                            <field name="removed_datetime" class="blue-input" decoration-info="removed_datetime != 0"/>
+                             <field name="oven_datetime" class="blue-input" decoration-info="oven_datetime != 0"/>
                             <field name="hours_1"/>
                             <field name="hours_2"/>
                             <field name="hours_3"/>
@@ -1427,11 +1438,11 @@
                             <field name="serial_no"/>
                             <field name="sieve_size"/>
                             <field name="particle_size"/>
-                            <field name="wt_retained" class="blue-input"/>
+                            <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
                            
                             <field name="percent_retained"/>
                               <field name="wt_sample_testing"/>
-                              <field name="actual_wt" class="blue-input"/>
+                              <field name="actual_wt" class="blue-input" decoration-info="actual_wt != 0"/>
                             <field name="cumulative_retained"/>
                             <field name="passing_percent"/>
                         </tree>
@@ -1472,8 +1483,8 @@
                             <field name="original_sulphate"/>
                            
                             <field name="original_magnesiu"/>
-                              <field name="wt_sulhate" class="blue-input"/>
-                              <field name="wt_manesium" class="blue-input"/>
+                              <field name="wt_sulhate" class="blue-input" decoration-info="wt_sulhate != 0"/>
+                              <field name="wt_manesium" class="blue-input" decoration-info="wt_manesium != 0"/>
                             <field name="loss_sulphae"/>
                             <field name="loss_manesium"/>
                         </tree>
