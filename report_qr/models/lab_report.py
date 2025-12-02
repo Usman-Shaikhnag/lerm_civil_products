@@ -340,3 +340,23 @@ class LabReport(models.Model):
             "url": f"/lab_report_qr/download/{self.id}?filename={filename}",
             "target": "self",
         }
+
+
+    def action_save_and_back(self):
+        self.ensure_one()
+
+        if self.original_pdf or self.original_pdf_ftp_path:
+            self.action_generate_qr_pdf()
+
+        # return {
+        #     "type": "ir.actions.act_window",
+        #     "res_model": "lab.report",
+        #     "view_mode": "tree,form",
+        #     "target": "current",
+        #     "name": "Lab Reports",
+        # }
+        # Return the lab.report list action
+        action = self.env.ref("report_qr.action_lab_report").read()[0]
+        # Just to be explicit: open in list, not on this record
+        action["res_id"] = False
+        return action

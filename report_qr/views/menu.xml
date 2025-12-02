@@ -1,11 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <odoo>
     <!-- Root menu -->
     <menuitem id="menu_lab_report_root"
               name="QR Report"
               sequence="10"
-              web_icon="report_qr,static/description/scan.png"
-              />
+              web_icon="report_qr,static/description/scan.png"/>
 
     <!-- Child menu that opens the list view -->
     <menuitem id="menu_lab_report"
@@ -13,6 +12,11 @@
               action="action_lab_report"
               name="Lab Reports"
               sequence="10"/>
-</odoo>
 
+    <!-- OPTIONAL: menu to open wizard directly -->
+    <menuitem id="menu_lab_report_new"
+              parent="menu_lab_report_root"
+              action="action_lab_report_wizard"
+              name="New Lab Report"
+              sequence="20"/>
 </odoo>

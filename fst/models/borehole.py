@@ -301,14 +301,14 @@ class ERTBorehole(models.Model):
             
             for line in lines:
                 # Place N-Value labels at the top depth, moved upwards by the offset
-                if line.n_value:
+                if line.sample_type and "UDS" in line.sample_type.strip().upper():
+                    ax.text(-0.05, line.top_depth - VERTICAL_OFFSET, "UDS", ha="right", va="center",
+                             fontsize=9, color="black")
+                elif line.n_value:
                     ax.text(-0.05, line.top_depth - VERTICAL_OFFSET, str(line.n_value), ha="right", va="center",
                              fontsize=9, color="brown", fontweight="bold")
                 
                 # Place UDS label at the top depth, moved upwards by the offset
-                if line.sample_type and "UDS" in line.sample_type.strip().upper():
-                    ax.text(-0.05, line.top_depth - VERTICAL_OFFSET, "UDS", ha="right", va="center",
-                             fontsize=9, color="black")
 
             # Depth labels on right (using the new merged segment boundaries)
             segment_depths = set()

@@ -1,7 +1,7 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import zipfile
-from PIL import Image,ImageDraw,ImageEnhance
+from PIL import Image, ImageEnhance, ImageDraw, ImageFont
 import io, base64, math, logging
 
 _logger = logging.getLogger(__name__)
@@ -252,16 +252,160 @@ class SoilBoreholeParent(models.Model):
         return report.report_action(self, config={'report_name': filename})
     
     
-    @api.depends('borehole_lines.soil_borehole_id.graph_image')
+    # @api.depends('borehole_lines.soil_borehole_id.graph_image')
+    # def _compute_combined_images(self):
+    #     for record in self:
+    #         # Clear existing records
+    #         record.combined_images.unlink()
+
+    #         images = []
+    #         for line in record.borehole_lines:
+    #             borehole = line.soil_borehole_id
+    #             if borehole and borehole.graph_image:
+    #                 try:
+    #                     img_data = base64.b64decode(borehole.graph_image)
+    #                     img = Image.open(io.BytesIO(img_data))
+    #                     images.append(img)
+    #                 except Exception as e:
+    #                     _logger.warning(f"Skipping invalid image: {e}")
+
+    #         if not images:
+    #             continue
+
+    #         grid_cols = 5
+    #         grid_rows = 4
+    #         thumb_w, thumb_h = 400, 400
+    #         max_per_image = grid_cols * grid_rows
+
+    #         # Split into groups of 20
+    #         chunks = [images[i:i + max_per_image] for i in range(0, len(images), max_per_image)]
+
+    #         ImageModel = self.env['soil.borehole.parent.image']
+
+    #         for idx, group in enumerate(chunks, start=1):
+    #             cols = min(grid_cols, len(group))
+    #             rows = math.ceil(len(group) / grid_cols)
+    #             combined_w = cols * thumb_w
+    #             combined_h = rows * thumb_h
+    #             combined_img = Image.new('RGB', (combined_w, combined_h), color=(255, 255, 255))
+
+    #             # Paste thumbnails
+    #             for i, img in enumerate(group):
+    #                 img = img.copy()
+                    
+    #                 img.thumbnail((thumb_w, thumb_h))
+    #                 enhancer = ImageEnhance.Sharpness(img)
+    #                 img = enhancer.enhance(1.3)
+                    
+    #                 final_thumbnail = Image.new('RGB', (thumb_w, thumb_h), color=(255, 255, 255))
+                    
+    #                 x_offset = (thumb_w - img.width) // 2
+    #                 y_offset = (thumb_h - img.height) // 2
+                    
+    #                 final_thumbnail.paste(img, (x_offset, y_offset))
+                    
+    #                 row, col = divmod(i, grid_cols)
+    #                 x = col * thumb_w
+    #                 y = row * thumb_h
+                    
+    #                 combined_img.paste(final_thumbnail, (x, y))
+    #             # draw = ImageDraw.Draw(combined_img)
+    #             # border_width = 4
+    #             # draw.rectangle(
+    #             #     [
+    #             #         border_width - 1, 
+    #             #         border_width - 1, 
+    #             #         combined_img.width - (border_width), 
+    #             #         combined_img.height - (border_width)
+    #             #     ],
+    #             #     outline="black",
+    #             #     width=border_width
+    #             # )
+
+    #             # Save to binary
+    #             buffer = io.BytesIO()
+    #             combined_img.save(buffer, format="PNG")
+    #             img_base64 = base64.b64encode(buffer.getvalue())
+
+    #             ImageModel.create({
+    #                 'parent_id': record.id,
+    #                 'sequence': idx,
+    #                 'image': img_base64,
+    #             })
+
+    @api.depends('borehole_lines.soil_borehole_id.graph_image',
+                'borehole_lines.soil_borehole_id.nvalue_ids.classification',
+                'borehole_lines.soil_borehole_id.nvalue_ids.symbol')
     def _compute_combined_images(self):
+        
+        # Same soil color scheme as in generate_borehole_graph (pattern_map)
+        SYMBOL_COLOR_MAP = {
+            "GW": "#B8B8A0",
+            "GP": "#B8B8A0",
+            "GM": "#A0A080",
+            "GC": "#909070",
+            "SW": "#FFFF99",
+            "SP": "#FFFF66",
+            "SM": "#E0E0A0",
+            "SC": "#DDAA88",
+            "ML": "#D3D3D3",
+            "CL": "#ADD8E6",
+            "OL": "#7B68EE",
+            "MH": "#B0C4DE",
+            "CH": "#5D8AA8",
+            "OH": "#4B371C",
+            "PT": "#556B2F",
+        }
+
+        # Classification code -> human-friendly name + symbol for legend
+        CLASSIFICATION_INFO = {
+            'Poorly_Graded': ("Poorly graded sand", "SP"),
+            'Well_Graded': ("Well graded sand", "SW"),
+            'Well-Graded Gravel': ("Well-graded gravels", "GW"),
+            'Poorly-Graded-Gravel': ("Poorly graded gravels", "GP"),
+            'Silty-Gravel': ("Silty gravels", "GM"),
+            'Clayey-Gravel': ("Clayey gravels", "GC"),
+            'Silty-Sand': ("Silty sands", "SM"),
+            'Clayey-Sand': ("Clayey sands", "SC"),
+            'Inorganic-Silt-FS': ("Inorganic silts & very fine sands", "ML"),
+            'Inorganic-Clays-LM': ("Inorganic clays (low–med plasticity)", "CL"),
+            'Organic-Silt': ("Organic silts", "OL"),
+            'Inorganic-Silt': ("Inorganic silts", "MH"),
+            'Inorganic-Clay': ("Inorganic clays (high plasticity)", "CH"),
+            'Organic-Clay': ("Organic clays", "OH"),
+            'Peat': ("Peat", "PT"),
+        }
+        ImageModel = self.env['soil.borehole.parent.image']
+
         for record in self:
-            # Clear existing records
+            # Clear existing combined images for this parent
             record.combined_images.unlink()
 
+            # --- 1. Collect all borehole thumbnails and the classifications used ---
             images = []
+            used_classifications = set()
+
             for line in record.borehole_lines:
                 borehole = line.soil_borehole_id
-                if borehole and borehole.graph_image:
+                if not borehole:
+                    continue
+
+                # Collect classification info from N-values for legend
+                for nv in borehole.nvalue_ids:
+                    if nv.classification:
+                        used_classifications.add(nv.classification)
+                    elif nv.symbol:
+                        # Fallback: map symbol -> classification like your SYMBOL_TO_CLASSIFICATION logic
+                        # Adjust if your actual mapping keys differ.
+                        symbol = nv.symbol
+                        # try to infer classification name from your CLASSIFICATION_INFO
+                        for cls_code, (_, info_symbol) in CLASSIFICATION_INFO.items():
+                            if info_symbol == symbol:
+                                used_classifications.add(cls_code)
+                                break
+
+                # Collect graph image thumbnails
+                if borehole.graph_image:
                     try:
                         img_data = base64.b64decode(borehole.graph_image)
                         img = Image.open(io.BytesIO(img_data))
@@ -272,59 +416,113 @@ class SoilBoreholeParent(models.Model):
             if not images:
                 continue
 
+            # --- 2. Build pages of thumbnails (same as your original logic) ---
             grid_cols = 5
             grid_rows = 4
             thumb_w, thumb_h = 400, 400
             max_per_image = grid_cols * grid_rows
 
-            # Split into groups of 20
             chunks = [images[i:i + max_per_image] for i in range(0, len(images), max_per_image)]
 
-            ImageModel = self.env['soil.borehole.parent.image']
+            # Prepare legend data once per parent (one legend for all combined boreholes)
+            legend_items = []
+            for cls_code in sorted(used_classifications):  # sort for stable ordering
+                friendly, symbol = CLASSIFICATION_INFO.get(cls_code, (cls_code, None))
+                color = SYMBOL_COLOR_MAP.get(symbol, "white")
+                # label text: e.g. "CL – Inorganic clays (low–med plasticity)"
+                if symbol:
+                    label = f"{symbol} – {friendly}"
+                else:
+                    label = friendly
+                legend_items.append((color, label))
 
+            # If there is no classification data, we will simply not draw a legend.
             for idx, group in enumerate(chunks, start=1):
                 cols = min(grid_cols, len(group))
                 rows = math.ceil(len(group) / grid_cols)
                 combined_w = cols * thumb_w
                 combined_h = rows * thumb_h
+
+                # --- 3. First, compose the main grid image ---
                 combined_img = Image.new('RGB', (combined_w, combined_h), color=(255, 255, 255))
 
-                # Paste thumbnails
                 for i, img in enumerate(group):
                     img = img.copy()
-                    
                     img.thumbnail((thumb_w, thumb_h))
                     enhancer = ImageEnhance.Sharpness(img)
                     img = enhancer.enhance(1.3)
-                    
+
                     final_thumbnail = Image.new('RGB', (thumb_w, thumb_h), color=(255, 255, 255))
-                    
+
                     x_offset = (thumb_w - img.width) // 2
                     y_offset = (thumb_h - img.height) // 2
-                    
                     final_thumbnail.paste(img, (x_offset, y_offset))
-                    
+
                     row, col = divmod(i, grid_cols)
                     x = col * thumb_w
                     y = row * thumb_h
-                    
-                    combined_img.paste(final_thumbnail, (x, y))
-                # draw = ImageDraw.Draw(combined_img)
-                # border_width = 4
-                # draw.rectangle(
-                #     [
-                #         border_width - 1, 
-                #         border_width - 1, 
-                #         combined_img.width - (border_width), 
-                #         combined_img.height - (border_width)
-                #     ],
-                #     outline="black",
-                #     width=border_width
-                # )
 
-                # Save to binary
+                    combined_img.paste(final_thumbnail, (x, y))
+
+                # --- 4. Add legend at the bottom-right (only used classifications) ---
+                if legend_items:
+                    # Estimate legend height: one row per item
+                    line_height = 22
+                    top_padding = 8
+                    bottom_padding = 8
+                    legend_height = top_padding + bottom_padding + line_height * len(legend_items)
+
+                    # Extend canvas downward to fit legend
+                    final_h = combined_h + legend_height
+                    final_img = Image.new('RGB', (combined_w, final_h), color=(255, 255, 255))
+                    final_img.paste(combined_img, (0, 0))
+
+                    draw = ImageDraw.Draw(final_img)
+                    font = ImageFont.load_default()
+
+                    margin = 10
+                    swatch_size = 16
+                    spacing = 6
+
+                    # Legend box area (anchored to bottom-right)
+                    box_width = min(420, combined_w - 2 * margin)  # cap width
+                    box_left = combined_w - box_width - margin
+                    box_top = combined_h + (legend_height - (line_height * len(legend_items) + top_padding + bottom_padding)) // 2
+                    box_right = combined_w - margin
+                    box_bottom = final_h - margin
+
+                    # Background & border
+                    draw.rectangle(
+                        [box_left, box_top, box_right, box_bottom],
+                        fill="white",
+                        outline="black",
+                        width=1,
+                    )
+
+                    # Draw each legend line
+                    y = box_top + top_padding
+                    x_swatch = box_left + 8
+                    x_text = x_swatch + swatch_size + spacing
+
+                    for color, label in legend_items:
+                        # Color swatch
+                        draw.rectangle(
+                            [x_swatch, y, x_swatch + swatch_size, y + swatch_size],
+                            fill=color,
+                            outline="black",
+                            width=1,
+                        )
+                        # Text
+                        draw.text((x_text, y), label, fill="black", font=font)
+                        y += line_height
+
+                else:
+                    # No legend → final image is just the combined grid
+                    final_img = combined_img
+
+                # --- 5. Save to Binary and create record ---
                 buffer = io.BytesIO()
-                combined_img.save(buffer, format="PNG")
+                final_img.save(buffer, format="PNG")
                 img_base64 = base64.b64encode(buffer.getvalue())
 
                 ImageModel.create({

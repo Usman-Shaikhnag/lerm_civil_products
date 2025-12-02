@@ -6,7 +6,7 @@
         <field name="name">lab.report.wizard.form</field>
         <field name="model">lab.report.wizard</field>
         <field name="arch" type="xml">
-            <form string="New Lab Report" version="7.0">
+            <form string="New Lab Report">
                 <group>
                     <field name="date"/>
                     <field name="partner_id"/>
@@ -34,23 +34,8 @@
         <field name="name">New Lab Report</field>
         <field name="res_model">lab.report.wizard</field>
         <field name="view_mode">form</field>
+        <field name="view_id" ref="view_lab_report_wizard_form"/>
         <field name="target">new</field>
     </record>
 
-    <!-- Add button in action toolbar of tree -->
-    <record id="lab_report_tree_action_inherit" model="ir.ui.view">
-        <field name="name">lab.report.tree.inherit.button</field>
-        <field name="model">lab.report</field>
-        <field name="inherit_id" ref="report_qr.view_lab_report_tree"/>
-        <field name="arch" type="xml">
-            <xpath expr="//tree" position="inside">
-                <header>
-                    <button name="%(action_lab_report_wizard)d"
-                            type="action"
-                            string="Add New Report"
-                            class="btn-primary"/>
-                </header>
-            </xpath>
-        </field>
-    </record>
 </odoo>

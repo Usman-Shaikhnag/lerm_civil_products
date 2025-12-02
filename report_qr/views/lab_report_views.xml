@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- Action & Menu -->
+    <!-- Action -->
+
     <record id="action_lab_report" model="ir.actions.act_window">
-        <field name="name">Lab Reports</field>
+        <field name="name">Lab Report List</field>
         <field name="res_model">lab.report</field>
         <field name="view_mode">tree,form</field>
+        <!-- Use our search view (no button inside it) -->
+        <field name="search_view_id" ref="view_lab_report_search"/>
         <field name="help" type="html">
             <p>Create and manage lab reports with QR codes.</p>
         </field>
     </record>
-
-    <menuitem id="menu_lab_report_root" name="Lab Reports" sequence="10"/>
-    <menuitem id="menu_lab_report" name="Reports"
-              parent="menu_lab_report_root" action="action_lab_report" sequence="10"/>
 
     <!-- Tree View -->
     <record id="view_lab_report_tree" model="ir.ui.view">
         <field name="name">lab.report.tree</field>
         <field name="model">lab.report</field>
         <field name="arch" type="xml">
-            <tree>
+            <!-- create=false hides the standard New button -->
+            <tree create="false">
                 <field name="date"/>
                 <field name="partner_id"/>
                 <field name="material"/>
                 <field name="ulr"/>
-                <field name="state"/>
+                <!-- <field name="state"/> -->
                 <button name="action_download_pdf"
                         string="Download"
                         type="object"
@@ -34,7 +34,39 @@
         </field>
     </record>
 
-    <!-- Form View (basic, for debugging) -->
+    <!-- Extra view to inject a header button into the tree -->
+    <record id="view_lab_report_tree_header" model="ir.ui.view">
+        <field name="name">lab.report.tree.header</field>
+        <field name="model">lab.report</field>
+        <field name="inherit_id" ref="report_qr.view_lab_report_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <header>
+                    <button name="%(report_qr.action_lab_report_wizard)d"
+                            type="action"
+                            string="New Lab Report"
+                            display="always"
+                            class="btn-primary oe_highlight"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search view (no buttons, to keep validator happy) -->
+    <record id="view_lab_report_search" model="ir.ui.view">
+        <field name="name">lab.report.search</field>
+        <field name="model">lab.report</field>
+        <field name="arch" type="xml">
+            <search string="Search Lab Reports">
+                <field name="partner_id"/>
+                <field name="material"/>
+                <field name="ulr"/>
+                <!-- <field name="state"/> -->
+            </search>
+        </field>
+    </record>
+
+    <!-- Form View -->
     <record id="view_lab_report_form" model="ir.ui.view">
         <field name="name">lab.report.form</field>
         <field name="model">lab.report</field>
@@ -49,25 +81,20 @@
                         <field name="ulr"/>
                         <field name="nabl_scope_id"/>
                         <field name="qr_position"/>
-                        <field name="state"/>
+                        <!-- <field name="state"/> -->
                     </group>
                     <group string="Files">
                         <field name="original_pdf" filename="original_pdf_filename"/>
-                        <field name="final_pdf" filename="final_pdf_filename"/>
                     </group>
                     <group string="QR URLs">
                         <field name="qr_left_url"/>
                         <field name="qr_right_url"/>
                     </group>
-                </sheet>
-
-                <footer>
-                    <button name="action_generate_qr_pdf"
-                            string="Generate QR PDF"
+                    <button name="action_save_and_back"
+                            string="Save"
                             type="object"
-                            class="btn-primary"/>
-                    <button string="Close" class="btn-secondary" special="cancel"/>
-                </footer>
+                            class="btn-primary oe_highlight"/>
+                </sheet>
             </form>
         </field>
     </record>
