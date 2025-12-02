@@ -15,26 +15,7 @@
 				<div class="container_eln" style="padding-top:70px;">
 					
 					<div t-foreach="eln" t-as="o">
-						<!-- <table>
-							<tr>
-								<td colspan="3">Report no :
-								</td>
-								<td colspan="3">
-									<span t-field="o.kes_no"/>
-								</td>
-								<td colspan="3">Report Date :
-								<span t-field="o.end_date"/>
-								</td>
-								<td colspan="3">
-									<span t-field="o.srf_date"/>
-								</td>
-								<td colspan="3" t-if="nabl">ULR NO :
-								</td>
-								<td colspan="3" t-if="nabl">
-									<span t-field="o.sample_id.ulr_no"/>
-								</td>
-							</tr>
-						</table> -->
+						
 						<table style="margin-top:10px; border:none">
 							<tr>
 								<td colspan="2" style=" font-weight: bold;">Client Details:</td>
@@ -50,16 +31,7 @@
 								</td>
 							</tr>
 							<tr>
-								<!-- <td colspan="12">Project / Site Address :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
+							
 								<td colspan="2" style=" font-weight: bold;">Client Reference:</td>
 								<td colspan="10"><span t-field="o.srf_id.client_refrence"/></td>
 							</tr>
@@ -118,109 +90,7 @@
 					<div style="text-align:center;">
 						<h4 class="mb-0" style="text-decoration: underline;">Results</h4>
 					</div>
-						<!-- <table style="margin-top:10px; width: 100%;">
-							<tbody>
-								<tr>
-									<td colspan="12">
-										<strong>Customer Party Name:</strong>
-										<span t-field="o.srf_id.customer.name"/>
-										<br/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
-									</td>
-								</tr>
-
-								<tr>
-									<td colspan="12">
-										<strong>Project / Site Address:</strong>
-										<span t-field="o.srf_id.name_work"/>
-									</td>
-								</tr>
-
-								<tr>
-									<td colspan="12">
-										<strong>Sample Description:</strong>
-										<span t-field="o.sample_id.sample_description"/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-
-						<table style="width: 100%; margin-top:10px;">
-							<tbody>
-								<tr>
-									<td colspan="6">
-										<strong>Test Start Date:</strong>
-										<span t-field="o.start_date"/>
-									</td>
-									<td colspan="6">
-										<strong>Test End Date:</strong>
-										<span t-field="o.end_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Sample Id Mark:</strong>
-										<span t-field="o.sample_id.client_sample_id"/>
-									</td>
-									<td colspan="6">
-										<strong>Sample Receipt Date:</strong>
-										<span t-field="o.sample_id.sample_received_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Size:</strong>
-										<span t-field="o.sample_id.size_id.size"/>
-									</td>
-									<td colspan="6">
-										<strong>Grade:</strong>
-										<span t-field="o.sample_id.grade_id.grade"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Brand:</strong>
-										<span t-field="o.sample_id.brand"/>
-									</td>
-									<td colspan="6">
-										<strong>Consultant Name:</strong>
-										<span t-field="o.srf_id.consultant_name1"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Client Name:</strong>
-										<span t-field="o.srf_id.client"/>
-									</td>
-									<td colspan="6">
-										<strong>Client Reference:</strong>
-										<span t-field="o.srf_id.client_refrence"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Discipline:</strong>
-										<span t-field="o.discipline.discipline"/>
-									</td>
-									<td colspan="6">
-										<strong>Group:</strong>
-										<span t-field="o.group.group"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="12">
-										<strong>Material/Test Name:</strong>
-										<span t-field="o.material.name"/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div> -->
+						
 					
 					<div>
 
@@ -242,156 +112,7 @@
                             </tr>
                         </tbody>
                     </table>
-						<!-- <table class="table table-bordered" style="width:100%; text-align:center;">
-							<thead>
-								<tr>
-									<th>Description</th>
-									<th style="text-align: center;">Dimensions</th>
-									<th colspan="3">Requirements <span t-field="eln.material.test_method_adopted"></span></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>Length (mm)</td>
-									<td style="text-align: center;" t-esc="brick.length_in_mm"/>
-									<td rowspan="3" style="text-align: center; vertical-align: middle;"><span t-field="eln.material.test_method_adopted"></span></td>
-									<td rowspan="3" style="text-align: center; vertical-align: middle;">20 No's</td>
-									<td>4600±80mm</td>
-								</tr>
-								<tr>
-									<td>Breadth (mm)</td>
-									<td style="text-align: center;" t-esc="brick.width_in_mm"/>
-									<td>2200±40mm</td>
-								</tr>
-								<tr>
-									<td>Height (mm)</td>
-									<td style="text-align: center;" t-esc="brick.height_in_mm"/>
-									<td>1400±40mm</td>
-								</tr>
-							</tbody>
-						</table> -->
-						<!-- 1 Compressive strength  -->
-						<!-- <table class="table table-bordered" style="width: 100%; text-align: center; border: 1px solid black; border-collapse: collapse;">
-							<thead>
-								<tr>
-									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle;">S.No</th>
-									<th colspan="3" style="border: 1px solid black; text-align: center; vertical-align: middle;">Dimensions<br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','125478bvf3-8d5d-4f45-8afb-b911f9cafe41')]).test_method.test_method"/>
-										</th>
-									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle;">Compressive Strength,
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).unit.name"/><br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).test_method.test_method"/>
-									</th>
-									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle;">Water Absorption, 
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).unit.name"/><br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).test_method.test_method"/>
-									</th>
-									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle;">Efflorescence<br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).test_method.test_method"/>
-									</th>
-								</tr>
-								<tr>
-									<th style="border: 1px solid black; text-align: center;">Length</th>
-									<th style="border: 1px solid black; text-align: center;">Breadth</th>
-									<th style="border: 1px solid black; text-align: center;">Height</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td style="border: 1px solid black; text-align: center;">1</td>
-									<td t-esc="brick.length" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.width" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.height" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.comp_strength_1" t-options='{"widget": "float", "precision": 2}' style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.water_absorption" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.visual_observation_1" style="border: 1px solid black; text-align: center;"/>
-								</tr>
-								<tr>
-									<td style="border: 1px solid black; text-align: center;">2</td>
-									<td t-esc="brick.length_2" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.width_2" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.height_2" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.comp_strength_2" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.water_absorption_2" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.visual_observation_2" style="border: 1px solid black; text-align: center;"/>
-								</tr>
-								<tr>
-									<td style="border: 1px solid black; text-align: center;">3</td>
-									<td t-esc="brick.length_3" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.width_3" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.height_3" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.comp_strength_3" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.water_absorption_3" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.visual_observation_3" style="border: 1px solid black; text-align: center;"/>
-								</tr>
-								<tr>
-									<td style="border: 1px solid black; text-align: center;">4</td>
-									<td t-esc="brick.length_4" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.width_4" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.height_4" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.comp_strength_4" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.water_absorption_4" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.visual_observation_4" style="border: 1px solid black; text-align: center;"/>
-								</tr>
-								<tr>
-									<td style="border: 1px solid black; text-align: center;">5</td>
-									<td t-esc="brick.length_5" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.width_5" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.height_5" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.comp_strength_5" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.water_absorption_5" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.visual_observation_5" style="border: 1px solid black; text-align: center;"/>
-								</tr>
-							</tbody>
-						</table> -->
-
-
-			            	
-						<!-- <table style="width:100%; border-collapse: collapse; font-size:13px;" border="1">
-							<thead>
-								<tr>
-									<th rowspan="2" style="text-align:center;">Sample No</th>
-									<th colspan="3" style="text-align:center;">Dimensions (mm) <br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','125478bvf3-8d5d-4f45-8afb-b911f9cafe41')]).test_method.test_method"/>
-									</th>
-									<th rowspan="2" style="text-align:center;">Compressive Strength 
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).unit.name"/><br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).test_method.test_method"/>
-									</th>
-									<th rowspan="2" style="text-align:center;">Water Absorption 
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).unit.name"/><br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).test_method.test_method"/>
-									</th>
-									<th rowspan="2" style="text-align:center;">Efflorescence Observation <br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).test_method.test_method"/>
-									</th>
-								</tr>
-								<tr>
-									<th style="text-align:center;">Length</th>
-									<th style="text-align:center;">Width</th>
-									<th style="text-align:center;">Height</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr t-foreach="brick.get_combined_lines()" t-as="line">
-									<td style="text-align:center;"><t t-esc="line['serial_no']"/></td>
-									<td style="text-align:center;"><t t-esc="line['length']"/></td>
-									<td style="text-align:center;"><t t-esc="line['width']"/></td>
-									<td style="text-align:center;"><t t-esc="line['height']"/></td>
-									<td style="text-align:center;"><t t-esc="line['comp_strength_1']" t-options='{"widget": "float", "precision": 2}'/></td>
-									<td style="text-align:center;"><t t-esc="line['water_absorption']" t-options='{"widget": "float", "precision": 2}'/></td>
-									<td style="text-align:center;"><t t-esc="line['visual_observation']"/></td>
-								</tr>
-								 <tr>
-								<td style="text-align:center; font-weight:bold;">
-									<t t-esc="brick.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td style="text-align:center; font-weight:bold;"><t t-esc="brick.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
-								
-							</tr>
-							</tbody>
-						</table> -->
-
+						
 						<table style="width:100%; border-collapse: collapse; font-size:13px;" border="1">
 							<thead>
 								<tr>
@@ -503,35 +224,46 @@
 					<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 						<div>
 							<div>
-								<b>
-								Checked By
-								</b>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.technician.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
 							</div>
-							<div style="height:40px">
 
-							</div>
-
+							
 							<div>
-								<b>
-									<span t-esc="eln.sample_id.check_by.name"/>
-								</b>
-							</div>
-
-							<div>
-								<b>
-									(<span t-esc="eln.sample_id.check_by.job_title"/>)
-								</b>
-							</div>
-						</div>
-						<div>
-							<div>
-								<b>
-									Approved By
-								</b>
-							</div>
-							<div style="height:40px">
-
-							</div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height: 40px;">
+											<t t-if="eln.sample_id.approveby_signature_required">
+												<div t-if="eln.sample_id.approved_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
 							<div>
 								<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
@@ -543,11 +275,7 @@
 									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
 								</b>
 							</div>
-							<!-- <div>
-								<b>
-									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
-								</b>
-							</div> -->
+							
 						</div>
 					</div>
 					

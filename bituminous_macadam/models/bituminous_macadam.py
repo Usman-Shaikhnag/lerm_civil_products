@@ -16,6 +16,20 @@ class BituminousMacadam(models.Model):
     size_id = fields.Many2one('lerm.size.line',compute="_compute_size_id")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'bitumen.macadam.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
 
     @api.depends("eln_ref")
     def _compute_size_id(self):
@@ -136,12 +150,17 @@ class BituminousMacadam(models.Model):
 
     binder_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_binder_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_binder_content_conformity", store=True)
 
     @api.depends('binder_content','eln_ref','grade')
     def _compute_binder_content_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.binder_content_conformity = 'na'
+                continue
             record.binder_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e59bcffd-e8ed-45ad-a2d3-879365e45419')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e59bcffd-e8ed-45ad-a2d3-879365e45419')]).parameter_table
@@ -164,13 +183,21 @@ class BituminousMacadam(models.Model):
         for result in self.eln_ref.parameters_result:
 
             #Binder Content
-            if result.parameter.internal_id == 'e59bcffd-e8ed-45ad-a2d3-879365e45419':
+             if result.parameter.internal_id == 'e59bcffd-e8ed-45ad-a2d3-879365e45419':
                 result.result_char = round(self.binder_content,2)
                 if self.binder_content_conformity == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            #  if result.parameter.internal_id == 'e59bcffd-e8ed-45ad-a2d3-879365e45419':
+            #     result.result_char = round(self.binder_content,2)
+            #     if self.binder_content_conformity == 'pass':
+            #         result.nabl_status = 'nabl'
+            #     else:
+            #         result.nabl_status = 'non-nabl'
+            #     continue
 
         return {
                 'view_mode': 'form',

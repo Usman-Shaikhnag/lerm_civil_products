@@ -20,6 +20,20 @@ class BitumenConcrete(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'bitumen.mix.aggregate.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
     @api.depends('eln_ref')
     def _compute_size_id(self):
         if self.eln_ref:
@@ -52,12 +66,17 @@ class BitumenConcrete(models.Model):
 
     binder_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_binder_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_binder_content_conformity", store=True)
 
     @api.depends('binder_content','eln_ref','grade')
     def _compute_binder_content_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.binder_content_conformity = 'na'
+                continue
             record.binder_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')]).parameter_table
@@ -501,6 +520,15 @@ class BitumenConcrete(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            
+            if result.parameter.internal_id == '62578gtre-7188-4086-b132-62b50e63f1247ui':
+                result.result_char = round(self.total_sieve_analysis,2)
+                # if self.binder_content_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue 
           
         return {
                 'view_mode': 'form',

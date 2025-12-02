@@ -19,6 +19,21 @@ class CementPPC(models.Model):
     start_date = fields.Date(string="Start Date", compute="_compute_start_date", store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'cement.ppc.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
     avg_fineness_unit    = fields.Char("Avg Fineness Cement Unit",    compute="_compute_units", store=False)
     avg_fineness_blaine_unit        = fields.Char("avg fineness blaine Unit",        compute="_compute_units", store=False)
     avg_soundness_cement_unit       = fields.Char("avg soundness cement Unit",       compute="_compute_units", store=False)
@@ -101,17 +116,21 @@ class CementPPC(models.Model):
     avg_cement_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_cement_conformity")
 
     avg_cement_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
+        ('fail', 'Non-NABL')
     ], string='NABL', default='fail',compute="_compute_avg_cement_nabl")
 
 
     @api.depends('avg_cement','eln_ref','grade')
     def _compute_avg_cement_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_cement_conformity = 'na'
+                continue
             record.avg_cement_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145hjy14-372f-4775-9bcb-e9dd70e6e6df')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145hjy14-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
@@ -193,6 +212,7 @@ class CementPPC(models.Model):
     avg_density_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+            ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_density_conformity")
 
     avg_density_nabl = fields.Selection([
@@ -204,6 +224,9 @@ class CementPPC(models.Model):
     @api.depends('avg_density','eln_ref','grade')
     def _compute_avg_density_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_density_conformity = 'na'
+                continue
             record.avg_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hy-372f-4775-9bcb-e9dd70e6e601h')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hy-372f-4775-9bcb-e9dd70e6e601h')]).parameter_table
@@ -261,6 +284,7 @@ class CementPPC(models.Model):
     avg_fineness_blaine_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+         ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_fineness_blaine_conformity")
 
     avg_fineness_blaine_nabl = fields.Selection([
@@ -272,6 +296,9 @@ class CementPPC(models.Model):
     @api.depends('avg_fineness_blaine','eln_ref','grade')
     def _compute_avg_fineness_blaine_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_fineness_blaine_conformity = 'na'
+                continue
             record.avg_fineness_blaine_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210456321t-372f-4775-9bcb-e9dd70214578r')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210456321t-372f-4775-9bcb-e9dd70214578r')]).parameter_table
@@ -333,6 +360,7 @@ class CementPPC(models.Model):
     avg_soundness_cement_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+         ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_soundness_cement_conformity")
 
     avg_soundness_cement_nabl = fields.Selection([
@@ -344,6 +372,9 @@ class CementPPC(models.Model):
     @api.depends('avg_soundness_cement','eln_ref','grade')
     def _compute_avg_soundness_cement_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_soundness_cement_conformity = 'na'
+                continue
             record.avg_soundness_cement_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245vfrt77-372f-4775-9bcb-e9dd723547htui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301245vfrt77-372f-4775-9bcb-e9dd723547htui')]).parameter_table
@@ -400,6 +431,7 @@ class CementPPC(models.Model):
     consitency_of_cement_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_consitency_of_cement_conformity")
 
     consitency_of_cement_nabl = fields.Selection([
@@ -411,6 +443,9 @@ class CementPPC(models.Model):
     @api.depends('consitency_of_cement','eln_ref','grade')
     def _compute_consitency_of_cement_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.consitency_of_cement_conformity = 'na'
+                continue
             record.consitency_of_cement_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hhh-372f-4775-9bcb-e9dd723547htui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30124578hhh-372f-4775-9bcb-e9dd723547htui')]).parameter_table
@@ -503,6 +538,7 @@ class CementPPC(models.Model):
     initial_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+         ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_initial_setting_conformity")
 
     initial_setting_nabl = fields.Selection([
@@ -514,6 +550,9 @@ class CementPPC(models.Model):
     @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
     def _compute_initial_setting_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.initial_setting_conformity = 'na'
+                continue
             record.initial_setting_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6987456-30fe-4043-b518-015f5c60d916')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6987456-30fe-4043-b518-015f5c60d916')]).parameter_table
@@ -602,6 +641,7 @@ class CementPPC(models.Model):
     final_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_final_setting_conformity")
 
     final_setting_nabl = fields.Selection([
@@ -613,6 +653,9 @@ class CementPPC(models.Model):
     @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
     def _compute_final_setting_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.final_setting_conformity = 'na'
+                continue
             record.final_setting_conformity = 'fail'
             line = self.env['lerm.parameter.master'].search([('internal_id','=','3214ght-5e9c-4335-9ea2-2d87624c3061')])
             materials = self.env['lerm.parameter.master'].search([('internal_id','=','3214ght-5e9c-4335-9ea2-2d87624c3061')]).parameter_table
@@ -730,6 +773,7 @@ class CementPPC(models.Model):
     avg_specific_gravity_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_specific_gravity_conformity")
 
     avg_specific_gravity_nabl = fields.Selection([
@@ -741,6 +785,9 @@ class CementPPC(models.Model):
     @api.depends('avg_specific_gravity','eln_ref','grade')
     def _compute_avg_specific_gravity_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_specific_gravity_conformity = 'na'
+                continue
             record.avg_specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578ty10i-372f-4775-9bcb-e9dd723547htui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214578ty10i-372f-4775-9bcb-e9dd723547htui')]).parameter_table
@@ -797,6 +844,7 @@ class CementPPC(models.Model):
     avg_3_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_3_days_conformity")
 
     avg_3_days_nabl = fields.Selection([
@@ -808,6 +856,9 @@ class CementPPC(models.Model):
     @api.depends('avg_3_days','eln_ref','grade')
     def _compute_avg_3_days_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_3_days_conformity = 'na'
+                continue
             record.avg_3_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','147frrt012-372f-4775-9bcb-e9dd723547htui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','147frrt012-372f-4775-9bcb-e9dd723547htui')]).parameter_table
@@ -850,6 +901,7 @@ class CementPPC(models.Model):
     avg_7_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_7_days_conformity")
 
     avg_7_days_nabl = fields.Selection([
@@ -861,6 +913,9 @@ class CementPPC(models.Model):
     @api.depends('avg_7_days','eln_ref','grade')
     def _compute_avg_7_days_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_7_days_conformity = 'na'
+                continue
             record.avg_7_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1236547ffv-372f-4775-9bcb-e9dd723547htui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1236547ffv-372f-4775-9bcb-e9dd723547htui')]).parameter_table
@@ -904,6 +959,7 @@ class CementPPC(models.Model):
     avg_28_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_avg_28_days_conformity")
 
     avg_28_days_nabl = fields.Selection([
@@ -915,6 +971,9 @@ class CementPPC(models.Model):
     @api.depends('avg_28_days','eln_ref','grade')
     def _compute_avg_28_days_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_28_days_conformity = 'na'
+                continue
             record.avg_28_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00rrrttt887-372f-4775-9bcb-e9dd723547htui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00rrrttt887-372f-4775-9bcb-e9dd723547htui')]).parameter_table

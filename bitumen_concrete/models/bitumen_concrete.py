@@ -20,6 +20,21 @@ class BitumenConcrete(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'bitumen.concrete.aggregate.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
     @api.depends('eln_ref')
     def _compute_size_id(self):
         if self.eln_ref:
@@ -52,12 +67,17 @@ class BitumenConcrete(models.Model):
 
     binder_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_binder_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_binder_content_conformity", store=True)
 
     @api.depends('binder_content','eln_ref','grade')
     def _compute_binder_content_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.binder_content_conformity = 'na'
+                continue
             record.binder_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32578999-7188-4086-b132-62b50e63f1247ui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32578999-7188-4086-b132-62b50e63f1247ui')]).parameter_table
@@ -128,12 +148,17 @@ class BitumenConcrete(models.Model):
 
     avg_sp_bitumen_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_sp_bitumen_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_sp_bitumen_conformity", store=True)
 
     @api.depends('avg_sp_bitumen','eln_ref','grade')
     def _compute_avg_sp_bitumen_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_sp_bitumen_conformity = 'na'
+                continue
             record.avg_sp_bitumen_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487698-4587-4086-b132-62b50e63f1247ui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487698-4587-4086-b132-62b50e63f1247ui')]).parameter_table
@@ -230,12 +255,17 @@ class BitumenConcrete(models.Model):
 
     mean_flash_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_mean_flash_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_mean_flash_conformity", store=True)
 
     @api.depends('mean_flash','eln_ref','grade')
     def _compute_mean_flash_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.mean_flash_conformity = 'na'
+                continue
             record.mean_flash_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457hy-4587-4086-b132-62b50e63f124772')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457hy-4587-4086-b132-62b50e63f124772')]).parameter_table
@@ -282,12 +312,17 @@ class BitumenConcrete(models.Model):
 
     mean_fire_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_mean_fire_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_mean_fire_conformity", store=True)
 
     @api.depends('mean_fire','eln_ref','grade')
     def _compute_mean_fire_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.mean_fire_conformity = 'na'
+                continue
             record.mean_fire_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98547ytrg-4587-4086-b132-62b50e63f124714')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98547ytrg-4587-4086-b132-62b50e63f124714')]).parameter_table
@@ -359,12 +394,17 @@ class BitumenConcrete(models.Model):
 
     avg_temp_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_temp_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_temp_conformity", store=True)
 
     @api.depends('avg_temp','eln_ref','grade')
     def _compute_avg_temp_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_temp_conformity = 'na'
+                continue
             record.avg_temp_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587914-4587-4086-b132-62b50e63f124772')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587914-4587-4086-b132-62b50e63f124772')]).parameter_table
@@ -427,12 +467,18 @@ class BitumenConcrete(models.Model):
 
     avg_penetration_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_penetration_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_penetration_conformity", store=True)
 
     @api.depends('avg_penetration','eln_ref','grade')
     def _compute_avg_penetration_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_penetration_conformity = 'na'
+                continue
+            record.binder_
             record.avg_penetration_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','68574nht-4587-4086-b132-62b50e63f12474h')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','68574nht-4587-4086-b132-62b50e63f12474h')]).parameter_table
@@ -920,6 +966,14 @@ class BitumenConcrete(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '234587hjy-7188-4086-b132-62b50e63f1247ui':
+                result.result_char = round(self.total_sieve_analysis,2)
+                # if self.avg_temp_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
           
         return {
                 'view_mode': 'form',
