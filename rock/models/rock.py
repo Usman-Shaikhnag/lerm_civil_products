@@ -167,7 +167,7 @@ class MechanicalRockLine(models.Model):
     _name = "mechanical.rock.line"
     parent_id = fields.Many2one('mechanical.rock',string="Parent Id")
 
-    blue_input = fields.Boolean(default=True,invisible=True)
+    # blue_input = fields.Boolean(default=True,invisible=True)
    
     sr_no = fields.Integer(string="Specimen NO.", readonly=True, copy=False, default=1)
     date_received = fields.Date(string="Date of Received")
