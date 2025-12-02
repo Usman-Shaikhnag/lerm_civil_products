@@ -32,7 +32,7 @@ class LabMaster(models.Model):
     footer_filename = fields.Char("Footer filename")
 
     lab_location_line = fields.One2many('lerm.lab.location.master','parent_id',string="Lab Location")
-
+    nabl_scope_link = fields.Char(string="NABL Scope Link")
 
 
 
