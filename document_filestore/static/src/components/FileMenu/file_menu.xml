@@ -1,0 +1,47 @@
+<templates>
+  <t t-name="document_filestore.FileMenu" owl="1">
+    <div class="position-relative" t-ref="menuRef">
+      <button class="menu-btn p-1 rounded btn btn-sm btn-link" t-on-click.stop="toggleMenu">
+        <i class="fa fa-ellipsis-v text-muted-foreground"/>
+      </button>
+
+      <t t-if="state.isOpen">
+        <div class="menu-dropdown" t-on-click.stop="">
+
+          <a class="menu-item border-bottom" t-att-href="props.downloadUrl">
+            <i class="fa fa-download"/> <span>Download</span>
+          </a>
+          
+          <!-- <t t-if="props.access == 'full'"> -->
+          <t t-if="isOwner()">
+            <button
+              class="menu-item border-bottom"
+              t-on-click="handleManageAccessClick"
+            >
+              <i class="fa fa-lock"/> <span>Manage Access</span>
+            </button>
+          </t>
+          <!-- Rename only if edit/full -->
+          <t t-if="props.access != 'view'">
+            <button class="menu-item border-bottom" t-on-click="rename" t-att-disabled="!canEdit">
+              <i class="fa fa-pencil"/> <span>Rename</span>
+            </button>
+          </t>
+
+          <!-- Delete only if full -->
+          <t t-if="props.access == 'full'">
+            <button class="menu-item destructive" t-on-click="delete" t-att-disabled="!canDelete">
+              <i class="fa fa-trash-o"/> <span>Delete</span>
+            </button>
+          </t>
+
+          <!-- Show disabled label instead if view-only -->
+          <t t-if="props.access == 'view'">
+            <span class="menu-item text-muted">View Only</span>
+          </t>
+
+        </div>
+      </t>
+    </div>
+  </t>
+</templates>

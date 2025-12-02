@@ -1,0 +1,72 @@
+<templates>
+  <t t-name="document_filestore.UserRightsModal" owl="1">
+    <div class="gd-modal-backdrop">
+      <div class="gd-modal-card">
+
+        <div class="gd-modal-header">
+          <h3>Share <t t-esc="props.folderName"/></h3>
+          <button class="close-btn" t-on-click="props.onClose">×</button>
+        </div>
+
+        <div class="gd-modal-body">
+
+          <div class="chip-search-row">
+            <div class="chip-container">
+            <!-- OWNER CHIP (fixed, non-removable) -->
+              <t t-if="state.owner">
+                <div class="chip owner-chip">
+                  <span t-esc="state.owner.name"/>
+                  <span class="owner-label">(Owner)</span>
+                </div>
+              </t>
+              <t t-foreach="state.selected" t-as="perm" t-key="perm.user_id">
+                <div class="chip">
+                  <span t-esc="perm.name"/>
+                  <i class="fa fa-times remove" t-on-click="() => this.removeUser(perm.user_id)"/>
+                </div>
+              </t>
+
+              <input type="text"
+                    placeholder="Search users..."
+                    class="chip-input"
+                    t-model="state.search"/>
+            </div>
+
+            <select class="access-dropdown" t-model="state.global_access">
+              <option value="view">Viewer</option>
+              <option value="edit">Editor</option>
+              <option value="full">Full Access</option>
+            </select>
+
+          </div>
+
+          <!-- Available users list (exclude selected) -->
+          <div class="filtered-user-list">
+            <t t-set="filtered" t-value="state.users.filter(
+                u => !state.selected.some(s => s.user_id === u.id)
+                  &amp;&amp; u.name.toLowerCase().includes(state.search.toLowerCase())
+              )"/>
+
+            <t t-if="filtered.length === 0">
+              <p class="no-results">No users found</p>
+            </t>
+
+            <t t-foreach="filtered" t-as="user" t-key="user.id">
+              <div class="user-select-row" t-on-click="() => this.addUser(user)">
+                <t t-esc="user.name"/>
+              </div>
+            </t>
+          </div>
+
+
+        </div>
+
+        <div class="gd-modal-footer">
+          <button class="btn btn-secondary mr-2" t-on-click="props.onClose">Cancel</button>
+          <button class="btn btn-primary" t-on-click="save">Save</button>
+        </div>
+
+      </div>
+    </div>
+  </t>
+</templates>
