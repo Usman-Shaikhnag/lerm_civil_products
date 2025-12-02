@@ -38,6 +38,24 @@
                         </field>
                     </div>
 
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
                    
                        <!--  Compressive Strength  -->
 
@@ -54,7 +72,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_compressive_strength">Temp.°C</label></td>
-                                    <td><field name="temp_compressive_strength"/></td>
+                                    <td><field name="temp_compressive_strength" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -64,7 +82,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_compressive_strength">Humidity %</label></td>
-                                    <td><field name="humidity_compressive_strength"/></td>
+                                    <td><field name="humidity_compressive_strength" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -86,7 +104,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="block_type">Block Type</label></td>
-                                    <td><field name="block_type" style="width:200px;"/></td>
+                                    <td><field name="block_type" style="width:200px;background-color:#d8ecff;"/></td>
                                 </tr>
 
                             </tbody>
@@ -103,14 +121,14 @@
                                    </label>
                                    
                                    <field name="plain_factor"
-                                    invisible="block_type != 'plain'" style=" padding-left:10px;"/>
+                                    invisible="block_type != 'plain'" style=" padding-left:10px;background-color:#d8ecff;"/>
                                    <label for="arrised_factor"
                                     invisible="block_type != 'arrised'">
                                      Arrised Correction Factor        
                                    </label>
                                    
                                    <field name="arrised_factor"
-                                    invisible="block_type != 'arrised'" style=" padding-left:10px;"/>
+                                    invisible="block_type != 'arrised'" style=" padding-left:10px;background-color:#d8ecff;"/>
                                 </td>
                              </tr>
 
@@ -128,12 +146,12 @@
                         <field name="compressive_strength_child_lines" nolabel="1">
                             <tree editable="bottom">
                                 <field name="serial_no"/>
-                                <field name='sample1' width="100px"/>
-                                <field name='length'/>
-                                <field name='width' />
-                                <field name='thickness' />
+                                <field name='sample1' width="100px" class="blue-input" decoration-info="sample1 != 0"/>
+                                <field name='length' class="blue-input" decoration-info="length != 0"/>
+                                <field name='width' class="blue-input" decoration-info="width != 0"/>
+                                <field name='thickness' class="blue-input" decoration-info="thickness != 0"/>
                                 <field name='area'/>
-                                <field name='load'/>
+                                <field name='load' class="blue-input" decoration-info="load != 0"/>
                                 <field name='correction_factor'/>
                                 <field name='compressive_strength'/>
                                 
@@ -146,7 +164,7 @@
                         <tr>
                                 <td><label class="fw-bold" for="avg_compressive_strength">Average Compressive Strength</label></td>
                                 <td>
-                                    <field name="avg_compressive_strength"/>
+                                    <field name="avg_compressive_strength" />
                                 </td>
                             </tr>
                             <tr>
@@ -191,7 +209,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_dimension">Temp.°C</label></td>
-                                    <td><field name="temp_dimension"/></td>
+                                    <td><field name="temp_dimension" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -201,7 +219,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_dimension">Humidity %</label></td>
-                                    <td><field name="humidity_dimension"/></td>
+                                    <td><field name="humidity_dimension" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -215,19 +233,19 @@
                                 <field name="serial_no"/>
                                 
                                 <field name='sample' style="width:100px;"/>
-                                <field name='length1'/>
-                                <field name='length2'/>
+                                <field name='length1' class="blue-input" decoration-info="length1 != 0"/>
+                                <field name='length2' class="blue-input" decoration-info="length2 != 0"/>
                                 <field name='avg_length' />
 
-                                <field name='width1'/>
-                                <field name='width2'/>
-                                <field name='width3' />
+                                <field name='width1' class="blue-input" decoration-info="width1 != 0"/>
+                                <field name='width2' class="blue-input" decoration-info="width2 != 0"/>
+                                <field name='width3' class="blue-input" decoration-info="width3 != 0"/>
                                 <field name='avg_width'/>
 
-                                <field name='thickness1'/>
-                                <field name='thickness2' />
-                                <field name='thickness3'/>
-                                <field name='thickness4' />
+                                <field name='thickness1' class="blue-input" decoration-info="thickness1 != 0"/>
+                                <field name='thickness2' class="blue-input" decoration-info="thickness2 != 0"/>
+                                <field name='thickness3' class="blue-input" decoration-info="thickness3 != 0"/>
+                                <field name='thickness4' class="blue-input" decoration-info="thickness4 != 0"/>
                                 <field name='avg_thickness'/>
                             </tree>
                         </field>
@@ -344,7 +362,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_water_absorption">Temp.°C</label></td>
-                                    <td><field name="temp_water_absorption"/></td>
+                                    <td><field name="temp_water_absorption" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -354,7 +372,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_water_absorption">Humidity %</label></td>
-                                    <td><field name="humidity_water_absorption"/></td>
+                                    <td><field name="humidity_water_absorption" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -365,10 +383,10 @@
                     <div invisible="water_absorption_visible == False" class="custom_table_borders">
                         <field name="water_absorption_child_lines" nolabel="1">
                             <tree editable="bottom">
-                                <field name="serial_no" width="40px"/>
-                                <field name='sample' width="100px"/>
-                                <field name='dry_weight'/>
-                                <field name='sat_weight' />
+                                <field name="serial_no" width="40px" />
+                                <field name='sample' width="100px" class="blue-input" decoration-info="sample != 0"/>
+                                <field name='dry_weight' class="blue-input" decoration-info="dry_weight != 0"/>
+                                <field name='sat_weight' class="blue-input" decoration-info="sat_weight != 0"/>
 
                                 <field name='sat_dry_weight'/>
                                 <field name='water_absorption'/>
