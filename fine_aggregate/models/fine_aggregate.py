@@ -1340,6 +1340,8 @@ class SieveAnalysisLine(models.Model):
     passing_percent = fields.Float(string="Passing %",digits=(12,3))
     specific_limt = fields.Char(string="Specified Limits")
 
+    blue_input = fields.Boolean(default=True,invisible=True)
+
 
 
     @api.model
@@ -1438,6 +1440,7 @@ class SpecificAndWaterLine(models.Model):
     wt_of_pycnometer_b = fields.Float(string="Wt of Pycnometer containing sample and Water:- (B)")
     wt_of_pycnometer_c = fields.Float(string="Wt of Pycnometer containing Water:- (C)")
     wt_of_oven_d = fields.Float(string="Wt of Oven Dried Aggregate :- ( D )")
+    blue_input = fields.Boolean(default=True,invisible=True)
 
  
 
@@ -1476,6 +1479,7 @@ class SoudnessLine(models.Model):
     hours_1 = fields.Char(string="Hours 1",compute="_compute_hours_1",store=True)
     hours_2 = fields.Char(string="Hours 2",compute="_compute_hours_2",store=True)
     hours_3 = fields.Char(string="Hours 3",compute="_compute_hours_3",store=True)
+    blue_input = fields.Boolean(default=True,invisible=True)
 
     @api.depends('oven_datetime', 'parent_id.soudness_child_lines.immersed_datetime')
     def _compute_hours_1(self):
@@ -1575,7 +1579,7 @@ class SieveAnalysisSoudnesLine(models.Model):
     actual_wt = fields.Float(string="Actual Weight of sample taken (gm)")
     cumulative_retained = fields.Float(string="Cum. Retained %",compute="_compute_cum_retained" , store=True)
     passing_percent = fields.Float(string="% Passing ")
-
+    blue_input = fields.Boolean(default=True,invisible=True)
 
 
     @api.depends('percent_retained')
@@ -1689,6 +1693,7 @@ class OuantitativelyExaminationLine(models.Model):
     wt_manesium = fields.Float(string="Weight Retained After  5 Cycle-gms Magnesium ")
     loss_sulphae = fields.Float(string="% Loss Sodium Sulphate",compute="_compute_loss_sulphae",digits=(12,1))
     loss_manesium = fields.Float(string="% Loss Magnesium ")
+    blue_input = fields.Boolean(default=True,invisible=True)
 
     @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
     def _compute_original_sulphate(self):
@@ -1748,6 +1753,7 @@ class QuantitativelyExaminationLine(models.Model):
 
     avg_sulphae = fields.Float(string="Weighted Average  (Corrected % loss) Sulphate",compute="_compute_avg_sulphae",store=True)
     avg_manesium = fields.Float(string="Weighted Average  (Corrected % loss) Magnesium ")
+    blue_input = fields.Boolean(default=True,invisible=True)
 
     @api.depends('finalloss_sulphae', 'grading_sulphate')
     def _compute_avg_sulphae(self):
@@ -1800,7 +1806,7 @@ class QuantitativelyExaminationLine(models.Model):
 
 
 
-    
+
 
     @api.depends('serial_no', 'parent_id.sieve_analysis_soundness_lines')
     def _compute_grading_sulphate(self):

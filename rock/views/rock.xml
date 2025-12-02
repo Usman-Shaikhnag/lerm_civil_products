@@ -11,6 +11,7 @@
                         <h1>
                             <field name="name_rock"  readonly="1" nolabel="1"/>
                         </h1>
+                        
                         <group style="white-space: nowrap; width:70%;">
                      
                         <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
@@ -35,14 +36,29 @@
                       </field>
                     </div>
                     <group/>
-                       <style>
+
+
+
+                    <style>
                         .blue-input input {
                             background-color: #d8ecff !important;   /* हलका Blue background */
-                            border-color: #3b82f6 !important;        /* Blue border */
-                            
+                            border-color: #3b82f6 !important;        /* Blue border */ 
                         }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
                     </style>
 
+
+                      
                      <!-- <group > -->
                      <div>
 
@@ -105,52 +121,52 @@
                     <div invisible = "usc_visible == False">
                         <field name="rock_child_lines">
                             <tree editable="bottom" class="custom_table_borders">
-                             <field name="blue_input" invisible="1"/>
+                             <!-- <field name="blue_input" invisible="1"/> -->
                                 <field name='sr_no'/>
-                                <field name='date_received'  decoration-info="blue_input"/>
-                                <field name='date_testing' decoration-info="blue_input"/>
-                                <field name='lab_id' width="120" decoration-info="blue_input"/>
-                                <field name='bh_no' width="120" decoration-info="blue_input"/>
-                                <field name='depth' width="120" decoration-info="blue_input"/>
-                                <field name='piece_no'  width="120" decoration-info="blue_input"/>
-                                <field name='lithological' width="120" decoration-info="blue_input"/>
-                                <field name='room_temp' decoration-info="blue_input"/>
-                                <field name='relative_humidity' decoration-info="blue_input"/>
-                                <field name='water_temperature' decoration-info="blue_input"/>
-                                <field name='dia_rock1' decoration-info="blue_input"/>
-                                <field name='dia_rock2'  decoration-info="blue_input"/>
-                                <field name='dia_rock3' decoration-info="blue_input"/>
+                                <field name='date_received'  class="blue-input" decoration-info="date_received != 0"/>
+                                <field name='date_testing' class="blue-input" decoration-info="date_testing != 0"/>
+                                <field name='lab_id' width="120" class="blue-input" decoration-info="lab_id != 0"/>
+                                <field name='bh_no' width="120" class="blue-input" decoration-info="bh_no != 0"/>
+                                <field name='depth' width="120" class="blue-input" decoration-info="depth != 0"/>
+                                <field name='piece_no'  width="120" class="blue-input" decoration-info="piece_no != 0"/>
+                                <field name='lithological' width="120" class="blue-input" decoration-info="lithological != 0"/>
+                                <field name='room_temp' class="blue-input" decoration-info="room_temp != 0"/>
+                                <field name='relative_humidity' class="blue-input" decoration-info="relative_humidity != 0"/>
+                                <field name='water_temperature' class="blue-input" decoration-info="water_temperature != 0"/>
+                                <field name='dia_rock1' class="blue-input" decoration-info="dia_rock1 != 0"/>
+                                <field name='dia_rock2'  class="blue-input" decoration-info="dia_rock2 != 0"/>
+                                <field name='dia_rock3' class="blue-input" decoration-info="dia_rock3 != 0"/>
                                 <field name='avg_dia' />
-                                <field name='height_rock1' decoration-info="blue_input"/>
-                                <field name='height_rock2' decoration-info="blue_input"/>
-                                <field name='height_rock3'  decoration-info="blue_input"/>
+                                <field name='height_rock1' class="blue-input" decoration-info="height_rock1 != 0"/>
+                                <field name='height_rock2' class="blue-input" decoration-info="height_rock2 != 0"/>
+                                <field name='height_rock3'  class="blue-input" decoration-info="height_rock3 != 0"/>
                                 <field name='avg_height' />
                                 <field name='hd'/>
                                 <field name='volume_of_sample'/>
-                                <field name='volume_of_sample1' decoration-info="blue_input"/>
-                                <field name='initial_wt' decoration-info="blue_input"/>
-                                <field name='dry_wet'   decoration-info="blue_input"/>
-                                  <field name='saturated_wet'   decoration-info="blue_input"/>
+                                <field name='volume_of_sample1' class="blue-input" decoration-info="volume_of_sample1 != 0"/>
+                                <field name='initial_wt' class="blue-input" decoration-info="initial_wt != 0"/>
+                                <field name='dry_wet'   class="blue-input" decoration-info="dry_wet != 0"/>
+                                  <field name='saturated_wet'  class="blue-input" decoration-info="saturated_wet != 0"/>
                                 
                                 <field name='volume_of_void'/>
-                                <field name='wt_of_sample' decoration-info="blue_input"/>
+                                <field name='wt_of_sample' class="blue-input" decoration-info="wt_of_sample != 0"/>
                                 <field name='sp_gravity'/>
                                 <field name='bulk_density'  />
                                 <field name='sat_density'/>
                                 <field name='dry_density'/>
                                 <field name='water_absorption'/>
                                 <field name='porosity'/>
-                                <field name='load_ucs'   decoration-info="blue_input"/>
+                                <field name='load_ucs'   class="blue-input" decoration-info="load_ucs != 0"/>
                                 <field name='load'/>
                                 <field name='comp_strength1'/>
                                 <field name='comp_strength2'/>
-                                <field name='point_load' decoration-info="blue_input"/>
+                                <field name='point_load' class="blue-input" decoration-info="point_load != 0"/>
                                 <field name='point_load_strength'/>
                                  <field name='point_load_index'/>
                                 <field name='comp_strength4'/>
                                 <field name='comp_strength5'/>
-                                <field name='duration_of_test' decoration-info="blue_input"/>
-                                <field name='mode_of_failure' width="120" decoration-info="blue_input"/>
+                                <field name='duration_of_test' class="blue-input" decoration-info="duration_of_test != 0"/>
+                                <field name='mode_of_failure' width="120" class="blue-input" decoration-info="mode_of_failure != 0"/>
                                 <field name='comp_rock'/>
                                 <field name='comp_rock1'/>
                                 <field name='stress_rate'/>
