@@ -37,6 +37,26 @@
                         </tree>
                       </field>
                     </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
                       <!-- Normal Consistency Start -->
 
                     
@@ -54,7 +74,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_percent_consistency">Temp.°C</label></td>
-                                    <td><field name="temp_percent_consistency"/></td>
+                                    <td><field name="temp_percent_consistency" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -64,7 +84,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_percent_consistency">Humidity %</label></td>
-                                    <td><field name="humidity_percent_consistency"/></td>
+                                    <td><field name="humidity_percent_consistency" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -74,12 +94,12 @@
                     <div invisible="normal_consistency_visible == False" class="custom_table_borders">
                         <field name="consistency_child_lines" nolabel="1">
                             <tree editable="bottom">
-                                <field name="sr_no"/>
+                                <field name="sr_no" width="70px"/>
                                 <!-- <field name='trail_no'/> -->
-                                <field name='mass_cement'/>
-                                <field name='water_added'/>
-                                <field name='water_percent' />
-                                <field name='penetration_mould'/>
+                                <field name='mass_cement' class="blue-input" decoration-info="mass_cement != 0" width="300px"/>
+                                <field name='water_added' class="blue-input" decoration-info="water_added != 0" width="300px"/>
+                                <field name='water_percent' width="300px"/>
+                                <field name='penetration_mould' class="blue-input" decoration-info="penetration_mould != 0" width="300px"/>
                                 <!-- <field name='consistency_percent'/> -->
                             </tree>
                         </field>
@@ -134,7 +154,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_setting_time">Temp.°C</label></td>
-                                    <td><field name="temp_setting_time"/></td>
+                                    <td><field name="temp_setting_time" class="blue-input" /></td>
                                 </tr>
                                 
                             </tbody>
@@ -144,7 +164,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_setting_time">Humidity %</label></td>
-                                    <td><field name="humidity_setting_time"/></td>
+                                    <td><field name="humidity_setting_time" class="blue-input" /></td>
                                 </tr>
                                 
                             </tbody>
@@ -158,9 +178,9 @@
                                 <!-- <field name="trail_no" /> -->
                                 <!-- <field name="room_temp" />
                                 <field name="humidity" /> -->
-                                <field name="time_water_t1" />
-                                <field name="time_needle_fails_t2" />
-                                <field name="time_needle_attach_t3" />
+                                <field name="time_water_t1" class="blue-input" decoration-info="time_water_t1 != 0"/>
+                                <field name="time_needle_fails_t2" class="blue-input" decoration-info="time_needle_fails_t2 != 0"/>
+                                <field name="time_needle_attach_t3" class="blue-input" decoration-info="time_needle_attach_t3 != 0"/>
                                  <field name="initial_setting" />
                                 <field name="final_setting" />
                             </tree>
@@ -237,7 +257,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soundness">Temp.°C</label></td>
-                                    <td><field name="temp_soundness"/></td>
+                                    <td><field name="temp_soundness" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -247,7 +267,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soundness">Humidity %</label></td>
-                                    <td><field name="humidity_soundness"/></td>
+                                    <td><field name="humidity_soundness" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -258,9 +278,9 @@
                         <field name="soundness_child_lines" nolabel="1">
                             <tree editable="bottom">
                                 <field name="sr_no" width="40px"/>
-                                <field name='mould_no' width="80px"/>
-                                <field name='initial_read'/>
-                                <field name='final_read' />
+                                <field name='mould_no' width="80px" class="blue-input" decoration-info="mould_no != 0"/>
+                                <field name='initial_read' class="blue-input" decoration-info="initial_read != 0"/>
+                                <field name='final_read' class="blue-input" decoration-info="final_read != 0"/>
                                 <field name='expansion'/> 
                             </tree>
                         </field>
@@ -312,7 +332,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_sound_auto">Temp.°C</label></td>
-                                    <td><field name="temp_sound_auto"/></td>
+                                    <td><field name="temp_sound_auto" class="blue-input" /></td>
                                 </tr>
                                 
                             </tbody>
@@ -322,7 +342,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_sound_auto">Humidity %</label></td>
-                                    <td><field name="humidity_sound_auto"/></td>
+                                    <td><field name="humidity_sound_auto" class="blue-input" /></td>
                                 </tr>
                                 
                             </tbody>
@@ -333,11 +353,11 @@
                         <field name="sound_auto_child_lines" nolabel="1">
                             <tree editable="bottom">
                                 <field name="sr_no"/>
-                                <field name="initial_reference_read" digits="[16, 3]"/>
-                                <field name='initial_read' digits="[16, 3]"/>
+                                <field name="initial_reference_read" digits="[16, 3]" class="blue-input" decoration-info="initial_reference_read != 0"/>
+                                <field name='initial_read' digits="[16, 3]" class="blue-input" decoration-info="initial_read != 0"/>
                                 <field name='initial_read_a' digits="[16, 3]"/>
-                                <field name='final_reference_read' digits="[16, 3]"/>
-                                <field name='final_read' digits="[16, 3]"/> 
+                                <field name='final_reference_read' digits="[16, 3]" class="blue-input" decoration-info="final_reference_read != 0"/>
+                                <field name='final_read' digits="[16, 3]" class="blue-input" decoration-info="final_read != 0"/> 
                                 <field name='final_read_b' digits="[16, 3]"/>
                                 <field name='autoclave_expansion' digits="[16, 4]" />
                             </tree>
@@ -390,7 +410,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_specific_gravity">Temp.°C</label></td>
-                                    <td><field name="temp_specific_gravity"/></td>
+                                    <td><field name="temp_specific_gravity" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -400,7 +420,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_specific_gravity">Humidity %</label></td>
-                                    <td><field name="humidity_specific_gravity"/></td>
+                                    <td><field name="humidity_specific_gravity" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -418,40 +438,40 @@
                          </tr>
                          <tr>
                            <td><label for="temp_water_1">Temperature of Water Bath  when Flask kept in bath – 0C</label></td>
-                           <td><field  name="temp_water_1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="temp_water_2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="temp_water_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_water_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                           </tr>
                          <tr>
                            <td><label for="temp_water_after_1">Temperature of Water Bath  after One Hour when Flask kept in bath – 0C</label></td>
-                           <td><field  name="temp_water_after_1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="temp_water_after_2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="temp_water_after_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_water_after_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>
                          <tr> 
                            <td><label for="initial_kerosene_1">Initial Level of Kerosene after one hour kept in Water Bath(A) – ml</label></td>
-                           <td><field  name="initial_kerosene_1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="initial_kerosene_2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="initial_kerosene_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="initial_kerosene_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>
                       
                          <tr>
                            <td><label for="mass_flyash_1">Mass of Flyash Sample Added in Flask (M) – gms</label></td>
-                           <td><field  name="mass_flyash_1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="mass_flyash_2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="mass_flyash_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="mass_flyash_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>      
 
                          <tr>
                            <td><label for="temp_waterflask_1">Temperature of water bath  when Flask kept in bath after Adding Flyash – 0C</label></td>
-                           <td><field  name="temp_waterflask_1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="temp_waterflask_2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="temp_waterflask_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_waterflask_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>      
                          <tr>
                            <td><label for="temp_waterflask_after_1">Temperature of water bath  after one hour when Flask kept in bath after Adding Flyash – 0C</label></td>
-                           <td><field  name="temp_waterflask_after_1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="temp_waterflask_after_2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="temp_waterflask_after_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_waterflask_after_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>      
                          <tr>
                            <td><label for="final_kerosene_1">Final Level of Kerosene after one hour kept in water bath(B) – ml</label></td>
-                           <td><field  name="final_kerosene_1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="final_kerosene_2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="final_kerosene_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="final_kerosene_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>      
                          <tr>
                            <td><label for="displaced_vol_1">Displaced Volume after Adding Flyash (V) = (B – A) – cm3</label></td>
@@ -515,7 +535,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_fineness_blain">Temp.°C</label></td>
-                                    <td><field name="temp_fineness_blain"/></td>
+                                    <td><field name="temp_fineness_blain" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -525,7 +545,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_fineness_blain">Humidity %</label></td>
-                                    <td><field name="humidity_fineness_blain"/></td>
+                                    <td><field name="humidity_fineness_blain" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -554,17 +574,17 @@
                                   <th style="border: 1px solid black; text-align: center; padding: 8px 10px;" >
                                    Density of pozzolana (ƍ) – gm/cc
                                   </th>
-                                  <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;" colspan="4"> <field name="density_pozzolana" nolabel="1"/></th>
+                                  <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;" colspan="4"> <field name="density_pozzolana" nolabel="1" class="blue-input"/></th>
                               </tr>
 
                                 <tr>
                                         <th style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            Time Required For Manometer Drop (t) – sec
                                         </th>
-                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="first_bed_reading1" nolabel="1"/></th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="first_bed_reading2" nolabel="1"/></th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="second_bed_reading1" nolabel="1"/></th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="second_bed_reading2" nolabel="1"/></th>
+                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="first_bed_reading1" nolabel="1" class="blue-input"/></th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="first_bed_reading2" nolabel="1" class="blue-input"/></th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="second_bed_reading1" nolabel="1" class="blue-input"/></th>
+                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;"> <field name="second_bed_reading2" nolabel="1" class="blue-input"/></th>
                                 </tr>
 
                                 <tr>
@@ -634,7 +654,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_fineness">Temp.°C</label></td>
-                                    <td><field name="temp_fineness"/></td>
+                                    <td><field name="temp_fineness" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -644,7 +664,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_fineness">Humidity %</label></td>
-                                    <td><field name="humidity_fineness"/></td>
+                                    <td><field name="humidity_fineness" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -655,11 +675,11 @@
                     <div invisible="fineness_visible == False" class="custom_table_borders">
                         <field name="fineness_child_lines" nolabel="1">
                             <tree editable="bottom">
-                                <field name="sr_no"/>
-                                <field name='sample_taken'/>
-                                <field name='sieve_size'/>
-                                <field name='weight_retained' />
-                                <field name='particle_retained'/>
+                                <field name="sr_no" width="70px"/>
+                                <field name='sample_taken' class="blue-input" decoration-info="sample_taken != 0" width="350px"/> 
+                                <field name='sieve_size' class="blue-input" decoration-info="sieve_size != 0" width="350px"/>
+                                <field name='weight_retained' class="blue-input" decoration-info="weight_retained != 0" width="350px"/>
+                                <field name='particle_retained' width="250px"/>
                             </tree>
                         </field>
                     </div>
@@ -709,7 +729,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_compressive_strength">Temp.°C</label></td>
-                                    <td><field name="temp_compressive_strength"/></td>
+                                    <td><field name="temp_compressive_strength" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -719,7 +739,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_compressive_strength">Humidity %</label></td>
-                                    <td><field name="humidity_compressive_strength"/></td>
+                                    <td><field name="humidity_compressive_strength" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -732,16 +752,16 @@
                       <field name="compressive_strength_child_lines" nolabel="1" colspan="2">
                         <tree editable="bottom">
                           <field name="serial_no"/>
-                          <field name="lab_id" width="120"/>
-                          <field name="testing_period" width="120"/>
+                          <field name="lab_id" width="120" class="blue-input" decoration-info="lab_id != 0"/>
+                          <field name="testing_period" width="120" class="blue-input" decoration-info="testing_period != 0"/>
                           <field name="casting_details"/>
-                           <field name="days"/>
+                           <field name="days" class="blue-input" decoration-info="days != 0"/>
                           <field name="testing_details" />
-                          <field name="cube_im" width="120"/>
-                           <field name="length1"/>
-                          <field name="width1"/>
-                          <field name="height1"/>
-                          <field name="load_failure" />
+                          <field name="cube_im" width="120" class="blue-input" decoration-info="cube_im != 0"/>
+                           <field name="length1" class="blue-input" decoration-info="length1 != 0"/>
+                          <field name="width1" class="blue-input" decoration-info="width1 != 0"/>
+                          <field name="height1" class="blue-input" decoration-info="height1 != 0"/>
+                          <field name="load_failure" class="blue-input" decoration-info="load_failure != 0"/>
                           <field name="compressive_strength" />
                           <field name="avg_compressive_strength" />
                         </tree>
@@ -766,16 +786,16 @@
                       <field name="compressive_cement_child_lines" nolabel="1" colspan="2">
                         <tree editable="bottom">
                           <field name="serial_no"/>
-                          <field name="lab_id" width="120"/>
-                          <field name="testing_period" width="120"/>
+                          <field name="lab_id" width="120" class="blue-input" decoration-info="lab_id != 0"/>
+                          <field name="testing_period" width="120" class="blue-input" decoration-info="testing_period != 0"/>
                           <field name="casting_details"/>
-                           <field name="days"/>
+                           <field name="days" class="blue-input" decoration-info="days != 0"/>
                           <field name="testing_details" />
-                          <field name="cube_im" width="120"/>
-                           <field name="length1"/>
-                          <field name="width1"/>
-                          <field name="height1"/>
-                          <field name="load_failure" />
+                          <field name="cube_im" width="120" class="blue-input" decoration-info="cube_im != 0"/>
+                           <field name="length1" class="blue-input" decoration-info="length1 != 0"/>
+                          <field name="width1" class="blue-input" decoration-info="width1 != 0"/>
+                          <field name="height1" class="blue-input" decoration-info="height1 != 0"/>
+                          <field name="load_failure" class="blue-input" decoration-info="load_failure != 0"/>
                           <field name="compressive_strength" />
                           <field name="avg_compressive_strength" />
                         </tree>
@@ -871,7 +891,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_lime">Temp.°C</label></td>
-                                    <td><field name="temp_lime"/></td>
+                                    <td><field name="temp_lime" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -881,7 +901,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_lime">Humidity %</label></td>
-                                    <td><field name="humidity_lime"/></td>
+                                    <td><field name="humidity_lime" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -894,16 +914,16 @@
                       <field name="lime_child_lines" nolabel="1" colspan="2">
                         <tree editable="bottom">
                           <field name="serial_no"/>
-                          <field name="lab_id" width="120"/>
-                          <field name="testing_period" width="120"/>
+                          <field name="lab_id" width="120" class="blue-input"  decoration-info="lab_id != 0" />
+                          <field name="testing_period" width="120" class="blue-input" decoration-info="testing_period != 0"/>
                           <field name="casting_details"/>
-                           <field name="days"/>
+                           <field name="days" class="blue-input" decoration-info="days != 0"/>
                           <field name="testing_details" />
-                          <field name="cube_im" width="120"/>
-                           <field name="length1"/>
-                          <field name="width1"/>
-                          <field name="height1"/>
-                          <field name="load_failure" />
+                          <field name="cube_im" width="120" class="blue-input" decoration-info="cube_im != 0"/>
+                           <field name="length1" class="blue-input" decoration-info="length1 != 0"/>
+                          <field name="width1" class="blue-input" decoration-info="width1 != 0"/>
+                          <field name="height1" class="blue-input" decoration-info="height1 != 0"/>
+                          <field name="load_failure"  class="blue-input" decoration-info="load_failure != 0"/>
                           <field name="compressive_strength" />
                           <!-- <field name="avg_compressive_strength" /> -->
                         </tree>
@@ -964,7 +984,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_drying_shrinkage">Temp.°C</label></td>
-                                    <td><field name="temp_drying_shrinkage"/></td>
+                                    <td><field name="temp_drying_shrinkage" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -974,7 +994,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_drying_shrinkage">Humidity %</label></td>
-                                    <td><field name="humidity_drying_shrinkage"/></td>
+                                    <td><field name="humidity_drying_shrinkage" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -985,11 +1005,11 @@
                         <field name="drying_shrinkage_child_lines" nolabel="1">
                             <tree editable="bottom">
                                 <field name="sr_no"/>
-                                <field name="initial_reference_read" digits="[16, 3]"/>
-                                <field name='initial_read' digits="[16, 3]"/>
+                                <field name="initial_reference_read" digits="[16, 3]" class="blue-input" decoration-info="initial_reference_read != 0"/>
+                                <field name='initial_read' digits="[16, 3]" class="blue-input" decoration-info="initial_read != 0"/>
                                 <field name='initial_read_a' digits="[16, 3]"/>
-                                <field name='final_reference_read' digits="[16, 3]"/>
-                                <field name='final_read' digits="[16, 3]"/> 
+                                <field name='final_reference_read' digits="[16, 3]" class="blue-input" decoration-info="final_reference_read != 0"/>
+                                <field name='final_read' digits="[16, 3]" class="blue-input" decoration-info="final_read != 0"/> 
                                 <field name='final_read_b' digits="[16, 3]"/>
                                 <field name='dry_autoclave_expansion' digits="[16, 4]" />
                             </tree>

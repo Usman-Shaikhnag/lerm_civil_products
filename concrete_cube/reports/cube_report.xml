@@ -17,23 +17,13 @@
 						
 					
 						 <table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
-							<!-- <tr>
-							
-								<td colspan="3"><strong>Report No</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
-								<td colspan="3" ><strong>URL NO</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td>
-							</tr> -->
+						
 
 							<tr>
 								<td colspan="3"><strong>Project Name</strong>: </td>
 								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 
-								<!-- <td><strong>Date of Report</strong>: </td>
-									
-								<td >
-								<span t-field="o.start_date" style="margin-right:10px;"/> 		
-								</td> -->
+						
 							</tr>
 						
 							
@@ -49,10 +39,7 @@
 										<span t-field="o.srf_id.customer.state_id"/> ,
 										<span t-field="o.srf_id.customer.country_id"/>
 								</td>
-								<!-- <td><strong>Date Sample Received</strong>: </td> -->
-								<!-- <td >
-								<span t-field="o.sample_id.sample_received_date"/>
-								</td > -->
+						
 								
 
 								<td colspan="3"><strong>Date Sample Received</strong>:</td>
@@ -68,7 +55,6 @@
 								<td colspan="3"><strong>Location</strong>: </td>
 								<td colspan="3">
 								Permanent facility
-							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
 								</td>
 							
 							</tr>
@@ -106,10 +92,10 @@
 						</table>
 
 						</div>
+                                
 
-                   <div>
-                
-                        <div style="margin-top: 30px;">
+
+						  <div style="margin-top: 30px;">
                             <!-- Type of Sample Details -->
                             <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px;">
                                 <tr>
@@ -134,12 +120,22 @@
                             </table>
                     </div>
 
+                   <div t-if="data.status_7days and (data.average_strength_nabl == 'pass' and nabl or (data.average_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                
+                       <div style="text-align: center;" >
+                                
+
+                                    <span t-field="data.casting_7_name"/>
+                                
+                
+                    </div>
+
                     <!-- ADDED TABLE FROM IMAGE -->
                 <div style="margin-top: 30px;">
                        
                        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
                             <thead>
-                                <tr  t-if="data.cube_visible and (data.average_strength_nabl == 'pass' and nabl or (data.average_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)" style="background-color:#f0f0f0; text-align: center;">
+                                <tr   style="background-color:#f0f0f0; text-align: center;">
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Sr No.</th>
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Identification Mark</th>
                                     <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Casting</th>
@@ -172,7 +168,7 @@
                      <t t-set="line_count" t-value="0"/>
 
 
-                    <tr  t-if="data.cube_visible and (data.average_strength_nabl == 'pass' and nabl or (data.average_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)" t-foreach="data.child_lines" t-as="r" style="text-align: center;">
+                    <tr  t-if="data.status_7days and (data.average_strength_nabl == 'pass' and nabl or (data.average_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)" t-foreach="data.child_lines" t-as="r" style="text-align: center;">
                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['sr_no']"/></td>
                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['id_mark']"/></td>
                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_casting']"/></td>
@@ -205,7 +201,177 @@
                 </tbody>
             </table>            
             </div>
+			</div>
 
+
+
+
+			<div t-if="data.status_14days and (data.average_strength14_nabl == 'pass' and nabl or (data.average_strength14_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                
+                       <div style="text-align: center;" >
+                                
+                                    <span t-field="data.casting_14_name"/>
+                                
+                            
+                
+                    </div>
+                    <!-- ADDED TABLE FROM IMAGE -->
+                <div style="margin-top: 30px;">
+                       
+                       <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                            <thead>
+                                <tr   style="background-color:#f0f0f0; text-align: center;">
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Sr No.</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Identification Mark</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Casting</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Testing</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Age of Specimen (days)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Room temperature (&amp;deg;C)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Relative Humidity (%)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Weight of cube (gms)</th>
+
+                                    <th  style="border: 1px solid black; padding: 8px;" t-att-colspan="data.type_of_sample == 'cube' and 2 or 2"> Plan Dimensions of Testing Faces (mm)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Cross sectional area (mm&amp;sup2;)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Maximum Load (kN)</th>
+                                   
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Compressive strength (N/mm&amp;sup2;)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2"> Average Compressive strength (N/mm&amp;sup2;)</th>
+
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Type of Failure</th>
+                                </tr>
+                                <tr>
+
+                                  <th style="border: 1px solid black; padding: 8px;" colspan="1">Length (mm)</th>
+                                 <th t-if="data.type_of_sample == 'cylinder'"  style="border: 1px solid black; padding: 8px;" colspan="1">Diameter (mm)</th>
+                                 <th t-if="data.type_of_sample == 'cube'" style="border: 1px solid black; padding: 8px;" colspan="1">Width (mm)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        
+
+
+                     <t t-set="line_count" t-value="0"/>
+
+
+                    <tr   t-foreach="data.child_lines14day" t-as="r" style="text-align: center;">
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['sr_no']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['id_mark']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_casting']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_testing1']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['days']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['room_temp']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['relative_humidity']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['wt_sample']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['length']"/></td>
+                    <td t-if="data.type_of_sample == 'cylinder'" style="border: 1px solid black; padding: 6px;"><span t-esc="r['diameter']"/></td>
+                    <td t-if="data.type_of_sample == 'cube'"  style="border: 1px solid black; padding: 6px;"><span t-esc="r['width']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="'%.2f' % r['cross_sectional_area']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['load']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"> <span t-esc="'%.2f' % r['compressive_strength14']"/></td>
+
+    
+                 <t t-if="(line_count + 3) % 3 == 0">
+                        <td style="border: 1px solid black; padding: 6px; text-align: center; vertical-align: middle;" t-att-rowspan="4">
+                            <span t-esc="r['average_strength14']" t-options='{"widget": "float", "precision": 2}'/>
+                        </td>
+                     </t>
+
+                    <t t-set="line_count" t-value="line_count + 1"/>
+
+
+                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td>
+                     </tr>
+                     
+
+                </tbody>
+            </table>            
+            </div>
+			</div>
+
+
+
+			<div t-if="data.status_28days and (data.average_strength28_nabl == 'pass' and nabl or (data.average_strength28_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                
+                     <div style="text-align: center;" >
+                          
+                                
+                       <span t-field="data.casting_28_name"/>
+                                
+                       
+                
+                    </div>
+                    <!-- ADDED TABLE FROM IMAGE -->
+                <div style="margin-top: 30px;">
+                       
+                       <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                            <thead>
+                                <tr   style="background-color:#f0f0f0; text-align: center;">
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Sr No.</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Identification Mark</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Casting</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Testing</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Age of Specimen (days)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Room temperature (&amp;deg;C)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Relative Humidity (%)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Weight of cube (gms)</th>
+
+                                    <th  style="border: 1px solid black; padding: 8px;" t-att-colspan="data.type_of_sample == 'cube' and 2 or 2"> Plan Dimensions of Testing Faces (mm)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Cross sectional area (mm&amp;sup2;)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Maximum Load (kN)</th>
+                                   
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Compressive strength (N/mm&amp;sup2;)</th>
+                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2"> Average Compressive strength (N/mm&amp;sup2;)</th>
+
+                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Type of Failure</th>
+                                </tr>
+                                <tr>
+
+                                  <th style="border: 1px solid black; padding: 8px;" colspan="1">Length (mm)</th>
+                                 <th t-if="data.type_of_sample == 'cylinder'"  style="border: 1px solid black; padding: 8px;" colspan="1">Diameter (mm)</th>
+                                 <th t-if="data.type_of_sample == 'cube'" style="border: 1px solid black; padding: 8px;" colspan="1">Width (mm)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        
+
+
+                     <t t-set="line_count" t-value="0"/>
+
+
+                    <tr   t-foreach="data.child_lines28day" t-as="r" style="text-align: center;">
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['sr_no']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['id_mark']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_casting']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_testing1']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['days']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['room_temp']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['relative_humidity']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['wt_sample']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['length']"/></td>
+                    <td t-if="data.type_of_sample == 'cylinder'" style="border: 1px solid black; padding: 6px;"><span t-esc="r['diameter']"/></td>
+                    <td t-if="data.type_of_sample == 'cube'"  style="border: 1px solid black; padding: 6px;"><span t-esc="r['width']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="'%.2f' % r['cross_sectional_area']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['load']"/></td>
+                    <td style="border: 1px solid black; padding: 6px;"> <span t-esc="'%.2f' % r['compressive_strength28']"/></td>
+
+    
+                 <t t-if="(line_count + 3) % 3 == 0">
+                        <td style="border: 1px solid black; padding: 6px; text-align: center; vertical-align: middle;" t-att-rowspan="4">
+                            <span t-esc="r['average_strength28']" t-options='{"widget": "float", "precision": 2}'/>
+                        </td>
+                     </t>
+
+                    <t t-set="line_count" t-value="line_count + 1"/>
+
+
+                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td>
+                     </tr>
+                     
+
+                </tbody>
+            </table>            
+            </div>
+       </div>
 
                    
 
@@ -227,6 +393,10 @@
                             <field name="structure_details"/>
                         </group>
                     </group>
+
+
+
+
 
                     <separator/>
 
@@ -329,7 +499,7 @@
                    </div>
 					
 					</div>
-               </div>
+               <!-- </div> -->
                
                
             </t>

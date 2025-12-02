@@ -40,7 +40,7 @@
 
                         <!-- Sample Parameters -->
                         <div class="custom_table_borders" style="margin-top: 15px;">
-                            <label for="sample_parameters" string="Sample Parameters"/>
+                            <!-- <label for="sample_parameters" string="Sample Parameters"/> -->
                             <field name="sample_parameters" nolabel="1">
                                 <tree>
                                     <field name="parameter_name"/>
@@ -101,7 +101,22 @@
 
                         <!-- Environmental Conditions -->
 
-                        <div class="d-flex gap-2" >
+                       
+                    <div>
+                    <group style="white-space:nowrap;" >
+                        <h1>
+                            <field name="casting_7_name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                     <group >
+                        <field name="status_7days"/>
+                      
+                    </group>
+
+                  
+                    </div>
+
+                     <div class="d-flex gap-2" invisible="status_7days == False" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -121,13 +136,39 @@
                             </tbody>
                         </table>
                     </div>
+
+                    
+
+
+                     <div class="d-flex gap-2"  invisible="status_7days == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="casting_date_7days"></label></td>
+                                    <td><field name="casting_date_7days"/></td>
+                                </tr> 
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="testing_date_7days"></label></td>
+                                    <td><field name="testing_date_7days" /> </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
                         
                             
                        
                         <!-- Sample Test Results -->
-                        <field name="child_lines" nolabel="1" class="custom_table_borders">
+                        <field name="child_lines" nolabel="1" class="custom_table_borders" invisible="status_7days == False">
                             <tree editable="bottom">
                                 <field name='sr_no' string="Sr. NO"/>
+<<<<<<< HEAD
                                 <field name='id_mark' string="Identification Mark" class="blue-input" decoration-info="id_mark != 0"/>
                                 <field name="dt_of_casting_formatted" string="Date of Casting" class="blue-input" decoration-info="dt_of_casting_formatted != 0"/>
                                 <field name='days' string="Age (days)" class="blue-input" decoration-info="days != 0"/>
@@ -138,36 +179,38 @@
                                 <field name='length' string="Length (mm)" class="blue-input" decoration-info="length != 0"/>
                                 <field name='diameter' string="Diameter (mm)" class="blue-input" decoration-info="diameter != 0"/>
                                 <field name='width'  string="width (mm)" class="blue-input" decoration-info="width != 0"/>
+=======
+                                <field name='id_mark' string="Identification Mark" width="100"/>
+                                <field name="dt_of_casting_formatted" string="Date of Casting" width="100"/>
+                                <field name='days' string="Age (days)"/>
+                                <field name="dt_of_testing1_formatted" string="Date of Testing" width="100"/>
+                                <field name='room_temp' string="Room Temp (°C)"/>
+                                <field name='relative_humidity' string="Relative Humidity (RH) (%)"/>
+                                <field name='wt_sample' string="Weight (gms)"/>
+                                <field name='length' string="Length (mm)"/>
+                                <field name='diameter'   string="Diameter (mm)"/>
+                                <field name='width'  string="width (mm)"/>
+>>>>>>> 832db895ff8f5da1e4cff299b55e0756ad05b5d8
 
                                 <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]" />
                                 <field name="load" string="Load (kN)" class="blue-input" decoration-info="load != 0"/>
                                 <field name='compressive_strength' string="Strength (N/mm²)" readonly="1" digits ="[16,2]"/>
-                                <field name='avg_compressive_strength' string="Avg Strength (N/mm²)" readonly="1"/>  
-                                <field name='type_of_failure' string="Type of Failure"/>
+                                <!-- <field name='avg_compressive_strength' string="Avg Strength (N/mm²)" readonly="1"/>   -->
+                                <field name='type_of_failure' string="Type of Failure" width="100"/>
                             </tree>
                                 </field> 
 
 
                                 
                         <!-- Calculate Average Button -->
-                        <button type="object" name="action_calculate_avg_strength" class="btn btn-primary mb-2">
+                        <button type="object" name="action_calculate_avg_strength" class="btn btn-primary mb-2"  invisible="status_7days == False">
                             <i class="fa fa-calculator mr-1"/> Calculate Average
                         </button>
                             
                     
-                        <!-- Hidden Grade Lines -->
-                        <field name="grade_child_lines" nolabel="1" class="custom_table_borders" invisible="1">
-                            <tree editable="bottom">
-                                <field name='sr_no' string="Sr. NO"/>
-                                <field name='grade1' />
-                                <field name='sd' />                        
-                            </tree>
-                        </field> 
+                  
 
-
-
-
-                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="status_7days == False">
                            <tbody>
                                   <tr>
                                 <td><label for="average_strength"></label></td>
@@ -194,6 +237,253 @@
                                 
                             </tbody>
                         </table>
+
+
+               
+
+                <div>
+                    <group style="white-space:nowrap;" >
+                        <h1>
+                            <field name="casting_14_name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                     <group >
+                        <field name="status_14days"/>
+                      
+                    </group>
+
+                     
+
+                  
+                    </div>
+
+                     <div class="d-flex gap-2"  invisible="status_14days == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="room_temperature14">Room Temperature</label></td>
+                                    <td><field name="room_temperature14"/>°C</td>
+                                </tr> 
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="relative_humidity14">Relative Humidity</label></td>
+                                    <td><field name="relative_humidity14" /> %</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                     <div class="d-flex gap-2"  invisible="status_14days == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="casting_date_14days"></label></td>
+                                    <td><field name="casting_date_14days"/></td>
+                                </tr> 
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="testing_date_14days"></label></td>
+                                    <td><field name="testing_date_14days" /> </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                        
+                            
+                       
+                        <!-- Sample Test Results -->
+                        <field name="child_lines14day" nolabel="1" class="custom_table_borders" invisible="status_14days == False">
+                            <tree editable="bottom">
+                                <field name='sr_no' string="Sr. NO"/>
+                                <field name='id_mark' string="Identification Mark" width="100"/>
+                                <field name="dt_of_casting_formatted" string="Date of Casting" width="100"/>
+                                <field name='days' string="Age (days)"/>
+                                <field name="dt_of_testing1_formatted" string="Date of Testing" width="100"/>
+                                <field name='room_temp' string="Room Temp (°C)"/>
+                                <field name='relative_humidity' string="Relative Humidity (RH) (%)"/>
+                                <field name='wt_sample' string="Weight (gms)"/>
+                                <field name='length' string="Length (mm)"/>
+                                <field name='diameter'   string="Diameter (mm)"/>
+                                <field name='width'  string="width (mm)"/>
+
+                                <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]"/>
+                                <field name="load" string="Load (kN)"/>
+                                <field name='compressive_strength14' string="Strength (N/mm²)" readonly="1" digits ="[16,2]"/>
+                                <!-- <field name='average_strength14' string="Avg Strength (N/mm²)" readonly="1"/>   -->
+                                <field name='type_of_failure' string="Type of Failure" width="100"/>
+                            </tree>
+                                </field> 
+
+
+                                <button type="object" name="action_calculate_avg_strength14" class="btn btn-primary mb-2" invisible="status_14days == False">
+                            <i class="fa fa-calculator mr-1"/> Calculate Average
+                        </button>
+                     
+                  
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="status_14days == False">
+                           <tbody>
+                                  <tr>
+                                <td><label for="average_strength14"></label></td>
+                                <td><field  name="average_strength14"/></td>
+                            </tr>
+
+                           
+                                  <tr>
+                                <td><label for="average_strength14_conformity"></label></td>
+                                <td><field  name="average_strength14_conformity"
+                                            decoration-success="average_strength14_conformity == 'pass'" 
+                                            decoration-danger="average_strength14_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="average_strength14_nabl"></label></td>
+                                <td><field name="average_strength14_nabl"
+                                            decoration-success="average_strength14_nabl == 'pass'" 
+                                            decoration-danger="average_strength14_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                                
+                            </tbody>
+                        </table>
+
+
+
+
+
+                    <div>
+                    <group style="white-space:nowrap;" >
+                        <h1>
+                            <field name="casting_28_name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                     <group >
+                        <field name="status_28days"/>
+                      
+                    </group>
+
+                     
+
+                  
+                    </div>
+
+                     <div class="d-flex gap-2"  invisible="status_28days == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="room_temperature28">Room Temperature</label></td>
+                                    <td><field name="room_temperature28"/>°C</td>
+                                </tr> 
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="relative_humidity28">Relative Humidity</label></td>
+                                    <td><field name="relative_humidity28" /> %</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                     <div class="d-flex gap-2"  invisible="status_28days == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="casting_date_28days"></label></td>
+                                    <td><field name="casting_date_28days"/></td>
+                                </tr> 
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="testing_date_28days"></label></td>
+                                    <td><field name="testing_date_28days" /> </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                        
+                            
+                       
+                        <!-- Sample Test Results -->
+                        <field name="child_lines28day" nolabel="1" class="custom_table_borders" invisible="status_28days == False">
+                            <tree editable="bottom">
+                                <field name='sr_no' string="Sr. NO"/>
+                                <field name='id_mark' string="Identification Mark" width="100"/>
+                                <field name="dt_of_casting_formatted" string="Date of Casting" width="100"/>
+                                <field name='days' string="Age (days)"/>
+                                <field name="dt_of_testing1_formatted" string="Date of Testing" width="100"/>
+                                <field name='room_temp' string="Room Temp (°C)"/>
+                                <field name='relative_humidity' string="Relative Humidity (RH) (%)"/>
+                                <field name='wt_sample' string="Weight (gms)"/>
+                                <field name='length' string="Length (mm)"/>
+                                <field name='diameter'   string="Diameter (mm)"/>
+                                <field name='width'  string="width (mm)"/>
+
+                                <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]"/>
+                                <field name="load" string="Load (kN)"/>
+                                <field name='compressive_strength28' string="Strength (N/mm²)" readonly="1" digits ="[16,2]"/>
+                                <!-- <field name='average_strength28' string="Avg Strength (N/mm²)" readonly="1"/>   -->
+                                <field name='type_of_failure' string="Type of Failure" width="100"/>
+                            </tree>
+                                </field> 
+
+
+                                
+                     <button type="object" name="action_calculate_avg_strength28" class="btn btn-primary mb-2" invisible="status_28days == False">
+                            <i class="fa fa-calculator mr-1"/> Calculate Average
+                        </button>
+                  
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="status_28days == False">
+                           <tbody>
+                                  <tr>
+                                <td><label for="average_strength28"></label></td>
+                                <td><field  name="average_strength28"/></td>
+                            </tr>
+
+                           
+                                  <tr>
+                                <td><label for="average_strength28_conformity"></label></td>
+                                <td><field  name="average_strength28_conformity"
+                                            decoration-success="average_strength28_conformity == 'pass'" 
+                                            decoration-danger="average_strength28_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="average_strength28_nabl"></label></td>
+                                <td><field name="average_strength28_nabl"
+                                            decoration-success="average_strength28_nabl == 'pass'" 
+                                            decoration-danger="average_strength28_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                                
+                            </tbody>
+                        </table>
+
+
+
+                     
                        
 
 

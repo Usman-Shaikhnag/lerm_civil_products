@@ -640,7 +640,9 @@
                         <table>
                             <tr cols="12" style="background-color:#f9f9f9;">
                                 <td colspan="3" style="text-align: center;"><b>Sr No</b></td>
+								
                                 <td colspan="3" style="text-align: center;"><b>Location</b></td>
+								
                                 
                                 <td colspan="3" style="text-align: center;"><b>Depth</b></td>
                                 <td colspan="3" style="text-align: center;"><b>Piece No</b></td>
@@ -657,14 +659,33 @@
 								<td colspan="3" style="text-align: center;"><b>Water Absorption</b></td>
 								<td colspan="3" style="text-align: center;"><b>Porosity</b></td>
 								<td colspan="3" style="text-align: center;"><b>Moisture content</b></td>
-								<td colspan="3" style="text-align: center;"><b>Compressive Strength  </b></td>
-								<td colspan="3" style="text-align: center;"><b>Compressive Strength </b></td>
-								<td colspan="3" style="text-align: center;"><b>Point load</b></td>
-								<td colspan="3" style="text-align: center;"><b>Point load strength index Is/Il (50)</b></td>
-								<td colspan="3" style="text-align: center;"><b>Duration of test</b></td>
-								<td colspan="3" style="text-align: center;"><b>Stress rate</b></td>
-								<td colspan="3" style="text-align: center;"><b>Mode of failure</b></td>
-								<td colspan="3" style="text-align: center;"><b>Sp. Gravity</b></td>
+
+							   <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/>
+								<td t-if="show_compress"  colspan="3" style="text-align: center;"><b>Compressive Strength  </b></td>
+						
+							
+							<t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/>
+								<td t-if="show_compress1" colspan="3" style="text-align: center;"><b>Compressive Strength </b></td>
+						
+							<t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/>
+								<td t-if="show_point_load" colspan="3" style="text-align: center;"><b>Point load</b></td>
+
+							 <t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/>
+								<td t-if="show_point_load_strength"  colspan="3" style="text-align: center;"><b>Point load strength index Is/Il (50)</b></td>
+                              
+
+							   <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/>
+								<td t-if="show_duration_of_test" colspan="3" style="text-align: center;"><b>Duration of test</b></td>
+
+								<t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/>
+								<td t-if="show_stress_rate" colspan="3" style="text-align: center;"><b>Stress rate</b></td>
+
+								
+								<t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/>
+								<td t-if="show_mode_of_failure" colspan="3" style="text-align: center;"><b>Mode of failure</b></td>
+
+								<t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/>
+								<td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>Sp. Gravity</b></td>
 								<!-- <td colspan="3" style="text-align: center;"><b>Load (UCS)</b></td> -->
 								
                             </tr>
@@ -688,26 +709,60 @@
 							<td colspan="3" style="text-align: center;"><b>%</b></td>
 							<td colspan="3" style="text-align: center;"><b>%</b></td>
 							<td colspan="3" style="text-align: center;"><b>%</b></td>
-							<td colspan="3" style="text-align: center;"><b>MPa</b></td>
-							<td colspan="3" style="text-align: center;"><b>MPa</b></td>
-							<td colspan="3" style="text-align: center;"><b>kN</b></td>
-							<td colspan="3" style="text-align: center;"><b>MPa</b></td>
-							<td colspan="3" style="text-align: center;"><b>Sec</b></td>
-							<td colspan="3" style="text-align: center;"><b>MPa/s</b></td>
-							<td colspan="3" style="text-align: center;"><b>-</b></td>
-							<td colspan="3" style="text-align: center;"><b>-</b></td>
+
+						 <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/>
+							<td t-if="show_compress" colspan="3" style="text-align: center;"><b>MPa</b></td>
+							
+							<t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/>
+							<td t-if="show_compress1" colspan="3" style="text-align: center;"><b>MPa</b></td>
+
+						<t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/>
+							<td t-if="show_point_load" colspan="3" style="text-align: center;"><b>kN</b></td>
+
+						<t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/>
+							<td t-if="show_point_load_strength" colspan="3" style="text-align: center;"><b>MPa</b></td>
+
+                           <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/>
+							<td t-if="show_duration_of_test" colspan="3" style="text-align: center;"><b>Sec</b></td>
+
+							<t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/>
+							<td t-if="show_stress_rate" colspan="3" style="text-align: center;"><b>MPa/s</b></td>
+
+							<t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/>
+							<td t-if="show_mode_of_failure" colspan="3" style="text-align: center;"><b>-</b></td>
+
+                          <t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/>
+							<td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>-</b></td>
 						</tr>
 
 						<tr style="background-color:#f9f9f9;">
 								
 								<td colspan="33" style="text-align: center; "><b>Test Method/Reference</b></td>
 								<td colspan="18" style="text-align: center; "><b>IS 13030</b></td>
-								<td colspan="3" style="text-align: center; "></td>
-								<td colspan="6" style="text-align: center; "><b>IS 9143</b></td>
-								<td colspan="6" style="text-align: center; "><b>IS 8764</b></td>
-								<td colspan="3" style="text-align: center; ">--</td>
-								<td colspan="3" style="text-align: center; ">--</td>
-								<td colspan="3" style="text-align: center; ">--</td>
+								<!-- <td colspan="3" style="text-align: center; "></td> -->
+								 <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/>
+								<td t-if="show_compress" colspan="3" style="text-align: center; "><b>IS 9143</b></td>
+
+								 <t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/>
+								<td t-if="show_compress1" colspan="3" style="text-align: center; "><b>IS 9143</b></td>
+
+                                 <t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/>
+								<td t-if="show_point_load" colspan="3" style="text-align: center; "><b>IS 8764</b></td>
+
+								<t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/>
+								<td t-if="show_point_load" colspan="3" style="text-align: center; "><b>IS 8764</b></td>
+
+                              <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/>
+								<td t-if="show_duration_of_test" colspan="3" style="text-align: center; ">--</td>
+
+								<t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/>
+								<td t-if="show_stress_rate" colspan="3" style="text-align: center; ">--</td>
+
+								<t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/>
+								<td t-if="show_mode_of_failure" colspan="3" style="text-align: center; ">--</td>
+
+							<t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/>
+							<td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>-</b></td> 
 							</tr>
                             <t t-set="f" t-value="0"/>
                             <tr t-foreach="data.rock_child_lines" t-as="r">
@@ -769,28 +824,41 @@
 								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['moisture_content']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
-								<td colspan="3" style="text-align: center;">
+								
+								
+								<td t-if="show_compress" colspan="3" style="text-align: center;">
                                     <span t-esc="r['comp_rock']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
-								<td colspan="3" style="text-align: center;">
+								
+							
+							
+								<td t-if="show_compress1" colspan="3" style="text-align: center;">
                                     <span t-esc="r['comp_rock1']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
-								<td colspan="3" style="text-align: center;">
+								
+								<td t-if="show_point_load" colspan="3" style="text-align: center;">
                                     <span t-esc="r['point_load']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
-								<td colspan="3" style="text-align: center;">
+
+								<td t-if="show_point_load_strength" colspan="3" style="text-align: center;">
                                     <span t-esc="r['point_load_strength']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
-								<td colspan="3" style="text-align: center;">
+
+								<td t-if="show_duration_of_test" colspan="3" style="text-align: center;">
                                     <span t-esc="r['duration_of_test']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
-								<td colspan="3" style="text-align: center;">
+
+
+								<td t-if="show_stress_rate" colspan="3" style="text-align: center;">
                                     <span t-esc="r['stress_rate']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>   
-								<td colspan="3" style="text-align: center;">
+
+								<td t-if="show_mode_of_failure" colspan="3" style="text-align: center;">
                                     <span t-esc="r['mode_of_failure']" />
                                 </td>  
-								<td colspan="3" style="text-align: center;">
+
+
+								<td t-if="show_sp_gravity"  colspan="3" style="text-align: center;">
                                     <span t-esc="r['sp_gravity']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>   
 								<!-- <td colspan="3" style="text-align: center;">

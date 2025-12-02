@@ -45,6 +45,20 @@
                             border-color: #3b82f6 !important;        /* Blue border */
                             
                         }
+                        .o_list_view td.blue-input,
+                        .o_list_view .o_data_cell.blue-input,
+                         .o_list_view .o_data_cell .blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view td.blue-input input,
+                        .o_list_view .o_data_cell.blue-input input,
+                        .o_list_view .o_data_cell .blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
                     </style>
 
 
@@ -188,28 +202,28 @@
                         <field name="compressive_dry_ids">
                             <tree editable="bottom" class="custom_table_borders">
 
-                                <field name="blue_input" invisible="1"/>
+                                
                                 <field name="serial_no"  />
-                                    <field name="date"  decoration-info="blue_input"/>
-                                    <field name="lab_id" width="120"  decoration-info="blue_input"/>
-                                    <field name="room_temp" width="100"  decoration-info="blue_input"/>
-                                    <field name="relative_humidity" width="100" decoration-info="blue_input"/>
+                                    <field name="date"  class="blue-input" decoration-info="date != 0"/>
+                                    <field name="lab_id" width="120"  class="blue-input" decoration-info="lab_id != 0"/>
+                                    <field name="room_temp" width="100"  class="blue-input" decoration-info="room_temp != 0"/>
+                                    <field name="relative_humidity" width="100" class="blue-input" decoration-info="relative_humidity != 0"/>
                                     
                                     <!-- ✅ Wrap long text fields -->
-                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;" decoration-info="blue_input"/>
-                                    <field name="stone_type" width="150" style="white-space: normal;" decoration-info="blue_input"/>
-                                    <field name="shape_stone" width="160" style="white-space: normal;" decoration-info="blue_input"/>
+                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;" class="blue-input" />
+                                    <field name="stone_type" width="150" style="white-space: normal;" class="blue-input" decoration-info="stone_type != 0"/>
+                                    <field name="shape_stone" width="160" style="white-space: normal;" class="blue-input" decoration-info="shape_stone != 0"/>
                                    
 
-                                    <field name="height_shape" width="100"  decoration-info="blue_input"/>
-                                    <field name="width_stone" width="100"  decoration-info="blue_input"/>
-                                     <field name="test_conditin" width="150" style="white-space: normal;" decoration-info="blue_input"/>
-                                    <field name="load_perpendiculer" width="150" decoration-info="blue_input"/>
-                                    <field name="load_parallel" width="150" decoration-info="blue_input"/>
-                                    <field name="load_perpendiculer_n" width="150" decoration-info="blue_input"/>
+                                    <field name="height_shape" width="100"  class="blue-input" decoration-info="height_shape != 0"/>
+                                    <field name="width_stone" width="100"  class="blue-input" decoration-info="width_stone != 0"/>
+                                     <field name="test_conditin" width="150" style="white-space: normal;" />
+                                    <field name="load_perpendiculer" width="150" class="blue-input" decoration-info="load_perpendiculer != 0"/>
+                                    <field name="load_parallel" width="150" class="blue-input" decoration-info="load_parallel != 0"/>
+                                    <field name="load_perpendiculer_n" width="150" class="blue-input" decoration-info="load_perpendiculer_n != 0"/>
                                     <field name="load_parallel_n" width="150" />
-                                    <field name="duration_test" width="120" decoration-info="blue_input"/>
-                                    <field name="appearance_stone" width="180" decoration-info="blue_input"/>
+                                    <field name="duration_test" width="120" class="blue-input" decoration-info="duration_test != 0"/>
+                                    <field name="appearance_stone" width="180" class="blue-input" decoration-info="appearance_stone != 0"/>
                                     <field name="hd_stone" width="100"/>
                                     <field name="area_stone" width="120"/>
                                     <field name="compressive_perpendiculer" width="200"/>
@@ -285,28 +299,28 @@
                      <div invisible="compressive_wet_visible == False">
                             <field name="compressive_wet_ids">
                                 <tree editable="bottom" class="custom_table_borders" string="Compressive Wet Test Readings">
-                                <field name="blue_input" invisible="1"/>
+                                
                                     <field name="serial_no"/>
-                                    <field name="date"   decoration-info="blue_input"/>
-                                    <field name="lab_id" width="120" decoration-info="blue_input"/>
-                                    <field name="room_temp" width="100" decoration-info="blue_input"/>
-                                    <field name="relative_humidity" width="100" decoration-info="blue_input"/>
+                                    <field name="date"   class="blue-input" decoration-info="date != 0"/>
+                                    <field name="lab_id" width="120" class="blue-input" decoration-info="lab_id != 0"/>
+                                    <field name="room_temp" width="100" class="blue-input" decoration-info="room_temp != 0"/>
+                                    <field name="relative_humidity" width="100" class="blue-input" decoration-info="relative_humidity != 0"/>
                                     
                                     <!-- ✅ Wrap long text fields -->
-                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;" decoration-info="blue_input"/>
-                                    <field name="stone_type" width="150" style="white-space: normal;" decoration-info="blue_input"/>
-                                    <field name="shape_stone" width="160" style="white-space: normal;" decoration-info="blue_input"/>
+                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;" class="blue-input" />
+                                    <field name="stone_type" width="150" style="white-space: normal;" class="blue-input" decoration-info="stone_type != 0"/>
+                                    <field name="shape_stone" width="160" style="white-space: normal;" class="blue-input" decoration-info="shape_stone != 0"/>
                                     
 
-                                    <field name="height_shape" width="100" decoration-info="blue_input"/>
-                                    <field name="width_stone" width="100" decoration-info="blue_input"/>
-                                    <field name="test_conditin" width="150" style="white-space: normal;" decoration-info="blue_input"/>
-                                    <field name="load_perpendiculer" width="150" decoration-info="blue_input"/>
-                                    <field name="load_parallel" width="150" decoration-info="blue_input"/>
+                                    <field name="height_shape" width="100" class="blue-input" decoration-info="height_shape != 0"/>
+                                    <field name="width_stone" width="100" class="blue-input" decoration-info="width_stone != 0"/>
+                                    <field name="test_conditin" width="150" style="white-space: normal;" />
+                                    <field name="load_perpendiculer" width="150" class="blue-input" decoration-info="load_perpendiculer != 0"/>
+                                    <field name="load_parallel" width="150" class="blue-input" decoration-info="load_parallel != 0"/>
                                     <field name="load_perpendiculer_n" width="150"/>
                                     <field name="load_parallel_n" width="150"/>
-                                    <field name="duration_test" width="120" decoration-info="blue_input"/>
-                                    <field name="appearance_stone" width="180" decoration-info="blue_input"/>
+                                    <field name="duration_test" width="120" class="blue-input" decoration-info="duration_test != 0"/>
+                                    <field name="appearance_stone" width="180" class="blue-input" decoration-info="appearance_stone != 0"/>
                                     <field name="hd_stone" width="100"/>
                                     <field name="area_stone" width="120"/>
                                     <field name="compressive_perpendiculer" width="200"/>
