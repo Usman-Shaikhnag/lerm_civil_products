@@ -102,8 +102,8 @@ class FineAggregate(models.Model):
 
 
 
-    temp_sieve_analysis = fields.Char(string="Temp.°C")
-    humidity_sieve_analysis= fields.Char(string="Humidity %")
+    temp_sieve_analysis = fields.Char(string="Temp.°C" ,required=True)
+    humidity_sieve_analysis= fields.Char(string="Humidity %" ,required=True)
 
 
     sieve_analysis_child_lines = fields.One2many('mechanical.fine.agg.sieve.analysis.ssl.line','parent_id',string="Parameter",
@@ -366,8 +366,8 @@ class FineAggregate(models.Model):
     water_absorption_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
 
-    temp_specific_gravity_water_absorption = fields.Char(string="Temp.°C")
-    humidity_temp_specific_gravity_water_absorption= fields.Char(string="Humidity %")
+    temp_specific_gravity_water_absorption = fields.Char(string="Temp.°C" ,required=True)
+    humidity_temp_specific_gravity_water_absorption= fields.Char(string="Humidity %" ,required=True)
 
     # wt_basket_and_sample = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm")
     
@@ -599,8 +599,8 @@ class FineAggregate(models.Model):
 
 
     
-    temp_density = fields.Char(string="Temp.°C")
-    humidity_density= fields.Char(string="Humidity %")
+    temp_density = fields.Char(string="Temp.°C" ,required=True)
+    humidity_density= fields.Char(string="Humidity %" ,required=True)
 
 
 
@@ -691,8 +691,8 @@ class FineAggregate(models.Model):
     loose_density_name = fields.Char("Name",default="Loose Density ")
     loose_density_visible = fields.Boolean("Loose density  Visible",compute="_compute_visible")
 
-    temp_density = fields.Char(string="Temp.°C")
-    humidity_density= fields.Char(string="Humidity %")
+    temp_density = fields.Char(string="Temp.°C" ,required=True)
+    humidity_density= fields.Char(string="Humidity %" ,required=True)
 
 
     capacity_of_cylinder_loose = fields.Float(string="Capacity of Cylinder Use for Test in litre (V)")
@@ -788,8 +788,8 @@ class FineAggregate(models.Model):
     voids_compacted_density_visible = fields.Boolean("Void In Compacted Visible",compute="_compute_visible")
 
 
-    temp_density = fields.Char(string="Temp.°C")
-    humidity_density= fields.Char(string="Humidity %")
+    temp_density = fields.Char(string="Temp.°C" ,required=True)
+    humidity_density= fields.Char(string="Humidity %",required=True)
 
 
     voids_loose_density_name = fields.Char("Name",default="Void In Loose Density ")
@@ -951,8 +951,8 @@ class FineAggregate(models.Model):
     soudness_child_lines = fields.One2many('fine.soudness.line','parent_id',string="Parameter")
 
     
-    temp_soudness = fields.Char(string="Temp.°C")
-    humidity_soudness = fields.Char(string="Humidity %")
+    temp_soudness = fields.Char(string="Temp.°C" ,required=True)
+    humidity_soudness = fields.Char(string="Humidity %" ,required=True)
 
 
 

@@ -65,8 +65,8 @@ class MechanicalBricks(models.Model):
     compressive_strength_name = fields.Char("Name",default=" Compressive Strength")
     compressive_strength_visible = fields.Boolean("Compressive Strength",compute="_compute_visible")
 
-    temp_compressive_strength = fields.Char("Temp °c")
-    humidity_compressive_strength = fields.Char("Humidity %")
+    temp_compressive_strength = fields.Char("Temp °c" ,required=True)
+    humidity_compressive_strength = fields.Char("Humidity %" ,required=True)
 
     compressive_strength_child_lines = fields.One2many('mechanical.bricks.compressive.line','parent_id',string="Compressive Strength Test" )
 
@@ -147,8 +147,8 @@ class MechanicalBricks(models.Model):
     water_absorption_name = fields.Char("Name",default=" Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption",compute="_compute_visible")
 
-    temp_water_absorption = fields.Char("Temp °c")
-    humidity_water_absorption = fields.Char("Humidity %")
+    temp_water_absorption = fields.Char("Temp °c" ,required=True)
+    humidity_water_absorption = fields.Char("Humidity %" ,required=True)
 
     water_absorption_child_lines = fields.One2many('mechanical.bricks.water.absorption.line','parent_id',string="Water Absorption Test")
 
@@ -236,8 +236,8 @@ class MechanicalBricks(models.Model):
     height_name = fields.Char("Name",default="height")
     height_visible = fields.Boolean("height",compute="_compute_visible")
 
-    temp_dimension = fields.Char("Temp °c")
-    humidity_dimension = fields.Char("Humidity %")
+    temp_dimension = fields.Char("Temp °c" ,required=True)
+    humidity_dimension = fields.Char("Humidity %" ,required=True)
 
     
     length1 = fields.Float(string="Length  ")

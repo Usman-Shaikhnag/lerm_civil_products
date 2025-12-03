@@ -90,31 +90,11 @@ class FlyaschNormalConsistency(models.Model):
     normal_consistency_name = fields.Char("Name",default="Consistency - %")
     normal_consistency_visible = fields.Boolean("Normal Consistency Visible",compute="_compute_visible")
 
-    temp_percent_consistency = fields.Char("Temp °c")
-    humidity_percent_consistency = fields.Char("Humidity %")
+    temp_percent_consistency = fields.Char("Temp °c" ,required=True)
+    humidity_percent_consistency = fields.Char("Humidity %" ,required=True)
 
     consistency_child_lines = fields.One2many('consistency.line','parent_id' ,string="Parameter")
 
-    
-
-    # def action_calculate_avg_strength(self):
-    #     for rec in self:
-    #         lines = rec.consistency_child_lines.sorted(key=lambda l: l.sr_no)  # sr_no ने sort करायचं
-    #         group_size = 2
-
-    #         for i in range(0, len(lines), group_size):
-    #             group = lines[i:i + group_size]
-    #             strengths = [l.water_percent for l in group if l.water_percent > 0]
-    #             avg = sum(strengths) / len(strengths) if strengths else 0.0
-
-    #             if group:
-    #                 group[0].consistency_percent = avg
-
-    #         for line in lines:
-    #             if line not in [lines[i] for i in range(0, len(lines), group_size)]:
-    #                 line.consistency_percent = 0.0
-
-     
 
     consistency_percent = fields.Float(
     string="Consistency (%)", compute="_compute_consistency_percent", store=True, digits=(12, 2))
@@ -125,15 +105,6 @@ class FlyaschNormalConsistency(models.Model):
         water_values = [line.water_percent for line in rec.consistency_child_lines if line.water_percent]
         rec.consistency_percent = sum(water_values) / len(water_values) if water_values else 0.0
 
-
-    # @api.depends('consistency_child_lines.water_percent')
-    # def _compute_consistency_percent(self):
-    #  for rec in self:
-    #     water_values = [line.water_percent for line in rec.consistency_child_lines if line.water_percent]
-    #     rec.consistency_percent = sum(water_values) / len(water_values) if water_values else 0.0
-
-
-   
 
     normal_consistency_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -206,8 +177,8 @@ class FlyaschNormalConsistency(models.Model):
     final_setting_time_name = fields.Char("Name",default="Setting Time")
 
 
-    temp_setting_time = fields.Char("Temp °c")
-    humidity_setting_time = fields.Char("Humidity %")
+    temp_setting_time = fields.Char("Temp °c" ,required=True)
+    humidity_setting_time = fields.Char("Humidity %" ,required=True)
 
     intial_time_lines = fields.One2many('setting.time.line','parent_id',string="Initial Time")
 
@@ -232,110 +203,7 @@ class FlyaschNormalConsistency(models.Model):
             else:
                 record.final_time_set = 0.0
 
-    # initial_time_set_conformity = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail'),
-    # ], string='Conformity',compute="_compute_initial_time_set_conformity", default='fail',store=True)
-
-    # initial_time_set_nabl = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail'),
-    # ], string='NABL',compute="_compute_initial_time_set_nabl", default='pass',store=True)
-
-
-    # @api.depends('initial_time_set','eln_ref','grade')
-    # def _compute_initial_time_set_conformity(self):
-    #     for record in self:
-    #         record.initial_time_set_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
-    #                 lower = float(record.initial_time_set) - float(record.initial_time_set)*mu_value
-    #                 upper = float(record.initial_time_set) + float(record.initial_time_set)*mu_value
-    #                 if lower >= req_min and upper <= req_max :
-    #                     record.initial_time_set_conformity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.initial_time_set_conformity = 'fail'
-
-    # @api.depends('initial_time_set','eln_ref','grade')
-    # def _compute_initial_time_set_nabl(self):
-        
-    #     for record in self:
-    #         record.initial_time_set_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')])
-    #         materials = self.env['lerm.parameter.master'].search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')]).parameter_table
-    #         # for material in materials:
-    #         #     if material.grade.id == record.grade.id:
-    #         lab_min = line.lab_min_value
-    #         lab_max = line.lab_max_value
-    #         mu_value = line.mu_value
-            
-    #         lower = float(record.initial_time_set) - float(record.initial_time_set)*mu_value
-    #         upper = float(record.initial_time_set) + float(record.initial_time_set)*mu_value
-    #         if lower >= lab_min and upper <= lab_max:
-    #             record.initial_time_set_nabl = 'pass'
-    #             break
-    #         else:
-    #             record.initial_time_set_nabl = 'fail'
-
-
-
-    # final_time_set_conformity = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail'),
-    # ], string='Conformity',compute="_compute_final_time_set_conformity", default='fail',store=True)
-
-    # final_time_set_nabl = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail'),
-    # ], string='NABL',compute="_compute_final_time_set_nabl", default='pass',store=True)
-
-
-    # @api.depends('final_time_set','eln_ref','grade')
-    # def _compute_final_time_set_conformity(self):
-    #     for record in self:
-    #         record.final_time_set_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
-    #                 lower = float(record.final_time_set) - float(record.final_time_set)*mu_value
-    #                 upper = float(record.final_time_set) + float(record.final_time_set)*mu_value
-    #                 if lower >= req_min and upper <= req_max :
-    #                     record.final_time_set_conformity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.final_time_set_conformity = 'fail'
-
-    # @api.depends('final_time_set','eln_ref','grade')
-    # def _compute_final_time_set_nabl(self):
-        
-    #     for record in self:
-    #         record.final_time_set_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')])
-    #         materials = self.env['lerm.parameter.master'].search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')]).parameter_table
-    #         # for material in materials:
-    #         #     if material.grade.id == record.grade.id:
-    #         lab_min = line.lab_min_value
-    #         lab_max = line.lab_max_value
-    #         mu_value = line.mu_value
-            
-    #         lower = float(record.final_time_set) - float(record.final_time_set)*mu_value
-    #         upper = float(record.final_time_set) + float(record.initial_time_set)*mu_value
-    #         if lower >= lab_min and upper <= lab_max:
-    #             record.final_time_set_nabl = 'pass'
-    #             break
-    #         else:
-    #             record.final_time_set_nabl = 'fail'
-
+  
 
 
     # Soundness By Le-Chatelier Test
@@ -344,8 +212,8 @@ class FlyaschNormalConsistency(models.Model):
     soundness_name = fields.Char("Name",default="Soundness By Le-Chatelier Test")
 
 
-    temp_soundness = fields.Char("Temp °c")
-    humidity_soundness = fields.Char("Humidity %")
+    temp_soundness = fields.Char("Temp °c" ,required=True)
+    humidity_soundness = fields.Char("Humidity %" ,required=True)
 
     soundness_child_lines = fields.One2many('soundness.le.chatelier.line','parent_id',string="Soundness By Le-Chatelier Test")
 
@@ -422,8 +290,8 @@ class FlyaschNormalConsistency(models.Model):
     sound_auto_name = fields.Char("Name",default="Soundness By AutoClave Test")
 
 
-    temp_sound_auto = fields.Char("Temp °c")
-    humidity_sound_auto = fields.Char("Humidity %")
+    temp_sound_auto = fields.Char("Temp °c" ,required=True)
+    humidity_sound_auto = fields.Char("Humidity %" ,required=True)
 
     sound_auto_child_lines = fields.One2many('soundness.autoclave.line','parent_id',string="AutoClave Test")
 
@@ -509,8 +377,8 @@ class FlyaschNormalConsistency(models.Model):
     specific_gravity_name = fields.Char("Name",default="Specific Gravity Test")
     specific_gravity_visible = fields.Boolean("Specific Gravity Test",compute="_compute_visible")
        
-    temp_specific_gravity = fields.Char("Temp °c")
-    humidity_specific_gravity = fields.Char("Humidity %")  
+    temp_specific_gravity = fields.Char("Temp °c" ,required=True)
+    humidity_specific_gravity = fields.Char("Humidity %" ,required=True)  
 
     temp_water_1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
     temp_water_2 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
@@ -558,18 +426,7 @@ class FlyaschNormalConsistency(models.Model):
 
     avg_density_fly = fields.Float("Average Density of Flyash Sample – gms/ cm3", store=True, digits=(12, 2),compute="_compute_avg_density_fly")
 
-    # @api.depends('density_fly_l', 'density_fly_2')
-    # def _compute_avg_density_fly(self):
-    #     for rec in self:
-    #         # ensure no division by zero
-    #         d1 = rec.density_fly_l or 0.0
-    #         d2 = rec.density_fly_2 or 0.0
 
-    #         # compute average only if at least one density exists
-    #         if d1 and d2:
-    #             rec.avg_density_fly = (d1 + d2) / 2
-    #         else:
-    #             rec.avg_density_fly = 0.0
 
     @api.depends('density_fly_l', 'density_fly_2')
     def _compute_avg_density_fly(self):
@@ -659,8 +516,8 @@ class FlyaschNormalConsistency(models.Model):
     fineness_blain_name = fields.Char("Name",default="Fineness by Blaines Air Permeability Method")
     fineness_blain_visible = fields.Boolean("Fineness by Blaines Air Permeability Method Visible",compute="_compute_visible")
 
-    temp_fineness_blain = fields.Char("Temp °c")
-    humidity_fineness_blain = fields.Char("Humidity %") 
+    temp_fineness_blain = fields.Char("Temp °c" ,required=True)
+    humidity_fineness_blain = fields.Char("Humidity %" ,required=True) 
 
     density_pozzolana = fields.Float(string="Density of pozzolana (ƍ) – gm/cc", digits=(12, 3))
 
@@ -777,14 +634,15 @@ class FlyaschNormalConsistency(models.Model):
 
 
 
-
-        # Particles retained on 45 micron IS sieve (wet sieving) - %
+        
+        
+       # Particles retained on 45 micron IS sieve (wet sieving) - %
 
     fineness_name = fields.Char("Name",default="Particles retained on 45 micron IS sieve (wet sieving) - %")
     fineness_visible = fields.Boolean("Particles retained on 45 micron IS sieve (wet sieving) - %",compute="_compute_visible")
        
-    temp_fineness = fields.Char("Temp °c")
-    humidity_fineness = fields.Char("Humidity %") 
+    temp_fineness = fields.Char("Temp °c" ,required=True)
+    humidity_fineness = fields.Char("Humidity %" ,required=True) 
 
     fineness_child_lines = fields.One2many('particles.retained.line','parent_id',string="Fineness By Sieving Test") 
 
@@ -864,8 +722,8 @@ class FlyaschNormalConsistency(models.Model):
     compressive_strength7_name = fields.Char("Name",default="Compressive Strength Fly Ash")
 
 
-    temp_compressive_strength = fields.Char("Temp °c")
-    humidity_compressive_strength = fields.Char("Humidity %")
+    temp_compressive_strength = fields.Char("Temp °c" ,required=True)
+    humidity_compressive_strength = fields.Char("Humidity %" ,required=True)
 
     compressive_strength_child_lines = fields.One2many('flyash.compressive.strength.line','parent_id',string="Compressive Strength Test")
 
@@ -1088,8 +946,8 @@ class FlyaschNormalConsistency(models.Model):
     lime_name = fields.Char("Name",default="Determination of Lime Reactivity of Flyash")
 
 
-    temp_lime = fields.Char("Temp °c")
-    humidity_lime = fields.Char("Humidity %")
+    temp_lime = fields.Char("Temp °c" ,required=True)
+    humidity_lime = fields.Char("Humidity %" ,required=True)
 
     lime_child_lines = fields.One2many('flyash.lime.line','parent_id',string="Lime Reactivity of Flyash")	
 
@@ -1186,8 +1044,8 @@ class FlyaschNormalConsistency(models.Model):
     drying_shrinkage_name = fields.Char("Name",default="Drying shrinkage Test")
 
 
-    temp_drying_shrinkage = fields.Char("Temp °c")
-    humidity_drying_shrinkage = fields.Char("Humidity %")
+    temp_drying_shrinkage = fields.Char("Temp °c" ,required=True)
+    humidity_drying_shrinkage = fields.Char("Humidity %" ,required=True)
 
     drying_shrinkage_child_lines = fields.One2many('drying.shrinkage.line','parent_id',string="AutoClave Test")
 
@@ -1566,10 +1424,7 @@ class SettingTimeLine(models.Model):
     parent_id = fields.Many2one('mechanical.flyasch.normalconsistency',string="Parent Id")
 
     sr_no = fields.Integer(string="Trial NO", readonly=True, copy=False, default=1)
-    # trail_no = fields.Integer(string="Trial No")
-
-    # room_temp = fields.Float("Room Temperature")
-    # humidity = fields.Float("Humidity (%)")
+   
     time_water_t1 = fields.Datetime(string="Time at which water is first added to cement, t1, mins")
     time_needle_fails_t2 = fields.Datetime(string="Time when needle fails to penetrate 5 +/-0.5 mm from bottom of the mould, t2 ,mins")
     time_needle_attach_t3 = fields.Datetime(string="Time when the needle makes an impression but the attachment fails to do so, t3, mins")

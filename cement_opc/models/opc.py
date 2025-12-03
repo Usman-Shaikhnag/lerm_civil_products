@@ -100,8 +100,8 @@ class CementNormalConsistency(models.Model):
     density_cement_name = fields.Char("Name",default="Density of Cement (Le-Chatlier Flask)")
     density_cement_visible = fields.Boolean("Density of Cement (Le-Chatlier Flask) Visible",compute="_compute_visible")
 
-    temp_specific = fields.Float("Temp.°C")
-    humidity_specific= fields.Float("Humidity %")
+    temp_specific = fields.Char("Temp.°C" ,required=True)
+    humidity_specific= fields.Char("Humidity %" ,required=True)
 
     temp_water1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
     temp_water2 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
@@ -325,8 +325,8 @@ class CementNormalConsistency(models.Model):
     initial_setting_time_name = fields.Char("Name",default="Setting Time")
 
   
-    temp_time = fields.Float("Initial Time Temp.°C")
-    humidity_time= fields.Float("Initial Time Humidity %")
+    temp_time = fields.Char("Initial Time Temp.°C" ,required=True)
+    humidity_time= fields.Char("Initial Time Humidity %" ,required=True)
     avg_initial_time = fields.Float("Average Intial Time",compute="_compute_avg_initial_time",store=True,digits=(12,4))
 
     @api.depends('intial_time_lines.initial')
@@ -339,8 +339,8 @@ class CementNormalConsistency(models.Model):
             else:
                 rec.avg_initial_time = 0
 
-    temp_time_final = fields.Float("Final Time Temp.°C")
-    humidity_time_final = fields.Float("Final Time Humidity %")
+    temp_time_final = fields.Char("Final Time Temp.°C" ,required=True)
+    humidity_time_final = fields.Char("Final Time Humidity %" ,required=True)
 
     avg_final_time = fields.Float("Average Final Time",compute="_compute_avg_final_time",store=True,digits=(12,4))
 
@@ -462,8 +462,8 @@ class CementNormalConsistency(models.Model):
     fineness_name = fields.Char("Name",default="Fineness by Blaines Air Permeability Method")
     fineness_visible = fields.Boolean("Fineness by Blaines Air Permeability Method Visible",compute="_compute_visible")
 
-    temp_fineness = fields.Float("Temp.°C")
-    humidity_fineness= fields.Float("Humidity %")
+    temp_fineness = fields.Char("Temp.°C" ,required=True)
+    humidity_fineness= fields.Char("Humidity %" ,required=True)
 
     density_cement = fields.Float(string="Density of Cement (g/cc)", digits=(12, 3))
     
@@ -587,8 +587,8 @@ class CementNormalConsistency(models.Model):
 
     avg_3_days = fields.Float(string="Avg Strength (3 Days)", compute="_compute_avg_strengths", store=True)
 
-    temp_3_days = fields.Float("Temp.°C")
-    humidity_3_days= fields.Float("Humidity %")
+    temp_3_days = fields.Char("Temp.°C" ,required=True)
+    humidity_3_days= fields.Char("Humidity %" ,required=True)
 
 
     avg_3_days_conformity = fields.Selection([
@@ -648,8 +648,8 @@ class CementNormalConsistency(models.Model):
 
     avg_7_days = fields.Float(string="Avg Strength (7 Days)", compute="_compute_avg_strengths", store=True)
 
-    temp_7_days = fields.Float("Temp.°C")
-    humidity_7_days= fields.Float("Humidity %")
+    temp_7_days = fields.Char("Temp.°C" ,required=True)
+    humidity_7_days= fields.Char("Humidity %" ,required=True)
 
     avg_7_days_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -709,8 +709,8 @@ class CementNormalConsistency(models.Model):
 
     avg_28_days = fields.Float(string="Avg Strength (28 Days)", compute="_compute_avg_strengths", store=True)
 
-    temp_28_days = fields.Float("Temp.°C")
-    humidity_28_days= fields.Float("Humidity %")
+    temp_28_days = fields.Char("Temp.°C" ,required=True)
+    humidity_28_days= fields.Char("Humidity %" ,required=True)
 
     avg_28_days_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -783,8 +783,8 @@ class CementNormalConsistency(models.Model):
     soundness_autoclave_name = fields.Char("Name",default="Soundness by Autoclave Test")
     soundness_autoclave_visible = fields.Boolean("Soundness by Autoclave Test Visible",compute="_compute_visible")
 
-    temp_soundness_autoclave = fields.Float("Temp.°C")
-    humidity_soundness_autoclave= fields.Float("Humidity %")
+    temp_soundness_autoclave = fields.Char("Temp.°C" ,required=True)
+    humidity_soundness_autoclave= fields.Char("Humidity %" ,required=True)
 
     opc_autoclave_ids = fields.One2many("mechanical.opc.autoclave.line", "parent_id", string="Test Readings")
 
@@ -865,8 +865,8 @@ class CementNormalConsistency(models.Model):
     soundness_le_method_name = fields.Char("Name",default="Soundness of Cement By Le-Chattelier Method")
     soundness_le_method_visible = fields.Boolean("Soundness of Cement By Le-Chattelier Method Visible",compute="_compute_visible")
 
-    temp_soundness_le_method = fields.Float("Temp.°C")
-    humidity_soundness_le_method= fields.Float("Humidity %")
+    temp_soundness_le_method = fields.Char("Temp.°C",required=True)
+    humidity_soundness_le_method= fields.Char("Humidity %",required=True)
 
     opc_le_method_ids = fields.One2many("mechanical.opc.lemethod.line", "parent_id", string="Test Readings")
 
