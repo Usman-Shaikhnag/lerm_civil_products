@@ -1587,7 +1587,7 @@
 					<div class="" t-foreach="eln" t-as="o">
 						
 					
-						 <table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
+						<table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
 							<tr>
 								<!-- <td ><strong>Mechanical Testing</strong>: </td>
 								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td> -->
@@ -1599,18 +1599,12 @@
 
 							<tr>
 								<td colspan="3"><strong>Project Name</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 
-								<td colspan="3"><strong>Date of Report</strong>: </td>
+								<!-- <td><strong>Date of Report</strong>: </td>
 									
-								<td colspan="3">
+								<td >
 								<span t-field="o.start_date" style="margin-right:10px;"/> 		
-								</td>
-
-								<!-- <td colspan="3"><strong>Sample Description</strong>: </td>
-									
-								<td colspan="3" style="padding-left: 10px;">
-								<span t-field="o.sample_id.size_id"/> 		
 								</td> -->
 							</tr>
 						
@@ -1641,12 +1635,12 @@
 							<tr>
 								
 								<td colspan="3" ><strong>Mechanical Testing</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.group_id"/></td>
 
-								<td colspan="3"><strong>Location</strong>: </td>
+								<td colspan="3"><strong>Date of Report</strong>: </td>
+									
 								<td colspan="3">
-								Permanent facility
-							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
 								</td>
 							
 							</tr>
@@ -1654,16 +1648,14 @@
 							<tr>
 								
 								
-								<!-- <td colspan="3"><strong>Date of Report</strong>: </td>
-									
+								
+								<td colspan="3"><strong>Location</strong>: </td>
 								<td colspan="3">
-								<span t-field="o.start_date" style="margin-right:10px;"/> 		
-								</td> -->
-								<td colspan="3"><strong>Sample Description</strong>: </td>
-									
-								<td colspan="3" style="padding-left: 10px;">
-								<span t-field="o.sample_id.size_id"/> 		
+								Permanent facility
+							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
 								</td>
+								
+								
 
 								<td colspan="3"><strong>Starting Date</strong>: </td>
 								<td colspan="3">
@@ -1674,12 +1666,26 @@
 							
 							<tr>
 
-								<td colspan="3"><strong>Type of Sample &amp; Condition</strong>: </td>
-								<td colspan="3"><span t-field="o.material.name"/></td>
+								<td colspan="3"><strong>Sample Description</strong>: </td>
+								<td colspan="3"><span t-field="o.sample_id.size_id"/></td>
 
 							<td colspan="3"><strong>Completion Date</strong>: </td>
 								<td colspan="3">
 								<span t-field="o.end_date" />
+								</td>
+						</tr>
+
+						<tr>
+
+								<td colspan="3"><strong>Source of Sample </strong>: </td>
+								<td colspan="3" style="padding-left: 10px;">
+								  <!-- <span t-field="o.size_id.size"/> -->
+								
+								</td>
+
+							<td colspan="3"><strong>No. of Sample</strong>: </td>
+								<td colspan="3">
+									<!-- <span t-field="o.end_date" /> -->
 								</td>
 						</tr>
 
@@ -1689,6 +1695,8 @@
 						</table>
 
 						</div>
+
+						
 
 					<table style="margin-top:10px;margin-bottom:0px;">
 					<t t-set="i" t-value="0"/>

@@ -58,12 +58,12 @@
 							<tr>
 								
 								<td colspan="3" ><strong>Mechanical Testing</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.group_id"/></td>
 
-								<td colspan="3"><strong>Location</strong>: </td>
+								<td colspan="3"><strong>Date of Report</strong>: </td>
+									
 								<td colspan="3">
-								Permanent facility
-							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
 								</td>
 							
 							</tr>
@@ -71,11 +71,14 @@
 							<tr>
 								
 								
-								<td colspan="3"><strong>Date of Report</strong>: </td>
-									
+								
+								<td colspan="3"><strong>Location</strong>: </td>
 								<td colspan="3">
-								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								Permanent facility
+							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
 								</td>
+								
+								
 
 								<td colspan="3"><strong>Starting Date</strong>: </td>
 								<td colspan="3">
@@ -86,12 +89,26 @@
 							
 							<tr>
 
-								<td colspan="3"><strong>Type of Sample &amp; Condition</strong>: </td>
+								<td colspan="3"><strong>Sample Description</strong>: </td>
 								<td colspan="3"><span t-field="o.material.name"/></td>
 
 							<td colspan="3"><strong>Completion Date</strong>: </td>
 								<td colspan="3">
 								<span t-field="o.end_date" />
+								</td>
+						</tr>
+
+						<tr>
+
+								<td colspan="3"><strong>Source of Sample </strong>: </td>
+								<td colspan="3" style="padding-left: 10px;">
+								  <!-- <span t-field="o.size_id.size"/> -->
+								
+								</td>
+
+							<td colspan="3"><strong>No. of Sample</strong>: </td>
+								<td colspan="3">
+									<!-- <span t-field="o.end_date" /> -->
 								</td>
 						</tr>
 
@@ -510,11 +527,17 @@
 
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id and parameter.size.id == eln.size_id.id"> -->
+										<t t-if="parameter.grade.id == eln.grade_id.id and parameter.size.id == eln.size_id.id">
+
 											<span t-field="parameter.permissable_limit"/>
 										</t>
+
 									</t>
+									
 								</td>
+								
+
 
 								<td style="text-align: center;" t-if="eln.conformity">
 									<!-- <span t-field="coarse_aggregate.avg_specific_gravity_conformity"/> -->
