@@ -70,8 +70,8 @@ class Stones(models.Model):
 
      
     lab_id1 = fields.Char(string="Lab ID No. ")
-    room_temp1 = fields.Float(string="Temperature during test", digits=(12,2))
-    relative_humidity1= fields.Float(string="Relative humidity during test ", digits=(12,2))
+    room_temp1 = fields.Float(string="Temperature during test", digits=(12,2) ,required=True)
+    relative_humidity1= fields.Float(string="Relative humidity during test ", digits=(12,2) ,required=True)
     depth = fields.Char(string="Depth")
     stone_type1 = fields.Char(string="Type of Stone")
 
@@ -472,8 +472,8 @@ class CompressiveDryLine(models.Model):
     blue_input = fields.Boolean(default=True,invisible=True)
     date = fields.Date(string="Date")
     lab_id = fields.Char(string="Lab ID No.) ")
-    room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2))
-    relative_humidity = fields.Float(string="Relative Humidity (%) ", digits=(12,2))
+    room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2),required=True)
+    relative_humidity = fields.Float(string="Relative Humidity (%) ", digits=(12,2),required=True)
     functional_check = fields.Char(string="Functional Checks ")
     stone_type = fields.Char(string="Type of stone) ")
     shape_stone = fields.Char(string="Shape of test piece (Cube/Cylinder) ")
@@ -598,8 +598,8 @@ class CompressiveWetLine(models.Model):
     # sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
     date = fields.Date(string="Date")
     lab_id = fields.Char(string="Lab ID No.) ")
-    room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2))
-    relative_humidity = fields.Float(string="Relative Humidity (%) ", digits=(12,2))
+    room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2),required=True)
+    relative_humidity = fields.Float(string="Relative Humidity (%) ", digits=(12,2),required=True)
     functional_check = fields.Char(string="Functional Checks ")
     stone_type = fields.Char(string="Type of stone) ")
     shape_stone = fields.Char(string="Shape of test piece (Cube/Cylinder) ")

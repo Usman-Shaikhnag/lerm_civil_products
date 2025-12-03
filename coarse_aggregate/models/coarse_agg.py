@@ -91,28 +91,18 @@ class CoarseAggregateMechanical(models.Model):
         # ---- compute fields (unit बदलल्यावर update)
     def _compute_units(self):
         for rec in self:
-            # rec.average_crushing_value_unit = rec._get_unit("ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71")
-            # rec.average_impact_value_unit = rec._get_unit("2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2")
+           
             rec.avg_compacted_unit     = rec._get_unit("357f579d-a310-4015-bc11-28a85c53ac83")
-            # rec.avg_bulk_density_unit   = rec._get_unit("65a41d1f-d557-438e-8fd1-2c619a334d02")
-            # rec.aggregate_elongation_unit   = rec._get_unit("9effe915-e5a3-45a7-aaeb-10caababd667")
-            # rec.aggregate_flakiness_unit   = rec._get_unit("be7a60bc-bb2c-410d-b91a-4f8730a4ac6f")
-            # rec.avg_specific_gravity_unit   = rec._get_unit("3114db41-cfa7-49ad-9324-fcdbc9661038")
-            # rec.avg_water_absorption_unit   = rec._get_unit("22ee804f-41a3-4fd1-a301-a8d9180fba10")
+           
 
     # ---- default values (create mode मध्ये दिसण्यासाठी)
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
         res.update({
-            # 'average_crushing_value_unit':   self._get_unit("ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71"),
-            # 'average_impact_value_unit': self._get_unit("2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2"),
+           
             'avg_compacted_unit':     self._get_unit("357f579d-a310-4015-bc11-28a85c53ac83"),
-            # 'avg_bulk_density_unit':   self._get_unit("65a41d1f-d557-438e-8fd1-2c619a334d02"),
-            # 'aggregate_elongation_unit':   self._get_unit("9effe915-e5a3-45a7-aaeb-10caababd667"),
-            # 'aggregate_flakiness_unit':   self._get_unit("be7a60bc-bb2c-410d-b91a-4f8730a4ac6f"),
-            # 'avg_specific_gravity_unit':   self._get_unit("3114db41-cfa7-49ad-9324-fcdbc9661038"),
-            # 'avg_water_absorption_unit':   self._get_unit("22ee804f-41a3-4fd1-a301-a8d9180fba10"),
+           
         })
         return res
 
@@ -145,8 +135,8 @@ class CoarseAggregateMechanical(models.Model):
 
     # Crushing Value 
 
-    temp_crushing_value = fields.Char(string="Temp.°C")
-    humidity_crushing_value= fields.Char(string="Humidity %")
+    temp_crushing_value = fields.Char(string="Temp.°C",required=True)
+    humidity_crushing_value= fields.Char(string="Humidity %" ,required=True)
 
     crushing_value_name = fields.Char("Name",default="Crushing Value")
     crushing_visible = fields.Boolean("Crushing Visible",compute="_compute_visible")
@@ -269,8 +259,8 @@ class CoarseAggregateMechanical(models.Model):
 
 
     # Specific Gravity 
-    temp_specific_water = fields.Char(string="Temp.°C")
-    humidity_specific_water= fields.Char(string="Humidity %")
+    temp_specific_water = fields.Char(string="Temp.°C" ,required=True )
+    humidity_specific_water= fields.Char(string="Humidity %" ,required=True)
 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
@@ -502,8 +492,8 @@ class CoarseAggregateMechanical(models.Model):
 
     # Impact Value 
 
-    temp_impact_value = fields.Char(string="Temp.°C")
-    humidity_impact_value= fields.Char(string="Humidity %")
+    temp_impact_value = fields.Char(string="Temp.°C" ,required=True)
+    humidity_impact_value= fields.Char(string="Humidity %" ,required=True)
 
     impact_value_name = fields.Char("Name",default=" Impact Value")
     impact_visible = fields.Boolean("Impact Visible",compute="_compute_visible")
@@ -654,8 +644,8 @@ class CoarseAggregateMechanical(models.Model):
    
     # !0% Fine Value
 
-    temp_fine_value = fields.Char(string="Temp.°C")
-    humidity_fine_value= fields.Char(string="Humidity %")
+    temp_fine_value = fields.Char(string="Temp.°C" ,required=True)
+    humidity_fine_value= fields.Char(string="Humidity %" ,required=True) 
 
     name_10fine = fields.Char(default="10% Fine Value")
     fine10_visible = fields.Boolean("10% Fine Visible",compute="_compute_visible")
@@ -825,8 +815,8 @@ class CoarseAggregateMechanical(models.Model):
 
 
      #  Elongation Index
-    temp_elongation = fields.Char(string="Temp.°C")
-    humidity_elongation= fields.Char(string="Humidity %")
+    temp_elongation = fields.Char(string="Temp.°C" ,required=True)
+    humidity_elongation= fields.Char(string="Humidity %" ,required=True)
 
     elongation_name = fields.Char(default="Elongation Index")
     elongation_visible = fields.Boolean(compute="_compute_visible")
@@ -961,8 +951,8 @@ class CoarseAggregateMechanical(models.Model):
 
     # Flakiness Index 
 
-    temp_flakiness = fields.Char(string="Temp.°C")
-    humidity_flakiness= fields.Char(string="Humidity %")
+    temp_flakiness = fields.Char(string="Temp.°C" ,required=True)
+    humidity_flakiness= fields.Char(string="Humidity %" ,required=True)
 
     flakiness_name = fields.Char("Name",default="Flakiness Index")
     flakiness_visible = fields.Boolean("Flakiness Visible",compute="_compute_visible")
@@ -1103,8 +1093,8 @@ class CoarseAggregateMechanical(models.Model):
 
     # Compacted  Or Rodded Density
 
-    temp_density = fields.Char(string="Temp.°C")
-    humidity_density= fields.Char(string="Humidity %")
+    temp_density = fields.Char(string="Temp.°C" ,required=True)
+    humidity_density= fields.Char(string="Humidity %" ,required=True)
 
 
     compacted_density_name = fields.Char("Name",default="Compacted Density ")
@@ -1423,8 +1413,8 @@ class CoarseAggregateMechanical(models.Model):
 
   # Rate of Evaporation
 
-    temp_evaporation = fields.Char(string="Temp.°C")
-    humidity_evaporation= fields.Char(string="Humidity %")
+    temp_evaporation = fields.Char(string="Temp.°C" ,required=True)
+    humidity_evaporation= fields.Char(string="Humidity %" ,required=True)
 
     rate_of_evaporation_name = fields.Char(default="Rate of Evaporation")
 
@@ -1507,8 +1497,8 @@ class CoarseAggregateMechanical(models.Model):
 
     # Abrasion Value
 
-    temp_abrasion_value = fields.Char(string="Temp.°C")
-    humidity_abrasion_value= fields.Char(string="Humidity %")
+    temp_abrasion_value = fields.Char(string="Temp.°C" ,required=True)
+    humidity_abrasion_value= fields.Char(string="Humidity %" ,required=True)
 
 
     abrasion_value_name = fields.Char("Name",default="Abrasion Value By Los Angeles+")
@@ -1658,8 +1648,8 @@ class CoarseAggregateMechanical(models.Model):
 
 
     # Sieve Analysis 
-    temp_sieve_analysis = fields.Char(string="Temp.°C")
-    humidity_sieve_analysis= fields.Char(string="Humidity %")
+    temp_sieve_analysis = fields.Char(string="Temp.°C" ,required=True)
+    humidity_sieve_analysis= fields.Char(string="Humidity %" ,required=True)
     
     weight_of_sample = fields.Float(string="Weight of Sample in gms")
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
@@ -1692,82 +1682,7 @@ class CoarseAggregateMechanical(models.Model):
             
         ]
         return default_lines
-
-
-
-
-    # def default_get(self, fields):
-    #     print("From Default Value")
-    #     res = super(CoarseAggregateMechanical, self).default_get(fields)
-    #     default_sieve_sizes = []
-        
-    #     # Safely get eln_ref with default None if not exists
-    #     eln_ref = res.get('eln_ref') 
-        
-    #     if eln_ref:
-    #         eln = self.env['lerm.eln'].sudo().browse(eln_ref)
-    #         if not eln.exists():
-    #             return res
-                
-    #         size_str = eln.size_id.size or ''
-    #         grade_str = (eln.grade_id.grade or '').lower()
-            
-    #         # Define mappings
-    #         if grade_str == 'single sized aggregate':
-    #             sieve_mapping = {
-                   
-    #                 '20': ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
-    #                 '16': ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-    #                 '12': ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-    #                 '10': ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
-    #                 '31.5': ['37.5 mm', '31.5 mm', '26.5 mm' , '19 mm', 'pan'],
-    #                 '19': ['37.5 mm', '31.5 mm', '26.5 mm' , '19 mm', 'pan'],
-    #             }
-                
-    #         # elif grade_str == 'graded aggregate':
-    #         #     sieve_mapping = {
-    #         #         '40': ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
-    #         #         '20': ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
-    #         #         '16': ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-    #         #         '12': ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-    #         #         '31.5': ['37.5 mm', '31.5 mm', '16mm' , '4.75 mm', 'pan'],
-    #         #         '19': ['22.4 mm', '19 mm','13.2 mm', '4.75 mm',  'pan'],
-    #         #     }
-    #         #     specific_limits_mapping = {
-    #         #         '40': ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
-    #         #         '20': ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
-    #         #         '16': ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
-    #         #         '12': ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
-    #         #         '31.5': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-    #         #         '19': ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-    #         #     }
-    #         else:
-    #             return res
-
-    #         # Extract numeric part
-    #         # match = re.search(r'\d+', size_str)
-    #         match = re.search(r'\d+(\.\d+)?', size_str)
-    #         if match:
-    #             # number = int(match.group())
-    #             number = match.group().strip()
-    #             sieve_list = sieve_mapping.get(number, [])
-    #             specific_limits = specific_limits_mapping.get(number, [])
-                
-              
-                    
-    #             # Create sieve analysis lines
-    #             for sieve_size, specific_limit in zip(sieve_list, specific_limits):
-    #                 size = {
-    #                     'sieve_size': sieve_size,
-    #                     'specific_limits': specific_limit,
-    #                 }
-    #                 default_sieve_sizes.append((0, 0, size))
-                
-    #             res['sieve_analysis_child_lines'] = default_sieve_sizes
-
-    #     return res
-
-
+    
 
     def default_get(self, fields):
         print("From Default Value")
@@ -1807,60 +1722,7 @@ class CoarseAggregateMechanical(models.Model):
 
         return res
 
-    # def _get_limits(self):
-
-    #     # IS:383 – 2016
-    #     is_383_2016 = {
-    #         '10': ['100', '85-100', '0-20', '0-5', '0'],
-    #         '20': ['100', '85-100', '0-20', '0-5', '0'],
-    #     }
-
-    #     # IRC:15 – 2017
-    #     irc_15_2017 = {
-    #         '31.5': ['100', '90-100', '85-95', '68-88', '0'],
-    #         '19':   ['100', '100', '100', '90-100', '0'],
-    #     }
-
-    #     limits_dict = {
-    #         'is_383_2016': is_383_2016,
-    #         'irc_15_2017': irc_15_2017,
-    #     }.get(self.standard_type, {})
-
-    #     # Extract number from size (like "20 mm" → "20")
-    #     selected_size = None
-    #     if self.size_id and self.size_id.size:
-    #         m = re.search(r'\d+(\.\d+)?', self.size_id.size)
-    #         if m:
-    #             selected_size = m.group()
-
-    #     return limits_dict.get(selected_size, [])
-
-    # # ------------------------------------------------
-    # # ONCHANGE — UI update only (NOT permanent save)
-    # # ------------------------------------------------
-    # @api.onchange('standard_type')
-    # def _onchange_standard_type(self):
-
-    #     limit_values = self._get_limits()
-
-    #     # UI update only
-    #     for line, limit in zip(self.sieve_analysis_child_lines, limit_values):
-    #         line.specific_limits = limit
-
-    # # ------------------------------------------------
-    # # WRITE → Permanent Save (DB SAVE FIX)
-    # # ------------------------------------------------
-    # def write(self, vals):
-    #     result = super().write(vals)
-
-    #     for record in self:
-    #         limit_values = record._get_limits()
-
-    #         for line, limit in zip(record.sieve_analysis_child_lines, limit_values):
-    #             line.write({'specific_limits': limit})
-
-    #     return result
-
+   
 
 
     def _get_limits(self):
@@ -2164,8 +2026,8 @@ class CoarseAggregateMechanical(models.Model):
 
      #  Soundness Test 
 
-    temp_soudness = fields.Char(string="Temp.°C")
-    humidity_soudness= fields.Char(string="Humidity %")
+    temp_soudness = fields.Char(string="Temp.°C" ,required=True)
+    humidity_soudness= fields.Char(string="Humidity %" ,required=True)
 
     soudness_name = fields.Char("Name",default="Soundness Test ")
     soudness_visible = fields.Boolean("Soundness Test",compute="_compute_visible")
