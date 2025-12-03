@@ -24,7 +24,7 @@
                                 <td style="text-align:left;">
                                   <t t-foreach="o.material.report_header_ids" t-as="hdr">
                                         <t t-if="hdr.is_active">
-                                            Issue No : (<span t-esc="hdr.issue_no"/>) <br></br>
+                                            Issue No : <span t-esc="hdr.issue_no"/> <br></br>
                                             Date : <span t-esc="hdr.issue_date.strftime('%d/%m/%y') if hdr.issue_date else ''"/>
                                         </t>
                                     </t>
@@ -32,7 +32,7 @@
                                 <td style="text-align:left;">
                                  <t t-foreach="o.material.report_header_ids" t-as="hdr">
                                         <t t-if="hdr.is_active">
-                                            Revision No : (<span t-esc="hdr.revision_no"/>) <br></br>
+                                            Revision No : <span t-esc="hdr.revision_no"/><br></br>
                                             Date : <span t-esc="hdr.revision_date.strftime('%d/%m/%y') if hdr.revision_date else ''"/>
                                         </t>
                                     </t>
@@ -92,10 +92,10 @@
 			
 					<table >
 						<tr colspan="12">
-							<td colspan="3" style="width: 9%;">Report no :
+							<td colspan="3" style="width: 8.5%;">Report no :
 							</td>
 							
-							<td colspan="3" style="width: 9%;">
+							<td colspan="3" style="width: 7%;">
 								<span t-field="o.kes_no"/>
 							</td>
 							

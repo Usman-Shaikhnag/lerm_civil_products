@@ -107,6 +107,7 @@ class ELN(models.Model):
     tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature")
     
     quantity = fields.Integer(string="Quantity")
+    source_sample = fields.Char(string="Source of Sample",compute="_compute_source_sample",store=True)
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")
     quantity_consumed = fields.Integer(string="Quantity Consumed")
@@ -170,6 +171,11 @@ class ELN(models.Model):
                 record.casting_date = record.sample_id.date_casting
             else:
                 record.casting_date = None
+
+    @api.depends('sample_id', 'sample_id.source_sample')
+    def _compute_source_sample(self):
+        for rec in self:
+            rec.source_sample = rec.sample_id.source_sample or ''
 
     @api.onchange('start_date', 'srf_date')
     def _start_date_validate(self):
@@ -405,6 +411,7 @@ class ELN(models.Model):
         sample_id.write({
             'state':'3-pending_verification',
             'quantity':self.quantity,
+            'source_sample':self.source_sample,
             'uom_id':self.uom_id.id,
             'quantity_received':self.quantity_received,
             'quantity_consumed':self.quantity_consumed,
@@ -414,6 +421,7 @@ class ELN(models.Model):
         sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.sample_id.id)])
         sample_register.write({
             'quantity':self.quantity,
+            'source_sample':self.source_sample,
             'uom_id':self.uom_id.id,
             'quantity_received':self.quantity_received,
             'quantity_consumed':self.quantity_consumed,

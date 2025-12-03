@@ -22,6 +22,7 @@ class ParameterMaster(models.Model):
     ir_model = fields.Many2one('ir.model',string="Model")
     test_method = fields.Many2one('lerm_civil.test_method',domain="[('product', '=', material)]",string="Parameter Test Method")
     discipline = fields.Many2one('lerm_civil.discipline',string="Discipline")
+    parameter_constant_id = fields.One2many("lerm.parameter.constant","parameter_id",string="Parameter Constant")
     nabl_select = fields.Selection([('nabl', 'NABL'), ('non_nabl', 'Non NABL')], string='NABL')
     group = fields.Many2one('lerm_civil.group',string="Group")
     parameter_table = fields.One2many('lerm.parameter.master.table','parameter_id',string="Material Table")
@@ -108,3 +109,12 @@ class ParameterMaster(models.Model):
         for record in self:
             if record.material:
                 record.size_ids = self.env['product.template'].search([('id','=', record.material.id)]).size_table
+
+
+class ParameterConstant(models.Model):
+    _name = 'lerm.parameter.constant'
+
+    parameter_id =  fields.Many2one('lerm.parameter.master',string="Parameters")
+
+    start_date = fields.Date(string="Date")
+    constant = fields.Float(string="Parameter Constant")
