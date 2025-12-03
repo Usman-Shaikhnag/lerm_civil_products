@@ -21,9 +21,19 @@
                     <style>
                         .blue-input input {
                             background-color: #d8ecff !important;   /* हलका Blue background */
-                            border-color: #3b82f6 !important;       /* Blue border */
-                            
+                            border-color: #3b82f6 !important;        /* Blue border */ 
                         }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
                     </style>
 
                        
@@ -158,7 +168,12 @@
                         <field name="child_lines" nolabel="1" class="custom_table_borders" invisible="status_7days == False">
                             <tree editable="bottom">
                                 <field name='sr_no' string="Sr. NO"/>
+<<<<<<< HEAD
+
+
                                 <field name='id_mark' string="Identification Mark" width="100"/>
+
+
                                 <field name="dt_of_casting_formatted" string="Date of Casting" width="100"/>
                                 <field name='days' string="Age (days)"/>
                                 <field name="dt_of_testing1_formatted" string="Date of Testing" width="100"/>
@@ -169,8 +184,23 @@
                                 <field name='diameter'   string="Diameter (mm)"/>
                                 <field name='width'  string="width (mm)"/>
 
-                                <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]"/>
-                                <field name="load" string="Load (kN)"/>
+
+                                
+=======
+                                <field name='id_mark' string="Identification Mark" class="blue-input" decoration-info="id_mark != 0"/>
+                                <field name="dt_of_casting_formatted" string="Date of Casting" class="blue-input" decoration-info="dt_of_casting_formatted != 0"/>
+                                <field name='days' string="Age (days)" class="blue-input" decoration-info="days != 0"/>
+                                <field name="dt_of_testing1_formatted" string="Date of Testing" class="blue-input" decoration-info="dt_of_testing1_formatted != 0"/>
+                                <field name='room_temp' string="Room Temp (°C)" class="blue-input" decoration-info="room_temp != 0"/>
+                                <field name='relative_humidity' string="Relative Humidity (RH) (%)" class="blue-input" decoration-info="relative_humidity != 0"/>
+                                <field name='wt_sample' string="Weight (gms)" class="blue-input" decoration-info="wt_sample != 0"/>
+                                <field name='length' string="Length (mm)" class="blue-input" decoration-info="length != 0"/>
+                                <field name='diameter' string="Diameter (mm)" class="blue-input" decoration-info="diameter != 0"/>
+                                <field name='width'  string="width (mm)" class="blue-input" decoration-info="width != 0"/>
+>>>>>>> 72f6cc06393a9099050968a97be1dfe00501f04c
+
+                                <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]" />
+                                <field name="load" string="Load (kN)" class="blue-input" decoration-info="load != 0"/>
                                 <field name='compressive_strength' string="Strength (N/mm²)" readonly="1" digits ="[16,2]"/>
                                 <!-- <field name='avg_compressive_strength' string="Avg Strength (N/mm²)" readonly="1"/>   -->
                                 <field name='type_of_failure' string="Type of Failure" width="100"/>

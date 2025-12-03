@@ -3,6 +3,7 @@ from odoo.exceptions import UserError,ValidationError
 import math
 
 
+
 class MechanicalBricksBurntClay(models.Model):
     _name = "mechanical.bricks.burnt.clay"
     _inherit = "lerm.eln"
@@ -85,8 +86,8 @@ class MechanicalBricksBurntClay(models.Model):
     compressive_strength_name = fields.Char("Name",default=" Compressive Strength")
     compressive_strength_visible = fields.Boolean("Compressive Strength",compute="_compute_visible")
 
-    temp_compressive_strength = fields.Char("Temp °c")
-    humidity_compressive_strength = fields.Char("Humidity %")
+    temp_compressive_strength = fields.Char("Temp °c" ,required=True)
+    humidity_compressive_strength = fields.Char("Humidity %" ,required=True)
 
     compressive_strength_child_lines = fields.One2many('mechanical.bricks.clay.compressive.line','parent_id',string="Compressive Strength Test" )
 
@@ -162,8 +163,8 @@ class MechanicalBricksBurntClay(models.Model):
     water_absorption_name = fields.Char("Name",default=" Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption",compute="_compute_visible")
 
-    temp_water_absorption = fields.Char("Temp °c")
-    humidity_water_absorption = fields.Char("Humidity %")
+    temp_water_absorption = fields.Char("Temp °c" ,required=True)
+    humidity_water_absorption = fields.Char("Humidity %" ,required=True)
 
     water_absorption_child_lines = fields.One2many('mechanical.bricks.clay.water.absorption.line','parent_id',string="Water Absorption Test")
 
@@ -247,8 +248,8 @@ class MechanicalBricksBurntClay(models.Model):
     height_name = fields.Char("Name",default="height")
     height_visible = fields.Boolean("height",compute="_compute_visible")
 
-    temp_dimension = fields.Char("Temp °c")
-    humidity_dimension = fields.Char("Humidity %")
+    temp_dimension = fields.Char("Temp °c" ,required=True)
+    humidity_dimension = fields.Char("Humidity %" ,required=True)
 
     
     length1 = fields.Float(string="Length  ")
@@ -490,53 +491,14 @@ class MechanicalBricksBurntClay(models.Model):
     efforescence_visible = fields.Boolean("Efforescence Visible",compute="_compute_visible")
     visual_observation_name_efforescence = fields.Char("Name",default="Efforescence")
 
-    temp_efforescence = fields.Char("Temp °c")
-    humidity_efforescence = fields.Char("Humidity %")
+    temp_efforescence = fields.Char("Temp °c" ,required=True)
+    humidity_efforescence = fields.Char("Humidity %" ,required=True)
 
 
     visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
 
             
 
-
-
-
-
-
-            
-            
-
-
-
-
-    
-
-   
-
-      
-
-
-        #-2----------efforescence Visual Observation 
-    # efforescence_visible = fields.Boolean("efforescence Visible",compute="_compute_visible")
-    # visual_observation_name_efforescence = fields.Char("Name",default="efforescence")
-    # visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    # visual_observation_2 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    # visual_observation_3 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    # visual_observation_4 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    # visual_observation_5 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-
-
-         #-3----------  Dimension As per IS: IS : 1077 -1992 
-
-    # dimension_visible = fields.Boolean("efforescence Visible",compute="_compute_visible")
-    # dimension_name1 = fields.Char("Name",default="Dimension (mm)")
-    # avrg_length = fields.Float(string="Average length")
-    # avrg_width = fields.Float(string="Average Width")
-    # avrg_height = fields.Float(string="Average Height")
-
-    
-
-    
 
 
     ### Compute Visible
@@ -647,9 +609,7 @@ class MechanicalBricksBurntClay(models.Model):
 
     @api.depends('eln_ref')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        
         for record in self:
             records = record.eln_ref.parameters_result.parameter.ids
             record.sample_parameters = records

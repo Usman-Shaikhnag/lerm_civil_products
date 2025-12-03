@@ -30,13 +30,24 @@
 
 
 
-                    <style>
+                     <style>
                         .blue-input input {
                             background-color: #d8ecff !important;   /* हलका Blue background */
-                            border-color: #3b82f6 !important;       /* Blue border */
-                            
+                            border-color: #3b82f6 !important;        /* Blue border */ 
                         }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
                     </style>
+
 
 
                     <div class="custom_table_borders" style="margin-top: 15px;">
@@ -102,6 +113,8 @@
                     <div invisible="sieve_visible == False">
                         <field name="sieve_analysis_child_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders ">
+                              <!-- <field name="blue_input" invisible="1"/> -->
+
                                 <field class="" name="serial_no" string="Sr.No"/>
                                 <field class="" name='sieve_size' string="IS Sieve Size"/>
                                 <field class="" name='wt_retained' string="Wt. Retained in gms"/>
@@ -638,12 +651,13 @@
                 <div invisible="soudness_visible == False">
                     <field name="soudness_child_lines" nolabel="1"  style="width:100%" >
                         <tree editable="bottom"  class="custom_table_borders">
+                          <!-- <field name="blue_input" invisible="1"/> -->
                             <field name="serial_no"/>
                             <field name="immersed_datetime"/>
-                            <field name="temp_solution" />
-                            <field name="specific_gravity_solution"/>
-                            <field name="removed_datetime"/>
-                             <field name="oven_datetime"/>
+                            <field name="temp_solution" class="blue-input" decoration-info="temp_solution != 0"/>
+                            <field name="specific_gravity_solution" class="blue-input" decoration-info="specific_gravity_solution != 0"/>
+                            <field name="removed_datetime" class="blue-input" decoration-info="removed_datetime != 0"/>
+                             <field name="oven_datetime" class="blue-input" decoration-info="oven_datetime != 0"/>
                             <field name="hours_1"/>
                             <field name="hours_2"/>
                             <field name="hours_3"/>
@@ -677,14 +691,15 @@
                     
                     <field name="sieve_analysis_soundness_lines" invisible = "soudness_visible == False">
                         <tree editable="bottom" class="custom_table_borders">
+                          <!-- <field name="blue_input" invisible="1"/> -->
                             <field name="serial_no"/>
                             <field name="sieve_size"/>
                             <field name="particle_size"/>
-                            <field name="wt_retained"/>
+                            <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
                            
                             <field name="percent_retained"/>
                               <field name="wt_sample_testing"/>
-                              <field name="actual_wt"/>
+                              <field name="actual_wt" class="blue-input" decoration-info="actual_wt != 0"/>
                             <field name="cumulative_retained"/>
                             <field name="passing_percent"/>
                         </tree>
@@ -719,14 +734,15 @@
                     
                     <field name="ouantitative_soundness_lines" invisible = "soudness_visible == False">
                         <tree editable="bottom" class="custom_table_borders">
+                          <field name="blue_input" invisible="1"/>
                             <field name="serial_no"/>
                             <field name="size"/>
                             <field name="cycle"/>
                             <field name="original_sulphate"/>
                            
                             <field name="original_magnesiu"/>
-                              <field name="wt_sulhate"/>
-                              <field name="wt_manesium"/>
+                              <field name="wt_sulhate" decoration-info="blue_input"/>
+                              <field name="wt_manesium" decoration-info="blue_input"/>
                             <field name="loss_sulphae"/>
                             <field name="loss_manesium"/>
                         </tree>
@@ -754,8 +770,8 @@
                             <field name="grading_sulphate"/>
                            
                             <field name="sieve_magnesium"/>
-                              <field name="wt_fraction_sulhate"/>
-                              <field name="wt_fraction_manesium"/>
+                              <field name="wt_fraction_sulhate" class="blue-input" decoration-info="wt_fraction_sulhate != 0"/>
+                              <field name="wt_fraction_manesium" class="blue-input" decoration-info="wt_fraction_manesium != 0"/>
                             <field name="finalloss_sulphae"/>
                             <field name="final_loss_manesium"/>
                             <field name="avg_sulphae"/>

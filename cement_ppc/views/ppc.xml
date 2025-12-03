@@ -31,13 +31,24 @@
 
 
 
-                      <style>
+                    <style>
                         .blue-input input {
                             background-color: #d8ecff !important;   /* हलका Blue background */
-                            border-color: #3b82f6 !important;       /* Blue border */
-                            
+                            border-color: #3b82f6 !important;        /* Blue border */ 
                         }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
                     </style>
+
 
 
                     <div class="custom_table_borders" style="margin-top: 15px;">
@@ -81,6 +92,7 @@
                     </div>
 
 
+
                     <div invisible="not density_cement_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                        <tbody>
@@ -91,40 +103,40 @@
                          </tr>
                          <tr>
                            <td><label for="temp_water1">Temperature of Water Bath  when Flask kept in bath – 0C</label></td>
-                           <td><field  name="temp_water1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="temp_water2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_water1"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water1 != 0"/></td>
+                           <td><field  name="temp_water2"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water2 != 0"/></td>
                           </tr>
                          <tr>
                            <td><label for="temp_water_after1">Temperature of Water Bath  after One Hour when Flask kept in bath – 0C  </label></td>
-                           <td><field  name="temp_water_after1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="temp_water_after2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_water_after1"  colspan="1"  nolabel="1"  class="blue-input" decoration-info="temp_water_after1 != 0"/></td>
+                           <td><field  name="temp_water_after2"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water_after2 != 0"/></td>
                          </tr>
                          <tr> 
                            <td><label for="initial_kerosene1">Initial Level of Kerosene after one hour kept in Water Bath(A) – ml</label></td>
-                           <td><field  name="initial_kerosene1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="initial_kerosene2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="initial_kerosene1"  colspan="1"  nolabel="1"  class="blue-input" decoration-info="initial_kerosene1 != 0"/></td>
+                           <td><field  name="initial_kerosene2"  colspan="1"  nolabel="1" class="blue-input" decoration-info="initial_kerosene2 != 0"/></td>
                          </tr>
                       
                          <tr>
                            <td><label for="mass1">Mass of Cement Sample Added in Flask (M) – gms</label></td>
-                           <td><field  name="mass1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="mass2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="mass1"  colspan="1"  nolabel="1" class="blue-input"  decoration-info="mass1 != 0"/></td>
+                           <td><field  name="mass2"  colspan="1"  nolabel="1" class="blue-input"  decoration-info="mass2 != 0"/></td>
                          </tr>      
 
                          <tr>
                            <td><label for="temp_water_flask1">Temperature of water bath  when Flask kept in bath after Adding Cement – 0C</label></td>
-                           <td><field  name="temp_water_flask1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="temp_water_flask2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_water_flask1"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water_flask1 != 0"/></td>
+                           <td><field  name="temp_water_flask2"  colspan="1"  nolabel="1"  class="blue-input" decoration-info="temp_water_flask2 != 0"/></td>
                          </tr>      
                          <tr>
                            <td><label for="temp_water_one1">Temperature of water bath  after one hour when Flask kept in bath after Adding Cement – 0C</label></td>
-                           <td><field  name="temp_water_one1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="temp_water_one2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="temp_water_one1"  colspan="1"  nolabel="1"  class="blue-input" decoration-info="temp_water_one1 != 0"/></td>
+                           <td><field  name="temp_water_one2"  colspan="1"  nolabel="1"  class="blue-input" decoration-info="temp_water_one2 != 0"/></td>
                          </tr>      
                          <tr>
                            <td><label for="final_kerosene1">Final Level of Kerosene after one hour kept in water bath(B) – ml</label></td>
-                           <td><field  name="final_kerosene1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="final_kerosene2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="final_kerosene1"  colspan="1"  nolabel="1"  class="blue-input" decoration-info="final_kerosene1 != 0"/></td>
+                           <td><field  name="final_kerosene2"  colspan="1"  nolabel="1"  class="blue-input" decoration-info="final_kerosene2 != 0"/></td>
                          </tr>      
                          <tr>
                            <td><label for="displaced1">Displaced Volume after Adding Cement (V) = (B – A) – cm3</label></td>
@@ -147,24 +159,11 @@
 
                        </tbody>
                      </table>
-                    </div>
-
-
-
-                    
-
+                 </div>
 
                     <table invisible="density_cement_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
-                        <tbody>
-                            <!-- <tr>
-                                <td><label class="fw-bold" for="avg_density">Density of Cement</label></td>
-                                <td>
-                                    <field name="avg_density" nolabel="1"/>
-                                    <span>g/cm³</span>
-                                </td>
-                            </tr> -->
-                          
-                            <tr>
+                     <tbody>
+                        <tr>
                                 <td><label class="fw-bold" for="avg_density_conformity"> Conformity</label></td>
                                 <td>
                                     <field name="avg_density_conformity"
@@ -221,13 +220,13 @@
                         <field name="consistency_cement_lines" class="custom_table_borders">
                             <tree editable="bottom">
                                 <field name="serial_no"/>
-                                <field name="lab_id" width="100px"/>
+                                <field name="lab_id" width="100px"  class="blue-input" decoration-info="lab_id != 0"/>
                                 <!-- <field name="trial_no"/> -->
 
                                 <field name="mass_of_cement"  />
-                                <field name="water_added"  />
+                                <field name="water_added" class="blue-input" decoration-info="water_added != 0" />
                                 <field name="water_mix" />
-                                <field name="needle_penitration" />
+                                <field name="needle_penitration"  class="blue-input" decoration-info="needle_penitration != 0"/>
                                 <!-- <field name="duration"/> -->
                             </tree>
                         </field>
@@ -281,9 +280,9 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no"/>
                                 <field name="lab_id" width="100px"/>
-                                <field name="time_water_t1" />
-                                <field name="time_needle_t2" />
-                                <field name="time_needle_t3" />
+                                <field name="time_water_t1" class="blue-input" decoration-info="time_water_t1 != 0"/>
+                                <field name="time_needle_t2" class="blue-input" decoration-info="time_needle_t2 != 0"/>
+                                <field name="time_needle_t3" class="blue-input" decoration-info="time_needle_t3 != 0"/>
                                 <field name="initial" />
                                 <field name="final" />
                             </tree>
@@ -436,6 +435,7 @@
                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;" colspan="2">First Cement Bed</th>
                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;" colspan="2">Second Cement Bed</th>
                                     </tr>
+        
                                     <tr>
                                         <th></th>
                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 5px 10px;">Reading 1</th>
@@ -522,15 +522,14 @@
                       <field name="ppc_compressive_ids" nolabel="1" colspan="2">
                         <tree editable="bottom">
                           <field name="serial_no"/>
-                          <field name="lab_id" width="120"/>
-                          <field name="testing_period" width="120"/>
-                          <field name="casting_details"/>
-                           <field name="days"/>
+                          <field name="lab_id" width="120" class="blue-input" decoration-info="lab_id != 0"/>
+                          <field name="testing_period" width="120" class="blue-input" decoration-info="testing_period != 0"/>
+                          <field name="casting_details" class="blue-input" decoration-info="casting_details != 0"/>
+                         <field name="days" class="blue-input" decoration-info="days != 0"/>
                           <field name="testing_details" />
-                          <field name="cube_im" />
-                           <field name="length1"/>
-                          <field name="width1"/>
-                          <field name="load_failure" />
+                          <field name="cube_im" class="blue-input" decoration-info="cube_im != 0"/>
+                           <field name="length1" class="blue-input" decoration-info="length1 != 0"/>
+                          <field name="width1" class="blue-input" decoration-info="width1 != 0"/>
                           <field name="compressive_strength" />
                           <field name="avg_compressive_strength" />
                         </tree>
@@ -556,14 +555,14 @@
                         <tr>
                                 <td><label class="fw-bold" for="temp_3_days"></label></td>
                                 <td>
-                                    <field name="temp_3_days" nolabel="1"/>
+                                    <field name="temp_3_days" nolabel="1" class="blue-input"/>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_3_days"></label></td>
                                 <td>
-                                    <field name="humidity_3_days" nolabel="1"/>
+                                    <field name="humidity_3_days" nolabel="1" class="blue-input"/>
                                 </td>
                             </tr>
                             <tr>
@@ -604,14 +603,14 @@
                          <tr>
                                 <td><label class="fw-bold" for="temp_7_days"></label></td>
                                 <td>
-                                    <field name="temp_7_days" nolabel="1"/>
+                                    <field name="temp_7_days" nolabel="1" class="blue-input"/>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_7_days"></label></td>
                                 <td>
-                                    <field name="humidity_7_days" nolabel="1"/>
+                                    <field name="humidity_7_days" nolabel="1" class="blue-input"/>
                                 </td>
                             </tr>
                             <tr>
@@ -652,14 +651,14 @@
                          <tr>
                                 <td><label class="fw-bold" for="temp_28_days"></label></td>
                                 <td>
-                                    <field name="temp_28_days" nolabel="1"/>
+                                    <field name="temp_28_days" nolabel="1" class="blue-input"/>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_28_days"></label></td>
                                 <td>
-                                    <field name="humidity_28_days" nolabel="1"/>
+                                    <field name="humidity_28_days" nolabel="1" class="blue-input"/>
                                 </td>
                             </tr>
                             <tr>
@@ -727,11 +726,11 @@
                         <tree editable="bottom">
                           <field name="serial_no"/>
                           <!-- <field name="mould_no" /> -->
-                          <field name="intial_ref" />
-                          <field name="initial_reading"/>
+                          <field name="intial_ref" class="blue-input" decoration-info="intial_ref != 0"/>
+                          <field name="initial_reading" class="blue-input" decoration-info="initial_reading != 0"/>
                            <field name="intial_a"/>
-                          <field name="final_ref" />
-                          <field name="final_reading" />
+                          <field name="final_ref" class="blue-input" decoration-info="final_ref != 0"/>
+                          <field name="final_reading" class="blue-input" decoration-info="final_reading != 0"/>
                            <field name="final_b"/>
                           <field name="autoclave"/>
                           
@@ -810,10 +809,10 @@
                       <field name="ppc_le_method_ids" nolabel="1" colspan="2">
                         <tree editable="bottom">
                           <field name="serial_no"/>
-                          <field name="lab_id" width="100"/>
-                          <field name="mould_no"  width="100"/>
-                          <field name="intial_ref"/>
-                           <field name="final_reading"/>
+                          <field name="lab_id" width="100" class="blue-input" decoration-info="lab_id != 0"/>
+                          <field name="mould_no"  width="100" class="blue-input" decoration-info="mould_no != 0"/>
+                          <field name="intial_ref" class="blue-input" decoration-info="intial_ref != 0"/>
+                           <field name="final_reading" class="blue-input" decoration-info="final_reading != 0"/>
                           <field name="expansion" />
                           <field name="avg_expansion" />
 

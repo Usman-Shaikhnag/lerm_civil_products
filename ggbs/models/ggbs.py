@@ -94,8 +94,8 @@ class GgbsMechanical(models.Model):
     specific_gravity_name1 = fields.Char("Name",default="Density Test")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
-    temp_specific = fields.Float("Temp.°C")
-    humidity_specific= fields.Float("Humidity %")
+    temp_specific = fields.Char("Temp.°C" ,required=True)
+    humidity_specific= fields.Char("Humidity %")
 
     temp_water1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
     temp_water2 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
@@ -281,8 +281,8 @@ class GgbsMechanical(models.Model):
 
     sai1 = fields.Float(string="Slag Activity Index",digits=(12,2),compute="_compute_slag_activity_index")
 
-    temp_7day = fields.Float("7 Days Temp.°C")
-    humidity_7day= fields.Float("7 Days Humidity %")
+    temp_7day = fields.Char("7 Days Temp.°C" ,required=True)
+    humidity_7day= fields.Char("7 Days Humidity %" ,required=True)
 
     day_7_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -341,8 +341,8 @@ class GgbsMechanical(models.Model):
                         record.day_7_nabl = 'fail'
 
     sai2 = fields.Float(string="Slag Activity Index",digits=(12,2),compute="_compute_slag_activity_index")
-    temp_28day = fields.Float("28 Days Temp.°C")
-    humidity_28day= fields.Float("28 Days Humidity %")
+    temp_28day = fields.Char("28 Days Temp.°C" ,required=True)
+    humidity_28day= fields.Char("28 Days Humidity %" ,required=True)
 
     day_28_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -401,17 +401,7 @@ class GgbsMechanical(models.Model):
                     else:
                         record.day_28_nabl = 'fail'
 
-    # @api.depends('average_strength1', 'average_cement_strength1', 'average_strength2', 'average_cement_strength2')
-    # def _compute_slag_activity_index(self):
-    #     for rec in self:
-    #         rec.sai1 = 0.0
-    #         rec.sai2 = 0.0
-
-    #         if rec.average_cement_strength1:
-    #             rec.sai1 = (rec.average_strength1 / rec.average_cement_strength1) * 100
-
-    #         if rec.average_cement_strength2:
-    #             rec.sai2 = (rec.average_strength2 / rec.average_cement_strength2) * 100
+  
     @api.depends('average_strength1', 'average_cement_strength1', 'average_strength2', 'average_cement_strength2')
     def _compute_slag_activity_index(self):
         for rec in self:
@@ -470,8 +460,8 @@ class GgbsMechanical(models.Model):
     fineness_name = fields.Char("Name",default="Fineness by Blaines Air Permeability Method")
     fineness_visible = fields.Boolean("Fineness by Blaines Air Permeability Method Visible",compute="_compute_visible")
 
-    temp_fineness = fields.Float("Temp.°C")
-    humidity_fineness= fields.Float("Humidity %")
+    temp_fineness = fields.Char("Temp.°C" ,required=True)
+    humidity_fineness= fields.Char("Humidity %" ,required=True)
 
     density_cement = fields.Float(string="Density of Cement (g/cc)", digits=(12, 3))
     
@@ -496,16 +486,7 @@ class GgbsMechanical(models.Model):
 
     specific_surface_first = fields.Float(string="Specific Surface (First)",compute="_compute_specific_surface_first", store=True, digits=(12, 0))
 
-    # @api.depends('avg_time_first', 'apparatus_constant_first', 'density_cement')
-    # def _compute_specific_surface_first(self):
-    #     for rec in self:
-    #         if rec.avg_time_first and rec.apparatus_constant_first and rec.density_cement:
-    #             # Compute specific surface
-    #             rec.specific_surface_first = round(
-    #                 (521.08 * rec.apparatus_constant_first * sqrt(rec.avg_time_first)) / rec.density_cement / 10, 2
-    #             )
-    #         else:
-    #             rec.specific_surface_first = 0.0
+   
 
     @api.depends('avg_time_first', 'apparatus_constant_first', 'density_cement')
     def _compute_specific_surface_first(self):

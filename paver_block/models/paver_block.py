@@ -85,8 +85,8 @@ class PaverBlock(models.Model):
     thickness_name = fields.Char("Name",default="Thickness")
     thickness_visible = fields.Boolean("Thickness",compute="_compute_visible")
 
-    temp_dimension = fields.Char("Temp °c")
-    humidity_dimension = fields.Char("Humidity %")
+    temp_dimension = fields.Char("Temp °c" ,required=True)
+    humidity_dimension = fields.Char("Humidity %" ,required=True)
 
     dimension_child_lines = fields.One2many('paver.dimension.line','parent_id',string="Dimension Test")
 
@@ -280,8 +280,8 @@ class PaverBlock(models.Model):
     water_absorption_name = fields.Char("Name",default=" Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption",compute="_compute_visible")
 
-    temp_water_absorption = fields.Char("Temp °c")
-    humidity_water_absorption = fields.Char("Humidity %")
+    temp_water_absorption = fields.Char("Temp °c" ,required=True)
+    humidity_water_absorption = fields.Char("Humidity %" ,required=True)
 
     water_absorption_child_lines = fields.One2many('paver.water.absorption.line','parent_id',string="Water Absorption Test")
 
@@ -356,8 +356,8 @@ class PaverBlock(models.Model):
     compressive_strength_name = fields.Char("Name",default=" Compressive Strength")
     compressive_strength_visible = fields.Boolean("Compressive Strength",compute="_compute_visible")
 
-    temp_compressive_strength = fields.Char("Temp °c")
-    humidity_compressive_strength = fields.Char("Humidity %")
+    temp_compressive_strength = fields.Char("Temp °c" ,required=True)
+    humidity_compressive_strength = fields.Char("Humidity %" ,required=True)
 
     # correction_factore = fields.Float(string=" Correction Factor")
 
