@@ -57,6 +57,10 @@ class LabReport(models.Model):
     left_qr_image = fields.Binary(string="Left QR Image", readonly=True)
     right_qr_image = fields.Binary(string="Right QR Image", readonly=True)
 
+    left_qr_boolean = fields.Boolean(string="Nabl Scope Link",default=True)
+    right_qr_boolean = fields.Boolean(string="Report Link",default=True)
+
+
     access_token = fields.Char(string="Access Token", readonly=True)
 
     state = fields.Selection(
@@ -71,18 +75,18 @@ class LabReport(models.Model):
     # ---------------------------------------------------------------------
     # COMPUTE URLS
     # ---------------------------------------------------------------------
-    @api.depends("nabl_scope_id", "nabl_scope_id.nabl_scope_link", "final_pdf_filename","ulr","name","original_pdf",)
+    @api.depends("nabl_scope_id", "nabl_scope_id.nabl_scope_link", "final_pdf_filename","ulr","name","original_pdf","left_qr_boolean","right_qr_boolean")
     def _compute_qr_urls(self):
         base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
         for report in self:
             # Left QR = NABL scope link
-            if report.nabl_scope_id and report.nabl_scope_id.nabl_scope_link:
+            if (report.left_qr_boolean and report.nabl_scope_id and report.nabl_scope_id.nabl_scope_link):
                 report.qr_left_url = report.nabl_scope_id.nabl_scope_link
             else:
                 report.qr_left_url = ""
 
             # Right QR = same URL as the Download button
-            if base_url and report.id:
+            if report.right_qr_boolean and base_url and report.id:
                 # predict filename same as in action_generate_qr_pdf
                 filename = report.final_pdf_filename or (report.ulr or report.name or "report") + "-with-qr.pdf"
                 # report.qr_right_url = f"{base_url}/lab_report_qr/download/{report.id}?filename={filename}"
@@ -237,13 +241,26 @@ class LabReport(models.Model):
             if not original_pdf_bytes:
                 continue
 
-            left_qr_bytes = report._generate_qr_png(report.qr_left_url)
-            right_qr_bytes = report._generate_qr_png(report.qr_right_url)
+            left_qr_bytes = (
+                report._generate_qr_png(report.qr_left_url)
+                if report.left_qr_boolean
+                else b""
+            )
+            right_qr_bytes = (
+                report._generate_qr_png(report.qr_right_url)
+                if report.right_qr_boolean
+                else b""
+            )
 
             if left_qr_bytes:
                 report.left_qr_image = base64.b64encode(left_qr_bytes)
+            else:
+                report.left_qr_image = False
+
             if right_qr_bytes:
                 report.right_qr_image = base64.b64encode(right_qr_bytes)
+            else:
+                report.left_qr_image = False
 
             if not left_qr_bytes and not right_qr_bytes:
                 report.final_pdf = report.original_pdf
@@ -327,7 +344,6 @@ class LabReport(models.Model):
         Always regenerate based on current settings, then download.
         """
         self.ensure_one()
-
         if self.original_pdf or self.original_pdf_ftp_path:
             self.action_generate_qr_pdf()
 
@@ -348,15 +364,6 @@ class LabReport(models.Model):
         if self.original_pdf or self.original_pdf_ftp_path:
             self.action_generate_qr_pdf()
 
-        # return {
-        #     "type": "ir.actions.act_window",
-        #     "res_model": "lab.report",
-        #     "view_mode": "tree,form",
-        #     "target": "current",
-        #     "name": "Lab Reports",
-        # }
-        # Return the lab.report list action
         action = self.env.ref("report_qr.action_lab_report").read()[0]
-        # Just to be explicit: open in list, not on this record
         action["res_id"] = False
         return action

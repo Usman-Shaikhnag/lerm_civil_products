@@ -19,6 +19,8 @@ class LabReportWizard(models.TransientModel):
     )
     original_pdf = fields.Binary(string="Upload PDF", required=True)
     original_pdf_filename = fields.Char(string="Filename")
+    left_qr_boolean = fields.Boolean(string="Nabl Scope Link",default=True)
+    right_qr_boolean = fields.Boolean(string="Report Link",default=True)
 
     def action_create_report(self):
         self.ensure_one()
@@ -33,6 +35,8 @@ class LabReportWizard(models.TransientModel):
                 "qr_position": self.qr_position,
                 "original_pdf": self.original_pdf,
                 "original_pdf_filename": self.original_pdf_filename,
+                "left_qr_boolean": self.left_qr_boolean,
+                "right_qr_boolean": self.right_qr_boolean,
             }
         )
 
