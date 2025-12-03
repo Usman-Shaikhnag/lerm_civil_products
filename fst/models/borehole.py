@@ -260,6 +260,8 @@ class ERTBorehole(models.Model):
                 "Inorganic-Clays": ("#5D8AA8", "x"), # Maps to CH pattern
                 "Organic-Clays": ("#4B371C", "/"),   # Maps to OH pattern
                 "Peat": ("#556B2F", "v"),            # Maps to PT pattern
+                "HR": ("#666666", "xx"),   # Hard Rock - dark + heavy crosshatch
+                "SR": ("#B0A080", "\\"),   # Soft Rock - lighter + single diagonal hatch
                 "DEFAULT": ("white", None),          # Default for unclassified or missing
             }
             
@@ -603,6 +605,9 @@ class SoilBoreholeNValue(models.Model):
         'OH': 'Organic-Clay',
         
         'PT': 'Peat',
+
+        'HR': 'Hard-Rock',
+        'SR': 'Soft-Rock',
     }
 
     # Reverse mapping
@@ -615,7 +620,7 @@ class SoilBoreholeNValue(models.Model):
             ('SW', 'SW'), ('SP', 'SP'), ('GW', 'GW'), ('GP', 'GP'), ('GM', 'GM'), ('GC', 'GC'),
             ('SM', 'SM'), ('SC', 'SC'),
             ('ML', 'ML'), ('CL', 'CL'), ('OL', 'OL'), ('MH', 'MH'), ('CH', 'CH'), ('OH', 'OH'),
-            ('PT', 'PT'),
+            ('PT', 'PT'), ('HR','HR'), ('SR','SR')
         ], string="Symbol")
 
     classification = fields.Selection([
@@ -634,6 +639,8 @@ class SoilBoreholeNValue(models.Model):
         ('Inorganic-Clay', 'Inorganic clays of high plasticity'),
         ('Organic-Clay', 'Organic clays'),
         ('Peat', 'Peat'),
+        ('Hard-Rock', 'Hard Rock'),
+        ('Soft-Rock', 'Soft Rock'),
     ], string="Classification")
 
     @api.onchange('symbol')

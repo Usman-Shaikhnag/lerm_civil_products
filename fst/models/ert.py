@@ -3,8 +3,155 @@ from odoo.exceptions import UserError,ValidationError
 import zipfile
 from PIL import Image, ImageEnhance, ImageDraw, ImageFont
 import io, base64, math, logging
+import matplotlib.pyplot as plt
+from matplotlib import patches as mpatches
 
 _logger = logging.getLogger(__name__)
+
+PATTERN_MAP_FOR_LEGEND = {
+    "GW": ("#B8B8A0", "."),
+    "GP": ("#B8B8A0", "o"),
+    "GM": ("#A0A080", "/."),
+    "GC": ("#909070", "+"),
+
+    "SW": ("#FFFF99", "\\\\"),
+    "SP": ("#FFFF66", "....."),
+    "SM": ("#E0E0A0", ".-"),
+    "SC": ("#DDAA88", "-."),
+
+    "ML": ("#D3D3D3", ":"),
+    "CL": ("#ADD8E6", "----"),
+    "OL": ("#7B68EE", "/-"),
+    "MH": ("#B0C4DE", "|||"),
+    "CH": ("#5D8AA8", "x"),
+    "OH": ("#4B371C", "/"),
+
+    "PT": ("#556B2F", "v"),
+
+    "HR": ("#666666", "xx"),  # Hard Rock
+    "SR": ("#B0A080", "\\"),  # Soft Rock
+    
+    "Inorganic-Clays": ("#5D8AA8", "x"),
+    "Organic-Clays": ("#4B371C", "/"),
+    "Peat": ("#556B2F", "v"),
+    
+    "DEFAULT": ("white", None),
+}
+
+
+def make_legend_image(legend_items):
+    """
+    legend_items: list of (facecolor, hatch, label)
+    Returns a PIL.Image or None.
+    """
+    if not legend_items:
+        return None
+
+    n = len(legend_items)
+    # Bigger per-row height so patterns are clear
+    fig_w, fig_h = 4, 0.5 * n   # width in inches, height in inches
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    ax.axis('off')
+
+    # We draw in a simple 0..1 × 0..n coordinate system
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, n)
+
+    for i, (facecolor, hatch, label) in enumerate(legend_items):
+        # draw from top to bottom
+        y = n - 1 - i
+
+        # Big rectangle for pattern
+        rect = mpatches.Rectangle(
+            (0.02, y + 0.15),   # x, y
+            0.20,               # width
+            0.7,                # height
+            facecolor=facecolor,
+            edgecolor='black',
+            hatch=hatch or '',
+            linewidth=1.0
+        )
+        ax.add_patch(rect)
+
+        # Text next to it
+        ax.text(
+            0.28, y + 0.5,
+            label,
+            va='center',
+            ha='left',
+            fontsize=9,
+        )
+
+    buf = io.BytesIO()
+    fig.savefig(buf, format='png', dpi=200, bbox_inches='tight', facecolor='white')
+    plt.close(fig)
+    buf.seek(0)
+
+    return Image.open(buf).convert('RGB')
+
+
+# def draw_hatch_pattern(base_img, bbox, hatch, line_color="black", spacing=4):
+#     """Approximate matplotlib hatches inside bbox using Pillow, clipped to box."""
+#     if not hatch:
+#         return
+
+#     x0, y0, x1, y1 = bbox
+#     # Ensure integer coordinates for PIL
+#     x0, y0, x1, y1 = map(int, (x0, y0, x1, y1))
+#     w = x1 - x0
+#     h = y1 - y0
+#     if w <= 0 or h <= 0:
+#         return
+
+#     # Draw on a separate transparent layer (clipping to 0..w,0..h)
+#     layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+#     d = ImageDraw.Draw(layer)
+
+#     for ch in hatch:
+#         if ch == '/':
+#             for offset in range(-h, w, spacing):
+#                 d.line((offset, h, offset + h, 0), fill=line_color, width=1)
+
+#         elif ch == '\\':
+#             for offset in range(-h, w, spacing):
+#                 d.line((offset, 0, offset + h, h), fill=line_color, width=1)
+
+#         elif ch == '-':
+#             for y in range(0, h, spacing):
+#                 d.line((0, y, w, y), fill=line_color, width=1)
+
+#         elif ch == '|':
+#             for x in range(0, w, spacing):
+#                 d.line((x, 0, x, h), fill=line_color, width=1)
+
+#         elif ch == 'x':
+#             for offset in range(-h, w, spacing):
+#                 d.line((offset, h, offset + h, 0), fill=line_color, width=1)
+#                 d.line((offset, 0, offset + h, h), fill=line_color, width=1)
+
+#         elif ch in ('.', ':'):
+#             for y in range(0, h, spacing):
+#                 for x in range(0, w, spacing):
+#                     d.ellipse((x, y, x + 1, y + 1), fill=line_color)
+
+#         elif ch == 'o':
+#             r = 2
+#             for y in range(0, h, spacing * 2):
+#                 for x in range(0, w, spacing * 2):
+#                     d.ellipse((x, y, x + r, y + r),
+#                               outline=line_color, width=1)
+
+#         elif ch == 'v':
+#             for y in range(0, h, spacing * 2):
+#                 for x in range(0, w, spacing * 2):
+#                     d.line((x, y, x + 2, y + 3), fill=line_color, width=1)
+#                     d.line((x + 4, y, x + 2, y + 3),
+#                            fill=line_color, width=1)
+
+#     # Paste pattern layer back onto the base image, clipped by its alpha
+#     base_img.paste(layer, (x0, y0), layer)
+
+
 
 class LermErtParent(models.Model):
     _name = "lerm.ert.parent"
@@ -206,26 +353,6 @@ class SoilBoreholeParent(models.Model):
             }
         }
     
-        
-    # @api.model
-    # def get_react_base_url(self):
-    #     """Detect React app URL dynamically."""
-    #     # Check system parameter if set, fallback to localhost:3000
-    #     param = self.env['ir.config_parameter'].sudo().get_param('react_app_url', 'http://localhost:3000')
-    #     return param
-
-    # def action_open_react(self):
-    #     base_url = self.get_react_base_url()
-    #     for rec in self:
-    #         url = f"{base_url}/borehole/{rec.id}"
-    #         return {
-    #             'type': 'ir.actions.act_url',
-    #             'target': 'new',
-    #             'url': url,
-    #         }
-        
-
-    
     def print_report(self):
         report = self.env.ref('fst.borehole_report_py3o')
         filename = f"{self.name or 'ERT'}"
@@ -337,26 +464,7 @@ class SoilBoreholeParent(models.Model):
                 'borehole_lines.soil_borehole_id.nvalue_ids.classification',
                 'borehole_lines.soil_borehole_id.nvalue_ids.symbol')
     def _compute_combined_images(self):
-        
-        # Same soil color scheme as in generate_borehole_graph (pattern_map)
-        SYMBOL_COLOR_MAP = {
-            "GW": "#B8B8A0",
-            "GP": "#B8B8A0",
-            "GM": "#A0A080",
-            "GC": "#909070",
-            "SW": "#FFFF99",
-            "SP": "#FFFF66",
-            "SM": "#E0E0A0",
-            "SC": "#DDAA88",
-            "ML": "#D3D3D3",
-            "CL": "#ADD8E6",
-            "OL": "#7B68EE",
-            "MH": "#B0C4DE",
-            "CH": "#5D8AA8",
-            "OH": "#4B371C",
-            "PT": "#556B2F",
-        }
-
+    
         # Classification code -> human-friendly name + symbol for legend
         CLASSIFICATION_INFO = {
             'Poorly_Graded': ("Poorly graded sand", "SP"),
@@ -373,7 +481,9 @@ class SoilBoreholeParent(models.Model):
             'Inorganic-Silt': ("Inorganic silts", "MH"),
             'Inorganic-Clay': ("Inorganic clays (high plasticity)", "CH"),
             'Organic-Clay': ("Organic clays", "OH"),
-            'Peat': ("Peat", "PT"),
+            'Peat': ("Peat", "PT"),        
+            'Hard-Rock': ("Hard Rock", "HR"),
+            'Soft-Rock': ("Soft Rock", "SR"),
         }
         ImageModel = self.env['soil.borehole.parent.image']
 
@@ -428,13 +538,16 @@ class SoilBoreholeParent(models.Model):
             legend_items = []
             for cls_code in sorted(used_classifications):  # sort for stable ordering
                 friendly, symbol = CLASSIFICATION_INFO.get(cls_code, (cls_code, None))
-                color = SYMBOL_COLOR_MAP.get(symbol, "white")
-                # label text: e.g. "CL – Inorganic clays (low–med plasticity)"
                 if symbol:
-                    label = f"{symbol} – {friendly}"
+                    facecolor, hatch = PATTERN_MAP_FOR_LEGEND.get(symbol, PATTERN_MAP_FOR_LEGEND["DEFAULT"])
+                    label = f"{symbol} - {friendly}"
                 else:
+                    facecolor, hatch = PATTERN_MAP_FOR_LEGEND["DEFAULT"]
                     label = friendly
-                legend_items.append((color, label))
+
+                legend_items.append((facecolor, hatch, label))
+            
+            legend_img = make_legend_image(legend_items) if legend_items else None
 
             # If there is no classification data, we will simply not draw a legend.
             for idx, group in enumerate(chunks, start=1):
@@ -443,9 +556,7 @@ class SoilBoreholeParent(models.Model):
                 combined_w = cols * thumb_w
                 combined_h = rows * thumb_h
 
-                # --- 3. First, compose the main grid image ---
                 combined_img = Image.new('RGB', (combined_w, combined_h), color=(255, 255, 255))
-
                 for i, img in enumerate(group):
                     img = img.copy()
                     img.thumbnail((thumb_w, thumb_h))
@@ -464,63 +575,20 @@ class SoilBoreholeParent(models.Model):
 
                     combined_img.paste(final_thumbnail, (x, y))
 
-                # --- 4. Add legend at the bottom-right (only used classifications) ---
-                if legend_items:
-                    # Estimate legend height: one row per item
-                    line_height = 22
-                    top_padding = 8
-                    bottom_padding = 8
-                    legend_height = top_padding + bottom_padding + line_height * len(legend_items)
-
+                if legend_img:
                     # Extend canvas downward to fit legend
-                    final_h = combined_h + legend_height
+                    lg_w, lg_h = legend_img.size
+                    final_h = combined_h + lg_h + 20  # 10 px margin top/bottom
                     final_img = Image.new('RGB', (combined_w, final_h), color=(255, 255, 255))
                     final_img.paste(combined_img, (0, 0))
 
-                    draw = ImageDraw.Draw(final_img)
-                    font = ImageFont.load_default()
-
-                    margin = 10
-                    swatch_size = 16
-                    spacing = 6
-
-                    # Legend box area (anchored to bottom-right)
-                    box_width = min(420, combined_w - 2 * margin)  # cap width
-                    box_left = combined_w - box_width - margin
-                    box_top = combined_h + (legend_height - (line_height * len(legend_items) + top_padding + bottom_padding)) // 2
-                    box_right = combined_w - margin
-                    box_bottom = final_h - margin
-
-                    # Background & border
-                    draw.rectangle(
-                        [box_left, box_top, box_right, box_bottom],
-                        fill="white",
-                        outline="black",
-                        width=1,
-                    )
-
-                    # Draw each legend line
-                    y = box_top + top_padding
-                    x_swatch = box_left + 8
-                    x_text = x_swatch + swatch_size + spacing
-
-                    for color, label in legend_items:
-                        # Color swatch
-                        draw.rectangle(
-                            [x_swatch, y, x_swatch + swatch_size, y + swatch_size],
-                            fill=color,
-                            outline="black",
-                            width=1,
-                        )
-                        # Text
-                        draw.text((x_text, y), label, fill="black", font=font)
-                        y += line_height
-
+                    # Position legend at bottom-right (or center)
+                    x_legend = combined_w - lg_w - 10   # bottom-right
+                    y_legend = combined_h + 10
+                    final_img.paste(legend_img, (x_legend, y_legend))
                 else:
-                    # No legend → final image is just the combined grid
                     final_img = combined_img
 
-                # --- 5. Save to Binary and create record ---
                 buffer = io.BytesIO()
                 final_img.save(buffer, format="PNG")
                 img_base64 = base64.b64encode(buffer.getvalue())
@@ -530,6 +598,7 @@ class SoilBoreholeParent(models.Model):
                     'sequence': idx,
                     'image': img_base64,
                 })
+
 
 
 class SoilBoreholeParentImage(models.Model):
