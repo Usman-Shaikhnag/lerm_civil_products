@@ -145,7 +145,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="casting_date_7days"></label></td>
-                                    <td><field name="casting_date_7days"/></td>
+                                    <td><field name="casting_date_7days" class="blue-input"/></td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -154,7 +154,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="testing_date_7days"></label></td>
-                                    <td><field name="testing_date_7days" /> </td>
+                                    <td><field name="testing_date_7days" /></td>
                                 </tr>
                                 
                             </tbody>
@@ -162,48 +162,31 @@
                     </div>
 
                         
-                            
                        
                         <!-- Sample Test Results -->
                         <field name="child_lines" nolabel="1" class="custom_table_borders" invisible="status_7days == False">
                             <tree editable="bottom">
                                 <field name='sr_no' string="Sr. NO"/>
-<<<<<<< HEAD
 
 
-                                <field name='id_mark' string="Identification Mark" width="100"/>
 
-
-                                <field name="dt_of_casting_formatted" string="Date of Casting" width="100"/>
-                                <field name='days' string="Age (days)"/>
-                                <field name="dt_of_testing1_formatted" string="Date of Testing" width="100"/>
-                                <field name='room_temp' string="Room Temp (°C)"/>
-                                <field name='relative_humidity' string="Relative Humidity (RH) (%)"/>
-                                <field name='wt_sample' string="Weight (gms)"/>
-                                <field name='length' string="Length (mm)"/>
-                                <field name='diameter'   string="Diameter (mm)"/>
-                                <field name='width'  string="width (mm)"/>
-
-
-                                
-=======
-                                <field name='id_mark' string="Identification Mark" class="blue-input" decoration-info="id_mark != 0"/>
-                                <field name="dt_of_casting_formatted" string="Date of Casting" class="blue-input" decoration-info="dt_of_casting_formatted != 0"/>
+                                <field name='id_mark' string="Identification Mark" width="100" class="blue-input" decoration-info="id_mark != 0"/>
+                                <field name="dt_of_casting_formatted" string="Date of Casting" width="100" class="blue-input" decoration-info="dt_of_casting_formatted != 0"/>
                                 <field name='days' string="Age (days)" class="blue-input" decoration-info="days != 0"/>
-                                <field name="dt_of_testing1_formatted" string="Date of Testing" class="blue-input" decoration-info="dt_of_testing1_formatted != 0"/>
-                                <field name='room_temp' string="Room Temp (°C)" class="blue-input" decoration-info="room_temp != 0"/>
-                                <field name='relative_humidity' string="Relative Humidity (RH) (%)" class="blue-input" decoration-info="relative_humidity != 0"/>
+                                <field name="dt_of_testing1_formatted" string="Date of Testing" width="100" class="blue-input" decoration-info="dt_of_testing1_formatted != 0"/>
+                                <field name='room_temp' string="Room Temp (°C)" />
+                                <field name='relative_humidity' string="Relative Humidity (RH) (%)" />
                                 <field name='wt_sample' string="Weight (gms)" class="blue-input" decoration-info="wt_sample != 0"/>
                                 <field name='length' string="Length (mm)" class="blue-input" decoration-info="length != 0"/>
-                                <field name='diameter' string="Diameter (mm)" class="blue-input" decoration-info="diameter != 0"/>
+                                <field name='diameter'   string="Diameter (mm)" class="blue-input" decoration-info="diameter != 0"/>
                                 <field name='width'  string="width (mm)" class="blue-input" decoration-info="width != 0"/>
->>>>>>> 72f6cc06393a9099050968a97be1dfe00501f04c
+
 
                                 <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]" />
                                 <field name="load" string="Load (kN)" class="blue-input" decoration-info="load != 0"/>
                                 <field name='compressive_strength' string="Strength (N/mm²)" readonly="1" digits ="[16,2]"/>
-                                <!-- <field name='avg_compressive_strength' string="Avg Strength (N/mm²)" readonly="1"/>   -->
-                                <field name='type_of_failure' string="Type of Failure" width="100"/>
+
+                                <field name='type_of_failure' string="Type of Failure" width="100" class="blue-input" decoration-info="type_of_failure != 0"/>
                             </tree>
                                 </field> 
 
@@ -269,7 +252,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="room_temperature14">Room Temperature</label></td>
-                                    <td><field name="room_temperature14"/>°C</td>
+                                    <td><field name="room_temperature14" class="blue-input"/>°C</td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -278,7 +261,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="relative_humidity14">Relative Humidity</label></td>
-                                    <td><field name="relative_humidity14" /> %</td>
+                                    <td><field name="relative_humidity14" class="blue-input"/> %</td>
                                 </tr>
                                 
                             </tbody>
@@ -291,7 +274,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="casting_date_14days"></label></td>
-                                    <td><field name="casting_date_14days"/></td>
+                                    <td><field name="casting_date_14days" class="blue-input"/></td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -314,22 +297,22 @@
                         <field name="child_lines14day" nolabel="1" class="custom_table_borders" invisible="status_14days == False">
                             <tree editable="bottom">
                                 <field name='sr_no' string="Sr. NO"/>
-                                <field name='id_mark' string="Identification Mark" width="100"/>
-                                <field name="dt_of_casting_formatted" string="Date of Casting" width="100"/>
-                                <field name='days' string="Age (days)"/>
-                                <field name="dt_of_testing1_formatted" string="Date of Testing" width="100"/>
-                                <field name='room_temp' string="Room Temp (°C)"/>
-                                <field name='relative_humidity' string="Relative Humidity (RH) (%)"/>
-                                <field name='wt_sample' string="Weight (gms)"/>
-                                <field name='length' string="Length (mm)"/>
-                                <field name='diameter'   string="Diameter (mm)"/>
-                                <field name='width'  string="width (mm)"/>
+                                <field name='id_mark' string="Identification Mark" width="100" class="blue-input" decoration-info="id_mark != 0"/>
+                                <field name="dt_of_casting_formatted" string="Date of Casting" width="100" class="blue-input" decoration-info="dt_of_casting_formatted != 0"/>
+                                <field name='days' string="Age (days)" class="blue-input" decoration-info="days != 0"/>
+                                <field name="dt_of_testing1_formatted" string="Date of Testing" width="100" class="blue-input" decoration-info="dt_of_testing1_formatted != 0"/>
+                                <field name='room_temp' string="Room Temp (°C)" />
+                                <field name='relative_humidity' string="Relative Humidity (RH) (%)" />
+                                <field name='wt_sample' string="Weight (gms)" class="blue-input" decoration-info="wt_sample != 0"/>
+                                <field name='length' string="Length (mm)" class="blue-input" decoration-info="length != 0"/>
+                                <field name='diameter'   string="Diameter (mm)" class="blue-input" decoration-info="diameter != 0"/>
+                                <field name='width'  string="width (mm)" class="blue-input" decoration-info="width != 0"/>
 
                                 <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]"/>
-                                <field name="load" string="Load (kN)"/>
+                                <field name="load" string="Load (kN)" class="blue-input" decoration-info="load != 0"/>
                                 <field name='compressive_strength14' string="Strength (N/mm²)" readonly="1" digits ="[16,2]"/>
                                 <!-- <field name='average_strength14' string="Avg Strength (N/mm²)" readonly="1"/>   -->
-                                <field name='type_of_failure' string="Type of Failure" width="100"/>
+                                <field name='type_of_failure' string="Type of Failure" width="100" class="blue-input" decoration-info="type_of_failure != 0"/>
                             </tree>
                                 </field> 
 
@@ -391,7 +374,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="room_temperature28">Room Temperature</label></td>
-                                    <td><field name="room_temperature28"/>°C</td>
+                                    <td><field name="room_temperature28" class="blue-input"/>°C</td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -400,7 +383,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="relative_humidity28">Relative Humidity</label></td>
-                                    <td><field name="relative_humidity28" /> %</td>
+                                    <td><field name="relative_humidity28" class="blue-input"/> %</td>
                                 </tr>
                                 
                             </tbody>
@@ -413,7 +396,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="casting_date_28days"></label></td>
-                                    <td><field name="casting_date_28days"/></td>
+                                    <td><field name="casting_date_28days" class="blue-input"/></td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -436,22 +419,22 @@
                         <field name="child_lines28day" nolabel="1" class="custom_table_borders" invisible="status_28days == False">
                             <tree editable="bottom">
                                 <field name='sr_no' string="Sr. NO"/>
-                                <field name='id_mark' string="Identification Mark" width="100"/>
-                                <field name="dt_of_casting_formatted" string="Date of Casting" width="100"/>
-                                <field name='days' string="Age (days)"/>
-                                <field name="dt_of_testing1_formatted" string="Date of Testing" width="100"/>
-                                <field name='room_temp' string="Room Temp (°C)"/>
-                                <field name='relative_humidity' string="Relative Humidity (RH) (%)"/>
-                                <field name='wt_sample' string="Weight (gms)"/>
-                                <field name='length' string="Length (mm)"/>
-                                <field name='diameter'   string="Diameter (mm)"/>
-                                <field name='width'  string="width (mm)"/>
+                                <field name='id_mark' string="Identification Mark" width="100" class="blue-input" decoration-info="id_mark != 0"/>
+                                <field name="dt_of_casting_formatted" string="Date of Casting" width="100" class="blue-input" decoration-info="dt_of_casting_formatted != 0"/>
+                                <field name='days' string="Age (days)" class="blue-input" decoration-info="days != 0"/>
+                                <field name="dt_of_testing1_formatted" string="Date of Testing" width="100" class="blue-input" decoration-info="dt_of_testing1_formatted != 0"/>
+                                <field name='room_temp' string="Room Temp (°C)" />
+                                <field name='relative_humidity' string="Relative Humidity (RH) (%)" />
+                                <field name='wt_sample' string="Weight (gms)" class="blue-input" decoration-info="wt_sample != 0"/>
+                                <field name='length' string="Length (mm)" class="blue-input" decoration-info="length != 0"/>
+                                <field name='diameter'   string="Diameter (mm)" class="blue-input" decoration-info="diameter != 0"/>
+                                <field name='width'  string="width (mm)" class="blue-input" decoration-info="width != 0"/>
 
                                 <field name='cross_sectional_area' string="Area (mm²)" readonly="1"  digits ="[16,2]"/>
-                                <field name="load" string="Load (kN)"/>
+                                <field name="load" string="Load (kN)" class="blue-input" decoration-info="load != 0"/>
                                 <field name='compressive_strength28' string="Strength (N/mm²)" readonly="1" digits ="[16,2]"/>
                                 <!-- <field name='average_strength28' string="Avg Strength (N/mm²)" readonly="1"/>   -->
-                                <field name='type_of_failure' string="Type of Failure" width="100"/>
+                                <field name='type_of_failure' string="Type of Failure" width="100" class="blue-input" decoration-info="type_of_failure != 0"/>
                             </tree>
                                 </field> 
 
