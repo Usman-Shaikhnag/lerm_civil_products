@@ -101,8 +101,8 @@ class PPCCementNormalConsistency(models.Model):
     density_cement_name = fields.Char("Name",default="Density of Cement (Le-Chatlier Flask)")
     density_cement_visible = fields.Boolean("Density of Cement (Le-Chatlier Flask) Visible",compute="_compute_visible")
 
-    temp_specific = fields.Char("Temp.°C" ,required=True)
-    humidity_specific= fields.Char("Humidity %", required=True)
+    temp_specific1 = fields.Char("Temp.°C" ,required=True)
+    humidity_specific1= fields.Char("Humidity %", required=True)
     
 
     temp_water1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")

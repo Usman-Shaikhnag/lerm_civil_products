@@ -61,7 +61,7 @@
                     </div>
 
                  
-                    <div invisible = "density_cement_visible == False"  style="margin-top: 20px;">
+                    <div ivinvisible="not density_cement_visible"  style="margin-top: 20px;">
                         <h1 class="text-center">
                             <field name="density_cement_name" readonly="1" nolabel="1"/>
                             <field name="density_cement_visible" invisible="1"/>
@@ -73,8 +73,8 @@
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
-                                    <td><label for="temp_specific">Temp.°C</label></td>
-                                    <td><field name="temp_specific" class="blue-input" invisible = "density_cement_visible == False"/></td>
+                                    <td><label for="temp_specific1">Temp.°C</label></td>
+                                    <td><field name="temp_specific1" class="blue-input"  invisible="not density_cement_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -83,8 +83,8 @@
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
-                                    <td><label for="humidity_specific">Humidity %</label></td>
-                                    <td><field name="humidity_specific" class="blue-input" invisible = "density_cement_visible == False"/></td>
+                                    <td><label for="humidity_specific1">Humidity %</label></td>
+                                    <td><field name="humidity_specific1" class="blue-input"  invisible="not density_cement_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -205,7 +205,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_consistency">Temp.°C</label></td>
-                                    <td><field name="temp_consistency" class="blue-input" nvisible = "consistency_cement_visible == False"/></td>
+                                    <td><field name="temp_consistency" class="blue-input" invisible="not consistency_cement_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -215,7 +215,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_consistency">Humidity %</label></td>
-                                    <td><field name="humidity_consistency" class="blue-input" nvisible = "consistency_cement_visible == False"/></td>
+                                    <td><field name="humidity_consistency" class="blue-input" invisible="not consistency_cement_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -348,14 +348,14 @@
                              <tr>
                                 <td><label class="fw-bold" for="temp_time_final"></label></td>
                                 <td>
-                                    <field name="temp_time_final" nolabel="1" class="blue-input"/>
+                                    <field name="temp_time_final" nolabel="1" class="blue-input" invisible="not initial_setting_time_visible"/>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_time_final"></label></td>
                                 <td>
-                                    <field name="humidity_time_final" nolabel="1" class="blue-input"/>
+                                    <field name="humidity_time_final" nolabel="1" class="blue-input" invisible="not initial_setting_time_visible"/>
                                 </td>
                             </tr>
                             <tr>
@@ -705,7 +705,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soundness_autoclave">Temp.°C</label></td>
-                                    <td><field name="temp_soundness_autoclave" class="blue-input" invisible = "compressive_visible == False"/></td>
+                                    <td><field name="temp_soundness_autoclave" class="blue-input"  invisible="not soundness_autoclave_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -715,7 +715,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soundness_autoclave">Humidity %</label></td>
-                                    <td><field name="humidity_soundness_autoclave" class="blue-input" invisible = "compressive_visible == False"/></td>
+                                    <td><field name="humidity_soundness_autoclave" class="blue-input"  invisible="not soundness_autoclave_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -789,7 +789,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soundness_le_method">Temp.°C</label></td>
-                                    <td><field name="temp_soundness_le_method" class="blue-input" invisible = "soundness_le_method_visible == False"/></td>
+                                    <td><field name="temp_soundness_le_method" class="blue-input" invisible="not soundness_le_method_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -799,7 +799,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soundness_le_method">Humidity %</label></td>
-                                    <td><field name="humidity_soundness_le_method" class="blue-input" invisible = "soundness_le_method_visible == False" /></td>
+                                    <td><field name="humidity_soundness_le_method" class="blue-input" invisible="not soundness_le_method_visible" /></td>
                                 </tr>
                                 
                             </tbody>
