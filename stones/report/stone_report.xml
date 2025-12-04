@@ -13,13 +13,14 @@
 						
 					
 						 <table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
-							<!-- <tr>
-							
-								<td colspan="3"><strong>Report No</strong>: </td>
+							<tr>
+								<!-- <td ><strong>Mechanical Testing</strong>: </td>
+								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td> -->
+								<!-- <td colspan="3"><strong>Report No</strong>: </td>
 								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
 								<td colspan="3" ><strong>URL NO</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td>
-							</tr> -->
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td> -->
+							</tr>
 
 							<tr>
 								<td colspan="3"><strong>Project Name</strong>: </td>
@@ -59,12 +60,12 @@
 							<tr>
 								
 								<td colspan="3" ><strong>Mechanical Testing</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.group_id"/></td>
 
-								<td colspan="3"><strong>Location</strong>: </td>
+								<td colspan="3"><strong>Date of Report</strong>: </td>
+									
 								<td colspan="3">
-								Permanent facility
-							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
 								</td>
 							
 							</tr>
@@ -72,11 +73,14 @@
 							<tr>
 								
 								
-								<td colspan="3"><strong>Date of Report</strong>: </td>
-									
+								
+								<td colspan="3"><strong>Location</strong>: </td>
 								<td colspan="3">
-								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								Permanent facility
+							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
 								</td>
+								
+								
 
 								<td colspan="3"><strong>Starting Date</strong>: </td>
 								<td colspan="3">
@@ -87,12 +91,26 @@
 							
 							<tr>
 
-								<td colspan="3"><strong>Type of Sample &amp; Condition</strong>: </td>
+								<td colspan="3"><strong>Sample Description</strong>: </td>
 								<td colspan="3"><span t-field="o.material.name"/></td>
 
 							<td colspan="3"><strong>Completion Date</strong>: </td>
 								<td colspan="3">
 								<span t-field="o.end_date" />
+								</td>
+						</tr>
+
+						<tr>
+
+								<td colspan="3"><strong>Source of Sample </strong>: </td>
+								<td colspan="3" style="padding-left: 10px;">
+								  <span t-field="o.source_sample"/>
+								
+								</td>
+
+							<td colspan="3"><strong>No. of Sample</strong>: </td>
+								<td colspan="3">
+									<span t-field="o.quantity" />
 								</td>
 						</tr>
 
