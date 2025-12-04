@@ -2,16 +2,18 @@ from odoo import http
 from odoo.http import request
 import base64
 from werkzeug.exceptions import NotFound
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class LabReportDownload(http.Controller):
 
-    @http.route('/lab_report_qr/download/<int:report_id>', type='http', auth='user')
+    @http.route('/lab_report_qr/download/<int:report_id>', type='http', auth='public')
     def download_report(self, report_id, filename=None, **kwargs):
         """
         Internal download URL used by the Download button.
         Returns the final PDF with QRs for the given lab.report.
         """
+        # _logger.info(">>> download_report CALLED for report_id=%s, filename=%s, kwargs=%s", report_id, filename, kwargs)
         report = request.env['lab.report'].sudo().browse(report_id)
         if not report or not report.exists():
             raise NotFound()

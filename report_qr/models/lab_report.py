@@ -8,6 +8,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from PyPDF2 import PdfFileReader, PdfFileWriter
 import paramiko
+from werkzeug.utils import url_quote
 
 
 class LabReport(models.Model):
@@ -74,6 +75,7 @@ class LabReport(models.Model):
     @api.depends("nabl_scope_id", "nabl_scope_id.nabl_scope_link", "final_pdf_filename","ulr","name","original_pdf",)
     def _compute_qr_urls(self):
         base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        db_name = self.env.cr.dbname
         for report in self:
             # Left QR = NABL scope link
             if report.nabl_scope_id and report.nabl_scope_id.nabl_scope_link:
@@ -85,8 +87,9 @@ class LabReport(models.Model):
             if base_url and report.id:
                 # predict filename same as in action_generate_qr_pdf
                 filename = report.final_pdf_filename or (report.ulr or report.name or "report") + "-with-qr.pdf"
-                # report.qr_right_url = f"{base_url}/lab_report_qr/download/{report.id}?filename={filename}"
-                report.qr_right_url = f"{base_url}/lab_report_qr/download/{report.id}?filename={filename}"
+                safe_filename = url_quote(filename)
+                report.qr_right_url = (f"{base_url}/lab_report_qr/download/{report.id}"
+                f"?db={db_name}&filename={safe_filename}")
             else:
                 report.qr_right_url = ""
 
@@ -265,9 +268,9 @@ class LabReport(models.Model):
                 overlay_buf = io.BytesIO()
                 c = canvas.Canvas(overlay_buf, pagesize=(width, height))
 
-                qr_width = width * 0.15
-                qr_height = qr_width
-                margin = width * 0.03
+                qr_width = 70
+                qr_height = 70
+                margin = 18
 
                 if report.qr_position == "top":
                     y = height - qr_height - margin
