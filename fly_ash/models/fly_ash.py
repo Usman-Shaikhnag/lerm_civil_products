@@ -380,11 +380,11 @@ class FlyaschNormalConsistency(models.Model):
     temp_specific_gravity = fields.Char("Temp °c" ,required=True)
     humidity_specific_gravity = fields.Char("Humidity %" ,required=True)  
 
-    temp_water_1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
-    temp_water_2 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
+    temp_water_1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0°C")
+    temp_water_2 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0°C")
 
-    temp_water_after_1 = fields.Float("Temperature of Water Bath  after One Hour when Flask kept in bath – 0C")
-    temp_water_after_2 = fields.Float("Temperature of Water Bath  after One Hour when Flask kept in bath – 0C")
+    temp_water_after_1 = fields.Float("Temperature of Water Bath  after One Hour when Flask kept in bath – 0°C")
+    temp_water_after_2 = fields.Float("Temperature of Water Bath  after One Hour when Flask kept in bath – 0°C")
 
     initial_kerosene_1 = fields.Float("Initial Level of Kerosene after one hour kept in Water Bath(A) – ml")
     initial_kerosene_2 = fields.Float("Initial Level of Kerosene after one hour kept in Water Bath(A) – ml")
@@ -392,11 +392,11 @@ class FlyaschNormalConsistency(models.Model):
     mass_flyash_1 = fields.Float("Mass of Flyash Sample Added in Flask (M) – gms")
     mass_flyash_2 = fields.Float("Mass of Flyash Sample Added in Flask (M) – gms")
 
-    temp_waterflask_1 = fields.Float("Temperature of water bath  when Flask kept in bath after Adding Flyash – 0C")
-    temp_waterflask_2 = fields.Float("Temperature of water bath  when Flask kept in bath after Adding Flyash – 0C")
+    temp_waterflask_1 = fields.Float("Temperature of water bath  when Flask kept in bath after Adding Flyash – 0°C")
+    temp_waterflask_2 = fields.Float("Temperature of water bath  when Flask kept in bath after Adding Flyash – 0°C")
 
-    temp_waterflask_after_1 = fields.Float("Temperature of water bath  after one hour when Flask kept in bath after Adding Flyash – 0C")
-    temp_waterflask_after_2 = fields.Float("Temperature of water bath  after one hour when Flask kept in bath after Adding Flyash – 0C")
+    temp_waterflask_after_1 = fields.Float("Temperature of water bath  after one hour when Flask kept in bath after Adding Flyash – 0°C")
+    temp_waterflask_after_2 = fields.Float("Temperature of water bath  after one hour when Flask kept in bath after Adding Flyash – 0°C")
 
     final_kerosene_1 = fields.Float("Final Level of Kerosene after one hour kept in water bath(B) – ml")
     final_kerosene_2 = fields.Float("Final Level of Kerosene after one hour kept in water bath(B) – ml")

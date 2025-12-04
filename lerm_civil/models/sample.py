@@ -50,6 +50,7 @@ class LermSampleForm(models.Model):
         ('non_nabl', 'Non-NABL'),
     ], string='Scope', default='nabl')
     sample_description = fields.Text(string="Sample Description")
+    source_sample = fields.Char(string="Source of Sample")
     group_ids = fields.Many2many('lerm_civil.group',string="Group Ids",compute="compute_group_ids")
     material_ids = fields.Many2many('product.template',string="Material Ids",compute="compute_material_ids")
     size_ids = fields.Many2many('lerm.size.line',string="Size Ids",compute="compute_size_ids")
