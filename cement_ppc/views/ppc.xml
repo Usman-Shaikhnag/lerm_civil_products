@@ -138,11 +138,18 @@
                            <td><field  name="final_kerosene1"  colspan="1"  nolabel="1"  class="blue-input" decoration-info="final_kerosene1 != 0"/></td>
                            <td><field  name="final_kerosene2"  colspan="1"  nolabel="1"  class="blue-input" decoration-info="final_kerosene2 != 0"/></td>
                          </tr>      
-                         <tr>
+                         <!-- <tr>
                            <td><label for="displaced1">Displaced Volume after Adding Cement (V) = (B – A) – cm3</label></td>
-                           <td><field  name="displaced1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="displaced2"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>      
+                           <td><field  name="displaced1"  colspan="1"  nolabel="1" /></td>
+                           <td><field  name="displaced2"  colspan="1"  nolabel="1" /></td>
+                         </tr>       -->
+
+                          <tr>
+                           <td><label for="displaced1">Displaced Volume after Adding Cement (V) = (B – A) – cm3</label></td>
+                           <td><field  name="displaced1"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="displaced2"  colspan="1"  nolabel="1"/></td>
+                         </tr>  
+
                          <tr>
                            <td><label for="density1">Density of Cement Sample (    ) – gms/ cm3</label></td>
                            <td><field  name="density1"  colspan="1"  nolabel="1"/></td>
@@ -270,10 +277,6 @@
                         </h1>
                     </div>
 
-                 
-
-                        
-                       
 
                       <div invisible = "initial_setting_time_visible == False">
                         <field name="intial_time_lines">
@@ -301,14 +304,14 @@
                             <tr>
                                 <td><label class="fw-bold" for="temp_time"></label></td>
                                 <td>
-                                    <field name="temp_time" nolabel="1"/>
+                                    <field name="temp_time" nolabel="1" class="blue-input"/>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_time"></label></td>
                                 <td>
-                                    <field name="humidity_time" nolabel="1"/>
+                                    <field name="humidity_time" nolabel="1" class="blue-input"/>
                                 </td>
                             </tr>
                             <tr>
@@ -339,20 +342,20 @@
                                 <tr>
                                 <td><label class="fw-bold" for="avg_final_time"></label></td>
                                 <td>
-                                    <field name="avg_final_time" nolabel="1"/>
+                                    <field name="avg_final_time" nolabel="1" />
                                 </td>
                             </tr>
                              <tr>
                                 <td><label class="fw-bold" for="temp_time_final"></label></td>
                                 <td>
-                                    <field name="temp_time_final" nolabel="1"/>
+                                    <field name="temp_time_final" nolabel="1" class="blue-input"/>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_time_final"></label></td>
                                 <td>
-                                    <field name="humidity_time_final" nolabel="1"/>
+                                    <field name="humidity_time_final" nolabel="1" class="blue-input"/>
                                 </td>
                             </tr>
                             <tr>
@@ -915,4 +918,13 @@
         </record>
 
     </data>
-</odoo>
+</odoo> 
+
+
+
+
+
+
+
+
+ 

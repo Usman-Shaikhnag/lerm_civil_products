@@ -93,7 +93,6 @@ class CementNormalConsistency(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
-   
 
         ## Density of Cement (Le-Chatlier Flask)
 
@@ -957,10 +956,7 @@ class CementNormalConsistency(models.Model):
 
 
 
-   
-      
 
-            
     ### Compute Visible
     @api.depends('eln_ref','sample_parameters')
     def _compute_visible(self):
@@ -1074,6 +1070,8 @@ class CementNormalConsistency(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
           
+
+          
         
         return {
                 'view_mode': 'form',
@@ -1144,9 +1142,6 @@ class ConsistencyCementLine(models.Model):
                 rec.water_mix = 0.0
 
 
-    
-
-   
 
 
     @api.model
@@ -1210,11 +1205,6 @@ class InitialTimeLine(models.Model):
                 rec.final = (t3 - t1).total_seconds() / 60
 
     
-
-
-    
-
-   
 
 
     @api.model
@@ -1307,9 +1297,6 @@ class CementCompressiveLine(models.Model):
                 record.testing_details = False
 
     
-
-    
-
     @api.model
     def create(self, vals):
         # Set the serial_no based on the existing records for the same parent
