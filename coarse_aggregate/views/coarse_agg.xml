@@ -66,7 +66,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_sieve_analysis">Temp.°C</label></td>
-                                    <td ><field name="temp_sieve_analysis" class="blue-input"/></td>
+                                    <td ><field name="temp_sieve_analysis" class="blue-input" invisible="not sieve_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -76,7 +76,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_sieve_analysis">Humidity %</label></td>
-                                    <td><field name="humidity_sieve_analysis" class="blue-input" /></td>
+                                    <td><field name="humidity_sieve_analysis" class="blue-input"   invisible="not sieve_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -162,7 +162,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_specific_water">Temp.°C</label></td>
-                                    <td><field name="temp_specific_water" class="blue-input"/></td>
+                                    <td><field name="temp_specific_water" class="blue-input" invisible="not specific_gravity_visible "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -172,7 +172,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_specific_water">Humidity %</label></td>
-                                    <td><field name="humidity_specific_water" class="blue-input"/></td>
+                                    <td><field name="humidity_specific_water" class="blue-input" invisible="not specific_gravity_visible "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -301,7 +301,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_impact_value">Temp.°C</label></td>
-                                    <td><field name="temp_impact_value" class="blue-input"/></td>
+                                    <td><field name="temp_impact_value" class="blue-input" invisible="not impact_visible "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -311,7 +311,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_impact_value">Humidity %</label></td>
-                                    <td><field name="humidity_impact_value" class="blue-input"/></td>
+                                    <td><field name="humidity_impact_value" class="blue-input" invisible="not impact_visible "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -417,7 +417,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_crushing_value">Temp.°C</label></td>
-                                    <td><field name="temp_crushing_value" class="blue-input"/></td>
+                                    <td><field name="temp_crushing_value" class="blue-input" invisible="not crushing_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -427,7 +427,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_crushing_value">Humidity %</label></td>
-                                    <td><field name="humidity_crushing_value" class="blue-input"/></td>
+                                    <td><field name="humidity_crushing_value" class="blue-input" invisible="not crushing_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -521,7 +521,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_fine_value">Temp.°C</label></td>
-                                    <td><field name="temp_fine_value" class="blue-input"/></td>
+                                    <td><field name="temp_fine_value" class="blue-input" invisible="not fine10_visible "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -531,7 +531,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_fine_value">Humidity %</label></td>
-                                    <td><field name="humidity_fine_value" class="blue-input"/></td>
+                                    <td><field name="humidity_fine_value" class="blue-input" invisible="not fine10_visible "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -637,7 +637,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_density">Temp.°C</label></td>
-                                    <td><field name="temp_density" class="blue-input"/></td>
+                                    <td><field name="temp_density" class="blue-input" invisible="not compacted_density_visible or not loose_density_visible or not voids_loose_density_visible or not voids_compacted_density_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -647,7 +647,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_density">Humidity %</label></td>
-                                    <td><field name="humidity_density" class="blue-input"/></td>
+                                    <td><field name="humidity_density" class="blue-input" invisible="not compacted_density_visible or not loose_density_visible or not voids_loose_density_visible or not voids_compacted_density_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -865,7 +865,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_evaporation">Temp.°C</label></td>
-                                    <td><field name="temp_evaporation" class="blue-input"/></td>
+                                    <td><field name="temp_evaporation" class="blue-input" invisible="rate_of_evaporation_visible == False"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -875,7 +875,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_evaporation">Humidity %</label></td>
-                                    <td><field name="humidity_evaporation" class="blue-input"/></td>
+                                    <td><field name="humidity_evaporation" class="blue-input" invisible="rate_of_evaporation_visible == False"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -947,7 +947,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_elongation">Temp.°C</label></td>
-                                    <td><field name="temp_elongation" class="blue-input"/></td>
+                                    <td><field name="temp_elongation" class="blue-input"  invisible="not elongation_visible "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -957,7 +957,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_elongation">Humidity %</label></td>
-                                    <td><field name="humidity_elongation" class="blue-input"/></td>
+                                    <td><field name="humidity_elongation" class="blue-input"  invisible="not elongation_visible "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1104,7 +1104,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_flakiness" >Temp.°C</label></td>
-                                    <td><field name="temp_flakiness" class="blue-input"/></td>
+                                    <td><field name="temp_flakiness" class="blue-input" invisible="not flakiness_visible "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1114,7 +1114,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_flakiness">Humidity %</label></td>
-                                    <td><field name="humidity_flakiness" class="blue-input"/></td>
+                                    <td><field name="humidity_flakiness" class="blue-input" invisible="not flakiness_visible "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1252,7 +1252,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_abrasion_value">Temp.°C</label></td>
-                                    <td><field name="temp_abrasion_value" class="blue-input"/></td>
+                                    <td><field name="temp_abrasion_value" class="blue-input" invisible="not abrasion_value_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1262,7 +1262,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_abrasion_value">Humidity %</label></td>
-                                    <td><field name="humidity_abrasion_value" class="blue-input"/></td>
+                                    <td><field name="humidity_abrasion_value" class="blue-input" invisible="not abrasion_value_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1376,7 +1376,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soudness">Temp.°C</label></td>
-                                    <td><field name="temp_soudness" class="blue-input"/></td>
+                                    <td><field name="temp_soudness" class="blue-input" invisible="not soudness_visible"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1386,7 +1386,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soudness">Humidity %</label></td>
-                                    <td><field name="humidity_soudness" class="blue-input"/></td>
+                                    <td><field name="humidity_soudness" class="blue-input" invisible="not soudness_visible"/></td>
                                 </tr>
                                 
                             </tbody>
