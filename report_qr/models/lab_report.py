@@ -282,9 +282,9 @@ class LabReport(models.Model):
                 overlay_buf = io.BytesIO()
                 c = canvas.Canvas(overlay_buf, pagesize=(width, height))
 
-                qr_width = width * 0.15
-                qr_height = qr_width
-                margin = width * 0.03
+                qr_width = 70
+                qr_height = 70
+                margin = 18
 
                 if report.qr_position == "top":
                     y = height - qr_height - margin
