@@ -1148,8 +1148,6 @@ class PPCCementNormalConsistency(models.Model):
                 continue
 
 
-
-          
         
         return {
                 'view_mode': 'form',
