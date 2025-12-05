@@ -101,8 +101,8 @@ class PPCCementNormalConsistency(models.Model):
     density_cement_name = fields.Char("Name",default="Density of Cement (Le-Chatlier Flask)")
     density_cement_visible = fields.Boolean("Density of Cement (Le-Chatlier Flask) Visible",compute="_compute_visible")
 
-    temp_specific = fields.Char("Temp.°C" ,required=True)
-    humidity_specific= fields.Char("Humidity %", required=True)
+    temp_specific1 = fields.Char("Temp.°C" ,required=True)
+    humidity_specific1= fields.Char("Humidity %", required=True)
     
 
     temp_water1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
@@ -127,8 +127,14 @@ class PPCCementNormalConsistency(models.Model):
     final_kerosene1 = fields.Float("Final Level of Kerosene after one hour kept in water bath(B) – ml")
     final_kerosene2 = fields.Float("Final Level of Kerosene after one hour kept in water bath(B) – ml")
 
-    displaced1 = fields.Float("Displaced Volume after Adding Cement (V) = (B – A) – cm3", store=True, digits=(12, 2))
-    displaced2 = fields.Float("Displaced Volume after Adding Cement (V) = (B – A) – cm3", store=True, digits=(12, 2))
+    displaced1 = fields.Float("Displaced Volume after Adding Cement (V) = (B – A) – cm3", store=True, digits=(12, 2),compute="_compute_displaced_volume")
+    displaced2 = fields.Float("Displaced Volume after Adding Cement (V) = (B – A) – cm3", store=True, digits=(12, 2),compute="_compute_displaced_volume")
+
+    @api.depends('final_kerosene1', 'initial_kerosene1', 'final_kerosene2', 'initial_kerosene2')
+    def _compute_displaced_volume(self):
+        for rec in self:
+            rec.displaced1 = (rec.final_kerosene1 - rec.initial_kerosene1) if rec.final_kerosene1 and rec.initial_kerosene1 else 0.0
+            rec.displaced2 = (rec.final_kerosene2 - rec.initial_kerosene2) if rec.final_kerosene2 and rec.initial_kerosene2 else 0.0
 
     density1 = fields.Float("Density of Cement Sample (    ) – gms/ cm3", store=True, digits=(12, 2),compute="_compute_values")
     density2 = fields.Float("Density of Cement Sample (    ) – gms/ cm3", store=True, digits=(12, 2),compute="_compute_values")
@@ -1031,13 +1037,118 @@ class PPCCementNormalConsistency(models.Model):
     # import wdb; wdb.set_trace()
         for result in self.eln_ref.parameters_result:
          
-            if result.parameter.internal_id == '254gt2547-372f-4775-9bcb-e9dd70e3587g':
+
+            if result.parameter.internal_id == 'be88a13b-8bc0-4d32-b8c0-43032c0cdd86':
                 result.result_char = round(self.avg_density,2)
                 if self.avg_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
+            if result.parameter.internal_id == '64616a30-801e-40aa-abba-32dcd71b7c37':
+                result.result_char = round(self.avg_consistency,2)
+                if self.avg_consistency_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '08c223af-a906-47c5-a15c-176ff5c9332d':
+                result.result_char = round(self.avg_initial_time,2)
+                if self.avg_initial_time_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '7797b1a6-d753-41ea-85f3-eaa37aebf08b':
+                result.result_char = round(self.specific_surface_first,2)
+                if self.fineness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '99d735e6-2076-4770-b5e1-f5b8399e5a27':
+                result.result_char = round(self.avg_density,2)
+                if self.avg_density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+
+            if result.parameter.internal_id == 'bf78dd87-02e2-4c6d-9463-a04f434d25c6':
+                result.result_char = round(self.avg_expantion,2)
+                if self.avg_expantion_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == 'd72cba69-a44e-406a-b621-8344c3716275':
+                result.result_char = round(self.avg_expantion1,2)
+                if self.avg_expantion1_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '36905ff2-60e5-4e3f-a003-4f12cf03ebe9':
+                result.result_char = round(self.avg_3_days,2)
+                if self.avg_3_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+
+            if result.parameter.internal_id == 'e2e1d8e6-d831-4b2b-8cb2-aa074dce7fc6':
+                result.result_char = round(self.avg_7_days,2)
+                if self.avg_7_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+
+            if result.parameter.internal_id == 'fd34def6-d5cf-47c5-87e2-72c7b59dd2c3':
+                result.result_char = round(self.avg_28_days,2)
+                if self.avg_28_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == 'd1fcbd33-f315-4290-a309-74acc90bc3f8':
+                result.result_char = round(self.avg_initial_time,2)
+                if self.avg_initial_time_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == 'e87e5708-bead-453a-90d5-4ec142545c52':
+                result.result_char = round(self.avg_final_time,2)
+                if self.avg_final_time_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+
           
         
         return {
