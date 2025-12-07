@@ -31,6 +31,9 @@ class CoarseAggregateMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
 
+    calc_mode = fields.Boolean(default=True)     # Calculate चालू असताना True
+    submit_mode = fields.Boolean(default=False)  
+
     notes_id = fields.One2many(
     'coarse.aggregate.notes',
     'parent_id',
@@ -815,8 +818,13 @@ class CoarseAggregateMechanical(models.Model):
 
 
      #  Elongation Index
-    temp_elongation = fields.Char(string="Temp.°C" ,required=True)
-    humidity_elongation= fields.Char(string="Humidity %" ,required=True)
+    temp_elongation = fields.Char(string="Temp.°C" )
+    humidity_elongation= fields.Char(string="Humidity %" )
+
+    # calc_mode_elongation = fields.Boolean(default=True)     # Calculate चालू असताना True
+    # submit_mode_elongation = fields.Boolean(default=False)  
+
+    
 
     elongation_name = fields.Char(default="Elongation Index")
     elongation_visible = fields.Boolean(compute="_compute_visible")
@@ -888,6 +896,8 @@ class CoarseAggregateMechanical(models.Model):
 
     def action_compute_elongation_index(self):
      for record in self:
+        # record.calc_mode_elongation = True
+        # record.submit_mode_elongation = False
         if record.total_total_percent_retained_el:
             record.elongation_index = round(record.total_total_percent_retained_el / 100, 2)
         else:
@@ -951,8 +961,8 @@ class CoarseAggregateMechanical(models.Model):
 
     # Flakiness Index 
 
-    temp_flakiness = fields.Char(string="Temp.°C" ,required=True)
-    humidity_flakiness= fields.Char(string="Humidity %" ,required=True)
+    temp_flakiness = fields.Char(string="Temp.°C" )
+    humidity_flakiness= fields.Char(string="Humidity %")
 
     flakiness_name = fields.Char("Name",default="Flakiness Index")
     flakiness_visible = fields.Boolean("Flakiness Visible",compute="_compute_visible")
@@ -1830,6 +1840,8 @@ class CoarseAggregateMechanical(models.Model):
 
     def calculate_sieve(self): 
         for record in self:
+            record.calc_mode = True
+            record.submit_mode = False
             # import wdb; wdb.set_trace()
             record.populate_sieve_analysis_lines()  # replace default_get call
             for line in record.sieve_analysis_child_lines:
@@ -2027,7 +2039,7 @@ class CoarseAggregateMechanical(models.Model):
      #  Soundness Test 
 
     temp_soudness = fields.Char(string="Temp.°C" ,required=True)
-    humidity_soudness= fields.Char(string="Humidity %" ,required=True)
+    humidity_soudness= fields.Char(string="Humidity %",required=True)
 
     soudness_name = fields.Char("Name",default="Soundness Test ")
     soudness_visible = fields.Boolean("Soundness Test",compute="_compute_visible")
@@ -2080,6 +2092,8 @@ class CoarseAggregateMechanical(models.Model):
 
     def calculate_sound_sieve(self): 
         for record in self:
+            record.calc_mode = True
+            record.submit_mode = False
             # import wdb; wdb.set_trace()
             previous_cumulative = 0  
             for line in record.sieve_analysis_soundness_lines:
@@ -2349,140 +2363,147 @@ class CoarseAggregateMechanical(models.Model):
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        for record in self:
 
-            # Elongation
-            if result.parameter.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
-                result.result_char = round(self.elongation_index,2)
-                if self.elongation_index_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+        # FIX — Required ON करायचे असल्यामुळे submit_mode TRUE
+            record.calc_mode = False
+            record.submit_mode = True
+          
+            for result in self.eln_ref.parameters_result:
+        
 
-            # Flakiness
-            if result.parameter.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
-                result.result_char = round(self.flakiness_index,2)
-                if self.flakiness_index_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+                # Elongation
+                if result.parameter.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
+                    result.result_char = round(self.elongation_index,2)
+                    if self.elongation_index_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
 
-
-            # specific gravity 
-            if result.parameter.internal_id == '3114db41-cfa7-49ad-9324-fcdbc9661038':
-                result.result_char = round(self.avg_specific_gravity,2)
-                if self.avg_specific_gravity_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # water absorbtion
-            if result.parameter.internal_id == '22ee804f-41a3-4fd1-a301-a8d9180fba10':
-                result.result_char = round(self.avg_water_absorption,2)
-                if self.avg_water_absorption_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue 
-
-            # impact value 
-            if result.parameter.internal_id == '2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2':
-                result.result_char = round(self.average_impact_value,2)
-                if self.impact_value_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+                # Flakiness
+                if result.parameter.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
+                    result.result_char = round(self.flakiness_index,2)
+                    if self.flakiness_index_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
 
 
-            # crushing value 
-            if result.parameter.internal_id == 'ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71':
-                result.result_char = round(self.average_crushing_value,2)
-                if self.average_crushing_value_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            
+                # specific gravity 
+                if result.parameter.internal_id == '3114db41-cfa7-49ad-9324-fcdbc9661038':
+                    result.result_char = round(self.avg_specific_gravity,2)
+                    if self.avg_specific_gravity_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
 
-            # Abrasion Value
-            if result.parameter.internal_id == '37f2161e-5cc0-413f-b76c-10478c65baf9':
-                result.result_char = round(self.avg_abrasion_value,2)
-                if self.avg_abrasion_value_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+                # water absorbtion
+                if result.parameter.internal_id == '22ee804f-41a3-4fd1-a301-a8d9180fba10':
+                    result.result_char = round(self.avg_water_absorption,2)
+                    if self.avg_water_absorption_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue 
 
-            # 10 % fine Values
-            if result.parameter.internal_id == '5f506c08-4369-491d-93a6-030514c29661':
-                result.result_char = round(self.avg_load_for_10fine,2)
-                if self.avg_load_for_10fine_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Compacted density
-            if result.parameter.internal_id == '357f579d-a310-4015-bc11-28a85c53ac83':
-                result.result_char = round(self.compacted_density,2)
-                if self.compacted_density_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Loose Density
-            if result.parameter.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
-                result.result_char = round(self.loose_density,2)
-                if self.loose_density_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # % void Compacted density
-            if result.parameter.internal_id == '04a95dc1-4b45-4817-a9b2-dd722bbe6281':
-                result.result_char = round(self.voids_compacted_density,2)
-                if self.voids_compacted_density_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+                # impact value 
+                if result.parameter.internal_id == '2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2':
+                    result.result_char = round(self.average_impact_value,2)
+                    if self.impact_value_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
 
 
-            # % void Loose density
-            if result.parameter.internal_id == '919587f2-5b45-4da1-bb73-10164b861833':
-                result.result_char = round(self.voids_loose_density,2)
-                if self.voids_loose_density_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+                # crushing value 
+                if result.parameter.internal_id == 'ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71':
+                    result.result_char = round(self.average_crushing_value,2)
+                    if self.average_crushing_value_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+                
 
-             # Rate Of Evaporation
-            if result.parameter.internal_id == '8e9d9c62-e634-47a2-a689-2c6c8538493c':
-                result.result_char = round(self.avg_rate_evaporation,2)
-                if self.avg_rate_evaporation_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+                # Abrasion Value
+                if result.parameter.internal_id == '37f2161e-5cc0-413f-b76c-10478c65baf9':
+                    result.result_char = round(self.avg_abrasion_value,2)
+                    if self.avg_abrasion_value_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
 
-             # Soundness Test
-            if result.parameter.internal_id == 'c8cd69bd-1f89-4f22-bae6-b81de73e6c2':
-                result.result_char = round(self.total_avg_sulphae,2)
-                if self.total_avg_sulphae_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+                # 10 % fine Values
+                if result.parameter.internal_id == '5f506c08-4369-491d-93a6-030514c29661':
+                    result.result_char = round(self.avg_load_for_10fine,2)
+                    if self.avg_load_for_10fine_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+
+                # Compacted density
+                if result.parameter.internal_id == '357f579d-a310-4015-bc11-28a85c53ac83':
+                    result.result_char = round(self.compacted_density,2)
+                    if self.compacted_density_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+
+                # Loose Density
+                if result.parameter.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
+                    result.result_char = round(self.loose_density,2)
+                    if self.loose_density_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+
+                # % void Compacted density
+                if result.parameter.internal_id == '04a95dc1-4b45-4817-a9b2-dd722bbe6281':
+                    result.result_char = round(self.voids_compacted_density,2)
+                    if self.voids_compacted_density_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
 
 
-            
+                # % void Loose density
+                if result.parameter.internal_id == '919587f2-5b45-4da1-bb73-10164b861833':
+                    result.result_char = round(self.voids_loose_density,2)
+                    if self.voids_loose_density_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+
+                # Rate Of Evaporation
+                if result.parameter.internal_id == '8e9d9c62-e634-47a2-a689-2c6c8538493c':
+                    result.result_char = round(self.avg_rate_evaporation,2)
+                    if self.avg_rate_evaporation_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+
+                # Soundness Test
+                if result.parameter.internal_id == 'c8cd69bd-1f89-4f22-bae6-b81de73e6c2':
+                    result.result_char = round(self.total_avg_sulphae,2)
+                    if self.total_avg_sulphae_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+
+
+                
 
 
         return {
