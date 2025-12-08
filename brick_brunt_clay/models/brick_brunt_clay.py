@@ -16,6 +16,10 @@ class MechanicalBricksBurntClay(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
+    calc_mode = fields.Boolean(default=True)     # Calculate चालू असताना True
+    submit_mode = fields.Boolean(default=False)
+
+
     @api.depends('eln_ref')
     def _compute_size_id(self):
         if self.eln_ref:

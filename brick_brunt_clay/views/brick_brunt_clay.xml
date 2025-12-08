@@ -74,7 +74,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_compressive_strength">Temp.°C</label></td>
-                                    <td><field name="temp_compressive_strength" class="blue-input" invisible="not compressive_strength_visible"/></td>
+                                    <td><field name="temp_compressive_strength" class="blue-input" invisible="not compressive_strength_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -84,13 +84,24 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_compressive_strength">Humidity %</label></td>
-                                    <td><field name="humidity_compressive_strength" class="blue-input" invisible="not compressive_strength_visible"/></td>
+                                    <td><field name="humidity_compressive_strength" class="blue-input" invisible="not compressive_strength_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
                         </table>
-                        
+
+                          
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><field name="calc_mode" class="blue-input" invisible="not compressive_strength_visible"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
                     </div>
+                        
+                    
 
                    
 
@@ -159,17 +170,18 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_water_absorption">Temp.°C</label></td>
-                                    <td><field name="temp_water_absorption" class="blue-input" invisible="not water_absorption_visible"/></td>
+                                    <td><field name="temp_water_absorption" class="blue-input" invisible="not water_absorption_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
                         </table>
                         
+
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_water_absorption">Humidity %</label></td>
-                                    <td><field name="humidity_water_absorption" class="blue-input" invisible="not water_absorption_visible"/></td>
+                                    <td><field name="humidity_water_absorption" class="blue-input" invisible="not water_absorption_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -240,7 +252,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_dimension">Temp.°C</label></td>
-                                    <td><field name="temp_dimension" class="blue-input" invisible="not dimension_visible"/></td>
+                                    <td><field name="temp_dimension" class="blue-input" invisible="not dimension_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -250,7 +262,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_dimension">Humidity %</label></td>
-                                    <td><field name="humidity_dimension" class="blue-input" invisible="not dimension_visible"/></td>
+                                    <td><field name="humidity_dimension" class="blue-input" invisible="not dimension_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -394,7 +406,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_efforescence">Temp.°C</label></td>
-                                    <td><field name="temp_efforescence" class="blue-input" invisible="not efforescence_visible"/></td>
+                                    <td><field name="temp_efforescence" class="blue-input" invisible="not efforescence_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -404,7 +416,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_efforescence">Humidity %</label></td>
-                                    <td><field name="humidity_efforescence" class="blue-input" invisible="not efforescence_visible"/></td>
+                                    <td><field name="humidity_efforescence" class="blue-input" invisible="not efforescence_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -448,7 +460,24 @@
 
                     
 
-                  <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                 
+                      <div style="display:flex;">
+                      <div style="width:50%">
+                       <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                      </div>
+                      
+                      <div style="width:50%">
+                        <field name="submit_mode" invisible="0"/>
+
+                      </div>
+                    </div>
+
+
                 </sheet>
             </form>
         </field>

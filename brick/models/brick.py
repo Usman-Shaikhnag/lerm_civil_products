@@ -19,6 +19,11 @@ class MechanicalBricks(models.Model):
 
     notes_id = fields.One2many('brick.notes','parent_id',string="Notes")
 
+    
+    calc_mode = fields.Boolean(default=True)     # Calculate चालू असताना True
+    submit_mode = fields.Boolean(default=False)
+
+
     @api.model
     def default_get(self, fields):
         res = super(MechanicalBricks, self).default_get(fields)

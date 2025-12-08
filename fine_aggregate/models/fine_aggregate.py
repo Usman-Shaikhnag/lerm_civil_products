@@ -22,6 +22,10 @@ class FineAggregate(models.Model):
 
     notes_id = fields.One2many('fine.notes','parent_id',string="Notes")
 
+
+    calc_mode = fields.Boolean(default=True)     
+    submit_mode = fields.Boolean(default=False)
+
     @api.model
     def default_get(self, fields):
         res = super(FineAggregate, self).default_get(fields)
@@ -238,6 +242,10 @@ class FineAggregate(models.Model):
     # corrected(added)
     def calculate_sieve1(self): 
         for record in self:
+
+            record.calc_mode = True
+            record.submit_mode = False
+
             previous_cumulative = 0  
             for line in record.sieve_analysis_child_lines:
                 print("Rows", str(line.percent_retained))
@@ -994,6 +1002,10 @@ class FineAggregate(models.Model):
 
     def calculate_sieve(self): 
         for record in self:
+
+            record.calc_mode = True
+            record.submit_mode = False
+
             previous_cumulative = 0  
             for line in record.sieve_analysis_soundness_lines:
                 print("Rows", str(line.percent_retained))
