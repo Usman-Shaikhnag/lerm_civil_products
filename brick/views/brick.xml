@@ -30,12 +30,7 @@
                           <field name="test_method"/>
                         </tree>
                       </field>
-                    <!-- <group>
-                      <field name="test_start_date"/>
-                      <field name="test_end_date"/>
-                    </group> -->
 
-                    
 
                          <!--  Compressive Strength  -->
 
@@ -67,7 +62,7 @@
                                 
                             </tbody>
                         </table>
-
+                        
                     </div>
 
                    
@@ -76,12 +71,12 @@
                         <field name="compressive_strength_child_lines" nolabel="1">
                             <tree editable="bottom">
                                 <field name="serial_no" width="40"/>
-                                <field name='sample1' width="110"/>
-                                <field name='length' width="110"/>
-                                <field name='width' width="110"/>
-                                <field name='thickness' width="110"/>
+                                <field name='sample1' width="110"  class="blue-input" invisible="not sample1"/>
+                                <field name='length' width="110"  class="blue-input" invisible="not length"/>
+                                <field name='width' width="110"  class="blue-input" invisible="not width"/>
+                                <field name='thickness' width="110"  class="blue-input" invisible="not thickness"/>
                                 <field name='area' width="110"/>
-                                <field name='load' width="110"/>
+                                <field name='load' width="110"  class="blue-input" invisible="not load"/>
                                 <field name='compressive_strength' width="110"/>
 
                             </tree>
@@ -119,14 +114,24 @@
                     <group/>
                            
 
-
-                    <style>
+                      <style>
                         .blue-input input {
                             background-color: #d8ecff !important;   /* हलका Blue background */
-                            border-color: #3b82f6 !important;       /* Blue border */
-                            
+                            border-color: #3b82f6 !important;        /* Blue border */ 
                         }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
                     </style>
+                   
 
 
 
@@ -167,13 +172,12 @@
                         <field name="water_absorption_child_lines" nolabel="1">
                             <tree editable="bottom">
                                 <field name="serial_no" width="40"/>
-                                <field name='sample' width="110"/>
-                                <field name='dry_weight' width="110"/>
-                                <field name='sat_weight' width="110"/>
+                                <field name='sample' width="110"  class="blue-input" invisible="not sample"/>
+                                <field name='dry_weight' width="110"  class="blue-input" invisible="not dry_weight"/>
+                                <field name='sat_weight' width="110"  class="blue-input" invisible="not sat_weight"/>
 
                                 <field name='sat_dry_weight' width="110"/>
-                                <field name='water_absorption' width="110"/>
-                                
+                                <field name='water_absorption' width="110"/>     
                             </tree>
                         </field>
                     </div>
@@ -221,7 +225,7 @@
                             <field name="length_visible" invisible="1"/>
                             <field name="width_visible" invisible="1"/>
                             <field name="height_visible" invisible="1"/>
-                            
+
                         </h1>
                     </div>
 
@@ -341,7 +345,7 @@
 
                         <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:33%">
                             <tbody>
-                                
+
 
                                 <tr>
                                 <td><label class="fw-bold" for="avg_height_conformity">Conformity</label></td>
