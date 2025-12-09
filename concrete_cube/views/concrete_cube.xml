@@ -10,6 +10,7 @@
                         <!-- Project Information -->
                         
                         
+                    
                             <group>
                            
                                 <field name="eln_ref" readonly="1"/>
@@ -121,7 +122,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="room_temperature">Room Temperature</label></td>
-                                    <td><field name="room_temperature" class="blue-input"/>°C</td>
+                                    <td><field name="room_temperature" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or submit_mode == True "/>°C</td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -130,11 +131,23 @@
                             <tbody>
                                 <tr>
                                     <td><label for="relative_humidity">Relative Humidity</label></td>
-                                    <td><field name="relative_humidity" class="blue-input"/> %</td>
+                                    <td><field name="relative_humidity" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or submit_mode == True "/> %</td>
                                 </tr>
                                 
                             </tbody>
                         </table>
+
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><field name="calc_mode" class="blue-input" invisible="not cube_visible"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+
                     </div>
 
                     
@@ -202,7 +215,7 @@
 
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="status_7days == False">
                            <tbody>
-                                  <tr>
+                            <tr>
                                 <td><label for="average_strength"></label></td>
                                 <td><field  name="average_strength"
                                 
@@ -210,7 +223,7 @@
                             </tr>
 
                            
-                                  <tr>
+                                <tr>
                                 <td><label for="average_strength_conformity"></label></td>
                                 <td><field  name="average_strength_conformity"
                                             decoration-success="average_strength_conformity == 'pass'" 
@@ -242,17 +255,15 @@
                       
                     </group>
 
-                     
-
-                  
                     </div>
+
 
                      <div class="d-flex gap-2"  invisible="status_14days == False">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label for="room_temperature14">Room Temperature</label></td>
-                                    <td><field name="room_temperature14" class="blue-input"/>°C</td>
+                                    <td><field name="room_temperature14" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or submit_mode == True "/>°C</td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -261,7 +272,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="relative_humidity14">Relative Humidity</label></td>
-                                    <td><field name="relative_humidity14" class="blue-input"/> %</td>
+                                    <td><field name="relative_humidity14" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or submit_mode == True "/> %</td>
                                 </tr>
                                 
                             </tbody>
@@ -374,7 +385,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="room_temperature28">Room Temperature</label></td>
-                                    <td><field name="room_temperature28" class="blue-input"/>°C</td>
+                                    <td><field name="room_temperature28" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or submit_mode == True "/>°C</td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -383,7 +394,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="relative_humidity28">Relative Humidity</label></td>
-                                    <td><field name="relative_humidity28" class="blue-input"/> %</td>
+                                    <td><field name="relative_humidity28" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or submit_mode == True "/> %</td>
                                 </tr>
                                 
                             </tbody>
@@ -497,9 +508,24 @@
 
 
                         <!-- Submit Button -->
-                        <group style="margin-top: 20px;">
-                            <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
-                        </group>
+                        <div style="display:flex;">
+                      <div style="width:50%">
+                       <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                      </div>
+                      
+                      <div style="width:50%">
+                        <field name="submit_mode" invisible="0"/>
+
+                      </div>
+                    </div>
+
+
+
                     </sheet>
                 </form>
             </field>

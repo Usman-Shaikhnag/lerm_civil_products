@@ -25,6 +25,9 @@ class PPCCementNormalConsistency(models.Model):
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
     notes_id = fields.One2many('cement.ppc.notes','parent_id',string="Notes")
 
+    calc_mode = fields.Boolean(default=True)     
+    submit_mode = fields.Boolean(default=False)
+
     @api.model
     def default_get(self, fields):
         res = super(PPCCementNormalConsistency, self).default_get(fields)
@@ -567,6 +570,7 @@ class PPCCementNormalConsistency(models.Model):
 
 
    
+
 
                 ## Cement Compressive Strength
 

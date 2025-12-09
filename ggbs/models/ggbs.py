@@ -24,6 +24,9 @@ class GgbsMechanical(models.Model):
 
     notes_id = fields.One2many('ggbs.notes','parent_id',string="Notes")
 
+    calc_mode = fields.Boolean(default=True)     
+    submit_mode = fields.Boolean(default=False)
+
     @api.model
     def default_get(self, fields):
         res = super(GgbsMechanical, self).default_get(fields)
@@ -233,6 +236,12 @@ class GgbsMechanical(models.Model):
 
     def action_calculate_avg_strength(self):
         for rec in self:
+
+
+            rec.calc_mode = True
+            rec.submit_mode = False
+
+
             lines = rec.slag_index_ids.sorted(key=lambda l: l.serial_no)  # serial_no ने sort करायचं
             group_size = 3
 
@@ -258,6 +267,11 @@ class GgbsMechanical(models.Model):
 
     def action_calculate_avg_cemet_strength(self):
         for rec in self:
+
+            rec.calc_mode = True
+            rec.submit_mode = False
+
+
             lines = rec.slag_index_cement_ids.sorted(key=lambda l: l.serial_no)  # serial_no ने sort करायचं
             group_size = 3
 
