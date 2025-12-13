@@ -30,7 +30,9 @@ PATTERN_MAP_FOR_LEGEND = {
 
     "HR": ("#666666", "xx"),  # Hard Rock
     "SR": ("#B0A080", "\\"),  # Soft Rock
-    
+    "MI": ("#B0C4DE", "|||"),     # Same as MH
+    "CI": ("#ADD8E6", "----"),    # Same as CL
+    "CL-ML": ("#ADD8E6", "----"), # Same as CL
     "Inorganic-Clays": ("#5D8AA8", "x"),
     "Organic-Clays": ("#4B371C", "/"),
     "Peat": ("#556B2F", "v"),
@@ -48,46 +50,54 @@ def make_legend_image(legend_items):
         return None
 
     n = len(legend_items)
-    # Bigger per-row height so patterns are clear
-    fig_w, fig_h = 4, 0.5 * n   # width in inches, height in inches
+
+    # ---- COMPACT, REPORT-FRIENDLY SIZE ----
+    row_h = 0.32                # inches per row
+    fig_w = 3.6                 # inches
+    fig_h = max(1.2, row_h * n)
+
     fig, ax = plt.subplots(figsize=(fig_w, fig_h))
     ax.axis('off')
 
-    # We draw in a simple 0..1 × 0..n coordinate system
     ax.set_xlim(0, 1)
     ax.set_ylim(0, n)
 
     for i, (facecolor, hatch, label) in enumerate(legend_items):
-        # draw from top to bottom
         y = n - 1 - i
 
-        # Big rectangle for pattern
+        # Smaller, cleaner rectangle
         rect = mpatches.Rectangle(
-            (0.02, y + 0.15),   # x, y
-            0.20,               # width
-            0.7,                # height
+            (0.04, y + 0.28),   # x, y
+            0.10,               # width
+            0.44,               # height
             facecolor=facecolor,
             edgecolor='black',
             hatch=hatch or '',
-            linewidth=1.0
+            linewidth=0.8
         )
         ax.add_patch(rect)
 
-        # Text next to it
         ax.text(
-            0.28, y + 0.5,
+            0.27, y + 0.5,
             label,
             va='center',
             ha='left',
-            fontsize=9,
+            fontsize=8.5,
         )
 
     buf = io.BytesIO()
-    fig.savefig(buf, format='png', dpi=200, bbox_inches='tight', facecolor='white')
+    fig.savefig(
+        buf,
+        format='png',
+        dpi=120,                # IMPORTANT: lower DPI
+        bbox_inches='tight',
+        facecolor='white'
+    )
     plt.close(fig)
-    buf.seek(0)
 
+    buf.seek(0)
     return Image.open(buf).convert('RGB')
+
 
 
 # def draw_hatch_pattern(base_img, bbox, hatch, line_color="black", spacing=4):
@@ -476,7 +486,7 @@ class SoilBoreholeParent(models.Model):
             'Silty-Sand': ("Silty sands", "SM"),
             'Clayey-Sand': ("Clayey sands", "SC"),
             'Inorganic-Silt-FS': ("Inorganic silts & very fine sands", "ML"),
-            'Inorganic-Clays-LM': ("Inorganic clays (low–med plasticity)", "CL"),
+            'Inorganic-Clays-LM': ("Inorganic clays (low - med plasticity)", "CL"),
             'Organic-Silt': ("Organic silts", "OL"),
             'Inorganic-Silt': ("Inorganic silts", "MH"),
             'Inorganic-Clay': ("Inorganic clays (high plasticity)", "CH"),
@@ -484,6 +494,9 @@ class SoilBoreholeParent(models.Model):
             'Peat': ("Peat", "PT"),        
             'Hard-Rock': ("Hard Rock", "HR"),
             'Soft-Rock': ("Soft Rock", "SR"),
+            'Inorganic-Silt-M': ("Inorganic silts of medium plasticity", "MI"),
+            'Inorganic-Clay-M': ("Inorganic clays of medium plasticity", "CI"),
+            'Silty-Clay-Border': ("Silty clay / clayey silt (CL-ML)", "CL-ML"),
         }
         ImageModel = self.env['soil.borehole.parent.image']
 
