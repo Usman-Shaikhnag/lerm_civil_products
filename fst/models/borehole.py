@@ -255,7 +255,14 @@ class ERTBorehole(models.Model):
                 # --- HIGHLY ORGANIC SOILS ---
                 # PT (Peat): Wavy lines or distinctive pattern
                 "PT": ("#556B2F", "v"),      # Olive drab/dark green, 'v' for organic matter
-                
+                # MI: Inorganic silt (medium plasticity) → reuse MH style
+                "MI": ("#B0C4DE", "|||"),
+
+                # CI: Inorganic clay (medium plasticity) → reuse CL style
+                "CI": ("#ADD8E6", "----"),
+
+                # CL-ML: Borderline silty clay / clayey silt → clay-dominant pattern
+                "CL-ML": ("#ADD8E6", "----"),
                 # --- DEFAULT/CUSTOM KEYS ---
                 "Inorganic-Clays": ("#5D8AA8", "x"), # Maps to CH pattern
                 "Organic-Clays": ("#4B371C", "/"),   # Maps to OH pattern
@@ -608,6 +615,9 @@ class SoilBoreholeNValue(models.Model):
 
         'HR': 'Hard-Rock',
         'SR': 'Soft-Rock',
+        'MI': 'Inorganic-Silt-M',
+        'CI': 'Inorganic-Clay-M',
+        'CL-ML': 'Silty-Clay-Border',
     }
 
     # Reverse mapping
@@ -620,7 +630,7 @@ class SoilBoreholeNValue(models.Model):
             ('SW', 'SW'), ('SP', 'SP'), ('GW', 'GW'), ('GP', 'GP'), ('GM', 'GM'), ('GC', 'GC'),
             ('SM', 'SM'), ('SC', 'SC'),
             ('ML', 'ML'), ('CL', 'CL'), ('OL', 'OL'), ('MH', 'MH'), ('CH', 'CH'), ('OH', 'OH'),
-            ('PT', 'PT'), ('HR','HR'), ('SR','SR')
+            ('PT', 'PT'), ('HR','HR'), ('SR','SR'),('MI', 'MI'),('CI', 'CI'),('CL-ML', 'CL-ML'),
         ], string="Symbol")
 
     classification = fields.Selection([
@@ -641,6 +651,9 @@ class SoilBoreholeNValue(models.Model):
         ('Peat', 'Peat'),
         ('Hard-Rock', 'Hard Rock'),
         ('Soft-Rock', 'Soft Rock'),
+        ('Inorganic-Silt-M', 'Inorganic silts of medium plasticity'),
+        ('Inorganic-Clay-M', 'Inorganic clays of medium plasticity'),
+        ('Silty-Clay-Border', 'Silty clay / clayey silt (CL-ML)'),
     ], string="Classification")
 
     @api.onchange('symbol')
