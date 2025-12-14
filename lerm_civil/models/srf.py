@@ -813,6 +813,9 @@ class CreateSampleWizard(models.TransientModel):
         string='Available Parameters'
     )
 
+
+    
+
     @api.model
     def _get_oldest_lab(self):
         oldest_lab = self.env['lerm.lab.master'].search([], order="create_date asc", limit=1)
@@ -1062,6 +1065,8 @@ class CreateSampleWizard(models.TransientModel):
 
 
     def add_sample(self,data=False):
+
+        
 
         # import wdb; wdb.set_trace()
         if data:

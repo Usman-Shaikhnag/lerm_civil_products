@@ -3,6 +3,7 @@ from odoo import api, fields, models
 class Material(models.Model):
     _inherit = "product.template"
 
+   
     display_name = fields.Char('Name', required=True, tracking=True)
     is_sample = fields.Boolean(string="Is Sample?")
     casting_required = fields.Boolean(string="Casting Required")
@@ -38,6 +39,13 @@ class Material(models.Model):
     test_method_adopted = fields.Char(string="Test Method Adopted")
 
     report_header_ids = fields.One2many("lerm.header.line", "product_id", string="Test Readings")
+
+
+    lab_boolean = fields.Boolean(string="Lab ID")
+
+    lab_table = fields.One2many("lab.name", "product_id", string="Test Readings")
+
+    
     
     
 
@@ -323,3 +331,71 @@ class HeaderDataLine(models.Model):
     revision_date = fields.Date(string="Revision Date")
 
     is_active = fields.Boolean(string="Is Active")
+
+
+from odoo import api, fields, models
+
+# class MaterialLab(models.Model):
+#     _name = "lab.name"
+
+#     product_id = fields.Many2one('product.template')
+#     eln_id = fields.Many2one('lerm.eln', string="ELN")
+#     eln_ids = fields.Many2many(
+#         'lerm.eln',
+#         string="Available ELNs",
+#         compute="_compute_eln_ids",
+#         store=False
+#     )
+
+#     date_lab = fields.Date(string="Date")
+
+#     srf_lab = fields.Char(
+#         string="SRF ID",
+#         compute="_compute_srf_lab",
+#         store=True
+#     )
+
+#     report_no = fields.Char(string="Report No")
+#     url_no = fields.Char(string="URL No")
+#     lab_Ids = fields.Char(string="Lab No")
+
+#     @api.depends('eln_id.srf_id')
+#     def _compute_srf_lab(self):
+#         for rec in self:
+#             rec.srf_lab = rec.eln_id.srf_id.srf_id if rec.eln_id and rec.eln_id.srf_id else False
+
+#     @api.depends('product_id')
+#     def _compute_eln_ids(self):
+#         for rec in self:
+#             if rec.product_id:
+#                 rec.eln_ids = self.env['lerm.eln'].search([('material','=',rec.product_id.id)])
+#             else:
+#                 rec.eln_ids = False
+
+from odoo import api, fields, models
+
+class MaterialLab(models.Model):
+    _name = "lab.name"
+    _description = "Lab Name"
+
+    product_id = fields.Many2one('product.template', string="Product")
+    eln_id = fields.Many2one('lerm.eln', string="ELN")
+    date_lab = fields.Date(string="Date")
+    srf_lab = fields.Char(string="SRF ID")
+    report_no = fields.Char(string="Report No")
+    url_no = fields.Char(string="URL No")
+    lab_Ids = fields.Char(string="Lab No")
+
+    
+
+    # # 🔹 Compute SRF ID automatically based on selected ELN
+    # @api.depends('eln_id.srf_id')
+    # def _compute_srf_lab(self):
+    #     for rec in self:
+    #         rec.srf_lab = rec.eln_id.srf_id.srf_id if rec.eln_id and rec.eln_id.srf_id else False
+
+
+
+
+    
+    
