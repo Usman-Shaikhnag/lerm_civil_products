@@ -133,6 +133,20 @@ class ELN(models.Model):
         return mapping.get(product.name)
 
 
+    show_create_lab_btn = fields.Boolean(
+    compute="_compute_show_create_lab_btn",
+    store=True
+    )
+
+    @api.depends('lab_id')
+    def _compute_show_create_lab_btn(self):
+        for rec in self:
+            # lab_id नाही → button show
+            # lab_id आहे → button hide
+            rec.show_create_lab_btn = not bool(rec.lab_id)
+
+
+
     
 
     from datetime import datetime
@@ -158,7 +172,7 @@ class ELN(models.Model):
         if last_rec and last_rec.lab_id:
             # last range चा end number घ्या
             last_end = int(last_rec.lab_id.split('-')[-1])
-            start_no = last_end + 1
+            start_no = last_end 
         else:
             start_no = 1
 
@@ -177,6 +191,16 @@ class ELN(models.Model):
 
    
     def action_create_lab_line(self):
+        if self.srf_id:
+            existing = self.search([
+                ('srf_id', '=', self.srf_id.id),
+                ('id', '!=', self.id),
+            ], limit=1)
+
+            if existing:
+                raise UserError(
+                    f"SRF {self.srf_id.srf_id} साठी Create Lab ID आधीच वापरले आहे"
+                ) 
         if not self.material:
             return {
                 'warning': {

@@ -81,13 +81,14 @@
                     <field name="source_sample"/>
                 </group>
                 </group>
-
+              <field name="show_create_lab_btn"  invisible="1"/>
              <button name="action_create_lab_line"
+                     
                         type="object"
                         string="Create Lab ID"
-                        class="oe_highlight"/>
+                        class="oe_highlight" invisible="not show_create_lab_btn"/>
               <group>
-               <!-- <field name="lab_id"  invisible="1"/> -->
+               <field name="lab_id"  invisible="1"/>
            </group>
 
                 <table class="table table-sm">
