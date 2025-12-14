@@ -162,7 +162,7 @@ class ELN(models.Model):
         else:
             start_no = 1
 
-        end_no = start_no + self.quantity - 1
+        end_no = start_no + self.quantity 
 
         start_id = f"{prefix}-{year}-{str(start_no).zfill(3)}"
 
