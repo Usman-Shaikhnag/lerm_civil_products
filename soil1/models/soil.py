@@ -1,6 +1,9 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 from datetime import timedelta
+from math import pi
+
+
 import math
 import matplotlib.pyplot as plt
 import io
@@ -14,6 +17,7 @@ from io import BytesIO
 from scipy.interpolate import make_interp_spline
 from matplotlib.ticker import LogLocator, MultipleLocator
 import re
+
 
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 
@@ -678,6 +682,36 @@ class Soil(models.Model):
                 record.graph_image_liquid = chart_image_liquid
         except:
             pass 
+
+
+
+
+
+
+
+
+
+
+
+#  1st table  Bulk Density
+
+    moisture_name = fields.Char( string="Name",default=" Bulk Density" )
+    moisture_visible = fields.Boolean(string="Bulk Density Visible",compute="_compute_visible")
+    bulk_line_ids = fields.One2many('soil.bulk.density','parent_id', string="Bulk Density Lines")
+
+
+
+   #  Calculation-NMC, 
+    
+
+    # NMC_name = fields.Char( string="Name",default=" NMC" )
+    moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
+   
+   
+
+
+
+
 
 
       # Plastic Limit
@@ -2430,15 +2464,20 @@ class Soil(models.Model):
             record.uu_triaxial_cohesion_visible  = False
 
 
+
+            record.moisture_visible  = False
+
+
+
+
+
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
 
                 if sample.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
                     record.sieve_visible = True
 
-                # if sample.internal_id == '800a2dc9-49fe-4dab-83e8-63758c7f351a':
-                #     record.water_content_visible = True
-                
+               
                 if sample.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
                     record.liquid_limit_visible = True
 
@@ -2500,17 +2539,22 @@ class Soil(models.Model):
                     record.uu_triaxial_cohesion_visible = True
 
 
-    # def open_eln_page(self):
-    #     # import wdb; wdb.set_trace()
 
-    #     return {
-    #             'view_mode': 'form',
-    #             'res_model': "lerm.eln",
-    #             'type': 'ir.actions.act_window',
-    #             'target': 'current',
-    #             'res_id': self.eln_ref.id,
-                
-    #         }
+
+
+
+
+                if sample.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
+                    record.moisture_visible = True
+
+
+   
+
+
+
+
+
+
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
         for result in self.eln_ref.parameters_result:
@@ -2790,53 +2834,7 @@ class LIQUIDLIMITLINE(models.Model):
             record.serial_no = index + 1
 
 
-# class WATERCONTENTLINE(models.Model):
-#     _name = "mechanical.water.content.line"
-#     parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
 
-#     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
-#     container_noo = fields.Integer(string="Container No") 
-#     wt_of_cont = fields.Float(string="Weight of container,(gms)")
-#     wet_sample_cont = fields.Float(string="Weight of wet sample + container (gm)")
-#     dry_sample_cont = fields.Float(string="Weigth of dry sample + Container (gms)")
-#     mass_dry_soil= fields.Float(string="Mass of dry soil")
-#     water_contentss = fields.Float(string="Water content (W)=(W1-W2)(W1-Wc)/100%",compute="_compute_water_contentss")
-#     w1_w2 = fields.Float(string="(W1-W2)",compute="_compute_w1_w2")
-#     W1_Wc = fields.Float(string="(W1_Wc)",compute="_compute_W1_Wc")
-
-
-
-#     @api.depends('wet_sample_cont', 'dry_sample_cont')
-#     def _compute_w1_w2(self):
-#         for line in self:
-#             line.w1_w2 = line.wet_sample_cont - line.dry_sample_cont
-
-
-#     @api.depends('wet_sample_cont', 'wt_of_cont')
-#     def _compute_W1_Wc(self):
-#         for line in self:
-#             line.W1_Wc = line.wet_sample_cont - line.wt_of_cont
-
-
- 
-#     @api.depends('w1_w2', 'W1_Wc')
-#     def _compute_water_contentss(self):
-#         for line in self:
-#             if line.W1_Wc != 0:
-#                 line.water_contentss = line.w1_w2 / line.W1_Wc *100
-#             else:
-#                 line.water_contentss = 0.0
-
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('serial_no'))
-#                 vals['serial_no'] = max_serial_no + 1
-
-       # return super(WATERCONTENTLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -3806,3 +3804,172 @@ class UUTriaxialCohesionLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+
+
+#bulk density
+
+
+class SoilBulkDensity(models.Model):
+    _name = 'soil.bulk.density'
+    
+    parent_id = fields.Many2one( 'mechanical.soil1',string="Parent Test",ondelete='cascade', )
+
+    serial_no = fields.Integer(string="Sr.No")
+
+    date = fields.Date( string="Date")
+
+    lab_id = fields.Char(string='Lab ID')
+
+    wt_uds_soil = fields.Float(string='Wt of UDS+Soil (gm)')
+    wt_empty_uds = fields.Float(string='Wt of empty UDS (gm)')
+    wt_soil = fields.Float(string='Wt of soil (gm)', compute='_compute_wt_soil',  store=True,)
+
+    height = fields.Float(string='Ht of sample (cm)')
+    diameter = fields.Float(string='Dia of UDS (cm)')
+    volume = fields.Float(string='Volume of soil sample (cm³)', compute='_compute_volume', store=True, )
+    bulk_density = fields.Float( string='Bulk density (gm/cm³)', compute='_compute_bulk_density', store=True,)
+
+   
+
+    @api.depends('wt_uds_soil', 'wt_empty_uds')
+    def _compute_wt_soil(self):
+        for rec in self:
+            rec.wt_soil = (rec.wt_uds_soil or 0.0) - (rec.wt_empty_uds or 0.0)
+
+    @api.depends('height', 'diameter')
+    def _compute_volume(self):
+        for rec in self:
+            if rec.height and rec.diameter:
+                r = rec.diameter / 2.0
+                rec.volume = pi * r * r * rec.height    
+            else:
+                rec.volume = 0.0
+
+    @api.depends('wt_soil', 'volume')
+    def _compute_bulk_density(self):
+        for rec in self:
+            rec.bulk_density = rec.wt_soil / rec.volume if rec.volume else 0.0  
+
+   
+
+    @api.model
+    def create(self, vals):
+        if vals.get('parent_id') and not vals.get('serial_no'):
+            existing = self.search(
+                [('parent_id', '=', vals['parent_id'])],
+                order='serial_no desc',
+                limit=1,
+            )
+            vals['serial_no'] = (existing.serial_no or 0) + 1 if existing else 1
+        return super().create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Call this after manual delete/reorder if needed
+        for parent in self.mapped('parent_id'):
+            lines = parent.bulk_line_ids.sorted('id')
+            for idx, line in enumerate(lines, start=1):
+                line.serial_no = idx
+
+
+
+
+
+
+
+
+
+#  Calculation-NMC, 
+
+class SoilMoisture(models.Model):
+    _name = 'soil.moisture'
+  
+    parent_id = fields.Many2one(   'mechanical.soil1',  string="Parent Id", ondelete='cascade', )
+
+    serial_no = fields.Integer(string='Sr.No')
+
+    date = fields.Date(string="Date")
+    lab_id = fields.Char(string='Lab ID')
+
+    wet_soil_container = fields.Float(string='Weight of wet soil + container (gm)' )
+    dry_soil_container = fields.Float( string='Weight of oven dry soil + container (gm)' )
+    container_weight = fields.Float( string='Weight of container (gm)' )
+    moisture_content = fields.Float(  string='Moisture content %',  compute='_compute_moisture_content',  store=True,)
+
+    avg_nmc = fields.Float( string='Avg NMC %', compute='_compute_avg_nmc', store=True,)
+
+    is_ok = fields.Boolean( string='True/False',compute='_compute_is_ok',store=True,)
+
+  
+    @api.depends('wet_soil_container', 'dry_soil_container', 'container_weight')
+    def _compute_moisture_content(self):
+        for rec in self:
+            w_wet = rec.wet_soil_container or 0.0
+            w_dry = rec.dry_soil_container or 0.0
+            w_cont = rec.container_weight or 0.0
+            dry_soil = w_dry - w_cont
+            if dry_soil > 0:
+                water = w_wet - w_dry
+                rec.moisture_content = (water / dry_soil) * 100.0
+            else:
+                rec.moisture_content = 0.0
+
+
+    @api.depends('moisture_content', 'date', 'lab_id', 'parent_id')
+    def _compute_avg_nmc(self):
+        for rec in self:
+            if not (rec.date and rec.lab_id and rec.parent_id):
+                rec.avg_nmc = 0.0
+                continue
+
+            trials = self.search([
+                ('parent_id', '=', rec.parent_id.id),
+                ('date', '=', rec.date),
+                ('lab_id', '=', rec.lab_id),
+            ])
+
+        
+            values = [t.moisture_content for t in trials]
+            rec.avg_nmc = sum(values) / len(values) if values else 0.0
+
+ 
+
+    @api.depends('moisture_content', 'avg_nmc')
+    def _compute_is_ok(self):
+        for rec in self:
+            mc = rec.moisture_content or 0.0
+            avg = rec.avg_nmc or 0.0
+            rec.is_ok = bool(avg and abs(mc - avg) <= 2.0)
+
+
+
+    @api.model
+    def create(self, vals):
+        if vals.get('parent_id') and not vals.get('serial_no'):
+            existing = self.search(
+                [('parent_id', '=', vals['parent_id'])],
+                order='serial_no desc',
+                limit=1,
+            )
+            vals['serial_no'] = (existing.serial_no or 0) + 1 if existing else 1
+        return super(SoilMoisture, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        for parent in self.mapped('parent_id'):
+            records = self.search([('parent_id', '=', parent.id)], order='id')
+            for index, record in enumerate(records, start=1):
+                record.serial_no = index
+
+
+
+
+
+
+
+
+
+
+
+

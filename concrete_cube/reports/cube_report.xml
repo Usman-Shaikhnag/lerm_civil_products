@@ -110,7 +110,7 @@
                                 
 
 
-						  <div style="margin-top: 30px;">
+						  <div style="margin-top: 10px;">
                             <!-- Type of Sample Details -->
                             <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px;">
                                 <tr>
@@ -146,7 +146,7 @@
                     </div>
 
                     <!-- ADDED TABLE FROM IMAGE -->
-                <div style="margin-top: 30px;">
+                <div style="margin-top: 10px;">
                        
                        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
                             <thead>
@@ -211,61 +211,51 @@
 
                      <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td>
                      </tr>
-                     
+
 
                 </tbody>
-            </table>            
-            </div>
-			</div>
 
 
 
 
-			<div t-if="data.status_14days and (data.average_strength14_nabl == 'pass' and nabl or (data.average_strength14_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-                
-                       <div style="text-align: center;" >
-                                
-                                    <span t-field="data.casting_14_name"/>
-                                
-                            
-                
-                    </div>
-                    <!-- ADDED TABLE FROM IMAGE -->
-                <div style="margin-top: 30px;">
-                       
-                       <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-                            <thead>
-                                <tr   style="background-color:#f0f0f0; text-align: center;">
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Sr No.</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Identification Mark</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Casting</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Testing</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Age of Specimen (days)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Room temperature (&amp;deg;C)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Relative Humidity (%)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Weight of cube (gms)</th>
-
-                                    <th  style="border: 1px solid black; padding: 8px;" t-att-colspan="data.type_of_sample == 'cube' and 2 or 2"> Plan Dimensions of Testing Faces (mm)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Cross sectional area (mm&amp;sup2;)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Maximum Load (kN)</th>
-                                   
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Compressive strength (N/mm&amp;sup2;)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2"> Average Compressive strength (N/mm&amp;sup2;)</th>
-
-                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Type of Failure</th>
-                                </tr>
-                                <tr>
-
-                                  <th style="border: 1px solid black; padding: 8px;" colspan="1">Length (mm)</th>
-                                 <th t-if="data.type_of_sample == 'cylinder'"  style="border: 1px solid black; padding: 8px;" colspan="1">Diameter (mm)</th>
-                                 <th t-if="data.type_of_sample == 'cube'" style="border: 1px solid black; padding: 8px;" colspan="1">Width (mm)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        
 
 
+
+<!-- <tr>
+    <td colspan="11"
+        style="text-align:right; 
+               padding-right: 160px;">
+        14 days
+    </td>
+</tr> -->
+
+
+
+
+<t t-if="data.child_lines14day">
+    <tr>
+        <td colspan="11"
+            style="text-align:right; padding-right:160px;">
+            14 days
+        </td>
+    </tr>
+
+    <tbody>
+        <t t-set="line_count" t-value="0"/>
+        <tr t-foreach="data.child_lines14day" t-as="r" style="text-align: center;">
+            <!-- your existing 14‑day columns -->
+        </tr>
+    </tbody>
+</t>
+
+
+
+
+
+
+                <tbody>
                      <t t-set="line_count" t-value="0"/>
+
 
 
                     <tr   t-foreach="data.child_lines14day" t-as="r" style="text-align: center;">
@@ -296,60 +286,43 @@
 
                      <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td>
                      </tr>
-                     
+
 
                 </tbody>
-            </table>            
-            </div>
-			</div>
 
 
 
-			<div t-if="data.status_28days and (data.average_strength28_nabl == 'pass' and nabl or (data.average_strength28_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-                
-                     <div style="text-align: center;" >
-                          
-                                
-                       <span t-field="data.casting_28_name"/>
-                                
-                       
-                
-                    </div>
-                    <!-- ADDED TABLE FROM IMAGE -->
-                <div style="margin-top: 30px;">
-                       
-                       <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-                            <thead>
-                                <tr   style="background-color:#f0f0f0; text-align: center;">
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Sr No.</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Identification Mark</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Casting</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Date of Testing</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Age of Specimen (days)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Room temperature (&amp;deg;C)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Relative Humidity (%)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Weight of cube (gms)</th>
 
-                                    <th  style="border: 1px solid black; padding: 8px;" t-att-colspan="data.type_of_sample == 'cube' and 2 or 2"> Plan Dimensions of Testing Faces (mm)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Cross sectional area (mm&amp;sup2;)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Maximum Load (kN)</th>
-                                   
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2">Compressive strength (N/mm&amp;sup2;)</th>
-                                    <th  style="border: 1px solid black; padding: 8px;" rowspan="2"> Average Compressive strength (N/mm&amp;sup2;)</th>
-
-                                    <th style="border: 1px solid black; padding: 8px;" rowspan="2">Type of Failure</th>
-                                </tr>
-                                <tr>
-
-                                  <th style="border: 1px solid black; padding: 8px;" colspan="1">Length (mm)</th>
-                                 <th t-if="data.type_of_sample == 'cylinder'"  style="border: 1px solid black; padding: 8px;" colspan="1">Diameter (mm)</th>
-                                 <th t-if="data.type_of_sample == 'cube'" style="border: 1px solid black; padding: 8px;" colspan="1">Width (mm)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                        
+<!-- <tr>
+    <td colspan="11"
+        style="text-align:right; 
+               padding-right: 160px;">
+        28 days
+    </td>
+</tr> -->
 
 
+<t t-if="data.child_lines14day">
+    <tr>
+        <td colspan="11"
+            style="text-align:right; padding-right:160px;">
+            28 days
+        </td>
+    </tr>
+
+    <tbody>
+        <t t-set="line_count" t-value="0"/>
+        <tr t-foreach="data.child_lines14day" t-as="r" style="text-align: center;">
+            <!-- your existing 28‑day columns -->
+        </tr>
+    </tbody>
+</t>
+
+
+
+
+
+                    <tbody> 
                      <t t-set="line_count" t-value="0"/>
 
 
@@ -381,14 +354,14 @@
 
                      <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['type_of_failure']"/></td>
                      </tr>
-                     
+
 
                 </tbody>
             </table>            
             </div>
-       </div>
+			
+           </div>
 
-                   
 
 
                     <!-- Machine Details -->
