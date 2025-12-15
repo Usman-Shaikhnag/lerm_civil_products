@@ -24,6 +24,8 @@ class ELN(models.Model):
     eln_id = fields.Char("ELN ID",required=True,readonly=True, default=lambda self: 'New',tracking=3)
     ir_model = fields.Many2one('ir.model',string="Model")
 
+   
+
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")
     technician = fields.Many2one('res.users',string="Technicians",tracking=5)
     sample_id = fields.Many2one('lerm.srf.sample',string='UID',tracking=True,ondelete="cascade")
@@ -42,6 +44,213 @@ class ELN(models.Model):
     
     # witness_path = fields.Char(string="Witness")
     # attachment_path = fields.Char(string="Attachment")
+
+    @api.model
+    def get_eln_ids_for_material_name(self, name):
+        if not name:
+            return []
+        # search product by display_name
+        product = self.env['product.template'].search([('display_name','=',name)], limit=1)
+        if product:
+            # search ELNs with that product
+            elns = self.search([('material','=',product.id)])
+            return elns.mapped('eln_id')
+        return []
+
+
+   
+    
+
+
+
+   
+
+   
+    # def action_create_lab_line(self):
+    #     if not self.material:
+    #         return {
+    #             'warning': {
+    #                 'title': 'Error',
+    #                 'message': 'Please select a Material first!'
+    #             }
+    #         }
+
+    #     Lab = self.env['lab.name']
+
+    #     existing = Lab.search([
+    #         ('eln_id', '=', self.id),
+    #         ('product_id', '=', self.material.id)
+    #     ])
+    #     if existing:
+    #         return {
+    #             'warning': {
+    #                 'title': 'Info',
+    #                 'message': 'Lab line already exists!'
+    #             }
+    #         }
+
+    #     # ✅ FIX IS HERE
+    #     url_no_value = self.sample_id.ulr_no if self.sample_id else False
+
+    #     Lab.create({
+    #         'product_id': self.material.id,
+    #         'eln_id': self.id,
+    #         'srf_lab': self.srf_id.srf_id if self.srf_id else False,
+    #         'date_lab': self.srf_date,
+    #         'report_no': self.kes_no,
+    #         'url_no': url_no_value,   # ← ULR stored into URL No
+    #     })
+
+    #     return {
+    #         'warning': {
+    #             'title': 'Success',
+    #             'message': 'Lab line created successfully'
+    #         }
+    #     }
+
+    lab_id = fields.Char(
+        string="Lab ID",
+        readonly=True,
+        tracking=True
+    )
+
+    def _get_lab_prefix(self, product):
+        mapping = {
+            'Burnt Clay Bricks': 'BRIC',
+            'Aggregate - Coarse': 'COAG',
+            'CEMENT MECHANICAL OPC': 'CEMT',
+            'CEMENT MECHANICAL PPC': 'CEMT',
+            'Fine Aggregate': 'FIAG',
+            'Fly Ash': 'FLAS',
+            'GGBS': 'GGBS',
+            'PAVER BLOCK': 'PVLB',
+            'ROCK': 'R',
+            'Soil': 'S',
+            'Stone': 'NS',
+            'Fly Ash Bricks':'FAB',
+            'Concrete Cubes Compressive Strength': 'CONC',
+        }
+        return mapping.get(product.name)
+
+
+    show_create_lab_btn = fields.Boolean(
+    compute="_compute_show_create_lab_btn",
+    store=True
+    )
+
+    @api.depends('lab_id')
+    def _compute_show_create_lab_btn(self):
+        for rec in self:
+            # lab_id नाही → button show
+            # lab_id आहे → button hide
+            rec.show_create_lab_btn = not bool(rec.lab_id)
+
+
+
+    
+
+    from datetime import datetime
+
+    def _generate_lab_id(self):
+        self.ensure_one()
+
+        if not self.material or not self.quantity or self.quantity <= 0:
+            return False
+
+        prefix = self._get_lab_prefix(self.material)
+        if not prefix:
+            return False
+
+        year = datetime.today().strftime('%y')  # 25
+
+        # Same product + year साठी शेवटचा Lab ID शोधा
+        last_rec = self.search([
+            ('material', '=', self.material.id),
+            ('lab_id', 'like', f'{prefix}-{year}-%')
+        ], order='id desc', limit=1)
+
+        if last_rec and last_rec.lab_id:
+            # last range चा end number घ्या
+            last_end = int(last_rec.lab_id.split('-')[-1])
+            start_no = last_end 
+        else:
+            start_no = 1
+
+        end_no = start_no + self.quantity 
+
+        start_id = f"{prefix}-{year}-{str(start_no).zfill(3)}"
+
+        # quantity = 1 असेल तर single ID
+        if self.quantity == 1:
+            return start_id
+
+        end_id = f"{prefix}-{year}-{str(end_no).zfill(3)}"
+        return f"{start_id} - {end_id}"
+
+
+
+   
+    def action_create_lab_line(self):
+        if self.srf_id:
+            existing = self.search([
+                ('srf_id', '=', self.srf_id.id),
+                ('id', '!=', self.id),
+            ], limit=1)
+
+            if existing:
+                raise UserError(
+                    f"SRF {self.srf_id.srf_id} साठी Create Lab ID आधीच वापरले आहे"
+                ) 
+        if not self.material:
+            return {
+                'warning': {
+                    'title': 'Error',
+                    'message': 'Please select a Material first!'
+                }
+            }
+
+        if self.quantity <= 0:
+            return {
+                'warning': {
+                    'title': 'Error',
+                    'message': 'Quantity must be greater than zero!'
+                }
+            }
+
+        # ✅ DEFINE HERE (FIX)
+        url_no_value = self.sample_id.ulr_no if self.sample_id else False
+
+        # Generate lab_id / range
+        self.lab_id = self._generate_lab_id()
+
+        Lab = self.env['lab.name']
+
+        Lab.create({
+            'product_id': self.material.id,
+            'eln_id': self.id,
+            'lab_Ids': self.lab_id,
+            'srf_lab': self.srf_id.srf_id if self.srf_id else False,
+            'date_lab': self.srf_date,
+            'report_no': self.kes_no,
+            'url_no': url_no_value,   # ✅ now defined
+        })
+
+        return {
+            'warning': {
+                'title': 'Success',
+                'message': f'Lab ID generated: {self.lab_id}'
+            }
+        }
+
+
+
+    
+
+
+
+
+
+
     
     witness_photo = fields.Binary(string="Witness Photo")
     witness_photo_name = fields.Char(string="Witness Photo Name")
@@ -106,7 +315,7 @@ class ELN(models.Model):
     active = fields.Boolean(string="Active",default=True)
     tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature")
     
-    quantity = fields.Integer(string="Quantity")
+    quantity = fields.Integer(string="Quantity",default=1)
     source_sample = fields.Char(string="Source of Sample",compute="_compute_source_sample",store=True)
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")
@@ -1172,6 +1381,7 @@ class UpdateResultChild(models.TransientModel):
     wizard_id = fields.Many2one('eln.update.result.wizard')
     parameter = fields.Many2one('eln.parameters',string="Parameter")
     result = fields.Float(string="Result")
+
 
 
 

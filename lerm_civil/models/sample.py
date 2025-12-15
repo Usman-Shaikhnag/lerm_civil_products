@@ -83,7 +83,6 @@ class LermSampleForm(models.Model):
     testedby_signature_required = fields.Boolean("Tested by Signature")
     page_break = fields.Integer("Page break",default=6)
 
-
     active = fields.Boolean(string="Active",default=True)
 
     invoice_number = fields.Many2one(
