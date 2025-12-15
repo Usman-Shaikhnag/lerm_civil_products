@@ -8,7 +8,8 @@ from io import BytesIO
 import os
 import base64
 import re
-# _logger = logging.getLogger(__name__)
+
+
 
 class Discipline(models.Model):
     _name = "lerm_civil.discipline"
@@ -170,6 +171,11 @@ class SrfForm(models.Model):
     
     attachment_path = fields.Char("Attachment")
     customer_portal_request = fields.Many2one('customer.sample.line',string="Customer Portal Request", readonly=True)
+    lab_id = fields.Char(
+        string="Lab ID",
+        readonly=True,
+        tracking=True
+    )
 
     
     def download_attachment(self):
@@ -381,6 +387,7 @@ class SrfForm(models.Model):
 
 
 
+
     def confirm_srf(self):
         srf_ids=[]
         
@@ -467,6 +474,26 @@ class SrfForm(models.Model):
                 # import wdb ; wdb.set_trace()
               
                 sample.write({'sample_no':sample_id,'kes_no':kes_no,'status':'2-confirmed','ulr_no':ulr_no})
+
+                # --------------------------------------------------
+                # CREATE LAB.NAME ENTRY
+                # --------------------------------------------------
+                existing_lab = self.env['lab.name'].search([
+                    ('srf_lab', '=', sample.srf_id.srf_id),  # use SRF record's srf_id field
+                    ('lab_Ids', '=', sample.lab_id)
+                ], limit=1)
+
+                if not existing_lab:
+                    self.env['lab.name'].create({
+                        'product_id': sample.material_id.id,
+                        'eln_id': False,
+                        'date_lab': sample.srf_id.srf_date,  # SRF date
+                        'srf_lab': sample.srf_id.srf_id,     # SRF ID string
+                        'report_no': kes_no,
+                        'url_no': ulr_no,
+                        'lab_Ids': sample.lab_id,
+                    })
+
                 self.env.cr.commit()
         
     
@@ -844,6 +871,89 @@ class CreateSampleWizard(models.TransientModel):
     quantity_consumed = fields.Integer(string="Quantity Consumed")
     quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
 
+    lab_id = fields.Char(
+        string="Lab ID",
+        readonly=True,
+        tracking=True,
+        store=True,
+        compute="_compute_lab_id"
+    )
+
+    # ---------------------------------------------------
+    # PREFIX LOGIC
+    # ---------------------------------------------------
+    def _get_lab_prefix(self, product):
+        mapping = {
+            'Burnt Clay Bricks': 'BRIC',
+            'Aggregate - Coarse': 'COAG',
+            'CEMENT MECHANICAL OPC': 'CEMT',
+            'CEMENT MECHANICAL PPC': 'CEMT',
+            'Fine Aggregate': 'FIAG',
+            'Fly Ash': 'FLAS',
+            'GGBS': 'GGBS',
+            'PAVER BLOCK': 'PVLB',
+            'ROCK': 'R',
+            'Soil': 'S',
+            'Stone': 'NS',
+            'Fly Ash Bricks': 'FAB',
+            'Concrete Cubes Compressive Strength': 'CONC',
+        }
+        return mapping.get(product.name)
+
+    # ---------------------------------------------------
+    # LAB ID GENERATION
+    # ---------------------------------------------------
+    
+    def _generate_lab_id(self):
+        self.ensure_one()
+
+        if not self.material_id or self.quantity <= 0:
+            return False
+
+        prefix = self._get_lab_prefix(self.material_id)
+        if not prefix:
+            return False
+
+        year = datetime.today().strftime('%y')
+
+        # 🔥 SEARCH IN lerm.srf.sample (NOT SRF)
+        samples = self.env['lerm.srf.sample'].search([
+            ('material_id', '=', self.material_id.id),
+            ('lab_id', 'like', f'{prefix}-{year}-%')
+        ])
+
+        last_no = 0
+        for sample in samples:
+            if sample.lab_id:
+                try:
+                    no = int(sample.lab_id.split('-')[-1])
+                    last_no = max(last_no, no)
+                except Exception:
+                    continue
+
+        start_no = last_no + 1
+        end_no = start_no + self.quantity - 1
+
+        start_id = f"{prefix}-{year}-{str(start_no).zfill(3)}"
+
+        if self.quantity == 1:
+            return start_id
+
+        end_id = f"{prefix}-{year}-{str(end_no).zfill(3)}"
+        return f"{start_id} - {end_id}"
+
+
+
+    # @api.onchange('material_id', 'quantity')
+    # def _onchange_generate_lab_id(self):
+    #     for rec in self:
+    #         rec.lab_id = rec._generate_lab_id() or False
+    @api.depends('material_id', 'quantity')
+    def _compute_lab_id(self):
+        for rec in self:
+            rec.lab_id = rec._generate_lab_id() or False
+
+
     @api.depends('quantity_received', 'quantity_consumed')
     def compute_quantity_balance(self):
         for rec in self:
@@ -1002,6 +1112,7 @@ class CreateSampleWizard(models.TransientModel):
         conformity = self.conformity
         volume = self.volume
         product_name = self.product_name
+        # lab_id = self.lab_id
 
 
         if self.grade_required:
@@ -1057,7 +1168,8 @@ class CreateSampleWizard(models.TransientModel):
             'volume':volume,
             'product_name':product_name,
             'lab_location':self.lab_location.id,
-            'location_name':self.location_name.id
+            'location_name':self.location_name.id,
+            # 'lab_id':self.lab_id,
 
             
         })
@@ -1067,7 +1179,6 @@ class CreateSampleWizard(models.TransientModel):
     def add_sample(self,data=False):
 
         
-
         # import wdb; wdb.set_trace()
         if data:
             discipline_id = data['discipline_id']
@@ -1085,7 +1196,10 @@ class CreateSampleWizard(models.TransientModel):
             casting = data["casting"]
             days_casting = data["days_casting"]
             date_casting = data["date_casting"]
+            # lab_id = data["lab_id"]
+            # lab_id = data.get("lab_id")
 
+            
             
             sample_range = self.env['sample.range.line'].create({
                 'srf_id': srf_id,
@@ -1103,7 +1217,9 @@ class CreateSampleWizard(models.TransientModel):
                 'source_sample':source_sample,
                 'casting':casting,
                 'date_casting':date_casting,
-                'days_casting':days_casting
+                'days_casting':days_casting,
+                # 'lab_id':lab_id,
+
             })
             
             srf = self.env["lerm.srf.sample"].create({
@@ -1124,11 +1240,14 @@ class CreateSampleWizard(models.TransientModel):
                 'date_casting':date_casting,
                 'days_casting':days_casting,
                 'lab_location':self.lab_location.id,
-                'location_name':self.location_name.id
+                'location_name':self.location_name.id,
+                # 'lab_id':lab_id,
+
 
 
             })
-            
+
+           
         
         
         else:
@@ -1163,6 +1282,8 @@ class CreateSampleWizard(models.TransientModel):
             product_name = self.product_name
             lab_location  = self.lab_location.id
             location_name = self.location_name.id
+            # lab_id = self.lab_id
+
             
 
 
@@ -1218,7 +1339,9 @@ class CreateSampleWizard(models.TransientModel):
                     'product_name':product_name.id,
                     'main_name':self.main_name,
                     'price':self.price,
-                    'date_casting':self.date_casting
+                    'date_casting':self.date_casting,
+                    # 'lab_id':self.lab_id,
+
 
                 })
                 for i in range(self.sample_qty):
@@ -1263,6 +1386,7 @@ class CreateSampleWizard(models.TransientModel):
                         'lab_location':lab_location,
                         'location_name':location_name,
                         'quantity':self.quantity,
+                        'lab_id':self.lab_id,
                         'uom_id':self.uom_id.id,
                         'quantity_received':self.quantity_received,
                         'quantity_consumed':self.quantity_consumed,
@@ -1272,6 +1396,7 @@ class CreateSampleWizard(models.TransientModel):
                     self.env['lerm.sample.register'].sudo().create({
                         'sample':sample.id,
                         'quantity':self.quantity,
+                        'lab_id':self.lab_id,
                         'uom_id':self.uom_id.id,
                         'quantity_received':self.quantity_received,
                         'quantity_consumed':self.quantity_consumed,
@@ -1342,6 +1467,7 @@ class CreateSampleWizard(models.TransientModel):
                         'department_id':sample.department_id,
                         'casting_date':sample.casting_date,
                         'quantity':sample.quantity,
+                        'lab_id':sample.lab_id,
                         'uom_id':sample.uom_id.id,
                         'quantity_received':sample.quantity_received,
                         'quantity_consumed':sample.quantity_consumed,

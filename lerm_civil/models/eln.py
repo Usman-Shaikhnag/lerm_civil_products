@@ -114,133 +114,133 @@ class ELN(models.Model):
         tracking=True
     )
 
-    def _get_lab_prefix(self, product):
-        mapping = {
-            'Burnt Clay Bricks': 'BRIC',
-            'Aggregate - Coarse': 'COAG',
-            'CEMENT MECHANICAL OPC': 'CEMT',
-            'CEMENT MECHANICAL PPC': 'CEMT',
-            'Fine Aggregate': 'FIAG',
-            'Fly Ash': 'FLAS',
-            'GGBS': 'GGBS',
-            'PAVER BLOCK': 'PVLB',
-            'ROCK': 'R',
-            'Soil': 'S',
-            'Stone': 'NS',
-            'Fly Ash Bricks':'FAB',
-            'Concrete Cubes Compressive Strength': 'CONC',
-        }
-        return mapping.get(product.name)
+    # def _get_lab_prefix(self, product):
+    #     mapping = {
+    #         'Burnt Clay Bricks': 'BRIC',
+    #         'Aggregate - Coarse': 'COAG',
+    #         'CEMENT MECHANICAL OPC': 'CEMT',
+    #         'CEMENT MECHANICAL PPC': 'CEMT',
+    #         'Fine Aggregate': 'FIAG',
+    #         'Fly Ash': 'FLAS',
+    #         'GGBS': 'GGBS',
+    #         'PAVER BLOCK': 'PVLB',
+    #         'ROCK': 'R',
+    #         'Soil': 'S',
+    #         'Stone': 'NS',
+    #         'Fly Ash Bricks':'FAB',
+    #         'Concrete Cubes Compressive Strength': 'CONC',
+    #     }
+    #     return mapping.get(product.name)
 
 
-    show_create_lab_btn = fields.Boolean(
-    compute="_compute_show_create_lab_btn",
-    store=True
-    )
+    # show_create_lab_btn = fields.Boolean(
+    # compute="_compute_show_create_lab_btn",
+    # store=True
+    # )
 
-    @api.depends('lab_id')
-    def _compute_show_create_lab_btn(self):
-        for rec in self:
-            # lab_id नाही → button show
-            # lab_id आहे → button hide
-            rec.show_create_lab_btn = not bool(rec.lab_id)
+    # @api.depends('lab_id')
+    # def _compute_show_create_lab_btn(self):
+    #     for rec in self:
+    #         # lab_id नाही → button show
+    #         # lab_id आहे → button hide
+    #         rec.show_create_lab_btn = not bool(rec.lab_id)
 
 
 
     
 
-    from datetime import datetime
+    # from datetime import datetime
 
-    def _generate_lab_id(self):
-        self.ensure_one()
+    # def _generate_lab_id(self):
+    #     self.ensure_one()
 
-        if not self.material or not self.quantity or self.quantity <= 0:
-            return False
+    #     if not self.material or not self.quantity or self.quantity <= 0:
+    #         return False
 
-        prefix = self._get_lab_prefix(self.material)
-        if not prefix:
-            return False
+    #     prefix = self._get_lab_prefix(self.material)
+    #     if not prefix:
+    #         return False
 
-        year = datetime.today().strftime('%y')  # 25
+    #     year = datetime.today().strftime('%y')  # 25
 
-        # Same product + year साठी शेवटचा Lab ID शोधा
-        last_rec = self.search([
-            ('material', '=', self.material.id),
-            ('lab_id', 'like', f'{prefix}-{year}-%')
-        ], order='id desc', limit=1)
+    #     # Same product + year साठी शेवटचा Lab ID शोधा
+    #     last_rec = self.search([
+    #         ('material', '=', self.material.id),
+    #         ('lab_id', 'like', f'{prefix}-{year}-%')
+    #     ], order='id desc', limit=1)
 
-        if last_rec and last_rec.lab_id:
-            # last range चा end number घ्या
-            last_end = int(last_rec.lab_id.split('-')[-1])
-            start_no = last_end 
-        else:
-            start_no = 1
+    #     if last_rec and last_rec.lab_id:
+    #         # last range चा end number घ्या
+    #         last_end = int(last_rec.lab_id.split('-')[-1])
+    #         start_no = last_end 
+    #     else:
+    #         start_no = 1
 
-        end_no = start_no + self.quantity 
+    #     end_no = start_no + self.quantity 
 
-        start_id = f"{prefix}-{year}-{str(start_no).zfill(3)}"
+    #     start_id = f"{prefix}-{year}-{str(start_no).zfill(3)}"
 
-        # quantity = 1 असेल तर single ID
-        if self.quantity == 1:
-            return start_id
+    #     # quantity = 1 असेल तर single ID
+    #     if self.quantity == 1:
+    #         return start_id
 
-        end_id = f"{prefix}-{year}-{str(end_no).zfill(3)}"
-        return f"{start_id} - {end_id}"
+    #     end_id = f"{prefix}-{year}-{str(end_no).zfill(3)}"
+    #     return f"{start_id} - {end_id}"
 
 
 
    
-    def action_create_lab_line(self):
-        if self.srf_id:
-            existing = self.search([
-                ('srf_id', '=', self.srf_id.id),
-                ('id', '!=', self.id),
-            ], limit=1)
+    # def action_create_lab_line(self):
+    #     if self.srf_id:
+    #         existing = self.search([
+    #             ('srf_id', '=', self.srf_id.id),
+    #             ('id', '!=', self.id),
+    #         ], limit=1)
 
-            if existing:
-                raise UserError(
-                    f"SRF {self.srf_id.srf_id} साठी Create Lab ID आधीच वापरले आहे"
-                ) 
-        if not self.material:
-            return {
-                'warning': {
-                    'title': 'Error',
-                    'message': 'Please select a Material first!'
-                }
-            }
+    #         if existing:
+    #             raise UserError(
+    #                 f"SRF {self.srf_id.srf_id} साठी Create Lab ID आधीच वापरले आहे"
+    #             ) 
+    #     if not self.material:
+    #         return {
+    #             'warning': {
+    #                 'title': 'Error',
+    #                 'message': 'Please select a Material first!'
+    #             }
+    #         }
 
-        if self.quantity <= 0:
-            return {
-                'warning': {
-                    'title': 'Error',
-                    'message': 'Quantity must be greater than zero!'
-                }
-            }
+    #     if self.quantity <= 0:
+    #         return {
+    #             'warning': {
+    #                 'title': 'Error',
+    #                 'message': 'Quantity must be greater than zero!'
+    #             }
+    #         }
 
-        # ✅ DEFINE HERE (FIX)
-        url_no_value = self.sample_id.ulr_no if self.sample_id else False
+    #     # ✅ DEFINE HERE (FIX)
+    #     url_no_value = self.sample_id.ulr_no if self.sample_id else False
 
-        # Generate lab_id / range
-        self.lab_id = self._generate_lab_id()
+    #     # Generate lab_id / range
+    #     self.lab_id = self._generate_lab_id()
 
-        Lab = self.env['lab.name']
+    #     Lab = self.env['lab.name']
 
-        Lab.create({
-            'product_id': self.material.id,
-            'eln_id': self.id,
-            'lab_Ids': self.lab_id,
-            'srf_lab': self.srf_id.srf_id if self.srf_id else False,
-            'date_lab': self.srf_date,
-            'report_no': self.kes_no,
-            'url_no': url_no_value,   # ✅ now defined
-        })
+    #     Lab.create({
+    #         'product_id': self.material.id,
+    #         'eln_id': self.id,
+    #         'lab_Ids': self.lab_id,
+    #         'srf_lab': self.srf_id.srf_id if self.srf_id else False,
+    #         'date_lab': self.srf_date,
+    #         'report_no': self.kes_no,
+    #         'url_no': url_no_value,   # ✅ now defined
+    #     })
 
-        return {
-            'warning': {
-                'title': 'Success',
-                'message': f'Lab ID generated: {self.lab_id}'
-            }
-        }
+    #     return {
+    #         'warning': {
+    #             'title': 'Success',
+    #             'message': f'Lab ID generated: {self.lab_id}'
+    #         }
+    #     }
 
 
 
@@ -620,6 +620,7 @@ class ELN(models.Model):
         sample_id.write({
             'state':'3-pending_verification',
             'quantity':self.quantity,
+            'lab_id':self.lab_id,
             'source_sample':self.source_sample,
             'uom_id':self.uom_id.id,
             'quantity_received':self.quantity_received,
@@ -630,6 +631,7 @@ class ELN(models.Model):
         sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.sample_id.id)])
         sample_register.write({
             'quantity':self.quantity,
+            'lab_id':self.lab_id,
             'source_sample':self.source_sample,
             'uom_id':self.uom_id.id,
             'quantity_received':self.quantity_received,
