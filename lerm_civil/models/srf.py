@@ -873,74 +873,91 @@ class CreateSampleWizard(models.TransientModel):
 
     lab_id = fields.Char(
         string="Lab ID",
-        readonly=True,
-        tracking=True,
-        store=True,
-        compute="_compute_lab_id"
+       
+        
     )
+
+
+
+    
+
+
+
+
+
 
     # ---------------------------------------------------
     # PREFIX LOGIC
     # ---------------------------------------------------
-    def _get_lab_prefix(self, product):
-        mapping = {
-            'Burnt Clay Bricks': 'BRIC',
-            'Aggregate - Coarse': 'COAG',
-            'CEMENT MECHANICAL OPC': 'CEMT',
-            'CEMENT MECHANICAL PPC': 'CEMT',
-            'Fine Aggregate': 'FIAG',
-            'Fly Ash': 'FLAS',
-            'GGBS': 'GGBS',
-            'PAVER BLOCK': 'PVLB',
-            'ROCK': 'R',
-            'Soil': 'S',
-            'Stone': 'NS',
-            'Fly Ash Bricks': 'FAB',
-            'Concrete Cubes Compressive Strength': 'CONC',
-        }
-        return mapping.get(product.name)
+    # def _get_lab_prefix(self, product):
+    #     mapping = {
+    #         'Burnt Clay Bricks': 'BRIC',
+    #         'Aggregate - Coarse': 'COAG',
+    #         'CEMENT MECHANICAL OPC': 'CEMT',
+    #         'CEMENT MECHANICAL PPC': 'CEMT',
+    #         'Fine Aggregate': 'FIAG',
+    #         'Fly Ash': 'FLAS',
+    #         'GGBS': 'GGBS',
+    #         'PAVER BLOCK': 'PVLB',
+    #         'ROCK': 'R',
+    #         'Soil': 'S',
+    #         'Stone': 'NS',
+    #         'Fly Ash Bricks': 'FAB',
+    #         'Concrete Cubes Compressive Strength': 'CONC',
+    #     }
+    #     return mapping.get(product.name)
 
-    # ---------------------------------------------------
-    # LAB ID GENERATION
-    # ---------------------------------------------------
+    # # ---------------------------------------------------
+    # # LAB ID GENERATION
+    # # ---------------------------------------------------
     
-    def _generate_lab_id(self):
-        self.ensure_one()
+    # def _generate_lab_id(self):
+    #     self.ensure_one()
 
-        if not self.material_id or self.quantity <= 0:
-            return False
+    #     if not self.material_id or self.quantity <= 0:
+    #         return False
 
-        prefix = self._get_lab_prefix(self.material_id)
-        if not prefix:
-            return False
+    #     prefix = self._get_lab_prefix(self.material_id)
+    #     if not prefix:
+    #         return False
 
-        year = datetime.today().strftime('%y')
+    #     year = datetime.today().strftime('%y')
 
-        # 🔥 SEARCH IN lerm.srf.sample (NOT SRF)
-        samples = self.env['lerm.srf.sample'].search([
-            ('material_id', '=', self.material_id.id),
-            ('lab_id', 'like', f'{prefix}-{year}-%')
-        ])
+    #     # 🔥 SEARCH IN lerm.srf.sample (NOT SRF)
+    #     samples = self.env['lerm.srf.sample'].search([
+    #         ('material_id', '=', self.material_id.id),
+    #         ('lab_id', 'like', f'{prefix}-{year}-%')
+    #     ])
 
-        last_no = 0
-        for sample in samples:
-            if sample.lab_id:
-                try:
-                    no = int(sample.lab_id.split('-')[-1])
-                    last_no = max(last_no, no)
-                except Exception:
-                    continue
+    #     last_no = 0
+    #     for sample in samples:
+    #         if sample.lab_id:
+    #             try:
+    #                 no = int(sample.lab_id.split('-')[-1])
+    #                 last_no = max(last_no, no)
+    #             except Exception:
+    #                 continue
 
-        start_no = last_no + 1
-        end_no = start_no + self.quantity - 1
+    #     start_no = last_no + 1
+    #     end_no = start_no + self.quantity - 1
 
-        start_id = f"{prefix}-{year}-{str(start_no).zfill(3)}"
+    #     start_id = f"{prefix}-{year}-{str(start_no).zfill(3)}"
 
-        if self.quantity == 1:
-            return start_id
+    #     if self.quantity == 1:
+    #         return start_id
 
-        end_id = f"{prefix}-{year}-{str(end_no).zfill(3)}"
-        return f"{start_id} - {end_id}"
+    #     end_id = f"{prefix}-{year}-{str(end_no).zfill(3)}"
+    #     return f"{start_id} - {end_id}"
+
+    
+
+
+
+
+
+    
+
+
 
 
 
@@ -948,10 +965,10 @@ class CreateSampleWizard(models.TransientModel):
     # def _onchange_generate_lab_id(self):
     #     for rec in self:
     #         rec.lab_id = rec._generate_lab_id() or False
-    @api.depends('material_id', 'quantity')
-    def _compute_lab_id(self):
-        for rec in self:
-            rec.lab_id = rec._generate_lab_id() or False
+    # @api.depends('material_id', 'quantity')
+    # def _compute_lab_id(self):
+    #     for rec in self:
+    #         rec.lab_id = rec._generate_lab_id() or False
 
 
     @api.depends('quantity_received', 'quantity_consumed')
