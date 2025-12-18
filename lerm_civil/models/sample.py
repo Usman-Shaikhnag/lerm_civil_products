@@ -25,6 +25,8 @@ class LermSampleForm(models.Model):
     lab_no_value = fields.Char(string="Value")
     group_id = fields.Many2one('lerm_civil.group',string="Group")
     # department_id = fields.Many2one('hr.department', string='Department')
+    datasheet_path = fields.Char(string="Datasheet Path")
+    report_path = fields.Char(string="Report Path")
     department_id = fields.Char(string='Department')
     material_id = fields.Many2one('product.template',string="Material")
     material_id_lab_name = fields.Char(string="Material",compute="compute_material_id_lab_name",store=True)
@@ -161,94 +163,94 @@ class LermSampleForm(models.Model):
     checked_by_signature_datasheet = fields.Boolean(string="Checked By Signature Datasheet")
 
     quantity = fields.Integer(string="Quantity")
-    # lab_id = fields.Char( string="Lab ID",readonly=True,tracking=True,store=True )
-    lab_id = fields.Char(
-        string="Lab ID",
-        readonly=True,
-        tracking=True,
-        store=True,
-        compute="_compute_lab_id"
+    lab_id = fields.Char( string="Lab ID" )
+    # lab_id = fields.Char(
+    #     string="Lab ID",
+    #     readonly=True,
+    #     tracking=True,
+    #     store=True,
+    #     compute="_compute_lab_id"
        
-    )
+    # )
 
-    lab_ids_raw = fields.Char()
-
-
-    def _get_lab_sequence_code(self, product):
-        mapping = {
-            'Burnt Clay Bricks': 'lerm.eln.bric',
-            'Aggregate - Coarse': 'lerm.eln.coag',
-            'CEMENT MECHANICAL OPC': 'lerm.eln.cemt',
-            'CEMENT MECHANICAL PPC': 'lerm.eln.cemt',
-            'Fine Aggregate': 'lerm.eln.fiag',
-            'Fly Ash': 'lerm.eln.flas',
-            'GGBS': 'lerm.eln.ggbs',
-            'PAVER BLOCK': 'lerm.eln.pvlb',
-            'ROCK': 'lerm.eln.rock',
-            'Soil': 'lerm.eln.soil',
-            'Stone': 'lerm.eln.ns',
-            'Fly Ash Bricks': 'lerm.eln.fab',
-            'Concrete Cubes Compressive Strength': 'lerm.eln.conc',
-        }
-        return mapping.get(product.name) if product else False
-
-    # --------------------
-    # COMPUTE (🔥 CONSUME SEQUENCE HERE)
-    # --------------------
-    @api.depends('material_id', 'quantity')
-    def _compute_lab_id(self):
-        for rec in self:
-            rec.lab_id = False
-            rec.lab_ids_raw = False
-
-            if not rec.material_id or rec.quantity <= 0:
-                continue
-
-            # prevent double consume
-            if rec.lab_ids_raw:
-                continue
-
-            seq_code = rec._get_lab_sequence_code(rec.material_id)
-            if not seq_code:
-                continue
-
-            ids = []
-            for i in range(rec.quantity):
-                lab = rec.env['ir.sequence'].next_by_code(seq_code)
-                if not lab:
-                    break
-                ids.append(lab)
-
-            if not ids:
-                continue
-
-            # ✅ store consumed IDs
-            rec.lab_ids_raw = ','.join(ids)
-
-            # preview
-            if len(ids) == 1:
-                rec.lab_id = ids[0]
-            else:
-                rec.lab_id = f"{ids[0]} - {ids[-1]}"
+    # lab_ids_raw = fields.Char()
 
 
-    def action_create_sample(self):
-        self.ensure_one()
+    # def _get_lab_sequence_code(self, product):
+    #     mapping = {
+    #         'Burnt Clay Bricks': 'lerm.eln.bric',
+    #         'Aggregate - Coarse': 'lerm.eln.coag',
+    #         'CEMENT MECHANICAL OPC': 'lerm.eln.cemt',
+    #         'CEMENT MECHANICAL PPC': 'lerm.eln.cemt',
+    #         'Fine Aggregate': 'lerm.eln.fiag',
+    #         'Fly Ash': 'lerm.eln.flas',
+    #         'GGBS': 'lerm.eln.ggbs',
+    #         'PAVER BLOCK': 'lerm.eln.pvlb',
+    #         'ROCK': 'lerm.eln.rock',
+    #         'Soil': 'lerm.eln.soil',
+    #         'Stone': 'lerm.eln.ns',
+    #         'Fly Ash Bricks': 'lerm.eln.fab',
+    #         'Concrete Cubes Compressive Strength': 'lerm.eln.conc',
+    #     }
+    #     return mapping.get(product.name) if product else False
 
-        if not self.lab_ids_raw:
-            return
+    # # --------------------
+    # # COMPUTE (🔥 CONSUME SEQUENCE HERE)
+    # # --------------------
+    # @api.depends('material_id', 'quantity')
+    # def _compute_lab_id(self):
+    #     for rec in self:
+    #         rec.lab_id = False
+    #         rec.lab_ids_raw = False
 
-        ids = self.lab_ids_raw.split(',')
+    #         if not rec.material_id or rec.quantity <= 0:
+    #             continue
 
-        lines = [{
-            'srf_id': self.srf_id.id,
-            'material_id': self.material_id.id,
-            'lab_id': lab,
-        } for lab in ids]
+    #         # prevent double consume
+    #         if rec.lab_ids_raw:
+    #             continue
 
-        self.env['lerm.srf.sample'].create(lines)
+    #         seq_code = rec._get_lab_sequence_code(rec.material_id)
+    #         if not seq_code:
+    #             continue
 
-        return {'type': 'ir.actions.act_window_close'}
+    #         ids = []
+    #         for i in range(rec.quantity):
+    #             lab = rec.env['ir.sequence'].next_by_code(seq_code)
+    #             if not lab:
+    #                 break
+    #             ids.append(lab)
+
+    #         if not ids:
+    #             continue
+
+    #         # ✅ store consumed IDs
+    #         rec.lab_ids_raw = ','.join(ids)
+
+    #         # preview
+    #         if len(ids) == 1:
+    #             rec.lab_id = ids[0]
+    #         else:
+    #             rec.lab_id = f"{ids[0]} - {ids[-1]}"
+
+
+    # def action_create_sample(self):
+    #     self.ensure_one()
+
+    #     if not self.lab_ids_raw:
+    #         return
+
+    #     ids = self.lab_ids_raw.split(',')
+
+    #     lines = [{
+    #         'srf_id': self.srf_id.id,
+    #         'material_id': self.material_id.id,
+    #         'lab_id': lab,
+    #     } for lab in ids]
+
+    #     self.env['lerm.srf.sample'].create(lines)
+
+    #     return {'type': 'ir.actions.act_window_close'}
 
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")
@@ -500,9 +502,9 @@ class LermSampleForm(models.Model):
             if not result.verified:
                 raise ValidationError("Not all parameters are verified. Please ensure all parameters are verified before proceeding.")
         
-        if not self.datasheet_path:
-            raise ValidationError("Please attach datasheet before submitting.")
-        import wdb ; wdb.set_trace()
+        # if not self.datasheet_path:
+        #     raise ValidationError("Please attach datasheet before submitting.")
+        # import wdb ; wdb.set_trace()
         
         sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.id)])
         try:

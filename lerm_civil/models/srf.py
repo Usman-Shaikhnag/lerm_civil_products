@@ -873,10 +873,91 @@ class CreateSampleWizard(models.TransientModel):
 
     lab_id = fields.Char(
         string="Lab ID",
+        readonly=True,
+        tracking=True,
+        store=True,
+        compute="_compute_lab_id"
        
-        
     )
 
+    lab_ids_raw = fields.Char()
+
+
+    def _get_lab_sequence_code(self, product):
+        mapping = {
+            'Burnt Clay Bricks': 'lerm.eln.bric',
+            'Aggregate - Coarse': 'lerm.eln.coag',
+            'CEMENT MECHANICAL OPC': 'lerm.eln.cemt',
+            'CEMENT MECHANICAL PPC': 'lerm.eln.cemt',
+            'Fine Aggregate': 'lerm.eln.fiag',
+            'Fly Ash': 'lerm.eln.flas',
+            'GGBS': 'lerm.eln.ggbs',
+            'PAVER BLOCK': 'lerm.eln.pvlb',
+            'ROCK': 'lerm.eln.rock',
+            'Soil': 'lerm.eln.soil',
+            'Stone': 'lerm.eln.ns',
+            'Fly Ash Bricks': 'lerm.eln.fab',
+            'Concrete Cubes Compressive Strength': 'lerm.eln.conc',
+        }
+        return mapping.get(product.name) if product else False
+
+    # --------------------
+    # COMPUTE (🔥 CONSUME SEQUENCE HERE)
+    # --------------------
+    @api.depends('material_id', 'quantity')
+    def _compute_lab_id(self):
+        for rec in self:
+            rec.lab_id = False
+            rec.lab_ids_raw = False
+
+            if not rec.material_id or rec.quantity <= 0:
+                continue
+
+            # prevent double consume
+            if rec.lab_ids_raw:
+                continue
+
+            seq_code = rec._get_lab_sequence_code(rec.material_id)
+            if not seq_code:
+                continue
+
+            ids = []
+            for i in range(rec.quantity):
+                lab = rec.env['ir.sequence'].next_by_code(seq_code)
+                if not lab:
+                    break
+                ids.append(lab)
+
+            if not ids:
+                continue
+
+            # ✅ store consumed IDs
+            rec.lab_ids_raw = ','.join(ids)
+
+            # preview
+            if len(ids) == 1:
+                rec.lab_id = ids[0]
+            else:
+                rec.lab_id = f"{ids[0]} - {ids[-1]}"
+
+
+    def action_create_sample(self):
+        self.ensure_one()
+
+        if not self.lab_ids_raw:
+            return
+
+        ids = self.lab_ids_raw.split(',')
+
+        lines = [{
+            'srf_id': self.srf_id.id,
+            'material_id': self.material_id.id,
+            'lab_id': lab,
+        } for lab in ids]
+
+        self.env['lerm.srf.sample'].create(lines)
+
+        return {'type': 'ir.actions.act_window_close'}
 
 
     
