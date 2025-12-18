@@ -87,6 +87,12 @@ class SampleRangeLine(models.Model):
     product_name = fields.Many2one('product.template',string="Product Name")
     main_name = fields.Char(string="Product Name")
     price = fields.Float(string="Price")
+    lab_id = fields.Char(
+        string="Lab ID",
+        readonly=True,
+        tracking=True,
+        store=True
+    )
 
     
     status = fields.Selection([
