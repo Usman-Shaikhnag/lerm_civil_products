@@ -125,13 +125,26 @@
                             <tree editable="bottom"  class="custom_table_borders ">
                               <!-- <field name="blue_input" invisible="1"/> -->
 
-                                <field class="" name="serial_no" string="Sr.No"/>
+                                <!-- <field class="" name="serial_no" string="Sr.No"/>
                                 <field class="" name='sieve_size' string="IS Sieve Size"/>
-                                <field class="" name='wt_retained' string="Wt. Retained in gms" />
+                                <field class="" name='wt_retained' string="Wt. Retained in gms" class="blue-input" decoration-info="wt_retained != 0"/>
                                 <field class="" name='percent_retained' string="% Retained"/>
                                 <field class="" name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
                                 <field class="" name='passing_percent' string="Passing %" readonly="1"/>
-                                <field class=" oe_center" name='specific_limt' string="Specified Limits"/>
+                                <field class=" oe_center" name='specific_limt' string="Specified Limits"/> -->
+
+
+                                <field name="serial_no" string="Sr.No"/>
+<field name="sieve_size" string="IS Sieve Size"/>
+<field name="wt_retained" string="Wt. Retained in gms" class="blue-input"
+       decoration-info="wt_retained != 0"/>
+<field name="percent_retained" string="% Retained"/>
+<field name="cumulative_retained"
+       context="{'default_cumulative_retained': cumulative_retained}"
+       string="Cum. Retained %"/>
+<field name="passing_percent" string="Passing %" readonly="1"/>
+<field name="specific_limt" string="Specified Limits" class="oe_center"/>
+
                                 
                             </tree>
                         </field>
