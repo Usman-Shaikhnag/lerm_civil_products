@@ -16,6 +16,7 @@
                        <field name="grade"/>
                     </group>
 
+
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
@@ -1639,10 +1640,36 @@
                         </field>
                     </div>
 
-    
 
 
 
+
+ <!-- Specific Gravity -->
+
+  <div invisible="specific_gravity_visible == False">
+                  <h1 class="text-center">
+                    <field name="gravity_name" readonly="1" nolabel="1"/>
+                        <field name="specific_gravity_visible" invisible="1"/>
+               </h1>
+                   </div>
+
+
+<!-- Bulk density table, same condition -->
+ <div invisible = "specific_gravity_visible == False">
+    <field name="gravity_line_ids">
+        <tree editable="bottom" class="custom_table_borders">
+            <field name="date" width="60px"/>
+            <field name="lab_id" width="50px"/>
+            <field name="wt_uds_soil" width="100px"/>
+            <field name="wt_empty_uds" width="100px"/>
+            <field name="wt_soil" width="100px"/>
+            <field name="height" width="100px"/>
+            <field name="diameter" width="100px"/>
+            <field name="volume" width="100px"/>
+            <field name="bulk_density" width="100px"/>
+        </tree>
+    </field>
+</div>
 
 
                     

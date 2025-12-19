@@ -386,11 +386,7 @@ class Soil(models.Model):
 
     
     
-    # @api.depends('sieve_analysis_child_lines.wt_retained')
-    # def _compute_total_sieve(self):
-    #     for record in self:
-    #         print("recordd",record)
-    #         record.total_sieve_analysis = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
+  
 
     graph_image_slive = fields.Binary("Sieve Graph", compute="_compute_graph_image_slive", store=True)
 
@@ -700,14 +696,25 @@ class Soil(models.Model):
     bulk_line_ids = fields.One2many('soil.bulk.density','parent_id', string="Bulk Density Lines")
 
 
+#  Calculation-NMC, 
 
-   #  Calculation-NMC, 
-    
-
-    # NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
    
    
+
+
+
+#  Specific Gravity
+
+    gravity_name = fields.Char( string="Name", default="Specific Gravity", )
+    specific_gravity_visible = fields.Boolean( string="Specific Gravity", compute="_compute_visible",)
+    gravity_line_ids = fields.One2many('soil.bulk.density','parent_id', string="Bulk Density Lines")
+
+    
+
+
+
+
 
 
 
@@ -1473,123 +1480,6 @@ class Soil(models.Model):
             # After Dry Density
             rec.after_dry_density = rec.after_bulk_density / (1 + (rec.avg_mc or 0) * 0.01)
 
-
-
-    # chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
-
-    # ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
-    # pt_2mm = fields.Float("PT at 2.5mm",default=1370)
-    # cbr_2mm = fields.Float("CBR at 2.5mm",compute="_compute_cbr_2mm")
-
-    # ps_5mm = fields.Float("PS for 5mm",compute="_compute_ps_5mm")
-    # pt_5mm = fields.Float("PT at 5mm",default=2055)
-    # cbr_5mm = fields.Float("CBR at 5mm",compute="_compute_cbr_5mm")
-
-    # cbr_result = fields.Float("CBR",compute="_compute_final_cbr")
-
-    # @api.depends('soil_table')
-    # def _compute_ps_2mm(self):
-    #     for record in self:
-    #         if record.soil_table and len(record.soil_table) >= 6:
-    #             fifth_row = record.soil_table[5] 
-    #             record.ps_2mm = fifth_row.load
-    #         else:
-    #             record.ps_2mm = 0
-
-
-    # @api.depends('soil_table')
-    # def _compute_ps_5mm(self):
-    #     for record in self:
-    #         if record.soil_table and len(record.soil_table) >= 9:
-    #             fifth_row = record.soil_table[8] 
-    #             record.ps_5mm = fifth_row.load
-    #         else:
-    #             record.ps_5mm = 0
-
-    # @api.depends('pt_2mm','ps_2mm')
-    # def _compute_cbr_2mm(self):
-    #     for record in self:
-    #         if record.pt_2mm != 0:
-    #             record.cbr_2mm = round((record.ps_2mm/record.pt_2mm)*100,2)
-    #         else:
-    #             record.cbr_2mm = 0
-
-    # @api.depends('pt_5mm','ps_5mm')
-    # def _compute_cbr_5mm(self):
-    #     for record in self:
-    #         if record.pt_5mm != 0:
-    #             record.cbr_5mm = round((record.ps_5mm/record.pt_5mm)*100,2)
-    #         else:
-    #             record.cbr_5mm = 0
-
-    # @api.depends('cbr_5mm','cbr_2mm')
-    # def _compute_final_cbr(self):
-    #     for record in self:
-    #         if record.cbr_5mm > record.cbr_2mm:
-    #             record.cbr_result = record.cbr_5mm
-    #         else:
-    #             record.cbr_result = record.cbr_2mm
-
-
-   
-
-    # chart_image_cbr = fields.Binary(
-    # "Line Chart",
-    # compute="_compute_chart_image_cbr",
-    # store=True
-    #   )
-
-    # def generate_line_chart_cbr(self):
-    #     # Prepare data
-    #     x_values = []
-    #     y_values = []
-    #     for line in self.soil_table:
-    #         x_values.append(line.penetration)
-    #         y_values.append(line.load)
-
-    #     if not x_values or not y_values:
-    #         return False
-
-    #     plt.figure(figsize=(10, 5))
-
-    #     # ✅ Blue curve with red points
-    #     plt.plot(x_values, y_values, color='blue', linestyle='-', linewidth=2, label='Curve')
-    #     plt.scatter(x_values, y_values, color='red', edgecolors='black', s=60, zorder=5, label='Points')
-
-    #     # ✅ Axis labels and title
-    #     plt.xlabel('Penetration (mm)', fontsize=12)
-    #     plt.ylabel('Load (kg)', fontsize=12)
-    #     plt.title('CBR (California Bearing Ratio)', fontsize=14)
-
-    #     # ✅ Axis range
-    #     plt.xlim(left=0, right=max(x_values) + 2)
-    #     plt.ylim(bottom=0, top=max(y_values) + (max(y_values) * 0.1))
-
-    #     # ✅ Grid (major + minor)
-    #     ax = plt.gca()
-    #     ax.xaxis.set_minor_locator(MultipleLocator(0.5))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(5))
-    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
-
-    #     # ✅ Save image
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.legend()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
-
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
-
-
-    # @api.depends('soil_table')
-    # def _compute_chart_image_cbr(self):
-    #     try:
-    #         for record in self:
-    #             chart_image = record.generate_line_chart_cbr()
-    #             record.chart_image_cbr = chart_image
-    #     except:
-    #         pass
 
 
 
@@ -2669,7 +2559,7 @@ class Soil(models.Model):
             record.determination_visible  = False 
             record.shrinkage_limit_visible  = False 
             record.permeability_falling_visible  = False 
-            record.specific_gravity_visible  = False 
+            # record.specific_gravity_visible  = False 
             record.direct_shear_visible  = False 
             record.ucs_visible  = False 
             record.consolidation_visible  = False 
@@ -2682,7 +2572,7 @@ class Soil(models.Model):
 
 
             record.moisture_visible  = False
-
+            record.specific_gravity_visible  = False 
 
 
 
@@ -2727,8 +2617,8 @@ class Soil(models.Model):
                 if sample.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
                     record.permeability_falling_visible = True
 
-                if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
-                    record.specific_gravity_visible = True
+                # if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                #     record.specific_gravity_visible = True
 
                 if sample.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                     record.direct_shear_visible = True
@@ -2763,6 +2653,12 @@ class Soil(models.Model):
                 if sample.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
                     record.moisture_visible = True
 
+                
+                if sample.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
+                    record.specific_gravity_visible = True
+
+
+              
 
    
 
@@ -3847,6 +3743,7 @@ class ConsolidationPCTestLine(models.Model):
             rec.strain_pc = rec.delta_h_pc / H0 if H0 !=0 else 0.0
 
 
+
     @api.depends("parent_id.initial_void_ratio_pc","stress_pc")
     def _compute_void_ratio_pc(self):
         for rec in self:
@@ -4046,8 +3943,9 @@ class UUTriaxialCohesionLine(models.Model):
 
 
 class SoilBulkDensity(models.Model):
+
     _name = 'soil.bulk.density'
-    
+
     parent_id = fields.Many2one( 'mechanical.soil1',string="Parent Test",ondelete='cascade', )
 
     serial_no = fields.Integer(string="Sr.No")
@@ -4199,6 +4097,68 @@ class SoilMoisture(models.Model):
 
 
 
+
+
+
+#  Specific Gravity
+
+class SoilBulkDensity(models.Model):
+    _name = 'soil.bulk.density'
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Test",ondelete='cascade',required=True, )
+
+    serial_no = fields.Integer(string="Sr.No")
+
+    date = fields.Date(string="Date")
+    lab_id = fields.Char(string='Lab ID')
+
+    wt_uds_soil = fields.Float(string='Wt of UDS + Soil (gm)')
+    wt_empty_uds = fields.Float(string='Wt of empty UDS (gm)')
+    wt_soil = fields.Float( string='Wt of soil (gm)', compute='_compute_wt_soil', store=True,)
+
+    height = fields.Float(string='Ht of sample (cm)')
+    diameter = fields.Float(string='Dia of UDS (cm)')
+    volume = fields.Float(  string='Volume of soil sample (cm³)',  compute='_compute_volume',  store=True, )
+    bulk_density = fields.Float( string='Bulk density (gm/cm³)', compute='_compute_bulk_density', store=True,)
+
+    # ---------- computations ----------
+
+    @api.depends('wt_uds_soil', 'wt_empty_uds')
+    def _compute_wt_soil(self):
+        for rec in self:
+            rec.wt_soil = (rec.wt_uds_soil or 0.0) - (rec.wt_empty_uds or 0.0)
+
+    @api.depends('height', 'diameter')
+    def _compute_volume(self):
+        for rec in self:
+            if rec.height and rec.diameter:
+                r = rec.diameter / 2.0
+                rec.volume = pi * r * r * rec.height  # V = π r² h [web:4]
+            else:
+                rec.volume = 0.0
+
+    @api.depends('wt_soil', 'volume')
+    def _compute_bulk_density(self):
+        for rec in self:
+            rec.bulk_density = rec.wt_soil / rec.volume if rec.volume else 0.0
+
+    # ---------- auto Sr.No ----------
+
+    @api.model
+    def create(self, vals):
+        if vals.get('parent_id') and not vals.get('serial_no'):
+            existing = self.search(
+                [('parent_id', '=', vals['parent_id'])],
+                order='serial_no desc',
+                limit=1,
+            )
+            vals['serial_no'] = (existing.serial_no or 0) + 1 if existing else 1
+        return super(SoilBulkDensity, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        for parent in self.mapped('parent_id'):
+            lines = parent.bulk_line_ids.sorted('id')
+            for idx, line in enumerate(lines, start=1):
+                line.serial_no = idx
 
 
 
