@@ -110,8 +110,7 @@ class ELN(models.Model):
 
     lab_id = fields.Char(
         string="Lab ID",
-        readonly=True,
-        tracking=True
+      
     )
 
     # def _get_lab_prefix(self, product):
@@ -620,7 +619,7 @@ class ELN(models.Model):
         sample_id.write({
             'state':'3-pending_verification',
             'quantity':self.quantity,
-            'lab_id':self.lab_id,
+            # 'lab_id':self.lab_id,
             'source_sample':self.source_sample,
             'uom_id':self.uom_id.id,
             'quantity_received':self.quantity_received,
@@ -631,7 +630,7 @@ class ELN(models.Model):
         sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.sample_id.id)])
         sample_register.write({
             'quantity':self.quantity,
-            'lab_id':self.lab_id,
+            # 'lab_id':self.lab_id,
             'source_sample':self.source_sample,
             'uom_id':self.uom_id.id,
             'quantity_received':self.quantity_received,
