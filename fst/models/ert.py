@@ -470,12 +470,12 @@ class SoilBoreholeParent(models.Model):
     #                 'image': img_base64,
     #             })
 
-    @api.depends('borehole_lines.soil_borehole_id.graph_image',
-                'borehole_lines.soil_borehole_id.nvalue_ids.classification',
-                'borehole_lines.soil_borehole_id.nvalue_ids.symbol')
+    @api.depends(
+        'borehole_lines.soil_borehole_id.graph_image',
+        'borehole_lines.soil_borehole_id.nvalue_ids.classification',
+        'borehole_lines.soil_borehole_id.nvalue_ids.symbol')
     def _compute_combined_images(self):
-    
-        # Classification code -> human-friendly name + symbol for legend
+
         CLASSIFICATION_INFO = {
             'Poorly_Graded': ("Poorly graded sand", "SP"),
             'Well_Graded': ("Well graded sand", "SW"),
@@ -491,47 +491,50 @@ class SoilBoreholeParent(models.Model):
             'Inorganic-Silt': ("Inorganic silts", "MH"),
             'Inorganic-Clay': ("Inorganic clays (high plasticity)", "CH"),
             'Organic-Clay': ("Organic clays", "OH"),
-            'Peat': ("Peat", "PT"),        
+            'Peat': ("Peat", "PT"),
             'Hard-Rock': ("Hard Rock", "HR"),
             'Soft-Rock': ("Soft Rock", "SR"),
             'Inorganic-Silt-M': ("Inorganic silts of medium plasticity", "MI"),
             'Inorganic-Clay-M': ("Inorganic clays of medium plasticity", "CI"),
             'Silty-Clay-Border': ("Silty clay / clayey silt (CL-ML)", "CL-ML"),
         }
+
         ImageModel = self.env['soil.borehole.parent.image']
 
+        # ---- Layout constants ----
+        GRID_COLS = 5
+        TARGET_WIDTH = 350
+        MAX_HEIGHT = 1400
+        ROW_GAP = 20
+        COL_GAP = 20
+
         for record in self:
-            # Clear existing combined images for this parent
             record.combined_images.unlink()
 
-            # --- 1. Collect all borehole thumbnails and the classifications used ---
             images = []
             used_classifications = set()
 
+            # -----------------------------
+            # 1. Collect borehole images + classifications
+            # -----------------------------
             for line in record.borehole_lines:
                 borehole = line.soil_borehole_id
                 if not borehole:
                     continue
 
-                # Collect classification info from N-values for legend
                 for nv in borehole.nvalue_ids:
                     if nv.classification:
                         used_classifications.add(nv.classification)
                     elif nv.symbol:
-                        # Fallback: map symbol -> classification like your SYMBOL_TO_CLASSIFICATION logic
-                        # Adjust if your actual mapping keys differ.
-                        symbol = nv.symbol
-                        # try to infer classification name from your CLASSIFICATION_INFO
                         for cls_code, (_, info_symbol) in CLASSIFICATION_INFO.items():
-                            if info_symbol == symbol:
+                            if info_symbol == nv.symbol:
                                 used_classifications.add(cls_code)
                                 break
 
-                # Collect graph image thumbnails
                 if borehole.graph_image:
                     try:
                         img_data = base64.b64decode(borehole.graph_image)
-                        img = Image.open(io.BytesIO(img_data))
+                        img = Image.open(io.BytesIO(img_data)).convert("RGB")
                         images.append(img)
                     except Exception as e:
                         _logger.warning(f"Skipping invalid image: {e}")
@@ -539,78 +542,122 @@ class SoilBoreholeParent(models.Model):
             if not images:
                 continue
 
-            # --- 2. Build pages of thumbnails (same as your original logic) ---
-            grid_cols = 5
-            grid_rows = 4
-            thumb_w, thumb_h = 400, 400
-            max_per_image = grid_cols * grid_rows
-
-            chunks = [images[i:i + max_per_image] for i in range(0, len(images), max_per_image)]
-
-            # Prepare legend data once per parent (one legend for all combined boreholes)
+            # -----------------------------
+            # 2. Prepare legend once
+            # -----------------------------
             legend_items = []
-            for cls_code in sorted(used_classifications):  # sort for stable ordering
+            for cls_code in sorted(used_classifications):
                 friendly, symbol = CLASSIFICATION_INFO.get(cls_code, (cls_code, None))
                 if symbol:
-                    facecolor, hatch = PATTERN_MAP_FOR_LEGEND.get(symbol, PATTERN_MAP_FOR_LEGEND["DEFAULT"])
+                    facecolor, hatch = PATTERN_MAP_FOR_LEGEND.get(
+                        symbol, PATTERN_MAP_FOR_LEGEND["DEFAULT"]
+                    )
                     label = f"{symbol} - {friendly}"
                 else:
                     facecolor, hatch = PATTERN_MAP_FOR_LEGEND["DEFAULT"]
                     label = friendly
 
                 legend_items.append((facecolor, hatch, label))
-            
+
             legend_img = make_legend_image(legend_items) if legend_items else None
 
-            # If there is no classification data, we will simply not draw a legend.
-            for idx, group in enumerate(chunks, start=1):
-                cols = min(grid_cols, len(group))
-                rows = math.ceil(len(group) / grid_cols)
-                combined_w = cols * thumb_w
-                combined_h = rows * thumb_h
+            # -----------------------------
+            # 3. Chunk images into pages
+            # -----------------------------
+            max_per_page = GRID_COLS * 4
+            chunks = [
+                images[i:i + max_per_page]
+                for i in range(0, len(images), max_per_page)
+            ]
 
-                combined_img = Image.new('RGB', (combined_w, combined_h), color=(255, 255, 255))
-                for i, img in enumerate(group):
-                    img = img.copy()
-                    img.thumbnail((thumb_w, thumb_h))
-                    enhancer = ImageEnhance.Sharpness(img)
-                    img = enhancer.enhance(1.3)
+            for page_idx, group in enumerate(chunks, start=1):
 
-                    final_thumbnail = Image.new('RGB', (thumb_w, thumb_h), color=(255, 255, 255))
+                # -----------------------------
+                # 4. Resize images proportionally
+                # -----------------------------
+                resized = []
+                for img in group:
+                    orig_w, orig_h = img.size
+                    scale = TARGET_WIDTH / orig_w
+                    new_w = TARGET_WIDTH
+                    new_h = int(orig_h * scale)
 
-                    x_offset = (thumb_w - img.width) // 2
-                    y_offset = (thumb_h - img.height) // 2
-                    final_thumbnail.paste(img, (x_offset, y_offset))
+                    if new_h > MAX_HEIGHT:
+                        new_h = MAX_HEIGHT
+                        new_w = int(orig_w * (new_h / orig_h))
 
-                    row, col = divmod(i, grid_cols)
-                    x = col * thumb_w
-                    y = row * thumb_h
+                    img = img.resize((new_w, new_h), Image.LANCZOS)
+                    img = ImageEnhance.Sharpness(img).enhance(1.3)
 
-                    combined_img.paste(final_thumbnail, (x, y))
+                    resized.append(img)
 
+                # -----------------------------
+                # 5. Compute dynamic grid size
+                # -----------------------------
+                rows = math.ceil(len(resized) / GRID_COLS)
+
+                row_heights = []
+                for r in range(rows):
+                    row_imgs = resized[r * GRID_COLS:(r + 1) * GRID_COLS]
+                    row_heights.append(max(img.height for img in row_imgs))
+
+                combined_w = GRID_COLS * TARGET_WIDTH + (GRID_COLS - 1) * COL_GAP
+                combined_h = sum(row_heights) + (rows - 1) * ROW_GAP
+
+                combined_img = Image.new("RGB", (combined_w, combined_h), (255, 255, 255))
+
+                # -----------------------------
+                # 6. Paste images
+                # -----------------------------
+                y_cursor = 0
+                idx = 0
+
+                for r, row_h in enumerate(row_heights):
+                    x_cursor = 0
+                    for c in range(GRID_COLS):
+                        if idx >= len(resized):
+                            break
+
+                        img = resized[idx]
+                        y_offset = y_cursor + (row_h - img.height) // 2
+                        combined_img.paste(img, (x_cursor, y_offset))
+
+                        x_cursor += TARGET_WIDTH + COL_GAP
+                        idx += 1
+
+                    y_cursor += row_h + ROW_GAP
+
+                # -----------------------------
+                # 7. Append legend (if any)
+                # -----------------------------
                 if legend_img:
-                    # Extend canvas downward to fit legend
                     lg_w, lg_h = legend_img.size
-                    final_h = combined_h + lg_h + 20  # 10 px margin top/bottom
-                    final_img = Image.new('RGB', (combined_w, final_h), color=(255, 255, 255))
+                    final_img = Image.new(
+                        "RGB",
+                        (combined_w, combined_h + lg_h + 20),
+                        (255, 255, 255)
+                    )
                     final_img.paste(combined_img, (0, 0))
-
-                    # Position legend at bottom-right (or center)
-                    x_legend = combined_w - lg_w - 10   # bottom-right
-                    y_legend = combined_h + 10
-                    final_img.paste(legend_img, (x_legend, y_legend))
+                    final_img.paste(
+                        legend_img,
+                        (combined_w - lg_w - 10, combined_h + 10)
+                    )
                 else:
                     final_img = combined_img
 
+                # -----------------------------
+                # 8. Save
+                # -----------------------------
                 buffer = io.BytesIO()
                 final_img.save(buffer, format="PNG")
                 img_base64 = base64.b64encode(buffer.getvalue())
 
                 ImageModel.create({
                     'parent_id': record.id,
-                    'sequence': idx,
+                    'sequence': page_idx,
                     'image': img_base64,
                 })
+
 
 
 
