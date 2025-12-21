@@ -39,6 +39,8 @@ class Soil(models.Model):
     soil_visible = fields.Boolean("USC Visible",compute="_compute_visible")
 
 
+   
+
     
 
 
@@ -50,6 +52,7 @@ class Soil(models.Model):
       
         for record in self:
             record.soil_visible = False
+         
             
 
             for sample in record.sample_parameters:
@@ -57,6 +60,8 @@ class Soil(models.Model):
 
                 if sample.internal_id == '12014fgr-5c56-475b-9arty12457866yyyjj':
                     record.soil_visible = True
+
+            
 
                 
 
@@ -181,5 +186,7 @@ class SoilLINE(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
 
 
