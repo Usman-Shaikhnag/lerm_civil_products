@@ -23,12 +23,10 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="confirm_srf" class="oe_highlight" type="object" string="Confirm"
-                        groups="lerm_civil.kes_verified_by,lerm_civil.kes_confirm_srf"
+                    <button name="confirm_srf" groups="lerm_civil.lerm_access_confirm_srf" class="oe_highlight" type="object" string="Confirm"
                         invisible="state in ('2-confirm')"/>
 
-                    <button name="open_edit_srf_header_wizard" class="oe_highlight" type="object" string="Edit SRF"
-                        groups="lerm_civil.srf_sample_editable"/>
+                    <button name="open_edit_srf_header_wizard" groups="lerm_civil.lerm_access_update_srf" class="oe_highlight" type="object" string="Edit SRF" />
 
                     <button name="action_srf_sent_mail" type="object" string="Send Mail"/>
 
@@ -85,8 +83,8 @@
                     </group>
 
                     <div class="oe_button_box d-flex gap-2">
-                        <button name="open_new_sample_add_wizard" string="New Sample" type="object" class="btn btn-primary mr-2" invisible="state in ('2-confirm')"/>
-                        <button name="open_sample_add_wizard" string="Repeat Sample" type="object" class="btn btn-primary" invisible="state in ('2-confirm')"/>
+                        <button name="open_new_sample_add_wizard" groups="lerm_civil.lerm_access_create_srf" string="New Sample" type="object" class="btn btn-primary mr-2" invisible="state in ('2-confirm')"/>
+                        <button name="open_sample_add_wizard" groups="lerm_civil.lerm_access_create_srf" string="Repeat Sample" type="object" class="btn btn-primary" invisible="state in ('2-confirm')"/>
                     </div>
 
                     <field name="samples"
@@ -105,10 +103,8 @@
                             <field name="sample_received_date"/>
                             <field name="sample_description"/>
                             <field name="quantity"/>
-                            <button name="edit_sample" string="Edit" type="object" class="btn-primary"
-                                groups="lerm_civil.srf_sample_editable"/>
-                            <button name="reallocate_sample" string="Reallocate" type="object" class="btn-primary"
-                                groups="lerm_civil.kes_job_allocation,lerm_civil.kes_hod_access_group,lerm_civil.kes_verified_by,lerm_civil.kes_quality_manager"/>
+                            <button name="edit_sample" groups="lerm_civil.lerm_access_update_srf" string="Edit" type="object" class="btn-primary"/>
+                            <button name="reallocate_sample" string="Reallocate" type="object" groups="lerm_civil.lerm_job_allocation" class="btn-primary"/>
                         </tree>
                     </field>
                 </sheet>
