@@ -26,6 +26,7 @@ class ELN(models.Model):
 
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")
     technician = fields.Many2one('res.users',string="Technicians",tracking=5)
+    technician_ids = fields.Many2many('res.users',string='Technicians',tracking=5,store=True,)
     sample_id = fields.Many2one('lerm.srf.sample',string='UID',tracking=True,ondelete="cascade")
     srf_date = fields.Date(string='SRF Date',tracking=True)
     kes_no = fields.Char(string="UID",tracking=True)
@@ -275,6 +276,7 @@ class ELN(models.Model):
                 'type': 'ir.actions.act_window',
                 'target': 'current',
                 'res_id': self.model_id,
+                'domain': [('parameters_result.technician', '=', self.env.uid)],
                 'context': {
                     'default_srf_id':self.srf_id.id,
                     'default_sample_id': self.sample_id.id,
@@ -411,11 +413,11 @@ class ELN(models.Model):
                 raise ValidationError("Start Date cannot be less than SRF Date")
 
         for result in self.parameters_result:
-            result.sudo().write({
-                'calculated':True
-            })
-            # if not result.calculated:
-            #     raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
+            if not result.calculated:
+                raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
+        #     result.sudo().write({
+        #         'calculated':True
+        #     })
         
         sample_id = self.sample_id.sudo()
         sample_id.write({
@@ -918,7 +920,7 @@ class ELNParametersResult(models.Model):
     test_method = fields.Many2one('lerm_civil.test_method',string="Specification")
     specification_permissible_limit = fields.Text(string="Specification",compute='_compute_specification')
     specification = fields.Text(string="Test Method", compute='_compute_specification')
-
+    technician = fields.Many2one('res.users', string='Technician', index=True, ondelete='set null')
 
     nabl_status = fields.Selection([
         ('nabl', 'NABL'),
