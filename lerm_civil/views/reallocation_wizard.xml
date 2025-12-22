@@ -3,28 +3,54 @@
     <data>
 
         <record id="sample_reallocation_wizard" model="ir.ui.view">
-        <field name="name">sample.reallocation.wizard.form</field>
-        <field name="model">sample.reallocation.wizard</field>
-        <field name="arch" type="xml">
-            <form>
-                <group>
-                    <field name="technicians" required="1"/>
+            <field name="name">sample.reallocation.wizard.form</field>
+            <field name="model">sample.reallocation.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Reallocate Sample">
 
-                </group>
-                <footer>
-                    <button
-                            type="object"
-                            class="oe_highlight" 
-                            name="reallocate_current_sample"
-                            string="Reallocate"/>
-                    <button
-                            type="object"
-                            name="discard_reallocation"
-                            string="Cancel"/>
-                </footer>
+                    <!-- Allocation type (keep for consistency, but do NOT use in tree) -->
+                    <group>
+                        <field name="allocation_type" widget="radio"/>
+                    </group>
 
-            </form>
-        </field>
+                    <!-- Sample mode -->
+                    <group invisible="allocation_type != 'sample'">
+                        <field name="technicians"/>
+                    </group>
+
+                    <!-- Parameter reallocation -->
+                    <group invisible="allocation_type != 'parameter'">
+                        <field name="technician_ids"
+                            widget="many2many_tags"/>
+
+                        <field name="line_ids">
+                            <tree editable="bottom">
+                                <field name="parameter_id"/>
+                                <field name="is_locked" invisible="1"/>
+                                <field name="allowed_technician_ids" invisible="1"/>
+                                
+                                <field name="technician"
+                                    readonly="is_locked"
+                                    domain="[('id','in',allowed_technician_ids)]"
+                                    options="{'no_create': True, 'no_open': True}"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                    <footer>
+                        <button name="reallocate_current_sample"
+                                type="object"
+                                string="Reallocate"
+                                class="oe_highlight"/>
+                        <button special="cancel" string="Cancel"/>
+                    </footer>
+
+                </form>
+            </field>
         </record>
+
+
+
+
     </data>
 </odoo>
