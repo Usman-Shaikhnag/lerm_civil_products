@@ -762,6 +762,27 @@ class Soil(models.Model):
 
     # NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
+
+
+    # specific gravity
+    gravity_name = fields.Char(string="Name",default=" SPECIFIC GRAVITY", )
+    specific_gravity_visible = fields.Boolean( string="Specific Gravity Visible",default=True )
+    gravity_line_ids = fields.One2many( "specific.gravity", "parent_id",string="Specific Gravity Lines",)
+
+
+
+
+
+
+
+
+
+# Atterbergs Limits (Free Swell)
+
+    freeswell_name = fields.Char(string="Name",default="Atterbergs Limits (Free Swell)",)
+    freeswell_visible = fields.Boolean( string="Free Swell Visible",default=True,)
+    freeswell_line_ids = fields.One2many( "soil.free.swell", "parent_id", string="Free Swell Lines",)
+
    
    
 
@@ -2987,6 +3008,10 @@ class Soil(models.Model):
             record.moisture_visible  = False
             record.gsa_visible = False
 
+            record.specific_gravity_visible = False
+            record.freeswell_visible = False
+
+
 
 
 
@@ -3068,6 +3093,12 @@ class Soil(models.Model):
                     record.moisture_visible = True
                 if sample.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
                     record.gsa_visible = True
+
+                if sample.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
+                    record.specific_gravity_visible = True
+
+                if sample.internal_id == '3825ec57-11f8-4249-9fa8-d99f64ffd396':
+                    record.freeswell_visible = True
 
 
    
@@ -5118,6 +5149,157 @@ class SoilHydrometerLineGSA(models.Model):
                 rec.n_corrected = (passing_075 * rec.n_finner) / 100
             else:
                 rec.n_corrected = 0.0
+
+
+
+# specific gravity
+
+
+
+
+class SpecificGravity(models.Model):
+    _name = "specific.gravity"
+   
+
+    parent_id = fields.Many2one(
+        "mechanical.soil1",
+        string="Parent Test",
+        ondelete="cascade",
+        required=True,
+    )
+    serial_no = fields.Integer(string="Sr.No", readonly=True)
+
+  
+    date = fields.Date(string="DATE TEST")
+    lab_id = fields.Char(string="Lab No.")
+    room_temp = fields.Float(string="Room Temperature (°C)")
+    bottle_no = fields.Char(string="Bottle No.")
+
+    wt_empty_bottle = fields.Float(string="Empty Wt. of Bottle (W1)")
+    wt_bottle_dry_soil = fields.Float(string="Bottle + dry soil (W2)")
+    wt_bottle_dry_soil_water = fields.Float(string="Bottle + Dry soil + Water (W3)")
+    wt_bottle_water = fields.Float(string="Bottle + Water (Tap) (W4)")
+
+    specific_gravity = fields.Float( string="Specific Gravity (G)", compute="_compute_specific_gravity", store=True, readonly=True,)
+    density_water = fields.Float( string="Density of water at room temp (gm/cc)", compute="_compute_density_water", store=True,  readonly=True, )
+    corr_specific_gravity = fields.Float(string="Corrected Specific Gravity (G')",compute="_compute_corr_specific_gravity", store=True, readonly=True,
+ )
+    avg_corr_specific_gravity = fields.Float(
+        string="Average corrected Specific Gravity",
+        compute="_compute_avg_corr_specific_gravity",
+        store=True,
+        readonly=True,
+    )
+
+   
+    @api.depends(
+        "wt_empty_bottle",
+        "wt_bottle_dry_soil",
+        "wt_bottle_dry_soil_water",
+        "wt_bottle_water",
+    )
+    def _compute_specific_gravity(self):
+        for rec in self:
+            W1 = rec.wt_empty_bottle or 0.0
+            W2 = rec.wt_bottle_dry_soil or 0.0
+            W3 = rec.wt_bottle_dry_soil_water or 0.0
+            W4 = rec.wt_bottle_water or 0.0
+            denom = (W4 - W1) - (W3 - W2)
+            rec.specific_gravity = (W2 - W1) / denom if denom else 0.0
+
+  
+    @api.depends("room_temp")
+    def _compute_density_water(self):
+        for rec in self:
+            T = rec.room_temp or 27.0
+          
+            rec.density_water = 1.0 - 0.0003 * max(0.0, T - 4.0)
+
+  
+    @api.depends("specific_gravity", "density_water")
+    def _compute_corr_specific_gravity(self):
+        for rec in self:
+            rho_27 = 1.0 - 0.0003 * (27.0 - 4.0)  
+            rec.corr_specific_gravity = (
+                rec.specific_gravity * (rec.density_water / rho_27) if rho_27 else 0.0
+            )
+
+  
+    @api.depends("parent_id", "date", "lab_id", "corr_specific_gravity")
+    def _compute_avg_corr_specific_gravity(self):
+        for rec in self:
+            if not rec.parent_id:
+                rec.avg_corr_specific_gravity = 0.0
+                continue
+            siblings = self.search([
+                ("parent_id", "=", rec.parent_id.id),
+                ("date", "=", rec.date),
+                ("lab_id", "=", rec.lab_id),
+            ])
+            vals = [l.corr_specific_gravity for l in siblings if l.corr_specific_gravity]
+            rec.avg_corr_specific_gravity = sum(vals) / len(vals) if vals else 0.0
+
+ 
+
+    @api.model
+    def create(self, vals):
+        if vals.get("parent_id") and not vals.get("serial_no"):
+            last = self.search(
+                [("parent_id", "=", vals["parent_id"])],
+                order="serial_no desc",
+                limit=1,
+            )
+            vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
+        return super().create(vals)
+
+
+
+
+# Atterbergs Limits (Free Swell)
+
+ 
+class SoilFreeSwell(models.Model):
+    _name = "soil.free.swell"
+
+
+    parent_id = fields.Many2one( "mechanical.soil1", string="Parent Test", ondelete="cascade", required=True,)
+    serial_no = fields.Integer(string="Sr.No", readonly=True)
+    lab_id = fields.Char(string="Lab No.")
+
+    vd = fields.Float(string="Vd")  
+    vk = fields.Float(string="Vk") 
+
+    free_swell = fields.Float( string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True,)
+    is_ok = fields.Boolean( string="TRUE/FALSE",  compute="_compute_is_ok",  store=True, readonly=True,)
+
+   
+    @api.depends("vd", "vk")
+    def _compute_free_swell(self):
+        for rec in self:
+            if rec.vk:
+                rec.free_swell = (rec.vd - rec.vk) / rec.vk * 100.0
+            else:
+                rec.free_swell = 0.0
+
+    
+    @api.depends("free_swell")
+    def _compute_is_ok(self):
+        for rec in self:
+            rec.is_ok = bool(rec.free_swell and rec.free_swell <= 50.0)
+
+    @api.model
+    def create(self, vals):
+        if vals.get("parent_id") and not vals.get("serial_no"):
+            last = self.search(
+                [("parent_id", "=", vals["parent_id"])],
+                order="serial_no desc",
+                limit=1,
+            )
+            vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
+        return super().create(vals)
+
+
+
 
     
 

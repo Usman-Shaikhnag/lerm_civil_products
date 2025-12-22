@@ -1964,6 +1964,73 @@
                       </div>
 
 
+                      
+            <!-- Specific Gravity title -->
+            <div invisible="specific_gravity_visible == False">
+                <h1 class="text-center">
+                    <field name="gravity_name" readonly="1" nolabel="1"/>
+                    <field name="specific_gravity_visible" invisible="1"/>
+                </h1>
+            </div>
+
+
+            <div invisible="specific_gravity_visible == False">
+                <field name="gravity_line_ids">
+                    <tree editable="bottom" class="custom_table_borders">
+
+                        <field name="serial_no" string="Sr.No" width="30px"/>
+                        <field name="date" string="DATE TEST" width="40px"/>
+                        <field name="lab_id" string="Lab No."  width="50px"/>
+
+                        <field name="room_temp" string="Room Temperature" width="110px"/>
+                        <field name="bottle_no" string="Bottle No."  width="80px"/>
+
+                        <field name="wt_empty_bottle" string="Empty Wt. of Bottle" width="100px"/>
+                        <field name="wt_bottle_dry_soil" string="Bottle + dry soil" width="100px"/>
+                        <field name="wt_bottle_dry_soil_water" string="Bottle + Dry soil + Water" width="100px"/>
+                        <field name="wt_bottle_water" string="Bottle + Water (Tap)" width="100px"/>
+
+                        <field name="specific_gravity" string="Specific Gravity (G)" width="100px" readonly="1"/>
+                        <field name="density_water" string="Density of water at room temp (gm/cc)" width="100px" readonly="1"/>
+                        <field name="corr_specific_gravity" string="Corrected Specific Gravity (G')" width="100px" readonly="1"/>
+                        <field name="avg_corr_specific_gravity" string="Average corrected Specific Gravity" width="100px" readonly="1"/>
+
+                    </tree>
+                </field>
+            </div>
+
+
+
+
+
+
+
+            <!-- Atterbergs Limits (Free Swell) -->
+
+
+            <div invisible="freeswell_visible == False">
+                <h1 class="text-center">
+                    <field name="freeswell_name" readonly="1" nolabel="1"/>
+                    <field name="freeswell_visible" invisible="1"/>
+                </h1>
+            </div>
+
+
+            <div invisible="freeswell_visible == False">
+                <field name="freeswell_line_ids">
+                    <tree editable="bottom" class="custom_table_borders">
+                        <field name="serial_no" string="Sr.No" width="35px"/>
+                        <field name="lab_id" string="Lab No." width="100px"/>
+                        <field name="vd" string="Vd" width="80px"/>
+                        <field name="vk" string="Vk" width="80px"/>
+                        <field name="free_swell" string="Free swell(%)" width="110px" readonly="1"/>
+                        <field name="is_ok" string="TRUE/FALSE" width="90px" readonly="1"/>
+                    </tree>
+                </field>
+            </div>
+
+
+
                  
 
             
