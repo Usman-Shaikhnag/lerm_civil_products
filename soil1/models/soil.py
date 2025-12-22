@@ -3,6 +3,26 @@ from odoo.exceptions import UserError,ValidationError
 from datetime import timedelta
 from math import pi
 
+import io
+import base64
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.ticker import LogLocator, MultipleLocator, NullFormatter, ScalarFormatter
+
+
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.ticker as ticker
+    import numpy as np
+except ImportError:
+    plt = None
+    np = None
+    ticker = None
+
+
 
 import math
 import matplotlib.pyplot as plt
@@ -38,6 +58,22 @@ class Soil(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+     
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+   
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -63,6 +99,14 @@ class Soil(models.Model):
     # Sieve Analysis
     sieve_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        if self.env.context.get('force_sieve_visible'):
+            res['sieve_visible'] = True
+        return res
+
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line1','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
 
@@ -90,17 +134,17 @@ class Soil(models.Model):
                 except ValueError:
                     continue
 
-                # µ to mm conversion
+               
                 if 'µ' in sieve_text or 'mic' in sieve_text.lower():
                     size_mm = size_value / 1000.0
                 else:
                     size_mm = size_value
 
-                # range check for clay fraction (< 0.002 mm)
+            
                 if 0 <= size_mm < 0.002:
                     total += line.passing_percent or 0.0
 
-            record.silt_clay = total  # Use a separate field for clay fraction
+            record.silt_clay = total  
 
 
     @api.depends('sieve_analysis_child_lines.passing_percent', 'sieve_analysis_child_lines.sieve_size')
@@ -343,16 +387,16 @@ class Soil(models.Model):
                 print("Rows", str(line.percent_retained))
                 previous_line = line.serial_no - 1
 
-                # If this line is 'Pan', directly assign fixed values
+               
                 if line.sieve_size and line.sieve_size.lower() == 'pan':
                     line.write({
                         'cumulative_retained': 100.00,
                         'passing_percent': 0.00,
                     })
                     print("PAN LINE: cumulative_retained=100, passing_percent=0")
-                    continue  # skip rest of logic for pan
+                    continue  
 
-                # Normal sieve calculation
+               
                 if previous_line == 0:
                     cumulative_retained = line.percent_retained
                 else:
@@ -386,8 +430,7 @@ class Soil(models.Model):
 
     
     
-  
-
+   
     graph_image_slive = fields.Binary("Sieve Graph", compute="_compute_graph_image_slive", store=True)
 
     @api.depends('sieve_analysis_child_lines.cumulative_retained', 'sieve_analysis_child_lines.passing_percent')
@@ -578,8 +621,7 @@ class Soil(models.Model):
             record.liquid_limit_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
+           
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
@@ -614,16 +656,16 @@ class Soil(models.Model):
 
         plt.figure(figsize=(10, 5))
 
-        # ✅ Blue line with red points
+      
         plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
         plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
 
-        # ✅ Labels and title
+       
         plt.xlabel('No. of Blows', fontsize=12)
         plt.ylabel('Water Content (%)', fontsize=12)
         plt.title('LIQUID LIMIT', fontsize=14)
 
-        # ✅ Axis limits (rounded)
+       
         max_y = max(y_value)
         y_limit = (int(max_y / 10) + 1) * 10
         plt.ylim(bottom=0, top=y_limit)
@@ -632,30 +674,30 @@ class Soil(models.Model):
         x_limit = (int(max_x / 10) + 1) * 10
         plt.xlim(left=0, right=x_limit)
 
-        # ✅ Minor ticks for fine grid lines
+      
         ax = plt.gca()
         ax.xaxis.set_minor_locator(MultipleLocator(1))
         ax.yaxis.set_minor_locator(MultipleLocator(1))
 
-        # ✅ Fine grid
+       
         plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
-        # 🔹 Highlight Liquid Limit point (DB field value वापरून)
+       
         if self.liquid_limit:
-            highlight_x = 25                # Blows (fixed at 25)
-            highlight_y = self.liquid_limit # Moisture content from field
+            highlight_x = 25                
+            highlight_y = self.liquid_limit 
 
-            # Dotted guide lines
+           
             plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
             plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
 
-            # Point mark
+           
             plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
 
-            # Label
+            
             plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
 
-        # ✅ Save to buffer
+
         buffer = io.BytesIO()
         plt.tight_layout()
         plt.legend()
@@ -696,22 +738,37 @@ class Soil(models.Model):
     bulk_line_ids = fields.One2many('soil.bulk.density','parent_id', string="Bulk Density Lines")
 
 
-#  Calculation-NMC, 
 
+
+
+
+
+
+
+   #  Calculation-NMC, 
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
    
+
+
    
+  # specific gravity
+    gravity_name = fields.Char(string="Name",default=" SPECIFIC GRAVITY", )
+    specific_gravity_visible = fields.Boolean( string="Specific Gravity Visible",default=True )
+    gravity_line_ids = fields.One2many( "specific.gravity", "parent_id",string="Specific Gravity Lines",)
 
 
 
-#  Specific Gravity
 
-    gravity_name = fields.Char( string="Name", default="Specific Gravity", )
-    specific_gravity_visible = fields.Boolean( string="Specific Gravity", compute="_compute_visible",)
-    gravity_line_ids = fields.One2many('soil.bulk.density','parent_id', string="Bulk Density Lines")
 
-    
 
+
+
+
+# Atterbergs Limits (Free Swell)
+
+    freeswell_name = fields.Char(string="Name",default="Atterbergs Limits (Free Swell)",)
+    freeswell_visible = fields.Boolean( string="Free Swell Visible",default=True,)
+    freeswell_line_ids = fields.One2many( "soil.free.swell", "parent_id", string="Free Swell Lines",)
 
 
 
@@ -917,8 +974,7 @@ class Soil(models.Model):
             record.heavy_table_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
+           
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
@@ -960,12 +1016,12 @@ class Soil(models.Model):
         x = x[sorted_indices]
         y = y[sorted_indices]
 
-        # Gentle smooth curve (quadratic)
+       
         x_smooth = np.linspace(x.min(), x.max(), 200)
         spline = make_interp_spline(x, y, k=2)
         y_smooth = spline(x_smooth)
 
-        # Find smooth curve peak (OMC/MDD)
+        
         smooth_max_index = np.argmax(y_smooth)
         smooth_max_x = x_smooth[smooth_max_index]
         smooth_max_y = y_smooth[smooth_max_index]
@@ -1482,7 +1538,7 @@ class Soil(models.Model):
 
 
 
-
+  
 
 
        # FSI
@@ -2379,8 +2435,7 @@ class Soil(models.Model):
             record.phi_deg_uu_triaxial_angle_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
+         
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
@@ -2533,12 +2588,161 @@ class Soil(models.Model):
 
             rec.phi_deg_uu_triaxial_cohesion = round(phi_deg, 3)
             rec.cohesion_uu_triaxial_cohesion = round(avg_c, 3)
-     
+
+#    Start GSA Parameter
+    gsa_name = fields.Char("Name",default="Grain Size Analysis (GSA)")
+
+    gsa_child_lines = fields.One2many('mechanical.gsa.line','parent_id',string="Parameter")
+    gsa_visible = fields.Boolean("Grain Size Analysis (GSA) Visible",compute="_compute_visible")
+
+    show_sieve = fields.Boolean(default=False)
+
+   
+
+    gsa_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+   
+
+    def action_generate_gsa_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_no = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_no': lab_no}))
+
+                record.gsa_child_lines = lines
+                record.gsa_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.gsa_child_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
+    gsa_graph_image = fields.Binary(
+        string="GSA Graph Image",
+        attachment=True,
+        help="Grain Size Analysis चा तयार केलेला आलेख."
+    )
+    gsa_graph_filename = fields.Char(
+        string="Graph Filename",
+        default="gsa_curve.png"
+    )
+
+    
+
+    
+    def action_generate_gsa_graph(self):
+        """
+        Generates a GSA Graph matching the reference image:
+        - X-Axis: 0.001 (Left) to 100 (Right) [Log Scale]
+        - Y-Axis: 0 (Bottom) to 100 (Top)
+        - Plot Direction: Smallest particle (Last Value) -> Largest particle
+        """
+        for record in self:
+          
+            fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
+            
+           
+            ax.set_xscale('log')
+            ax.set_xlim(0.001, 100) 
+            ax.set_ylim(0, 100)      
+
+         
+            ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
+            ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
+
+          
+           
+            ax.grid(True, which='major', axis='both', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
+         
+            ax.grid(True, which='minor', axis='both', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
+
+        
+            locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
+            ax.xaxis.set_major_locator(locmaj)
+            
+            def nice_log_formatter(x, pos):
+                # Only label the main powers of 10
+                if x in [0.001, 0.01, 0.1, 1, 10, 100]:
+                    return f"{x:g}" 
+                return ""
+            ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
+
+            # 6. Plot Data
+            data_plotted = False
+            
+            if record.gsa_child_lines:
+                for sample in record.gsa_child_lines:
+                    sizes = []
+                    passing = []
+
+                   
+                    lines = sample.sieve_analysis_child_lines_gsa.sorted(
+                        key=lambda r: float(str(r.sieve_size).lower().replace('mm','').strip()) if r.sieve_size and r.sieve_size.replace('.', '', 1).isdigit() else 0.0,
+                        reverse=False 
+                    )
+
+                    for line in lines:
+                        if line.sieve_size and line.passing_percent is not None:
+                            try:
+                                size_str = str(line.sieve_size).lower().replace('mm', '').strip()
+                                size_val = float(size_str)
+                                pass_val = line.passing_percent
+
+                               
+                                if 0.001 <= size_val <= 100:
+                                    sizes.append(size_val)
+                                    passing.append(pass_val)
+                            except ValueError:
+                                continue
+                    
+                    if sizes and passing:
+                        # Plot the curve
+                        ax.plot(sizes, passing, marker='o', markersize=4, linewidth=2, label=sample.lab_no or "Sample")
+                        data_plotted = True
+
+            # Add Legend
+            if data_plotted:
+                ax.legend(loc='lower right', fontsize=9)
+
+            # 7. Save Image
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png', bbox_inches='tight') 
+            plt.close(fig)
+            buffer.seek(0)
+            
+            record.gsa_graph_image = base64.b64encode(buffer.read())
+            buffer.close()
+
+        # 8. Reload Form View
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Soil Form',
+            'res_model': 'mechanical.soil1',
+            'res_id': record.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
 
     
 
 
-    
    
 
      ### Compute Visible
@@ -2559,7 +2763,7 @@ class Soil(models.Model):
             record.determination_visible  = False 
             record.shrinkage_limit_visible  = False 
             record.permeability_falling_visible  = False 
-            # record.specific_gravity_visible  = False 
+            record.specific_gravity_visible  = False 
             record.direct_shear_visible  = False 
             record.ucs_visible  = False 
             record.consolidation_visible  = False 
@@ -2572,7 +2776,11 @@ class Soil(models.Model):
 
 
             record.moisture_visible  = False
-            record.specific_gravity_visible  = False 
+            record.gsa_visible = False
+            record.specific_gravity_visible = False
+            record.freeswell_visible = False
+
+
 
 
 
@@ -2617,8 +2825,7 @@ class Soil(models.Model):
                 if sample.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
                     record.permeability_falling_visible = True
 
-                # if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
-                #     record.specific_gravity_visible = True
+               
 
                 if sample.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                     record.direct_shear_visible = True
@@ -2652,13 +2859,17 @@ class Soil(models.Model):
 
                 if sample.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
                     record.moisture_visible = True
+                if sample.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
+                    record.gsa_visible = True
 
-                
+
                 if sample.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
                     record.specific_gravity_visible = True
 
+                if sample.internal_id == '3825ec57-11f8-4249-9fa8-d99f64ffd396':
+                    record.freeswell_visible = True
 
-              
+
 
    
 
@@ -2742,9 +2953,9 @@ class Soil(models.Model):
 
     @api.model
     def create(self, vals):
-        # import wdb;wdb.set_trace()
+    
         record = super(Soil, self).create(vals)
-        # record.get_all_fields()
+       
         record.eln_ref.write({'model_id':record.id})
         return record
 
@@ -2756,9 +2967,7 @@ class Soil(models.Model):
 
     @api.depends('eln_ref')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+       
         for record in self:
             records = record.eln_ref.parameters_result.parameter.ids
             record.sample_parameters = records
@@ -2784,6 +2993,9 @@ class Soil(models.Model):
 class SoilSieveAnalysisLine(models.Model):
     _name = "mechanical.soil.sieve.analysis.line1"
     parent_id = fields.Many2one('mechanical.soil1', string="Parent Id")
+
+    
+
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size")
@@ -2793,15 +3005,11 @@ class SoilSieveAnalysisLine(models.Model):
     cumulative_retained = fields.Float(string="Cum. Retained %",compute="_compute_cum_retained" , store=True)
     passing_percent = fields.Float(string="Cumulative % ")
 
-    # @api.onchange('cumulative_retained')
-    # def _compute_passing_percent(self):
-    #     for record in self:
-    #         record.passing_percent = 100 - record.cumulative_retained
-
+    
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -2811,13 +3019,13 @@ class SoilSieveAnalysisLine(models.Model):
         return super(SoilSieveAnalysisLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+      
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
     def write(self, vals):
-        # Handle row deletions and adjust serial numbers
+     
         if 'parent_id' in vals or 'wt_retained' in vals:
             for record in self:
                 if record.parent_id and record.parent_id == vals.get('parent_id') and 'wt_retained' in vals:
@@ -2827,7 +3035,7 @@ class SoilSieveAnalysisLine(models.Model):
 
             if 'wt_retained' in vals:
                 for record in self:
-                    # record.parent_id._compute_total()
+                   
                     pass
 
             return new_self
@@ -2835,7 +3043,7 @@ class SoilSieveAnalysisLine(models.Model):
         return super(SoilSieveAnalysisLine, self).write(vals)
 
     def unlink(self):
-        # Get the parent_id before the deletion
+      
         parent_id = self[0].parent_id
 
         res = super(SoilSieveAnalysisLine, self).unlink()
@@ -2856,9 +3064,6 @@ class SoilSieveAnalysisLine(models.Model):
 
 
 
-    # @api.depends('cumulative_retained')
-    # def _compute_cum_retained(self):
-    #     self.cumulative_retained=0
 
     @api.depends('percent_retained', 'parent_id.sieve_analysis_child_lines.percent_retained')
     def _compute_cum_retained(self):
@@ -2882,11 +3087,9 @@ class SoilSieveAnalysisLine(models.Model):
 
     def get_previous_record(self):
         for record in self:
-            # import wdb; wdb.set_trace()
+         
             sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
-            # index = sorted_lines.index(record)
-            # print("Working")
-
+          
 
 
 
@@ -2930,7 +3133,7 @@ class LIQUIDLIMITLINE(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+      
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -2940,7 +3143,7 @@ class LIQUIDLIMITLINE(models.Model):
         return super(LIQUIDLIMITLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+     
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -2949,7 +3152,7 @@ class LIQUIDLIMITLINE(models.Model):
 
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+     
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -2991,7 +3194,7 @@ class PLASTICLIMITLINE(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3001,7 +3204,7 @@ class PLASTICLIMITLINE(models.Model):
         return super(PLASTICLIMITLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+     
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3048,9 +3251,9 @@ class HEAVYCOMPACTIONLINE(models.Model):
     @api.depends('wet_con_ovendry', 'wet_con_ovenwet', 'empty_wt', 'bulk_density')
     def _compute_water_and_dry_density(self):
         for rec in self:
-            m2 = rec.wet_con_ovenwet     # container + wet soil
-            m3 = rec.wet_con_ovendry         # container + oven dry soil
-            m1 = rec.empty_wt        # empty container
+            m2 = rec.wet_con_ovenwet     
+            m3 = rec.wet_con_ovendry       
+            m1 = rec.empty_wt       
 
             if m2 and m3 and m1 and (m3 - m1) != 0:
                 rec.water_content = ((m2 - m3) / (m3 - m1)) * 100
@@ -3067,7 +3270,7 @@ class HEAVYCOMPACTIONLINE(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3077,7 +3280,7 @@ class HEAVYCOMPACTIONLINE(models.Model):
         return super(HEAVYCOMPACTIONLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+    
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3104,7 +3307,7 @@ class LVDTLINE(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3114,7 +3317,7 @@ class LVDTLINE(models.Model):
         return super(LVDTLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+     
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3142,7 +3345,7 @@ class INTERNALFRACTIONLINE(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3152,7 +3355,7 @@ class INTERNALFRACTIONLINE(models.Model):
         return super(INTERNALFRACTIONLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+      
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3193,7 +3396,7 @@ class SoilCBRLine(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+      
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3203,7 +3406,7 @@ class SoilCBRLine(models.Model):
         return super(SoilCBRLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+      
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3249,9 +3452,9 @@ class LIGHTCOMPACTIONLINE(models.Model):
     @api.depends('wet_con_ovendry1', 'wet_con_ovenwet1', 'empty_wt1', 'bulk_density1')
     def _compute_water_and_dry_density1(self):
         for rec in self:
-            m2 = rec.wet_con_ovenwet1     # container + wet soil
-            m3 = rec.wet_con_ovendry1         # container + oven dry soil
-            m1 = rec.empty_wt1        # empty container
+            m2 = rec.wet_con_ovenwet1   
+            m3 = rec.wet_con_ovendry1        
+            m1 = rec.empty_wt1       
 
             if m2 and m3 and m1 and (m3 - m1) != 0:
                 rec.water_content1 = ((m2 - m3) / (m3 - m1)) * 100
@@ -3268,7 +3471,7 @@ class LIGHTCOMPACTIONLINE(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3278,7 +3481,7 @@ class LIGHTCOMPACTIONLINE(models.Model):
         return super(LIGHTCOMPACTIONLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+       
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3330,7 +3533,7 @@ class ShrinkagelimitLINE(models.Model):
         for rec in self:
             volume = 0.0
             if rec.parent_id:
-                # घेतो पहिला record volume wet lines मधून
+               
                 wet_line = rec.parent_id.volume_wet_table[:1]  
                 if wet_line:
                     volume = wet_line.volume_wet
@@ -3341,7 +3544,7 @@ class ShrinkagelimitLINE(models.Model):
         for rec in self:
             volume1 = 0.0
             if rec.parent_id:
-                # घेतो पहिला record volume wet lines मधून
+                
                 wet_line1 = rec.parent_id.volume_dry_table[:1]  
                 if wet_line1:
                     volume1 = wet_line1.volume_dry
@@ -3362,7 +3565,7 @@ class ShrinkagelimitLINE(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+      
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3372,7 +3575,7 @@ class ShrinkagelimitLINE(models.Model):
         return super(ShrinkagelimitLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+        
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3415,7 +3618,7 @@ class VolumeDryLINE(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3425,7 +3628,7 @@ class VolumeDryLINE(models.Model):
         return super(VolumeDryLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+       
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3468,7 +3671,7 @@ class VolumeWetLINE(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3478,7 +3681,7 @@ class VolumeWetLINE(models.Model):
         return super(VolumeWetLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+       
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3500,7 +3703,7 @@ class SoilPermeabilityLine(models.Model):
         for rec in self:
             rec.k_value = 0.0
             if all([rec.h1, rec.h2, rec.t, rec.parent_id.length, rec.parent_id.diameter_mold, rec.parent_id.diameter_standpipe]):
-                # Areas
+             
                 A = math.pi * rec.parent_id.diameter_mold**2 / 4.0
                 a = math.pi * rec.parent_id.diameter_standpipe**2 / 4.0
                 L = rec.parent_id.length
@@ -3509,7 +3712,7 @@ class SoilPermeabilityLine(models.Model):
                 if rec.h1 != rec.h2 and A > 0 and a > 0 and L > 0 and t > 0:
                     h1, h2 = rec.h1, rec.h2
                     if h1 < h2:
-                        h1, h2 = h2, h1  # swap to ensure positive log
+                        h1, h2 = h2, h1  
                     k = (2.303 * a * L) / (A * t) * math.log10(h1 / h2)
                     rec.k_value = round(k, 2)
 
@@ -3517,7 +3720,7 @@ class SoilPermeabilityLine(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3527,7 +3730,7 @@ class SoilPermeabilityLine(models.Model):
         return super(SoilPermeabilityLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+      
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3554,11 +3757,11 @@ class DirectShearTestLine(models.Model):
     def _compute_shear(self):
         for rec in self:
             k = rec.parent_id.proving_ring_constant or 0
-            # Horizontal Load
+        
             rec.horizontal_load = rec.proving_ring_reading * k
-            # Corrected Area
+         
             rec.corrected_area = rec.ao * (1 - rec.delta/100)
-            # Shear Stress (sign preserved)
+       
             if rec.corrected_area != 0:
                 rec.shear_stress = rec.horizontal_load / rec.corrected_area
             else:
@@ -3568,7 +3771,7 @@ class DirectShearTestLine(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+     
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3578,7 +3781,7 @@ class DirectShearTestLine(models.Model):
         return super(DirectShearTestLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+      
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3596,7 +3799,7 @@ class UCSTestLine(models.Model):
     proving_ring_reading = fields.Float(string="Proving Ring Reading [Division]", digits=(12,3))
     deformation = fields.Float(string="Deformation [mm]", digits=(12,3))
     
-    load = fields.Float(string="Load [Kg]")  # now user input
+    load = fields.Float(string="Load [Kg]")  
     corrected_area = fields.Float(string="Corrected Area [cm²]", compute="_compute_corrected_area", store=True, digits=(12,3))
     axial_strain = fields.Float(string="Axial Strain", compute="_compute_axial_strain", store=True, digits=(12,3))
     stress = fields.Float(string="Stress [Kg/cm²]", compute="_compute_stress", store=True, digits=(12,3))
@@ -3627,7 +3830,7 @@ class UCSTestLine(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+     
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3637,7 +3840,7 @@ class UCSTestLine(models.Model):
         return super(UCSTestLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+       
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3681,17 +3884,16 @@ class ConsolidationTestLine(models.Model):
     def _compute_void_ratio(self):
         for rec in self:
             e0 = rec.parent_id.initial_void_ratio or 0.0
-            sigma0 = 1.0  # reference stress (usually 1 Kg/cm²)
+            sigma0 = 1.0 
             if rec.stress > 0:
-                rec.void_ratio = e0 - 0.1 * math.log10(rec.stress/sigma0)  # factor 0.1 placeholder, modify as per standard
-            else:
+                rec.void_ratio = e0 - 0.1 * math.log10(rec.stress/sigma0) 
                 rec.void_ratio = e0
 
 
     
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3701,7 +3903,7 @@ class ConsolidationTestLine(models.Model):
         return super(ConsolidationTestLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+    
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3744,19 +3946,20 @@ class ConsolidationPCTestLine(models.Model):
 
 
 
+
     @api.depends("parent_id.initial_void_ratio_pc","stress_pc")
     def _compute_void_ratio_pc(self):
         for rec in self:
             e0 = rec.parent_id.initial_void_ratio_pc or 0.0
-            sigma0 = 1.0  # reference stress_pc (usually 1 Kg/cm²)
+            sigma0 = 1.0 
             if rec.stress_pc > 0:
-                rec.void_ratio_pc = e0 - 0.1 * math.log10(rec.stress_pc / sigma0)  # factor can be adjusted per standard
+                rec.void_ratio_pc = e0 - 0.1 * math.log10(rec.stress_pc / sigma0)  
             else:
                 rec.void_ratio_pc = e0
     
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3766,7 +3969,7 @@ class ConsolidationPCTestLine(models.Model):
         return super(ConsolidationPCTestLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+      
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3786,7 +3989,7 @@ class DirectShearLine(models.Model):
     
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+    
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3796,7 +3999,7 @@ class DirectShearLine(models.Model):
         return super(DirectShearLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+       
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3830,7 +4033,7 @@ class SwellingPressureLine(models.Model):
     
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+     
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3840,7 +4043,7 @@ class SwellingPressureLine(models.Model):
         return super(SwellingPressureLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+     
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3875,7 +4078,7 @@ class UUTriaxialLine(models.Model):
     
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+       
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3885,7 +4088,7 @@ class UUTriaxialLine(models.Model):
         return super(UUTriaxialLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+ 
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3920,7 +4123,7 @@ class UUTriaxialCohesionLine(models.Model):
     
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+      
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -3930,7 +4133,7 @@ class UUTriaxialCohesionLine(models.Model):
         return super(UUTriaxialCohesionLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+      
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -3945,7 +4148,7 @@ class UUTriaxialCohesionLine(models.Model):
 class SoilBulkDensity(models.Model):
 
     _name = 'soil.bulk.density'
-
+    
     parent_id = fields.Many2one( 'mechanical.soil1',string="Parent Test",ondelete='cascade', )
 
     serial_no = fields.Integer(string="Sr.No")
@@ -4094,75 +4297,610 @@ class SoilMoisture(models.Model):
                 record.serial_no = index
 
 
+    
 
 
+class SoilGSALINE(models.Model):
+    _name = "mechanical.gsa.line"
+    parent_id = fields.Many2one(
+        'mechanical.soil1',
+        string="Parent Soil",
+        ondelete='cascade'
+    )
+
+    
+    
 
 
+    sr_no = fields.Integer(string="Sr NO.")
+    
+    symbol = fields.Char(string="Symbol")
+    bh_id = fields.Char(string="BH ID")
+    lab_no = fields.Char(string="LAB ID")
+    sample_depth = fields.Char(string="Sample Depth (m)")
+    sample_details = fields.Char(string="Sample Details")
+
+    wt_of_samp = fields.Float(string="Weight of total sample (gm)")
+
+    temp = fields.Float("Temp °c" )
+    humidity = fields.Float("Humidity %" )
+
+    wt_of_samp1 = fields.Float(string="Weight of total sample (gm)")
+
+    meniscus_corre = fields.Float(string="Meniscus Correction, Cm", digits=(12,1))
+    vescosity_water = fields.Float(string="Viscosity of Water at Room Temperature in poise",digits=(12,6),store=True)
+    dispersion = fields.Float(string="Dispersion Agent Correction, x")
+    temp_corre = fields.Float(string="Temperature Correction, Mt",compute="_compute_temp_corre",digits=(12,4))
+    specific_gravity = fields.Float(string="Specific gravity",digits=(12,3))
 
 
-#  Specific Gravity
-
-class SoilBulkDensity(models.Model):
-    _name = 'soil.bulk.density'
-    parent_id = fields.Many2one('mechanical.soil1',string="Parent Test",ondelete='cascade',required=True, )
-
-    serial_no = fields.Integer(string="Sr.No")
-
-    date = fields.Date(string="Date")
-    lab_id = fields.Char(string='Lab ID')
-
-    wt_uds_soil = fields.Float(string='Wt of UDS + Soil (gm)')
-    wt_empty_uds = fields.Float(string='Wt of empty UDS (gm)')
-    wt_soil = fields.Float( string='Wt of soil (gm)', compute='_compute_wt_soil', store=True,)
-
-    height = fields.Float(string='Ht of sample (cm)')
-    diameter = fields.Float(string='Dia of UDS (cm)')
-    volume = fields.Float(  string='Volume of soil sample (cm³)',  compute='_compute_volume',  store=True, )
-    bulk_density = fields.Float( string='Bulk density (gm/cm³)', compute='_compute_bulk_density', store=True,)
-
-    # ---------- computations ----------
-
-    @api.depends('wt_uds_soil', 'wt_empty_uds')
-    def _compute_wt_soil(self):
+    @api.depends('temp')
+    def _compute_vescosity_water(self):
         for rec in self:
-            rec.wt_soil = (rec.wt_uds_soil or 0.0) - (rec.wt_empty_uds or 0.0)
-
-    @api.depends('height', 'diameter')
-    def _compute_volume(self):
-        for rec in self:
-            if rec.height and rec.diameter:
-                r = rec.diameter / 2.0
-                rec.volume = pi * r * r * rec.height  # V = π r² h [web:4]
+            t = rec.temp
+            if t is not False and t < 19:
+                rec.vescosity_water = (
+                    (0.0000000053308 * (t ** 4))
+                    - (0.00000045221 * (t ** 3))
+                    + (0.000019001 * (t ** 2))
+                    - (0.00063391 * t)
+                    + 0.017937
+                )
             else:
-                rec.volume = 0.0
+                rec.vescosity_water = 0.0
 
-    @api.depends('wt_soil', 'volume')
-    def _compute_bulk_density(self):
+
+    @api.depends('temp')
+    def _compute_temp_corre(self):
         for rec in self:
-            rec.bulk_density = rec.wt_soil / rec.volume if rec.volume else 0.0
+            if rec.temp is not False:
+                rec.temp_corre = (-0.2109 * rec.temp) + 5.6814
+            else:
+                rec.temp_corre = 0.0
 
-    # ---------- auto Sr.No ----------
+
+    sieve_analysis_child_lines_gsa = fields.One2many(
+        'gsa.lab.sieve.analysis.line',
+        'parent_id_gsa',
+        string="Sieve Analysis"
+    )
+
+    hydrometer_analysis_lines_gsa = fields.One2many(
+        'gsa.hydrometer.analysis.line',
+        'parent_id_gsa',
+        string="Sieve Analysis",default=lambda self: self._default_hydrometer_analysis_lines_gsa()
+    )
+
+
+    def action_add_n_corrected(self):
+        for record in self:
+
+          
+            sieve_075 = record.sieve_analysis_child_lines_gsa.filtered(
+                lambda l: l.sieve_size == '0.075'
+            )
+            if not sieve_075:
+                raise UserError("0.075 sieve line not found")
+
+           
+            hydro_lines = record.hydrometer_analysis_lines_gsa.filtered(
+                lambda h: h.n_corrected is not False
+            )
+
+            if not hydro_lines:
+                raise UserError("No Hydrometer data found")
+
+           
+            for line in record.sieve_analysis_child_lines_gsa:
+                try:
+                    if float(line.sieve_size) < 0.075:
+                        line.unlink()
+                except Exception:
+                    pass
+
+           
+            for h in hydro_lines:
+                self.env['gsa.lab.sieve.analysis.line'].create({
+                    'parent_id_gsa': record.id,
+                    'sieve_size': f"{h.diameter_soil:.2f}",  
+                    'passing_percent': h.n_corrected,       
+                    
+                })
+
+
+
+    @api.model
+    def _default_hydrometer_analysis_lines_gsa(self):
+        return [
+            (0, 0, {'time': 0.5}),
+            (0, 0, {'time': 1}),
+            (0, 0, {'time': 2}),
+            (0, 0, {'time': 4}),
+            (0, 0, {'time': 8}),
+            (0, 0, {'time': 15}),
+            (0, 0, {'time': 30}),
+            (0, 0, {'time': 60}),
+            (0, 0, {'time': 120}),
+            (0, 0, {'time': 240}),
+            (0, 0, {'time': 1440}),
+        ]
 
     @api.model
     def create(self, vals):
-        if vals.get('parent_id') and not vals.get('serial_no'):
-            existing = self.search(
-                [('parent_id', '=', vals['parent_id'])],
-                order='serial_no desc',
-                limit=1,
-            )
-            vals['serial_no'] = (existing.serial_no or 0) + 1 if existing else 1
-        return super(SoilBulkDensity, self).create(vals)
+        record = super().create(vals)
+
+      
+        default_sieve_sizes = [
+            "50", "40", "25", "20", "16", "12.5", "10",
+            "6.3", "4.75", "2.36", "1.18", "0.6", "0.425",
+            "0.3", "0.15", "0.075"
+        ]
+
+    
+        if not record.sieve_analysis_child_lines_gsa:
+            lines = []
+            for i, sieve in enumerate(default_sieve_sizes, start=1):
+                lines.append((0, 0, {
+                 
+                    'sieve_size': sieve,
+                  
+                }))
+            record.sieve_analysis_child_lines_gsa = lines
+
+        return record
+
+    def calculate_sieve_gsa(self): 
+        for record in self:
+
+        
+
+            previous_cumulative = 0  
+            for line in record.sieve_analysis_child_lines_gsa:
+                print("Rows", str(line.percent_retained))
+                previous_line = line.serial_no - 1
+                if previous_line == 0:
+                    cumulative_retained = line.percent_retained
+                else:
+                    previous_line_record = self.env['gsa.lab.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
+                    
+                    if previous_line_record:
+                        previous_cumulative = previous_line_record.cumulative_retained
+                    cumulative_retained = previous_cumulative + line.percent_retained
+
+                passing_percent = 100 - cumulative_retained
+
+                line.write({
+                    'cumulative_retained': round(cumulative_retained, 2),
+                    'passing_percent': round(passing_percent, 2),
+                })
+                
+                print("Updated Cumulative Retained:", cumulative_retained)
+                print("Updated Passing Percent:", passing_percent)
+
+                previous_cumulative = cumulative_retained
+
+    
+
+
+
+
+
+
+
+
+    
+
+
+  
+
+
+   
+
+class SoilSieveAnalysisLineGSA(models.Model):
+    _name = "gsa.lab.sieve.analysis.line"
+   
+
+    parent_id_gsa = fields.Many2one(
+        'mechanical.gsa.line',
+        string="GSA Line",
+        ondelete='cascade'
+    )
+
+    lab_no = fields.Char(string="LAB ID")
+
+    wt_of_samp = fields.Float(string="Weight of total sample (gm)")
+
+    temp = fields.Float("Temp °c" )
+    humidity = fields.Float("Humidity %" )
+
+
+   
+
+    
+
+    
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sieve_size = fields.Char(string="IS Sieve Size")
+    wt_retained = fields.Float(string="Soil Retained wt",digits=(12,3))
+    percent_retained = fields.Float(string='Cumulative Wt. retained',compute="_compute_percent_retained1",digits=(12,2) )
+    cumulative_retained = fields.Float(string="Cumulative % retained",compute="_compute_cumulative_retained" , store=True)
+    passing_percent = fields.Float(string="% Passing ",digits=(12,3),store=True)
+
+    
+
+    
+    @api.model
+    def create(self, vals):
+    
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilSieveAnalysisLineGSA, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        for parent in self.mapped('parent_id'):
-            lines = parent.bulk_line_ids.sorted('id')
-            for idx, line in enumerate(lines, start=1):
-                line.serial_no = idx
+       
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+    def unlink(self):
+        parents = self.mapped('parent_id_gsa')
+        res = super().unlink()
+        for parent in parents:
+            parent.sieve_analysis_child_lines_gsa._reorder_serial_numbers()
+        return res
+
+   
+
+    @api.depends('wt_retained', 'parent_id_gsa.sieve_analysis_child_lines_gsa.wt_retained')
+    def _compute_percent_retained1(self):
+        for record in self:
+            record.percent_retained = 0.0
+            if not record.parent_id_gsa:
+                continue
+
+         
+            cumulative = 0.0
+            for line in record.parent_id_gsa.sieve_analysis_child_lines_gsa:
+                cumulative += line.wt_retained or 0.0
+                if line == record:
+                    record.percent_retained = round(cumulative, 3)
+                    break
+
+
+   
+    @api.depends(
+    'percent_retained',
+    'parent_id_gsa.wt_of_samp'
+    )
+    def _compute_cumulative_retained(self):
+        for record in self:
+            if record.parent_id_gsa and record.parent_id_gsa.wt_of_samp:
+                record.cumulative_retained = round(
+                    (record.percent_retained / record.parent_id_gsa.wt_of_samp) * 100,
+                    3
+                )
+            else:
+                record.cumulative_retained = 0.0
+
+
+
+class SoilHydrometerLineGSA(models.Model):
+    _name = "gsa.hydrometer.analysis.line"
+   
+
+    parent_id_gsa = fields.Many2one(
+        'mechanical.gsa.line',
+        string="GSA Line",
+        ondelete='cascade'
+    )
+
+
+    wt_of_samp1 = fields.Float(string="Weight of total sample (gm)")
+
+    meniscus_corre = fields.Float(string="Meniscus Correction, Cm",digits=(12,1))
+    vescosity_water = fields.Float(string="Viscosity of Water at Room Temperature in poise",compute="_compute_vescosity_water",digits=(12,6),store=True)
+    dispersion = fields.Float(string="Dispersion Agent Correction, x")
+    temp_corre = fields.Float(string="Temperature Correction, Mt",compute="_compute_temp_corre",digits=(12,4))
+    specific_gravity = fields.Float(string="Specific gravity",digits=(12,3))
+
+    temp = fields.Float("Temp °c" )
+
+
+    @api.depends('parent_id_gsa.temp')
+    def _compute_vescosity_water(self):
+        for rec in self:
+            t = rec.parent_id_gsa.temp
+            if t is not False and t < 19:
+                rec.vescosity_water = (
+                    (0.0000000053308 * (t ** 4))
+                    - (0.00000045221 * (t ** 3))
+                    + (0.000019001 * (t ** 2))
+                    - (0.00063391 * t)
+                    + 0.017937
+                )
+            else:
+                rec.vescosity_water = 0.0
+
+
+    @api.depends('parent_id_gsa.temp')
+    def _compute_temp_corre(self):
+        for rec in self:
+            if rec.parent_id_gsa.temp is not False:
+                rec.temp_corre = (-0.2109 * rec.parent_id_gsa.temp) + 5.6814
+            else:
+                rec.temp_corre = 0.0
+
+    
+
+    
+    time = fields.Float(string="Time ")
+    hydrometer_reading = fields.Float(string="Hydrometer Reading",digits=(12,1))
+    men_corrected = fields.Float(string="Meniscus Corrected",digits=(12,1),compute="_compute_men_corrected")
+    eff_depth = fields.Float(string='Effective Depth',digits=(12,1) ,compute="_compute_eff_depth")
+    velocity = fields.Float(string="Velocity" , store=True,compute="_compute_velocity",digits=(12,2))
+    temp_combined = fields.Float(string="Temp. + Dispersion Combined ",digits=(12,2),compute="_compute_temp_combined",store=True)
+
+    root_velocity = fields.Float(string="Sq. root of Velocity ",digits=(12,2),compute="_compute_root_velocity",store=True)
+    diameter_soil = fields.Float(string="Diameter of soil",digits=(12,2),compute="_compute_diameter_soil",store=True)
+    n_finner = fields.Float(string="N% Finer than",digits=(12,2),compute="_compute_n_finner",store=True)
+    n_corrected = fields.Float(string="N% corrected",digits=(12,2),store=True,compute="_compute_n_corrected")
+
+
+    @api.depends('hydrometer_reading', 'parent_id_gsa.meniscus_corre')
+    def _compute_men_corrected(self):
+        for rec in self:
+            rec.men_corrected = (
+                (rec.hydrometer_reading or 0.0) +
+                (rec.parent_id_gsa.meniscus_corre or 0.0)
+            )
+
+    @api.depends('men_corrected', 'time')
+    def _compute_eff_depth(self):
+        for rec in self:
+            if rec.men_corrected:
+                rec.eff_depth = (-0.3444 * rec.men_corrected) + (
+                    21.736 if rec.time in (8.0, 15.0, 30.0, 60.0, 120.0, 240.0, 1440.0)
+                    else 20.256
+                )
+            else:
+                rec.eff_depth = 0.0
+
+    @api.depends('eff_depth', 'time')
+    def _compute_velocity(self):
+        for rec in self:
+            if rec.time:
+                rec.velocity = rec.eff_depth / rec.time
+            else:
+                rec.velocity = 0.0
+
+    @api.depends(
+    'men_corrected',
+    'parent_id_gsa.temp_corre',
+    'parent_id_gsa.dispersion'
+    )
+    def _compute_temp_combined(self):
+        for rec in self:
+            rec.temp_combined = (
+                (rec.men_corrected or 0.0)
+                + (rec.parent_id_gsa.temp_corre or 0.0)
+                - (rec.parent_id_gsa.dispersion or 0.0)
+            )
+
+    @api.depends('velocity')
+    def _compute_root_velocity(self):
+        for rec in self:
+            if rec.velocity and rec.velocity > 0:
+                rec.root_velocity = math.sqrt(rec.velocity)
+            else:
+                rec.root_velocity = 0.0
+
+    @api.depends(
+    'root_velocity',
+    'parent_id_gsa.vescosity_water',
+    'parent_id_gsa.specific_gravity'
+    )
+    def _compute_diameter_soil(self):
+        for rec in self:
+            v = rec.parent_id_gsa.vescosity_water
+            sg = rec.parent_id_gsa.specific_gravity
+
+            if rec.root_velocity and v and sg and sg > 1:
+                constant_part = (18 / (981 * 60)) * (v / (sg - 1))
+                rec.diameter_soil = 10 * math.sqrt(constant_part) * rec.root_velocity
+            else:
+                rec.diameter_soil = 0.0
+
+    @api.depends(
+    'temp_combined',
+    'parent_id_gsa.specific_gravity',
+    'parent_id_gsa.wt_of_samp1'
+    )
+    def _compute_n_finner(self):
+        for rec in self:
+            sg = rec.parent_id_gsa.specific_gravity
+            wt = rec.parent_id_gsa.wt_of_samp1
+            tc = rec.temp_combined
+
+            if sg and sg > 1 and wt and tc:
+                rec.n_finner = (
+                    (sg / (sg - 1))
+                    * (1 / wt)
+                    * tc
+                    * 100
+                )
+            else:
+                rec.n_finner = 0.0
+
+    @api.depends(
+    'n_finner',
+    'parent_id_gsa.sieve_analysis_child_lines_gsa.sieve_size',
+    'parent_id_gsa.sieve_analysis_child_lines_gsa.passing_percent'
+    )
+    def _compute_n_corrected(self):
+        for rec in self:
+            passing_075 = 0.0
+
+            # get passing_percent where sieve_size == '0.075'
+            for line in rec.parent_id_gsa.sieve_analysis_child_lines_gsa:
+                if line.sieve_size == '0.075':
+                    passing_075 = line.passing_percent or 0.0
+                    break
+
+            if passing_075 and rec.n_finner:
+                rec.n_corrected = (passing_075 * rec.n_finner) / 100
+            else:
+                rec.n_corrected = 0.0
+
+    
+
+
+# specific gravity
 
 
 
 
+class SpecificGravity(models.Model):
+    _name = "specific.gravity"
+   
+
+    parent_id = fields.Many2one(
+        "mechanical.soil1",
+        string="Parent Test",
+        ondelete="cascade",
+        required=True,
+    )
+    serial_no = fields.Integer(string="Sr.No", readonly=True)
+
+  
+    date = fields.Date(string="DATE TEST")
+    lab_id = fields.Char(string="Lab No.")
+    room_temp = fields.Float(string="Room Temperature (°C)")
+    bottle_no = fields.Char(string="Bottle No.")
+
+    wt_empty_bottle = fields.Float(string="Empty Wt. of Bottle (W1)")
+    wt_bottle_dry_soil = fields.Float(string="Bottle + dry soil (W2)")
+    wt_bottle_dry_soil_water = fields.Float(string="Bottle + Dry soil + Water (W3)")
+    wt_bottle_water = fields.Float(string="Bottle + Water (Tap) (W4)")
+
+    specific_gravity = fields.Float( string="Specific Gravity (G)", compute="_compute_specific_gravity", store=True, readonly=True,)
+    density_water = fields.Float( string="Density of water at room temp (gm/cc)", compute="_compute_density_water", store=True,  readonly=True, )
+    corr_specific_gravity = fields.Float(string="Corrected Specific Gravity (G')",compute="_compute_corr_specific_gravity", store=True, readonly=True,
+ )
+    avg_corr_specific_gravity = fields.Float(
+        string="Average corrected Specific Gravity",
+        compute="_compute_avg_corr_specific_gravity",
+        store=True,
+        readonly=True,
+    )
+
+   
+    @api.depends(
+        "wt_empty_bottle",
+        "wt_bottle_dry_soil",
+        "wt_bottle_dry_soil_water",
+        "wt_bottle_water",
+    )
+    def _compute_specific_gravity(self):
+        for rec in self:
+            W1 = rec.wt_empty_bottle or 0.0
+            W2 = rec.wt_bottle_dry_soil or 0.0
+            W3 = rec.wt_bottle_dry_soil_water or 0.0
+            W4 = rec.wt_bottle_water or 0.0
+            denom = (W4 - W1) - (W3 - W2)
+            rec.specific_gravity = (W2 - W1) / denom if denom else 0.0
+
+  
+    @api.depends("room_temp")
+    def _compute_density_water(self):
+        for rec in self:
+            T = rec.room_temp or 27.0
+          
+            rec.density_water = 1.0 - 0.0003 * max(0.0, T - 4.0)
+
+  
+    @api.depends("specific_gravity", "density_water")
+    def _compute_corr_specific_gravity(self):
+        for rec in self:
+            rho_27 = 1.0 - 0.0003 * (27.0 - 4.0)  
+            rec.corr_specific_gravity = (
+                rec.specific_gravity * (rec.density_water / rho_27) if rho_27 else 0.0
+            )
+
+  
+    @api.depends("parent_id", "date", "lab_id", "corr_specific_gravity")
+    def _compute_avg_corr_specific_gravity(self):
+        for rec in self:
+            if not rec.parent_id:
+                rec.avg_corr_specific_gravity = 0.0
+                continue
+            siblings = self.search([
+                ("parent_id", "=", rec.parent_id.id),
+                ("date", "=", rec.date),
+                ("lab_id", "=", rec.lab_id),
+            ])
+            vals = [l.corr_specific_gravity for l in siblings if l.corr_specific_gravity]
+            rec.avg_corr_specific_gravity = sum(vals) / len(vals) if vals else 0.0
+
+ 
+
+    @api.model
+    def create(self, vals):
+        if vals.get("parent_id") and not vals.get("serial_no"):
+            last = self.search(
+                [("parent_id", "=", vals["parent_id"])],
+                order="serial_no desc",
+                limit=1,
+            )
+            vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
+        return super().create(vals)
 
 
 
+
+# Atterbergs Limits (Free Swell)
+
+ 
+class SoilFreeSwell(models.Model):
+    _name = "soil.free.swell"
+
+
+    parent_id = fields.Many2one( "mechanical.soil1", string="Parent Test", ondelete="cascade", required=True,)
+    serial_no = fields.Integer(string="Sr.No", readonly=True)
+    lab_id = fields.Char(string="Lab No.")
+
+    vd = fields.Float(string="Vd")  
+    vk = fields.Float(string="Vk") 
+
+    free_swell = fields.Float( string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True,)
+    is_ok = fields.Boolean( string="TRUE/FALSE",  compute="_compute_is_ok",  store=True, readonly=True,)
+
+   
+    @api.depends("vd", "vk")
+    def _compute_free_swell(self):
+        for rec in self:
+            if rec.vk:
+                rec.free_swell = (rec.vd - rec.vk) / rec.vk * 100.0
+            else:
+                rec.free_swell = 0.0
+
+    
+    @api.depends("free_swell")
+    def _compute_is_ok(self):
+        for rec in self:
+            rec.is_ok = bool(rec.free_swell and rec.free_swell <= 50.0)
+
+    @api.model
+    def create(self, vals):
+        if vals.get("parent_id") and not vals.get("serial_no"):
+            last = self.search(
+                [("parent_id", "=", vals["parent_id"])],
+                order="serial_no desc",
+                limit=1,
+            )
+            vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
+        return super().create(vals)

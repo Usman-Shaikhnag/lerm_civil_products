@@ -499,13 +499,7 @@
                         </field>
                     </div>
 
-                    <!-- CBR -->
-                    <div invisible="soil_visible == False">
-                        <h1 class="text-center">
-                            <field name="soil_name" readonly="1" nolabel="1"/>
-                            <field name="soil_visible" invisible="1"/>
-                        </h1>
-                    </div>
+                 
 
                     <style>
                             .soil-table table {
@@ -527,245 +521,7 @@
                             }
                         </style>
 
-                         <div class="soil-table">
-
-                        <!-- WATER CONTENT SECTION -->
-                        <h4>Water Content</h4>
-
-                        <table>
-                            <tr class="header">
-                                <th>Water Content</th>
-                                <th>Can No</th>
-                                <th>wt of Can + wet soil</th>
-                                <th>wt of Can + dry soil</th>
-                                <th>wt of water</th>
-                                <th>wt of can</th>
-                                <th>Wt of dry soil</th>
-                                <th>Moisture content %</th>
-                                <th>Avg MC %</th>
-                            </tr>
-
-                            <!-- BEFORE SOAKING -->
-                            <tr>
-                                <td class="header">Before soaking</td>
-                                <td class="red"><field name="before_can_no"/></td>
-                                <td class="red"><field name="before_can_wet_soil"/></td>
-                                <td class="red"><field name="before_can_dry_soil"/></td>
-                                <td><field name="before_wt_water"/></td>
-                                <td class="red"><field name="before_wt_can"/></td>
-                                <td><field name="before_wt_dry_soil"/></td>
-                                <td><field name="before_mc"/></td>
-                               
-                               <td style="background:#eee;"><field name="before_avg_mc"/></td>
-                            </tr>
-
-                            <!-- TOP -->
-                            <tr>
-                                <td class="header">Top</td>
-                                <td class="red"> <field name="top_can_no"/></td>
-                                <td class="red"><field name="top_can_wet_soil"/></td>
-                                <td class="red"><field name="top_can_dry_soil"/></td>
-                                <td><field name="top_wt_water"/></td>
-                                <td class="red"><field name="top_wt_can"/></td>
-                                <td><field name="top_wt_dry_soil"/></td>
-                                <td><field name="top_mc"/></td>
-                                <td rowspan="3" style="background:#eee;">
-                                    <field name="avg_mc"/>
-                                </td>
-                            </tr>
-
-                            <!-- CENTRE -->
-                            <tr>
-                                <td class="header">Centre</td>
-                                <td class="red"><field name="centre_can_no"/></td>
-                                <td class="red"><field name="centre_can_wet_soil"/></td>
-                                <td class="red"><field name="centre_can_dry_soil"/></td>
-                                <td><field name="centre_wt_water"/></td>
-                                <td class="red"><field name="centre_wt_can"/></td>
-                                <td><field name="centre_wt_dry_soil"/></td>
-                                <td><field name="centre_mc"/></td>
-                            </tr>
-
-                            <!-- BOTTOM -->
-                            <tr>
-                                <td class="header">Bottom</td>
-                                <td class="red"><field name="bottom_can_no"/></td>
-                                <td class="red"><field name="bottom_can_wet_soil"/></td>
-                                <td class="red"><field name="bottom_can_dry_soil"/></td>
-                                <td><field name="bottom_wt_water"/></td>
-                                <td class="red"><field name="bottom_wt_can"/></td>
-                                <td><field name="bottom_wt_dry_soil"/></td>
-                                <td><field name="bottom_mc"/></td>
-                            </tr>
-                        </table>
-
-                        <!-- CONDITION OF SPECIMEN -->
-                        <h4 class="mt16">Condition of specimen</h4>
-
-                        <table>
-                            <tr class="header">
-                                <th></th>
-                                <th>Wt of mould + soil (g)</th>
-                                <th>Wt of mould (g)</th>
-                                <th>Wt of soil (g)</th>
-                                <th>Volume of specimen (cc)</th>
-                                <th>Bulk density</th>
-                                <th>Dry density</th>
-                            </tr>
-
-                            <!-- BEFORE -->
-                            <tr>
-                                <td class="header">Before soaking</td>
-                                <td class="red"><field name="before_mould_soil"/></td>
-                                <td class="red"><field name="before_mould"/></td>
-                                <td><field name="before_soil"/></td>
-                                <td ><field name="volume_specimen1"/></td>
-                                
-                                <td><field name="before_bulk_density"/></td>
-                                <td><field name="before_dry_density"/></td>
-                            </tr>
-
-                            <!-- AFTER -->
-                            <tr>
-                                <td class="header">After soaking</td>
-                                <td class="red"><field name="after_mould_soil"/></td>
-                                <td class="red"><field name="after_mould"/></td>
-                                <td><field name="after_soil"/></td>
-                                <td ><field name="volume_specimen2"/></td>
-                                <td><field name="after_bulk_density"/></td>
-                                <td><field name="after_dry_density"/></td>
-                            </tr>
-                        </table>
-
-                    </div>
-
-                     <div class="d-flex gap-2"  invisible="not soil_visible" style="margin-top: 10px;">
-                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="room_temp">% rise/fall  in force value</label></td>
-                                    <td><field name="room_temp" /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-
-                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="temp_correction">% rise/fall  in force value</label></td>
-                                    <td><field name="temp_correction" /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
                         
-                       
-                    </div>
-
-
-                    <div class="d-flex gap-2"  invisible="not soil_visible">
-                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="std_temp">% rise/fall  in force value</label></td>
-                                    <td><field name="std_temp" /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-
-                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="rise_temp">% rise/fall  in force value</label></td>
-                                    <td><field name="rise_temp" /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                       
-                    </div>
-
-                     <div class="d-flex gap-2"  invisible="not soil_visible">
-                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="rise_force">% rise/fall  in force value</label></td>
-                                    <td><field name="rise_force" /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                       
-                    </div>
-                    
-                    <div invisible = "soil_visible == False">
-                        <field name="soil_table" class="custom_table_borders">
-                            <tree editable="bottom" >
-                                <field name="serial_no"/>
-                                <field name="penetration"/>
-                                <field name="proving_reading"/>
-                                <field name="no_division"/>
-                                <field name="applied_force"/>
-                                <field name="avg_load"/>
-                            </tree>
-                        </field>                      
-                    </div>
-
-                    <!-- <div invisible = "soil_visible == False" class="text-center">
-                      <field name="chart_image_cbr" widget="image" readonly="1"/>
-                    </div> -->
-
-                   
-
-
-
-
-
-
-
-
-
-
-                    <!-- <div class="d-flex gap-2">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
-                            <tbody>
-                                <tr>
-                                    <td><label for="ps_2mm"></label></td>
-                                    <td><field name="ps_2mm"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="pt_2mm"></label></td>
-                                    <td><field name="pt_2mm"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="cbr_2mm"></label></td>
-                                    <td><field name="cbr_2mm"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
-                            <tbody>
-                                <tr>
-                                    <td><label for="ps_5mm"></label></td>
-                                    <td><field name="ps_5mm"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="pt_5mm"></label></td>
-                                    <td><field name="pt_5mm"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="cbr_5mm"></label></td>
-                                    <td><field name="cbr_5mm"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> -->
-
 
                    <!--  FSI -->
                     <div invisible="fsi_visible == False">
@@ -1039,16 +795,16 @@
                             </tbody>
                         </table>
 
-
+<!-- 
                           <div invisible = "specific_gravity_visible == False">
                         <h1 class="text-center">
                             <field name="specific_gravity_name" readonly="1" nolabel="1"/>
                             <field name="specific_gravity_visible" invisible="1"/>
                         </h1>
-                    </div>
+                    </div> -->
 
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
+                    <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
                         <tbody>
                             <tr>
                                 <td><label for="m1">Mass of Density Bottle (M1)</label></td>
@@ -1092,7 +848,7 @@
                                 </tr>
                             </tbody>
                         </table>
-
+ -->
 
 
 
@@ -1593,14 +1349,12 @@
 
 
 
-
- <!-- NMC – Moisture Content -->
-               <div invisible="moisture_visible == False">
-                  <h1 class="text-center">
-                    <field name="moisture_name" readonly="1" nolabel="1"/>
-                        <field name="moisture_visible" invisible="1"/>
-               </h1>
-                   </div>
+     <div invisible = "moisture_visible == False">
+                        <h1 class="text-center">
+                            <field name="moisture_name" readonly="1" nolabel="1"/>
+                            <field name="moisture_visible" invisible="1"/>
+                        </h1>
+                    </div> 
 
 
 
@@ -1644,32 +1398,80 @@
 
 
 
- <!-- Specific Gravity -->
-
-  <div invisible="specific_gravity_visible == False">
-                  <h1 class="text-center">
-                    <field name="gravity_name" readonly="1" nolabel="1"/>
-                        <field name="specific_gravity_visible" invisible="1"/>
-               </h1>
-                   </div>
 
 
-<!-- Bulk density table, same condition -->
- <div invisible = "specific_gravity_visible == False">
+
+
+
+
+<!-- Specific Gravity title -->
+<div invisible="specific_gravity_visible == False">
+    <h1 class="text-center">
+        <field name="gravity_name" readonly="1" nolabel="1"/>
+        <field name="specific_gravity_visible" invisible="1"/>
+    </h1>
+</div>
+
+
+<div invisible="specific_gravity_visible == False">
     <field name="gravity_line_ids">
         <tree editable="bottom" class="custom_table_borders">
-            <field name="date" width="60px"/>
-            <field name="lab_id" width="50px"/>
-            <field name="wt_uds_soil" width="100px"/>
-            <field name="wt_empty_uds" width="100px"/>
-            <field name="wt_soil" width="100px"/>
-            <field name="height" width="100px"/>
-            <field name="diameter" width="100px"/>
-            <field name="volume" width="100px"/>
-            <field name="bulk_density" width="100px"/>
+
+            <field name="serial_no" string="Sr.No" width="30px"/>
+            <field name="date" string="DATE TEST" width="40px"/>
+            <field name="lab_id" string="Lab No."  width="50px"/>
+
+            <field name="room_temp" string="Room Temperature" width="110px"/>
+            <field name="bottle_no" string="Bottle No."  width="80px"/>
+
+            <field name="wt_empty_bottle" string="Empty Wt. of Bottle" width="100px"/>
+            <field name="wt_bottle_dry_soil" string="Bottle + dry soil" width="100px"/>
+            <field name="wt_bottle_dry_soil_water" string="Bottle + Dry soil + Water" width="100px"/>
+            <field name="wt_bottle_water" string="Bottle + Water (Tap)" width="100px"/>
+
+            <field name="specific_gravity" string="Specific Gravity (G)" width="100px" readonly="1"/>
+            <field name="density_water" string="Density of water at room temp (gm/cc)" width="100px" readonly="1"/>
+            <field name="corr_specific_gravity" string="Corrected Specific Gravity (G')" width="100px" readonly="1"/>
+            <field name="avg_corr_specific_gravity" string="Average corrected Specific Gravity" width="100px" readonly="1"/>
+
         </tree>
     </field>
 </div>
+
+
+
+
+
+
+
+<!-- Atterbergs Limits (Free Swell) -->
+
+
+<div invisible="freeswell_visible == False">
+    <h1 class="text-center">
+        <field name="freeswell_name" readonly="1" nolabel="1"/>
+        <field name="freeswell_visible" invisible="1"/>
+    </h1>
+</div>
+
+
+<div invisible="freeswell_visible == False">
+    <field name="freeswell_line_ids">
+        <tree editable="bottom" class="custom_table_borders">
+            <field name="serial_no" string="Sr.No" width="35px"/>
+            <field name="lab_id" string="Lab No." width="100px"/>
+            <field name="vd" string="Vd" width="80px"/>
+            <field name="vk" string="Vk" width="80px"/>
+            <field name="free_swell" string="Free swell(%)" width="110px" readonly="1"/>
+            <field name="is_ok" string="TRUE/FALSE" width="90px" readonly="1"/>
+        </tree>
+    </field>
+</div>
+
+
+
+
+
 
 
                     
