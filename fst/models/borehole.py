@@ -187,9 +187,10 @@ class ERTBorehole(models.Model):
 
             lines = lines_to_plot # Use the new list of merged segments
             # --- END OF REVISED DATA PROCESSING ---
+            DEPTH_SCALE = 0.30  # inches per meter (tweak 0.25–0.35)
+            min_height = 4
+            max_height = 18
 
-            fig, ax = plt.subplots(figsize=(2, 4))
-            
             # Ensure max_depth is calculated from the last segment's bottom depth
             # The structure of the previous logic handles the max_depth correctly:
             if all_records:
@@ -197,6 +198,9 @@ class ERTBorehole(models.Model):
             else:
                 max_depth = 0.0 # Handle case where all_records is empty
             min_depth = 0.0
+            
+            fig_height = max(min_height, min(max_height, max_depth * DEPTH_SCALE))
+            fig, ax = plt.subplots(figsize=(2.2, fig_height))
             
             # Draw log rectangle outline with high zorder to be on top
             ax.plot([0, 0], [min_depth, max_depth], color="black", zorder=3)
@@ -347,7 +351,7 @@ class ERTBorehole(models.Model):
             ax.axis("off")
 
             buf = io.BytesIO()
-            plt.savefig(buf, format="png", bbox_inches="tight", dpi=180)
+            plt.savefig(buf, format="png", bbox_inches="tight", dpi=300)
             plt.close(fig)
             borehole.graph_image = base64.b64encode(buf.getvalue())
 
