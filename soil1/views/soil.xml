@@ -16,7 +16,6 @@
                        <field name="grade"/>
                     </group>
 
-
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
@@ -500,7 +499,13 @@
                         </field>
                     </div>
 
-                 
+                    <!-- CBR -->
+                    <div invisible="soil_visible == False">
+                        <h1 class="text-center">
+                            <field name="soil_name" readonly="1" nolabel="1"/>
+                            <field name="soil_visible" invisible="1"/>
+                        </h1>
+                    </div>
 
                     <style>
                             .soil-table table {
@@ -522,8 +527,6 @@
                             }
                         </style>
 
-<<<<<<< HEAD
-=======
                          <div class="soil-table" invisible="soil_visible == False">
 
                         <!-- WATER CONTENT SECTION -->
@@ -656,8 +659,113 @@
                                 
                             </tbody>
                         </table>
->>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
                         
+                       
+                    </div>
+
+
+                    <div class="d-flex gap-2"  invisible="not soil_visible">
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="std_temp">% rise/fall  in force value</label></td>
+                                    <td><field name="std_temp" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="rise_temp">% rise/fall  in force value</label></td>
+                                    <td><field name="rise_temp" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                       
+                    </div>
+
+                     <div class="d-flex gap-2"  invisible="not soil_visible">
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="rise_force">% rise/fall  in force value</label></td>
+                                    <td><field name="rise_force" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                       
+                    </div>
+                    
+                    <div invisible = "soil_visible == False">
+                        <field name="soil_table" class="custom_table_borders">
+                            <tree editable="bottom" >
+                                <field name="serial_no"/>
+                                <field name="penetration"/>
+                                <field name="proving_reading"/>
+                                <field name="no_division"/>
+                                <field name="applied_force"/>
+                                <field name="avg_load"/>
+                            </tree>
+                        </field>                      
+                    </div>
+
+                    <!-- <div invisible = "soil_visible == False" class="text-center">
+                      <field name="chart_image_cbr" widget="image" readonly="1"/>
+                    </div> -->
+
+                   
+
+
+
+
+
+
+
+
+
+
+                    <!-- <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="ps_2mm"></label></td>
+                                    <td><field name="ps_2mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="pt_2mm"></label></td>
+                                    <td><field name="pt_2mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="cbr_2mm"></label></td>
+                                    <td><field name="cbr_2mm"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="ps_5mm"></label></td>
+                                    <td><field name="ps_5mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="pt_5mm"></label></td>
+                                    <td><field name="pt_5mm"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="cbr_5mm"></label></td>
+                                    <td><field name="cbr_5mm"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+
 
                    <!--  FSI -->
                     <div invisible="fsi_visible == False">
@@ -931,16 +1039,16 @@
                             </tbody>
                         </table>
 
-<!-- 
+
                           <div invisible = "specific_gravity_visible == False">
                         <h1 class="text-center">
                             <field name="specific_gravity_name" readonly="1" nolabel="1"/>
                             <field name="specific_gravity_visible" invisible="1"/>
                         </h1>
-                    </div> -->
+                    </div>
 
 
-                    <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
                         <tbody>
                             <tr>
                                 <td><label for="m1">Mass of Density Bottle (M1)</label></td>
@@ -984,7 +1092,7 @@
                                 </tr>
                             </tbody>
                         </table>
- -->
+
 
 
 
@@ -1485,12 +1593,14 @@
 
 
 
-     <div invisible = "moisture_visible == False">
-                        <h1 class="text-center">
-                            <field name="moisture_name" readonly="1" nolabel="1"/>
-                            <field name="moisture_visible" invisible="1"/>
-                        </h1>
-                    </div> 
+
+ <!-- NMC – Moisture Content -->
+               <div invisible="moisture_visible == False">
+                  <h1 class="text-center">
+                    <field name="moisture_name" readonly="1" nolabel="1"/>
+                        <field name="moisture_visible" invisible="1"/>
+               </h1>
+                   </div>
 
 
 
@@ -1531,82 +1641,6 @@
                     </div>
 
 
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-<!-- Specific Gravity title -->
-<div invisible="specific_gravity_visible == False">
-    <h1 class="text-center">
-        <field name="gravity_name" readonly="1" nolabel="1"/>
-        <field name="specific_gravity_visible" invisible="1"/>
-    </h1>
-</div>
-
-
-<div invisible="specific_gravity_visible == False">
-    <field name="gravity_line_ids">
-        <tree editable="bottom" class="custom_table_borders">
-
-            <field name="serial_no" string="Sr.No" width="30px"/>
-            <field name="date" string="DATE TEST" width="40px"/>
-            <field name="lab_id" string="Lab No."  width="50px"/>
-
-            <field name="room_temp" string="Room Temperature" width="110px"/>
-            <field name="bottle_no" string="Bottle No."  width="80px"/>
-
-            <field name="wt_empty_bottle" string="Empty Wt. of Bottle" width="100px"/>
-            <field name="wt_bottle_dry_soil" string="Bottle + dry soil" width="100px"/>
-            <field name="wt_bottle_dry_soil_water" string="Bottle + Dry soil + Water" width="100px"/>
-            <field name="wt_bottle_water" string="Bottle + Water (Tap)" width="100px"/>
-
-            <field name="specific_gravity" string="Specific Gravity (G)" width="100px" readonly="1"/>
-            <field name="density_water" string="Density of water at room temp (gm/cc)" width="100px" readonly="1"/>
-            <field name="corr_specific_gravity" string="Corrected Specific Gravity (G')" width="100px" readonly="1"/>
-            <field name="avg_corr_specific_gravity" string="Average corrected Specific Gravity" width="100px" readonly="1"/>
-
-        </tree>
-    </field>
-</div>
-
-
-
-
-
-
-
-<!-- Atterbergs Limits (Free Swell) -->
-
-
-<div invisible="freeswell_visible == False">
-    <h1 class="text-center">
-        <field name="freeswell_name" readonly="1" nolabel="1"/>
-        <field name="freeswell_visible" invisible="1"/>
-    </h1>
-</div>
-
-
-<div invisible="freeswell_visible == False">
-    <field name="freeswell_line_ids">
-        <tree editable="bottom" class="custom_table_borders">
-            <field name="serial_no" string="Sr.No" width="35px"/>
-            <field name="lab_id" string="Lab No." width="100px"/>
-            <field name="vd" string="Vd" width="80px"/>
-            <field name="vk" string="Vk" width="80px"/>
-            <field name="free_swell" string="Free swell(%)" width="110px" readonly="1"/>
-            <field name="is_ok" string="TRUE/FALSE" width="90px" readonly="1"/>
-        </tree>
-    </field>
-</div>
-
-
-=======
                     <div invisible="gsa_visible == False">
                         <h1 class="text-center">
                             <field name="gsa_name" readonly="1" nolabel="1"/>
@@ -1619,41 +1653,51 @@
 
                     <field name="show_sieve" invisible="1"/>
 
-                <field name="gsa_child_lines">
+                <field name="gsa_child_lines" class="custom_table_borders">
                     <tree editable="bottom" string="GSA Lines" decoration-info="lab_no">
-                        <field name="symbol"/>
+                        <field name="symbol" widget="html" />
                         <field name="bh_id"/>
                         <field name="lab_no" string="Lab ID"/>
                         <field name="sample_depth"/>
                         <field name="sample_details"/>
+                          <field name="water_content"/>
                         <field name="wt_of_samp"/>
                          <field name="temp"/>
                           <field name="humidity"/>
                            <field name="specific_gravity"/>
+                            <field name="gravel"/>
+                            <field name="sand"/>
+                            <field name="silt"/>
+                            <field name="silt_clay"/>
                     </tree>
 
-                    <form>
+                    <form class="custom_table_borders">
                         <sheet>
                        
-                            <field name="symbol"/>
+                            <field name="symbol" widget="html"/>
                             <field name="bh_id"/>
                             <field name="lab_no" string="Lab ID"/>
                             <field name="sample_depth"/>
                             <field name="sample_details"/>
+                             <field name="water_content"/>
                             <field name="wt_of_samp"/>
 
                             <field name="temp"/>
                           <field name="humidity"/>
                           <field name="specific_gravity"/>
+                          <field name="gravel"/>
+                          <field name="sand"/>
+                          <field name="silt"/>
+                          <field name="silt_clay"/>
                            
                        
                         </sheet>
                     </form>
                 </field>
 
-                <group string="Sieve Analysis" invisible="not show_sieve">
+                <group string="Sieve Analysis Lab ID" invisible="not show_sieve">
     
-                    <field name="gsa_child_lines">
+                    <field name="gsa_child_lines" class="custom_table_borders" string="">
                         <form>
                        
               
@@ -1700,6 +1744,53 @@
                             </tbody>
                         </table>
                         </div>
+
+                         <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="bh_id"></label></td>
+                                    <td><field name="bh_id"   /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="sample_depth"></label></td>
+                                    <td><field name="sample_depth"   /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                         <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="sample_details"></label></td>
+                                    <td><field name="sample_details"   /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="water_content"></label></td>
+                                    <td><field name="water_content"   /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        </div>
+
+                        
 
                         <div >
                         <button string="Calculate" type="object" name="calculate_sieve_gsa" class="oe_highlight">
@@ -1861,17 +1952,16 @@
                             icon="fa-area-chart"
                             help="Sieve Analysis डेटावर आधारित ग्राफ तयार करण्यासाठी क्लिक करा."/>
                  </div>
->>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
 
 
-                 <group>
+                 <div style="text-align: center; width: 100%;">
                             <field name="gsa_graph_image" 
                                    widget="image" 
                                    readonly="1" 
                                    nolabel="1" 
                                    filename="gsa_graph_filename"
                                    options="{'size': [900, 600]}"/> <field name="gsa_graph_filename" invisible="1"/>
-                        </group>
+                      </div>
 
 
                  
