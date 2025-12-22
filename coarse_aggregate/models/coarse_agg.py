@@ -2114,12 +2114,22 @@ class CoarseAggregateMechanical(models.Model):
 
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
 
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
             # Elongation
+            if result.parameter.internal_id == 'c2168fff-e47c-4155-99ff-9d7dc223e768':
+                result.calculated = True
+            
             if result.parameter.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
                 result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
                 if self.aggregate_combine_conformity == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -2129,6 +2139,7 @@ class CoarseAggregateMechanical(models.Model):
             # Flakiness
             if result.parameter.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
                 result.result_char = round(self.aggregate_flakiness,2)
+                result.calculated = True
                 if self.aggregate_combine_conformity == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -2138,6 +2149,7 @@ class CoarseAggregateMechanical(models.Model):
             # Loose bulk
             if result.parameter.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
                 result.result_char = round(self.loose_bulk_density,2)
+                result.calculated = True
                 if self.loose_bulk_density_conformity == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -2146,6 +2158,7 @@ class CoarseAggregateMechanical(models.Model):
 
             # rodded bulk
             if result.parameter.internal_id == '155935d1-24d9-4276-9e4f-453803342e8c':
+                result.calculated = True
                 result.result_char = round(self.rodded_bulk_density,2)
                 if self.rodded_bulk_density_conformity == 'pass':
                     result.nabl_status = 'nabl'
@@ -2155,6 +2168,7 @@ class CoarseAggregateMechanical(models.Model):
 
             # specific gravity 
             if result.parameter.internal_id == '3114db41-cfa7-49ad-9324-fcdbc9661038':
+                result.calculated = True
                 result.result_char = round(self.specific_gravity,2)
                 if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -2164,6 +2178,7 @@ class CoarseAggregateMechanical(models.Model):
 
             # water absorbtion
             if result.parameter.internal_id == '22ee804f-41a3-4fd1-a301-a8d9180fba10':
+                result.calculated = True
                 result.result_char = round(self.water_absorption,2)
                 if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -2173,6 +2188,7 @@ class CoarseAggregateMechanical(models.Model):
 
             # impact value 
             if result.parameter.internal_id == '2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2':
+                result.calculated = True
                 result.result_char = round(self.average_impact_value,2)
                 if self.impact_value_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -2182,6 +2198,7 @@ class CoarseAggregateMechanical(models.Model):
 
             # crushing value 
             if result.parameter.internal_id == 'ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71':
+                result.calculated = True
                 result.result_char = round(self.average_crushing_value,2)
                 if self.average_crushing_value_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -2191,6 +2208,7 @@ class CoarseAggregateMechanical(models.Model):
 
             # Compacted density
             if result.parameter.internal_id == '357f579d-a310-4015-bc11-28a85c53ac83':
+                result.calculated = True
                 result.result_char = round(self.avg_compacted,2)
                 if self.avg_compacted_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -2200,6 +2218,7 @@ class CoarseAggregateMechanical(models.Model):
 
             # % void Compacted density
             if result.parameter.internal_id == '04a95dc1-4b45-4817-a9b2-dd722bbe6281':
+                result.calculated = True
                 result.result_char = round(self.avg_void_compacted_density,2)
                 if self.avg_void_compacted_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -2210,6 +2229,7 @@ class CoarseAggregateMechanical(models.Model):
 
             # % void Loose density
             if result.parameter.internal_id == '919587f2-5b45-4da1-bb73-10164b861833':
+                result.calculated = True
                 result.result_char = round(self.avg_void_loose_density,2)
                 if self.avg_void_loose_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -2245,12 +2265,33 @@ class CoarseAggregateMechanical(models.Model):
         return super(CoarseAggregateMechanical, self).read(fields=fields, load=load)
 
    
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
+
+
 
     def get_all_fields(self):
         record = self.env['mechanical.coarse.aggregate'].browse(self.ids[0])
