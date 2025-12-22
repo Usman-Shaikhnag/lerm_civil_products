@@ -22,6 +22,7 @@
                         <field name="sample_id" readonly="1" />
                         <field name="eln_ref" readonly="1"/>
                         <field name="size_id"/>
+                         <field name="lab_id" invisible="1" />
                         <field name="parameter_id" invisible="1"/>
                     </group>
 
@@ -521,6 +522,141 @@
                             }
                         </style>
 
+<<<<<<< HEAD
+=======
+                         <div class="soil-table" invisible="soil_visible == False">
+
+                        <!-- WATER CONTENT SECTION -->
+                        <h4>Water Content</h4>
+
+                        <table>
+                            <tr class="header">
+                                <th>Water Content</th>
+                                <th>Can No</th>
+                                <th>wt of Can + wet soil</th>
+                                <th>wt of Can + dry soil</th>
+                                <th>wt of water</th>
+                                <th>wt of can</th>
+                                <th>Wt of dry soil</th>
+                                <th>Moisture content %</th>
+                                <th>Avg MC %</th>
+                            </tr>
+
+                            <!-- BEFORE SOAKING -->
+                            <tr>
+                                <td class="header">Before soaking</td>
+                                <td class="red"><field name="before_can_no"/></td>
+                                <td class="red"><field name="before_can_wet_soil"/></td>
+                                <td class="red"><field name="before_can_dry_soil"/></td>
+                                <td><field name="before_wt_water"/></td>
+                                <td class="red"><field name="before_wt_can"/></td>
+                                <td><field name="before_wt_dry_soil"/></td>
+                                <td><field name="before_mc"/></td>
+                               
+                               <td style="background:#eee;"><field name="before_avg_mc"/></td>
+                            </tr>
+
+                            <!-- TOP -->
+                            <tr>
+                                <td class="header">Top</td>
+                                <td class="red"> <field name="top_can_no"/></td>
+                                <td class="red"><field name="top_can_wet_soil"/></td>
+                                <td class="red"><field name="top_can_dry_soil"/></td>
+                                <td><field name="top_wt_water"/></td>
+                                <td class="red"><field name="top_wt_can"/></td>
+                                <td><field name="top_wt_dry_soil"/></td>
+                                <td><field name="top_mc"/></td>
+                                <td rowspan="3" style="background:#eee;">
+                                    <field name="avg_mc"/>
+                                </td>
+                            </tr>
+
+                            <!-- CENTRE -->
+                            <tr>
+                                <td class="header">Centre</td>
+                                <td class="red"><field name="centre_can_no"/></td>
+                                <td class="red"><field name="centre_can_wet_soil"/></td>
+                                <td class="red"><field name="centre_can_dry_soil"/></td>
+                                <td><field name="centre_wt_water"/></td>
+                                <td class="red"><field name="centre_wt_can"/></td>
+                                <td><field name="centre_wt_dry_soil"/></td>
+                                <td><field name="centre_mc"/></td>
+                            </tr>
+
+                            <!-- BOTTOM -->
+                            <tr>
+                                <td class="header">Bottom</td>
+                                <td class="red"><field name="bottom_can_no"/></td>
+                                <td class="red"><field name="bottom_can_wet_soil"/></td>
+                                <td class="red"><field name="bottom_can_dry_soil"/></td>
+                                <td><field name="bottom_wt_water"/></td>
+                                <td class="red"><field name="bottom_wt_can"/></td>
+                                <td><field name="bottom_wt_dry_soil"/></td>
+                                <td><field name="bottom_mc"/></td>
+                            </tr>
+                        </table>
+
+                        <!-- CONDITION OF SPECIMEN -->
+                        <h4 class="mt16">Condition of specimen</h4>
+
+                        <table>
+                            <tr class="header">
+                                <th></th>
+                                <th>Wt of mould + soil (g)</th>
+                                <th>Wt of mould (g)</th>
+                                <th>Wt of soil (g)</th>
+                                <th>Volume of specimen (cc)</th>
+                                <th>Bulk density</th>
+                                <th>Dry density</th>
+                            </tr>
+
+                            <!-- BEFORE -->
+                            <tr>
+                                <td class="header">Before soaking</td>
+                                <td class="red"><field name="before_mould_soil"/></td>
+                                <td class="red"><field name="before_mould"/></td>
+                                <td><field name="before_soil"/></td>
+                                <td ><field name="volume_specimen1"/></td>
+                                
+                                <td><field name="before_bulk_density"/></td>
+                                <td><field name="before_dry_density"/></td>
+                            </tr>
+
+                            <!-- AFTER -->
+                            <tr>
+                                <td class="header">After soaking</td>
+                                <td class="red"><field name="after_mould_soil"/></td>
+                                <td class="red"><field name="after_mould"/></td>
+                                <td><field name="after_soil"/></td>
+                                <td ><field name="volume_specimen2"/></td>
+                                <td><field name="after_bulk_density"/></td>
+                                <td><field name="after_dry_density"/></td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                     <div class="d-flex gap-2"  invisible="not soil_visible" style="margin-top: 10px;">
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="room_temp">% rise/fall  in force value</label></td>
+                                    <td><field name="room_temp" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_correction">% rise/fall  in force value</label></td>
+                                    <td><field name="temp_correction" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
                         
 
                    <!--  FSI -->
@@ -1395,6 +1531,7 @@
                     </div>
 
 
+<<<<<<< HEAD
 
 
 
@@ -1469,18 +1606,298 @@
 </div>
 
 
+=======
+                    <div invisible="gsa_visible == False">
+                        <h1 class="text-center">
+                            <field name="gsa_name" readonly="1" nolabel="1"/>
+                            <field name="gsa_visible" invisible="1"/>
+                        </h1>
+                    </div>
 
 
+                   
 
+                    <field name="show_sieve" invisible="1"/>
+
+                <field name="gsa_child_lines">
+                    <tree editable="bottom" string="GSA Lines" decoration-info="lab_no">
+                        <field name="symbol"/>
+                        <field name="bh_id"/>
+                        <field name="lab_no" string="Lab ID"/>
+                        <field name="sample_depth"/>
+                        <field name="sample_details"/>
+                        <field name="wt_of_samp"/>
+                         <field name="temp"/>
+                          <field name="humidity"/>
+                           <field name="specific_gravity"/>
+                    </tree>
+
+                    <form>
+                        <sheet>
+                       
+                            <field name="symbol"/>
+                            <field name="bh_id"/>
+                            <field name="lab_no" string="Lab ID"/>
+                            <field name="sample_depth"/>
+                            <field name="sample_details"/>
+                            <field name="wt_of_samp"/>
+
+                            <field name="temp"/>
+                          <field name="humidity"/>
+                          <field name="specific_gravity"/>
+                           
+                       
+                        </sheet>
+                    </form>
+                </field>
+
+                <group string="Sieve Analysis" invisible="not show_sieve">
+    
+                    <field name="gsa_child_lines">
+                        <form>
+                       
+              
+                    <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="lab_no"></label></td>
+                                    <td><field name="lab_no"  readonly="1"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="wt_of_samp"></label></td>
+                                    <td><field name="wt_of_samp"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                    </div>
+                     <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp">Temp.°C</label></td>
+                                    <td><field name="temp"   /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity">Humidity %</label></td>
+                                    <td><field name="humidity"   /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        </div>
+
+                        <div >
+                        <button string="Calculate" type="object" name="calculate_sieve_gsa" class="oe_highlight">
+                            <i class="fa fa-calculator"/> Calculate
+                        </button>
+                    </div>
+
+                     
+
+                            <sheet>
+
+                            <div>
+                            <div class="text-center fw-bold fs-5 mb-3">
+                                       DETERMINATION OF GRAIN SIZE ANALYSIS: SIEVE ANALYSIS
+                                    </div>
+                                <field name="sieve_analysis_child_lines_gsa" class="custom_table_borders">
+                                 
+                                    <tree editable="bottom">
+                                        <!-- <field name="serial_no"/> -->
+                                        <field name="sieve_size"/>
+                                        <field name="wt_retained" string="Soil Retained wt"/>
+                                        <field name="percent_retained" string='Cumulative Wt. retained'/>
+                                        <field name="cumulative_retained" string="Cumulative % retained"/>
+                                        <field name="passing_percent" string="% Passing "/>
+
+                                    </tree>
+                                </field>
+
+                                 <div >
+                                    <button string="Calculate" type="object" name="action_add_n_corrected" class="oe_highlight">
+                                        <i class="fa fa-calculator"/> Add N Corrected Value
+                                    </button>
+                                </div>
+                                </div>
+
+                                  <div style="margin-top: 10px;"> 
+                                   <div class="d-flex gap-2" >
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="temp"></label></td>
+                                                <td><field name="temp"   /></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                    
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="wt_of_samp1"></label></td>
+                                                <td><field name="wt_of_samp1"   /></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                    </div>
+
+                                      <div class="d-flex gap-2" >
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="meniscus_corre"></label></td>
+                                                <td><field name="meniscus_corre"   /></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                    
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="vescosity_water"></label></td>
+                                                <td><field name="vescosity_water"   /></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                    </div>
+
+                                    <div class="d-flex gap-2" >
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="dispersion"></label></td>
+                                                <td><field name="dispersion"   /></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                    
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="temp_corre"></label></td>
+                                                <td><field name="temp_corre"   /></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                    </div>
+
+                                       <div class="d-flex gap-2" >
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="specific_gravity"></label></td>
+                                                <td><field name="specific_gravity"   /></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                    
+                                  
+                                    </div>
+
+                                      
+
+                                  <div class="text-center fw-bold fs-5 mb-3">
+                                        DETERMINATION OF GRAIN SIZE ANALYSIS: HYDROMETER ANALYSIS
+                                    </div>
+                                  <field name="hydrometer_analysis_lines_gsa" class="custom_table_borders">
+                                 
+                                    <tree editable="bottom">
+                                        <field name="time"/>
+                                        <field name="hydrometer_reading"/>
+                                        <field name="men_corrected" />
+                                        <field name="eff_depth" />
+                                        <field name="velocity" />
+                                        <field name="temp_combined" />
+
+                                        <field name="root_velocity" />
+                                        <field name="diameter_soil" />
+                                        <field name="n_finner" />
+                                        <field name="n_corrected" />
+                                    </tree>
+                                </field>
+                                 </div>
+                            </sheet>
+                        </form>
+                    </field>
+                </group>
+               
+                 <div invisible = "gsa_visible == False">
+                  <field name= 'gsa_lines_generated' invisible="1" />
+                  <button name="action_generate_gsa_lines"
+                   
+                    type="object"
+                    string="Generate Lab Lines"
+                    class="oe_highlight"
+                    invisible="gsa_lines_generated == True"/>
+
+                </div>
+                <div style="margin-top: 10px;">
+                <button name="action_generate_gsa_graph" 
+                            string="Generate GSA Graph" 
+                            type="object" 
+                            class="oe_highlight" 
+                            icon="fa-area-chart"
+                            help="Sieve Analysis डेटावर आधारित ग्राफ तयार करण्यासाठी क्लिक करा."/>
+                 </div>
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
+
+
+                 <group>
+                            <field name="gsa_graph_image" 
+                                   widget="image" 
+                                   readonly="1" 
+                                   nolabel="1" 
+                                   filename="gsa_graph_filename"
+                                   options="{'size': [900, 600]}"/> <field name="gsa_graph_filename" invisible="1"/>
+                        </group>
+
+
+                 
+
+            
+
+
+                
 
 
                     
-                  
+                    <div style="margin-top: 10px;">
                     <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                    </div>
                 </sheet>
             </form>
         </field>
         </record>
+
+
+       
+
+
+
+     
+
 
 
         <record id="view_soil_prefill_data_form" model="ir.ui.view">

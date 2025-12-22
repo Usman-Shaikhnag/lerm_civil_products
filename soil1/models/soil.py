@@ -12,7 +12,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import LogLocator, MultipleLocator, NullFormatter, ScalarFormatter
 
+<<<<<<< HEAD
 
+=======
+# Matplotlib आणि NumPy इम्पोर्ट करण्याचा प्रयत्न करा
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
 try:
     import matplotlib.pyplot as plt
     import matplotlib.ticker as ticker
@@ -64,7 +68,13 @@ class Soil(models.Model):
             store=True
         )
 
+<<<<<<< HEAD
      
+=======
+        # -----------------------------
+        # Compute method
+        # -----------------------------
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
     @api.depends('eln_ref')
     def _compute_lab_id(self):
         for rec in self:
@@ -72,7 +82,16 @@ class Soil(models.Model):
                 rec.lab_id = rec.eln_ref.lab_id
             else:
                 rec.lab_id = False
+<<<<<<< HEAD
    
+=======
+    # material = fields.Many2one('product.template',string='Material',compute="_compute_material_id",store=True)
+
+    # @api.depends('eln_ref.material')
+    # def _compute_material_id(self):
+    #     for rec in self:
+    #         rec.material = rec.eln_ref.material if rec.eln_ref else False
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()
@@ -2645,7 +2664,109 @@ class Soil(models.Model):
 
     
 
+<<<<<<< HEAD
     
+=======
+    # def action_generate_gsa_graph(self):
+    #     """
+    #     Generates a Log-Linear Graph matching the reference image style:
+    #     X-Axis: 0.001 to 100 (Log Scale, Left to Right)
+    #     Y-Axis: 0 to 100 (Linear Scale)
+    #     """
+    #     for record in self:
+    #         # 1. Initialize Plot
+    #         # (figsize width=12, height=6 gives a good aspect ratio)
+    #         fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
+            
+    #         # 2. Configure Axes limits and Scale immediately
+    #         ax.set_xscale('log')
+    #         ax.set_xlim(0.001, 100)  # Left=0.001, Right=100
+    #         ax.set_ylim(0, 100)      # Bottom=0, Top=100
+
+    #         # 3. Configure Labels and Title
+    #         ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
+    #         ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
+    #         # ax.set_title("Grain Size Distribution", fontsize=12, fontweight='bold')
+
+    #         # 4. Configure Grid (To match the dense grid in your image)
+    #         # Major Grid (Darker)
+    #         ax.grid(True, which='major', axis='both', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
+    #         # Minor Grid (Lighter, for the log lines)
+    #         ax.grid(True, which='minor', axis='both', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
+
+    #         # 5. Format X-Axis Ticks (0.001, 0.01, 0.1, 1, 10, 100)
+    #         locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
+    #         ax.xaxis.set_major_locator(locmaj)
+            
+    #         # Formatter to avoid scientific notation (e.g., show 0.01 instead of 10^-2)
+    #         def nice_log_formatter(x, pos):
+    #             if x in [0.001, 0.01, 0.1, 1, 10, 100]:
+    #                 return f"{x:g}" # Removes trailing zeros
+    #             return ""
+    #         ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
+
+    #         # 6. Plot Data
+    #         data_plotted = False
+            
+    #         # Loop through the GSA Lines (e.g. Lab IDs)
+    #         if record.gsa_child_lines:
+    #             for sample in record.gsa_child_lines:
+    #                 sizes = []
+    #                 passing = []
+
+    #                 # Sort lines by size to ensure the line connects correctly
+    #                 # (Smallest to Largest or vice versa, either works for line plotting)
+    #                 lines = sample.sieve_analysis_child_lines_gsa.sorted(
+    #                     key=lambda r: float(str(r.sieve_size).lower().replace('mm','').strip()) if r.sieve_size and r.sieve_size.replace('.', '', 1).isdigit() else 0.0
+    #                 )
+
+    #                 for line in lines:
+    #                     if line.sieve_size and line.passing_percent is not None:
+    #                         try:
+    #                             # Clean string "0.075 mm" -> 0.075
+    #                             size_str = str(line.sieve_size).lower().replace('mm', '').strip()
+    #                             size_val = float(size_str)
+    #                             pass_val = line.passing_percent
+
+    #                             # X-axis is log, so size must be > 0. 
+    #                             # Also filter out extremely large placeholders if any.
+    #                             if 0.001 <= size_val <= 100:
+    #                                 sizes.append(size_val)
+    #                                 passing.append(pass_val)
+    #                         except ValueError:
+    #                             continue
+                    
+    #                 if sizes and passing:
+    #                     # Plot the curve with markers
+    #                     # 'marker' adds dots, 'linewidth' makes it visible
+    #                     ax.plot(sizes, passing, marker='o', markersize=4, linewidth=2, label=sample.lab_no or "Sample")
+    #                     data_plotted = True
+
+    #         # Add Legend if we plotted data
+    #         if data_plotted:
+    #             ax.legend(loc='lower right', fontsize=9)
+
+    #         # 7. Save Image
+    #         buffer = io.BytesIO()
+    #         # bbox_inches='tight' removes extra white borders
+    #         plt.savefig(buffer, format='png', bbox_inches='tight') 
+    #         plt.close(fig)
+    #         buffer.seek(0)
+            
+    #         record.gsa_graph_image = base64.b64encode(buffer.read())
+    #         buffer.close()
+
+    #     # 8. Reload Form View
+    #     return {
+    #         'type': 'ir.actions.act_window',
+    #         'name': 'Soil Form',
+    #         'res_model': 'mechanical.soil1',
+    #         'res_id': record.id,
+    #         'view_mode': 'form',
+    #         'target': 'current',
+    #     }
+
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
     def action_generate_gsa_graph(self):
         """
         Generates a GSA Graph matching the reference image:
@@ -2654,6 +2775,7 @@ class Soil(models.Model):
         - Plot Direction: Smallest particle (Last Value) -> Largest particle
         """
         for record in self:
+<<<<<<< HEAD
           
             fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
             
@@ -2673,6 +2795,28 @@ class Soil(models.Model):
             ax.grid(True, which='minor', axis='both', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
 
         
+=======
+            # 1. Initialize Plot with high DPI for clarity
+            fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
+            
+            # 2. Configure Axes limits and Scale immediately
+            ax.set_xscale('log')
+            ax.set_xlim(0.001, 100)  # Left=0.001, Right=100
+            ax.set_ylim(0, 100)      # Bottom=0, Top=100 (Strictly start from 0)
+
+            # 3. Configure Labels
+            ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
+            ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
+
+            # 4. Configure Dense Grid (Like the image)
+            # Major Grid (Darker lines for 0.01, 0.1, 1, 10...)
+            ax.grid(True, which='major', axis='both', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
+            # Minor Grid (Lighter lines for intermediate values)
+            ax.grid(True, which='minor', axis='both', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
+
+            # 5. Format X-Axis Ticks (0.001, 0.01, 0.1, 1, 10, 100)
+            # This ensures the specific numbers from your image appear on the axis
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
             locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
             ax.xaxis.set_major_locator(locmaj)
             
@@ -2691,7 +2835,13 @@ class Soil(models.Model):
                     sizes = []
                     passing = []
 
+<<<<<<< HEAD
                    
+=======
+                    # SORTING CHANGE: reverse=False (Ascending Order)
+                    # This sorts 0.001 -> 0.075 -> 4.75 -> 80
+                    # This draws the line starting from the "Last Value" (Smallest) on the Left
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
                     lines = sample.sieve_analysis_child_lines_gsa.sorted(
                         key=lambda r: float(str(r.sieve_size).lower().replace('mm','').strip()) if r.sieve_size and r.sieve_size.replace('.', '', 1).isdigit() else 0.0,
                         reverse=False 
@@ -2704,7 +2854,11 @@ class Soil(models.Model):
                                 size_val = float(size_str)
                                 pass_val = line.passing_percent
 
+<<<<<<< HEAD
                                
+=======
+                                # Plot data within the valid axis range
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
                                 if 0.001 <= size_val <= 100:
                                     sizes.append(size_val)
                                     passing.append(pass_val)
@@ -2743,6 +2897,18 @@ class Soil(models.Model):
     
 
 
+<<<<<<< HEAD
+=======
+
+
+
+
+    
+
+
+    
+    
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
    
 
      ### Compute Visible
@@ -2777,9 +2943,12 @@ class Soil(models.Model):
 
             record.moisture_visible  = False
             record.gsa_visible = False
+<<<<<<< HEAD
             record.specific_gravity_visible = False
             record.freeswell_visible = False
 
+=======
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
 
 
 
@@ -2861,6 +3030,7 @@ class Soil(models.Model):
                     record.moisture_visible = True
                 if sample.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
                     record.gsa_visible = True
+<<<<<<< HEAD
 
 
                 if sample.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
@@ -2869,6 +3039,8 @@ class Soil(models.Model):
                 if sample.internal_id == '3825ec57-11f8-4249-9fa8-d99f64ffd396':
                     record.freeswell_visible = True
 
+=======
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
 
 
    
@@ -4313,6 +4485,10 @@ class SoilGSALINE(models.Model):
 
 
     sr_no = fields.Integer(string="Sr NO.")
+<<<<<<< HEAD
+=======
+    #  readonly=True, copy=False, default=1
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
     
     symbol = fields.Char(string="Symbol")
     bh_id = fields.Char(string="BH ID")
@@ -4375,14 +4551,22 @@ class SoilGSALINE(models.Model):
     def action_add_n_corrected(self):
         for record in self:
 
+<<<<<<< HEAD
           
+=======
+            # 1️⃣ 0.075 sieve exists?
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
             sieve_075 = record.sieve_analysis_child_lines_gsa.filtered(
                 lambda l: l.sieve_size == '0.075'
             )
             if not sieve_075:
                 raise UserError("0.075 sieve line not found")
 
+<<<<<<< HEAD
            
+=======
+            # 2️⃣ Take ALL hydrometer lines AS-IS (order preserved)
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
             hydro_lines = record.hydrometer_analysis_lines_gsa.filtered(
                 lambda h: h.n_corrected is not False
             )
@@ -4390,7 +4574,11 @@ class SoilGSALINE(models.Model):
             if not hydro_lines:
                 raise UserError("No Hydrometer data found")
 
+<<<<<<< HEAD
            
+=======
+            # 3️⃣ Delete old < 0.075 sieve rows
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
             for line in record.sieve_analysis_child_lines_gsa:
                 try:
                     if float(line.sieve_size) < 0.075:
@@ -4398,12 +4586,21 @@ class SoilGSALINE(models.Model):
                 except Exception:
                     pass
 
+<<<<<<< HEAD
            
             for h in hydro_lines:
                 self.env['gsa.lab.sieve.analysis.line'].create({
                     'parent_id_gsa': record.id,
                     'sieve_size': f"{h.diameter_soil:.2f}",  
                     'passing_percent': h.n_corrected,       
+=======
+            # 4️⃣ Insert EXACT hydrometer values (duplicates + 0.00 included)
+            for h in hydro_lines:
+                self.env['gsa.lab.sieve.analysis.line'].create({
+                    'parent_id_gsa': record.id,
+                    'sieve_size': f"{h.diameter_soil:.2f}",   # 0.05, 0.04 ... 0.00
+                    'passing_percent': h.n_corrected,         # 65.05 ... 6.58
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
                     
                 })
 
@@ -4429,14 +4626,22 @@ class SoilGSALINE(models.Model):
     def create(self, vals):
         record = super().create(vals)
 
+<<<<<<< HEAD
       
+=======
+        # List of default IS sieve sizes
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
         default_sieve_sizes = [
             "50", "40", "25", "20", "16", "12.5", "10",
             "6.3", "4.75", "2.36", "1.18", "0.6", "0.425",
             "0.3", "0.15", "0.075"
         ]
 
+<<<<<<< HEAD
     
+=======
+        # Generate default child lines if none exist
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
         if not record.sieve_analysis_child_lines_gsa:
             lines = []
             for i, sieve in enumerate(default_sieve_sizes, start=1):
@@ -4480,6 +4685,346 @@ class SoilGSALINE(models.Model):
                 previous_cumulative = cumulative_retained
 
     
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+
+    
+
+
+  
+
+
+   
+
+class SoilSieveAnalysisLineGSA(models.Model):
+    _name = "gsa.lab.sieve.analysis.line"
+    # parent_id = fields.Many2one('mechanical.gsa.line', string="Parent Id")
+
+    parent_id_gsa = fields.Many2one(
+        'mechanical.gsa.line',
+        string="GSA Line",
+        ondelete='cascade'
+    )
+
+    lab_no = fields.Char(string="LAB ID")
+
+    wt_of_samp = fields.Float(string="Weight of total sample (gm)")
+
+    temp = fields.Float("Temp °c" )
+    humidity = fields.Float("Humidity %" )
+
+
+   
+
+    
+
+    
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sieve_size = fields.Char(string="IS Sieve Size")
+    wt_retained = fields.Float(string="Soil Retained wt",digits=(12,3))
+    percent_retained = fields.Float(string='Cumulative Wt. retained',compute="_compute_percent_retained1",digits=(12,2) )
+    cumulative_retained = fields.Float(string="Cumulative % retained",compute="_compute_cumulative_retained" , store=True)
+    passing_percent = fields.Float(string="% Passing ",digits=(12,3),store=True)
+
+    
+
+    
+    # --------------------------------------------------
+    # SERIAL NUMBER AUTO ASSIGN
+    # --------------------------------------------------
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilSieveAnalysisLineGSA, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+    # --------------------------------------------------
+    # UNLINK HANDLING
+    # --------------------------------------------------
+    def unlink(self):
+        parents = self.mapped('parent_id_gsa')
+        res = super().unlink()
+        for parent in parents:
+            parent.sieve_analysis_child_lines_gsa._reorder_serial_numbers()
+        return res
+
+    # --------------------------------------------------
+    # COMPUTE % RETAINED
+    # --------------------------------------------------
+    # @api.depends(
+    # 'wt_retained',
+    # 'parent_id_gsa.sieve_analysis_child_lines_gsa.wt_retained'
+    # )
+    # def _compute_percent_retained1(self):
+    #     for record in self:
+    #         cumulative = 0.0
+
+    #         if not record.parent_id_gsa:
+    #             record.percent_retained = 0.0
+    #             continue
+
+    #         lines = record.parent_id_gsa.sieve_analysis_child_lines_gsa.sorted('serial_no')
+
+    #         for line in lines:
+    #             cumulative += line.wt_retained or 0.0
+    #             if line.id == record.id:
+    #                 record.percent_retained = round(cumulative, 3)
+    #                 break
+
+    @api.depends('wt_retained', 'parent_id_gsa.sieve_analysis_child_lines_gsa.wt_retained')
+    def _compute_percent_retained1(self):
+        for record in self:
+            record.percent_retained = 0.0
+            if not record.parent_id_gsa:
+                continue
+
+            # Use the recordset order directly; avoid sorting by id
+            cumulative = 0.0
+            for line in record.parent_id_gsa.sieve_analysis_child_lines_gsa:
+                cumulative += line.wt_retained or 0.0
+                if line == record:
+                    record.percent_retained = round(cumulative, 3)
+                    break
+
+
+    # --------------------------------------------------
+    # COMPUTE CUMULATIVE % RETAINED
+    # --------------------------------------------------
+    @api.depends(
+    'percent_retained',
+    'parent_id_gsa.wt_of_samp'
+    )
+    def _compute_cumulative_retained(self):
+        for record in self:
+            if record.parent_id_gsa and record.parent_id_gsa.wt_of_samp:
+                record.cumulative_retained = round(
+                    (record.percent_retained / record.parent_id_gsa.wt_of_samp) * 100,
+                    3
+                )
+            else:
+                record.cumulative_retained = 0.0
+
+
+    # --------------------------------------------------
+    # COMPUTE % PASSING
+    # --------------------------------------------------
+    # @api.depends('cumulative_retained')
+    # def _compute_passing_percent(self):
+    #     for record in self:
+    #         record.passing_percent = round(
+    #             100 - (record.cumulative_retained or 0.0),
+    #             3
+    #         )
+
+
+
+class SoilHydrometerLineGSA(models.Model):
+    _name = "gsa.hydrometer.analysis.line"
+    # parent_id = fields.Many2one('mechanical.gsa.line', string="Parent Id")
+
+    parent_id_gsa = fields.Many2one(
+        'mechanical.gsa.line',
+        string="GSA Line",
+        ondelete='cascade'
+    )
+
+
+    wt_of_samp1 = fields.Float(string="Weight of total sample (gm)")
+
+    meniscus_corre = fields.Float(string="Meniscus Correction, Cm",digits=(12,1))
+    vescosity_water = fields.Float(string="Viscosity of Water at Room Temperature in poise",compute="_compute_vescosity_water",digits=(12,6),store=True)
+    dispersion = fields.Float(string="Dispersion Agent Correction, x")
+    temp_corre = fields.Float(string="Temperature Correction, Mt",compute="_compute_temp_corre",digits=(12,4))
+    specific_gravity = fields.Float(string="Specific gravity",digits=(12,3))
+
+    temp = fields.Float("Temp °c" )
+
+
+    @api.depends('parent_id_gsa.temp')
+    def _compute_vescosity_water(self):
+        for rec in self:
+            t = rec.parent_id_gsa.temp
+            if t is not False and t < 19:
+                rec.vescosity_water = (
+                    (0.0000000053308 * (t ** 4))
+                    - (0.00000045221 * (t ** 3))
+                    + (0.000019001 * (t ** 2))
+                    - (0.00063391 * t)
+                    + 0.017937
+                )
+            else:
+                rec.vescosity_water = 0.0
+
+
+    @api.depends('parent_id_gsa.temp')
+    def _compute_temp_corre(self):
+        for rec in self:
+            if rec.parent_id_gsa.temp is not False:
+                rec.temp_corre = (-0.2109 * rec.parent_id_gsa.temp) + 5.6814
+            else:
+                rec.temp_corre = 0.0
+
+    
+
+    
+    time = fields.Float(string="Time ")
+    hydrometer_reading = fields.Float(string="Hydrometer Reading",digits=(12,1))
+    men_corrected = fields.Float(string="Meniscus Corrected",digits=(12,1),compute="_compute_men_corrected")
+    eff_depth = fields.Float(string='Effective Depth',digits=(12,1) ,compute="_compute_eff_depth")
+    velocity = fields.Float(string="Velocity" , store=True,compute="_compute_velocity",digits=(12,2))
+    temp_combined = fields.Float(string="Temp. + Dispersion Combined ",digits=(12,2),compute="_compute_temp_combined",store=True)
+
+    root_velocity = fields.Float(string="Sq. root of Velocity ",digits=(12,2),compute="_compute_root_velocity",store=True)
+    diameter_soil = fields.Float(string="Diameter of soil",digits=(12,2),compute="_compute_diameter_soil",store=True)
+    n_finner = fields.Float(string="N% Finer than",digits=(12,2),compute="_compute_n_finner",store=True)
+    n_corrected = fields.Float(string="N% corrected",digits=(12,2),store=True,compute="_compute_n_corrected")
+
+
+    @api.depends('hydrometer_reading', 'parent_id_gsa.meniscus_corre')
+    def _compute_men_corrected(self):
+        for rec in self:
+            rec.men_corrected = (
+                (rec.hydrometer_reading or 0.0) +
+                (rec.parent_id_gsa.meniscus_corre or 0.0)
+            )
+
+    @api.depends('men_corrected', 'time')
+    def _compute_eff_depth(self):
+        for rec in self:
+            if rec.men_corrected:
+                rec.eff_depth = (-0.3444 * rec.men_corrected) + (
+                    21.736 if rec.time in (8.0, 15.0, 30.0, 60.0, 120.0, 240.0, 1440.0)
+                    else 20.256
+                )
+            else:
+                rec.eff_depth = 0.0
+
+    @api.depends('eff_depth', 'time')
+    def _compute_velocity(self):
+        for rec in self:
+            if rec.time:
+                rec.velocity = rec.eff_depth / rec.time
+            else:
+                rec.velocity = 0.0
+
+    @api.depends(
+    'men_corrected',
+    'parent_id_gsa.temp_corre',
+    'parent_id_gsa.dispersion'
+    )
+    def _compute_temp_combined(self):
+        for rec in self:
+            rec.temp_combined = (
+                (rec.men_corrected or 0.0)
+                + (rec.parent_id_gsa.temp_corre or 0.0)
+                - (rec.parent_id_gsa.dispersion or 0.0)
+            )
+
+    @api.depends('velocity')
+    def _compute_root_velocity(self):
+        for rec in self:
+            if rec.velocity and rec.velocity > 0:
+                rec.root_velocity = math.sqrt(rec.velocity)
+            else:
+                rec.root_velocity = 0.0
+
+    @api.depends(
+    'root_velocity',
+    'parent_id_gsa.vescosity_water',
+    'parent_id_gsa.specific_gravity'
+    )
+    def _compute_diameter_soil(self):
+        for rec in self:
+            v = rec.parent_id_gsa.vescosity_water
+            sg = rec.parent_id_gsa.specific_gravity
+
+            if rec.root_velocity and v and sg and sg > 1:
+                constant_part = (18 / (981 * 60)) * (v / (sg - 1))
+                rec.diameter_soil = 10 * math.sqrt(constant_part) * rec.root_velocity
+            else:
+                rec.diameter_soil = 0.0
+
+    @api.depends(
+    'temp_combined',
+    'parent_id_gsa.specific_gravity',
+    'parent_id_gsa.wt_of_samp1'
+    )
+    def _compute_n_finner(self):
+        for rec in self:
+            sg = rec.parent_id_gsa.specific_gravity
+            wt = rec.parent_id_gsa.wt_of_samp1
+            tc = rec.temp_combined
+
+            if sg and sg > 1 and wt and tc:
+                rec.n_finner = (
+                    (sg / (sg - 1))
+                    * (1 / wt)
+                    * tc
+                    * 100
+                )
+            else:
+                rec.n_finner = 0.0
+
+    @api.depends(
+    'n_finner',
+    'parent_id_gsa.sieve_analysis_child_lines_gsa.sieve_size',
+    'parent_id_gsa.sieve_analysis_child_lines_gsa.passing_percent'
+    )
+    def _compute_n_corrected(self):
+        for rec in self:
+            passing_075 = 0.0
+
+            # get passing_percent where sieve_size == '0.075'
+            for line in rec.parent_id_gsa.sieve_analysis_child_lines_gsa:
+                if line.sieve_size == '0.075':
+                    passing_075 = line.passing_percent or 0.0
+                    break
+
+            if passing_075 and rec.n_finner:
+                rec.n_corrected = (passing_075 * rec.n_finner) / 100
+            else:
+                rec.n_corrected = 0.0
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+>>>>>>> 2d295e0a42e9e3e3f4f8d31e1b85973c4e99b4fa
 
 
 
