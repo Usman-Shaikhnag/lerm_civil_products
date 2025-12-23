@@ -25,6 +25,11 @@
           <field name="is_product_based_calculation"/>
           <label for="is_product_based_calculation"/>
         </span>
+
+          <span class="d-inline-block">
+          <field name="lab_boolean"/>
+          <label for="lab_boolean"/>
+        </span>
       </xpath>
 
       <!-- Placeholder on Name Field -->
@@ -39,6 +44,7 @@
         </group>
       </xpath>
 
+      
       <!-- LERM Tabs -->
       <xpath expr="//page[@name='general_information']" position="after">
 
@@ -158,6 +164,25 @@
           </field>
         </page>
 
+
+         <page string="Lab ID"
+              invisible="lab_boolean == False">
+          <field name="lab_table">
+            <tree editable="bottom">
+         
+                 <field name="product_id"/>
+                
+                <field name="eln_id" readonly="1" column_invisible="1"/>
+                <field name="srf_lab" column_invisible="1"/>
+                <field name="date_lab"/>
+                <field name="report_no"/>
+                <field name="url_no"/>
+                <field name="lab_Ids"/>
+
+            </tree>
+          </field>
+        </page>
+
         
 
       </xpath>
@@ -184,10 +209,7 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_product_tree_view"/>
             <field name="arch" type="xml">
-                <!-- <field name="name" position="after">
-                    <field name="lab_name" readonly="1"/>
-                    
-                </field> -->
+              
               <xpath expr="//tree/field[@name='name']" position="after">
                 <field name="lab_name" readonly="1"/>
               </xpath>
@@ -196,23 +218,8 @@
     </record>
 
 
-    
-    <!-- <record id="lerm_civil_parameter_line_form" model="ir.ui.view">
-         <field name="name">lerm.parameter.line.form</field>
-         <field name="model">lerm.parameter.line</field>
-         <field name="arch" type="xml">
-         <form>
-         <sheet>
-         <group style="width:33%">
-         <field name="parameter" />
-         <field name="discipline"/>
-         <field name="parameters_ids" domain="[('discipline', '=', discipline)]"/>
-         </group>
-         
-         </sheet>
-         </form>
-         </field>
-         </record> -->
+
+
     
     <record id="view_partner_inherited_form" model="ir.ui.view">
       <field name="name">view.partner.inherited.form</field>
@@ -242,23 +249,7 @@
     </record>
 
 
-     <!-- <record id="account_move_inherited_form" model="ir.ui.view">
-            <field name="name">account.move.inherited.form</field>
-            <field name="model">account.move</field>
-            <field name="inherit_id" ref="account.view_move_form"/>
-            <field name="arch" type="xml">
-                
-               
-                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="after">
-                    <field name="pricelist_id" invisible="1"/>
-                    <field name="report_no1"  widget="many2many_tags" options="{'no_create': True}"   />
-               
-                </xpath>
-                
-              
-                
-            </field>
-        </record> -->
+  
     
     
   </data>

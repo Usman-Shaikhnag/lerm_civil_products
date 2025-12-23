@@ -74,7 +74,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_percent_consistency">Temp.°C</label></td>
-                                    <td><field name="temp_percent_consistency" class="blue-input"/></td>
+                                    <td><field name="temp_percent_consistency" class="blue-input" invisible="not normal_consistency_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -84,7 +84,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_percent_consistency">Humidity %</label></td>
-                                    <td><field name="humidity_percent_consistency" class="blue-input"/></td>
+                                    <td><field name="humidity_percent_consistency" class="blue-input" invisible="not normal_consistency_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -154,7 +154,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_setting_time">Temp.°C</label></td>
-                                    <td><field name="temp_setting_time" class="blue-input" /></td>
+                                    <td><field name="temp_setting_time" class="blue-input" invisible="not initial_setting_time_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -164,7 +164,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_setting_time">Humidity %</label></td>
-                                    <td><field name="humidity_setting_time" class="blue-input" /></td>
+                                    <td><field name="humidity_setting_time" class="blue-input" invisible="not initial_setting_time_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -257,7 +257,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soundness">Temp.°C</label></td>
-                                    <td><field name="temp_soundness" class="blue-input"/></td>
+                                    <td><field name="temp_soundness" class="blue-input" invisible="not soundness_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -267,7 +267,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soundness">Humidity %</label></td>
-                                    <td><field name="humidity_soundness" class="blue-input"/></td>
+                                    <td><field name="humidity_soundness" class="blue-input" invisible="not soundness_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -332,7 +332,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_sound_auto">Temp.°C</label></td>
-                                    <td><field name="temp_sound_auto" class="blue-input" /></td>
+                                    <td><field name="temp_sound_auto" class="blue-input" invisible="not sound_auto_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -342,7 +342,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_sound_auto">Humidity %</label></td>
-                                    <td><field name="humidity_sound_auto" class="blue-input" /></td>
+                                    <td><field name="humidity_sound_auto" class="blue-input" invisible="not sound_auto_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -410,7 +410,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_specific_gravity">Temp.°C</label></td>
-                                    <td><field name="temp_specific_gravity" class="blue-input"/></td>
+                                    <td><field name="temp_specific_gravity" class="blue-input" invisible="not specific_gravity_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -420,7 +420,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_specific_gravity">Humidity %</label></td>
-                                    <td><field name="humidity_specific_gravity" class="blue-input"/></td>
+                                    <td><field name="humidity_specific_gravity" class="blue-input" invisible="not specific_gravity_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -535,7 +535,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_fineness_blain">Temp.°C</label></td>
-                                    <td><field name="temp_fineness_blain" class="blue-input"/></td>
+                                    <td><field name="temp_fineness_blain" class="blue-input" invisible="not fineness_blain_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -545,7 +545,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_fineness_blain">Humidity %</label></td>
-                                    <td><field name="humidity_fineness_blain" class="blue-input"/></td>
+                                    <td><field name="humidity_fineness_blain" class="blue-input" invisible="not fineness_blain_visible" required = "calc_mode == False or submit_mode == True " /></td>
                                 </tr>
                                 
                             </tbody>
@@ -654,7 +654,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_fineness">Temp.°C</label></td>
-                                    <td><field name="temp_fineness" class="blue-input"/></td>
+                                    <td><field name="temp_fineness" class="blue-input" invisible="not fineness_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -664,7 +664,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_fineness">Humidity %</label></td>
-                                    <td><field name="humidity_fineness" class="blue-input"/></td>
+                                    <td><field name="humidity_fineness" class="blue-input" invisible="not fineness_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -729,7 +729,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_compressive_strength">Temp.°C</label></td>
-                                    <td><field name="temp_compressive_strength" class="blue-input"/></td>
+                                    <td><field name="temp_compressive_strength" class="blue-input" invisible="not compressive_strength_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -739,7 +739,17 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_compressive_strength">Humidity %</label></td>
-                                    <td><field name="humidity_compressive_strength" class="blue-input"/></td>
+                                    <td><field name="humidity_compressive_strength" class="blue-input" invisible="not compressive_strength_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><field name="calc_mode" class="blue-input" invisible="not compressive_strength_visible"  /></td>
                                 </tr>
                                 
                             </tbody>
@@ -891,7 +901,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_lime">Temp.°C</label></td>
-                                    <td><field name="temp_lime" class="blue-input"/></td>
+                                    <td><field name="temp_lime" class="blue-input" invisible="not lime_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -901,7 +911,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_lime">Humidity %</label></td>
-                                    <td><field name="humidity_lime" class="blue-input"/></td>
+                                    <td><field name="humidity_lime" class="blue-input" invisible="not lime_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -984,7 +994,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_drying_shrinkage">Temp.°C</label></td>
-                                    <td><field name="temp_drying_shrinkage" class="blue-input"/></td>
+                                    <td><field name="temp_drying_shrinkage" class="blue-input" invisible="not drying_shrinkage_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -994,7 +1004,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_drying_shrinkage">Humidity %</label></td>
-                                    <td><field name="humidity_drying_shrinkage" class="blue-input"/></td>
+                                    <td><field name="humidity_drying_shrinkage" class="blue-input" invisible="not drying_shrinkage_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1064,36 +1074,25 @@
 
                     </notebook>
 
-
-          
-
-          
-
-                   
-
-
-
-                     
-
-
                    <group/>
                    <group/>
-                    <button
+
+
+                    <div style="display:flex;">
+                      <div style="width:50%">
+                       <button
                             type="object"
                             class="oe_highlight" 
                             name="open_eln_page"
                             string="Submit"
                             />
+                      </div>
                       
-                    
+                      <div style="width:50%">
+                        <field name="submit_mode" invisible="0"/>
 
-
-
-
-                     
-
-
-                     
+                      </div>
+                    </div>
                      
 
                 </sheet>

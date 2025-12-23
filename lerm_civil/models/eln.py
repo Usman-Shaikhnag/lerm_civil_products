@@ -24,6 +24,8 @@ class ELN(models.Model):
     eln_id = fields.Char("ELN ID",required=True,readonly=True, default=lambda self: 'New',tracking=3)
     ir_model = fields.Many2one('ir.model',string="Model")
 
+   
+
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")
     technician = fields.Many2one('res.users',string="Technicians",tracking=5)
     sample_id = fields.Many2one('lerm.srf.sample',string='UID',tracking=True,ondelete="cascade")
@@ -42,6 +44,22 @@ class ELN(models.Model):
     
     # witness_path = fields.Char(string="Witness")
     # attachment_path = fields.Char(string="Attachment")
+
+    @api.model
+    def get_eln_ids_for_material_name(self, name):
+        if not name:
+            return []
+        # search product by display_name
+        product = self.env['product.template'].search([('display_name','=',name)], limit=1)
+        if product:
+            # search ELNs with that product
+            elns = self.search([('material','=',product.id)])
+            return elns.mapped('eln_id')
+        return []
+
+
+   
+
     
     witness_photo = fields.Binary(string="Witness Photo")
     witness_photo_name = fields.Char(string="Witness Photo Name")
@@ -106,8 +124,14 @@ class ELN(models.Model):
     active = fields.Boolean(string="Active",default=True)
     tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature")
     
-    quantity = fields.Integer(string="Quantity")
+    quantity = fields.Integer(string="Quantity",default=1)
     source_sample = fields.Char(string="Source of Sample",compute="_compute_source_sample",store=True)
+    lab_id = fields.Char(
+        string="Lab ID",
+        readonly=True,
+        tracking=True,
+        store=True
+    )
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")
     quantity_consumed = fields.Integer(string="Quantity Consumed")
@@ -411,6 +435,7 @@ class ELN(models.Model):
         sample_id.write({
             'state':'3-pending_verification',
             'quantity':self.quantity,
+            # 'lab_id':self.lab_id,
             'source_sample':self.source_sample,
             'uom_id':self.uom_id.id,
             'quantity_received':self.quantity_received,
@@ -421,6 +446,7 @@ class ELN(models.Model):
         sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.sample_id.id)])
         sample_register.write({
             'quantity':self.quantity,
+            # 'lab_id':self.lab_id,
             'source_sample':self.source_sample,
             'uom_id':self.uom_id.id,
             'quantity_received':self.quantity_received,
@@ -1172,6 +1198,7 @@ class UpdateResultChild(models.TransientModel):
     wizard_id = fields.Many2one('eln.update.result.wizard')
     parameter = fields.Many2one('eln.parameters',string="Parameter")
     result = fields.Float(string="Result")
+
 
 
 

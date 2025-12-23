@@ -525,6 +525,7 @@
 								</td>
 							</tr>
 
+
 							<t t-set="i" t-value="0"/>
 							<tr t-foreach="data.opc_compressive_ids" t-as="r">
 								<td >
@@ -906,14 +907,12 @@
 
 
 <template id="opc_report">
-		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
+	<t t-call="web.html_container">
+
 			
-			<!-- <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln_general"> -->
+
 			<t t-call="lerm_civil.genstru_layout_header_footer_lerm_eln">
-				<!-- <div style="text-align:center;margin-top:10px">
-					<p style="font-size:15px"><b>Test Report on cement Mechanical</b></p>
-				</div> -->
+				
 				<div class="container_eln">
 					<div t-foreach="eln" t-as="o">
 					
@@ -921,27 +920,15 @@
 
 						 <table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
 							<tr>
-								<!-- <td ><strong>Mechanical Testing</strong>: </td>
-								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td> -->
-								<!-- <td colspan="3"><strong>Report No</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
-								<td colspan="3" ><strong>URL NO</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td> -->
+								
 							</tr>
 
 							<tr>
 								<td colspan="3"><strong>Project Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
-
-								<!-- <td><strong>Date of Report</strong>: </td>
-									
-								<td >
-								<span t-field="o.start_date" style="margin-right:10px;"/> 		
-								</td> -->
+								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>	
 							</tr>
 						
-							
-						
+					
 							<tr>
 							<td colspan="3" style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
 							<td colspan="3" style="padding-left: 10px;width:25%;">
@@ -952,7 +939,7 @@
 										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
 										<span t-field="o.srf_id.customer.state_id"/> ,
 										<span t-field="o.srf_id.customer.country_id"/>
-								</td>
+							</td>
 								
 
 								<td colspan="3"><strong>Date Sample Received</strong>:</td>
@@ -1126,13 +1113,7 @@
 
 							</td>
 
-								<!-- <td style="text-align: center;">
-									<t t-foreach="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd723547htui').parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t>
-								</td>	 -->
+								
 
 								<td style="text-align: center;" >
 									<span>
@@ -1205,11 +1186,7 @@
 									</t>
 								</t>
 								
-								<!-- <t t-foreach="parameters.get('3214578nbhgt2-372f-4775-9bcb-e9dd321456yytr').parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t> -->
+								
 								</td>	
 
 								<td style="text-align: center;" >
@@ -1333,11 +1310,7 @@
 									</t>
 								</t>
 								
-								<!-- <t t-foreach="parameters.get('254gt2547-372f-4775-9bcb-e9dd70e3587g').parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t> -->
+								
 								</td>	
 
 								<td style="text-align: center;" >
@@ -1410,11 +1383,7 @@
 									</t>
 								</t>
 								
-								<!-- <t t-foreach="parameters.get('87ye7425-30fe-4043-b518-987456321r').parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t> -->
+								
 								</td>	
 
 								<td style="text-align: center;" >
@@ -1488,11 +1457,7 @@
 									</t>
 								</t>
 								
-								<!-- <t t-foreach="parameters.get('87ye7425-30fe-4043-b518-32145698jj').parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t> -->
+
 								</td>	
 
 								<td style="text-align: center;" >
@@ -1566,11 +1531,7 @@
 										<span t-esc="parameters.get('63te7425-30fe-4043-b518-0102147hhytr').test_method.test_method"/>
 									</t>
 								</t>
-								<!-- <t t-foreach="parameters.get('63te7425-30fe-4043-b518-0102147hhytr').parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t> -->
+								
 								</td>	
 
 								<td style="text-align: center;" >
@@ -1654,11 +1615,7 @@
 									</t>
 								</t>
 								
-								<!-- <t t-foreach="parameters.get('147frrt012-372f-4775-9bcb-e9dd651478trew').parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t> -->
+								
 								</td>
 
 								<td style="text-align: center;" >

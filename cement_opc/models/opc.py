@@ -12,6 +12,7 @@ class CementNormalConsistency(models.Model):
     _inherit = "lerm.eln"
     _rec_name = "name"
 
+
     name = fields.Char("Name",default="Cement")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -22,6 +23,10 @@ class CementNormalConsistency(models.Model):
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
 
     notes_id = fields.One2many('cement.opc.notes','parent_id',string="Notes")
+ 
+    calc_mode = fields.Boolean(default=True)     
+    submit_mode = fields.Boolean(default=False)
+
 
     @api.model
     def default_get(self, fields):
@@ -977,9 +982,6 @@ class CementNormalConsistency(models.Model):
                 if sample.internal_id == '254gt2547-372f-4775-9bcb-e9dd70e3587g':
                     record.density_cement_visible = True
 
-                
-
-               
                 if sample.internal_id == '3214578nbhgt2-372f-4775-9bcb-e9dd723547htui':
                     record.consistency_cement_visible = True
 
@@ -1121,12 +1123,9 @@ class ConsistencyCementLine(models.Model):
     parent_id = fields.Many2one('cement.opc',string="Parent Id")
 
     serial_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
-
+    
     lab_id = fields.Char(string="Lab ID ")
 
-    # trial_no = fields.Integer(string="Trial No.")
-
-   
     
     mass_of_cement = fields.Float(string="Mass of Cement Taken gms.")
     water_added = fields.Float(string="Water Added ml")
@@ -1299,7 +1298,7 @@ class CementCompressiveLine(models.Model):
     
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -1309,7 +1308,7 @@ class CementCompressiveLine(models.Model):
         return super(CementCompressiveLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in opc_compressive_ids
+
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1

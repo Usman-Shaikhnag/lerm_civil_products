@@ -24,6 +24,11 @@ class PaverBlock(models.Model):
 
     notes_id = fields.One2many('paver.block.notes','parent_id',string="Notes")
 
+
+    calc_mode = fields.Boolean(default=True)     
+    submit_mode = fields.Boolean(default=False)
+
+
     @api.model
     def default_get(self, fields):
         res = super(PaverBlock, self).default_get(fields)

@@ -27,6 +27,10 @@ class FlyaschNormalConsistency(models.Model):
 
     notes_id = fields.One2many('flyash.notes','parent_id',string="Notes")
 
+    calc_mode = fields.Boolean(default=True)     
+    submit_mode = fields.Boolean(default=False)
+
+
     @api.model
     def default_get(self, fields):
         res = super(FlyaschNormalConsistency, self).default_get(fields)
@@ -729,6 +733,10 @@ class FlyaschNormalConsistency(models.Model):
 
     def action_calculate_avg_strength(self):
         for rec in self:
+
+            rec.calc_mode = True
+            rec.submit_mode = False
+
             lines = rec.compressive_strength_child_lines.sorted(key=lambda l: l.serial_no) 
             group_size = 3
 
@@ -754,6 +762,9 @@ class FlyaschNormalConsistency(models.Model):
 
     def action_calculate_avg_cement_strength(self):
         for rec in self:
+
+            rec.calc_mode = True
+            rec.submit_mode = False
             lines = rec.compressive_cement_child_lines.sorted(key=lambda l: l.serial_no) 
             group_size = 3
 
@@ -953,6 +964,11 @@ class FlyaschNormalConsistency(models.Model):
 
     def action_calculate_avg_strengthss(self):
         for rec in self:
+
+
+            rec.calc_mode = True
+            rec.submit_mode = False
+
             lines = rec.lime_child_lines.sorted(key=lambda l: l.serial_no) 
             group_size = 3
 

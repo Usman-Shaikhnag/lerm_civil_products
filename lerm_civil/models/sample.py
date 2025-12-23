@@ -25,6 +25,8 @@ class LermSampleForm(models.Model):
     lab_no_value = fields.Char(string="Value")
     group_id = fields.Many2one('lerm_civil.group',string="Group")
     # department_id = fields.Many2one('hr.department', string='Department')
+    datasheet_path = fields.Char(string="Datasheet Path")
+    report_path = fields.Char(string="Report Path")
     department_id = fields.Char(string='Department')
     material_id = fields.Many2one('product.template',string="Material")
     material_id_lab_name = fields.Char(string="Material",compute="compute_material_id_lab_name",store=True)
@@ -82,7 +84,6 @@ class LermSampleForm(models.Model):
     approveby_signature_required = fields.Boolean("Approved by Signature")
     testedby_signature_required = fields.Boolean("Tested by Signature")
     page_break = fields.Integer("Page break",default=6)
-
 
     active = fields.Boolean(string="Active",default=True)
 
@@ -162,6 +163,9 @@ class LermSampleForm(models.Model):
     checked_by_signature_datasheet = fields.Boolean(string="Checked By Signature Datasheet")
 
     quantity = fields.Integer(string="Quantity")
+    lab_id = fields.Char( string="Lab ID" )
+
+
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")
     quantity_consumed = fields.Integer(string="Quantity Consumed")

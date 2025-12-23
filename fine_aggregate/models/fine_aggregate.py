@@ -22,6 +22,10 @@ class FineAggregate(models.Model):
 
     notes_id = fields.One2many('fine.notes','parent_id',string="Notes")
 
+
+    calc_mode = fields.Boolean(default=True)     
+    submit_mode = fields.Boolean(default=False)
+
     @api.model
     def default_get(self, fields):
         res = super(FineAggregate, self).default_get(fields)
@@ -80,21 +84,7 @@ class FineAggregate(models.Model):
             rec.avg_compacted_unit     = rec._get_unit("357f579d-a310-4015-bc11-28a85c53ac83")
           
 
-    # ---- default values (create mode मध्ये दिसण्यासाठी)
-    # @api.model
-    # def default_get(self, fields_list):
-    #     res = super().default_get(fields_list)
-    #     res.update({
-         
-    #         'avg_compacted_unit':     self._get_unit("357f579d-a310-4015-bc11-28a85c53ac83"),
           
-    #     })
-    #     return res
-
-  
-
-
-#     # Sieve Analysis 
 
 # Sieve Analysis 
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
@@ -158,7 +148,7 @@ class FineAggregate(models.Model):
             (0, 0, {'sieve_size': '600 micron'}),
             (0, 0, {'sieve_size': '300 micron'}),
             (0, 0, {'sieve_size': '150 micron'}),
-              (0, 0, {'sieve_size': 'Pan'})
+            (0, 0, {'sieve_size': 'Pan'})
             
         ]
         return default_lines
@@ -238,6 +228,10 @@ class FineAggregate(models.Model):
     # corrected(added)
     def calculate_sieve1(self): 
         for record in self:
+
+            record.calc_mode = True
+            record.submit_mode = False
+
             previous_cumulative = 0  
             for line in record.sieve_analysis_child_lines:
                 print("Rows", str(line.percent_retained))
@@ -947,6 +941,7 @@ class FineAggregate(models.Model):
     #  Soudness Test 
     soudness_name = fields.Char("Name",default="Soudness Test ")
     soudness_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
+    magnesium_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
 
     soudness_child_lines = fields.One2many('fine.soudness.line','parent_id',string="Parameter")
 
@@ -957,8 +952,7 @@ class FineAggregate(models.Model):
 
 
     sieve_name = fields.Char("Name",default="Gradation of Sample")
-    # sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
-
+  
     wt_of_sample = fields.Float(string="Wt. Of Sample Taken For Analysis (gms) = ", digits=(8,3))
  
     sieve_analysis_soundness_lines = fields.One2many('mechanical.soudness.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_soundness_lines())
@@ -994,6 +988,10 @@ class FineAggregate(models.Model):
 
     def calculate_sieve(self): 
         for record in self:
+
+            record.calc_mode = True
+            record.submit_mode = False
+
             previous_cumulative = 0  
             for line in record.sieve_analysis_soundness_lines:
                 print("Rows", str(line.percent_retained))
@@ -1183,6 +1181,62 @@ class FineAggregate(models.Model):
 
 
 
+    @api.depends('total_avg_manesium','eln_ref','grade')
+    def _compute_total_avg_manesium_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.total_avg_manesium_conformity = 'na'
+                continue
+            
+            record.total_avg_manesium_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ff9f86ce-1f7a-4e3f-83b4-284a413745df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ff9f86ce-1f7a-4e3f-83b4-284a413745df')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.total_avg_manesium - record.total_avg_manesium*mu_value
+                    upper = record.total_avg_manesium + record.total_avg_manesium*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.total_avg_manesium_conformity = 'pass'
+                        break
+                    else:
+                        record.total_avg_manesium_conformity = 'fail'
+
+    total_avg_manesium_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')],
+        
+    string="NABL", compute="_compute_total_avg_manesium_nabl", store=True)
+
+    @api.depends('total_avg_manesium','eln_ref','grade')
+    def _compute_total_avg_manesium_nabl(self):
+        
+        for record in self:
+
+            
+            record.total_avg_manesium_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ff9f86ce-1f7a-4e3f-83b4-284a413745df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ff9f86ce-1f7a-4e3f-83b4-284a413745df')]).parameter_table
+            for material in materials:
+                # if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.total_avg_manesium - record.total_avg_manesium*mu_value
+                    upper = record.total_avg_manesium + record.total_avg_manesium*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.total_avg_manesium_nabl = 'pass'
+                        break
+                    else:
+                        record.total_avg_manesium_nabl = 'fail'
+
+
+
      ### Compute Visible
     @api.depends('sample_parameters')
     def _compute_visible(self):
@@ -1199,6 +1253,7 @@ class FineAggregate(models.Model):
             record.voids_compacted_density_visible = False
             record.voids_loose_density_visible = False
             record.soudness_visible = False
+            record.magnesium_visible = False
             
            
           
@@ -1232,6 +1287,9 @@ class FineAggregate(models.Model):
 
                 if sample.internal_id == 'a0e7aaf3-68ff-4e75-830d-91ae04c98f5796':
                     record.soudness_visible = True
+                
+                if sample.internal_id == 'ff9f86ce-1f7a-4e3f-83b4-284a413745df':
+                    record.magnesium_visible = True
 
               
 
@@ -1674,10 +1732,9 @@ class SieveAnalysisSoudnesLine(models.Model):
 
     def get_previous_record(self):
         for record in self:
-            # import wdb; wdb.set_trace()
+        
             sorted_lines = sorted(record.parent_id.sieve_analysis_soundness_lines, key=lambda r: r.id)
-            # index = sorted_lines.index(record)
-            # print("Working")
+           
 
 class OuantitativelyExaminationLine(models.Model):
     _name = "fine.ouantitative.line"

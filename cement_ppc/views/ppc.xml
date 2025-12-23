@@ -74,7 +74,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_specific1">Temp.°C</label></td>
-                                    <td><field name="temp_specific1" class="blue-input"  invisible="not density_cement_visible"/></td>
+                                    <td><field name="temp_specific1" class="blue-input"  invisible="not density_cement_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -84,7 +84,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_specific1">Humidity %</label></td>
-                                    <td><field name="humidity_specific1" class="blue-input"  invisible="not density_cement_visible"/></td>
+                                    <td><field name="humidity_specific1" class="blue-input"  invisible="not density_cement_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -137,13 +137,7 @@
                            <td><label for="final_kerosene1">Final Level of Kerosene after one hour kept in water bath(B) – ml</label></td>
                            <td><field  name="final_kerosene1"  colspan="1"  nolabel="1"  class="blue-input" decoration-info="final_kerosene1 != 0"/></td>
                            <td><field  name="final_kerosene2"  colspan="1"  nolabel="1"  class="blue-input" decoration-info="final_kerosene2 != 0"/></td>
-                         </tr>      
-                         <!-- <tr>
-                           <td><label for="displaced1">Displaced Volume after Adding Cement (V) = (B – A) – cm3</label></td>
-                           <td><field  name="displaced1"  colspan="1"  nolabel="1" /></td>
-                           <td><field  name="displaced2"  colspan="1"  nolabel="1" /></td>
-                         </tr>       -->
-
+                         </tr>     
                           <tr>
                            <td><label for="displaced1">Displaced Volume after Adding Cement (V) = (B – A) – cm3</label></td>
                            <td><field  name="displaced1"  colspan="1"  nolabel="1"/></td>
@@ -205,7 +199,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_consistency">Temp.°C</label></td>
-                                    <td><field name="temp_consistency" class="blue-input" invisible="not consistency_cement_visible"/></td>
+                                    <td><field name="temp_consistency" class="blue-input" invisible="not consistency_cement_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -215,12 +209,13 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_consistency">Humidity %</label></td>
-                                    <td><field name="humidity_consistency" class="blue-input" invisible="not consistency_cement_visible"/></td>
+                                    <td><field name="humidity_consistency" class="blue-input" invisible="not consistency_cement_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
                         </table>
                     </div>
+
 
 
                     <div invisible = "consistency_cement_visible == False">
@@ -304,14 +299,14 @@
                             <tr>
                                 <td><label class="fw-bold" for="temp_time"></label></td>
                                 <td>
-                                    <field name="temp_time" nolabel="1" class="blue-input" invisible="not initial_setting_time_visible"/>
+                                    <field name="temp_time" nolabel="1" class="blue-input" invisible="not initial_setting_time_visible" required = "calc_mode == False or submit_mode == True "/>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_time"></label></td>
                                 <td>
-                                    <field name="humidity_time" nolabel="1" class="blue-input" invisible="not initial_setting_time_visible"/>
+                                    <field name="humidity_time" nolabel="1" class="blue-input" invisible="not initial_setting_time_visible" required = "calc_mode == False or submit_mode == True "/>
                                 </td>
                             </tr>
                             <tr>
@@ -348,14 +343,14 @@
                              <tr>
                                 <td><label class="fw-bold" for="temp_time_final"></label></td>
                                 <td>
-                                    <field name="temp_time_final" nolabel="1" class="blue-input" invisible="not initial_setting_time_visible"/>
+                                    <field name="temp_time_final" nolabel="1" class="blue-input" invisible="not avg_final_time" required = "calc_mode == False or submit_mode == True "/>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_time_final"></label></td>
                                 <td>
-                                    <field name="humidity_time_final" nolabel="1" class="blue-input" invisible="not initial_setting_time_visible"/>
+                                    <field name="humidity_time_final" nolabel="1" class="blue-input" invisible="not avg_final_time" required = "calc_mode == False or submit_mode == True "/>
                                 </td>
                             </tr>
                             <tr>
@@ -395,7 +390,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_fineness">Temp.°C</label></td>
-                                    <td><field name="temp_fineness" class="blue-input" invisible="not fineness_visible"/></td>
+                                    <td><field name="temp_fineness" class="blue-input" invisible="not fineness_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -405,7 +400,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_fineness">Humidity %</label></td>
-                                    <td><field name="humidity_fineness" class="blue-input" invisible="not fineness_visible"/></td>
+                                    <td><field name="humidity_fineness" class="blue-input" invisible="not fineness_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -558,14 +553,14 @@
                         <tr>
                                 <td><label class="fw-bold" for="temp_3_days"></label></td>
                                 <td>
-                                    <field name="temp_3_days" nolabel="1" class="blue-input" invisible = "compressive_visible == False"/>
+                                    <field name="temp_3_days" nolabel="1" class="blue-input" invisible="not temp_3_days" required = "calc_mode == False or submit_mode == True "/>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_3_days"></label></td>
                                 <td>
-                                    <field name="humidity_3_days" nolabel="1" class="blue-input" invisible = "compressive_visible == False"/>
+                                    <field name="humidity_3_days" nolabel="1" class="blue-input" invisible="not humidity_3_days" required = "calc_mode == False or submit_mode == True "/>
                                 </td>
                             </tr>
                             <tr>
@@ -606,14 +601,14 @@
                          <tr>
                                 <td><label class="fw-bold" for="temp_7_days"></label></td>
                                 <td>
-                                    <field name="temp_7_days" nolabel="1" class="blue-input" invisible = "compressive_visible == False"/>
+                                    <field name="temp_7_days" nolabel="1" class="blue-input" invisible="not temp_7_days" required = "calc_mode == False or submit_mode == True "/>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_7_days"></label></td>
                                 <td>
-                                    <field name="humidity_7_days" nolabel="1" class="blue-input" invisible = "compressive_visible == False"/>
+                                    <field name="humidity_7_days" nolabel="1" class="blue-input" invisible="not humidity_7_days" required = "calc_mode == False or submit_mode == True "/>
                                 </td>
                             </tr>
                             <tr>
@@ -654,14 +649,14 @@
                          <tr>
                                 <td><label class="fw-bold" for="temp_28_days"></label></td>
                                 <td>
-                                    <field name="temp_28_days" nolabel="1" class="blue-input" invisible = "compressive_visible == False"/>
+                                    <field name="temp_28_days" nolabel="1" class="blue-input" invisible="not temp_28_days" required = "calc_mode == False or submit_mode == True "/>
                                 </td>
                             </tr>
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_28_days"></label></td>
                                 <td>
-                                    <field name="humidity_28_days" nolabel="1" class="blue-input" invisible = "compressive_visible == False"/>
+                                    <field name="humidity_28_days" nolabel="1" class="blue-input" invisible="not humidity_28_days" required = "calc_mode == False or submit_mode == True "/>
                                 </td>
                             </tr>
                             <tr>
@@ -689,6 +684,7 @@
                                 </td>
                             </tr>
                         </tbody>
+                        
                     </table>
 
 
@@ -705,7 +701,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soundness_autoclave">Temp.°C</label></td>
-                                    <td><field name="temp_soundness_autoclave" class="blue-input"  invisible="not soundness_autoclave_visible"/></td>
+                                    <td><field name="temp_soundness_autoclave" class="blue-input"  invisible="not soundness_autoclave_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -715,7 +711,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soundness_autoclave">Humidity %</label></td>
-                                    <td><field name="humidity_soundness_autoclave" class="blue-input"  invisible="not soundness_autoclave_visible"/></td>
+                                    <td><field name="humidity_soundness_autoclave" class="blue-input"  invisible="not soundness_autoclave_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -789,7 +785,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soundness_le_method">Temp.°C</label></td>
-                                    <td><field name="temp_soundness_le_method" class="blue-input" invisible="not soundness_le_method_visible"/></td>
+                                    <td><field name="temp_soundness_le_method" class="blue-input" invisible="not soundness_le_method_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -799,12 +795,25 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soundness_le_method">Humidity %</label></td>
-                                    <td><field name="humidity_soundness_le_method" class="blue-input" invisible="not soundness_le_method_visible" /></td>
+                                    <td><field name="humidity_soundness_le_method" class="blue-input" invisible="not soundness_le_method_visible" required = "calc_mode == False or submit_mode == True " /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+
+                         
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><field name="calc_mode" class="blue-input" invisible="not soundness_le_method_visible"  /></td>
                                 </tr>
                                 
                             </tbody>
                         </table>
                     </div>
+
+                  
 
              
 
@@ -881,7 +890,26 @@
 
                     
 
-                    <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                   
+                      <div style="display:flex;">
+                       <div style="width:50%">
+                       <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                      </div>
+                      
+                      <div style="width:50%">
+                        <field name="submit_mode" invisible="0"/>
+
+                      </div>
+                    </div>
+
+
+
+
                 </sheet>
             </form>
         </field>

@@ -30,12 +30,7 @@
                           <field name="test_method"/>
                         </tree>
                       </field>
-                    <!-- <group>
-                      <field name="test_start_date"/>
-                      <field name="test_end_date"/>
-                    </group> -->
 
-                    
 
                          <!--  Compressive Strength  -->
 
@@ -52,7 +47,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_compressive_strength">Temp.°C</label></td>
-                                    <td><field name="temp_compressive_strength" class="blue-input"/></td>
+                                    <td><field name="temp_compressive_strength" class="blue-input" invisible="not compressive_strength_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -62,12 +57,21 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_compressive_strength">Humidity %</label></td>
-                                    <td><field name="humidity_compressive_strength" class="blue-input"/></td>
+                                    <td><field name="humidity_compressive_strength" class="blue-input" invisible="not compressive_strength_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
                         </table>
 
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><field name="calc_mode" class="blue-input" invisible="not compressive_strength_visible"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
                     </div>
 
                    
@@ -76,12 +80,12 @@
                         <field name="compressive_strength_child_lines" nolabel="1">
                             <tree editable="bottom">
                                 <field name="serial_no" width="40"/>
-                                <field name='sample1' width="110"/>
-                                <field name='length' width="110"/>
-                                <field name='width' width="110"/>
-                                <field name='thickness' width="110"/>
+                                <field name='sample1' width="110"  class="blue-input" invisible="not sample1"/>
+                                <field name='length' width="110"  class="blue-input" invisible="not length"/>
+                                <field name='width' width="110"  class="blue-input" invisible="not width"/>
+                                <field name='thickness' width="110"  class="blue-input" invisible="not thickness"/>
                                 <field name='area' width="110"/>
-                                <field name='load' width="110"/>
+                                <field name='load' width="110"  class="blue-input" invisible="not load"/>
                                 <field name='compressive_strength' width="110"/>
 
                             </tree>
@@ -119,14 +123,24 @@
                     <group/>
                            
 
-
-                    <style>
+                      <style>
                         .blue-input input {
                             background-color: #d8ecff !important;   /* हलका Blue background */
-                            border-color: #3b82f6 !important;       /* Blue border */
-                            
+                            border-color: #3b82f6 !important;        /* Blue border */ 
                         }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
                     </style>
+                   
 
 
 
@@ -145,7 +159,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_water_absorption">Temp.°C</label></td>
-                                    <td><field name="temp_water_absorption" class="blue-input"/></td>
+                                    <td><field name="temp_water_absorption" class="blue-input" invisible="not water_absorption_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -155,7 +169,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_water_absorption">Humidity %</label></td>
-                                    <td><field name="humidity_water_absorption" class="blue-input"/></td>
+                                    <td><field name="humidity_water_absorption" class="blue-input" invisible="not water_absorption_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -167,13 +181,12 @@
                         <field name="water_absorption_child_lines" nolabel="1">
                             <tree editable="bottom">
                                 <field name="serial_no" width="40"/>
-                                <field name='sample' width="110"/>
-                                <field name='dry_weight' width="110"/>
-                                <field name='sat_weight' width="110"/>
+                                <field name='sample' width="110"  class="blue-input" invisible="not sample"/>
+                                <field name='dry_weight' width="110"  class="blue-input" invisible="not dry_weight"/>
+                                <field name='sat_weight' width="110"  class="blue-input" invisible="not sat_weight"/>
 
                                 <field name='sat_dry_weight' width="110"/>
-                                <field name='water_absorption' width="110"/>
-                                
+                                <field name='water_absorption' width="110"/>     
                             </tree>
                         </field>
                     </div>
@@ -221,7 +234,7 @@
                             <field name="length_visible" invisible="1"/>
                             <field name="width_visible" invisible="1"/>
                             <field name="height_visible" invisible="1"/>
-                            
+
                         </h1>
                     </div>
 
@@ -230,7 +243,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_dimension">Temp.°C</label></td>
-                                    <td><field name="temp_dimension" class="blue-input"/></td>
+                                    <td><field name="temp_dimension" class="blue-input" invisible="not dimension_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -240,7 +253,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_dimension">Humidity %</label></td>
-                                    <td><field name="humidity_dimension" class="blue-input"/></td>
+                                    <td><field name="humidity_dimension" class="blue-input" invisible="not dimension_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -341,7 +354,7 @@
 
                         <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:33%">
                             <tbody>
-                                
+
 
                                 <tr>
                                 <td><label class="fw-bold" for="avg_height_conformity">Conformity</label></td>
@@ -386,7 +399,24 @@
 
 
                    
-                  <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                  
+                      <div style="display:flex;">
+                      <div style="width:50%">
+                       <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                      </div>
+                      
+                      <div style="width:50%">
+                        <field name="submit_mode" invisible="0"/>
+
+                      </div>
+                    </div>
+
+
                 </sheet>
             </form>
         </field>

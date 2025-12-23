@@ -27,6 +27,9 @@ class MechanicalConcreteCube(models.Model):
     testing_date_7days = fields.Date(string="Date of Testing",compute="_compute_testing_date_7days")
     status_7days = fields.Boolean("Done")
 
+    calc_mode = fields.Boolean(default=True)     
+    submit_mode = fields.Boolean(default=False)
+
     @api.depends('casting_date_7days')
     def _compute_testing_date_7days(self):
         for record in self:
@@ -47,8 +50,8 @@ class MechanicalConcreteCube(models.Model):
     testing_date_14days = fields.Date(string="Date of Testing",compute="_compute_testing_date_14days")
     status_14days = fields.Boolean("Done")
 
-    room_temperature14 = fields.Integer(string="Room Temperature (°C)")
-    relative_humidity14 = fields.Integer(string="Relative Humidity (%)")
+    room_temperature14 = fields.Integer(string="Room Temperature (°C)" ,required=True)
+    relative_humidity14 = fields.Integer(string="Relative Humidity (%)" ,required=True)
 
     @api.depends('casting_date_14days')
     def _compute_testing_date_14days(self):
@@ -62,6 +65,11 @@ class MechanicalConcreteCube(models.Model):
 
     def action_calculate_avg_strength14(self):
         for rec in self:
+
+
+            rec.calc_mode = True
+            rec.submit_mode = False
+
             lines = rec.child_lines14day.sorted(key=lambda l: l.sr_no)
             group_size = 3
 
@@ -155,8 +163,8 @@ class MechanicalConcreteCube(models.Model):
     testing_date_28days = fields.Date(string="Date of Testing",compute="_compute_testing_date_28days")
     status_28days = fields.Boolean("Done")
 
-    room_temperature28 = fields.Integer(string="Room Temperature (°C)")
-    relative_humidity28 = fields.Integer(string="Relative Humidity (%)")
+    room_temperature28 = fields.Integer(string="Room Temperature (°C)" ,required=True)
+    relative_humidity28 = fields.Integer(string="Relative Humidity (%)" ,required=True)
 
     @api.depends('casting_date_28days')
     def _compute_testing_date_28days(self):
@@ -170,6 +178,10 @@ class MechanicalConcreteCube(models.Model):
 
     def action_calculate_avg_strength28(self):
         for rec in self:
+
+            rec.calc_mode = True
+            rec.submit_mode = False
+
             lines = rec.child_lines28day.sorted(key=lambda l: l.sr_no)
             group_size = 3
 
@@ -194,9 +206,6 @@ class MechanicalConcreteCube(models.Model):
             rec.average_strength28 = sum(strengths) / len(strengths) if strengths else 0.0
 
    
-
-
-
     average_strength28_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -276,8 +285,6 @@ class MechanicalConcreteCube(models.Model):
                 record.date_of_casting = None
 
 
-    
-
 
 
 
@@ -340,6 +347,11 @@ class MechanicalConcreteCube(models.Model):
 
     def action_calculate_avg_strength(self):
         for rec in self:
+
+            rec.calc_mode = True
+            rec.submit_mode = False
+        
+
             lines = rec.child_lines.sorted(key=lambda l: l.sr_no)
             group_size = 3
 
@@ -787,8 +799,8 @@ class MechanicalConcreteCubeLine(models.Model):
     #             record.dt_of_testing1 = False
     
     # Environmental conditions per sample
-    room_temp = fields.Float(string="Room Temperature (°C)",compute = "_compute_room_temp")
-    relative_humidity = fields.Float(string="Relative Humidity (%)" ,compute = "_compute_relative_humidity")
+    room_temp = fields.Char(string="Room Temperature (°C)",compute = "_compute_room_temp")
+    relative_humidity = fields.Char(string="Relative Humidity (%)" ,compute = "_compute_relative_humidity")
     
     load = fields.Float(string="Load (kN)")
     cross_sectional_area = fields.Float(string="Cross Sectional Area (mm²)", compute="_compute_cross_sectional_area")
@@ -959,8 +971,8 @@ class MechanicalConcreteCubeLine14(models.Model):
     
     
     # Environmental conditions per sample
-    room_temp = fields.Float(string="Room Temperature (°C)",compute = "_compute_room_temp")
-    relative_humidity = fields.Float(string="Relative Humidity (%)" ,compute = "_compute_relative_humidity")
+    room_temp = fields.Char(string="Room Temperature (°C)",compute = "_compute_room_temp")
+    relative_humidity = fields.Char(string="Relative Humidity (%)" ,compute = "_compute_relative_humidity")
     
     load = fields.Float(string="Load (kN)")
     cross_sectional_area = fields.Float(string="Cross Sectional Area (mm²)", compute="_compute_cross_sectional_area")

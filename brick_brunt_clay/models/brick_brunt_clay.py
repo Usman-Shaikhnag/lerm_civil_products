@@ -10,10 +10,20 @@ class MechanicalBricksBurntClay(models.Model):
     _rec_name = "name2"
 
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     name2 = fields.Char("Name",default="Burnt Clay Bricks")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
+
+    calc_mode = fields.Boolean(default=True)     # Calculate चालू असताना True
+    submit_mode = fields.Boolean(default=False)
+
+
+    @api.depends('eln_ref')
+    def _compute_size_id(self):
+        if self.eln_ref:
+            self.size_id = self.eln_ref.size_id.id
 
     notes_id = fields.One2many('brick.burnt.clay.notes','parent_id',string="Notes")
 
@@ -86,8 +96,8 @@ class MechanicalBricksBurntClay(models.Model):
     compressive_strength_name = fields.Char("Name",default=" Compressive Strength")
     compressive_strength_visible = fields.Boolean("Compressive Strength",compute="_compute_visible")
 
-    temp_compressive_strength = fields.Char("Temp °c" ,required=True)
-    humidity_compressive_strength = fields.Char("Humidity %" ,required=True)
+    temp_compressive_strength = fields.Char("Temp °c" )
+    humidity_compressive_strength = fields.Char("Humidity %" )
 
     compressive_strength_child_lines = fields.One2many('mechanical.bricks.clay.compressive.line','parent_id',string="Compressive Strength Test" )
 

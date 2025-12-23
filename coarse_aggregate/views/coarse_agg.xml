@@ -24,6 +24,8 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="size_id"/>
                         <field name="parameter_id" invisible="1"/>
+                       
+                      
                     </group>
                     <!-- <group class="custom_table_borders"> -->
                     <div class="custom_table_borders" style="margin-top: 15px;">
@@ -66,7 +68,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_sieve_analysis">Temp.°C</label></td>
-                                    <td ><field name="temp_sieve_analysis" class="blue-input" invisible="not sieve_visible"/></td>
+                                    <td ><field name="temp_sieve_analysis" class="blue-input" invisible="not sieve_visible" required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -76,7 +78,16 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_sieve_analysis">Humidity %</label></td>
-                                    <td><field name="humidity_sieve_analysis" class="blue-input"   invisible="not sieve_visible"/></td>
+                                    <td><field name="humidity_sieve_analysis" class="blue-input" invisible="not sieve_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><field name="calc_mode" class="blue-input" invisible="not sieve_visible"  /></td>
                                 </tr>
                                 
                             </tbody>
@@ -127,7 +138,7 @@
                         </button>
                     </div>
 
-
+            
                     <!-- Table for Total Sieve Analysis -->
                     <table class="table table-sm o_form_table table-bordered w-50 mt-2 custom_table_borders" invisible="not sieve_visible">
                         <tbody>
@@ -162,7 +173,11 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_specific_water">Temp.°C</label></td>
+<<<<<<< HEAD
                                     <td><field name="temp_specific_water" class="blue-input" invisible="not specific_gravity_visible " /></td>
+=======
+                                    <td><field name="temp_specific_water" class="blue-input" invisible="not specific_gravity_visible "  required = "calc_mode == False or submit_mode == True "/></td>
+>>>>>>> 4aa782bf3eadda68763e997937686a88032a17bc
                                 </tr>
                                 
                             </tbody>
@@ -172,7 +187,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_specific_water">Humidity %</label></td>
-                                    <td><field name="humidity_specific_water" class="blue-input" invisible="not specific_gravity_visible "/></td>
+                                    <td><field name="humidity_specific_water" class="blue-input"  invisible="not specific_gravity_visible " required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -262,7 +277,7 @@
                       </div>
                       
                       <div style="width:50%">
-                         <table class="table table-sm table-bordered w-100 custom_table_borders" invisible="not water_absorption_visible"> 
+                         <table class="table table-sm table-bordered w-100 custom_table_borders" invisible="not specific_gravity_visible"> 
                         <tbody>
                             <tr>
                                 <td><label for="avg_water_absorption_conformity"></label></td>
@@ -301,7 +316,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_impact_value">Temp.°C</label></td>
-                                    <td><field name="temp_impact_value" class="blue-input" invisible="not impact_visible "/></td>
+                                    <td><field name="temp_impact_value" class="blue-input" invisible="not impact_visible  "  required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -311,7 +326,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_impact_value">Humidity %</label></td>
-                                    <td><field name="humidity_impact_value" class="blue-input" invisible="not impact_visible "/></td>
+                                    <td><field name="humidity_impact_value" class="blue-input" invisible="not impact_visible "  required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -417,7 +432,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_crushing_value">Temp.°C</label></td>
-                                    <td><field name="temp_crushing_value" class="blue-input" invisible="not crushing_visible"/></td>
+                                    <td><field name="temp_crushing_value" class="blue-input" invisible= "crushing_visible == False"  required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -427,7 +442,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_crushing_value">Humidity %</label></td>
-                                    <td><field name="humidity_crushing_value" class="blue-input" invisible="not crushing_visible"/></td>
+                                    <td><field name="humidity_crushing_value" class="blue-input" invisible= "crushing_visible == False"  required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -520,8 +535,8 @@
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
-                                    <td><label for="temp_fine_value">Temp.°C</label></td>
-                                    <td><field name="temp_fine_value" class="blue-input" invisible="not fine10_visible "/></td>
+                                    <td><label for="temp_fine_value">Temp.°C</label></td> 
+                                    <td><field name="temp_fine_value" class="blue-input" invisible="fine10_visible == False"  required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -531,7 +546,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_fine_value">Humidity %</label></td>
-                                    <td><field name="humidity_fine_value" class="blue-input" invisible="not fine10_visible "/></td>
+                                    <td><field name="humidity_fine_value" class="blue-input" invisible="fine10_visible == False"  required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -637,7 +652,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_density">Temp.°C</label></td>
-                                    <td><field name="temp_density" class="blue-input" invisible="not compacted_density_visible or not loose_density_visible or not voids_loose_density_visible or not voids_compacted_density_visible"/></td>
+                                    <td><field name="temp_density" class="blue-input" invisible="not compacted_density_visible or not loose_density_visible or not voids_loose_density_visible or not voids_compacted_density_visible"  required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -647,7 +662,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_density">Humidity %</label></td>
-                                    <td><field name="humidity_density" class="blue-input" invisible="not compacted_density_visible or not loose_density_visible or not voids_loose_density_visible or not voids_compacted_density_visible"/></td>
+                                    <td><field name="humidity_density" class="blue-input" invisible="not compacted_density_visible or not loose_density_visible or not voids_loose_density_visible or not voids_compacted_density_visible"  required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -865,7 +880,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_evaporation">Temp.°C</label></td>
-                                    <td><field name="temp_evaporation" class="blue-input" invisible="rate_of_evaporation_visible == False"/></td>
+                                    <td><field name="temp_evaporation" class="blue-input"  invisible="not rate_of_evaporation_visible"  required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -875,7 +890,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_evaporation">Humidity %</label></td>
-                                    <td><field name="humidity_evaporation" class="blue-input" invisible="rate_of_evaporation_visible == False"/></td>
+                                    <td><field name="humidity_evaporation" class="blue-input"  invisible="not rate_of_evaporation_visible"  required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -939,6 +954,7 @@
                         <h1>
                             <field name="elongation_name" readonly="1" nolabel="1"/>
                             <field name="elongation_visible" invisible="1"/>
+                            
                         </h1>
                     </div>
 
@@ -947,7 +963,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_elongation">Temp.°C</label></td>
-                                    <td><field name="temp_elongation" class="blue-input"  invisible="not elongation_visible "/></td>
+                                    <td><field name="temp_elongation" class="blue-input"  invisible="not elongation_visible " required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -957,11 +973,12 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_elongation">Humidity %</label></td>
-                                    <td><field name="humidity_elongation" class="blue-input"  invisible="not elongation_visible "/></td>
+                                    <td><field name="humidity_elongation" class="blue-input"  invisible="not elongation_visible " required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
                         </table>
+                         
                     </div>
 
                     <div invisible="not elongation_visible " class="custom_table_borders">
@@ -1104,7 +1121,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_flakiness" >Temp.°C</label></td>
-                                    <td><field name="temp_flakiness" class="blue-input" invisible="not flakiness_visible "/></td>
+                                    <td><field name="temp_flakiness" class="blue-input" invisible="not flakiness_visible"   /></td>
                                 </tr>
                                 
                             </tbody>
@@ -1114,7 +1131,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_flakiness">Humidity %</label></td>
-                                    <td><field name="humidity_flakiness" class="blue-input" invisible="not flakiness_visible "/></td>
+                                    <td><field name="humidity_flakiness" class="blue-input" invisible="not flakiness_visible" /></td>
                                 </tr>
                                 
                             </tbody>
@@ -1247,12 +1264,12 @@
                         </h1>
                     </div>
 
-                     <div class="d-flex gap-2" invisible="not abrasion_value_visible">
+                     <div class="d-flex gap-2" invisible="not abrasion_value_visible" required = "calc_mode == False ">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label for="temp_abrasion_value">Temp.°C</label></td>
-                                    <td><field name="temp_abrasion_value" class="blue-input" invisible="not abrasion_value_visible"/></td>
+                                    <td><field name="temp_abrasion_value" class="blue-input" invisible="not abrasion_value_visible"   required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1262,7 +1279,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_abrasion_value">Humidity %</label></td>
-                                    <td><field name="humidity_abrasion_value" class="blue-input" invisible="not abrasion_value_visible"/></td>
+                                    <td><field name="humidity_abrasion_value" class="blue-input" invisible="not abrasion_value_visible"   required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1376,7 +1393,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soudness">Temp.°C</label></td>
-                                    <td><field name="temp_soudness" class="blue-input" invisible="not soudness_visible"/></td>
+                                    <td><field name="temp_soudness" class="blue-input" invisible="not soudness_visible"  required = "calc_mode == False or submit_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1386,7 +1403,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soudness">Humidity %</label></td>
-                                    <td><field name="humidity_soudness" class="blue-input" invisible="not soudness_visible"/></td>
+                                    <td><field name="humidity_soudness" class="blue-input" invisible="not soudness_visible" required = "calc_mode == False or submit_mode == True " /></td>
                                 </tr>
                                 
                             </tbody>
@@ -1460,7 +1477,7 @@
 
                   
                     <div invisible="soudness_visible == False">
-                        <button type="object" name="calculate_sieve" class="btn btn-primary">
+                        <button type="object" name="calculate_sound_sieve" class="btn btn-primary">
                             <i class="fa fa-calculator mr-1"/> Calculate
                         </button>
                     </div>
@@ -1600,20 +1617,22 @@
                     </notebook>
 
 
-
-
-
-
-
-
-
-
-                     <button
+                             
+                   <div style="display:flex;">
+                      <div style="width:50%">
+                       <button
                             type="object"
                             class="oe_highlight" 
                             name="open_eln_page"
                             string="Submit"
                             />
+                      </div>
+                      
+                      <div style="width:50%">
+                        <field name="submit_mode" invisible="0"/>
+
+                      </div>
+                    </div>
 
                 </sheet>
             </form>

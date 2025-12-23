@@ -1685,9 +1685,7 @@
 								</td>
 						</tr>
 
-						
-
-							
+									
 						</table>
 
 						</div>
@@ -1793,13 +1791,7 @@
 								</t>
 
 								</td>
-								<!-- <td style="text-align: center;">
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table" t-as="parameter">
-										
-											<span t-field="parameter.specification"/>
-										
-									</t>
-								</td>	 -->
+								
 
 								<td t-att-rowspan="rowspan_count" style="text-align: center;padding-top:90px;" >
 									<span>
@@ -1831,12 +1823,7 @@
 
 								<t t-esc="dict(data._fields['standard_type'].selection).get(data.standard_type)"/>
 
-								 
-									 <!-- <t t-foreach="parameters.get('c2168fff-e47c-4155-99ff-9d7dc223e768').parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.permissable_limit"/>
-										</t>
-									</t> -->
+
 								</td>
 								
 									
@@ -1866,16 +1853,7 @@
 									<span> 
 									   --
 									</span>									
-								</td>
-
-								<!-- <td style="border: 1px solid black; padding: 6px;text-align: center;">
-									<span> 
-									   
-									</span>									
-								</td> -->
-
-								
-								
+								</td>			
 							</tr>
 
 
@@ -1899,11 +1877,7 @@
 								<td style="border: 1px solid black; padding: 6px;text-align: center;">
 										<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
-								<!-- <td style="text-align: center;">
-									<span>
-										<span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
-									</span>									
-								</td> -->
+							
 
 								<td style="border: 1px solid black; padding: 6px;text-align: center;">
 										<span t-esc="r['specific_limits']"/>
@@ -1911,8 +1885,7 @@
 								
 									
 
-								<td style="text-align: center;" t-if="eln.conformity">
-									<!-- <span t-field="coarse_aggregate.avg_specific_gravity_conformity"/> -->
+								<td style="text-align: center;" t-if="eln.conformity">				
 								</td>
 								
 							</tr>
@@ -1975,9 +1948,7 @@
 
 								<td style="text-align: center;">
 								    <t t-foreach="parameters.get('3114db41-cfa7-49ad-9324-fcdbc9661038').parameter_table" t-as="parameter">
-									<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-esc="parameter.permissable_limit"/>
-									</t> -->
+
 									
 									<t t-if="parameter.size.id == eln.size_id.id">
 											<span t-field="parameter.permissable_limit"/>
@@ -2641,7 +2612,7 @@
 									
 
 								<td style="text-align: center;" t-if="eln.conformity">
-									<!-- <span t-field="coarse_aggregate.avg_specific_gravity_conformity"/> -->
+									
 								</td>
 								
 							</tr>
@@ -2700,9 +2671,7 @@
 
 								<td style="text-align: center;">
 									<t t-foreach="parameters.get('04a95dc1-4b45-4817-a9b2-dd722bbe6281').parameter_table" t-as="parameter">
-									<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-esc="parameter.permissable_limit"/>
-									</t> -->
+								
 									<t t-if="parameter.size.id == eln.size_id.id">
 											<span t-field="parameter.permissable_limit"/>
 										</t>
@@ -2712,7 +2681,7 @@
 									
 
 								<td style="text-align: center;" t-if="eln.conformity">
-									<!-- <span t-field="coarse_aggregate.avg_specific_gravity_conformity"/> -->
+									
 								</td>
 								
 							</tr>
@@ -2771,9 +2740,7 @@
 
 								<td style="text-align: center;">
 									<t t-foreach="parameters.get('919587f2-5b45-4da1-bb73-10164b861833').parameter_table" t-as="parameter">
-									<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-esc="parameter.permissable_limit"/>
-									</t> -->
+									
 									<t t-if="parameter.size.id == eln.size_id.id">
 											<span t-field="parameter.permissable_limit"/>
 										</t>
@@ -2849,9 +2816,7 @@
 
 								<td style="text-align: center;">
 									<t t-foreach="parameters.get('c8cd69bd-1f89-4f22-bae6-b81de73e6c2').parameter_table" t-as="parameter">
-									<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-esc="parameter.permissable_limit"/>
-									</t> -->
+								
 									<t t-if="parameter.size.id == eln.size_id.id">
 											<span t-field="parameter.permissable_limit"/>
 										</t>
@@ -2861,7 +2826,7 @@
 									
 
 								<td style="text-align: center;" t-if="eln.conformity">
-									<!-- <span t-field="coarse_aggregate.avg_specific_gravity_conformity"/> -->
+									
 								</td>
 								
 							</tr>
@@ -2872,27 +2837,7 @@
 								<td colspan ="1">
 									<span t-esc="parameters.get('8b80bc59-f49e-483e-8ccd-2fb4b076620e').parameter_name"/>
 								</td>
-								<!-- <td rowspan="2" style="text-align: center;padding-top:50px;">
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','8b80bc59-f49e-483e-8ccd-2fb4b076620e')]).test_method"/>
-								</td> -->
-								<!-- <td style="text-align: center;">
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')]).parameter_table" t-as="parameter">
-										
-											<span t-field="parameter.specification"/>
-										
-									</t>
-								</td>	 -->
-
-								<!-- <td  rowspan="2" style="text-align: center;padding-top:50px;" >
-									<span>
-										<span t-field="data.temp_soudness"/>
-									</span>									
-								</td>	
-									<td  rowspan="2" style="text-align: center;padding-top:50px;">
-									<span>
-										<span t-field="data.temp_soudness"/>
-									</span>									
-								</td>	 -->
+							
 
 								<td style="text-align: center;">
 									<span t-esc="parameters.get('8b80bc59-f49e-483e-8ccd-2fb4b076620e').unit.name"/>	
@@ -2905,31 +2850,22 @@
 
 								<td style="text-align: center;">
 									<t t-foreach="parameters.get('8b80bc59-f49e-483e-8ccd-2fb4b076620e').parameter_table" t-as="parameter">
-									<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-esc="parameter.permissable_limit"/>
-									</t> -->
+									
 									<t t-if="parameter.size.id == eln.size_id.id">
 											<span t-field="parameter.permissable_limit"/>
 										</t>
 								</t>
 								</td>
 								
-									
-
+								
 								<td style="text-align: center;" t-if="eln.conformity">
-									<!-- <span t-field="coarse_aggregate.avg_specific_gravity_conformity"/> -->
+								
 								</td>
 								
 							</tr>
-
 						
-
-
-
-
-
-							</tbody>
-					</table>
+			        </tbody>
+				</table>
 
 					
 
