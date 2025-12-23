@@ -2179,91 +2179,91 @@ class Soil(models.Model):
                 record.avg_stress_nabl = 'fail'
 
      # Consolidation Test (Cc) Test
-    consolidation_name = fields.Char("Name",default="Consolidation Test (Cc)")
-    consolidation_visible = fields.Boolean("Consolidation Test (Cc) Visible",compute="_compute_visible")
+    # consolidation_name = fields.Char("Name",default="Consolidation Test (Cc)")
+    # consolidation_visible = fields.Boolean("Consolidation Test (Cc) Visible",compute="_compute_visible")
 
-    initial_height = fields.Float(string="Initial Height H0 ", digits=(12,3))
-    diameter = fields.Float(string="Diameter D0 ", digits=(12,3))
-    area = fields.Float(string="Area ", compute="_compute_area", store=True, digits=(12,3))
-    initial_void_ratio = fields.Float(string="Initial Void Ratio e0", digits=(12,3))
+    # initial_height = fields.Float(string="Initial Height H0 ", digits=(12,3))
+    # diameter = fields.Float(string="Diameter D0 ", digits=(12,3))
+    # area = fields.Float(string="Area ", compute="_compute_area", store=True, digits=(12,3))
+    # initial_void_ratio = fields.Float(string="Initial Void Ratio e0", digits=(12,3))
 
-    consolidation_name_ids = fields.One2many("mechanical.consolidation.test.line1", "parent_id", string="Test Lines")
+    # consolidation_name_ids = fields.One2many("mechanical.consolidation.test.line1", "parent_id", string="Test Lines")
 
-    compression_index = fields.Float(string="Compression Index Cc", compute="_compute_cc", store=True, digits=(12,3))
+    # compression_index = fields.Float(string="Compression Index Cc", compute="_compute_cc", store=True, digits=(12,3))
 
-    compression_index_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_compression_index_conformity", store=True)
+    # compression_index_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_compression_index_conformity", store=True)
 
-    @api.depends('compression_index','eln_ref','grade')
-    def _compute_compression_index_conformity(self):
+    # @api.depends('compression_index','eln_ref','grade')
+    # def _compute_compression_index_conformity(self):
         
-        for record in self:
-            record.compression_index_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
+    #     for record in self:
+    #         record.compression_index_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
                     
-                    lower = record.compression_index - record.compression_index*mu_value
-                    upper = record.compression_index + record.compression_index*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.compression_index_conformity = 'pass'
-                        break
-                    else:
-                        record.compression_index_conformity = 'fail'
+    #                 lower = record.compression_index - record.compression_index*mu_value
+    #                 upper = record.compression_index + record.compression_index*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.compression_index_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.compression_index_conformity = 'fail'
 
-    compression_index_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_compression_index_nabl", store=True)
+    # compression_index_nabl = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_compression_index_nabl", store=True)
 
-    @api.depends('compression_index','eln_ref','grade')
-    def _compute_compression_index_nabl(self):
+    # @api.depends('compression_index','eln_ref','grade')
+    # def _compute_compression_index_nabl(self):
         
-        for record in self:
-            record.compression_index_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
+    #     for record in self:
+    #         record.compression_index_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table
+    #         # for material in materials:
+    #         #     if material.grade.id == record.grade.id:
+    #         lab_min = line.lab_min_value
+    #         lab_max = line.lab_max_value
+    #         mu_value = line.mu_value
             
-            lower = record.compression_index - record.compression_index*mu_value
-            upper = record.compression_index + record.compression_index*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.compression_index_nabl = 'pass'
-                break
-            else:
-                record.compression_index_nabl = 'fail'
+    #         lower = record.compression_index - record.compression_index*mu_value
+    #         upper = record.compression_index + record.compression_index*mu_value
+    #         if lower >= lab_min and upper <= lab_max:
+    #             record.compression_index_nabl = 'pass'
+    #             break
+    #         else:
+    #             record.compression_index_nabl = 'fail'
 
-    @api.depends("diameter")
-    def _compute_area(self):
-        for rec in self:
-            if rec.diameter:
-                radius = rec.diameter / 2.0 / 10  # mm to cm
-                rec.area = math.pi * radius**2
-            else:
-                rec.area = 0.0
+    # @api.depends("diameter")
+    # def _compute_area(self):
+    #     for rec in self:
+    #         if rec.diameter:
+    #             radius = rec.diameter / 2.0 / 10  # mm to cm
+    #             rec.area = math.pi * radius**2
+    #         else:
+    #             rec.area = 0.0
 
-    @api.depends("consolidation_name_ids.void_ratio")
-    def _compute_cc(self):
-        # Simple approximation: slope of virgin compression line
-        for rec in self:
-            lines = sorted(rec.consolidation_name_ids, key=lambda l: l.stress or 0)
-            if len(lines) >= 2:
-                e1, e2 = lines[0].void_ratio, lines[-1].void_ratio
-                sigma1, sigma2 = lines[0].stress, lines[-1].stress
-                if sigma1 > 0 and sigma2 > 0:
-                    rec.compression_index = round((e1 - e2) / (math.log10(sigma2) - math.log10(sigma1)), 3)
-                else:
-                    rec.compression_index = 0.0
-            else:
-                rec.compression_index = 0.0
+    # @api.depends("consolidation_name_ids.void_ratio")
+    # def _compute_cc(self):
+    #     # Simple approximation: slope of virgin compression line
+    #     for rec in self:
+    #         lines = sorted(rec.consolidation_name_ids, key=lambda l: l.stress or 0)
+    #         if len(lines) >= 2:
+    #             e1, e2 = lines[0].void_ratio, lines[-1].void_ratio
+    #             sigma1, sigma2 = lines[0].stress, lines[-1].stress
+    #             if sigma1 > 0 and sigma2 > 0:
+    #                 rec.compression_index = round((e1 - e2) / (math.log10(sigma2) - math.log10(sigma1)), 3)
+    #             else:
+    #                 rec.compression_index = 0.0
+    #         else:
+    #             rec.compression_index = 0.0
 
     # Consolidation Test (Pc) Test
     consolidation_pc_name = fields.Char("Name",default="Consolidation Test (Pc)")
@@ -2445,81 +2445,81 @@ class Soil(models.Model):
             rec.cohesion = c
 
       # Swelling Pressure by Consolidometer Method
-    swelling_pressure_name = fields.Char("Name",default="Swelling Pressure by Consolidometer Method")
-    swelling_pressure_visible = fields.Boolean("Swelling Pressure by Consolidometer Method Visible",compute="_compute_visible")
+    # swelling_pressure_name = fields.Char("Name",default="Swelling Pressure by Consolidometer Method")
+    # swelling_pressure_visible = fields.Boolean("Swelling Pressure by Consolidometer Method Visible",compute="_compute_visible")
 
-    swelling_pressure_line_ids = fields.One2many(
-        'mechanical.swelling.line1',
-        'parent_id',
-        string="swelling_pressure Table"
-    )
+    # swelling_pressure_line_ids = fields.One2many(
+    #     'mechanical.swelling.line1',
+    #     'parent_id',
+    #     string="swelling_pressure Table"
+    # )
 
-    # Final result (average swelling pressure)
-    avg_swelling_pressure = fields.Float(
-        string="Average Swelling ",
-        compute="_compute_avg_swelling_pressure",
-        store=True
-    )
+    # # Final result (average swelling pressure)
+    # avg_swelling_pressure = fields.Float(
+    #     string="Average Swelling ",
+    #     compute="_compute_avg_swelling_pressure",
+    #     store=True
+    # )
 
 
-    avg_swelling_pressure_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_swelling_pressure_conformity", store=True)
+    # avg_swelling_pressure_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_avg_swelling_pressure_conformity", store=True)
 
-    @api.depends('avg_swelling_pressure','eln_ref','grade')
-    def _compute_avg_swelling_pressure_conformity(self):
+    # @api.depends('avg_swelling_pressure','eln_ref','grade')
+    # def _compute_avg_swelling_pressure_conformity(self):
         
-        for record in self:
-            record.avg_swelling_pressure_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
+    #     for record in self:
+    #         record.avg_swelling_pressure_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
                     
-                    lower = record.avg_swelling_pressure - record.avg_swelling_pressure*mu_value
-                    upper = record.avg_swelling_pressure + record.avg_swelling_pressure*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_swelling_pressure_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_swelling_pressure_conformity = 'fail'
+    #                 lower = record.avg_swelling_pressure - record.avg_swelling_pressure*mu_value
+    #                 upper = record.avg_swelling_pressure + record.avg_swelling_pressure*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.avg_swelling_pressure_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.avg_swelling_pressure_conformity = 'fail'
 
-    avg_swelling_pressure_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_avg_swelling_pressure_nabl", store=True)
+    # avg_swelling_pressure_nabl = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_avg_swelling_pressure_nabl", store=True)
 
-    @api.depends('avg_swelling_pressure','eln_ref','grade')
-    def _compute_avg_swelling_pressure_nabl(self):
+    # @api.depends('avg_swelling_pressure','eln_ref','grade')
+    # def _compute_avg_swelling_pressure_nabl(self):
         
-        for record in self:
-            record.avg_swelling_pressure_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
+    #     for record in self:
+    #         record.avg_swelling_pressure_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table
+    #         # for material in materials:
+    #         #     if material.grade.id == record.grade.id:
+    #         lab_min = line.lab_min_value
+    #         lab_max = line.lab_max_value
+    #         mu_value = line.mu_value
             
-            lower = record.avg_swelling_pressure - record.avg_swelling_pressure*mu_value
-            upper = record.avg_swelling_pressure + record.avg_swelling_pressure*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_swelling_pressure_nabl = 'pass'
-                break
-            else:
-                record.avg_swelling_pressure_nabl = 'fail'
+    #         lower = record.avg_swelling_pressure - record.avg_swelling_pressure*mu_value
+    #         upper = record.avg_swelling_pressure + record.avg_swelling_pressure*mu_value
+    #         if lower >= lab_min and upper <= lab_max:
+    #             record.avg_swelling_pressure_nabl = 'pass'
+    #             break
+    #         else:
+    #             record.avg_swelling_pressure_nabl = 'fail'
 
-    @api.depends('swelling_pressure_line_ids.swelling_pressure')
-    def _compute_avg_swelling_pressure(self):
-        for rec in self:
-            if rec.swelling_pressure_line_ids:
-                total = sum(rec.swelling_pressure_line_ids.mapped('swelling_pressure'))
-                rec.avg_swelling_pressure = total / len(rec.swelling_pressure_line_ids)
-            else:
-                rec.avg_swelling_pressure = 0.0
+    # @api.depends('swelling_pressure_line_ids.swelling_pressure')
+    # def _compute_avg_swelling_pressure(self):
+    #     for rec in self:
+    #         if rec.swelling_pressure_line_ids:
+    #             total = sum(rec.swelling_pressure_line_ids.mapped('swelling_pressure'))
+    #             rec.avg_swelling_pressure = total / len(rec.swelling_pressure_line_ids)
+    #         else:
+    #             rec.avg_swelling_pressure = 0.0
 
      # Unconsolidated Undrained Triaxial Test (Angle of Friction)
     uu_triaxial_angle_name = fields.Char("Name",default="Unconsolidated Undrained Triaxial Test (Angle of Friction)")
@@ -2958,6 +2958,933 @@ class Soil(models.Model):
             
             record.gsa_graph_image = base64.b64encode(buffer.read())
             buffer.close()
+
+         # DETERMINATION OF CONSOLIDATION PROPERTIES		
+    consolidation_name = fields.Char("Name",default="DETERMINATION OF CONSOLIDATION PROPERTIES")
+    consolidation_visible = fields.Boolean("DETERMINATION OF CONSOLIDATION PROPERTIES",compute="_compute_visible")	
+
+    consolidation_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
+    consolidation_diameter = fields.Float(string="Diameter, D", digits=(8,1))
+    consolidation_height = fields.Float(string="Height, H", digits=(8,1))
+    consolidation_area = fields.Float(string="Area, A", compute="_compute_consolidation_area", digits=(8,3))
+    consolidation_volume = fields.Float(string="Volume, Vol", compute="_compute_consolidation_volume", digits=(8,3))
+
+    @api.depends('consolidation_diameter')
+    def _compute_consolidation_area(self):
+        for line in self:
+            if line.consolidation_diameter:
+                line.consolidation_area = (pi / 4) * (line.consolidation_diameter ** 2)
+            else:
+              line.consolidation_area = 0
+    
+    @api.depends('consolidation_height','consolidation_area','consolidation_diameter')
+    def _compute_consolidation_volume(self):
+        for line in self:
+            area = (pi / 4) * (line.consolidation_diameter ** 2)
+            if line.consolidation_height and line.consolidation_area:
+                line.consolidation_volume = line.consolidation_height * area
+            else:
+              line.consolidation_volume = 0
+
+    con_wt_of_ring = fields.Float(string="Weight Of Ring, w1" , digits=(10,3)) 
+    con_wt_wet_specimen_bf = fields.Float(string="Weight Of Wet Specimen + Ring, w2" , digits=(10,3))  # before test
+    con_wt_wet_specimen_af = fields.Float(string="Weight Of Wet Specimen + Ring, w5" , digits=(10,3))  # after test
+    con_wt_dry_specimen_af = fields.Float(string="Weight Of Dry Specimen + Ring, w3" , digits=(10,3))  # after test
+
+    con_wt_dry_soil = fields.Float(string= "Weight Of Dry Specimen + Ring, w4", compute="_compute_con_wt_dry_soil", digits=(10,3))
+
+    con_height_solid = fields.Float(string= "Height of Solids, Hs", compute="_compute_con_height_solid", digits=(10,4))
+
+    @api.depends('con_wt_dry_specimen_af','con_wt_of_ring')
+    def _compute_con_wt_dry_soil(self):
+        for line in self:
+                line.con_wt_dry_soil = line.con_wt_dry_specimen_af - line.con_wt_of_ring
+
+
+    @api.depends('con_wt_dry_specimen_af','con_wt_of_ring','consolidation_area','consolidation_specific_gravity')
+    def _compute_con_height_solid(self):
+        for line in self:
+            dry_soil = line.con_wt_dry_specimen_af - line.con_wt_of_ring
+
+            if line.consolidation_specific_gravity and line.consolidation_area:
+                line.con_height_solid = dry_soil / (line.consolidation_area * line.consolidation_specific_gravity)
+            else:
+              line.con_height_solid = 0   
+
+    con_water_content = fields.Float(string= "Water Content, wc", compute="_compute_con_water_content", digits=(8,2)) 
+    con_bulk_density_soil = fields.Float(string= "Bulk Density of Soil, γb", compute="_compute_con_bulk_density_soil", digits=(8,2)) 
+    con_dry_density_soil = fields.Float(string= "Dry Density of Soil, γd", compute="_compute_con_dry_density_soil", digits=(8,2)) 
+    con_swell_void_ratio = fields.Float(string= "Void ratio, e", compute="_compute_con_swell_void_ratio", digits=(8,2)) 
+    con_degree_sat = fields.Float(string= "Degree of Saturation, Sr", compute="_compute_con_degree_sat", digits=(8,2)) 
+
+
+    @api.depends('con_wt_of_ring','con_wt_wet_specimen_bf','con_wt_dry_specimen_af')
+    def _compute_con_water_content(self):
+        for line in self:
+            num = line.con_wt_wet_specimen_bf - line.con_wt_dry_specimen_af
+            deno = line.con_wt_dry_specimen_af - line.con_wt_of_ring
+
+            if deno != 0:
+                line.con_water_content = (num / deno) * 100
+            else:
+              line.con_water_content = 0
+
+    @api.depends('con_wt_wet_specimen_bf','con_wt_of_ring','consolidation_volume')
+    def _compute_con_bulk_density_soil(self):
+        for line in self:
+            if line.consolidation_volume != 0:
+                line.con_bulk_density_soil = (line.con_wt_wet_specimen_bf - line.con_wt_of_ring) / line.consolidation_volume
+            else:
+              line.con_bulk_density_soil = 0    
+
+    @api.depends('con_wt_wet_specimen_bf', 'con_wt_of_ring', 'consolidation_volume', 'con_wt_dry_specimen_af')
+    def _compute_con_dry_density_soil(self):
+     for line in self:
+        line.con_dry_density_soil = 0  
+        
+        if not line.consolidation_volume or not line.con_wt_dry_specimen_af or line.con_wt_dry_specimen_af == line.con_wt_of_ring:
+            continue
+
+        # Compute bulk density
+        bulk_den = (line.con_wt_wet_specimen_bf - line.con_wt_of_ring) / line.consolidation_volume
+
+        # Compute water content
+        water_con = (
+            (line.con_wt_wet_specimen_bf - line.con_wt_dry_specimen_af)
+            / (line.con_wt_dry_specimen_af - line.con_wt_of_ring)
+        ) * 100
+
+        # Calculate dry density
+        line.con_dry_density_soil = bulk_den / (1 + (water_con / 100))
+
+    @api.depends('consolidation_height','con_height_solid')
+    def _compute_con_swell_void_ratio(self):
+        for line in self:
+            if line.con_height_solid != 0:
+                line.con_swell_void_ratio = (line.consolidation_height - line.con_height_solid) / line.con_height_solid
+            else:
+              line.con_swell_void_ratio = 0 
+
+    @api.depends('consolidation_height','con_height_solid','consolidation_specific_gravity','con_wt_wet_specimen_bf','con_wt_dry_specimen_af','con_wt_of_ring')
+    def _compute_con_degree_sat(self):
+        for line in self:
+            if not line.con_height_solid:
+              line.con_degree_sat = 0
+              continue
+            void_ratio = (line.consolidation_height - line.con_height_solid) / line.con_height_solid 
+            
+            deno = line.con_wt_dry_specimen_af - line.con_wt_of_ring
+            if deno == 0 or void_ratio == 0:
+              line.con_degree_sat = 0
+              continue
+
+            water_con = ((line.con_wt_wet_specimen_bf - line.con_wt_dry_specimen_af) / deno) * 100
+
+            line.con_degree_sat = (line.consolidation_specific_gravity * water_con) / void_ratio 
+
+    evaluate_swell_pressure = fields.Char(
+    string="Evaluate swell pressure ??",
+    compute="_compute_evaluate_swell_pressure",
+    store=True)
+
+    @api.depends('con_initial_read', 'consolidation_ids.load_0_05_0_1')
+    def _compute_evaluate_swell_pressure(self):
+     for rec in self:
+        c17 = rec.con_initial_read or 0.0   # corresponds to Excel C17
+        d22 = rec.consolidation_ids.mapped('load_0_05_0_1') or []
+        d = d22[0] if len(d22) >= 3 else 0.0
+
+
+        rec.evaluate_swell_pressure = "YES" if (c17 - d) > 0 else "NO"
+
+    con_initial_read = fields.Float(string= "Initial Reading",  digits=(8,3)) 
+    con_set_load_read = fields.Float(string= "Setting load Reading",  digits=(8,2))
+
+    
+
+    consolidation_ids = fields.One2many("consolidation.loading.line", "parent_id", string="1st Cycle Loading",default=lambda self: self.default_con_gauge_reading())
+
+    @api.model
+    def default_con_gauge_reading(self):
+        default_lines = [
+            (0, 0, {'time_m': '0',}),
+            (0, 0, {'time_m': '1',}),
+            (0, 0, {'time_m': '4',}),
+            (0, 0, {'time_m': '6',}),
+            (0, 0, {'time_m': '16',}),
+            (0, 0, {'time_m': '25',}),
+            (0, 0, {'time_m': '36',}),
+            (0, 0, {'time_m': '49',}),
+            (0, 0, {'time_m': '64',}),
+            (0, 0, {'time_m': '81',}),
+            (0, 0, {'time_m': '100',}),
+            (0, 0, {'time_m': '121',}),
+            (0, 0, {'time_m': '141',}),
+            (0, 0, {'time_m': '169',}),
+            (0, 0, {'time_m': '196',}),
+            (0, 0, {'time_m': '225',}),
+            (0, 0, {'time_m': '256',}),
+            (0, 0, {'time_m': '289',}),
+            (0, 0, {'time_m': '361',}),
+            
+        ]
+        return default_lines
+    
+    consolidation_unloading_ids = fields.One2many("consolidation.unloading.line", "parent_id", string="1st Cycle Loading",default=lambda self: self.default_con_gauge_reading_2())
+
+    @api.model
+    def default_con_gauge_reading_2(self):
+        default_lines = [
+            (0, 0, {'time_m': '0',}),
+            (0, 0, {'time_m': '5',}),
+            (0, 0, {'time_m': '10',}),
+            (0, 0, {'time_m': '15',}),
+            (0, 0, {'time_m': '20',}),
+            (0, 0, {'time_m': '25',}),
+            (0, 0, {'time_m': '30',}),
+            (0, 0, {'time_m': '35',}),
+            (0, 0, {'time_m': '40',}),
+            (0, 0, {'time_m': '45',}),
+            (0, 0, {'time_m': '50',}),
+            (0, 0, {'time_m': '55',}),
+            (0, 0, {'time_m': '60',}),
+            
+        ]
+        return default_lines
+    
+
+
+    consolidation_output_ids = fields.One2many("consolidation.both.cycle.line", "parent_id", string="1st Cycle Loading	",default=lambda self: self.default_con_cycle_reading())
+
+    @api.model
+    def default_con_cycle_reading(self):
+        default_lines = [
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '0.05',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '0.10',}),
+            (0, 0, {'cylces':'1st Cycle Loading', 'applied_pressure': '0.20',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '0.50',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '1.00',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '2.00',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '4.00',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '8.00',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '8.00',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '4.00',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '2.00',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '1.00',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '0.50',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '0.20',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '0.10',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '0.05',}),
+            
+        ]
+        return default_lines
+    
+
+    ce = fields.Float(string="Ce", digits=(8, 3), compute="_compute_ce_cr", store=True)
+    cr = fields.Float(string="Cr", digits=(8, 3), compute="_compute_ce_cr", store=True)
+
+
+    @api.depends(
+        'consolidation_output_ids.e_void',
+        'consolidation_output_ids.applied_pressure',
+        'consolidation_output_ids.cylces',
+    )
+    def _compute_ce_cr(self):
+        for rec in self:
+            rec.ce = 0.0
+            rec.cr = 0.0
+
+            lines = rec.consolidation_output_ids
+
+            # --------- Ce from loading segment (choose same points as Excel) ---------
+            # example: use loading rows at 0.50 and 4.00 kg/cm²
+            l1 = lines.filtered(
+                lambda l: l.cylces == '1st Cycle Loading' and l.applied_pressure == 0.50
+            )[:1]
+            l2 = lines.filtered(
+                lambda l: l.cylces == '1st Cycle Loading' and l.applied_pressure == 4.00
+            )[:1]
+
+            if l1 and l2:
+                e1, p1 = l1.e_void or 0.0, l1.applied_pressure or 0.0
+                e2, p2 = l2.e_void or 0.0, l2.applied_pressure or 0.0
+                if p1 and p2 and p2 != p1:
+                    rec.ce = (e1 - e2) / log10(p2 / p1)
+
+            # --------- Cr from unloading segment (same as Excel) ---------
+            # example: use unloading rows at 0.50 and 0.10 kg/cm²
+            u1 = lines.filtered(
+                lambda l: l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.50
+            )[:1]
+            u2 = lines.filtered(
+                lambda l: l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.10
+            )[:1]
+
+            if u1 and u2:
+                e1, p1 = u1.e_void or 0.0, u1.applied_pressure or 0.0
+                e2, p2 = u2.e_void or 0.0, u2.applied_pressure or 0.0
+                if p1 and p2 and p2 != p1:
+                    rec.cr = (e1 - e2) / log10(p2 / p1)
+
+
+
+
+     # DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD				
+    
+    swelling_pressure_name = fields.Char("Name",default="DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD")
+    swelling_pressure_visible = fields.Boolean("DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD",compute="_compute_visible")
+
+    swelling_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
+    swelling_diameter = fields.Float(string="Diameter, D", digits=(8,1))
+    swelling_height = fields.Float(string="Height, H", digits=(8,1))
+    swelling_area = fields.Float(string="Area, A", compute="_compute_swelling_area", digits=(8,3))
+    swelling_volume = fields.Float(string="Volume, Vol", compute="_compute_swelling_volume", digits=(8,3))
+
+    @api.depends('swelling_diameter')
+    def _compute_swelling_area(self):
+        for line in self:
+            if line.swelling_diameter:
+                line.swelling_area = (pi / 4) * (line.swelling_diameter ** 2)
+            else:
+              line.swelling_area = 0
+    
+    @api.depends('swelling_height','swelling_area','swelling_diameter')
+    def _compute_swelling_volume(self):
+        for line in self:
+            area = (pi / 4) * (line.swelling_diameter ** 2)
+            if line.swelling_height and line.swelling_area:
+                line.swelling_volume = line.swelling_height * area
+            else:
+              line.swelling_volume = 0
+
+    wt_of_ring = fields.Float(string="Weight Of Ring, w1" , digits=(10,3)) 
+    wt_wet_specimen_bf = fields.Float(string="Weight Of Wet Specimen + Ring, w2" , digits=(10,3))  # before test
+    wt_wet_specimen_af = fields.Float(string="Weight Of Wet Specimen + Ring, w5" , digits=(10,2))  # after test
+    wt_dry_specimen_af = fields.Float(string="Weight Of Dry Specimen + Ring, w3" , digits=(10,3))  # after test
+
+    wt_dry_soil = fields.Float(string= "Weight Of Dry Specimen + Ring, w4", compute="_compute_wt_dry_soil", digits=(10,3))
+
+    height_solid = fields.Float(string= "Dry weight of soil, w4", compute="_compute_height_solid", digits=(10,4))
+
+    @api.depends('wt_dry_specimen_af','wt_of_ring')
+    def _compute_wt_dry_soil(self):
+        for line in self:
+                line.wt_dry_soil = line.wt_dry_specimen_af - line.wt_of_ring
+
+
+    @api.depends('wt_dry_specimen_af','wt_of_ring','swelling_area','swelling_specific_gravity')
+    def _compute_height_solid(self):
+        for line in self:
+            dry_soil = line.wt_dry_specimen_af - line.wt_of_ring
+
+            if line.swelling_specific_gravity and line.swelling_area:
+                line.height_solid = dry_soil / (line.swelling_area * line.swelling_specific_gravity)
+            else:
+              line.height_solid = 0
+
+    
+    water_content = fields.Float(string= "Water Content, wc", compute="_compute_water_content", digits=(8,2)) 
+    bulk_density_soil = fields.Float(string= "Bulk Density of Soil, γb", compute="_compute_bulk_density_soil", digits=(8,2)) 
+    dry_density_soil = fields.Float(string= "Dry Density of Soil, γd", compute="_compute_dry_density_soil", digits=(8,2)) 
+    swell_void_ratio = fields.Float(string= "Void ratio, e", compute="_compute_swell_void_ratio", digits=(8,2)) 
+    degree_sat = fields.Float(string= "Degree of Saturation, Sr", compute="_compute_degree_sat", digits=(8,2)) 
+
+
+    @api.depends('wt_of_ring','wt_wet_specimen_bf','wt_dry_specimen_af')
+    def _compute_water_content(self):
+        for line in self:
+            num = line.wt_wet_specimen_bf - line.wt_dry_specimen_af
+            deno = line.wt_dry_specimen_af - line.wt_of_ring
+
+            if deno != 0:
+                line.water_content = (num / deno) * 100
+            else:
+              line.water_content = 0
+
+    @api.depends('wt_wet_specimen_bf','wt_of_ring','swelling_volume')
+    def _compute_bulk_density_soil(self):
+        for line in self:
+            if line.swelling_volume != 0:
+                line.bulk_density_soil = (line.wt_wet_specimen_bf - line.wt_of_ring) / line.swelling_volume
+            else:
+              line.bulk_density_soil = 0    
+
+    @api.depends('wt_wet_specimen_bf', 'wt_of_ring', 'swelling_volume', 'wt_dry_specimen_af')
+    def _compute_dry_density_soil(self):
+     for line in self:
+        line.dry_density_soil = 0  
+        
+        if not line.swelling_volume or not line.wt_dry_specimen_af or line.wt_dry_specimen_af == line.wt_of_ring:
+            continue
+
+        # Compute bulk density
+        bulk_den = (line.wt_wet_specimen_bf - line.wt_of_ring) / line.swelling_volume
+
+        # Compute water content
+        water_con = (
+            (line.wt_wet_specimen_bf - line.wt_dry_specimen_af)
+            / (line.wt_dry_specimen_af - line.wt_of_ring)
+        ) * 100
+
+        # Calculate dry density
+        line.dry_density_soil = bulk_den / (1 + (water_con / 100))
+
+    @api.depends('swelling_height','height_solid')
+    def _compute_swell_void_ratio(self):
+        for line in self:
+            if line.height_solid != 0:
+                line.swell_void_ratio = (line.swelling_height - line.height_solid) / line.height_solid
+            else:
+              line.swell_void_ratio = 0 
+
+    @api.depends('swelling_height','height_solid','swelling_specific_gravity','wt_wet_specimen_bf','wt_dry_specimen_af','wt_of_ring')
+    def _compute_degree_sat(self):
+        for line in self:
+            if not line.height_solid:
+              line.degree_sat = 0
+              continue
+            void_ratio = (line.swelling_height - line.height_solid) / line.height_solid 
+            
+            deno = line.wt_dry_specimen_af - line.wt_of_ring
+            if deno == 0 or void_ratio == 0:
+              line.degree_sat = 0
+              continue
+
+            water_con = ((line.wt_wet_specimen_bf - line.wt_dry_specimen_af) / deno) * 100
+
+            line.degree_sat = (line.swelling_specific_gravity * water_con) / void_ratio
+
+
+    water_content_1 = fields.Float(string= "Water Content, wc", compute="_compute_water_content_1", digits=(8,2)) 
+    bulk_density_soil_1 = fields.Float(string= "Bulk Density of Soil, γb", compute="_compute_bulk_density_soil_1", digits=(8,2)) 
+    dry_density_soil_1 = fields.Float(string= "Dry Density of Soil, γd", compute="_compute_dry_density_soil_1", digits=(8,2)) 
+    swell_void_ratio_1 = fields.Float(string= "Void ratio, e", compute="_compute_swell_void_ratio_1", digits=(8,2)) 
+    degree_sat_1 = fields.Float(string= "Degree of Saturation, Sr", compute="_compute_degree_sat_1", digits=(8,2)) 
+
+    @api.depends('wt_of_ring','wt_wet_specimen_af','wt_dry_specimen_af')
+    def _compute_water_content_1(self):
+        for line in self:
+            num = line.wt_wet_specimen_af - line.wt_dry_specimen_af
+            deno = line.wt_dry_specimen_af - line.wt_of_ring
+
+            if deno != 0:
+                line.water_content_1 = (num / deno) * 100
+            else:
+              line.water_content_1 = 0
+
+    @api.depends('wt_of_ring', 'wt_wet_specimen_af',
+             'swelling_area', 'swelling_output_ids.specimen_height')
+    def _compute_bulk_density_soil_1(self):
+     for line in self:
+        num = (line.wt_wet_specimen_af or 0.0) - (line.wt_of_ring or 0.0)
+
+        # get list of heights from child lines
+        heights = line.swelling_output_ids.mapped('specimen_height') or []
+        # take third-last value if it exists
+        h = heights[-3] if len(heights) >= 3 else 0.0
+
+        deno = (line.swelling_area or 0.0) * h
+
+        if deno:
+            line.bulk_density_soil_1 = num / deno
+        else:
+            line.bulk_density_soil_1 = 0.0
+
+    @api.depends('wt_wet_specimen_af', 'wt_of_ring', 'swelling_area','wt_dry_specimen_af', 'swelling_output_ids.specimen_height')
+    def _compute_dry_density_soil_1(self):
+     for line in self:
+        line.dry_density_soil_1 = 0  
+        
+        if not line.swelling_area or not line.wt_dry_specimen_af or line.wt_dry_specimen_af == line.wt_of_ring:
+            continue
+
+        # Compute bulk density
+        num = (line.wt_wet_specimen_af or 0.0) - (line.wt_of_ring or 0.0)
+
+        # get list of heights from child lines
+        heights = line.swelling_output_ids.mapped('specimen_height') or []
+        # take third-last value if it exists
+        h = heights[-3] if len(heights) >= 3 else 0.0
+
+        deno = (line.swelling_area or 0.0) * h
+        bulk_den =  num / deno
+
+        # Compute water content
+        water_con = (
+            (line.wt_wet_specimen_af - line.wt_dry_specimen_af)
+            / (line.wt_dry_specimen_af - line.wt_of_ring)
+        ) * 100
+
+        # Calculate dry density
+        line.dry_density_soil_1 = bulk_den / (1 + (water_con / 100))
+
+
+    @api.depends('swelling_output_ids.e_void')
+    def _compute_swell_void_ratio_1(self):
+        for line in self:
+            # get list of heights from child lines
+            void = line.swelling_output_ids.mapped('e_void') or []
+            # take third-last value if it exists
+            v = void[-1] if len(void) >= 3 else 0.0
+            line.swell_void_ratio_1 = v
+
+    @api.depends('swelling_output_ids.e_void',
+             'swelling_specific_gravity',
+             'wt_wet_specimen_af',
+             'wt_dry_specimen_af',
+             'wt_of_ring')
+    def _compute_degree_sat_1(self):
+     for line in self:
+        # last void ratio from child lines (or 0 if no lines)
+        voids = line.swelling_output_ids.mapped('e_void') or []
+        v = voids[-1] if voids else 0.0
+
+        # water content in %
+        water_con = 0.0
+        denom = (line.wt_dry_specimen_af or 0.0) - (line.wt_of_ring or 0.0)
+        if denom:
+            water_con = ((line.wt_wet_specimen_af or 0.0)
+                         - (line.wt_dry_specimen_af or 0.0)) / denom * 100.0
+
+        # S = (w * Gs) / e   (in % if w is in %)
+        if v:
+            line.degree_sat_1 = (line.swelling_specific_gravity or 0.0) * water_con / v
+        else:
+            line.degree_sat_1 = 0.0
+
+
+
+
+
+
+    initial_read = fields.Float(string= "Initial Reading",  digits=(8,2)) 
+    set_load_read = fields.Float(string= "Setting load Reading",  digits=(8,2))
+
+    swelling_ids = fields.One2many("swelling.pressure.loading.line", "parent_id", string="1st Cycle Loading	",default=lambda self: self.default_gauge_reading())
+
+    @api.model
+    def default_gauge_reading(self):
+        default_lines = [
+            (0, 0, {'time_m': '0',}),
+            (0, 0, {'time_m': '1',}),
+            (0, 0, {'time_m': '4',}),
+            (0, 0, {'time_m': '6',}),
+            (0, 0, {'time_m': '16',}),
+            (0, 0, {'time_m': '25',}),
+            (0, 0, {'time_m': '36',}),
+            (0, 0, {'time_m': '49',}),
+            (0, 0, {'time_m': '64',}),
+            (0, 0, {'time_m': '81',}),
+            (0, 0, {'time_m': '100',}),
+            (0, 0, {'time_m': '121',}),
+            (0, 0, {'time_m': '141',}),
+            (0, 0, {'time_m': '169',}),
+            (0, 0, {'time_m': '196',}),
+            (0, 0, {'time_m': '225',}),
+            (0, 0, {'time_m': '256',}),
+            (0, 0, {'time_m': '289',}),
+            (0, 0, {'time_m': '361',}),
+            
+        ]
+        return default_lines
+    
+    swelling_unloading_ids = fields.One2many("swelling.pressure.unloading.line", "parent_id", string="1st Cycle Loading	",default=lambda self: self.default_gauge_reading_2())
+
+    @api.model
+    def default_gauge_reading_2(self):
+        default_lines = [
+            (0, 0, {'time_m': '0',}),
+            (0, 0, {'time_m': '5',}),
+            (0, 0, {'time_m': '10',}),
+            (0, 0, {'time_m': '15',}),
+            (0, 0, {'time_m': '20',}),
+            (0, 0, {'time_m': '25',}),
+            (0, 0, {'time_m': '30',}),
+            (0, 0, {'time_m': '35',}),
+            (0, 0, {'time_m': '40',}),
+            (0, 0, {'time_m': '45',}),
+            (0, 0, {'time_m': '50',}),
+            (0, 0, {'time_m': '55',}),
+            (0, 0, {'time_m': '60',}),
+            
+        ]
+        return default_lines
+    
+
+    swelling_output_ids = fields.One2many("swelling.pressure.both.cycle.line", "parent_id", string="1st Cycle Loading	",default=lambda self: self.default_cycle_reading())
+
+    @api.model
+    def default_cycle_reading(self):
+        default_lines = [
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '0.05',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '0.10',}),
+            (0, 0, {'cylces':'1st Cycle Loading', 'applied_pressure': '0.20',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '0.40',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '0.80',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '1.60',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '3.20',}),
+            (0, 0, {'cylces':'1st Cycle Loading' ,'applied_pressure': '6.40',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '6.40',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '3.20',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '1.60',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '0.80',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '0.40',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '0.20',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '0.10',}),
+            (0, 0, {'cylces':'1st Cycle Unloading' ,'applied_pressure': '0.05',}),
+            
+        ]
+        return default_lines
+    
+
+    swelling_table_ids = fields.One2many("swelling.pressure.graph.line", "parent_id", string="Graph Table",default=lambda self: self.default_table_reading())
+
+    @api.model
+    def default_table_reading(self):
+        default_lines = [
+            (0, 0, {'applied_pressure': '0.10',}),
+            (0, 0, {'applied_pressure': '0.20',}),
+            (0, 0, {'applied_pressure': '0.50',}),
+            (0, 0, {'applied_pressure': '1.00',}),
+            (0, 0, {'applied_pressure': '2.00',}),
+            (0, 0, {'applied_pressure': '4.00',}),
+            
+        ]
+        return default_lines
+    
+
+    swelling_pressure = fields.Float(
+    string="Swelling Pressure (kg/cm²)",
+    digits=(8, 3),
+    compute="_compute_swelling_pressure",
+    store=True)
+
+    @api.depends('swelling_table_ids.applied_pressure',
+             'swelling_table_ids.delta_h')
+    def _compute_swelling_pressure(self):
+     for rec in self:
+        lines = rec.swelling_table_ids.sorted('applied_pressure')
+        sp = 0.0
+        # find first pair where ΔH changes sign (D49 > 0, D50 < 0)
+        for i in range(len(lines) - 1):
+            d1 = lines[i].delta_h
+            d2 = lines[i + 1].delta_h
+            if d1 >= 0 and d2 <= 0:
+                p1 = lines[i].applied_pressure
+                p2 = lines[i + 1].applied_pressure
+                # linear interpolation at ΔH = 0
+                if (d2 - d1) != 0:
+                    sp = p1 + (p2 - p1) * (0.0 - d1) / (d2 - d1)
+                break
+        rec.swelling_pressure = round(sp, 2)
+
+
+
+    graph_image_swell = fields.Binary("Swelling Pressure Graph", compute="_compute_graph_image_swell", store=True)
+
+    @api.depends('swelling_table_ids.applied_pressure', 'swelling_table_ids.delta_h')
+    def _compute_graph_image_swell(self):
+        for record in self:
+            if record.swelling_table_ids:
+                record.graph_image_swell = record.generate_line_chart_swell()
+            else:
+                record.graph_image_swell = False
+
+
+
+    def generate_line_chart_swell(self):
+     self.ensure_one()
+
+     lines = self.swelling_table_ids.sorted('applied_pressure')
+     x_vals = np.array(
+        [l.applied_pressure for l in lines if l.applied_pressure is not None],
+        dtype=float
+     )
+     y_vals = np.array(
+        [l.delta_h for l in lines if l.delta_h is not None],
+        dtype=float
+     )
+     if x_vals.size < 3:
+        return False    # need at least 3 points for a curve
+
+     # swelling pressure (same as before) ...
+     sp = 0.0
+     for i in range(len(x_vals) - 1):
+        d1 = y_vals[i]
+        d2 = y_vals[i + 1]
+        if d1 >= 0 and d2 <= 0 and (d2 - d1) != 0:
+            p1 = x_vals[i]
+            p2 = x_vals[i + 1]
+            sp = p1 + (p2 - p1) * (0.0 - d1) / (d2 - d1)
+            break
+
+     # ---- cubic spline for smooth curve ----
+     from scipy.interpolate import CubicSpline   # needs SciPy installed [web:72][web:74]
+     cs = CubicSpline(x_vals, y_vals, bc_type='natural')
+     x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
+     y_smooth = cs(x_smooth)
+
+     import matplotlib
+     matplotlib.use('Agg')
+    
+
+     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+     # smooth cubic‑spline curve
+     ax.plot(x_smooth, y_smooth, color='steelblue', linewidth=2)
+
+     # original points
+     ax.scatter(x_vals, y_vals, color='steelblue')
+     for x, y in zip(x_vals, y_vals):
+        ax.annotate(f"{y:.3f}", (x, y),
+                    textcoords="offset points", xytext=(0, 5),
+                    ha='center', fontsize=8)
+
+     ax.axhline(0, color='tab:blue', linewidth=1)
+     if sp:
+        ax.axvline(sp, color='red', linewidth=1)
+
+     ax.set_xlabel('Pressure kg/cm²')
+     ax.set_ylabel('Deformation, mm')
+     ax.set_ylim(-0.75, 2.50)
+     ax.set_yticks([-0.75, 0.0, 0.75, 1.50, 2.25])
+     ax.grid(True)
+
+     buf = BytesIO()
+     fig.tight_layout()
+     fig.savefig(buf, format='png')
+     plt.close(fig)
+     buf.seek(0)
+     return base64.b64encode(buf.read())
+
+
+
+
+
+    #  DETERMINE PERMEABILITY OF SOIL - BY FALLING HEAD			
+
+    permeability_falling_name = fields.Char("Name",default="Permeability Falling Head Test")
+    permeability_falling_visible = fields.Boolean("Permeability Falling Head Test",compute="_compute_visible")
+
+    dia_standpipe = fields.Float(string="Dia of Stand Pipe, d (cm)", digits=(8,1))
+    dia_soil_sample = fields.Float(string="Dia of Soil Sample, D (cm)", digits=(8,1))
+    length_soil = fields.Float(string="Length of Soil Sample, L (cm)", digits=(8,1))
+    bt_wt_soil_mould = fields.Float(string="Weight of wet soil + mould specimen before test, Wt, gm:", digits=(8,0))
+    at_wt_soil = fields.Float(string="Weight of wet soil specimen after test, Wt, gm:", digits=(8,0))
+
+    wt_empty_mould = fields.Float(string="Empty weight of mould (gm)", digits=(8,0))
+    wt_dry_soil = fields.Float(string="Dry weight of soil", digits=(8,0))
+
+    distance = fields.Float(string="Distance between 0 of scale to the middle of the bottom opening, cm	", digits=(8,0))
+
+
+
+
+    
+    area_pipe = fields.Float(string="Area of Pipe (sq.cm)", compute="_compute_area_pipe", digits=(8,2), store=True)
+    area_soil_samp = fields.Float(string="Area of Soil Sample (sq.cm)", compute="_compute_area_soil_samp", digits=(8,2), store=True)
+    vol_per_mould = fields.Float(string="Volume of permeabiliy mould (cc)", compute="_compute_vol_per_mould", digits=(8,2), store=True)
+    bulk_wt_soil = fields.Float(string="Bulk wt of soil (gm)", compute="_compute_bulk_wt_soil", digits=(8,2), store=True)
+    bulk_density = fields.Float(string="Bulk density (gm/cc)", compute="_compute_bulk_density", digits=(8,2) ,store = True)
+
+    moisture_con_bt = fields.Float(string="Moisture Content (before Test), %", compute="_compute_moisture_con_bt", digits=(8,2), store=True)
+    moisture_con_at = fields.Float(string="Moisture Content (After Test), %", compute="_compute_moisture_con_at", digits=(8,2), store=True)
+
+    dry_density = fields.Float(string="Dry density (gm/cc)", compute="_compute_dry_density", digits=(8,2), store=True)
+
+
+
+    @api.depends('dia_standpipe')
+    def _compute_area_pipe(self):
+        for line in self:
+            if line.dia_standpipe:
+                line.area_pipe = 0.7853981634 * line.dia_standpipe * line.dia_standpipe
+            else:
+              line.area_pipe = 0.0
+
+    @api.depends('dia_soil_sample')
+    def _compute_area_soil_samp(self):
+        for line in self:
+            if line.dia_soil_sample:
+                line.area_soil_samp = 0.7853981634 * line.dia_soil_sample * line.dia_soil_sample
+            else:
+              line.area_soil_samp = 0.0
+
+    @api.depends('dia_soil_sample', 'length_soil')
+    def _compute_vol_per_mould(self):
+        for line in self:
+            if line.dia_soil_sample and line.length_soil:
+                soil_samp = 0.7853981634 * line.dia_soil_sample * line.dia_soil_sample
+                line.vol_per_mould = line.length_soil * soil_samp
+            else:
+                line.vol_per_mould = 0.0
+    
+    @api.depends('bt_wt_soil_mould', 'wt_empty_mould')
+    def _compute_bulk_wt_soil(self):
+        for line in self:
+            if line.bt_wt_soil_mould and line.wt_empty_mould:
+                line.bulk_wt_soil = line.bt_wt_soil_mould - line.wt_empty_mould
+            else:
+                line.bulk_wt_soil = 0.0
+
+    @api.depends('dia_soil_sample', 'length_soil', 'bt_wt_soil_mould', 'wt_empty_mould')
+    def _compute_bulk_density(self):
+      for line in self:
+        if (
+            line.dia_soil_sample
+            and line.length_soil
+            and line.bt_wt_soil_mould
+            and line.wt_empty_mould
+        ):
+            soil_samp = 0.7853981634 * line.dia_soil_sample * line.dia_soil_sample
+            vol_per_mould = line.length_soil * soil_samp
+            if vol_per_mould:
+                bulk_wt_soil = line.bt_wt_soil_mould - line.wt_empty_mould
+                line.bulk_density = bulk_wt_soil / vol_per_mould
+            else:
+                line.bulk_density = 0.0
+        else:
+            line.bulk_density = 0.0
+
+
+    @api.depends('bt_wt_soil_mould', 'wt_empty_mould', 'wt_dry_soil')
+    def _compute_moisture_con_bt(self):
+     for line in self:
+        if line.bt_wt_soil_mould and line.wt_empty_mould and line.wt_dry_soil:
+            bulk_wt_soil = line.bt_wt_soil_mould - line.wt_empty_mould
+            water_mass = bulk_wt_soil - line.wt_dry_soil
+            
+            line.moisture_con_bt = (water_mass / line.wt_dry_soil) * 100
+        else:
+            line.moisture_con_bt = 0.0
+
+    @api.depends('bt_wt_soil_mould', 'wt_empty_mould', 'wt_dry_soil', 'at_wt_soil')
+    def _compute_moisture_con_at(self):
+     for line in self:
+        if line.at_wt_soil and line.wt_dry_soil:
+            water_mass = line.at_wt_soil - line.wt_dry_soil
+            line.moisture_con_at = (water_mass / line.wt_dry_soil) * 100
+        else:
+            line.moisture_con_at = 0.0
+
+
+    
+
+    @api.depends('dia_soil_sample', 'length_soil',
+             'bt_wt_soil_mould', 'wt_empty_mould', 'wt_dry_soil')
+    def _compute_dry_density(self):
+     for line in self:
+        if (line.dia_soil_sample and line.length_soil and
+                line.bt_wt_soil_mould and line.wt_empty_mould and
+                line.wt_dry_soil):
+
+            # Volume of specimen (cc)
+            soil_area = 0.7853981634 * line.dia_soil_sample * line.dia_soil_sample
+            vol_per_mould = line.length_soil * soil_area
+
+            # Bulk (wet) unit weight γ = W_wet / V
+            bulk_wt_soil = line.bt_wt_soil_mould - line.wt_empty_mould
+            if not vol_per_mould:
+                line.dry_density = 0.0
+                continue
+            bulk_density = bulk_wt_soil / vol_per_mould
+
+            # Moisture content w = (W_wet − W_dry)/W_dry
+            water_mass = bulk_wt_soil - line.wt_dry_soil
+            moisture_con = water_mass / line.wt_dry_soil if line.wt_dry_soil else 0.0  # in fraction
+
+            # Dry density γ_d = γ / (1 + w)
+            line.dry_density = bulk_density / (1.0 + moisture_con) if (1.0 + moisture_con) else 0.0
+        else:
+            line.dry_density = 0.0
+
+
+    W1_soil = fields.Float(string="W1", digits=(8,3))
+    W2_soil = fields.Float(string="W2", digits=(8,3))
+    W3_soil = fields.Float(string="W3 = (W2-W1)", compute="_compute_W3_soil", digits=(8,3), store=True)
+    volume_soil = fields.Float(string="Volume (V)", digits=(8,0))
+    density_soils = fields.Float(string="Density (γ) g/cc", compute="_compute_density_soils", digits=(16,6), store=True)
+    
+
+    @api.depends('W2_soil','W1_soil')
+    def _compute_W3_soil(self):
+        for line in self:
+                line.W3_soil =  line.W2_soil - line.W1_soil
+
+    @api.depends('volume_soil', 'W2_soil', 'W1_soil')
+    def _compute_density_soils(self):
+      for line in self:
+        # All inputs must exist and volume must be non‑zero
+        if line.volume_soil not in (None, 0) and line.W2_soil is not None and line.W1_soil is not None:
+            w3_soil = line.W2_soil - line.W1_soil
+            line.density_soils = round(w3_soil / line.volume_soil, 6)
+        else:
+            line.density_soils = 0.0
+
+
+    W1_soil_28 = fields.Float(string="W1", digits=(8,3))
+    W2_soil_28 = fields.Float(string="W2", digits=(8,3))
+    W3_soil_28 = fields.Float(string="W3 = (W2-W1)", compute="_compute_W3_soil_28", digits=(8,3), store=True)
+    volume_soil_28 = fields.Float(string="Volume (V)", digits=(8,0))
+    density_soils_28 = fields.Float(string="Density (γ) g/cc", compute="_compute_density_soils_28", digits=(16,6), store=True)
+    specific_gravity_per = fields.Float(string="Specific Gravity", compute="_compute_specific_gravity_per_28", digits=(16,6), store=True)
+
+    @api.depends('W2_soil_28','W1_soil_28')
+    def _compute_W3_soil_28(self):
+        for line in self:
+                line.W3_soil_28 =  line.W2_soil_28 - line.W1_soil_28
+
+    @api.depends('volume_soil_28', 'W2_soil_28', 'W1_soil_28')
+    def _compute_density_soils_28(self):
+      for line in self:
+        # All inputs must exist and volume must be non‑zero
+        if line.volume_soil_28 not in (None, 0) and line.W2_soil_28 is not None and line.W1_soil_28 is not None:
+            w3_soil_28 = line.W2_soil_28 - line.W1_soil_28
+            line.density_soils_28 = round(w3_soil_28 / line.volume_soil_28, 6)
+        else:
+            line.density_soils_28 = 0.0
+
+    @api.depends('density_soils','density_soils_28')
+    def _compute_specific_gravity_per_28(self):
+        for line in self:
+            if line.density_soils and line.density_soils_28 :    
+                line.specific_gravity_per =  round(line.density_soils/line.density_soils_28,6)
+
+    permeability_ids = fields.One2many("soil.permeability.test.line", "parent_id", string="DETERMINE PERMEABILITY OF SOIL - BY FALLING HEAD")
+
+    avg_permeability = fields.Float("Average Permeability Avg KT :",compute="_compute_avg_permeability", digits=(16, 9), store=True)
+
+    avg_permeability_27 = fields.Float("Average Permeability K27 :",compute="_compute_avg_permeability", digits=(16, 9), store=True)
+
+    @api.depends('permeability_ids.permeability','specific_gravity_per')
+    def _compute_avg_permeability(self):
+        for line in self:
+            if line.permeability_ids:
+                vals = line.permeability_ids.mapped("permeability")
+                line.avg_permeability = sum(vals) / len(vals)
+                line.avg_permeability_27 = line.avg_permeability * line.specific_gravity_per
+
+            else:
+                line.avg_permeability = 0.0
+                line.avg_permeability_27 = 0.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         return {
             'type': 'ir.actions.act_window',
@@ -4084,67 +5011,67 @@ class UCSTestLine(models.Model):
 
 
 
-class ConsolidationTestLine(models.Model):
-    _name = "mechanical.consolidation.test.line1"
-    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+# class ConsolidationTestLine(models.Model):
+#     _name = "mechanical.consolidation.test.line1"
+#     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+#     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
-    load = fields.Float(string="Load [Kg]")
-    dial_gauge = fields.Float(string="Dial Gauge δ [mm]")
-    delta_h = fields.Float(string="ΔH [mm]", compute="_compute_corrected_height", store=True)
-    corrected_height = fields.Float(string="Corrected Height H [mm]", compute="_compute_corrected_height", store=True)
-    stress = fields.Float(string="Stress σ [Kg/cm²]", compute="_compute_stress", store=True, digits=(12,3))
-    strain = fields.Float(string="Strain ε", compute="_compute_strain", store=True, digits=(12,3))
-    void_ratio = fields.Float(string="Void Ratio e", compute="_compute_void_ratio", store=True, digits=(12,3))
+#     load = fields.Float(string="Load [Kg]")
+#     dial_gauge = fields.Float(string="Dial Gauge δ [mm]")
+#     delta_h = fields.Float(string="ΔH [mm]", compute="_compute_corrected_height", store=True)
+#     corrected_height = fields.Float(string="Corrected Height H [mm]", compute="_compute_corrected_height", store=True)
+#     stress = fields.Float(string="Stress σ [Kg/cm²]", compute="_compute_stress", store=True, digits=(12,3))
+#     strain = fields.Float(string="Strain ε", compute="_compute_strain", store=True, digits=(12,3))
+#     void_ratio = fields.Float(string="Void Ratio e", compute="_compute_void_ratio", store=True, digits=(12,3))
 
-    @api.depends("dial_gauge","parent_id.initial_height")
-    def _compute_corrected_height(self):
-        for rec in self:
-            H0 = rec.parent_id.initial_height or 1
-            rec.delta_h = rec.dial_gauge
-            rec.corrected_height = H0 - rec.delta_h
+#     @api.depends("dial_gauge","parent_id.initial_height")
+#     def _compute_corrected_height(self):
+#         for rec in self:
+#             H0 = rec.parent_id.initial_height or 1
+#             rec.delta_h = rec.dial_gauge
+#             rec.corrected_height = H0 - rec.delta_h
 
-    @api.depends("load","parent_id.area")
-    def _compute_stress(self):
-        for rec in self:
-            A = rec.parent_id.area or 1
-            rec.stress = rec.load / A if A !=0 else 0.0
+#     @api.depends("load","parent_id.area")
+#     def _compute_stress(self):
+#         for rec in self:
+#             A = rec.parent_id.area or 1
+#             rec.stress = rec.load / A if A !=0 else 0.0
 
-    @api.depends("delta_h","parent_id.initial_height")
-    def _compute_strain(self):
-        for rec in self:
-            H0 = rec.parent_id.initial_height or 1
-            rec.strain = rec.delta_h / H0 if H0 !=0 else 0.0
+#     @api.depends("delta_h","parent_id.initial_height")
+#     def _compute_strain(self):
+#         for rec in self:
+#             H0 = rec.parent_id.initial_height or 1
+#             rec.strain = rec.delta_h / H0 if H0 !=0 else 0.0
 
-    @api.depends("parent_id.initial_void_ratio","stress")
-    def _compute_void_ratio(self):
-        for rec in self:
-            e0 = rec.parent_id.initial_void_ratio or 0.0
-            sigma0 = 1.0  # reference stress (usually 1 Kg/cm²)
-            if rec.stress > 0:
-                rec.void_ratio = e0 - 0.1 * math.log10(rec.stress/sigma0)  # factor 0.1 placeholder, modify as per standard
-            else:
-                rec.void_ratio = e0
+#     @api.depends("parent_id.initial_void_ratio","stress")
+#     def _compute_void_ratio(self):
+#         for rec in self:
+#             e0 = rec.parent_id.initial_void_ratio or 0.0
+#             sigma0 = 1.0  # reference stress (usually 1 Kg/cm²)
+#             if rec.stress > 0:
+#                 rec.void_ratio = e0 - 0.1 * math.log10(rec.stress/sigma0)  # factor 0.1 placeholder, modify as per standard
+#             else:
+#                 rec.void_ratio = e0
 
 
     
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
+#     @api.model
+#     def create(self, vals):
+#         # Set the serial_no based on the existing records for the same parent
+#         if vals.get('parent_id'):
+#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+#             if existing_records:
+#                 max_serial_no = max(existing_records.mapped('serial_no'))
+#                 vals['serial_no'] = max_serial_no + 1
 
-        return super(ConsolidationTestLine, self).create(vals)
+#         return super(ConsolidationTestLine, self).create(vals)
 
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
+#     def _reorder_serial_numbers(self):
+#         # Reorder the serial numbers based on the positions of the records in child_lines
+#         records = self.sorted('id')
+#         for index, record in enumerate(records):
+#             record.serial_no = index + 1
 
 
 
@@ -4240,49 +5167,49 @@ class DirectShearLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
-class SwellingPressureLine(models.Model):
-    _name = "mechanical.swelling.line1"
-    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+# class SwellingPressureLine(models.Model):
+#     _name = "mechanical.swelling.line1"
+#     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+#     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
-    dial_gauge_reading = fields.Float(string="Dial Gauge Reading (mm)")
-    load_applied = fields.Float(string="Load Applied (kg)")
-    area_of_sample = fields.Float(string="Area of Sample (cm²)", required=True)
+#     dial_gauge_reading = fields.Float(string="Dial Gauge Reading (mm)")
+#     load_applied = fields.Float(string="Load Applied (kg)")
+#     area_of_sample = fields.Float(string="Area of Sample (cm²)", required=True)
 
-    swelling_pressure = fields.Float(
-        string="Swelling Pressure (kg/cm²)",
-        compute="_compute_swelling_pressure",
-        store=True
-     )
+#     swelling_pressure = fields.Float(
+#         string="Swelling Pressure (kg/cm²)",
+#         compute="_compute_swelling_pressure",
+#         store=True
+#      )
 
-    @api.depends('load_applied', 'area_of_sample')
-    def _compute_swelling_pressure(self):
-        for line in self:
-            if line.area_of_sample > 0:
-                line.swelling_pressure = line.load_applied / line.area_of_sample
-            else:
-                line.swelling_pressure = 0.0
+#     @api.depends('load_applied', 'area_of_sample')
+#     def _compute_swelling_pressure(self):
+#         for line in self:
+#             if line.area_of_sample > 0:
+#                 line.swelling_pressure = line.load_applied / line.area_of_sample
+#             else:
+#                 line.swelling_pressure = 0.0
 
    
 
     
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
+#     @api.model
+#     def create(self, vals):
+#         # Set the serial_no based on the existing records for the same parent
+#         if vals.get('parent_id'):
+#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+#             if existing_records:
+#                 max_serial_no = max(existing_records.mapped('serial_no'))
+#                 vals['serial_no'] = max_serial_no + 1
 
-        return super(SwellingPressureLine, self).create(vals)
+#         return super(SwellingPressureLine, self).create(vals)
 
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
+#     def _reorder_serial_numbers(self):
+#         # Reorder the serial numbers based on the positions of the records in child_lines
+#         records = self.sorted('id')
+#         for index, record in enumerate(records):
+#             record.serial_no = index + 1
 
 
 class UUTriaxialLine(models.Model):
@@ -5297,6 +6224,1300 @@ class SoilFreeSwell(models.Model):
             )
             vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
         return super().create(vals)
+
+
+class ConsolidationLoadingLine(models.Model):
+    _name = "consolidation.loading.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    time_m = fields.Float(string="Time (Minutes)")
+    sqrt_time = fields.Float(string="SQRT (t) min", compute="_compute_sqrt_time", store=True)
+    load_0_05_0_1 = fields.Float(string="0.05-0.1 kg/cm²",digits=(8,3))
+    load_0_1_0_2 = fields.Float(string="0.1-0.2 kg/cm²" ,digits=(8,3))
+    load_0_2_0_5 = fields.Float(string="0.2-0.5 kg/cm²" ,digits=(8,3))
+    load_0_5_1_0 = fields.Float(string="0.5-1.0 kg/cm²" ,digits=(8,3))
+    load_1_0_2_0 = fields.Float(string="1.0-2.0 kg/cm²" ,digits=(8,3))
+    load_2_0_4_0 = fields.Float(string="2.0-4.0 kg/cm²" ,digits=(8,3))
+    load_4_0_8_0 = fields.Float(string="4.0-8.0 " ,digits=(8,3))
+
+    @api.depends("time_m")
+    def _compute_sqrt_time(self):
+        for rec in self:
+            if rec.time_m:
+                rec.sqrt_time = rec.time_m ** 0.5
+            else:
+                rec.sqrt_time =  0.0
+
+
+   
+
+    
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(ConsolidationLoadingLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class ConsolidationUnloadingLine(models.Model):
+    _name = "consolidation.unloading.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    time_m = fields.Float(string="Time (Minutes)")
+    load_8_0_4_0 = fields.Float(string="8.0-4.0" ,digits=(8,3))
+    load_4_0_8_0 = fields.Float(string="4.0-8.0" ,digits=(8,3))
+    load_2_0_4_0 = fields.Float(string="2.0-4.0" ,digits=(8,3))
+    load_1_0_2_0 = fields.Float(string="1.0-2.0" ,digits=(8,3))
+    load_0_5_1_0 = fields.Float(string="0.5-1.0" ,digits=(8,3))
+    load_0_2_0_5 = fields.Float(string="0.2-0.5" ,digits=(8,3))
+    load_0_1_0_2 = fields.Float(string="0.1-0.2" ,digits=(8,3))
+    # load_0_05_0_1 = fields.Float(string="0.05-0.1",digits=(8,3))
+    setting_load = fields.Float(string="Setting Load",digits=(8,3))
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(ConsolidationUnloadingLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+class ConsolidationBothCycleLine(models.Model):
+    _name = "consolidation.both.cycle.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    cylces=  fields.Char(string="Cycles" )
+
+    applied_pressure = fields.Float(string="Applied Pressure kg/cm²" , digits=(8,2))
+    final_read = fields.Float(string="Final Dial Reading mm" ,digits=(8,3),compute="_compute_final_read", store=True)
+    delta_h = fields.Float(string=" Δ𝐻 cm" ,digits=(8,3),compute="_compute_delta_h" ,store=True)
+    specimen_height = fields.Float(string="Specimen Height (H) cm" ,digits=(8,3) , compute="_compute_specimen_height" ,store=True )
+    e_void = fields.Float(string="e = (H/Hs)-1" ,digits=(8,3) , compute="_compute_e_void" ,store=True)
+    change_void = fields.Float(string="de", digits=(16,6), compute="_compute_change_void" ,store=True)
+    d_sigma = fields.Float(string=" dσ" ,digits=(16,6) , compute="_compute_d_sigma" ,store=True)
+    av = fields.Float(string="aᵥ (cm²/kg)" ,digits=(16,6) ,compute="_compute_av" ,store=True)
+    mv = fields.Float("mᵥ (cm²/kg)", digits=(8, 3),compute="_compute_mv" ,store=True)
+
+    t90 = fields.Float("t₉₀ (min)", digits=(8, 3))
+    Hav = fields.Float("Hav (cm)", digits=(8, 3))
+
+    cv = fields.Float("cᵥ (cm²/sec)", digits=(16, 4), compute="_compute_cv" ,store=True)
+    cc = fields.Float("cc (cm²/sec)", digits=(8, 3), compute="_compute_cc" ,store=True)
+
+    @api.depends(
+    'applied_pressure', 'cylces',
+    'parent_id.consolidation_ids.load_0_05_0_1',
+    'parent_id.consolidation_ids.load_0_1_0_2',
+    'parent_id.consolidation_ids.load_0_2_0_5',
+    'parent_id.consolidation_ids.load_0_5_1_0',
+    'parent_id.consolidation_ids.load_1_0_2_0',
+    'parent_id.consolidation_ids.load_2_0_4_0',
+    'parent_id.consolidation_ids.load_4_0_8_0',
+    'parent_id.consolidation_unloading_ids.load_8_0_4_0',
+    'parent_id.consolidation_unloading_ids.load_4_0_8_0',
+    'parent_id.consolidation_unloading_ids.load_2_0_4_0',
+    'parent_id.consolidation_unloading_ids.load_1_0_2_0',
+    'parent_id.consolidation_unloading_ids.load_0_5_1_0',
+    'parent_id.consolidation_unloading_ids.load_0_2_0_5',
+    'parent_id.consolidation_unloading_ids.load_0_1_0_2',
+    # 'parent_id.consolidation_unloading_ids.load_0_05_0_1',
+)
+    def _compute_final_read(self):
+     for line in self:
+        parent = line.parent_id
+        line.final_read = 0.0
+        if not parent:
+            continue
+
+        # helper to get min safely
+        def _min(vals):
+            vals = [v for v in vals if v not in (False, None)]
+            return min(vals) if vals else 0.0
+
+        # ------------- LOADING -------------
+        if line.cylces == '1st Cycle Loading':
+            if line.applied_pressure == 0.05:
+                # Excel: =Input!D21 (first loading row, 0 min)
+                recs = parent.consolidation_ids.sorted('time_m')
+                line.final_read = recs[0].load_0_05_0_1 if recs else 0.0
+
+            elif line.applied_pressure == 0.10:
+                line.final_read = _min(parent.consolidation_ids.mapped('load_0_05_0_1'))
+
+            elif line.applied_pressure == 0.20:
+                line.final_read = _min(parent.consolidation_ids.mapped('load_0_1_0_2'))
+
+            elif line.applied_pressure == 0.50:
+                line.final_read = _min(parent.consolidation_ids.mapped('load_0_2_0_5'))
+
+            elif line.applied_pressure == 1.00:
+                line.final_read = _min(parent.consolidation_ids.mapped('load_0_5_1_0'))
+
+            elif line.applied_pressure == 2.00:
+                line.final_read = _min(parent.consolidation_ids.mapped('load_1_0_2_0'))
+
+            elif line.applied_pressure == 4.00:
+                line.final_read = _min(parent.consolidation_ids.mapped('load_2_0_4_0'))
+
+            elif line.applied_pressure == 8.00:
+                line.final_read = _min(parent.consolidation_ids.mapped('load_4_0_8_0'))
+
+        # ------------- UNLOADING -------------
+        elif line.cylces == '1st Cycle Unloading':
+          if line.applied_pressure == 8.00:
+            # C23 = first setting‑load reading (Input!N21)
+            recs = parent.consolidation_unloading_ids.sorted('time_m')
+            vals = [recs[0].load_8_0_4_0] if recs else []
+
+          elif line.applied_pressure == 4.00:
+             prev_line = parent.consolidation_output_ids.filtered(
+              lambda l: l.cylces == '1st Cycle Unloading'
+             and l.applied_pressure == 8.00
+             )
+             prev_line = prev_line[0] if prev_line else False
+             c18 = prev_line.final_read if prev_line else 0.0
+
+             if not c18:
+               first = parent.consolidation_unloading_ids.sorted('time_m')[:1]
+               first = first[0] if first else False
+               vals = [first.load_4_0_8_0] if first else []
+             else:
+               vals = parent.consolidation_unloading_ids.mapped('load_8_0_4_0')
+          elif line.applied_pressure == 2.00:
+           vals = parent.consolidation_unloading_ids.mapped('load_4_0_8_0')
+          elif line.applied_pressure == 1.00:
+           vals = parent.consolidation_unloading_ids.mapped('load_2_0_4_0')
+          elif line.applied_pressure == 0.50:
+           vals = parent.consolidation_unloading_ids.mapped('load_1_0_2_0')
+          elif line.applied_pressure == 0.20:
+           vals = parent.consolidation_unloading_ids.mapped('load_0_5_1_0')
+          elif line.applied_pressure == 0.10:
+           vals = parent.consolidation_unloading_ids.mapped('load_0_2_0_5')
+          elif line.applied_pressure == 0.05:
+           vals = parent.consolidation_unloading_ids.mapped('load_0_1_0_2')
+          else:
+           vals = []
+
+          vals = [v for v in vals if v not in (False, None)]
+          line.final_read = max(vals) if vals else 0.0
+
+
+    @api.depends(
+    'final_read', 'applied_pressure', 'cylces', 'serial_no',
+    'parent_id.consolidation_output_ids.final_read',
+    'parent_id.consolidation_output_ids.applied_pressure',
+    'parent_id.consolidation_output_ids.cylces',
+    'parent_id.consolidation_output_ids.serial_no')
+    def _compute_delta_h(self):
+     for line in self:
+        parent = line.parent_id
+        line.delta_h = 0.0
+        if not parent:
+            continue
+
+        lines = list(parent.consolidation_output_ids.sorted('serial_no'))
+        if not lines:
+            continue
+
+        try:
+            idx = lines.index(line)
+        except ValueError:
+            continue
+
+        # first row → 0.000
+        if idx == 0:
+            line.delta_h = 0.0
+            continue
+
+        prev = lines[idx - 1]
+
+        # last loading row: if dial = 0, reuse previous ΔH
+        if line.cylces == '1st Cycle Loading' and line.applied_pressure == 8.00:
+            if line.final_read == 0 and prev:
+                line.delta_h = prev.delta_h
+                continue
+
+        # 4.00 unloading (Excel: IF(C18=0, D21, (C19-C20)/10))
+        if line.cylces == '1st Cycle Unloading' and line.applied_pressure == 4.00:
+            # row with 8.00 unloading (for C18 and C19)
+            row_8 = next(
+                (l for l in lines
+                 if l.cylces == '1st Cycle Unloading' and l.applied_pressure == 8.00),
+                None
+            )
+            # row with 2.00 unloading (for D21)
+            row_2 = next(
+                (l for l in lines
+                 if l.cylces == '1st Cycle Unloading' and l.applied_pressure == 2.00),
+                None
+            )
+
+            c18 = row_8.final_read if row_8 else 0.0
+            if c18 == 0 and row_2:
+                # use D21 (ΔH at 2.00 unloading)
+                line.delta_h = row_2.delta_h
+            elif row_8 and line.final_read not in (False, None):
+                # (C19 - C20) / 10
+                line.delta_h = (row_8.final_read - line.final_read) / 10.0
+            else:
+                line.delta_h = 0.0
+            continue
+
+        # default rule: (prevC - currC) / 10
+        if prev and prev.final_read not in (False, None) and line.final_read not in (False, None):
+            line.delta_h = round((prev.final_read - line.final_read) / 10.0 , 3)
+        else:
+            line.delta_h = 0.0
+
+    @api.depends(
+    'delta_h', 'parent_id.consolidation_height',
+    'parent_id.consolidation_output_ids.delta_h',
+    'parent_id.consolidation_output_ids.applied_pressure',
+    'parent_id.consolidation_output_ids.cylces',
+    'parent_id.consolidation_output_ids.serial_no'
+)
+    def _compute_specimen_height(self):
+     for line in self:
+        parent = line.parent_id
+        line.specimen_height = 0.0
+        if not parent:
+            continue
+
+        lines = list(parent.consolidation_output_ids.sorted('serial_no'))
+        if not lines:
+            continue
+
+        try:
+            idx = lines.index(line)
+        except ValueError:
+            continue
+
+        # first row: initial specimen height from parent
+        if idx == 0:
+            line.specimen_height = parent.consolidation_height or 0.0
+            continue
+
+        prev_line = lines[idx - 1]
+
+        base_H = prev_line.specimen_height or 0.0
+        line.specimen_height = round(base_H - (line.delta_h or 0.0), 3)
+
+
+    
+
+
+
+
+
+    @api.depends('specimen_height', 'parent_id.con_height_solid')
+    def _compute_e_void(self):
+     for line in self:
+        Hs = line.parent_id.con_height_solid or 0.0
+        if Hs:
+            line.e_void = (line.specimen_height / Hs) - 1.0
+        else:
+            line.e_void = 0.0
+
+    @api.depends('e_void', 'applied_pressure', 'cylces',
+             'parent_id.consolidation_output_ids.e_void',
+             'parent_id.consolidation_output_ids.applied_pressure',
+             'parent_id.consolidation_output_ids.cylces',
+             'parent_id.consolidation_output_ids.serial_no')
+    def _compute_change_void(self):
+     for line in self:
+        parent = line.parent_id
+        line.change_void = 0.0
+        if not parent:
+            continue
+
+        lines = list(parent.consolidation_output_ids.sorted('serial_no'))
+        if not lines:
+            continue
+
+        try:
+            idx = lines.index(line)
+        except ValueError:
+            continue
+
+        prev_line = None
+
+        # one formula for loading block
+        if line.cylces == '1st Cycle Loading':
+            if idx > 0:
+                prev_line = lines[idx - 1]
+
+        # one formula for unloading block
+        elif line.cylces == '1st Cycle Unloading':
+            if idx > 0:
+                prev_line = lines[idx - 1]
+
+        if prev_line:
+            line.change_void = (prev_line.e_void or 0.0) - (line.e_void or 0.0)
+        else:
+            line.change_void = 0.0
+
+    
+
+#     @api.depends(
+#     'applied_pressure',
+#     'serial_no',
+#     'parent_id.consolidation_output_ids.applied_pressure',
+#     'parent_id.consolidation_output_ids.serial_no',
+# )
+#     def _compute_d_sigma(self):
+#      for line in self:
+#         line.d_sigma = 0.0
+
+#         parent = line.parent_id
+#         if not parent or not line.serial_no or line.serial_no == 1:
+#             continue
+
+#         # Previous row (Excel previous row)
+#         prev = parent.consolidation_output_ids.filtered(
+#             lambda l: l.serial_no == line.serial_no - 1
+#         )[:1]
+
+#         if prev:
+#             line.d_sigma = (line.applied_pressure or 0.0) - (prev.applied_pressure or 0.0)
+
+    @api.depends(
+        'applied_pressure',
+        'parent_id.consolidation_output_ids.applied_pressure',
+        'parent_id.consolidation_output_ids.serial_no',
+    )
+    def _compute_d_sigma(self):
+        for line in self:
+            parent = line.parent_id
+            line.d_sigma = 0.0
+            if not parent:
+                continue
+
+            # get all lines for this parent in row order
+            lines = list(parent.consolidation_output_ids.sorted('serial_no'))
+            if not lines:
+                continue
+
+            try:
+                idx = lines.index(line)
+            except ValueError:
+                continue
+
+            # first row (0.05 loading) → 0
+            if idx == 0:
+                line.d_sigma = 0.0
+                continue
+
+            # all other rows: Bi − B(i−1)
+            prev = lines[idx - 1]
+            line.d_sigma = (line.applied_pressure or 0.0) - (prev.applied_pressure or 0.0)
+
+
+
+
+
+
+
+    @api.depends('change_void', 'd_sigma')
+    def _compute_av(self):
+     for line in self:
+        de = line.change_void or 0.0
+        ds = line.d_sigma or 0.0
+        if ds:
+            line.av = round((de / ds),6)
+        else:
+            line.av = 0.0
+
+
+    @api.depends('av', 'parent_id.con_swell_void_ratio')
+    def _compute_mv(self):
+        for line in self:
+            e0 = line.parent_id.con_swell_void_ratio or 0.0
+            denom = 1.0 + e0
+            if denom:
+                line.mv = line.av / denom
+            else:
+                line.mv = 0.0
+
+    Hav = fields.Float("Hav (cm)", digits=(8, 4), compute="_compute_Hav", store=True)
+
+    @api.depends(
+    'specimen_height',
+    'parent_id.consolidation_output_ids.specimen_height',
+    'parent_id.consolidation_output_ids.serial_no',)
+    def _compute_Hav(self):
+     for line in self:
+        parent = line.parent_id
+        line.Hav = 0.0
+        if not parent:
+            continue
+
+        lines = list(parent.consolidation_output_ids.sorted('serial_no'))
+        if not lines:
+            continue
+
+        try:
+            idx = lines.index(line)
+        except ValueError:
+            continue
+
+        if idx == 0:
+            # first row: Hav = H (same as Excel row 15)
+            line.Hav = line.specimen_height or 0.0
+        else:
+            prev = lines[idx - 1]
+            h1 = prev.specimen_height or 0.0
+            h2 = line.specimen_height or 0.0
+            line.Hav = (h1 + h2) / 2.0
+
+   
+
+    # @api.depends('Hav', 't90')
+    # def _compute_cv(self):
+    #  for line in self:
+    #     # existing mv logic can stay here too, if any
+
+    #     H_av = line.Hav or 0.0
+    #     t_90 = line.t90 or 0.0
+
+    #     if H_av and t_90:
+    #         # 0.848 * (Hav/2)^2 / (t90 * 60)
+    #         line.cv = 0.848 * (H_av / 2.0) ** 2 / (t_90 * 60.0)
+    #     else:
+    #         line.cv = 0.0
+
+    @api.depends('Hav', 't90')
+    def _compute_cv(self):
+     for line in self:
+        H_av = line.Hav or 0.0
+        t_90 = line.t90 or 0.0
+
+        if H_av != 0.0 and t_90 > 0.0:
+            line.cv = 0.848 * (H_av / 2.0) ** 2 / (t_90 * 60.0)
+        else:
+            line.cv = 0.0
+
+    @api.depends(
+    'change_void',
+    'applied_pressure',
+    'parent_id.consolidation_output_ids.applied_pressure',
+    'parent_id.consolidation_output_ids.serial_no',
+)
+    def _compute_cc(self):
+     for line in self:
+        de = line.change_void or 0.0
+        p2 = line.applied_pressure or 0.0
+
+        # previous line in same parent (by serial_no)
+        p1 = 0.0
+        if line.parent_id:
+            prev = line.parent_id.consolidation_output_ids \
+                .filtered(lambda l: l.serial_no == line.serial_no - 1)[:1]
+            if prev:
+                p1 = prev.applied_pressure or 0.0
+
+        if de and p2 and p1 and p2 != p1:
+            line.cc = de / log10(p2 / p1)
+        else:
+            line.cc = 0.0
+
+    ce = fields.Float(related='parent_id.ce', readonly=True)
+    cr = fields.Float(related='parent_id.cr', readonly=True)
+
+    
+    
+
+
+
+
+
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(ConsolidationBothCycleLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+
+
+class SwellingPressureLoadingLine(models.Model):
+    _name = "swelling.pressure.loading.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    time_m = fields.Float(string="Time (Minutes)")
+    sqrt_time = fields.Float(string="SQRT (t) min", compute="_compute_sqrt_time", store=True)
+    load_0_05_0_1 = fields.Float(string="0.05-0.1 kg/cm²",digits=(8,3))
+    load_0_1_0_2 = fields.Float(string="0.1-0.2 kg/cm²" ,digits=(8,3))
+    load_0_2_0_5 = fields.Float(string="0.2-0.5 kg/cm²" ,digits=(8,3))
+    load_0_5_1_0 = fields.Float(string="0.5-1.0 kg/cm²" ,digits=(8,3))
+    load_1_0_2_0 = fields.Float(string="1.0-2.0 kg/cm²" ,digits=(8,3))
+    load_2_0_4_0 = fields.Float(string="2.0-4.0 kg/cm²" ,digits=(8,3))
+    load_4_0_8_0 = fields.Float(string="4.0-8.0 " ,digits=(8,3))
+
+    @api.depends("time_m")
+    def _compute_sqrt_time(self):
+        for rec in self:
+            if rec.time_m:
+                rec.sqrt_time = rec.time_m ** 0.5
+            else:
+                rec.sqrt_time =  0.0
+
+
+   
+
+    
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SwellingPressureLoadingLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class SwellingPressureUnloadingLine(models.Model):
+    _name = "swelling.pressure.unloading.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    time_m = fields.Float(string="Time (Minutes)")
+    load_8_0_4_0 = fields.Float(string="8.0-4.0" ,digits=(8,3))
+    load_4_0_8_0 = fields.Float(string="4.0-8.0" ,digits=(8,3))
+    load_2_0_4_0 = fields.Float(string="2.0-4.0" ,digits=(8,3))
+    load_1_0_2_0 = fields.Float(string="1.0-2.0" ,digits=(8,3))
+    load_0_5_1_0 = fields.Float(string="0.5-1.0" ,digits=(8,3))
+    load_0_2_0_5 = fields.Float(string="0.2-0.5" ,digits=(8,3))
+    load_0_1_0_2 = fields.Float(string="0.1-0.2" ,digits=(8,3))
+    # load_0_05_0_1 = fields.Float(string="0.05-0.1",digits=(8,3))
+    setting_load = fields.Float(string="Setting Load",digits=(8,3))
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SwellingPressureUnloadingLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class SwellingPressureBothCycleLine(models.Model):
+    _name = "swelling.pressure.both.cycle.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    cylces=  fields.Char(string="Cycles" )
+
+    applied_pressure = fields.Float(string="Applied Pressure kg/cm²" , digits=(8,2))
+    final_read = fields.Float(string="Final Dial Reading mm" ,digits=(8,3),compute="_compute_final_read", store=True)
+    delta_h = fields.Float(string=" Δ𝐻 cm" ,digits=(8,3),compute="_compute_delta_h" ,store=True,)
+    specimen_height = fields.Float(string="Specimen Height (H) cm" ,digits=(8,3) , compute="_compute_specimen_height",
+    store=True,)
+    e_void = fields.Float(string="e = (H/Hs)-1" ,digits=(8,3), compute="_compute_e_void", store=True)
+    change_void = fields.Float(string="de", digits=(8, 3),
+                           compute="_compute_change_void", store=True)
+    d_sigma = fields.Float(string=" dσ" ,digits=(8,3), compute="_compute_d_sigma", store=True)
+    av = fields.Float(string="aᵥ (cm²/kg)" ,digits=(16,6) ,compute="_compute_av", store=True)
+    mv = fields.Float("mᵥ (cm²/kg)", digits=(8, 3), compute="_compute_mv", store=True)
+
+    t90 = fields.Float("t₉₀ (min)", digits=(8, 3))
+    Hav = fields.Float("Hav (cm)", digits=(8, 3),compute="_compute_Hav", store=True)
+
+    cv = fields.Float("cᵥ (cm²/sec)", digits=(8, 3), compute="_compute_cv", store=True)
+    cc = fields.Float("cᵥ (cm²/sec)", digits=(8, 3), compute="_compute_Cc", store=True)
+
+    @api.depends(
+    'applied_pressure', 'cylces',
+    'parent_id.swelling_ids.load_0_05_0_1',
+    'parent_id.swelling_ids.load_0_1_0_2',
+    'parent_id.swelling_ids.load_0_2_0_5',
+    'parent_id.swelling_ids.load_0_5_1_0',
+    'parent_id.swelling_ids.load_1_0_2_0',
+    'parent_id.swelling_ids.load_2_0_4_0',
+    'parent_id.swelling_ids.load_4_0_8_0',
+    'parent_id.swelling_unloading_ids.load_8_0_4_0',
+    'parent_id.swelling_unloading_ids.load_4_0_8_0',
+    'parent_id.swelling_unloading_ids.load_2_0_4_0',
+    'parent_id.swelling_unloading_ids.load_1_0_2_0',
+    'parent_id.swelling_unloading_ids.load_0_5_1_0',
+    'parent_id.swelling_unloading_ids.load_0_2_0_5',
+    'parent_id.swelling_unloading_ids.load_0_1_0_2',
+    # 'parent_id.swelling_unloading_ids.load_0_05_0_1',
+)
+    def _compute_final_read(self):
+     for line in self:
+        parent = line.parent_id
+        line.final_read = 0.0
+        if not parent:
+            continue
+
+        # helper to get min safely
+        def _min(vals):
+            vals = [v for v in vals if v not in (False, None)]
+            return min(vals) if vals else 0.0
+
+        # ------------- LOADING -------------
+        if line.cylces == '1st Cycle Loading':
+            if line.applied_pressure == 0.05:
+                # Excel: =Input!D21 (first loading row, 0 min)
+                recs = parent.swelling_ids.sorted('time_m')
+                line.final_read = recs[0].load_0_05_0_1 if recs else 0.0
+
+            elif line.applied_pressure == 0.10:
+                line.final_read = _min(parent.swelling_ids.mapped('load_0_05_0_1'))
+
+            elif line.applied_pressure == 0.20:
+                line.final_read = _min(parent.swelling_ids.mapped('load_0_1_0_2'))
+
+            elif line.applied_pressure == 0.40:
+                line.final_read = _min(parent.swelling_ids.mapped('load_0_2_0_5'))
+
+            elif line.applied_pressure == 0.80:
+                line.final_read = _min(parent.swelling_ids.mapped('load_0_5_1_0'))
+
+            elif line.applied_pressure == 1.60:
+                line.final_read = _min(parent.swelling_ids.mapped('load_1_0_2_0'))
+
+            elif line.applied_pressure == 3.20:
+                line.final_read = _min(parent.swelling_ids.mapped('load_2_0_4_0'))
+
+            elif line.applied_pressure == 6.40:
+                line.final_read = _min(parent.swelling_ids.mapped('load_4_0_8_0'))
+
+        # ------------- UNLOADING -------------
+        elif line.cylces == '1st Cycle Unloading':
+          if line.applied_pressure == 6.40:
+           # C23 = Input!N21 (first row only)
+            recs = parent.swelling_unloading_ids.sorted('time_m')
+            vals = [recs[0].load_8_0_4_0] if recs else []
+          elif line.applied_pressure == 3.20:
+           vals = parent.swelling_unloading_ids.mapped('load_8_0_4_0')
+          elif line.applied_pressure == 1.60:
+           vals = parent.swelling_unloading_ids.mapped('load_4_0_8_0')
+          elif line.applied_pressure == 0.80:
+           vals = parent.swelling_unloading_ids.mapped('load_2_0_4_0')
+          elif line.applied_pressure == 0.40:
+           vals = parent.swelling_unloading_ids.mapped('load_1_0_2_0')
+          elif line.applied_pressure == 0.20:
+           vals = parent.swelling_unloading_ids.mapped('load_0_5_1_0')
+          elif line.applied_pressure == 0.10:
+           vals = parent.swelling_unloading_ids.mapped('load_0_2_0_5')
+          elif line.applied_pressure == 0.05:
+           vals = parent.swelling_unloading_ids.mapped('load_0_1_0_2')
+          else:
+           vals = []
+
+          vals = [v for v in vals if v not in (False, None)]
+          line.final_read = max(vals) if vals else 0.0
+
+    @api.depends('final_read', 'applied_pressure', 'cylces',
+             'parent_id.swelling_output_ids.final_read',
+             'parent_id.swelling_output_ids.applied_pressure',
+             'parent_id.swelling_output_ids.cylces')
+    def _compute_delta_h(self):
+     for line in self:
+        parent = line.parent_id
+        line.delta_h = 0.0
+        if not parent:
+            continue
+
+        lines = list(parent.swelling_output_ids.sorted('serial_no'))
+        if not lines:
+            continue
+
+        try:
+            idx = lines.index(line)
+        except ValueError:
+            continue
+
+        prev = None
+
+        # first row → 0.000
+        if idx == 0:
+            line.delta_h = 0.0
+            continue
+
+        # normal rule: previous row with different pressure
+        prev = lines[idx - 1]
+
+        # special case: 0.10 unloading (like Excel D29 = (C27-C29)/10)
+        if line.cylces == '1st Cycle Unloading' and line.applied_pressure == 0.10:
+            prev = next(
+                (l for l in lines
+                 if l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.40),
+                prev,
+            )
+
+        # special case: 0.05 unloading (D30 = (C28-C30)/10, uses 0.20)
+        if line.cylces == '1st Cycle Unloading' and line.applied_pressure == 0.05:
+            prev = next(
+                (l for l in lines
+                 if l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.20),
+                prev,
+            )
+
+        if prev and prev.final_read is not False and line.final_read is not False:
+            line.delta_h = (prev.final_read - line.final_read) / 10.0
+        else:
+            line.delta_h = 0.0
+
+    
+
+    @api.depends('delta_h', 'parent_id.swelling_height',
+             'parent_id.swelling_output_ids.delta_h',
+             'parent_id.swelling_output_ids.applied_pressure',
+             'parent_id.swelling_output_ids.cylces')
+    def _compute_specimen_height(self):
+     for line in self:
+        parent = line.parent_id
+        line.specimen_height = 0.0
+        if not parent:
+            continue
+
+        lines = list(parent.swelling_output_ids.sorted('serial_no'))
+        if not lines:
+            continue
+
+        try:
+            idx = lines.index(line)
+        except ValueError:
+            continue
+
+        # first row: initial specimen height
+        if idx == 0:
+            line.specimen_height = parent.swelling_height or 0.0
+            continue
+
+        prev_line = None
+
+        # special case: 0.10 unloading  (E29 = E27 - D29)
+        if line.cylces == '1st Cycle Unloading' and line.applied_pressure == 0.10:
+            prev_line = next(
+                (l for l in lines
+                 if l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.40),
+                None
+            )
+
+        # special case: 0.05 unloading  (E30 = E28 - D30)
+        elif line.cylces == '1st Cycle Unloading' and line.applied_pressure == 0.05:
+            prev_line = next(
+                (l for l in lines
+                 if l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.20),
+                None
+            )
+
+        # normal case: previous row in sheet
+        if not prev_line:
+            prev_line = lines[idx - 1]
+
+        base_H = prev_line.specimen_height or 0.0
+        line.specimen_height = base_H - (line.delta_h or 0.0)
+
+
+    
+
+    @api.depends('specimen_height', 'parent_id.height_solid')
+    def _compute_e_void(self):
+     for line in self:
+        Hs = line.parent_id.height_solid or 0.0
+        if Hs:
+            line.e_void = (line.specimen_height / Hs) - 1.0
+        else:
+            line.e_void = 0.0
+
+    
+
+   
+
+    @api.depends(
+    'e_void', 'applied_pressure', 'cylces',
+    'parent_id.swelling_output_ids.e_void',
+    'parent_id.swelling_output_ids.applied_pressure',
+    'parent_id.swelling_output_ids.cylces'
+)
+    def _compute_change_void(self):
+     for line in self:
+        parent = line.parent_id
+        line.change_void = 0.0
+        if not parent:
+            continue
+
+        rs = parent.swelling_output_ids.sorted('serial_no')
+        lines = list(rs)  # convert to plain Python list
+        if not lines:
+            continue
+
+        try:
+            idx = lines.index(line)
+        except ValueError:
+            continue
+
+        prev_line = None
+
+        # special: 0.10 unloading -> G29 = F27 - F29
+        if line.cylces == '1st Cycle Unloading' and line.applied_pressure == 0.10:
+            prev_line = next(
+                (l for l in lines
+                 if l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.40),
+                None,
+            )
+
+        # special: 0.05 unloading -> G30 = F28 - F30
+        elif line.cylces == '1st Cycle Unloading' and line.applied_pressure == 0.05:
+            prev_line = next(
+                (l for l in lines
+                 if l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.20),
+                None,
+            )
+
+        # normal case: immediate previous row
+        else:
+            if idx > 0:
+                prev_line = lines[idx - 1]
+
+        if prev_line:
+            line.change_void = (prev_line.e_void or 0.0) - (line.e_void or 0.0)
+        else:
+            line.change_void = 0.0
+
+
+
+    
+
+    @api.depends(
+    'applied_pressure', 'cylces',
+    'parent_id.swelling_output_ids.applied_pressure',
+    'parent_id.swelling_output_ids.cylces'
+)
+    def _compute_d_sigma(self):
+     for line in self:
+        parent = line.parent_id
+        line.d_sigma = 0.0
+        if not parent:
+            continue
+
+        lines = list(parent.swelling_output_ids.sorted('serial_no'))
+        if not lines:
+            continue
+
+        try:
+            idx = lines.index(line)
+        except ValueError:
+            continue
+
+        prev = None
+
+        # ---------- LOADING ----------
+        if line.cylces == '1st Cycle Loading':
+            # default: previous loading row
+            if idx > 0:
+                prev = lines[idx - 1]
+
+            # special: 3.20 loading (H21 = B21-B19, previous = 0.80)
+            if line.applied_pressure == 3.20:
+                prev_080 = next(
+                    (l for l in lines
+                     if l.cylces == '1st Cycle Loading' and l.applied_pressure == 0.80),
+                    None
+                )
+                if prev_080:
+                    prev = prev_080
+
+        # ---------- UNLOADING ----------
+        elif line.cylces == '1st Cycle Unloading':
+            # default: previous unloading row
+            if idx > 0:
+                prev = lines[idx - 1]
+
+            # both last unloading rows subtract from 0.20 unloading
+            if line.applied_pressure in (0.10, 0.05):
+                prev_020 = next(
+                    (l for l in lines
+                     if l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.20),
+                    None
+                )
+                if prev_020:
+                    prev = prev_020
+
+        # ---------- set value ----------
+        if prev:
+            line.d_sigma = (line.applied_pressure or 0.0) - (prev.applied_pressure or 0.0)
+        else:
+            line.d_sigma = 0.0
+
+
+    @api.depends('change_void', 'd_sigma')
+    def _compute_av(self):
+     for line in self:
+        de = line.change_void or 0.0
+        ds = line.d_sigma or 0.0
+        if ds:
+            line.av = de / ds
+        else:
+            line.av = 0.0
+
+
+    @api.depends('av', 'parent_id.swell_void_ratio')
+    def _compute_mv(self):
+        for line in self:
+            e0 = line.parent_id.swell_void_ratio or 0.0
+            denom = 1.0 + e0
+            if denom:
+                line.mv = line.av / denom
+            else:
+                line.mv = 0.0
+
+    Hav = fields.Float("Hav (cm)", digits=(8, 4), compute="_compute_Hav", store=True)
+
+    @api.depends(
+    'specimen_height',
+    'parent_id.swelling_output_ids.specimen_height',
+    'parent_id.swelling_output_ids.serial_no',)
+    def _compute_Hav(self):
+     for line in self:
+        parent = line.parent_id
+        line.Hav = 0.0
+        if not parent:
+            continue
+
+        lines = list(parent.swelling_output_ids.sorted('serial_no'))
+        if not lines:
+            continue
+
+        try:
+            idx = lines.index(line)
+        except ValueError:
+            continue
+
+        if idx == 0:
+            # first row: Hav = H (same as Excel row 15)
+            line.Hav = line.specimen_height or 0.0
+        else:
+            prev = lines[idx - 1]
+            h1 = prev.specimen_height or 0.0
+            h2 = line.specimen_height or 0.0
+            line.Hav = (h1 + h2) / 2.0
+
+   
+
+    @api.depends('Hav', 't90')
+    def _compute_cv(self):
+     for line in self:
+        # existing mv logic can stay here too, if any
+
+        H_av = line.Hav or 0.0
+        t_90 = line.t90 or 0.0
+
+        if H_av and t_90:
+            # 0.848 * (Hav/2)^2 / (t90 * 60)
+            line.cv = 0.848 * (H_av / 2.0) ** 2 / (t_90 * 60.0)
+        else:
+            line.cv = 0.0
+
+    
+
+    @api.depends(
+    'change_void', 'applied_pressure', 'cylces',
+    'parent_id.swelling_output_ids.change_void',
+    'parent_id.swelling_output_ids.applied_pressure',
+    'parent_id.swelling_output_ids.cylces',
+    'parent_id.swelling_output_ids.serial_no',)
+    def _compute_Cc(self):
+     for line in self:
+        line.cc = 0.0
+        parent = line.parent_id
+        if not parent:
+            continue
+
+        rows = list(parent.swelling_output_ids.sorted('serial_no'))
+        if not rows:
+            continue
+
+        # find row by cycle + pressure with tolerance
+        def _find(cycle, pressure):
+            for r in rows:
+                if (
+                    r.cylces == cycle
+                    and r.applied_pressure is not None
+                    and abs(r.applied_pressure - pressure) < 1e-6
+                ):
+                    return r
+            return None
+
+        pair = None
+
+        # Loading rows: N17, N18, N19, N20, N21
+        if line.cylces == "1st Cycle Loading":
+            p = line.applied_pressure or 0.0
+
+            # N17 = G17 / LOG10(B17/B16)  -> 0.20 vs 0.10
+            if abs(p - 0.20) < 1e-6:
+                pair = _find("1st Cycle Loading", 0.10)
+
+            # N18 = G18 / LOG10(B18/B17)  -> 0.40 vs 0.20
+            elif abs(p - 0.40) < 1e-6:
+                pair = _find("1st Cycle Loading", 0.20)
+
+            # N19 = G19 / LOG10(B19/B18)  -> 0.80 vs 0.40
+            elif abs(p - 0.80) < 1e-6:
+                pair = _find("1st Cycle Loading", 0.40)
+
+            # N20 = G20 / LOG10(B20/B19)  -> 1.60 vs 0.80
+            elif abs(p - 1.60) < 1e-6:
+                pair = _find("1st Cycle Loading", 0.80)
+
+            # N21 = G21 / LOG10(B21/B19)  -> 3.20 vs 0.80
+            elif abs(p - 3.20) < 1e-6:
+                pair = _find("1st Cycle Loading", 0.80)
+
+        # Unloading rows: N24, N25, N26, N27, N28, N29, N30
+        elif line.cylces == "1st Cycle Unloading":
+            p = line.applied_pressure or 0.0
+
+            # N24 = G24 / LOG10(B24/B23)  -> 3.20 vs 6.40
+            if abs(p - 3.20) < 1e-6:
+                pair = _find("1st Cycle Unloading", 6.40)
+
+            # N25 = G25 / LOG10(B25/B24)  -> 1.60 vs 3.20
+            elif abs(p - 1.60) < 1e-6:
+                pair = _find("1st Cycle Unloading", 3.20)
+
+            # N26 = G26 / LOG10(B26/B25)  -> 0.80 vs 1.60
+            elif abs(p - 0.80) < 1e-6:
+                pair = _find("1st Cycle Unloading", 1.60)
+
+            # N27 = G27 / LOG10(B27/B26)  -> 0.40 vs 0.80
+            elif abs(p - 0.40) < 1e-6:
+                pair = _find("1st Cycle Unloading", 0.80)
+
+            # N28 = G28 / LOG10(B28/B27)  -> 0.20 vs 0.40
+            elif abs(p - 0.20) < 1e-6:
+                pair = _find("1st Cycle Unloading", 0.40)
+
+            # N29 = G29 / LOG10(B29/B27)  -> 0.10 vs 0.40
+            elif abs(p - 0.10) < 1e-6:
+                pair = _find("1st Cycle Unloading", 0.40)
+
+            # N30 = G30 / LOG10(B30/B28)  -> 0.05 vs 0.20
+            elif abs(p - 0.05) < 1e-6:
+                pair = _find("1st Cycle Unloading", 0.20)
+
+        # compute 6.cc if pair found
+        if pair and line.applied_pressure and pair.applied_pressure:
+            de = line.change_void or 0.0
+            ratio = (line.applied_pressure or 0.0) / (pair.applied_pressure or 1.0)
+            if de and ratio > 0:
+                line.cc = de / math.log10(ratio)
+            else:
+                line.cc = 0.0
+        else:
+            line.cc = 0.0
+
+  
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SwellingPressureBothCycleLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class SwellingPressureGraphLine(models.Model):
+    _name = "swelling.pressure.graph.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    cylces=  fields.Char(string="Cycles" )
+
+    applied_pressure = fields.Float(string="Applied Pressure kg/cm²" , digits=(8,2))
+    final_read = fields.Float(string="Final Dial Reading mm" ,digits=(8,3),compute="_compute_final_read", store=True)
+    delta_h = fields.Float(string=" Δ𝐻 cm" ,digits=(8,3),compute="_compute_delta_h" ,store=True)
+
+    @api.depends('applied_pressure', 'parent_id.swelling_ids')
+    def _compute_final_read(self):
+        for line in self:
+            final = 0.0
+            if line.parent_id and line.applied_pressure:
+                # map pressure to column name
+                field_map = {
+                    0.10: 'load_0_05_0_1',
+                    0.20: 'load_0_1_0_2',
+                    0.50: 'load_0_2_0_5',
+                    1.00: 'load_0_5_1_0',
+                    2.00: 'load_1_0_2_0',
+                    4.00: 'load_2_0_4_0',  # or load_4_0_8_0 depending on your design
+                }
+                field = field_map.get(round(line.applied_pressure, 2))
+                if field:
+                    # last non-zero reading for that pressure
+                    records = line.parent_id.swelling_ids.filtered(lambda r: getattr(r, field))
+                    if records:
+                        final = records.sorted('time_m')[-1][field]
+            line.final_read = final
+
+    @api.depends('final_read', 'parent_id.initial_read')
+    def _compute_delta_h(self):
+        for line in self:
+            if line.final_read and line.parent_id.initial_read:
+                line.delta_h = line.final_read - line.parent_id.initial_read
+            else:
+                line.delta_h = 0.0
+
+
+    
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SwellingPressureGraphLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class SoilPermeabilityTestLine(models.Model):
+    _name = "soil.permeability.test.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="Trial No",readonly=True, copy=False, default=1)
+
+    
+
+    initial_head = fields.Float(string="Initial Head (cm) (H1)" , digits=(8,0))
+    final_head = fields.Float(string="Final Head (cm) (H2)" , digits=(8,0))
+    initial_head1 = fields.Float(string="Initial Head (cm) (H1)" , digits=(8,0) ,compute="_compute_heads" ,store=True)
+    final_head2 = fields.Float(string="Final Head (cm) (H2)" , digits=(8,0) , compute="_compute_heads" ,store=True)
+    time = fields.Float(string="Time (sec)", digits=(12,2))
+    permeability = fields.Float("Permeability (cm/s)",compute="_compute_permeability", digits=(16, 9), store=True)
+    
+
+    @api.depends('initial_head','final_head','parent_id.distance')
+    def _compute_heads(self):
+        for line in self:
+            if line.initial_head and line.final_head and line.parent_id.distance :    
+                line.initial_head1 =  line.initial_head + line.parent_id.distance
+                line.final_head2 =  line.final_head +  line.parent_id.distance
+
+    @api.depends('parent_id.area_pipe', 'parent_id.area_soil_samp',
+             'parent_id.length_soil', 'time', 'initial_head1', 'final_head2')
+    def _compute_permeability(self):
+     for line in self:
+        p = line.parent_id
+        if p.area_pipe and p.area_soil_samp and p.length_soil and line.time and line.initial_head1 and line.final_head2:
+            num = p.area_pipe * p.length_soil
+            den = p.area_soil_samp * line.time
+            ln_term = math.log(line.initial_head1 / line.final_head2)
+            line.permeability = (num / den) * ln_term
+        else:
+            line.permeability = 0.0
+
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilPermeabilityTestLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 

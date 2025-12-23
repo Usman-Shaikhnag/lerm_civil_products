@@ -2029,6 +2029,631 @@
                 </field>
             </div>
 
+            <!-- DETERMINATION OF CONSOLIDATION PROPERTIES -->
+                    <div invisible = "consolidation_visible == False">
+                        <h1 class="text-center">
+                            <field name="consolidation_name" readonly="1" nolabel="1"/>
+                            <field name="consolidation_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not consolidation_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="consolidation_specific_gravity">Specific Gravity, G</label></td>
+                                <td><field name="consolidation_specific_gravity"/> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="consolidation_diameter">Diameter, D</label></td>
+                                <td><field name="consolidation_diameter"/> (cm)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="consolidation_height">Height, H</label></td>
+                                <td><field name="consolidation_height"/> (cm)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="consolidation_area">Area, A</label></td>
+                                <td><field name="consolidation_area"/> (cm2)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="consolidation_volume">Volume, Vol</label></td>
+                                <td><field name="consolidation_volume"/> (cm2)</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not consolidation_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="con_wt_of_ring">Weight Of Ring, w1</label></td>
+                                <td><field name="con_wt_of_ring"/> (gm)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="con_wt_wet_specimen_bf">Weight Of Wet Specimen + Ring, w2</label></td>
+                                <td><field name="con_wt_wet_specimen_bf"/> (gm) (Before Test)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="con_wt_wet_specimen_af">Weight Of Dry Specimen + Ring, w3</label></td>
+                                <td><field name="con_wt_wet_specimen_af"/> (gm) (After Test)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="con_wt_dry_specimen_af">Weight Of Dry Specimen + Ring, w3</label></td>
+                                <td><field name="con_wt_dry_specimen_af"/> (gm) (After Test)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="con_wt_dry_soil">Weight Of Dry Specimen + Ring, w4</label></td>
+                                <td><field name="con_wt_dry_soil"/> (gm)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="con_height_solid">Dry weight of soil, w4</label></td>
+                                <td><field name="con_height_solid"/> (cm)</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not consolidation_visible">
+                        <tbody>
+                             <tr>
+                                <td><span></span></td>
+                                <td><span>Before Test</span></td>
+                                <!-- <td><span>After Test</span></td> -->
+                            </tr>
+                            <tr>
+                                <td><label for="con_water_content">Water Content, wc</label></td>
+                                <td><field name="con_water_content"/> </td>
+                                <!-- <td><field name="water_content_1"/> </td> -->
+                            </tr>
+                            <tr>
+                                <td><label for="con_bulk_density_soil">Bulk Density of Soil, γb</label></td>
+                                <td><field name="con_bulk_density_soil"/> </td>
+                                <!-- <td><field name="bulk_density_soil_1"/> </td> -->
+                            </tr>
+                            <tr>
+                                <td><label for="con_dry_density_soil">Dry Density of Soil, γd</label></td>
+                                <td><field name="con_dry_density_soil"/> </td>
+                                <!-- <td><field name="dry_density_soil_1"/> </td> -->
+                            </tr>
+                            <tr>
+                                <td><label for="con_swell_void_ratio">Void ratio, e</label></td>
+                                <td><field name="con_swell_void_ratio"/> </td>
+                                <!-- <td><field name="swell_void_ratio_1"/></td> -->
+                            </tr>
+                            <tr>
+                                <td><label for="con_degree_sat">Degree of Saturation, Sr</label></td>
+                                <td><field name="con_degree_sat"/> </td>
+                                <!-- <td><field name="degree_sat_1"/> </td> -->
+                            </tr>
+                            
+                            
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2" invisible="not consolidation_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="con_initial_read">Initial Reading</label></td>
+                                    <td ><field name="con_initial_read" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="con_set_load_read">Setting load Reading</label></td>
+                                    <td><field name="con_set_load_read" class="blue-input" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not consolidation_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="evaluate_swell_pressure">Evalute swell pressure ??</label></td>
+                                    <td style="width:300px;"><field name="evaluate_swell_pressure" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+
+                    <div invisible = "consolidation_visible == False">
+                    <h2> 1st Cycle Loading	
+                    </h2>
+                        <field name="consolidation_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='time_m'/>
+                                <field name='sqrt_time'  />
+                                <field name='load_0_05_0_1'/>
+                                <field name='load_0_1_0_2'/>
+                                <field name='load_0_2_0_5'/>
+                                <field name='load_0_5_1_0'/>
+                                <field name='load_1_0_2_0'/>
+                                <field name='load_2_0_4_0'/>
+                                <field name='load_4_0_8_0'/>
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div invisible = "consolidation_visible == False">
+                    <h2> 1st Cycle UnLoading	
+                    </h2>
+                        <field name="consolidation_unloading_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='time_m'/>
+                                <field name='load_8_0_4_0'/>
+                                <field name='load_4_0_8_0'/>
+                                <field name='load_2_0_4_0'/>
+                                <field name='load_1_0_2_0'/>
+                                <field name='load_0_5_1_0'/>
+                                <field name='load_0_2_0_5'/>
+                                <field name='load_0_1_0_2'/>
+                                <!-- <field name='load_0_05_0_1'/> -->
+                                <field name='setting_load'/>
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+
+                    <div invisible = "consolidation_visible == False">
+                    <h2> Cycles	
+                    </h2>
+                        <field name="consolidation_output_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='cylces'/>
+                                <field name='applied_pressure'/>
+                                <field name='final_read'/>
+                                <field name='delta_h'/>
+                                <field name='specimen_height'/>
+                                <field name='e_void'/>
+                                <field name='change_void' digits="[16,3]"/>
+                                <field name='d_sigma' digits="[16,3]"/>
+                                <field name='av'  />
+                                <field name='mv' />
+                                <field name='t90' />
+                                <field name='Hav' />
+                                <field name='cv' />
+                                <field name='cc' />
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible="not consolidation_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="ce">Coefficient of expansion</label></td>
+                                    <td ><field name="ce" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="cr">Cr (recompression/swell index)</label></td>
+                                    <td><field name="cr" class="blue-input" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+
+
+                <!-- DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD	 -->
+                    <div invisible = "swelling_pressure_visible == False">
+                        <h1 class="text-center">
+                            <field name="swelling_pressure_name" readonly="1" nolabel="1"/>
+                            <field name="swelling_pressure_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not swelling_pressure_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="swelling_specific_gravity">Specific Gravity, G</label></td>
+                                <td><field name="swelling_specific_gravity"/> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="swelling_diameter">Diameter, D</label></td>
+                                <td><field name="swelling_diameter"/> (cm)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="swelling_height">Height, H</label></td>
+                                <td><field name="swelling_height"/> (cm)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="swelling_area">Area, A</label></td>
+                                <td><field name="swelling_area"/> (cm2)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="swelling_volume">Volume, Vol</label></td>
+                                <td><field name="swelling_volume"/> (cm2)</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not swelling_pressure_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="wt_of_ring">Weight Of Ring, w1</label></td>
+                                <td><field name="wt_of_ring"/> (gm)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="wt_wet_specimen_bf">Weight Of Wet Specimen + Ring, w2</label></td>
+                                <td><field name="wt_wet_specimen_bf"/> (gm) (Before Test)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="wt_wet_specimen_af">Weight Of Wet Specimen + Ring, w5</label></td>
+                                <td><field name="wt_wet_specimen_af"/> (gm) (After Test)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="wt_dry_specimen_af">Weight Of Dry Specimen + Ring, w3</label></td>
+                                <td><field name="wt_dry_specimen_af"/> (gm) (After Test)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="wt_dry_soil">Weight Of Dry Specimen + Ring, w4</label></td>
+                                <td><field name="wt_dry_soil"/> (gm)</td>
+                            </tr>
+                            <tr>
+                                <td><label for="height_solid">Dry weight of soil, w4</label></td>
+                                <td><field name="height_solid"/> (cm)</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not swelling_pressure_visible">
+                        <tbody>
+                             <tr>
+                                <td><span></span></td>
+                                <td><span>Before Test</span></td>
+                                <td><span>After Test</span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="water_content">Water Content, wc</label></td>
+                                <td><field name="water_content"/> </td>
+                                <td><field name="water_content_1"/> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="bulk_density_soil">Bulk Density of Soil, γb</label></td>
+                                <td><field name="bulk_density_soil"/> </td>
+                                <td><field name="bulk_density_soil_1"/> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="dry_density_soil">Dry Density of Soil, γd</label></td>
+                                <td><field name="dry_density_soil"/> </td>
+                                <td><field name="dry_density_soil_1"/> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="swell_void_ratio">Void ratio, e</label></td>
+                                <td><field name="swell_void_ratio"/> </td>
+                                <td><field name="swell_void_ratio_1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="degree_sat">Degree of Saturation, Sr</label></td>
+                                <td><field name="degree_sat"/> </td>
+                                <td><field name="degree_sat_1"/> </td>
+                            </tr>
+                            
+                            
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-2" invisible="not swelling_pressure_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="initial_read">Initial Reading</label></td>
+                                    <td ><field name="initial_read" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="set_load_read">Setting load Reading</label></td>
+                                    <td><field name="set_load_read" class="blue-input" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div invisible = "swelling_pressure_visible == False">
+                    <h2> 1st Cycle Loading	
+                    </h2>
+                        <field name="swelling_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='time_m'/>
+                                <field name='sqrt_time'  />
+                                <field name='load_0_05_0_1'/>
+                                <field name='load_0_1_0_2'/>
+                                <field name='load_0_2_0_5'/>
+                                <field name='load_0_5_1_0'/>
+                                <field name='load_1_0_2_0'/>
+                                <field name='load_2_0_4_0'/>
+                                <field name='load_4_0_8_0'/>
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div invisible = "swelling_pressure_visible == False">
+                    <h2> 1st Cycle UnLoading	
+                    </h2>
+                        <field name="swelling_unloading_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='time_m'/>
+                                <field name='load_8_0_4_0'/>
+                                <field name='load_4_0_8_0'/>
+                                <field name='load_2_0_4_0'/>
+                                <field name='load_1_0_2_0'/>
+                                <field name='load_0_5_1_0'/>
+                                <field name='load_0_2_0_5'/>
+                                <field name='load_0_1_0_2'/>
+                                <!-- <field name='load_0_05_0_1'/> -->
+                                <field name='setting_load'/>
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+
+                    <div invisible = "swelling_pressure_visible == False">
+                    <h2> Cycles	
+                    </h2>
+                        <field name="swelling_output_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='cylces'/>
+                                <field name='applied_pressure'/>
+                                <field name='final_read'/>
+                                <field name='delta_h'/>
+                                <field name='specimen_height'/>
+                                <field name='e_void'/>
+                                <field name='change_void'/>
+                                <field name='d_sigma'/>
+                                <field name='av' />
+                                <field name='mv' />
+                                <field name='t90' />
+                                <field name='Hav' />
+                                <field name='cv' />
+                                <field name='cc' />
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div invisible = "swelling_pressure_visible == False">
+                    <h2> Graph	
+                    </h2>
+                        <field name="swelling_table_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='applied_pressure'/>
+                                <field name='final_read'/>
+                                <field name='delta_h'/>
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not swelling_pressure_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="swelling_pressure">Swelling Pressure (kg/cm2)	</label></td>
+                                <td><field name="swelling_pressure"/> </td>
+                            </tr>
+                            
+                            
+                        </tbody>
+                    </table>
+
+                    <!-- <field name="graph_image_swell" widget="image" class="oe_avatar"/> -->
+
+                    <div invisible = "swelling_pressure_visible == False" class="custom_table_borders text-center">
+                        <field name="graph_image_swell" widget="image"  readonly="1"/>
+                    </div>
+                    <group/>
+
+
+
+                    <!-- DETERMINE PERMEABILITY OF SOIL - BY FALLING HEAD	-->
+
+                    <div invisible = "permeability_falling_visible == False">
+                        <h1 class="text-center">
+                            <field name="permeability_falling_name" readonly="1" nolabel="1"/>
+                            <field name="permeability_falling_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not permeability_falling_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="dia_standpipe">Dia of Stand Pipe, d (cm)</label></td>
+                                    <td ><field name="dia_standpipe" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dia_soil_sample">Dia of Soil Sample, D (cm)</label></td>
+                                    <td ><field name="dia_soil_sample" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="length_soil">Length of Soil Sample, L (cm)</label></td>
+                                    <td ><field name="length_soil" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="distance">Distance between 0 of scale to the middle of the bottom opening, cm</label></td>
+                                    <td ><field name="distance" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="bt_wt_soil_mould">Weight of wet soil + mould specimen before test, Wt, gm:</label></td>
+                                    <td><field name="bt_wt_soil_mould" class="blue-input" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="at_wt_soil">Weight of wet soil specimen after test, Wt, gm:</label></td>
+                                    <td><field name="at_wt_soil" class="blue-input" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="wt_empty_mould">Empty weight of mould (gm)</label></td>
+                                    <td><field name="wt_empty_mould" class="blue-input" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="wt_dry_soil">Dry weight of soil</label></td>
+                                    <td><field name="wt_dry_soil" class="blue-input" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not permeability_falling_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="area_pipe">Area of Pipe (sq.cm)</label></td>
+                                    <td ><field name="area_pipe" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="area_soil_samp">Area of Soil Sample (sq.cm)</label></td>
+                                    <td ><field name="area_soil_samp"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="vol_per_mould">Volume of permeabiliy mould (cc)</label></td>
+                                    <td ><field name="vol_per_mould" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="bulk_wt_soil">Bulk wt of soil (gm)</label></td>
+                                    <td ><field name="bulk_wt_soil" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="moisture_con_bt">Moisture Content (before Test), %</label></td>
+                                    <td><field name="moisture_con_bt" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="moisture_con_at">Moisture Content (After Test), %</label></td>
+                                    <td><field name="moisture_con_at"  /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="bulk_density">Bulk density (gm/cc)</label></td>
+                                    <td><field name="bulk_density" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dry_density">Dry density (gm/cc)</label></td>
+                                    <td><field name="dry_density"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not permeability_falling_visible">
+                        <tbody>
+                             <tr>
+                                <td><span></span></td>
+                                <td><label for="W1_soil">W1</label></td>
+                                <td><label for="W2_soil">W2</label></td>
+                                <td><label for="W3_soil">W3 = (W2-W1)</label></td>
+                                <td><label for="volume_soil">Volume (V)</label></td>
+                                <td><label for="density_soils">Density (γ) g/cc</label></td>
+                                <td><label for="specific_gravity_per">Specific Gravity</label></td>
+                                
+                            </tr>
+                            <tr>
+                                <td><span>Density of Water at 27°C</span></td>
+                                <td><field name="W1_soil"/> </td>
+                                <td><field name="W2_soil"/> </td>
+                                <td><field name="W3_soil"/> </td>
+                                <td><field name="volume_soil"/> </td>
+                                <td><field name="density_soils"/> </td>
+                                <td class="text-center" rowspan = "2" style="padding-top:25px;"><field name="specific_gravity_per"/> </td>
+
+                            </tr>
+                            <tr>
+                                <td><span>Density of Water at 28°C</span></td>
+                                <td><field name="W1_soil_28"/> </td>
+                                <td><field name="W2_soil_28"/> </td>
+                                <td><field name="W3_soil_28"/> </td>
+                                <td><field name="volume_soil_28"/> </td>
+                                <td><field name="density_soils_28"/> </td>
+                                
+                            </tr>
+                            
+                            
+                        </tbody>
+                    </table>
+
+                    <div invisible = "permeability_falling_visible == False">
+                    
+                        <field name="permeability_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='initial_head'/>
+                                <field name='final_head'/>
+                                <field name='initial_head1'/>
+                                <field name='final_head2'/>
+                                <field name='time'/>
+                                <field name='permeability'/>
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not permeability_falling_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_permeability">Average Permeability Avg KT :</label></td>
+                                    <td ><field name="avg_permeability"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="avg_permeability_27">Average Permeability K27 :</label></td>
+                                    <td><field name="avg_permeability_27"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
 
 
                  
