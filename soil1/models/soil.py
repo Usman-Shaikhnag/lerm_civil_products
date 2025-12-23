@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import io
 import base64
+from math import log10
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -1882,78 +1883,78 @@ class Soil(models.Model):
     volume_wet_name = fields.Char("Name",default="Volume of wet soil(V1)")
 
     # Permeability Falling Head Test
-    permeability_falling_name = fields.Char("Name",default="Permeability Falling Head Test")
-    permeability_falling_visible = fields.Boolean("Permeability Falling Head Test Visible",compute="_compute_visible")
+    # permeability_falling_name = fields.Char("Name",default="Permeability Falling Head Test")
+    # permeability_falling_visible = fields.Boolean("Permeability Falling Head Test Visible",compute="_compute_visible")
 
    
-    length = fields.Float(string="Length of Soil Specimen (L) [cm]", digits=(12,2))
-    diameter_mold = fields.Float(string="Diameter of Mold (D) [cm]", digits=(12,2))
-    diameter_standpipe = fields.Float(string="Diameter of Stand Pipe (d) [cm]", digits=(12,2))
+    # length = fields.Float(string="Length of Soil Specimen (L) [cm]", digits=(12,2))
+    # diameter_mold = fields.Float(string="Diameter of Mold (D) [cm]", digits=(12,2))
+    # diameter_standpipe = fields.Float(string="Diameter of Stand Pipe (d) [cm]", digits=(12,2))
 
-    # Child lines
-    test_line_ids = fields.One2many("mechanical.permeability.line1", "parent_id", string="Test Readings")
+    # # Child lines
+    # test_line_ids = fields.One2many("mechanical.permeability.line1", "parent_id", string="Test Readings")
 
-    # Average K
-    avg_k = fields.Float(string="Average Permeability (k) [cm/s]", compute="_compute_avg_k", store=True, digits=(12,2))
+    # # Average K
+    # avg_k = fields.Float(string="Average Permeability (k) [cm/s]", compute="_compute_avg_k", store=True, digits=(12,2))
 
-    @api.depends("test_line_ids.k_value")
-    def _compute_avg_k(self):
-        for rec in self:
-            if rec.test_line_ids:
-                vals = rec.test_line_ids.mapped("k_value")
-                rec.avg_k = sum(vals) / len(vals)
-            else:
-                rec.avg_k = 0.0
+    # @api.depends("test_line_ids.k_value")
+    # def _compute_avg_k(self):
+    #     for rec in self:
+    #         if rec.test_line_ids:
+    #             vals = rec.test_line_ids.mapped("k_value")
+    #             rec.avg_k = sum(vals) / len(vals)
+    #         else:
+    #             rec.avg_k = 0.0
 
-    avg_k_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_k_conformity", store=True)
+    # avg_k_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_avg_k_conformity", store=True)
 
-    @api.depends('avg_k','eln_ref','grade')
-    def _compute_avg_k_conformity(self):
+    # @api.depends('avg_k','eln_ref','grade')
+    # def _compute_avg_k_conformity(self):
         
-        for record in self:
-            record.avg_k_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
+    #     for record in self:
+    #         record.avg_k_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
                     
-                    lower = record.avg_k - record.avg_k*mu_value
-                    upper = record.avg_k + record.avg_k*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_k_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_k_conformity = 'fail'
+    #                 lower = record.avg_k - record.avg_k*mu_value
+    #                 upper = record.avg_k + record.avg_k*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.avg_k_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.avg_k_conformity = 'fail'
 
-    avg_k_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_avg_k_nabl", store=True)
+    # avg_k_nabl = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_avg_k_nabl", store=True)
 
-    @api.depends('avg_k','eln_ref','grade')
-    def _compute_avg_k_nabl(self):
+    # @api.depends('avg_k','eln_ref','grade')
+    # def _compute_avg_k_nabl(self):
         
-        for record in self:
-            record.avg_k_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
+    #     for record in self:
+    #         record.avg_k_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table
+    #         # for material in materials:
+    #         #     if material.grade.id == record.grade.id:
+    #         lab_min = line.lab_min_value
+    #         lab_max = line.lab_max_value
+    #         mu_value = line.mu_value
             
-            lower = record.avg_k - record.avg_k*mu_value
-            upper = record.avg_k + record.avg_k*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_k_nabl = 'pass'
-                break
-            else:
-                record.avg_k_nabl = 'fail'
+    #         lower = record.avg_k - record.avg_k*mu_value
+    #         upper = record.avg_k + record.avg_k*mu_value
+    #         if lower >= lab_min and upper <= lab_max:
+    #             record.avg_k_nabl = 'pass'
+    #             break
+    #         else:
+    #             record.avg_k_nabl = 'fail'
 
      # Specific Gravity
     specific_gravity_name = fields.Char("Name",default="Specific Gravity")
@@ -4850,54 +4851,54 @@ class VolumeWetLINE(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
-class SoilPermeabilityLine(models.Model):
-    _name = "mechanical.permeability.line1"
-    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+# class SoilPermeabilityLine(models.Model):
+#     _name = "mechanical.permeability.line1"
+#     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
-    serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
+#     serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
 
-    h1 = fields.Float(string="Initial Head (h1) [cm]", digits=(12,2))
-    h2 = fields.Float(string="Final Head (h2) [cm]", digits=(12,2))
-    t = fields.Float(string="Time Interval (t) [s]", digits=(12,2))
+#     h1 = fields.Float(string="Initial Head (h1) [cm]", digits=(12,2))
+#     h2 = fields.Float(string="Final Head (h2) [cm]", digits=(12,2))
+#     t = fields.Float(string="Time Interval (t) [s]", digits=(12,2))
 
-    k_value = fields.Float(string="Permeability (k) [cm/s]", compute="_compute_k_value", store=True, digits=(12,2))
+#     k_value = fields.Float(string="Permeability (k) [cm/s]", compute="_compute_k_value", store=True, digits=(12,2))
 
-    @api.depends("h1","h2","t","parent_id.length","parent_id.diameter_mold","parent_id.diameter_standpipe")
-    def _compute_k_value(self):
-        for rec in self:
-            rec.k_value = 0.0
-            if all([rec.h1, rec.h2, rec.t, rec.parent_id.length, rec.parent_id.diameter_mold, rec.parent_id.diameter_standpipe]):
-                # Areas
-                A = math.pi * rec.parent_id.diameter_mold**2 / 4.0
-                a = math.pi * rec.parent_id.diameter_standpipe**2 / 4.0
-                L = rec.parent_id.length
-                t = rec.t
+#     @api.depends("h1","h2","t","parent_id.length","parent_id.diameter_mold","parent_id.diameter_standpipe")
+#     def _compute_k_value(self):
+#         for rec in self:
+#             rec.k_value = 0.0
+#             if all([rec.h1, rec.h2, rec.t, rec.parent_id.length, rec.parent_id.diameter_mold, rec.parent_id.diameter_standpipe]):
+#                 # Areas
+#                 A = math.pi * rec.parent_id.diameter_mold**2 / 4.0
+#                 a = math.pi * rec.parent_id.diameter_standpipe**2 / 4.0
+#                 L = rec.parent_id.length
+#                 t = rec.t
 
-                if rec.h1 != rec.h2 and A > 0 and a > 0 and L > 0 and t > 0:
-                    h1, h2 = rec.h1, rec.h2
-                    if h1 < h2:
-                        h1, h2 = h2, h1  # swap to ensure positive log
-                    k = (2.303 * a * L) / (A * t) * math.log10(h1 / h2)
-                    rec.k_value = round(k, 2)
+#                 if rec.h1 != rec.h2 and A > 0 and a > 0 and L > 0 and t > 0:
+#                     h1, h2 = rec.h1, rec.h2
+#                     if h1 < h2:
+#                         h1, h2 = h2, h1  # swap to ensure positive log
+#                     k = (2.303 * a * L) / (A * t) * math.log10(h1 / h2)
+#                     rec.k_value = round(k, 2)
 
     
 
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
+#     @api.model
+#     def create(self, vals):
+#         # Set the serial_no based on the existing records for the same parent
+#         if vals.get('parent_id'):
+#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+#             if existing_records:
+#                 max_serial_no = max(existing_records.mapped('serial_no'))
+#                 vals['serial_no'] = max_serial_no + 1
 
-        return super(SoilPermeabilityLine, self).create(vals)
+#         return super(SoilPermeabilityLine, self).create(vals)
 
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
+#     def _reorder_serial_numbers(self):
+#         # Reorder the serial numbers based on the positions of the records in child_lines
+#         records = self.sorted('id')
+#         for index, record in enumerate(records):
+#             record.serial_no = index + 1
 
 
 
