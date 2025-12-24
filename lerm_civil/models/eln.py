@@ -43,8 +43,8 @@ class ELN(models.Model):
     witness_name = fields.Char(string="Witness Name")
     witness_description = fields.Char(string="Witness Description")
     
-    # witness_path = fields.Char(string="Witness")
-    # attachment_path = fields.Char(string="Attachment")
+    witness_path = fields.Char(string="Witness")
+    attachment_path = fields.Char(string="Attachment")
 
     @api.model
     def get_eln_ids_for_material_name(self, name):

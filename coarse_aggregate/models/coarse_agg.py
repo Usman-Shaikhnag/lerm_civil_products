@@ -2388,12 +2388,14 @@ class CoarseAggregateMechanical(models.Model):
             )
 
             for result in technician_results:
+                # Sieve Analysis
                 if result.parameter.internal_id == 'c2168fff-e47c-4155-99ff-9d7dc223e768':
                         result.calculated = True
 
                 # Elongation
                 if result.parameter.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
                     result.result_char = round(self.elongation_index,2)
+                    result.calculated = True
                     if self.elongation_index_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2403,6 +2405,7 @@ class CoarseAggregateMechanical(models.Model):
                 # Flakiness
                 if result.parameter.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
                     result.result_char = round(self.flakiness_index,2)
+                    result.calculated = True
                     if self.flakiness_index_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2413,6 +2416,7 @@ class CoarseAggregateMechanical(models.Model):
                 # specific gravity 
                 if result.parameter.internal_id == '3114db41-cfa7-49ad-9324-fcdbc9661038':
                     result.result_char = round(self.avg_specific_gravity,2)
+                    result.calculated = True
                     if self.avg_specific_gravity_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2422,6 +2426,7 @@ class CoarseAggregateMechanical(models.Model):
                 # water absorbtion
                 if result.parameter.internal_id == '22ee804f-41a3-4fd1-a301-a8d9180fba10':
                     result.result_char = round(self.avg_water_absorption,2)
+                    result.calculated = True
                     if self.avg_water_absorption_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2431,6 +2436,7 @@ class CoarseAggregateMechanical(models.Model):
                 # impact value 
                 if result.parameter.internal_id == '2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2':
                     result.result_char = round(self.average_impact_value,2)
+                    result.calculated = True
                     if self.impact_value_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2441,6 +2447,7 @@ class CoarseAggregateMechanical(models.Model):
                 # crushing value 
                 if result.parameter.internal_id == 'ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71':
                     result.result_char = round(self.average_crushing_value,2)
+                    result.calculated = True
                     if self.average_crushing_value_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2451,6 +2458,7 @@ class CoarseAggregateMechanical(models.Model):
                 # Abrasion Value
                 if result.parameter.internal_id == '37f2161e-5cc0-413f-b76c-10478c65baf9':
                     result.result_char = round(self.avg_abrasion_value,2)
+                    result.calculated = True
                     if self.avg_abrasion_value_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2460,6 +2468,7 @@ class CoarseAggregateMechanical(models.Model):
                 # 10 % fine Values
                 if result.parameter.internal_id == '5f506c08-4369-491d-93a6-030514c29661':
                     result.result_char = round(self.avg_load_for_10fine,2)
+                    result.calculated = True
                     if self.avg_load_for_10fine_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2469,6 +2478,7 @@ class CoarseAggregateMechanical(models.Model):
                 # Compacted density
                 if result.parameter.internal_id == '357f579d-a310-4015-bc11-28a85c53ac83':
                     result.result_char = round(self.compacted_density,2)
+                    result.calculated = True
                     if self.compacted_density_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2478,6 +2488,7 @@ class CoarseAggregateMechanical(models.Model):
                 # Loose Density
                 if result.parameter.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
                     result.result_char = round(self.loose_density,2)
+                    result.calculated = True
                     if self.loose_density_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2487,6 +2498,7 @@ class CoarseAggregateMechanical(models.Model):
                 # % void Compacted density
                 if result.parameter.internal_id == '04a95dc1-4b45-4817-a9b2-dd722bbe6281':
                     result.result_char = round(self.voids_compacted_density,2)
+                    result.calculated = True
                     if self.voids_compacted_density_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2497,6 +2509,7 @@ class CoarseAggregateMechanical(models.Model):
                 # % void Loose density
                 if result.parameter.internal_id == '919587f2-5b45-4da1-bb73-10164b861833':
                     result.result_char = round(self.voids_loose_density,2)
+                    result.calculated = True
                     if self.voids_loose_density_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
@@ -2505,6 +2518,7 @@ class CoarseAggregateMechanical(models.Model):
 
                 # Rate Of Evaporation
                 if result.parameter.internal_id == '8e9d9c62-e634-47a2-a689-2c6c8538493c':
+                    result.calculated = True
                     result.result_char = round(self.avg_rate_evaporation,2)
                     if self.avg_rate_evaporation_nabl == 'pass':
                         result.nabl_status = 'nabl'
@@ -2515,15 +2529,12 @@ class CoarseAggregateMechanical(models.Model):
                 # Soundness Test
                 if result.parameter.internal_id == 'c8cd69bd-1f89-4f22-bae6-b81de73e6c2':
                     result.result_char = round(self.total_avg_sulphae,2)
+                    result.calculated = True
                     if self.total_avg_sulphae_nabl == 'pass':
                         result.nabl_status = 'nabl'
                     else:
                         result.nabl_status = 'non-nabl'
                     continue
-
-
-                
-
 
         return {
                 'view_mode': 'form',
@@ -2552,12 +2563,24 @@ class CoarseAggregateMechanical(models.Model):
         return super(CoarseAggregateMechanical, self).read(fields=fields, load=load)
 
    
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
     def get_all_fields(self):
         record = self.env['mechanical.coarse.aggregate'].browse(self.ids[0])
