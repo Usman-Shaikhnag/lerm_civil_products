@@ -27,6 +27,18 @@ except ImportError:
     plt = None
     np = None
     ticker = None
+from matplotlib.ticker import FormatStrFormatter
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
+
+# Smooth curve साठी या दोन लायब्ररीज लागतात.
+# जर त्या नसतील तर कोड एरर न देता साधी लाईन वापरेल.
+try:
+    import numpy as np
+    from scipy.interpolate import make_interp_spline
+    HAS_SCIPY = True
+except ImportError:
+    HAS_SCIPY = False
 
 
 
@@ -2960,6 +2972,17 @@ class Soil(models.Model):
             record.gsa_graph_image = base64.b64encode(buffer.read())
             buffer.close()
 
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Soil Form',
+            'res_model': 'mechanical.soil1',
+            'res_id': record.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+    
+
          # DETERMINATION OF CONSOLIDATION PROPERTIES		
     consolidation_name = fields.Char("Name",default="DETERMINATION OF CONSOLIDATION PROPERTIES")
     consolidation_visible = fields.Boolean("DETERMINATION OF CONSOLIDATION PROPERTIES",compute="_compute_visible")	
@@ -3105,6 +3128,100 @@ class Soil(models.Model):
 
     consolidation_ids = fields.One2many("consolidation.loading.line", "parent_id", string="1st Cycle Loading",default=lambda self: self.default_con_gauge_reading())
 
+
+
+
+
+    # --- 1. प्रत्येक ग्राफसाठी वेगळे Image Field ---
+    consolidation_graph_05_1 = fields.Binary(string="Graph 0.05-0.1")
+    consolidation_graph_1_2 = fields.Binary(string="Graph 0.1-0.2")
+    consolidation_graph_2_5 = fields.Binary(string="Graph 0.2-0.5")
+    consolidation_graph_5_10 = fields.Binary(string="Graph 0.5-1.0")
+    consolidation_graph_10_20 = fields.Binary(string="Graph 1.0-2.0")
+    consolidation_graph_20_40 = fields.Binary(string="Graph 2.0-4.0")
+    consolidation_graph_40_80 = fields.Binary(string="Graph 4.0-8.0")
+
+
+
+    def action_generate_graph(self):
+        for record in self:
+            sorted_lines = sorted(record.consolidation_ids, key=lambda x: x.sqrt_time if x.sqrt_time else 0)
+
+            graph_configs = [
+                ('load_0_05_0_1', '1st Cycle Loading - (0.05 - 0.1)', 'consolidation_graph_05_1', (10, 6)),
+                ('load_0_1_0_2',  '1st Cycle Loading - (0.1 - 0.2)',  'consolidation_graph_1_2', (10, 6)),
+                ('load_0_2_0_5',  '1st Cycle Loading - (0.2 - 0.5)',  'consolidation_graph_2_5', (10, 6)),
+                ('load_0_5_1_0',  '1st Cycle Loading - (0.5 - 1.0)',  'consolidation_graph_5_10', (10, 6)),
+                
+                ('load_1_0_2_0',  '1st Cycle Loading - (1.0 - 2.0)',  'consolidation_graph_10_20', (20, 8)),
+                ('load_2_0_4_0',  '1st Cycle Loading - (2.0 - 4.0)',  'consolidation_graph_20_40', (20, 8)),
+                ('load_4_0_8_0',  '1st Cycle Loading - (4.0 - 8.0)',  'consolidation_graph_40_80', (20, 8)),
+            ]
+
+            for line_field, title, image_field, fig_size in graph_configs:
+                image_data = self._plot_graph(sorted_lines, line_field, title, fig_size)
+                record[image_field] = image_data
+
+    def _plot_graph(self, lines, y_field_name, title, fig_size):
+        """
+        Input: Lines, Field Name, Title, and Figure Size
+        """
+        x_values = []
+        y_values = []
+
+        for line in lines:
+            y_val = getattr(line, y_field_name, None)
+            
+            if line.sqrt_time is not None and y_val is not None:
+                x_values.append(line.sqrt_time)
+                y_values.append(y_val)
+
+        if not x_values or not y_values:
+            return False
+
+        # --- Plotting Logic ---
+        
+        can_smooth = HAS_SCIPY and len(x_values) >= 3
+
+        fig, ax = plt.subplots(figsize=fig_size)
+
+        if can_smooth:
+            try:
+                x_np = np.array(x_values)
+                y_np = np.array(y_values)
+                x_new = np.linspace(x_np.min(), x_np.max(), 300)
+                spl = make_interp_spline(x_np, y_np, k=3)
+                y_smooth = spl(x_new)
+                
+                ax.plot(x_new, y_smooth, color='black', linestyle='-', linewidth=1.5)
+                ax.plot(x_values, y_values, marker='o', markersize=6, color='black', linestyle='None')
+            except Exception:
+                ax.plot(x_values, y_values, marker='o', markersize=6, linestyle='-', color='black', linewidth=1.5)
+        else:
+            ax.plot(x_values, y_values, marker='o', markersize=6, linestyle='-', color='black', linewidth=1.5)
+
+        # Formatting
+        ax.set_xlim(0, 20)
+        ax.set_xticks(range(0, 21, 2))
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+        
+        ax.grid(which='major', linestyle='-', linewidth='0.5', color='gray')
+        ax.minorticks_on()
+        ax.grid(which='minor', linestyle=':', linewidth='0.5', color='lightgray')
+
+        ax.set_title(title, fontsize=16)
+        ax.set_xlabel('SQRT (Time in minutes)', fontsize=12)
+        ax.set_ylabel('Dial Gauge Reading (mm)', fontsize=12)
+
+        # Save Image
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
+        plt.close(fig)
+        buf.seek(0)
+        
+        return base64.b64encode(buf.getvalue())
+
+    
     @api.model
     def default_con_gauge_reading(self):
         default_lines = [
@@ -3853,7 +3970,7 @@ class Soil(models.Model):
 
     permeability_ids = fields.One2many("soil.permeability.test.line", "parent_id", string="DETERMINE PERMEABILITY OF SOIL - BY FALLING HEAD")
 
-    avg_permeability = fields.Float("Average Permeability Avg KT :",compute="_compute_avg_permeability", digits=(16, 9), store=True)
+    avg_permeability = fields.Float("Average Permeability Avg KT :", digits=(16, 9), store=True)
 
     avg_permeability_27 = fields.Float("Average Permeability K27 :",compute="_compute_avg_permeability", digits=(16, 9), store=True)
 
@@ -3887,15 +4004,7 @@ class Soil(models.Model):
 
 
 
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Soil Form',
-            'res_model': 'mechanical.soil1',
-            'res_id': record.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
-
+      
     
 
 
