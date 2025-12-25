@@ -127,11 +127,19 @@ class ELN(models.Model):
     
     quantity = fields.Integer(string="Quantity",default=1)
     source_sample = fields.Char(string="Source of Sample",compute="_compute_source_sample",store=True)
+    # lab_id = fields.Char(
+    #     string="Lab ID",
+    #     readonly=True,
+    #     tracking=True,
+    #     store=True
+    # )
+
     lab_id = fields.Char(
         string="Lab ID",
+        related='sample_id.lab_id',  # हे sample_id मधील lab_id कॉपी करेल
+        store=True,                  # डेटाबेसमध्ये स्टोअर करण्यासाठी
         readonly=True,
-        tracking=True,
-        store=True
+        tracking=True
     )
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")

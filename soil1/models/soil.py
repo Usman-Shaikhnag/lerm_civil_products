@@ -2788,6 +2788,7 @@ class Soil(models.Model):
         default="gsa_curve.png"
     )
 
+
     
 
     # def action_generate_gsa_graph(self):
