@@ -1039,11 +1039,17 @@ class PPCCementNormalConsistency(models.Model):
 
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
-         
+        current_user = self.env.user
+            # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+                lambda r: r.technician == current_user
+            )
+
+        for result in technician_results:
 
             if result.parameter.internal_id == 'be88a13b-8bc0-4d32-b8c0-43032c0cdd86':
                 result.result_char = round(self.avg_density,2)
+                result.calculated = True
                 if self.avg_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1053,6 +1059,7 @@ class PPCCementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == '64616a30-801e-40aa-abba-32dcd71b7c37':
                 result.result_char = round(self.avg_consistency,2)
+                result.calculated = True
                 if self.avg_consistency_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1062,6 +1069,7 @@ class PPCCementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == '08c223af-a906-47c5-a15c-176ff5c9332d':
                 result.result_char = round(self.avg_initial_time,2)
+                result.calculated = True
                 if self.avg_initial_time_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1071,6 +1079,7 @@ class PPCCementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == '7797b1a6-d753-41ea-85f3-eaa37aebf08b':
                 result.result_char = round(self.specific_surface_first,2)
+                result.calculated = True
                 if self.fineness_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1079,6 +1088,7 @@ class PPCCementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == '99d735e6-2076-4770-b5e1-f5b8399e5a27':
                 result.result_char = round(self.avg_density,2)
+                result.calculated = True
                 if self.avg_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1089,6 +1099,7 @@ class PPCCementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == 'bf78dd87-02e2-4c6d-9463-a04f434d25c6':
                 result.result_char = round(self.avg_expantion,2)
+                result.calculated = True
                 if self.avg_expantion_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1098,6 +1109,7 @@ class PPCCementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == 'd72cba69-a44e-406a-b621-8344c3716275':
                 result.result_char = round(self.avg_expantion1,2)
+                result.calculated = True
                 if self.avg_expantion1_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1107,6 +1119,7 @@ class PPCCementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == '36905ff2-60e5-4e3f-a003-4f12cf03ebe9':
                 result.result_char = round(self.avg_3_days,2)
+                result.calculated = True
                 if self.avg_3_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1117,6 +1130,7 @@ class PPCCementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == 'e2e1d8e6-d831-4b2b-8cb2-aa074dce7fc6':
                 result.result_char = round(self.avg_7_days,2)
+                result.calculated = True
                 if self.avg_7_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1127,6 +1141,7 @@ class PPCCementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == 'fd34def6-d5cf-47c5-87e2-72c7b59dd2c3':
                 result.result_char = round(self.avg_28_days,2)
+                result.calculated = True
                 if self.avg_28_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1136,6 +1151,7 @@ class PPCCementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == 'd1fcbd33-f315-4290-a309-74acc90bc3f8':
                 result.result_char = round(self.avg_initial_time,2)
+                result.calculated = True
                 if self.avg_initial_time_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1145,6 +1161,7 @@ class PPCCementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == 'e87e5708-bead-453a-90d5-4ec142545c52':
                 result.result_char = round(self.avg_final_time,2)
+                result.calculated = True
                 if self.avg_final_time_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1172,13 +1189,24 @@ class PPCCementNormalConsistency(models.Model):
         return record
 
    
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-     
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
     def get_all_fields(self):
         record = self.env['cement.ppc'].browse(self.ids[0])

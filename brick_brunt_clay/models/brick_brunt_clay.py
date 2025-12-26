@@ -540,11 +540,21 @@ class MechanicalBricksBurntClay(models.Model):
      
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        current_user = self.env.user
+            # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+                lambda r: r.technician == current_user
+            )
+
+        for result in technician_results:
 
         # Dimension Test 
+            if result.parameter.internal_id == '9f1689be-107d-4e30-9d3d-2aff6292264d':
+                result.calculated = True
+
             if result.parameter.internal_id == '457360db-e033-49ed-9c93-11e3bf87548d':
                 result.result_char = round(self.avg_length,2)
+                result.calculated = True
                 if self.avg_length_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -553,6 +563,7 @@ class MechanicalBricksBurntClay(models.Model):
 
             if result.parameter.internal_id == 'c41c2f45-dc62-4d9b-a08f-607a05b87115':
                 result.result_char = round(self.avg_width,2)
+                result.calculated = True
                 if self.avg_width_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -561,6 +572,7 @@ class MechanicalBricksBurntClay(models.Model):
 
             if result.parameter.internal_id == 'b88e1360-4bdf-4170-b3bc-913bdbc467f6':
                 result.result_char = round(self.avg_height,2)
+                result.calculated = True
                 if self.avg_height_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -570,6 +582,7 @@ class MechanicalBricksBurntClay(models.Model):
             # Water Absorption
             if result.parameter.internal_id == '1ddc7095-da2d-44a2-a70a-ab97216aee77':
                 result.result_char = round(self.avg_water_absorption,2)
+                result.calculated = True
                 if self.avg_water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -579,6 +592,7 @@ class MechanicalBricksBurntClay(models.Model):
             # Compressive Strength
             if result.parameter.internal_id == '97928829-9b1f-4091-aa7f-4b76f98eb47f':
                 result.result_char = round(self.avg_compressive_strength,2)
+                result.calculated = True
                 if self.avg_compressive_strength_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -588,6 +602,7 @@ class MechanicalBricksBurntClay(models.Model):
              #  Efforescence
             if result.parameter.internal_id == '3e9d3877-e657-4409-8e7c-12c066f3cf26':
                 result.result_char = (self.visual_observation_1).upper()
+                result.calculated = True
                 # if self.avg_compressive_strength_nabl == 'pass':
                 #     result.nabl_status = 'nabl'
                 # else:
@@ -617,13 +632,24 @@ class MechanicalBricksBurntClay(models.Model):
             self.grade = self.eln_ref.grade_id.id
     
 
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
     def get_all_fields(self):
         record = self.env['mechanical.bricks.burnt.clay'].browse(self.ids[0])

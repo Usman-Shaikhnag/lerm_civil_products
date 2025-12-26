@@ -601,37 +601,52 @@ class GgbsMechanical(models.Model):
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
-                   
-                    if result.parameter.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
-                        result.result_char = self.average_density
-                        if self.specific_gravity_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
-                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-321478658':
-                        result.result_char = self.sai1
-                        if self.day_7_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+                lambda r: r.technician == current_user
+            )
 
-                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-3214855pp':
-                        result.result_char = self.sai2
-                        if self.day_28_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
-                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
-                        result.result_char = self.specific_surface_first
-                        if self.fineness_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
+        for result in technician_results:
+                   
+            if result.parameter.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
+                result.result_char = self.average_density
+                result.calculated = True
+                if self.specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-321478658':
+                result.result_char = self.sai1
+                result.calculated = True
+                if self.day_7_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-3214855pp':
+                result.result_char = self.sai2
+                result.calculated = True
+                if self.day_28_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
+                result.result_char = self.specific_surface_first
+                result.calculated = True
+                if self.fineness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            
+            if result.parameter.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
+                result.calculated = True
                   
 
         return {
@@ -640,8 +655,8 @@ class GgbsMechanical(models.Model):
                 'type': 'ir.actions.act_window',
                 'target': 'current',
                 'res_id': self.eln_ref.id,
+                }
                 
-            }    
 
     @api.model
     def create(self, vals):
@@ -652,12 +667,24 @@ class GgbsMechanical(models.Model):
         return record
 
 
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
         
     def get_all_fields(self):
