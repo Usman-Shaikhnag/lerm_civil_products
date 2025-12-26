@@ -549,6 +549,19 @@ class MechanicalBricks(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue 
+            
+            if result.parameter.internal_id == 'b8d83f94-3e58-4760-acc9-512499f563dc':
+                result.calculated = True
+            
+            if result.parameter.internal_id == 'ea445305-117e-4e49-82b1-f876b0a34d26':
+                result.calculated = True
+            
+            if result.parameter.internal_id == 'd29d2505-a5ea-4c8f-a644-8df0a5377a27':
+                result.calculated = True
+
+            if result.parameter.internal_id == 'ec5ffecb-2f38-4a7f-93e0-9626feb08139':
+                result.calculated = True
+ 
 
         return {
                 'view_mode': 'form',
