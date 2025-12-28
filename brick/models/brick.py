@@ -522,11 +522,18 @@ class MechanicalBricks(models.Model):
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        current_user = self.env.user
+            # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+                lambda r: r.technician == current_user
+            )
+
+        for result in technician_results:
             
             # crushing 
             if result.parameter.internal_id == '31478fghht-9287-48c7-a607-bf1b64a8115d':
                 result.result_char = round(self.avg_compressive_strength,2)
+                result.calculated = True
                 if self.avg_compressive_strength_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -536,11 +543,25 @@ class MechanicalBricks(models.Model):
             # water absorbtion
             if result.parameter.internal_id == '321475gfet1-f3ab-4b19-af25-91a4671baf5f':
                 result.result_char = round(self.avg_water_absorption,2)
+                result.calculated = True
                 if self.avg_water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue 
+            
+            if result.parameter.internal_id == 'b8d83f94-3e58-4760-acc9-512499f563dc':
+                result.calculated = True
+            
+            if result.parameter.internal_id == 'ea445305-117e-4e49-82b1-f876b0a34d26':
+                result.calculated = True
+            
+            if result.parameter.internal_id == 'd29d2505-a5ea-4c8f-a644-8df0a5377a27':
+                result.calculated = True
+
+            if result.parameter.internal_id == 'ec5ffecb-2f38-4a7f-93e0-9626feb08139':
+                result.calculated = True
+ 
 
         return {
                 'view_mode': 'form',
@@ -565,13 +586,24 @@ class MechanicalBricks(models.Model):
             self.grade = self.eln_ref.grade_id.id
     
 
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
     def get_all_fields(self):
         record = self.env['mechanical.bricks'].browse(self.ids[0])
