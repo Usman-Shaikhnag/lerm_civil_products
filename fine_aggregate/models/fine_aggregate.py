@@ -228,9 +228,10 @@ class FineAggregate(models.Model):
     # corrected(added)
     def calculate_sieve1(self): 
         for record in self:
-
-            record.calc_mode = True
+            
             record.submit_mode = False
+            record.calc_mode = True
+            
 
             previous_cumulative = 0  
             for line in record.sieve_analysis_child_lines:
@@ -256,6 +257,13 @@ class FineAggregate(models.Model):
                 print("Updated Passing Percent:", passing_percent)
 
                 previous_cumulative = cumulative_retained
+            # Jar Button Visible ahe (True), tar Submit Mode 'False' ch theva.
+            if record.soudness_visible:
+                record.submit_mode = False
+            
+            # Jar Button Invisible ahe (False), tar automatic 'True' kara.
+            else:
+                record.submit_mode = True
             
      
     
@@ -988,9 +996,10 @@ class FineAggregate(models.Model):
 
     def calculate_sieve(self): 
         for record in self:
-
-            record.calc_mode = True
+            
             record.submit_mode = False
+            record.calc_mode = True
+            
 
             previous_cumulative = 0  
             for line in record.sieve_analysis_soundness_lines:
@@ -1023,6 +1032,9 @@ class FineAggregate(models.Model):
                 print("Updated Passing Percent:", passing_percent)
 
                 previous_cumulative = cumulative_retained
+            record.submit_mode = True
+
+    
 
 
     ouantitative_name = fields.Char("Name",default="Quantitatively Examination :-")
@@ -1295,6 +1307,9 @@ class FineAggregate(models.Model):
 
 
     def open_eln_page(self):
+
+
+        
   
         for result in self.eln_ref.parameters_result:
           

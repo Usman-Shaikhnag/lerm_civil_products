@@ -1348,7 +1348,134 @@ class Soil(models.Model):
     soil_name = fields.Char("Name",default="California Bearing Ratio")
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
    
-    soil_table = fields.One2many('mechanical.cbr.line1','parent_id',string="CBR")
+    soil_table = fields.One2many('mechanical.cbr.line1','parent_id',string="CBR",default=lambda self: self._default_cbr_child_lines())
+
+    cbr_2_5_mm = fields.Float(string="CBR At Penetration Of 2.5 mm",compute="_compute_cbr_values",store=True) 
+    cbr_5_mm = fields.Float(string="CBR At Penetration Of 5 mm",compute="_compute_cbr_values",store=True)
+
+    # --- SEPARATE COMPUTE FUNCTION ---
+    @api.depends('soil_table', 'soil_table.penetration', 'soil_table.avg_load')
+    def _compute_cbr_values(self):
+        for record in self:
+            # Default values (jar data nasel tar 0.0)
+            val_2_5 = 0.0
+            val_5_0 = 0.0
+            
+            # Data sort kara (Penetration nusar)
+            lines = record.soil_table.sorted(key=lambda l: l.penetration)
+            x_values = [line.penetration for line in lines]
+            y_values = [line.avg_load for line in lines]
+
+            # Logic: Jar data asel ani values 2.5/5.0 chya range madhe astil
+            if len(x_values) > 1:
+                target_x = [2.5, 5.0]
+                
+                # Interpolation (Exact Load kadhnyasathi)
+                target_y = np.interp(target_x, x_values, y_values)
+                
+                load_at_2_5 = target_y[0]
+                load_at_5_0 = target_y[1]
+
+                # --- MAIN CALCULATION FORMULA ---
+                # Formula: (Load * 100) / Standard Load
+                val_2_5 = (load_at_2_5 * 100) / 13.781
+                val_5_0 = (load_at_5_0 * 100) / 20.55
+
+            # Field la value assign kara
+            record.cbr_2_5_mm = val_2_5
+            record.cbr_5_mm = val_5_0
+
+    # --- NEW FIELDS FOR GRAPH ---
+    cbr_graph = fields.Binary(string="CBR Graph") 
+    cbr_graph_name = fields.Char(default="cbr_graph.png")
+
+
+
+    def action_generate_cbr_graph(self):
+        for record in self:
+            if not record.soil_table:
+                continue
+
+            # 1. Data Prepare kara
+            lines = record.soil_table.sorted(key=lambda l: l.penetration)
+            
+            x_values = [line.penetration for line in lines]
+            y_values = [line.avg_load for line in lines]
+
+            if not x_values or not y_values:
+                continue
+
+            # 2. Plot Setup
+            plt.figure(figsize=(10, 6))
+            ax = plt.gca()
+
+            # 3. Main Curve Plot kara (Black line with dots)
+            # 'ko-' mhanje Black color, Circle marker, Solid line
+            plt.plot(x_values, y_values, 'ko-', linewidth=1.5, markersize=6, label='CBR Curve')
+
+            # 4. 2.5mm ani 5.0mm sathi Logic (Lines ani Labels)
+            target_x = [2.5, 5.0]
+            
+            if len(x_values) > 1:
+                # Interpolation karun exact Y value kadha
+                target_y = np.interp(target_x, x_values, y_values)
+
+                for tx, ty in zip(target_x, target_y):
+                    if tx <= max(x_values):
+                        # Blue Vertical Line (Ubhi line)
+                        plt.plot([tx, tx], [0, ty], color='blue', linewidth=1)
+                        
+                        # Blue Horizontal Line (Advi line)
+                        plt.plot([0, tx], [ty, ty], color='blue', linewidth=1)
+                        
+                        # Intersection var Blue Dot (Point)
+                        plt.plot(tx, ty, 'bo', markersize=5)  # 'bo' mhanje Blue Circle
+
+                        # Label (Text Value)
+                        # Point chya javal value lihun yeil (Ex: 4.65 kN)
+                        label_text = f"{ty:.2f}"
+                        plt.text(tx - 0.5, ty + 0.2, label_text, color='blue', fontsize=10, fontweight='bold')
+
+            # 5. Graph Formatting (Styling)
+            plt.xlabel('Penetration in mm', fontweight='bold', fontsize=12)
+            plt.ylabel('Average Load in kN', fontweight='bold', fontsize=12)
+            
+            # X-Axis 0 te 14 range
+            plt.xlim(0, 14)
+            plt.ylim(bottom=0)
+            
+            # X-Axis var sagale numbers (0, 1, 2...14) disnyasathi
+            plt.xticks(np.arange(0, 15, 1))
+            
+            # Grid (Optional - jar havi asel tar uncomment kara)
+            # plt.grid(True, linestyle='--', alpha=0.5)
+
+            # 6. Graph Save kara
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
+            plt.close()
+            
+            record.cbr_graph = base64.b64encode(buf.getvalue())
+
+    
+
+    @api.model
+    def _default_cbr_child_lines(self):
+        default_lines = [
+            (0, 0, {'penetration': '0.0'}),
+            (0, 0, {'penetration': '0.50 '}),
+            (0, 0, {'penetration': '1.00'}),
+            (0, 0, {'penetration': '1.50'}),
+            (0, 0, {'penetration': '2.00'}),
+            (0, 0, {'penetration': '2.50'}),
+            (0, 0, {'penetration': ' 4.00'}),
+            (0, 0, {'penetration': '5.00'}),
+            (0, 0, {'penetration': '7.50'}),
+            (0, 0, {'penetration': '10.00'}),
+            (0, 0, {'penetration': '12.50'}),
+           
+        ]
+        return default_lines
 
     room_temp = fields.Float(string="Room Temp.°C" )
     temp_correction= fields.Float(string="Temperature correction ",digits=(12,3) )
@@ -1427,7 +1554,7 @@ class Soil(models.Model):
         digits=(12, 3),
     )
     top_wt_can = fields.Float(digits=(12,3))
-    top_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil", store=True,digits=(12,3))
+    top_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil1", store=True,digits=(12,3))
     top_mc = fields.Float(compute="_compute_mc", store=True, digits=(12, 6))
 
     # -----------------------------
@@ -1443,7 +1570,7 @@ class Soil(models.Model):
         digits=(12, 1),
     )
     centre_wt_can = fields.Float(digits=(12,3))
-    centre_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil", store=True,digits=(12,3))
+    centre_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil1", store=True,digits=(12,3))
     centre_mc = fields.Float(compute="_compute_mc", store=True, digits=(12, 6))
 
     # -----------------------------
@@ -1459,7 +1586,7 @@ class Soil(models.Model):
         digits=(12, 3),
     )
     bottom_wt_can = fields.Float(digits=(12,3))
-    bottom_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil", store=True,digits=(12,3))
+    bottom_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil1", store=True,digits=(12,3))
     bottom_mc = fields.Float(compute="_compute_mc", store=True, digits=(12, 6))
 
 
@@ -1479,7 +1606,7 @@ class Soil(models.Model):
     @api.depends('top_can_dry_soil', 'top_wt_can',
              'centre_can_dry_soil', 'centre_wt_can',
              'bottom_can_dry_soil', 'bottom_wt_can')
-    def _compute_wt_dry_soil(self):
+    def _compute_wt_dry_soil1(self):
         for rec in self:
             rec.top_wt_dry_soil = (rec.top_can_dry_soil or 0) - (rec.top_wt_can or 0)
             rec.centre_wt_dry_soil = (rec.centre_can_dry_soil or 0) - (rec.centre_wt_can or 0)
@@ -3989,27 +4116,263 @@ class Soil(models.Model):
 
 
 
+    triaxial_test_name = fields.Char("Name",default="DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST")
+    triaxial_test_visible = fields.Boolean("DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST",compute="_compute_visible")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
+    dia_triaxial = fields.Float(string="Diameter (mm)", digits=(8, 1))
     
-
-
+    # Area automatically calculate hoil
+    area1_triaxial = fields.Float(
+        string="Area (A): cm²", 
+        digits=(8, 2), 
+        compute="_compute_triaxial_details1", 
+        store=True
+    )
     
+    height_triaxial = fields.Float(string="Height: mm", digits=(8, 1))
+    
+    # Jar Volume pan automatic pahije asel tar te pan calculate karta yeil
+    soil_volume = fields.Float(
+        string="Soil Volume: cm³", 
+        digits=(8, 2),
+        compute="_compute_triaxial_details1",
+        store=True
+    )
+    
+    temp_triaxial = fields.Float(string="Temp. (deg)", digits=(8, 0))
+    humidity_triaxial = fields.Float(string="Humidity (%)", digits=(8, 0))
+    start_date_traxial = fields.Date(string="Starting Date")
+
+    # --- CALCULATION LOGIC ---
+    # --- CALCULATION LOGIC ---
+    @api.depends('dia_triaxial', 'height_triaxial')
+    def _compute_triaxial_details1(self):
+        for record in self:
+            # 1. Area Calculation (Result: 11.34 cm² for 38mm dia)
+            if record.dia_triaxial:
+                # Formula: (PI / 4) * d^2
+                # Result mm² madhe ahe, tyala cm² madhe karayla 100 ne divide kara
+                area_mm2 = (math.pi / 4) * (record.dia_triaxial * record.dia_triaxial)
+                record.area1_triaxial = area_mm2  # Convert to cm²
+            else:
+                record.area1_triaxial = 0.0
+            
+            # 2. Volume Calculation
+            # Area (cm²) * Height (mm) -> Unit mismatch hoto
+            # Height la cm madhe convert karava lagel (divide by 10)
+            if record.area1_triaxial and record.height_triaxial:
+                height_cm = record.height_triaxial 
+                volume_cm3 = record.area1_triaxial * height_cm
+                record.soil_volume = volume_cm3 
+            else:
+                record.soil_volume = 0.0
+
+   # --- COMMON PARAMETERS ---
+    specific_gravity = fields.Float(string="Specific Gravity", digits=(5, 3))
+
+    # =========================================================
+    # TRIAL 1: Cell Pressure 0.5
+    # =========================================================
+    mass_before_05 = fields.Float(string="Mass Before (0.5)", digits=(10, 3))
+    mass_after_05 = fields.Float(string="Mass After (0.5)", digits=(10, 3))
+    mass_dry_05 = fields.Float(string="Mass Dry (0.5)", digits=(10, 3))
+
+    moisture_05 = fields.Float(string="Moisture % (0.5)", compute="_compute_triaxial_05", digits=(10, 2))
+    bulk_density_05 = fields.Float(string="Bulk Density (0.5)", compute="_compute_triaxial_05", digits=(10, 2))
+    dry_density_05 = fields.Float(string="Dry Density (0.5)", compute="_compute_triaxial_05", digits=(10, 2))
+    void_ratio_05 = fields.Float(string="Void Ratio (0.5)", compute="_compute_triaxial_05", digits=(10, 2))
+    saturation_05 = fields.Float(string="Saturation (0.5)", compute="_compute_triaxial_05", digits=(10, 2))
+
+    # =========================================================
+    # TRIAL 2: Cell Pressure 1.0
+    # =========================================================
+    mass_before_10 = fields.Float(string="Mass Before (1.0)", digits=(10, 3))
+    mass_after_10 = fields.Float(string="Mass After (1.0)", digits=(10, 3))
+    mass_dry_10 = fields.Float(string="Mass Dry (1.0)", digits=(10, 3))
+
+    moisture_10 = fields.Float(string="Moisture % (1.0)", compute="_compute_triaxial_10", digits=(10, 2))
+    bulk_density_10 = fields.Float(string="Bulk Density (1.0)", compute="_compute_triaxial_10", digits=(10, 2))
+    dry_density_10 = fields.Float(string="Dry Density (1.0)", compute="_compute_triaxial_10", digits=(10, 2))
+    void_ratio_10 = fields.Float(string="Void Ratio (1.0)", compute="_compute_triaxial_10", digits=(10, 2))
+    saturation_10 = fields.Float(string="Saturation (1.0)", compute="_compute_triaxial_10", digits=(10, 2))
+
+    # =========================================================
+    # TRIAL 3: Cell Pressure 1.5
+    # =========================================================
+    mass_before_15 = fields.Float(string="Mass Before (1.5)", digits=(10, 3))
+    mass_after_15 = fields.Float(string="Mass After (1.5)", digits=(10, 3))
+    mass_dry_15 = fields.Float(string="Mass Dry (1.5)", digits=(10, 3))
+
+    moisture_15 = fields.Float(string="Moisture % (1.5)", compute="_compute_triaxial_15", digits=(10, 2))
+    bulk_density_15 = fields.Float(string="Bulk Density (1.5)", compute="_compute_triaxial_15", digits=(10, 2))
+    dry_density_15 = fields.Float(string="Dry Density (1.5)", compute="_compute_triaxial_15", digits=(10, 2))
+    void_ratio_15 = fields.Float(string="Void Ratio (1.5)", compute="_compute_triaxial_15", digits=(10, 2))
+    saturation_15 = fields.Float(string="Saturation (1.5)", compute="_compute_triaxial_15", digits=(10, 2))
+
+    # --- CALCULATION LOGIC: DIMENSIONS ---
+    @api.depends('dia_triaxial', 'height_triaxial')
+    def _compute_triaxial_details(self):
+        for record in self:
+            # 1. Area Calculation
+            if record.dia_triaxial:
+                # Formula: (PI / 4) * d^2
+                area = (math.pi / 4) * (record.dia_triaxial * record.dia_triaxial)
+                record.area_triaxial = area
+            else:
+                record.area_triaxial = 0.0
+            
+            # 2. Volume Calculation (Area * Height)
+            if record.area_triaxial and record.height_triaxial:
+                volume_mm3 = record.area_triaxial * record.height_triaxial
+                record.soil_volume = volume_mm3 
+            else:
+                record.soil_volume = 0.0
+
+    # --- CALCULATION LOGIC: TRIALS (Helper Function) ---
+    def _calculate_trial(self, mass_before, mass_after, mass_dry, volume, G):
+        vals = {'m': 0.0, 'bd': 0.0, 'dd': 0.0, 'e': 0.0, 'sr': 0.0}
+        
+        # 1. Moisture Calculation
+        if mass_dry > 0:
+            vals['m'] = ((mass_after - mass_dry) / mass_dry) * 100
+        
+        # 2. Bulk Density Calculation
+        # Tumcha formula: mass_before / (volume / 1000)
+        # Volume mm³ to cm³ conversion (divide by 1000)
+        if volume > 0:
+            vol_cc = volume / 1000.0  # Convert mm³ to cm³
+            vals['bd'] = mass_before / vol_cc
+            
+        # 3. Dry Density Calculation
+        # Formula: Bulk Density / (1 + moisture/100)
+        w_decimal = vals['m'] / 100.0
+        if (1 + w_decimal) > 0:
+            vals['dd'] = vals['bd'] / (1 + w_decimal)
+            
+        # 4. Void Ratio Calculation
+        # Formula: (G / Dry Density) - 1
+        if vals['dd'] > 0:
+            vals['e'] = (G / vals['dd']) - 1
+            
+        # 5. Saturation Calculation
+        # Formula: (w * G) / e * 100
+        if vals['e'] > 0:
+            vals['sr'] = (w_decimal * G) / vals['e'] * 100
+            
+        return vals
+
+    # --- COMPUTE FUNCTIONS ---
+    @api.depends('mass_before_05', 'mass_after_05', 'mass_dry_05', 'soil_volume', 'specific_gravity')
+    def _compute_triaxial_05(self):
+        for rec in self:
+            res = self._calculate_trial(rec.mass_before_05, rec.mass_after_05, rec.mass_dry_05, rec.soil_volume, rec.specific_gravity)
+            rec.moisture_05 = res['m']
+            rec.bulk_density_05 = res['bd']
+            rec.dry_density_05 = res['dd']
+            rec.void_ratio_05 = res['e']
+            rec.saturation_05 = res['sr']
+
+    @api.depends('mass_before_10', 'mass_after_10', 'mass_dry_10', 'soil_volume', 'specific_gravity')
+    def _compute_triaxial_10(self):
+        for rec in self:
+            res = self._calculate_trial(rec.mass_before_10, rec.mass_after_10, rec.mass_dry_10, rec.soil_volume, rec.specific_gravity)
+            rec.moisture_10 = res['m']
+            rec.bulk_density_10 = res['bd']
+            rec.dry_density_10 = res['dd']
+            rec.void_ratio_10 = res['e']
+            rec.saturation_10 = res['sr']
+
+    @api.depends('mass_before_15', 'mass_after_15', 'mass_dry_15', 'soil_volume', 'specific_gravity')
+    def _compute_triaxial_15(self):
+        for rec in self:
+            res = self._calculate_trial(rec.mass_before_15, rec.mass_after_15, rec.mass_dry_15, rec.soil_volume, rec.specific_gravity)
+            rec.moisture_15 = res['m']
+            rec.bulk_density_15 = res['bd']
+            rec.dry_density_15 = res['dd']
+            rec.void_ratio_15 = res['e']
+            rec.saturation_15 = res['sr']
+
+   # ... (Trial 1, 2, 3 fields tasech theva) ...
+
+    # =========================================================
+    # AVERAGE COLUMN FIELDS (Fakt Mass aani Density sathi)
+    # =========================================================
+    
+    # --- MASS AVERAGES ---
+    mass_before_avg = fields.Float(string="Avg Mass Before", compute="_compute_averages", digits=(10, 3), store=True)
+    mass_after_avg = fields.Float(string="Avg Mass After", compute="_compute_averages", digits=(10, 3), store=True)
+    mass_dry_avg = fields.Float(string="Avg Mass Dry", compute="_compute_averages", digits=(10, 3), store=True)
+
+    # --- RESULT AVERAGES (Void Ratio & Saturation Kadhle) ---
+    moisture_avg = fields.Float(string="Avg Moisture %", compute="_compute_averages", digits=(10, 2), store=True)
+    bulk_density_avg = fields.Float(string="Avg Bulk Density", compute="_compute_averages", digits=(10, 2), store=True)
+    dry_density_avg = fields.Float(string="Avg Dry Density", compute="_compute_averages", digits=(10, 2), store=True)
+
+    # --- UPDATED COMPUTE FUNCTION ---
+    @api.depends(
+        'mass_before_05', 'mass_before_10', 'mass_before_15',
+        'mass_after_05', 'mass_after_10', 'mass_after_15',
+        'mass_dry_05', 'mass_dry_10', 'mass_dry_15',
+        'moisture_05', 'moisture_10', 'moisture_15',
+        'bulk_density_05', 'bulk_density_10', 'bulk_density_15',
+        'dry_density_05', 'dry_density_10', 'dry_density_15'
+    )
+    def _compute_averages(self):
+        for rec in self:
+            # 1. Mass Averages
+            rec.mass_before_avg = (rec.mass_before_05 + rec.mass_before_10 + rec.mass_before_15) / 3
+            rec.mass_after_avg = (rec.mass_after_05 + rec.mass_after_10 + rec.mass_after_15) / 3
+            rec.mass_dry_avg = (rec.mass_dry_05 + rec.mass_dry_10 + rec.mass_dry_15) / 3
+
+            # 2. Result Averages (Moisture & Densities Only)
+            rec.moisture_avg = (rec.moisture_05 + rec.moisture_10 + rec.moisture_15) / 3
+            rec.bulk_density_avg = (rec.bulk_density_05 + rec.bulk_density_10 + rec.bulk_density_15) / 3
+            rec.dry_density_avg = (rec.dry_density_05 + rec.dry_density_10 + rec.dry_density_15) / 3
+            
+            # NOTE: Void Ratio aani Saturation cha avg calculate kelela nahi.
+
+    # proving_ring_constant = fields.Float(string="Proving Ring Constant (K)", default=1.0, digits=(10, 3))
+    
+    # Line connection
+    triaxial_test_line_ids = fields.One2many('triaxial.test.line', 'parent_id', string="Test Lines")
+
+    temp_triaxial = fields.Float("Room Temp" )
+    humidity_triaxial_test = fields.Float("Temperature correction fro each deg C rise/fall (+/-)" ,digits=(12,3))
+
+    std_temp_triaxial_test = fields.Float(string="Std Temp During calibr'n")
+
+   
+    # --- COMPUTED FIELDS ---
+    rise_fall_triaxial_test = fields.Float(
+        string="Rise/Fall in temperature (Deg)", 
+        digits=(12, 1),
+        compute="_compute_temp_corrections",
+        store=True
+    )
+
+    rise_force_triaxial_test = fields.Float(
+        string="% rise/fall in force value", 
+        digits=(12, 3),
+        compute="_compute_temp_corrections",
+        store=True
+    )
+
+    # --- CALCULATION LOGIC ---
+    @api.depends('temp_triaxial', 'std_temp_triaxial_test', 'humidity_triaxial_test')
+    def _compute_temp_corrections(self):
+        for rec in self:
+            # 1. Rise/Fall Calculation
+            # Formula: Room Temp - Std Temp
+            # (temp_triaxial - std_temp_triaxial_test)
+            diff = rec.temp_triaxial - rec.std_temp_triaxial_test
+            rec.rise_fall_triaxial_test = diff
+            
+            # 2. Rise Force Calculation
+            # Formula: Correction Factor * Rise/Fall
+            # (humidity_triaxial_test * rise_fall_triaxial_test)
+            rec.rise_force_triaxial_test = rec.humidity_triaxial_test * diff
+
+
 
    
 
@@ -4040,6 +4403,8 @@ class Soil(models.Model):
             record.swelling_pressure_visible  = False 
             record.uu_triaxial_angle_visible  = False
             record.uu_triaxial_cohesion_visible  = False
+
+            record.triaxial_test_visible  = False
 
 
 
@@ -4137,6 +4502,10 @@ class Soil(models.Model):
 
                 if sample.internal_id == '3825ec57-11f8-4249-9fa8-d99f64ffd396':
                     record.freeswell_visible = True
+
+                if sample.internal_id == 'yt25ec57-11f8-4249-9fa8-788889999rtt':
+                    record.triaxial_test_visible = True
+
 
 
    
@@ -7629,6 +7998,234 @@ class SoilPermeabilityTestLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+# --- NEW CLASS FOR LINES (TABLE) ---
+class TriaxialTestLine(models.Model):
+    _name = 'triaxial.test.line'
+    _description = 'Triaxial Test Readings'
+
+    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+
+    # 1. Displacement / Strain
+    horizontal_dial = fields.Float(string="Horizantal Dial Reading",compute="_compute_dial_reading",store=True)
+    strain = fields.Float(string="Strain",  digits=(10, 4))
+    
+    # 2. Corrected Area (Calculated)
+    corrected_area = fields.Float(string="Corrected Area (cm²)",  digits=(10, 3),compute="_compute_corrected_area", store=True)
+
+    # ==================================
+    # 0.5 kg/cm² Pressure
+    # ==================================
+    pr_05 = fields.Float(string="Proving ring reading (0.5)")
+    shear_stress_05 = fields.Float(string="Shear stress (kg/sq.cm)(0.5)",compute="_compute_shear_stress_05",  digits=(10, 3), store=True)
+
+    # ==================================
+    # 1.0 kg/cm² Pressure
+    # ==================================
+    pr_10 = fields.Float(string="Proving ring reading(1)")
+    shear_stress_10 = fields.Float(string="Shear stress (kg/sq.cm)(1)",compute="_compute_shear_stress_10",  digits=(10, 3), store=True)
+
+    # ==================================
+    # 1.5 kg/cm² Pressure
+    # ==================================
+    pr_15 = fields.Float(string="Proving ring reading(1.5)")
+    shear_stress_15 = fields.Float(string="Shear stress (kg/sq.cm)(1.5)",compute="_compute_shear_stress_15",  digits=(10, 3), store=True)
+
+    pr_5 = fields.Float(string="0.5",compute="_compute_pr_5_calculation",store=True,digits=(12,9))
+    pr_1 = fields.Float(string="1.0",compute="_compute_pr_1_calculation",store=True,digits=(12,9))
+    pr_1_5 = fields.Float(string="1.5",compute="_compute_pr_1_5_calculation",store=True,digits=(12,9))
+
+
+    @api.depends('pr_05', 'corrected_area', 'parent_id.triaxial_test_line_ids')
+    def _compute_pr_5_calculation(self):
+        # Parent wise group kara (Optimization sathi)
+        for parent in self.mapped('parent_id'):
+            # Saglya lines sequence madhe ghene
+            lines = parent.triaxial_test_line_ids
+            
+            for i, line in enumerate(lines):
+                # --- 1. FIRST LINE (Index 0) ---
+                if i == 0:
+                    line.pr_5 = 0.0
+                
+                else:
+                 
+                    numerator = (((line.pr_05 * 5.0) * 1.682) + 13.644)
+                    
+                
+                    denominator = 9.81 * line.corrected_area
+                    
+                
+                    if denominator > 0:
+                        line.pr_5 = numerator / denominator
+                    else:
+                        line.pr_5 = 0.0
+
+    @api.depends('pr_10', 'corrected_area', 'parent_id.triaxial_test_line_ids')
+    def _compute_pr_1_calculation(self):
+        # Optimization sathi Parent wise group kara
+        for parent in self.mapped('parent_id'):
+            # Saglya lines sequence madhe ghene
+            lines = parent.triaxial_test_line_ids
+            
+            for i, line in enumerate(lines):
+                # --- FIRST LINE (Index 0) ---
+                if i == 0:
+                    line.pr_1 = 0.0
+                
+                # --- SECOND LINE ONWARDS ---
+                else:
+                    # Logic same as pr_5, but using pr_10
+                    # Formula: (((pr_10 * 5) * 1.682) + 13.644) / (9.81 * corrected_area)
+                    
+                    numerator = (((line.pr_10 * 5.0) * 1.682) + 13.644)
+                    denominator = 9.81 * line.corrected_area
+                    
+                    if denominator > 0:
+                        line.pr_1 = numerator / denominator
+                    else:
+                        line.pr_1 = 0.0
+
+    @api.depends('pr_15', 'corrected_area', 'parent_id.triaxial_test_line_ids')
+    def _compute_pr_1_5_calculation(self):
+        # Optimization sathi Parent wise group kara
+        for parent in self.mapped('parent_id'):
+            # Saglya lines sequence madhe ghene
+            lines = parent.triaxial_test_line_ids
+            
+            for i, line in enumerate(lines):
+                # --- FIRST LINE (Index 0) ---
+                if i == 0:
+                    line.pr_1 = 0.0
+                
+                # --- SECOND LINE ONWARDS ---
+                else:
+                    # Logic same as pr_5, but using pr_15
+                    # Formula: (((pr_15 * 5) * 1.682) + 13.644) / (9.81 * corrected_area)
+                    
+                    numerator = (((line.pr_15 * 5.0) * 1.682) + 13.644)
+                    denominator = 9.81 * line.corrected_area
+                    
+                    if denominator > 0:
+                        line.pr_1_5 = numerator / denominator
+                    else:
+                        line.pr_1_5 = 0.0
+
+    # 2. Compute Function
+    @api.depends('parent_id.triaxial_test_line_ids')
+    def _compute_dial_reading(self):
+        # Sagle unique parents ghene (Optimization sathi)
+        for parent in self.mapped('parent_id'):
+            
+            current_val = 0.0
+            
+            # Parent chya saglya lines la loop lavne (Sequence nusar)
+            # Odoo UI madhe lines display order nusar deto
+            for i, line in enumerate(parent.triaxial_test_line_ids):
+                
+                # Pahili line (Index 0) asel tar 0.0 theva (kiva user ne takleli value)
+                if i == 0:
+                    # Jar line navin asel tar 0, nahitar tich value theva
+                    if not line.horizontal_dial:
+                        line.horizontal_dial = 0.0
+                    current_val = line.horizontal_dial
+                
+                else:
+                    # Second line pasun: Previous Value (current_val) + 25
+                    new_val = current_val + 25.0
+                    line.horizontal_dial = new_val
+                    current_val = new_val
+
+    @api.depends('horizontal_dial', 'parent_id.area1_triaxial', 'parent_id.height_triaxial', 'parent_id.triaxial_test_line_ids')
+    def _compute_corrected_area(self):
+        # Parent groups madhe loop firvu (Optimization)
+        for parent in self.mapped('parent_id'):
+            # Parent chya saglya lines sequence nusar ghene
+            lines = parent.triaxial_test_line_ids
+            
+            # Initial Area aani Height Parent madhun ghene
+            A0 = parent.area1_triaxial or 0.0
+            H0 = parent.height_triaxial or 1.0  # Divide by zero talnyasathi default 1
+            
+            for i, line in enumerate(lines):
+                # --- CONDITION 1: FIRST LINE (Index 0) ---
+                if i == 0:
+                    # Formula: area1_triaxial / 100
+                    line.corrected_area = A0 / 100.0
+                
+                # --- CONDITION 2: SECOND LINE ONWARDS ---
+                else:
+                    # 1. Strain Calculation: (horizontal_dial / 100) / height_triaxial
+                    # Dial reading la 100 ne divide karun mm conversion (as per your formula)
+                    change_in_length = line.horizontal_dial / 100.0
+                    
+                    if H0 > 0:
+                        strain = change_in_length / H0
+                    else:
+                        strain = 0.0
+
+                    # 2. Corrected Area Formula: (A0 / (1 - Strain)) / 100
+                    # (1 - Strain) check kara, zero nako
+                    if (1 - strain) > 0:
+                        corrected_area_val = A0 / (1 - strain)
+                        line.corrected_area = corrected_area_val / 100.0
+                    else:
+                        # Fallback jar strain 1 peksha jast zala tar
+                        line.corrected_area = 0.0
+
+    # --- CALCULATION LOGIC ---
+    @api.depends('pr_5', 'parent_id.rise_force_triaxial_test')
+    def _compute_shear_stress_05(self):
+        for line in self:
+            # 1. Parent madhun Rise Force value ghene
+            # Jar parent set nasel tar 0.0 consider kara
+            rise_force = line.parent_id.rise_force_triaxial_test or 0.0
+            
+            # 2. Formula Apply Kara
+            # Formula: pr_5 + (pr_5 * rise_force)
+            if line.pr_5:
+                # Calculation logic
+                extra_force = line.pr_5 * rise_force
+                line.shear_stress_05 = line.pr_5 + extra_force
+            else:
+                line.shear_stress_05 = 0.0
+
+
+    @api.depends('pr_1', 'parent_id.rise_force_triaxial_test')
+    def _compute_shear_stress_10(self):
+        for line in self:
+            # 1. Parent madhun Rise Force value ghene
+            # Jar parent set nasel tar 0.0 consider kara
+            rise_force = line.parent_id.rise_force_triaxial_test or 0.0
+            
+            # 2. Formula Apply Kara
+            # Formula: pr_1 + (pr_1 * rise_force)
+            if line.pr_1:
+                # Calculation logic
+                extra_force = line.pr_1 * rise_force
+                line.shear_stress_10 = line.pr_1 + extra_force
+            else:
+                line.shear_stress_10 = 0.0
+
+    @api.depends('pr_1_5', 'parent_id.rise_force_triaxial_test')
+    def _compute_shear_stress_15(self):
+        for line in self:
+            # 1. Parent madhun Rise Force value ghene
+            # Jar parent set nasel tar 0.0 consider kara
+            rise_force = line.parent_id.rise_force_triaxial_test or 0.0
+            
+            # 2. Formula Apply Kara
+            # Formula: pr_1_5 + (pr_1_5 * rise_force)
+            if line.pr_1_5:
+                # Calculation logic
+                extra_force = line.pr_1_5 * rise_force
+                line.shear_stress_15 = line.pr_1_5 + extra_force
+            else:
+                line.shear_stress_15 = 0.0
+
+
+
+
 
 
 

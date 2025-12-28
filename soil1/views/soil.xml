@@ -714,10 +714,43 @@
                             </tree>
                         </field>                      
                     </div>
+                 <div invisible = "soil_visible == False" >
+                    <button name="action_generate_cbr_graph" 
+                        string="Generate Graph" 
+                        type="object" 
+                        class="oe_highlight"/>
+                </div>
 
-                    <!-- <div invisible = "soil_visible == False" class="text-center">
-                      <field name="chart_image_cbr" widget="image" readonly="1"/>
-                    </div> -->
+                    <div invisible = "soil_visible == False" class="text-center">
+                      <field name="cbr_graph" widget="image" readonly="1"/>
+                    </div>
+
+
+                   
+
+                    <div class="d-flex gap-2"  invisible="not soil_visible">
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="cbr_2_5_mm"></label></td>
+                                    <td><field name="cbr_2_5_mm" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="cbr_5_mm"></label></td>
+                                    <td><field name="cbr_5_mm" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                       
+                    </div>
 
                    
 
@@ -2683,6 +2716,291 @@
                             </tbody>
                         </table>
                     </div>
+
+
+
+                     <div invisible="triaxial_test_visible == False">
+                        <h1 class="text-center">
+                            <field name="triaxial_test_name" readonly="1" nolabel="1"/>
+                            <field name="triaxial_test_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                     <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="dia_triaxial"></label></td>
+                                    <td ><field name="dia_triaxial"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="area1_triaxial"></label></td>
+                                    <td><field name="area1_triaxial"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                      <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="height_triaxial"></label></td>
+                                    <td ><field name="height_triaxial"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="soil_volume"></label></td>
+                                    <td><field name="soil_volume"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                     <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_triaxial"></label></td>
+                                    <td ><field name="temp_triaxial"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_triaxial"></label></td>
+                                    <td><field name="humidity_triaxial"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                     <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date_traxial"></label></td>
+                                    <td ><field name="start_date_traxial"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_triaxial"></label></td>
+                                    <td><field name="humidity_triaxial"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table> -->
+                    </div>
+
+
+
+
+                    <div class="oe_structure">
+                        <separator string="Triaxial Shear Test Data"/>
+                        
+                        <group col="4">
+                            <field name="specific_gravity"/>
+                            </group>
+
+                        <div style="overflow-x: auto;">
+                            <table class="table table-bordered table-sm text-center" style="border: 2px solid black;">
+                                
+                                <thead style="background-color: #e9ecef; font-weight: bold;">
+                                    <tr>
+                                        <th style="width: 30%; text-align: left; vertical-align: middle;">Trial No / Cell Pressure</th>
+                                        <th style="width: 17.5%; vertical-align: middle;">0.5 kg/cm²</th>
+                                        <th style="width: 17.5%; vertical-align: middle;">1.0 kg/cm²</th>
+                                        <th style="width: 17.5%; vertical-align: middle;">1.5 kg/cm²</th>
+                                        <th style="width: 17.5%; vertical-align: middle; background-color: #d1ecf1;">Average</th> </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align: left; font-weight: bold;">Initial mass of soil (before testing) (g)</td>
+                                        <td><field name="mass_before_05" nolabel="1"/></td>
+                                        <td><field name="mass_before_10" nolabel="1"/></td>
+                                        <td><field name="mass_before_15" nolabel="1"/></td>
+                                        <td style="font-weight: bold; background-color: #e2e6ea;">
+                                            <field name="mass_before_avg" nolabel="1" readonly="1" force_save="1"/>
+                                        </td>
+                                        </tr>
+
+                                    <tr>
+                                        <td style="text-align: left; font-weight: bold;">Initial mass of soil (after testing) (g)</td>
+                                        <td><field name="mass_after_05" nolabel="1"/></td>
+                                        <td><field name="mass_after_10" nolabel="1"/></td>
+                                        <td><field name="mass_after_15" nolabel="1"/></td>
+                                        <td style="font-weight: bold; background-color: #e2e6ea;">
+                                            <field name="mass_after_avg" nolabel="1" readonly="1" force_save="1"/>
+                                        </td>
+                                        </tr>
+
+                                    <tr>
+                                        <td style="text-align: left; font-weight: bold;">Mass of dry soil (g)</td>
+                                        <td><field name="mass_dry_05" nolabel="1"/></td>
+                                        <td><field name="mass_dry_10" nolabel="1"/></td>
+                                        <td><field name="mass_dry_15" nolabel="1"/></td>
+                                        <td style="font-weight: bold; background-color: #e2e6ea;">
+                                            <field name="mass_dry_avg" nolabel="1" readonly="1" force_save="1"/>
+                                        </td>
+                                        </tr>
+
+                                    <tr style="background-color: #f8f9fa;">
+                                        <td style="text-align: left; font-weight: bold;">Moisture Content (%)</td>
+                                        <td><field name="moisture_05" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td><field name="moisture_10" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td><field name="moisture_15" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td style="font-weight: bold; background-color: #e2e6ea;">
+                                            <field name="moisture_avg" nolabel="1" readonly="1" force_save="1"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr style="background-color: #f8f9fa;">
+                                        <td style="text-align: left; font-weight: bold;">Bulk Density of soil (g/cc)</td>
+                                        <td><field name="bulk_density_05" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td><field name="bulk_density_10" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td><field name="bulk_density_15" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td style="font-weight: bold; background-color: #e2e6ea;">
+                                            <field name="bulk_density_avg" nolabel="1" readonly="1" force_save="1"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr style="background-color: #f8f9fa;">
+                                        <td style="text-align: left; font-weight: bold;">Dry Density of soil (g/cc)</td>
+                                        <td><field name="dry_density_05" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td><field name="dry_density_10" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td><field name="dry_density_15" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td style="font-weight: bold; background-color: #e2e6ea;">
+                                            <field name="dry_density_avg" nolabel="1" readonly="1" force_save="1"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr style="background-color: #f8f9fa;">
+                                        <td style="text-align: left; font-weight: bold;">Void Ratio (e)</td>
+                                        <td><field name="void_ratio_05" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td><field name="void_ratio_10" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td><field name="void_ratio_15" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <!-- <td style="font-weight: bold; background-color: #e2e6ea;">
+                                            <field name="void_ratio_avg" nolabel="1" readonly="1" force_save="1"/>
+                                        </td> -->
+                                    </tr>
+
+                                    <tr style="background-color: #f8f9fa;">
+                                        <td style="text-align: left; font-weight: bold;">Degree of Saturation (Sr) %</td>
+                                        <td><field name="saturation_05" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td><field name="saturation_10" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <td><field name="saturation_15" nolabel="1" readonly="1" force_save="1"/></td>
+                                        <!-- <td style="font-weight: bold; background-color: #e2e6ea;">
+                                            <field name="saturation_avg" nolabel="1" readonly="1" force_save="1"/>
+                                        </td> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_triaxial"></label></td>
+                                    <td ><field name="temp_triaxial"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_triaxial_test"></label></td>
+                                    <td><field name="humidity_triaxial_test"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="std_temp_triaxial_test"></label></td>
+                                    <td ><field name="std_temp_triaxial_test"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="rise_fall_triaxial_test"></label></td>
+                                    <td><field name="rise_fall_triaxial_test"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                      <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="rise_force_triaxial_test"></label></td>
+                                    <td ><field name="rise_force_triaxial_test"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                    
+                    </div>
+
+                    <field name="triaxial_test_line_ids">
+                        <tree editable="bottom" class="custom_table_borders">
+                            <field name="horizontal_dial"/>
+                            <field name="corrected_area" />
+                            
+                            <field name="pr_05" width="200"/>
+                            <field name="shear_stress_05"  width="200" />
+                            
+                            <field name="pr_10" width="200" />
+                            <field name="shear_stress_10"   width="200"/>
+                            
+                            <field name="pr_15" width="200" />
+                            <field name="shear_stress_15"  width="200" />
+                            <field name="pr_5" />
+                            <field name="pr_1"   />
+                            <field name="pr_1_5"   />
+                        </tree>
+                    </field>
+
+
 
 
 
