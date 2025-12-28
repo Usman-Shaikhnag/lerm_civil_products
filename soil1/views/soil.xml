@@ -1674,7 +1674,7 @@
                     </div>
 
 
-                              <div invisible="gsa_visible == False">
+                 <div invisible="gsa_visible == False">
                         <h1 class="text-center">
                             <field name="gsa_name" readonly="1" nolabel="1"/>
                             <field name="gsa_visible" invisible="1"/>
@@ -1687,10 +1687,11 @@
                     <field name="show_sieve" invisible="1"/>
 
                 <field name="gsa_child_lines" class="custom_table_borders">
-                    <tree editable="bottom" string="GSA Lines" decoration-info="lab_no">
+                    <tree  string="GSA Lines" decoration-info="lab_no">
                         <field name="symbol" widget="html" />
                         <field name="bh_id"/>
-                        <field name="lab_no" string="Lab ID"/>
+                        <field name="lab_no" string="Lab ID" width="200"/>
+                   
                         <field name="sample_depth"/>
                         <field name="sample_details"/>
                           <field name="water_content"/>
@@ -1702,270 +1703,241 @@
                             <field name="sand"/>
                             <field name="silt"/>
                             <field name="silt_clay"/>
+                            <field name="soil_classification"/>
                     </tree>
 
-                    <form class="custom_table_borders">
-                        <sheet>
-                       
-                            <field name="symbol" widget="html"/>
-                            <field name="bh_id"/>
-                            <field name="lab_no" string="Lab ID"/>
-                            <field name="sample_depth"/>
-                            <field name="sample_details"/>
-                             <field name="water_content"/>
-                            <field name="wt_of_samp"/>
-
-                            <field name="temp"/>
-                          <field name="humidity"/>
-                          <field name="specific_gravity"/>
-                          <field name="gravel"/>
-                          <field name="sand"/>
-                          <field name="silt"/>
-                          <field name="silt_clay"/>
-                           
-                       
-                        </sheet>
-                    </form>
-                </field>
-
-                <group string="Sieve Analysis Lab ID" invisible="not show_sieve">
-    
-                    <field name="gsa_child_lines" class="custom_table_borders" string="">
-                        <form>
-                       
-              
-                    <div class="d-flex gap-2" >
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="lab_no"></label></td>
-                                    <td><field name="lab_no"  readonly="1"/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="wt_of_samp"></label></td>
-                                    <td><field name="wt_of_samp"  /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-
-                    </div>
-                     <div class="d-flex gap-2" >
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="temp">Temp.°C</label></td>
-                                    <td><field name="temp"   /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="humidity">Humidity %</label></td>
-                                    <td><field name="humidity"   /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        </div>
-
-                         <div class="d-flex gap-2" >
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="bh_id"></label></td>
-                                    <td><field name="bh_id"   /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="sample_depth"></label></td>
-                                    <td><field name="sample_depth"   /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        </div>
-
-
-                         <div class="d-flex gap-2" >
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="sample_details"></label></td>
-                                    <td><field name="sample_details"   /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="water_content"></label></td>
-                                    <td><field name="water_content"   /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        </div>
-
-                        
-
-                        <div >
-                        <button string="Calculate" type="object" name="calculate_sieve_gsa" class="oe_highlight">
-                            <i class="fa fa-calculator"/> Calculate
-                        </button>
-                    </div>
-
-                     
-
+                    <form>
                             <sheet>
+                                <div class="d-flex gap-2">
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="lab_no"/></td>
+                                                <td><field name="lab_no" readonly="1"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="wt_of_samp"/></td>
+                                                <td><field name="wt_of_samp"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
 
-                            <div>
-                            <div class="text-center fw-bold fs-5 mb-3">
-                                       DETERMINATION OF GRAIN SIZE ANALYSIS: SIEVE ANALYSIS
-                                    </div>
-                                <field name="sieve_analysis_child_lines_gsa" class="custom_table_borders">
+                                <div class="d-flex gap-2">
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="temp">Temp.°C</label></td>
+                                                <td><field name="temp"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="humidity">Humidity %</label></td>
+                                                <td><field name="humidity"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="bh_id"/></td>
+                                                <td><field name="bh_id"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="sample_depth"/></td>
+                                                <td><field name="sample_depth"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="sample_details"/></td>
+                                                <td><field name="sample_details"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="water_content"/></td>
+                                                <td><field name="water_content"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                  <div class="d-flex gap-2">
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="soil_classification"/></td>
+                                                <td><field name="soil_classification"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                  
-                                    <tree editable="bottom">
-                                        <!-- <field name="serial_no"/> -->
-                                        <field name="sieve_size"/>
-                                        <field name="wt_retained" string="Soil Retained wt"/>
-                                        <field name="percent_retained" string='Cumulative Wt. retained'/>
-                                        <field name="cumulative_retained" string="Cumulative % retained"/>
-                                        <field name="passing_percent" string="% Passing "/>
+                                </div>
 
-                                    </tree>
-                                </field>
+                              
 
-                                 <div >
-                                    <button string="Calculate" type="object" name="action_add_n_corrected" class="oe_highlight">
-                                        <i class="fa fa-calculator"/> Add N Corrected Value
+                                <newline/>
+                                <separator/>
+
+                                <div>
+                                    <div class="text-center fw-bold fs-5 mb-3">
+                                        DETERMINATION OF GRAIN SIZE ANALYSIS: SIEVE ANALYSIS
+                                    </div>
+                                    
+                                    <field name="sieve_analysis_child_lines_gsa" class="custom_table_borders">
+                                        <tree editable="bottom">
+                                            <field name="sieve_size"/>
+                                            <field name="wt_retained" string="Soil Retained wt"/>
+                                            <field name="percent_retained" string='Cumulative Wt. retained'/>
+                                            <field name="cumulative_retained" string="Cumulative % retained"/>
+                                            <field name="passing_percent" string="% Passing "/>
+                                        </tree>
+                                    </field>
+
+
+                                <div>
+                                    <button string="Calculate" type="object" name="calculate_sieve_gsa" class="oe_highlight">
+                                        <i class="fa fa-calculator"/> Calculate
                                     </button>
                                 </div>
+
+                                  
                                 </div>
 
-                                  <div style="margin-top: 10px;"> 
-                                   <div class="d-flex gap-2" >
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                <newline/>
+                                <separator/>
+
+                                <div style="margin-top: 10px;">
+                                    <div class="d-flex gap-2">
+                                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
                                             <tr>
-                                                <td><label for="temp"></label></td>
-                                                <td><field name="temp"   /></td>
+                                                <td><label for="temp">Temp.°C</label></td>
+                                                <td><field name="temp"/></td>
                                             </tr>
-                                            
                                         </tbody>
                                     </table>
+                                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                            <tbody>
+                                                <tr>
+                                                    <td><label for="wt_of_samp1"/></td>
+                                                    <td><field name="wt_of_samp1"/></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                        <tbody>
-                                            <tr>
-                                                <td><label for="wt_of_samp1"></label></td>
-                                                <td><field name="wt_of_samp1"   /></td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
                                     </div>
 
-                                      <div class="d-flex gap-2" >
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                                        <tbody>
-                                            <tr>
-                                                <td><label for="meniscus_corre"></label></td>
-                                                <td><field name="meniscus_corre"   /></td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
-                                    
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                        <tbody>
-                                            <tr>
-                                                <td><label for="vescosity_water"></label></td>
-                                                <td><field name="vescosity_water"   /></td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
+                                    <div class="d-flex gap-2">
+
+                                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                            <tbody>
+                                                <tr>
+                                                    <td><label for="meniscus_corre"/></td>
+                                                    <td><field name="meniscus_corre"/></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                            <tbody>
+                                                <tr>
+                                                    <td><label for="vescosity_water"/></td>
+                                                    <td><field name="vescosity_water"/></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                     
                                     </div>
 
-                                    <div class="d-flex gap-2" >
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                                        <tbody>
-                                            <tr>
-                                                <td><label for="dispersion"></label></td>
-                                                <td><field name="dispersion"   /></td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
-                                    
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                        <tbody>
-                                            <tr>
-                                                <td><label for="temp_corre"></label></td>
-                                                <td><field name="temp_corre"   /></td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
+                                    <div class="d-flex gap-2">
+
+                                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                            <tbody>
+                                                <tr>
+                                                    <td><label for="dispersion"/></td>
+                                                    <td><field name="dispersion"/></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                            <tbody>
+                                                <tr>
+                                                    <td><label for="temp_corre"/></td>
+                                                    <td><field name="temp_corre"/></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                       
                                     </div>
 
-                                       <div class="d-flex gap-2" >
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                                        <tbody>
-                                            <tr>
-                                                <td><label for="specific_gravity"></label></td>
-                                                <td><field name="specific_gravity"   /></td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
-                                    
-                                  
-                                    </div>
 
-                                      
+                                     <div class="d-flex gap-2">
 
-                                  <div class="text-center fw-bold fs-5 mb-3">
-                                        DETERMINATION OF GRAIN SIZE ANALYSIS: HYDROMETER ANALYSIS
+                                     
+                                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                            <tbody>
+                                                <tr>
+                                                    <td><label for="specific_gravity"/></td>
+                                                    <td><field name="specific_gravity"/></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                  <field name="hydrometer_analysis_lines_gsa" class="custom_table_borders">
-                                 
+                                </div>
+
+                                <div class="text-center fw-bold fs-5 mb-3" style="margin-top: 15px;">
+                                    DETERMINATION OF GRAIN SIZE ANALYSIS: HYDROMETER ANALYSIS
+                                </div>
+
+                                <field name="hydrometer_analysis_lines_gsa" class="custom_table_borders">
                                     <tree editable="bottom">
                                         <field name="time"/>
                                         <field name="hydrometer_reading"/>
-                                        <field name="men_corrected" />
-                                        <field name="eff_depth" />
-                                        <field name="velocity" />
-                                        <field name="temp_combined" />
-
-                                        <field name="root_velocity" />
-                                        <field name="diameter_soil" />
-                                        <field name="n_finner" />
-                                        <field name="n_corrected" />
+                                        <field name="men_corrected"/>
+                                        <field name="eff_depth"/>
+                                        <field name="velocity"/>
+                                        <field name="temp_combined"/>
+                                        <field name="root_velocity"/>
+                                        <field name="diameter_soil"/>
+                                        <field name="n_finner"/>
+                                        <field name="n_corrected"/>
                                     </tree>
                                 </field>
-                                 </div>
+
                             </sheet>
+
+                            <div style="margin-left: 10px;"> <button string="Calculate" 
+                                        type="object" 
+                                        name="action_add_n_corrected" 
+                                        class="oe_highlight">
+                                    <i class="fa fa-calculator"/> Add N Corrected Value
+                                </button>
+                            </div>
                         </form>
-                    </field>
-                </group>
+                        </field>
+
                
                  <div invisible = "gsa_visible == False">
                   <field name= 'gsa_lines_generated' invisible="1" />
@@ -2818,7 +2790,7 @@
 
 
 
-                    <div class="oe_structure">
+                    <div class="oe_structure" invisible="triaxial_test_visible == False">
                         <separator string="Triaxial Shear Test Data"/>
                         
                         <group col="4">
@@ -2981,7 +2953,7 @@
                     
                     </div>
 
-                    <field name="triaxial_test_line_ids">
+                    <field name="triaxial_test_line_ids" invisible="triaxial_test_visible == False">
                         <tree editable="bottom" class="custom_table_borders">
                             <field name="horizontal_dial"/>
                             <field name="corrected_area" />

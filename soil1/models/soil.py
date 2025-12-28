@@ -5950,7 +5950,8 @@ class SoilGSALINE(models.Model):
         ondelete='cascade'
     )
 
-    
+
+   
     
 
 
@@ -5971,6 +5972,30 @@ class SoilGSALINE(models.Model):
     humidity = fields.Float("Humidity %" )
 
     wt_of_samp1 = fields.Float(string="Weight of total sample (gm)")
+
+    soil_classification = fields.Selection([
+        ('poorly_graded', 'Poorly_Graded'),
+        ('well_graded', 'Well_Graded'),
+        ('well_graded_gravel', 'Well-Graded Gravel'),
+        ('poorly_graded_gravel', 'Poorly-Graded-Gravel'),
+        ('silty_gravel', 'Silty-Gravel'),
+        ('clayey_gravel', 'Clayey-Gravel'),
+        ('silty_sand', 'Silty-Sand'),
+        ('clayey_sand', 'Clayey-Sand'),
+        ('inorganic_silt_fs', 'Inorganic-Silt-FS'),
+        ('inorganic_clays_lm', 'Inorganic-Clays-LM'),
+        ('organic_silt', 'Organic-Silt'),
+        ('inorganic_silt', 'Inorganic-Silt'),
+        ('inorganic_clay', 'Inorganic-Clay'),
+        ('organic_clay', 'Organic-Clay'),
+        ('peat', 'Peat'),
+        ('hard_rock', 'Hard-Rock'),
+        ('soft_rock', 'Soft-Rock'),
+        ('inorganic_silt_m', 'Inorganic-Silt-M'),
+        ('inorganic_clay_m', 'Inorganic-Clay-M'),
+        ('silty_clay_border', 'Silty-Clay-Border'),
+        ('fine_grained_soil', 'Fine Grained Soil'),
+    ], string="Classification")
 
     meniscus_corre = fields.Float(string="Meniscus Correction, Cm", digits=(12,1))
     vescosity_water = fields.Float(string="Viscosity of Water at Room Temperature in poise",digits=(12,6),store=True)
