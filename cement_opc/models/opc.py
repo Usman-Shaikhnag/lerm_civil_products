@@ -1008,10 +1008,17 @@ class CementNormalConsistency(models.Model):
 
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        current_user = self.env.user
+            # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+                lambda r: r.technician == current_user
+            )
+
+        for result in technician_results:
          
             if result.parameter.internal_id == '254gt2547-372f-4775-9bcb-e9dd70e3587g':
                 result.result_char = round(self.avg_density,2)
+                result.calculated = True
                 if self.avg_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1019,6 +1026,7 @@ class CementNormalConsistency(models.Model):
                 continue
             if result.parameter.internal_id == '3214578nbhgt2-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_consistency,2)
+                result.calculated = True
                 if self.avg_consistency_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1027,6 +1035,7 @@ class CementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == '63te7425-30fe-4043-b518-0102147hhytr':
                 result.result_char = round(self.specific_surface_first,2)
+                result.calculated = True
                 if self.fineness_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1035,6 +1044,7 @@ class CementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == '147frrt012-372f-4775-9bcb-e9dd651478trew':
                 result.result_char = round(self.avg_3_days,2)
+                result.calculated = True
                 if self.avg_3_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1043,6 +1053,7 @@ class CementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == '1236547ffv-372f-4775-9bcb-e9dd987ytre14g':
                 result.result_char = round(self.avg_7_days,2)
+                result.calculated = True
                 if self.avg_7_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1050,6 +1061,7 @@ class CementNormalConsistency(models.Model):
                 continue
             if result.parameter.internal_id == '00rrrttt887-372f-4775-9bcb-e9dd987nnhtre1':
                 result.result_char = round(self.avg_28_days,2)
+                result.calculated = True
                 if self.avg_28_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1058,6 +1070,7 @@ class CementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == '87ye7425-30fe-4043-b518-987456321r':
                 result.result_char = round(self.avg_expantion,2)
+                result.calculated = True
                 if self.avg_expantion_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1066,12 +1079,25 @@ class CementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == '87ye7425-30fe-4043-b518-32145698jj':
                 result.result_char = round(self.avg_expantion1,2)
+                result.calculated = True
                 if self.avg_expantion1_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-          
+
+            if result.parameter.internal_id == '87ye7425-30fe-4043-b518-4578tyre0':
+                result.calculated = True
+
+            if result.parameter.internal_id == '40ce7425-30fe-4043-b518-015f5c60d916':
+                result.calculated = True
+
+            if result.parameter.internal_id == '3214578nbhgt2-372f-4775-9bcb-e9dd321456yytr':
+                result.calculated = True
+
+            if result.parameter.internal_id == '3214578nbhgt2-372f-4775-9bcb-e9dd654789nnghh':
+                result.calculated = True
+
 
           
         
@@ -1095,13 +1121,24 @@ class CementNormalConsistency(models.Model):
         return record
 
   
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
     def get_all_fields(self):
         record = self.env['cement.opc'].browse(self.ids[0])

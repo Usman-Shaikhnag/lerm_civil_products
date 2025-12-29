@@ -1232,11 +1232,18 @@ class FlyaschNormalConsistency(models.Model):
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+                lambda r: r.technician == current_user
+            )
+
+        for result in technician_results:
 
              # Consistency
             if result.parameter.internal_id == '124fgrt3-1b3c-43ae-9c20-5421b6d6edf9':
                 result.result_char = round(self.consistency_percent,2)
+                result.calculated = True
                 if self.normal_consistency_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1246,6 +1253,7 @@ class FlyaschNormalConsistency(models.Model):
             # Initial Setting
             if result.parameter.internal_id == '2014fgr32-6bbe-4fdf-9571-a5a099be0293':
                 result.result_char = round(self.initial_time_set,2)
+                result.calculated = True
                 # if self.initial_time_set_nabl == 'pass':
                 #     result.nabl_status = 'nabl'
                 # else:
@@ -1255,6 +1263,7 @@ class FlyaschNormalConsistency(models.Model):
             # Final Setting
             if result.parameter.internal_id == '32145grte8-6526-4fcc-a5ec-18cc1ae10857':
                 result.result_char = round(self.final_time_set,2)
+                result.calculated = True
                 # if self.final_time_set_nabl == 'pass':
                 #     result.nabl_status = 'nabl'
                 # else:
@@ -1264,6 +1273,7 @@ class FlyaschNormalConsistency(models.Model):
             # Soundness By Le-Chatelier Test
             if result.parameter.internal_id == '3210ght7-91b0-4153-87ef-11b6954a9837':
                 result.result_char = round(self.avg_expansion,2)
+                result.calculated = True
                 if self.avg_expansion_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1273,6 +1283,7 @@ class FlyaschNormalConsistency(models.Model):
              # Soundness By AutoClave Test
             if result.parameter.internal_id == 'b0e2437d-514b-4875-9f3a-203d5fad1d83':
                 result.result_char = round(self.avg_autoclave_expansion,2)
+                result.calculated = True
                 if self.avg_autoclave_expansion_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1282,6 +1293,7 @@ class FlyaschNormalConsistency(models.Model):
              # Specific Gravity Test
             if result.parameter.internal_id == '3214fgrt-1d2c-4d3b-9ebe-ecb0b5e1221e':
                 result.result_char = round(self.avg_density_fly,2)
+                result.calculated = True
                 if self.avg_density_fly_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1291,6 +1303,7 @@ class FlyaschNormalConsistency(models.Model):
              # Particles retained on 45 micron IS sieve (wet sieving) - %
             if result.parameter.internal_id == '2104fvdr-6047-4781-9885-0b8b29050fda':
                 result.result_char = round(self.avg_particle_retained,2)
+                result.calculated = True
                 if self.avg_particle_retained_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1300,6 +1313,7 @@ class FlyaschNormalConsistency(models.Model):
              # Drying shrinkage Test
             if result.parameter.internal_id == '3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5':
                 result.result_char = round(self.avg_dry_autoclave_expansion,2)
+                result.calculated = True
                 if self.avg_dry_autoclave_expansion_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1309,6 +1323,7 @@ class FlyaschNormalConsistency(models.Model):
              # Compressive Strength
             if result.parameter.internal_id == '3201vfg-98f0-419e-94cd-1844af4393f5':
                 result.result_char = round(self.average_28_days,2)
+                result.calculated = True
                 if self.average_28_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1318,6 +1333,7 @@ class FlyaschNormalConsistency(models.Model):
              # Determination of Lime Reactivity of Flyash
             if result.parameter.internal_id == '320147vbfd-c97d-4d83-a9f2-2eb112eae116':
                 result.result_char = round(self.avg_10_days,2)
+                result.calculated = True
                 if self.avg_10_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1327,24 +1343,16 @@ class FlyaschNormalConsistency(models.Model):
              # Fineness By Blain Air
             if result.parameter.internal_id == '03c1a445-e599-4ba9-ac67-f186a7c6dd61':
                 result.result_char = round(self.specific_surface_m2kg,2)
+                result.calculated = True
                 if self.specific_surface_m2kg == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
             
-
-
-
-
-
-
-
-
-
-
-
-
+            if result.parameter.internal_id == '4c16fe35-cd02-4d12-ba13-aa95bf000d73':
+                result.calculated = True
+            
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",
@@ -1368,15 +1376,24 @@ class FlyaschNormalConsistency(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 

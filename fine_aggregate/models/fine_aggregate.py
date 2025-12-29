@@ -228,9 +228,10 @@ class FineAggregate(models.Model):
     # corrected(added)
     def calculate_sieve1(self): 
         for record in self:
-
-            record.calc_mode = True
+            
             record.submit_mode = False
+            record.calc_mode = True
+            
 
             previous_cumulative = 0  
             for line in record.sieve_analysis_child_lines:
@@ -256,6 +257,13 @@ class FineAggregate(models.Model):
                 print("Updated Passing Percent:", passing_percent)
 
                 previous_cumulative = cumulative_retained
+            # Jar Button Visible ahe (True), tar Submit Mode 'False' ch theva.
+            if record.soudness_visible:
+                record.submit_mode = False
+            
+            # Jar Button Invisible ahe (False), tar automatic 'True' kara.
+            else:
+                record.submit_mode = True
             
      
     
@@ -988,9 +996,10 @@ class FineAggregate(models.Model):
 
     def calculate_sieve(self): 
         for record in self:
-
-            record.calc_mode = True
+            
             record.submit_mode = False
+            record.calc_mode = True
+            
 
             previous_cumulative = 0  
             for line in record.sieve_analysis_soundness_lines:
@@ -1023,6 +1032,9 @@ class FineAggregate(models.Model):
                 print("Updated Passing Percent:", passing_percent)
 
                 previous_cumulative = cumulative_retained
+            record.submit_mode = True
+
+    
 
 
     ouantitative_name = fields.Char("Name",default="Quantitatively Examination :-")
@@ -1295,42 +1307,63 @@ class FineAggregate(models.Model):
 
 
     def open_eln_page(self):
-  
-        for result in self.eln_ref.parameters_result:
-          
 
-            # water absorbtion
-            if result.parameter.internal_id == '4dbde30b-0cdc-4641-abdd-68a574fd7e1f':
-                result.result_char = round(self.avg_water_absorption,2)
-                if self.avg_water_absorption_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+                lambda r: r.technician == current_user
+            )
 
+        for result in technician_results:
+            internal_id = result.parameter.internal_id
 
-            if result.parameter.internal_id == '4587tyhloos-3fa3-4b83-ae31-9d281767188c':
-                result.result_char = round(self.loose_density,2)
-                if self.loose_density_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-        
-           
+            # Sieve analysis
+            if internal_id == "318d72a1-7188-4086-b132-62b50e63f5d1":
+                result.calculated = True
+
+            # Specific gravity
+            elif internal_id == "45875ght-7188-4086-b132-62b50e63f1245gt":
+                result.calculated = True
+
+            # Water absorption
+            elif internal_id == "4dbde30b-0cdc-4641-abdd-68a574fd7e1f":
+                result.result_char = round(self.avg_water_absorption, 2)
+                result.calculated = True
+                result.nabl_status = (
+                    'nabl' if self.avg_water_absorption_nabl == 'pass' else 'non-nabl'
+                )
+
+            # Loose density
+            elif internal_id == "4587tyhloos-3fa3-4b83-ae31-9d281767188c":
+                result.result_char = round(self.loose_density, 2)
+                result.calculated = True
+                result.nabl_status = (
+                    'nabl' if self.loose_density_nabl == 'pass' else 'non-nabl'
+                )
+
+            # Finer than 75 micron
+            elif internal_id == "988f5bf6-c865-453c-9cd6-993a5a59ad95":
+                result.calculated = True
 
             # Compacted density
-            if result.parameter.internal_id == 'd961c78a-9f5c-4e7f-9f03-86ab65740161':
-                result.result_char = round(self.compacted_density,2)
-                if self.compacted_density_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            
+            elif internal_id == "d961c78a-9f5c-4e7f-9f03-86ab65740161":
+                result.result_char = round(self.compacted_density, 2)
+                result.calculated = True
+                result.nabl_status = (
+                    'nabl' if self.compacted_density_nabl == 'pass' else 'non-nabl'
+                )
 
-         
-       
+            # Voids – compacted density
+            elif internal_id == "a699d9fd-57f5-4044-97ea-2bea87bf9c44":
+                result.calculated = True
+
+            # Voids – loose density
+            elif internal_id == "8a944a9b-4d7d-44a3-a82c-6d8bacc07846":
+                result.calculated = True
+
+            # Soundness
+            elif internal_id == "a0e7aaf3-68ff-4e75-830d-91ae04c98f5796":
+                result.calculated = True
 
 
         return {
@@ -1357,15 +1390,24 @@ class FineAggregate(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 

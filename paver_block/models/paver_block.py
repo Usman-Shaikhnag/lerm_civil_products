@@ -544,14 +544,20 @@ class PaverBlock(models.Model):
 
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+                lambda r: r.technician == current_user
+            )
 
-            
-
-
+        for result in technician_results:
             # Dimension Test 
+            if result.parameter.internal_id == '23547trew-199c-497a-b3a7-45023c604673':
+                result.calculated = True
+
             if result.parameter.internal_id == '4609c439-2ee4-4e3e-b40c-334e95b2bbda':
                 result.result_char = round(self.average_length,2)
+                result.calculated = True
                 if self.average_length_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -560,6 +566,7 @@ class PaverBlock(models.Model):
 
             if result.parameter.internal_id == 'f079957b-608f-40c0-aebd-0db011ab0f2c':
                 result.result_char = round(self.average_width,2)
+                result.calculated = True
                 if self.average_width_nabl1 == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -568,6 +575,7 @@ class PaverBlock(models.Model):
 
             if result.parameter.internal_id == '549532ef-08e1-46f7-9565-bf034ce334f4':
                 result.result_char = round(self.average_thickness,2)
+                result.calculated = True
                 if self.average_thickness_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -577,6 +585,7 @@ class PaverBlock(models.Model):
             # Water Absorption
             if result.parameter.internal_id == '2147fgrr-eba3-4f15-b33d-679b39f7372e':
                 result.result_char = round(self.avg_water_absorption,2)
+                result.calculated = True
                 if self.avg_water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -586,6 +595,7 @@ class PaverBlock(models.Model):
             # Compressive Strength
             if result.parameter.internal_id == '1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11':
                 result.result_char = round(self.avg_compressive_strength,2)
+                result.calculated = True
                 if self.avg_compressive_strength_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -599,9 +609,9 @@ class PaverBlock(models.Model):
                 'type': 'ir.actions.act_window',
                 'target': 'current',
                 'res_id': self.eln_ref.id,
+                }
 
 
-            }
             
     
 
@@ -619,15 +629,24 @@ class PaverBlock(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 

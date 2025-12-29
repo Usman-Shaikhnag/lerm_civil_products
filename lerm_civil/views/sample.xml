@@ -16,7 +16,7 @@
                             name="open_sample_allotment_wizard"
                             string="Allotment"
                             groups="lerm_civil.kes_job_allocation,lerm_civil.kes_hod_access_group,lerm_civil.kes_verified_by,lerm_civil.kes_quality_manager"
-                            invisible="state not in ('1-allotment_pending')"/>
+                            invisible="state not in ('1-allotment_pending','7-partially-alloted')"/>
 
                         <button type="object" name="print_datasheet" string="Print Datasheet"/>
 
@@ -178,7 +178,7 @@
 
                         <button name="open_form" type="object" class="btn btn-primary" string="Open Form" invisible="product_or_form_based == False"/>
             
-                        <field invisible="1" name="parameters" nolabel="1" options="{'no_create': True, 'no_open': True}" />
+                        <field name="parameters" nolabel="1" options="{'no_create': True, 'no_open': True}" />
                         <field name="parameters_result" nolabel="1" invisible="product_or_form_based == True">
                             <tree editable="bottom" >
                                 <field name="parameter"/>
@@ -347,20 +347,37 @@
     </record>
 
     <record id="srf_sample_allotment_wizard" model="ir.ui.view">
-        <field name="name">sample.allotment.wizard</field>
+        <field name="name">sample.allotment.wizard.form</field>
         <field name="model">sample.allotment.wizard</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Allot Sample">
                 <sheet>
-                    <group style="width:100%">
-                        <field name='technicians'/>
-                        <!-- <field name="message_ids" widget="mail_thread"/>
-                        <field name="activity_ids" widget="mail_activity"/> -->
+                    <group>
+                        <field name="allocation_type" widget="radio"/>
                     </group>
+
+                    <group invisible="allocation_type != 'sample'">
+                        <field name="technicians"/>
+                    </group>
+
+                    <group invisible="allocation_type != 'parameter'">
+                        <field name="technician_ids" widget="many2many_tags"/>
+                        <field name="line_ids">
+                            <tree editable="bottom">
+                                <field name="parameter_id"/>
+                                <field name="is_locked" invisible="1"/>
+                                <field name="allowed_technician_ids" invisible="1"/>
+                                <field name="technician"
+                                        readonly="is_locked"
+                                        domain="[('id', 'in', allowed_technician_ids)]"
+                                        options="{'no_create': True, 'no_open': True}"/>
+                            </tree>
+                            </field>
+                    </group>
+
                     <footer>
                         <button name="allot_sample" string="Allot Sample" type="object" class="btn-primary"/>
                         <button name="close_allotment_wizard" string="Close" type="object"/>
-                        <button name="schedule_activity" string="Schedule Activity" type="object" class="oe_highlight"/>
                     </footer>
                 </sheet>
             </form>
