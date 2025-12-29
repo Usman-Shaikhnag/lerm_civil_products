@@ -126,25 +126,25 @@
                          
 
                                 <field name="serial_no" string="Sr.No"/>
-<field name="sieve_size" string="IS Sieve Size"/>
-<field name="wt_retained" string="Wt. Retained in gms" class="blue-input"
-       decoration-info="wt_retained != 0"/>
-<field name="percent_retained" string="% Retained"/>
-<field name="cumulative_retained"
-       context="{'default_cumulative_retained': cumulative_retained}"
-       string="Cum. Retained %"/>
-<field name="passing_percent" string="Passing %" readonly="1"/>
-<field name="specific_limt" string="Specified Limits" class="oe_center"/>
+                                    <field name="sieve_size" string="IS Sieve Size"/>
+                                    <field name="wt_retained" string="Wt. Retained in gms" class="blue-input"
+                                        decoration-info="wt_retained != 0"/>
+                                    <field name="percent_retained" string="% Retained"/>
+                                    <field name="cumulative_retained"
+                                        context="{'default_cumulative_retained': cumulative_retained}"
+                                        string="Cum. Retained %"/>
+                                    <field name="passing_percent" string="Passing %" readonly="1"/>
+                                    <field name="specific_limt" string="Specified Limits" class="oe_center"/>
 
-                                
-                            </tree>
-                        </field>
-                    </div>
-                    <div invisible="sieve_visible == False">
-                        <button string="Calculate" type="object" name="calculate_sieve1" class="oe_highlight">
-                            <i class="fa fa-calculator"/> Calculate
-                        </button>
-                    </div>
+                                                                    
+                                    </tree>
+                                </field>
+                            </div>
+                            <div invisible="sieve_visible == False">
+                                <button string="Calculate" type="object" name="calculate_sieve1" class="oe_highlight">
+                                    <i class="fa fa-calculator"/> Calculate
+                                </button>
+                            </div>
 
 
 
@@ -879,7 +879,7 @@
                       </div>
                       
                       <div style="width:50%">
-                        <field name="submit_mode" invisible="0"/>
+                        <field name="submit_mode" invisible="1"/>
 
                       </div>
                     </div>
