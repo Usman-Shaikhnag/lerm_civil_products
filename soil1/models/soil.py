@@ -123,14 +123,14 @@ class Soil(models.Model):
 
     # Sieve Analysis
     sieve_name = fields.Char("Name",default="Sieve Analysis")
-    sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+    sieve_visible = fields.Boolean("Sieve Analysis Visible")
 
-    @api.model
-    def default_get(self, fields_list):
-        res = super().default_get(fields_list)
-        if self.env.context.get('force_sieve_visible'):
-            res['sieve_visible'] = True
-        return res
+    # @api.model
+    # def default_get(self, fields_list):
+    #     res = super().default_get(fields_list)
+    #     if self.env.context.get('force_sieve_visible'):
+    #         res['sieve_visible'] = True
+    #     return res
 
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line1','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
@@ -2825,7 +2825,6 @@ class Soil(models.Model):
         for rec in self:
             lines = rec.uu_triaxial_cohesion_line_ids
 
-            # किमान 2 data points असले पाहिजेत
             if not lines or len(lines) < 2:
                 rec.phi_deg_uu_triaxial_cohesion = 0.0
                 rec.cohesion_uu_triaxial_cohesion = 0.0
@@ -2834,7 +2833,6 @@ class Soil(models.Model):
             slopes = []
             intercepts = []
 
-            # सर्व सलग points वरून slope व intercept काढा
             for i in range(len(lines) - 1):
                 p1 = lines[i]
                 p2 = lines[i + 1]
@@ -2869,9 +2867,102 @@ class Soil(models.Model):
 
     show_sieve = fields.Boolean(default=False)
 
+    gsa_particle_child_lines = fields.One2many('mechanical.gsa.particle.line','parent_id')
+
    
 
     gsa_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+   # --- BUTTON ACTION ---
+    def action_calc_d_values(self):
+        """Button to Calculate and Fetch Values"""
+        self._calculate_all_d_values()
+        return True
+
+    def _calculate_all_d_values(self):
+        for record in self:
+            record.gsa_particle_child_lines.unlink()
+            
+            lines_list = []
+
+            for gsa in record.gsa_child_lines:
+                # --- CALCULATION LOGIC START ---
+                val_d10 = 0.0
+                val_d30 = 0.0
+                val_d60 = 0.0
+                val_cu = 0.0
+                val_cc = 0.0
+                
+                if gsa.sieve_analysis_child_lines_gsa:
+                    clean_data = []
+                    for line in gsa.sieve_analysis_child_lines_gsa:
+                        try:
+                            sz_str = re.sub(r"[^0-9.]", "", str(line.sieve_size))
+                            size_val = float(sz_str) if sz_str else 0.0
+                            pass_val = line.passing_percent
+                            clean_data.append({'size': size_val, 'passing': pass_val})
+                        except:
+                            continue
+
+                    clean_data.sort(key=lambda x: x['passing'], reverse=True)
+                    val_d10 = self._get_interpolated_value(clean_data, 10)
+                    val_d30 = self._get_interpolated_value(clean_data, 30)
+                    val_d60 = self._get_interpolated_value(clean_data, 60)
+
+                    if val_d10 > 0:
+                        val_cu = val_d60 / val_d10
+                        if val_d60 > 0:
+                            val_cc = (val_d30 ** 2) / (val_d60 * val_d10)
+                # --- CALCULATION LOGIC END ---
+
+              
+                
+                fetched_meniscus = getattr(gsa, 'meniscus_corre', 0.5)   # Default 0.5 if not found
+                fetched_dispersion = getattr(gsa, 'dispersion', 1.575)   # Default 1.575 if not found
+                fetched_temp_corre = getattr(gsa, 'temp_corre', 0.0)     
+
+                lines_list.append({
+                    'parent_id': record.id,
+                    'bh_id': gsa.bh_id,
+                    'sample_depth': gsa.sample_depth,
+                    
+                    # Calculated Values
+                    'd_10': val_d10,
+                    'd_30': val_d30,
+                    'd_60': val_d60,
+                    'c_u': round(val_cu, 2),
+                    'c_c': round(val_cc, 2),
+                    
+                    # Fetched Values (Same Name Fields)
+                    'meniscus_corre': fetched_meniscus,
+                    'dispersion': fetched_dispersion,
+                    'temp_corre': fetched_temp_corre,
+                })
+
+            if lines_list:
+                self.env['mechanical.gsa.particle.line'].create(lines_list)
+
+    # Helper Function
+    def _get_interpolated_value(self, data_list, target_percent):
+        upper = None
+        lower = None
+        for i in range(len(data_list) - 1):
+            curr = data_list[i]
+            next_one = data_list[i+1]
+            if curr['passing'] >= target_percent and next_one['passing'] < target_percent:
+                upper = curr
+                lower = next_one
+                break
+        
+        if upper and lower:
+            size2 = upper['size']
+            size1 = lower['size']
+            pass2 = upper['passing']
+            pass1 = lower['passing']
+            if (pass2 - pass1) != 0:
+                result = size2 - ((pass2 - target_percent) * (size2 - size1) / (pass2 - pass1))
+                return round(result, 4)
+        return 0.0
 
    
 
@@ -5997,9 +6088,9 @@ class SoilGSALINE(models.Model):
         ('fine_grained_soil', 'Fine Grained Soil'),
     ], string="Classification")
 
-    meniscus_corre = fields.Float(string="Meniscus Correction, Cm", digits=(12,1))
-    vescosity_water = fields.Float(string="Viscosity of Water at Room Temperature in poise",digits=(12,6),store=True)
-    dispersion = fields.Float(string="Dispersion Agent Correction, x")
+    meniscus_corre = fields.Float(string="Meniscus Correction, Cm", digits=(12,1),default=0.5)
+    vescosity_water = fields.Float(string="Viscosity of Water at Room Temperature in poise",digits=(12,9),store=True,default=0.0093885959)
+    dispersion = fields.Float(string="Dispersion Agent Correction, x",default=1.575,digits=(12,3))
     temp_corre = fields.Float(string="Temperature Correction, Mt",compute="_compute_temp_corre",digits=(12,4))
     specific_gravity = fields.Float(string="Specific gravity",digits=(12,3))
 
@@ -6581,6 +6672,37 @@ class SoilHydrometerLineGSA(models.Model):
                 rec.n_corrected = (passing_075 * rec.n_finner) / 100
             else:
                 rec.n_corrected = 0.0
+
+
+
+class SoilGSALINE1(models.Model):
+    _name = "mechanical.gsa.particle.line"
+    parent_id = fields.Many2one(
+        'mechanical.soil1',
+        string="Parent Soil",
+        ondelete='cascade'
+    )
+
+
+   
+    
+
+
+   
+    bh_id = fields.Char(string="BH ID")
+    sample_depth = fields.Char(string="Sample Depth (m)")
+    d_10 = fields.Float(string="D10",digits=(12,3))
+    d_30 = fields.Float(string="D30")
+    d_60 = fields.Float(string="D60")
+
+    c_u = fields.Float(string="Cu")
+    c_c = fields.Float(string="Cc")
+
+    meniscus_corre = fields.Float(string="Meniscus correction, Cm",digits=(12,1))
+
+    dispersion = fields.Float(string="Dispersing agent correction, x",digits=(12,3))
+
+    temp_corre = fields.Float("Temperature Correction, Mt",digits=(12,4) )
 
 
 

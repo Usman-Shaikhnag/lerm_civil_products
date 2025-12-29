@@ -1968,6 +1968,27 @@
                                    options="{'size': [900, 600]}"/> <field name="gsa_graph_filename" invisible="1"/>
                       </div>
 
+
+            <field name="gsa_particle_child_lines" class="custom_table_borders">
+                <tree editable="bottom">
+                    <field name="bh_id"/>
+                    <field name="sample_depth"/>
+                    <field name="d_10"/>
+                    <field name="d_30"/>
+                    <field name="d_60"/>
+                    <field name="c_u"/>
+                    <field name="c_c"/>
+                    <field name="meniscus_corre"/>
+                    <field name="dispersion"/>
+                    <field name="temp_corre"/>
+                </tree>
+            </field>
+
+         <button name="action_calc_d_values" 
+            string="Calculate " 
+            type="object" 
+            class="oe_highlight"/>
+
                       
             <!-- Specific Gravity title -->
             <div invisible="specific_gravity_visible == False">
