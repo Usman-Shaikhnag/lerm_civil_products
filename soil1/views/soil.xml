@@ -148,7 +148,7 @@
 
 
                        <!-- Liquid Limit-->
-                    <div invisible = "liquid_limit_visible == False">
+                    <!-- <div invisible = "liquid_limit_visible == False">
                         <h1 class="text-center">
                             <field name="liquid_limit_name" readonly="1" nolabel="1"/>
                             <field name="liquid_limit_visible" invisible="1"/>
@@ -193,11 +193,11 @@
                                             readonly="1" /></td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> -->
 
-                    <div invisible = "liquid_limit_visible == False" class="custom_table_borders text-center">
+                    <!-- <div invisible = "liquid_limit_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image_liquid" widget="image" readonly="1"/>
-                    </div>
+                    </div> -->
 
 
                     <!-- Plastic Limit -->
@@ -1038,17 +1038,18 @@
                                 </tr>
                             </tbody>
                         </table> -->
-
+<!-- 
 
                           <div invisible = "specific_gravity_visible == False">
                         <h1 class="text-center">
                             <field name="specific_gravity_name" readonly="1" nolabel="1"/>
                             <field name="specific_gravity_visible" invisible="1"/>
                         </h1>
-                    </div>
+                    </div> -->
 
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
+
+                    <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
                         <tbody>
                             <tr>
                                 <td><label for="m1">Mass of Density Bottle (M1)</label></td>
@@ -1091,7 +1092,7 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
 
 
 
@@ -1622,6 +1623,14 @@
                         </field>
                     </div>
 
+
+                    <div invisible="moisture_visible == False">
+                  <h1 class="text-center">
+                    <field name="NMC_name" readonly="1" nolabel="1"/>
+                        <field name="moisture_visible" invisible="1"/>
+               </h1>
+                   </div>
+
     
                    <div invisible = "moisture_visible == False">
                         <field name="moisture_ids">
@@ -1933,9 +1942,9 @@
                         </form>
                     </field>
                 </group>
-               
+<!--                
                  <div invisible = "gsa_visible == False">
-                  <field name= 'gsa_lines_generated' invisible="1" />
+                  <field name= 'gsa_lines_generated' invisible="1"/>
                   <button name="action_generate_gsa_lines"
                    
                     type="object"
@@ -1943,8 +1952,8 @@
                     class="oe_highlight"
                     invisible="gsa_lines_generated == True"/>
 
-                </div>
-                <div style="margin-top: 10px;">
+                </div> -->
+                <!-- <div style="margin-top: 10px;">
                 <button name="action_generate_gsa_graph" 
                             string="Generate GSA Graph" 
                             type="object" 
@@ -1961,11 +1970,12 @@
                                    nolabel="1" 
                                    filename="gsa_graph_filename"
                                    options="{'size': [900, 600]}"/> <field name="gsa_graph_filename" invisible="1"/>
-                      </div>
+                      </div> -->
 
 
                       
             <!-- Specific Gravity title -->
+            
             <div invisible="specific_gravity_visible == False">
                 <h1 class="text-center">
                     <field name="gravity_name" readonly="1" nolabel="1"/>
@@ -2028,6 +2038,105 @@
                     </tree>
                 </field>
             </div>
+
+
+
+
+
+
+
+<!-- Atterbergs Limits (Ll,Pl,Sl) -->
+
+
+    <record id="view_lab_atterberg_test_form" model="ir.ui.view">
+    <field name="name">lab.atterberg.test.form</field>
+    <field name="model">lab.atterberg.test</field>
+    <field name="arch" type="xml">
+        <form string="Atterberg Limits">
+            <sheet>
+
+                <group>
+                    <field name="name"/>
+                </group>
+
+                <!-- PLASTIC LIMIT (your first image) -->
+                <group string="PLASTIC LIMIT">
+                    <field name="plastic_line_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="test_no" string="Test no."/>
+                            <field name="container_no" string="Container no."/>
+                            <field name="m3"/>
+                            <field name="m2"/>
+                            <field name="m1"/>
+                            <field name="m3_m2"/>
+                            <field name="m2_m1"/>
+                            <field name="water_content"/>
+                        </tree>
+                    </field>
+                    <field name="plastic_limit" string="Plastic Limit (%)"/>
+                </group>
+
+                <!-- LIQUID LIMIT (second image) -->
+                <group string="LIQUID LIMIT">
+                    <field name="liquid_line_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="test_no" string="Test no."/>
+                            <field name="blows" string="Number of blows"/>
+                            <field name="container_no" string="Container no."/>
+                            <field name="m3"/>
+                            <field name="m2"/>
+                            <field name="m1"/>
+                            <field name="m3_m2"/>
+                            <field name="m2_m1"/>
+                            <field name="water_content"/>
+                        </tree>
+                    </field>
+                    <field name="liquid_limit" string="Liquid Limit (%)"/>
+                </group>
+
+                <!-- SHRINKAGE LIMIT (third image) -->
+                <group string="SHRINKAGE LIMIT">
+                    <field name="shrinkage_line_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="test_no" string="Test no."/>
+                            <field name="container_no" string="Container no."/>
+                            <field name="m1"/>
+                            <field name="v1"/>
+                            <field name="m3"/>
+                            <field name="m2"/>
+                            <field name="m3_m2"/>
+                            <field name="m2_m1"/>
+                            <field name="v2"/>
+                            <field name="v1_v2"/>
+                            <field name="water_content"/>
+                            <field name="shrinkage_ratio"/>
+                            <field name="shrinkage_limit"/>
+                        </tree>
+                    </field>
+                    <field name="shrinkage_limit" string="Shrinkage Limit (%)"/>
+                </group>
+
+            </sheet>
+        </form>
+    </field>
+</record>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             <!-- DETERMINATION OF CONSOLIDATION PROPERTIES -->
                     <div invisible = "consolidation_visible == False">

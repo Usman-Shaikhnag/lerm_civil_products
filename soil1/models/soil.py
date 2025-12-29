@@ -87,6 +87,7 @@ class Soil(models.Model):
     #     for rec in self:
     #         rec.material = rec.eln_ref.material if rec.eln_ref else False
 
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -552,109 +553,109 @@ class Soil(models.Model):
 
 
                # Liquid Limit
-    liquid_limit_name = fields.Char("Name",default="Liquid Limit")
-    liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
+    # liquid_limit_name = fields.Char("Name",default="Liquid Limit")
+    # liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
     # job_no_liquid_limit = fields.Char(string="Job No")
     # material_liquid_limit = fields.Char(String="Material")
     # start_date_liquid_limit = fields.Date("Start Date")
     # end_date_liquid_limit = fields.Date("End Date")
-    child_liness = fields.One2many('mechanical.liquid.limits.line1','parent_id',string="Liquid Limit")
-    liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
+    # child_liness = fields.One2many('mechanical.liquid.limits.line1','parent_id',string="Liquid Limit")
+    # liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
 
    
    
 
-    @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
-    def _compute_liquid_limit(self):
-        for record in self:
-            lines = record.child_liness.filtered(lambda l: l.blwo_no1 is not None and l.moisture_content is not None)
-            if not lines or len(lines) < 2:
-                record.liquid_limit = 0.0
-                continue
+    # @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
+    # def _compute_liquid_limit(self):
+    #     for record in self:
+    #         lines = record.child_liness.filtered(lambda l: l.blwo_no1 is not None and l.moisture_content is not None)
+    #         if not lines or len(lines) < 2:
+    #             record.liquid_limit = 0.0
+    #             continue
 
             # Sort by blwo_no1 ascending
-            lines_sorted = sorted(lines, key=lambda l: l.blwo_no1)
-            target = 25.0
+            # lines_sorted = sorted(lines, key=lambda l: l.blwo_no1)
+            # target = 25.0
 
             # Find the two points around target (just below and just above)
-            lower = None
-            upper = None
-            for i, line in enumerate(lines_sorted):
-                if line.blwo_no1 < target:
-                    lower = line
-                elif line.blwo_no1 >= target and lower:
-                    upper = line
-                    break
+            # lower = None
+            # upper = None
+            # for i, line in enumerate(lines_sorted):
+            #     if line.blwo_no1 < target:
+            #         lower = line
+            #     elif line.blwo_no1 >= target and lower:
+            #         upper = line
+            #         break
 
-            if lower and upper:
-                x1, x2 = lower.blwo_no1, upper.blwo_no1
-                y1, y2 = lower.moisture_content, upper.moisture_content
+            # if lower and upper:
+            #     x1, x2 = lower.blwo_no1, upper.blwo_no1
+            #     y1, y2 = lower.moisture_content, upper.moisture_content
 
-                if x2 != x1:
+            #     if x2 != x1:
                     # Linear interpolation
-                    ll_value = y1 + (y2 - y1) * (target - x1) / (x2 - x1)
-                else:
-                    ll_value = y1
-                record.liquid_limit = ll_value
-            elif lower:
+            #         ll_value = y1 + (y2 - y1) * (target - x1) / (x2 - x1)
+            #     else:
+            #         ll_value = y1
+            #     record.liquid_limit = ll_value
+            # elif lower:
                 # If target above highest value
-                record.liquid_limit = lower.moisture_content
-            else:
-                record.liquid_limit = 0.0
+    #             record.liquid_limit = lower.moisture_content
+    #         else:
+    #             record.liquid_limit = 0.0
 
     
-    liquid_limit_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
+    # liquid_limit_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
 
-    @api.depends('liquid_limit','eln_ref','grade')
-    def _compute_liquid_limit_conformity(self):
+    # @api.depends('liquid_limit','eln_ref','grade')
+    # def _compute_liquid_limit_conformity(self):
         
-        for record in self:
-            record.liquid_limit_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
+    #     for record in self:
+    #         record.liquid_limit_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
                     
-                    lower = record.liquid_limit - record.liquid_limit*mu_value
-                    upper = record.liquid_limit + record.liquid_limit*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.liquid_limit_conformity = 'pass'
-                        break
-                    else:
-                        record.liquid_limit_conformity = 'fail'
+    #                 lower = record.liquid_limit - record.liquid_limit*mu_value
+    #                 upper = record.liquid_limit + record.liquid_limit*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.liquid_limit_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.liquid_limit_conformity = 'fail'
 
-    liquid_limit_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_liquid_limit_nabl", store=True)
+    # liquid_limit_nabl = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_liquid_limit_nabl", store=True)
 
-    @api.depends('liquid_limit','eln_ref','grade')
-    def _compute_liquid_limit_nabl(self):
+    # @api.depends('liquid_limit','eln_ref','grade')
+    # def _compute_liquid_limit_nabl(self):
         
-        for record in self:
-            record.liquid_limit_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
+    #     for record in self:
+    #         record.liquid_limit_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
+    #         lab_min = line.lab_min_value
+    #         lab_max = line.lab_max_value
+    #         mu_value = line.mu_value
             
-            lower = record.liquid_limit - record.liquid_limit*mu_value
-            upper = record.liquid_limit + record.liquid_limit*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.liquid_limit_nabl = 'pass'
-                break
-            else:
-                record.liquid_limit_nabl = 'fail'
+    #         lower = record.liquid_limit - record.liquid_limit*mu_value
+    #         upper = record.liquid_limit + record.liquid_limit*mu_value
+    #         if lower >= lab_min and upper <= lab_max:
+    #             record.liquid_limit_nabl = 'pass'
+    #             break
+    #         else:
+    #             record.liquid_limit_nabl = 'fail'
 
 
-    graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
+    # graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
 
     
 
@@ -662,83 +663,83 @@ class Soil(models.Model):
 
    
 
-    def generate_line_chart_liquid(self):
-        x_value = []
-        y_value = []
-        for line in self.child_liness:
-            if line.blwo_no1 and line.moisture_content is not None:
-                x_value.append(line.blwo_no1)
-                y_value.append(line.moisture_content)
+    # def generate_line_chart_liquid(self):
+    #     x_value = []
+    #     y_value = []
+    #     for line in self.child_liness:
+    #         if line.blwo_no1 and line.moisture_content is not None:
+    #             x_value.append(line.blwo_no1)
+    #             y_value.append(line.moisture_content)
 
-        if not x_value or not y_value:
-            return False
+    #     if not x_value or not y_value:
+    #         return False
 
-        plt.figure(figsize=(10, 5))
+    #     plt.figure(figsize=(10, 5))
 
         # ✅ Blue line with red points
-        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+        # plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+        # plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
 
         # ✅ Labels and title
-        plt.xlabel('No. of Blows', fontsize=12)
-        plt.ylabel('Water Content (%)', fontsize=12)
-        plt.title('LIQUID LIMIT', fontsize=14)
+        # plt.xlabel('No. of Blows', fontsize=12)
+        # plt.ylabel('Water Content (%)', fontsize=12)
+        # plt.title('LIQUID LIMIT', fontsize=14)
 
         # ✅ Axis limits (rounded)
-        max_y = max(y_value)
-        y_limit = (int(max_y / 10) + 1) * 10
-        plt.ylim(bottom=0, top=y_limit)
+        # max_y = max(y_value)
+        # y_limit = (int(max_y / 10) + 1) * 10
+        # plt.ylim(bottom=0, top=y_limit)
 
-        max_x = max(x_value)
-        x_limit = (int(max_x / 10) + 1) * 10
-        plt.xlim(left=0, right=x_limit)
+        # max_x = max(x_value)
+        # x_limit = (int(max_x / 10) + 1) * 10
+        # plt.xlim(left=0, right=x_limit)
 
         # ✅ Minor ticks for fine grid lines
-        ax = plt.gca()
-        ax.xaxis.set_minor_locator(MultipleLocator(1))
-        ax.yaxis.set_minor_locator(MultipleLocator(1))
+        # ax = plt.gca()
+        # ax.xaxis.set_minor_locator(MultipleLocator(1))
+        # ax.yaxis.set_minor_locator(MultipleLocator(1))
 
         # ✅ Fine grid
-        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+        # plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
         # 🔹 Highlight Liquid Limit point (DB field value वापरून)
-        if self.liquid_limit:
-            highlight_x = 25                # Blows (fixed at 25)
-            highlight_y = self.liquid_limit # Moisture content from field
+        # if self.liquid_limit:
+        #     highlight_x = 25                
+        #     highlight_y = self.liquid_limit
 
             # Dotted guide lines
-            plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
-            plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
+            # plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
+            # plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
 
             # Point mark
-            plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
+            # plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
 
             # Label
-            plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
+            # plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
 
         # ✅ Save to buffer
-        buffer = io.BytesIO()
-        plt.tight_layout()
-        plt.legend()
-        plt.savefig(buffer, format='png')
-        plt.close()
-        buffer.seek(0)
+    #     buffer = io.BytesIO()
+    #     plt.tight_layout()
+    #     plt.legend()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
 
-        return base64.b64encode(buffer.read()).decode('utf-8')
+    #     return base64.b64encode(buffer.read()).decode('utf-8')
 
 
         
        
     
 
-    @api.depends('child_liness')
-    def _compute_graph_image_liquid(self):
-        try:
-            for record in self:
-                chart_image_liquid = record.generate_line_chart_liquid()
-                record.graph_image_liquid = chart_image_liquid
-        except:
-            pass 
+    # @api.depends('child_liness')
+    # def _compute_graph_image_liquid(self):
+    #     try:
+    #         for record in self:
+    #             chart_image_liquid = record.generate_line_chart_liquid()
+    #             record.graph_image_liquid = chart_image_liquid
+    #     except:
+    #         pass 
 
 
 
@@ -761,7 +762,7 @@ class Soil(models.Model):
    #  Calculation-NMC, 
     
 
-    # NMC_name = fields.Char( string="Name",default=" NMC" )
+    NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
 
 
@@ -786,6 +787,66 @@ class Soil(models.Model):
 
    
    
+
+
+
+
+# Atterbergs Limits (Ll,Pl,Sl)
+
+    plastic_line_ids = fields.One2many( 'lab.atterberg.plastic.line', 'test_id', string='Plastic Limit Lines' )
+    liquid_line_ids = fields.One2many('lab.atterberg.liquid.line', 'test_id', string='Liquid Limit Lines')
+    shrinkage_line_ids = fields.One2many( 'lab.atterberg.shrinkage.line', 'test_id', string='Shrinkage Limit Lines')
+
+    # FINAL LIMITS (BOTTOM BLUE ROWS)
+    plastic_limit = fields.Float(string='Plastic Limit (%)',  compute='_compute_limits', store=True)
+    liquid_limit = fields.Float(string='Liquid Limit (%)', compute='_compute_limits', store=True)
+    shrinkage_limit = fields.Float(string='Shrinkage Limit (%)',  compute='_compute_limits', store=True)
+    shrinkage_limit_visible = fields.Boolean( string="Free Swell Visible",default=True,)
+
+
+
+    @api.depends('plastic_line_ids.water_content', 'liquid_line_ids.water_content','shrinkage_line_ids.shrinkage_limit')
+    def _compute_limits(self):
+        for rec in self:
+            # plastic limit = average of plastic water contents
+            if rec.plastic_line_ids:
+                rec.plastic_limit = (
+                    sum(rec.plastic_line_ids.mapped('water_content'))
+                    / len(rec.plastic_line_ids)
+                )
+            else:
+                rec.plastic_limit = 0.0
+
+            # liquid limit = water content at 25 blows (flow curve) [web:31]
+            lines = rec.liquid_line_ids.filtered(lambda l: l.blows)
+            if len(lines) >= 2:
+                xs = [math.log10(l.blows) for l in lines]
+                ys = [l.water_content for l in lines]
+                n = len(xs)
+                sx = sum(xs); sy = sum(ys)
+                sxx = sum(x*x for x in xs)
+                sxy = sum(x*y for x, y in zip(xs, ys))
+                a = (n*sxy - sx*sy) / (n*sxx - sx*sx)
+                b = (sy - a*sx) / n
+                rec.liquid_limit = a * math.log10(25.0) + b
+            else:
+                rec.liquid_limit = 0.0
+
+            # shrinkage limit = average of child shrinkage limits [web:41]
+            if rec.shrinkage_line_ids:
+                rec.shrinkage_limit = (
+                    sum(rec.shrinkage_line_ids.mapped('shrinkage_limit'))
+                    / len(rec.shrinkage_line_ids)
+                )
+            else:
+                rec.shrinkage_limit = 0.0
+
+
+
+
+
+
+
 
 
 
@@ -1553,122 +1614,7 @@ class Soil(models.Model):
 
 
 
-    # chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
-
-    # ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
-    # pt_2mm = fields.Float("PT at 2.5mm",default=1370)
-    # cbr_2mm = fields.Float("CBR at 2.5mm",compute="_compute_cbr_2mm")
-
-    # ps_5mm = fields.Float("PS for 5mm",compute="_compute_ps_5mm")
-    # pt_5mm = fields.Float("PT at 5mm",default=2055)
-    # cbr_5mm = fields.Float("CBR at 5mm",compute="_compute_cbr_5mm")
-
-    # cbr_result = fields.Float("CBR",compute="_compute_final_cbr")
-
-    # @api.depends('soil_table')
-    # def _compute_ps_2mm(self):
-    #     for record in self:
-    #         if record.soil_table and len(record.soil_table) >= 6:
-    #             fifth_row = record.soil_table[5] 
-    #             record.ps_2mm = fifth_row.load
-    #         else:
-    #             record.ps_2mm = 0
-
-
-    # @api.depends('soil_table')
-    # def _compute_ps_5mm(self):
-    #     for record in self:
-    #         if record.soil_table and len(record.soil_table) >= 9:
-    #             fifth_row = record.soil_table[8] 
-    #             record.ps_5mm = fifth_row.load
-    #         else:
-    #             record.ps_5mm = 0
-
-    # @api.depends('pt_2mm','ps_2mm')
-    # def _compute_cbr_2mm(self):
-    #     for record in self:
-    #         if record.pt_2mm != 0:
-    #             record.cbr_2mm = round((record.ps_2mm/record.pt_2mm)*100,2)
-    #         else:
-    #             record.cbr_2mm = 0
-
-    # @api.depends('pt_5mm','ps_5mm')
-    # def _compute_cbr_5mm(self):
-    #     for record in self:
-    #         if record.pt_5mm != 0:
-    #             record.cbr_5mm = round((record.ps_5mm/record.pt_5mm)*100,2)
-    #         else:
-    #             record.cbr_5mm = 0
-
-    # @api.depends('cbr_5mm','cbr_2mm')
-    # def _compute_final_cbr(self):
-    #     for record in self:
-    #         if record.cbr_5mm > record.cbr_2mm:
-    #             record.cbr_result = record.cbr_5mm
-    #         else:
-    #             record.cbr_result = record.cbr_2mm
-
-
    
-
-    # chart_image_cbr = fields.Binary(
-    # "Line Chart",
-    # compute="_compute_chart_image_cbr",
-    # store=True
-    #   )
-
-    # def generate_line_chart_cbr(self):
-    #     # Prepare data
-    #     x_values = []
-    #     y_values = []
-    #     for line in self.soil_table:
-    #         x_values.append(line.penetration)
-    #         y_values.append(line.load)
-
-    #     if not x_values or not y_values:
-    #         return False
-
-    #     plt.figure(figsize=(10, 5))
-
-    #     # ✅ Blue curve with red points
-    #     plt.plot(x_values, y_values, color='blue', linestyle='-', linewidth=2, label='Curve')
-    #     plt.scatter(x_values, y_values, color='red', edgecolors='black', s=60, zorder=5, label='Points')
-
-    #     # ✅ Axis labels and title
-    #     plt.xlabel('Penetration (mm)', fontsize=12)
-    #     plt.ylabel('Load (kg)', fontsize=12)
-    #     plt.title('CBR (California Bearing Ratio)', fontsize=14)
-
-    #     # ✅ Axis range
-    #     plt.xlim(left=0, right=max(x_values) + 2)
-    #     plt.ylim(bottom=0, top=max(y_values) + (max(y_values) * 0.1))
-
-    #     # ✅ Grid (major + minor)
-    #     ax = plt.gca()
-    #     ax.xaxis.set_minor_locator(MultipleLocator(0.5))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(5))
-    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
-
-    #     # ✅ Save image
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.legend()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
-
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
-
-
-    # @api.depends('soil_table')
-    # def _compute_chart_image_cbr(self):
-    #     try:
-    #         for record in self:
-    #             chart_image = record.generate_line_chart_cbr()
-    #             record.chart_image_cbr = chart_image
-    #     except:
-    #         pass
-
 
 
 
@@ -1882,79 +1828,7 @@ class Soil(models.Model):
     volume_wet_table = fields.One2many('mechanical.volume.wet.line1','parent_id',string="Parameter")
     volume_wet_name = fields.Char("Name",default="Volume of wet soil(V1)")
 
-    # Permeability Falling Head Test
-    # permeability_falling_name = fields.Char("Name",default="Permeability Falling Head Test")
-    # permeability_falling_visible = fields.Boolean("Permeability Falling Head Test Visible",compute="_compute_visible")
-
    
-    # length = fields.Float(string="Length of Soil Specimen (L) [cm]", digits=(12,2))
-    # diameter_mold = fields.Float(string="Diameter of Mold (D) [cm]", digits=(12,2))
-    # diameter_standpipe = fields.Float(string="Diameter of Stand Pipe (d) [cm]", digits=(12,2))
-
-    # # Child lines
-    # test_line_ids = fields.One2many("mechanical.permeability.line1", "parent_id", string="Test Readings")
-
-    # # Average K
-    # avg_k = fields.Float(string="Average Permeability (k) [cm/s]", compute="_compute_avg_k", store=True, digits=(12,2))
-
-    # @api.depends("test_line_ids.k_value")
-    # def _compute_avg_k(self):
-    #     for rec in self:
-    #         if rec.test_line_ids:
-    #             vals = rec.test_line_ids.mapped("k_value")
-    #             rec.avg_k = sum(vals) / len(vals)
-    #         else:
-    #             rec.avg_k = 0.0
-
-    # avg_k_conformity = fields.Selection([
-    #         ('pass', 'Pass'),
-    #         ('fail', 'Fail')], string="Conformity", compute="_compute_avg_k_conformity", store=True)
-
-    # @api.depends('avg_k','eln_ref','grade')
-    # def _compute_avg_k_conformity(self):
-        
-    #     for record in self:
-    #         record.avg_k_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
-                    
-    #                 lower = record.avg_k - record.avg_k*mu_value
-    #                 upper = record.avg_k + record.avg_k*mu_value
-    #                 if lower >= req_min and upper <= req_max:
-    #                     record.avg_k_conformity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.avg_k_conformity = 'fail'
-
-    # avg_k_nabl = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail')], string="NABL", compute="_compute_avg_k_nabl", store=True)
-
-    # @api.depends('avg_k','eln_ref','grade')
-    # def _compute_avg_k_nabl(self):
-        
-    #     for record in self:
-    #         record.avg_k_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table
-    #         # for material in materials:
-    #         #     if material.grade.id == record.grade.id:
-    #         lab_min = line.lab_min_value
-    #         lab_max = line.lab_max_value
-    #         mu_value = line.mu_value
-            
-    #         lower = record.avg_k - record.avg_k*mu_value
-    #         upper = record.avg_k + record.avg_k*mu_value
-    #         if lower >= lab_min and upper <= lab_max:
-    #             record.avg_k_nabl = 'pass'
-    #             break
-    #         else:
-    #             record.avg_k_nabl = 'fail'
 
      # Specific Gravity
     specific_gravity_name = fields.Char("Name",default="Specific Gravity")
@@ -2179,92 +2053,7 @@ class Soil(models.Model):
             else:
                 record.avg_stress_nabl = 'fail'
 
-     # Consolidation Test (Cc) Test
-    # consolidation_name = fields.Char("Name",default="Consolidation Test (Cc)")
-    # consolidation_visible = fields.Boolean("Consolidation Test (Cc) Visible",compute="_compute_visible")
-
-    # initial_height = fields.Float(string="Initial Height H0 ", digits=(12,3))
-    # diameter = fields.Float(string="Diameter D0 ", digits=(12,3))
-    # area = fields.Float(string="Area ", compute="_compute_area", store=True, digits=(12,3))
-    # initial_void_ratio = fields.Float(string="Initial Void Ratio e0", digits=(12,3))
-
-    # consolidation_name_ids = fields.One2many("mechanical.consolidation.test.line1", "parent_id", string="Test Lines")
-
-    # compression_index = fields.Float(string="Compression Index Cc", compute="_compute_cc", store=True, digits=(12,3))
-
-    # compression_index_conformity = fields.Selection([
-    #         ('pass', 'Pass'),
-    #         ('fail', 'Fail')], string="Conformity", compute="_compute_compression_index_conformity", store=True)
-
-    # @api.depends('compression_index','eln_ref','grade')
-    # def _compute_compression_index_conformity(self):
-        
-    #     for record in self:
-    #         record.compression_index_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
-                    
-    #                 lower = record.compression_index - record.compression_index*mu_value
-    #                 upper = record.compression_index + record.compression_index*mu_value
-    #                 if lower >= req_min and upper <= req_max:
-    #                     record.compression_index_conformity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.compression_index_conformity = 'fail'
-
-    # compression_index_nabl = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail')], string="NABL", compute="_compute_compression_index_nabl", store=True)
-
-    # @api.depends('compression_index','eln_ref','grade')
-    # def _compute_compression_index_nabl(self):
-        
-    #     for record in self:
-    #         record.compression_index_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table
-    #         # for material in materials:
-    #         #     if material.grade.id == record.grade.id:
-    #         lab_min = line.lab_min_value
-    #         lab_max = line.lab_max_value
-    #         mu_value = line.mu_value
-            
-    #         lower = record.compression_index - record.compression_index*mu_value
-    #         upper = record.compression_index + record.compression_index*mu_value
-    #         if lower >= lab_min and upper <= lab_max:
-    #             record.compression_index_nabl = 'pass'
-    #             break
-    #         else:
-    #             record.compression_index_nabl = 'fail'
-
-    # @api.depends("diameter")
-    # def _compute_area(self):
-    #     for rec in self:
-    #         if rec.diameter:
-    #             radius = rec.diameter / 2.0 / 10  # mm to cm
-    #             rec.area = math.pi * radius**2
-    #         else:
-    #             rec.area = 0.0
-
-    # @api.depends("consolidation_name_ids.void_ratio")
-    # def _compute_cc(self):
-    #     # Simple approximation: slope of virgin compression line
-    #     for rec in self:
-    #         lines = sorted(rec.consolidation_name_ids, key=lambda l: l.stress or 0)
-    #         if len(lines) >= 2:
-    #             e1, e2 = lines[0].void_ratio, lines[-1].void_ratio
-    #             sigma1, sigma2 = lines[0].stress, lines[-1].stress
-    #             if sigma1 > 0 and sigma2 > 0:
-    #                 rec.compression_index = round((e1 - e2) / (math.log10(sigma2) - math.log10(sigma1)), 3)
-    #             else:
-    #                 rec.compression_index = 0.0
-    #         else:
-    #             rec.compression_index = 0.0
+     
 
     # Consolidation Test (Pc) Test
     consolidation_pc_name = fields.Char("Name",default="Consolidation Test (Pc)")
@@ -2445,82 +2234,7 @@ class Soil(models.Model):
             rec.phi_deg = phi_deg
             rec.cohesion = c
 
-      # Swelling Pressure by Consolidometer Method
-    # swelling_pressure_name = fields.Char("Name",default="Swelling Pressure by Consolidometer Method")
-    # swelling_pressure_visible = fields.Boolean("Swelling Pressure by Consolidometer Method Visible",compute="_compute_visible")
-
-    # swelling_pressure_line_ids = fields.One2many(
-    #     'mechanical.swelling.line1',
-    #     'parent_id',
-    #     string="swelling_pressure Table"
-    # )
-
-    # # Final result (average swelling pressure)
-    # avg_swelling_pressure = fields.Float(
-    #     string="Average Swelling ",
-    #     compute="_compute_avg_swelling_pressure",
-    #     store=True
-    # )
-
-
-    # avg_swelling_pressure_conformity = fields.Selection([
-    #         ('pass', 'Pass'),
-    #         ('fail', 'Fail')], string="Conformity", compute="_compute_avg_swelling_pressure_conformity", store=True)
-
-    # @api.depends('avg_swelling_pressure','eln_ref','grade')
-    # def _compute_avg_swelling_pressure_conformity(self):
-        
-    #     for record in self:
-    #         record.avg_swelling_pressure_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
-                    
-    #                 lower = record.avg_swelling_pressure - record.avg_swelling_pressure*mu_value
-    #                 upper = record.avg_swelling_pressure + record.avg_swelling_pressure*mu_value
-    #                 if lower >= req_min and upper <= req_max:
-    #                     record.avg_swelling_pressure_conformity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.avg_swelling_pressure_conformity = 'fail'
-
-    # avg_swelling_pressure_nabl = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail')], string="NABL", compute="_compute_avg_swelling_pressure_nabl", store=True)
-
-    # @api.depends('avg_swelling_pressure','eln_ref','grade')
-    # def _compute_avg_swelling_pressure_nabl(self):
-        
-    #     for record in self:
-    #         record.avg_swelling_pressure_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table
-    #         # for material in materials:
-    #         #     if material.grade.id == record.grade.id:
-    #         lab_min = line.lab_min_value
-    #         lab_max = line.lab_max_value
-    #         mu_value = line.mu_value
-            
-    #         lower = record.avg_swelling_pressure - record.avg_swelling_pressure*mu_value
-    #         upper = record.avg_swelling_pressure + record.avg_swelling_pressure*mu_value
-    #         if lower >= lab_min and upper <= lab_max:
-    #             record.avg_swelling_pressure_nabl = 'pass'
-    #             break
-    #         else:
-    #             record.avg_swelling_pressure_nabl = 'fail'
-
-    # @api.depends('swelling_pressure_line_ids.swelling_pressure')
-    # def _compute_avg_swelling_pressure(self):
-    #     for rec in self:
-    #         if rec.swelling_pressure_line_ids:
-    #             total = sum(rec.swelling_pressure_line_ids.mapped('swelling_pressure'))
-    #             rec.avg_swelling_pressure = total / len(rec.swelling_pressure_line_ids)
-    #         else:
-    #             rec.avg_swelling_pressure = 0.0
+    
 
      # Unconsolidated Undrained Triaxial Test (Angle of Friction)
     uu_triaxial_angle_name = fields.Char("Name",default="Unconsolidated Undrained Triaxial Test (Angle of Friction)")
@@ -2778,98 +2492,7 @@ class Soil(models.Model):
 
     
 
-    # def action_generate_gsa_graph(self):
-    #     for record in self:
-    #         # 1. Initialize Plot
-    #         fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
-            
-    #         # 2. Configure Axes limits
-    #         ax.set_xscale('log')
-    #         ax.set_xlim(0.001, 100)  
-    #         ax.set_ylim(0, 110)      
-
-    #         # 3. Labels
-    #         ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
-    #         ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
-
-    #         # 4. Grid
-    #         ax.grid(True, which='major', axis='both', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
-    #         ax.grid(True, which='minor', axis='both', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
-
-    #         # 5. Format X-Axis Ticks
-    #         locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
-    #         ax.xaxis.set_major_locator(locmaj)
-            
-    #         def nice_log_formatter(x, pos):
-    #             if x in [0.001, 0.01, 0.1, 1, 10, 100]:
-    #                 return f"{x:g}" 
-    #             return ""
-    #         ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
-    #         ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
-
-    #         # --- MARKER LIST (Vegvegle Symbols) ---
-    #         # 'o' = Circle, '^' = Triangle Up, 's' = Square, 'D' = Diamond, 'x' = Cross, '*' = Star
-    #         marker_cycle = itertools.cycle(['^', '*', 'D', 'x', 'o', 's', 'v', '+'])
-
-    #         # 6. Plot Data
-    #         data_plotted = False
-            
-    #         if record.gsa_child_lines:
-    #             for sample in record.gsa_child_lines:
-    #                 data_pairs = []
-
-    #                 # Pratyek sample sathi navin symbol ghyaycha
-    #                 current_marker = next(marker_cycle)
-
-    #                 for line in sample.sieve_analysis_child_lines_gsa:
-    #                     if line.sieve_size and line.passing_percent is not None:
-    #                         try:
-    #                             # String clean kara
-    #                             size_str = str(line.sieve_size).lower().replace('mm', '').strip()
-    #                             if 'pan' in size_str:
-    #                                 continue 
-
-    #                             # 5 digit rounding logic
-    #                             size_val = round(float(size_str), 5)
-    #                             pass_val = line.passing_percent
-
-    #                             if 0.001 <= size_val <= 100:
-    #                                 data_pairs.append((size_val, pass_val))
-    #                         except ValueError:
-    #                             continue
-                    
-    #                 # Sort: Smallest -> Largest
-    #                 data_pairs.sort(key=lambda x: x[0]) 
-
-    #                 if data_pairs:
-    #                     sizes = [x[0] for x in data_pairs]
-    #                     passing = [x[1] for x in data_pairs]
-
-    #                     # --- CHANGE: marker=current_marker vaparla ahe ---
-    #                     ax.plot(sizes, passing, marker=current_marker, markersize=6, linewidth=2, label=sample.lab_no or "Sample")
-    #                     data_plotted = True
-
-    #         # Legend
-    #         if data_plotted:
-    #             ax.legend(loc='lower right', fontsize=9)
-
-    #         # 7. Save Image
-    #         buffer = io.BytesIO()
-    #         plt.savefig(buffer, format='png', bbox_inches='tight') 
-    #         plt.close(fig)
-    #         buffer.seek(0)
-            
-    #         record.gsa_graph_image = base64.b64encode(buffer.read())
-    #         buffer.close()
-
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'name': 'Soil Form',
-    #         'res_model': 'mechanical.soil1',
-    #         'res_id': record.id,
-    #         'view_mode': 'form',
-    #         'target': 'current',
-    #     }
+   
 
     def action_generate_gsa_graph(self):
         for record in self:
@@ -3891,7 +3514,7 @@ class Soil(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Soil Form',
             'res_model': 'mechanical.soil1',
-            'res_id': record.id,
+            'res_id': 'record.id',
             'view_mode': 'form',
             'target': 'current',
         }
@@ -3935,9 +3558,10 @@ class Soil(models.Model):
 
             record.moisture_visible  = False
             record.gsa_visible = False
-
+            
             record.specific_gravity_visible = False
             record.freeswell_visible = False
+            record.shrinkage_limit_visible = False
 
 
 
@@ -3984,8 +3608,8 @@ class Soil(models.Model):
                 if sample.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
                     record.permeability_falling_visible = True
 
-                if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
-                    record.specific_gravity_visible = True
+                # if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                #     record.specific_gravity_visible = True
 
                 if sample.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                     record.direct_shear_visible = True
@@ -4002,8 +3626,8 @@ class Soil(models.Model):
                 if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
                     record.angle_shear_visible = True
 
-                if sample.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
-                    record.swelling_pressure_visible = True
+                # if sample.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
+                #     record.swelling_pressure_visible = True
 
                 if sample.internal_id == '65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d':
                     record.uu_triaxial_angle_visible = True
@@ -4028,7 +3652,8 @@ class Soil(models.Model):
                 if sample.internal_id == '3825ec57-11f8-4249-9fa8-d99f64ffd396':
                     record.freeswell_visible = True
 
-
+                if sample.internal_id == 'da6f58e1-f875-44ae-865e-4dbea7bb0875':
+                    record.shrinkage_limit_visible = True
    
 
 
@@ -4851,54 +4476,8 @@ class VolumeWetLINE(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
-# class SoilPermeabilityLine(models.Model):
-#     _name = "mechanical.permeability.line1"
-#     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
-#     serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
 
-#     h1 = fields.Float(string="Initial Head (h1) [cm]", digits=(12,2))
-#     h2 = fields.Float(string="Final Head (h2) [cm]", digits=(12,2))
-#     t = fields.Float(string="Time Interval (t) [s]", digits=(12,2))
-
-#     k_value = fields.Float(string="Permeability (k) [cm/s]", compute="_compute_k_value", store=True, digits=(12,2))
-
-#     @api.depends("h1","h2","t","parent_id.length","parent_id.diameter_mold","parent_id.diameter_standpipe")
-#     def _compute_k_value(self):
-#         for rec in self:
-#             rec.k_value = 0.0
-#             if all([rec.h1, rec.h2, rec.t, rec.parent_id.length, rec.parent_id.diameter_mold, rec.parent_id.diameter_standpipe]):
-#                 # Areas
-#                 A = math.pi * rec.parent_id.diameter_mold**2 / 4.0
-#                 a = math.pi * rec.parent_id.diameter_standpipe**2 / 4.0
-#                 L = rec.parent_id.length
-#                 t = rec.t
-
-#                 if rec.h1 != rec.h2 and A > 0 and a > 0 and L > 0 and t > 0:
-#                     h1, h2 = rec.h1, rec.h2
-#                     if h1 < h2:
-#                         h1, h2 = h2, h1  # swap to ensure positive log
-#                     k = (2.303 * a * L) / (A * t) * math.log10(h1 / h2)
-#                     rec.k_value = round(k, 2)
-
-    
-
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('serial_no'))
-#                 vals['serial_no'] = max_serial_no + 1
-
-#         return super(SoilPermeabilityLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.serial_no = index + 1
 
 
 
@@ -5012,67 +4591,7 @@ class UCSTestLine(models.Model):
 
 
 
-# class ConsolidationTestLine(models.Model):
-#     _name = "mechanical.consolidation.test.line1"
-#     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
-#     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-#     load = fields.Float(string="Load [Kg]")
-#     dial_gauge = fields.Float(string="Dial Gauge δ [mm]")
-#     delta_h = fields.Float(string="ΔH [mm]", compute="_compute_corrected_height", store=True)
-#     corrected_height = fields.Float(string="Corrected Height H [mm]", compute="_compute_corrected_height", store=True)
-#     stress = fields.Float(string="Stress σ [Kg/cm²]", compute="_compute_stress", store=True, digits=(12,3))
-#     strain = fields.Float(string="Strain ε", compute="_compute_strain", store=True, digits=(12,3))
-#     void_ratio = fields.Float(string="Void Ratio e", compute="_compute_void_ratio", store=True, digits=(12,3))
-
-#     @api.depends("dial_gauge","parent_id.initial_height")
-#     def _compute_corrected_height(self):
-#         for rec in self:
-#             H0 = rec.parent_id.initial_height or 1
-#             rec.delta_h = rec.dial_gauge
-#             rec.corrected_height = H0 - rec.delta_h
-
-#     @api.depends("load","parent_id.area")
-#     def _compute_stress(self):
-#         for rec in self:
-#             A = rec.parent_id.area or 1
-#             rec.stress = rec.load / A if A !=0 else 0.0
-
-#     @api.depends("delta_h","parent_id.initial_height")
-#     def _compute_strain(self):
-#         for rec in self:
-#             H0 = rec.parent_id.initial_height or 1
-#             rec.strain = rec.delta_h / H0 if H0 !=0 else 0.0
-
-#     @api.depends("parent_id.initial_void_ratio","stress")
-#     def _compute_void_ratio(self):
-#         for rec in self:
-#             e0 = rec.parent_id.initial_void_ratio or 0.0
-#             sigma0 = 1.0  # reference stress (usually 1 Kg/cm²)
-#             if rec.stress > 0:
-#                 rec.void_ratio = e0 - 0.1 * math.log10(rec.stress/sigma0)  # factor 0.1 placeholder, modify as per standard
-#             else:
-#                 rec.void_ratio = e0
-
-
-    
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('serial_no'))
-#                 vals['serial_no'] = max_serial_no + 1
-
-#         return super(ConsolidationTestLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.serial_no = index + 1
 
 
 
@@ -5168,49 +4687,8 @@ class DirectShearLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
-# class SwellingPressureLine(models.Model):
-#     _name = "mechanical.swelling.line1"
-#     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
-#     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
-#     dial_gauge_reading = fields.Float(string="Dial Gauge Reading (mm)")
-#     load_applied = fields.Float(string="Load Applied (kg)")
-#     area_of_sample = fields.Float(string="Area of Sample (cm²)", required=True)
-
-#     swelling_pressure = fields.Float(
-#         string="Swelling Pressure (kg/cm²)",
-#         compute="_compute_swelling_pressure",
-#         store=True
-#      )
-
-#     @api.depends('load_applied', 'area_of_sample')
-#     def _compute_swelling_pressure(self):
-#         for line in self:
-#             if line.area_of_sample > 0:
-#                 line.swelling_pressure = line.load_applied / line.area_of_sample
-#             else:
-#                 line.swelling_pressure = 0.0
-
-   
-
-    
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('serial_no'))
-#                 vals['serial_no'] = max_serial_no + 1
-
-#         return super(SwellingPressureLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.serial_no = index + 1
 
 
 class UUTriaxialLine(models.Model):
@@ -5898,17 +5376,7 @@ class SoilSieveAnalysisLineGSA(models.Model):
                 record.cumulative_retained = 0.0
 
 
-    # --------------------------------------------------
-    # COMPUTE % PASSING
-    # --------------------------------------------------
-    # @api.depends('cumulative_retained')
-    # def _compute_passing_percent(self):
-    #     for record in self:
-    #         record.passing_percent = round(
-    #             100 - (record.cumulative_retained or 0.0),
-    #             3
-    #         )
-
+    
 
 
 class SoilHydrometerLineGSA(models.Model):
@@ -6586,27 +6054,7 @@ class ConsolidationBothCycleLine(models.Model):
 
     
 
-#     @api.depends(
-#     'applied_pressure',
-#     'serial_no',
-#     'parent_id.consolidation_output_ids.applied_pressure',
-#     'parent_id.consolidation_output_ids.serial_no',
-# )
-#     def _compute_d_sigma(self):
-#      for line in self:
-#         line.d_sigma = 0.0
 
-#         parent = line.parent_id
-#         if not parent or not line.serial_no or line.serial_no == 1:
-#             continue
-
-#         # Previous row (Excel previous row)
-#         prev = parent.consolidation_output_ids.filtered(
-#             lambda l: l.serial_no == line.serial_no - 1
-#         )[:1]
-
-#         if prev:
-#             line.d_sigma = (line.applied_pressure or 0.0) - (prev.applied_pressure or 0.0)
 
     @api.depends(
         'applied_pressure',
@@ -7523,10 +6971,68 @@ class SoilPermeabilityTestLine(models.Model):
 
 
 
+
+
+# Atterbergs Limits (Ll,Pl,Sl,  Plastic limit )
+
+
+class LabAtterbergPlasticLine(models.Model):
+    _name = 'lab.atterberg.plastic.line'
+
+
+    test_id = fields.Many2one('lab.atterberg.test', ondelete='cascade')
+
+    test_no = fields.Integer(string='Test no.')
+    container_no = fields.Integer(string='Container no.')
+    m3 = fields.Float(string='m3 (gm)')  
+    m2 = fields.Float(string='m2 (gm)') 
+    m1 = fields.Float(string='m1 (gm)')  
+
+    m3_m2 = fields.Float(string='(m3-m2) (gm)', compute='_compute_vals', store=True)
+    m2_m1 = fields.Float(string='(m2-m1) (gm)', compute='_compute_vals', store=True)
+    water_content = fields.Float(string='Water Content (%)',
+                                 compute='_compute_vals', store=True)
+
+    @api.depends('m3', 'm2', 'm1')
+    def _compute_vals(self):
+        for rec in self:
+            rec.m3_m2 = rec.m3 - rec.m2
+            rec.m2_m1 = rec.m2 - rec.m1
+            rec.water_content = ((rec.m3_m2 / rec.m2_m1) * 100 if rec.m2_m1 else 0.0)
+
     
 
 
 
+# Atterbergs Limits (Ll,Pl,Sl,  Liquid limit)
+
+class LabAtterbergLiquidLine(models.Model):
+    _name = 'lab.atterberg.liquid.line'
+
+
+    test_id = fields.Many2one('lab.atterberg.test', ondelete='cascade')
+
+    test_no = fields.Integer(string='Test no.')
+    blows = fields.Integer(string='Number of blows')
+    container_no = fields.Integer(string='Container no.')
+    m3 = fields.Float(string='m3 (gm)')   # container + wet soil [web:37]
+    m2 = fields.Float(string='m2 (gm)')   # container + dry soil
+    m1 = fields.Float(string='m1 (gm)')   # container only
+
+    m3_m2 = fields.Float(string='(m3-m2) (gm)', compute='_compute_vals', store=True)
+    m2_m1 = fields.Float(string='(m2-m1) (gm)', compute='_compute_vals', store=True)
+    water_content = fields.Float(string='Water Content (%)',
+                                 compute='_compute_vals', store=True)
+
+    @api.depends('m3', 'm2', 'm1')
+    def _compute_vals(self):
+        for rec in self:
+            rec.m3_m2 = rec.m3 - rec.m2
+            rec.m2_m1 = rec.m2 - rec.m1
+            # same water content formula as plastic limit [web:37]
+            rec.water_content = (
+                (rec.m3_m2 / rec.m2_m1) * 100 if rec.m2_m1 else 0.0
+            )
 
 
 
@@ -7535,8 +7041,51 @@ class SoilPermeabilityTestLine(models.Model):
 
 
 
-    
 
+# Atterbergs Limits (Ll,Pl,Sl,  Shrinkage limit)
+
+class LabAtterbergShrinkageLine(models.Model):
+    _name = 'lab.atterberg.shrinkage.line'
+   
+
+    test_id = fields.Many2one('lab.atterberg.test', ondelete='cascade')
+
+    test_no = fields.Integer(string='Test no.')
+    container_no = fields.Integer(string='Container no.')
+    m1 = fields.Float(string='m1 (gm)')   
+    v1 = fields.Float(string='V1 (cm³)')  
+    m3 = fields.Float(string='m3 (gm)')  
+    m2 = fields.Float(string='m2 (gm)')   
+    v2 = fields.Float(string='V2 (cm³)')  
+
+    m3_m2 = fields.Float(string='(m3-m2) (gm)', compute='_compute_vals', store=True)
+    m2_m1 = fields.Float(string='(m2-m1) (gm)', compute='_compute_vals', store=True)
+    v1_v2 = fields.Float(string='(V1-V2) (cm³)', compute='_compute_vals', store=True)
+    water_content = fields.Float(string='Water Content (%)',
+                                 compute='_compute_vals', store=True)
+    shrinkage_ratio = fields.Float(string='Shrinkage Ratio',
+                                   compute='_compute_vals', store=True)
+    shrinkage_limit = fields.Float(string='Shrinkage Limit (%)',
+                                   compute='_compute_vals', store=True)
+
+    @api.depends('m1', 'm3', 'm2', 'v1', 'v2')
+    def _compute_vals(self):
+        gamma_w = 1.0  # gm/cm³ [web:41]
+        for rec in self:
+            rec.m3_m2 = rec.m3 - rec.m2              # dry soil mass
+            rec.m2_m1 = rec.m2 - rec.m1
+            rec.v1_v2 = rec.v1 - rec.v2
+            if rec.m3_m2:
+                # Ws = w - (V1 - V2)*γw/Wd *100 [web:41]
+                w_init = ((rec.m1 - rec.m3_m2 - rec.m2) / rec.m3_m2) * 100.0
+                ws = w_init - (rec.v1_v2 * gamma_w / rec.m3_m2) * 100.0
+                rec.shrinkage_limit = ws
+                rec.water_content = ws
+                rec.shrinkage_ratio = (
+                    rec.m3_m2 / (rec.v2 * gamma_w) if rec.v2 else 0.0
+                )
+            else:
+                rec.shrinkage_limit = rec.water_content = rec.shrinkage_ratio = 0.0
 
 
 
