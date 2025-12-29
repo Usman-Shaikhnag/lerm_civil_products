@@ -142,12 +142,12 @@
                     <tree editable="bottom">
                         <field name="sequence" string="Sequence" widget="handle"/>
                         <field name="parameter"/>
-                        <field name="technician"/>
+                        <field name="technician" readonly="1"/>
                         <field name="result_type" optional="show"/>
                         <field name="result_char" optional="show" readonly="result_type == 'number'"/>
                         <field name="result" optional="show" readonly="1" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="calculation_type" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
-                        <field name="calculated" optional="show"/>
+                        <field name="calculated"  readonly="1" optional="show"/>
                         <field name="unit" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="test_method" optional="show" string="Parameter Test Method" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="specification_permissible_limit" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
