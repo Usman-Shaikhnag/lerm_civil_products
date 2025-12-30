@@ -82,6 +82,60 @@ class Soil(models.Model):
             store=True
         )
 
+    lab_option_ids = fields.One2many(
+        'lab.option.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+   
+
+    
+
+    # --- Button Function ---
+    def action_generate_options(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first (Previous options delete kara)
+                    # (5, 0, 0) command saglya lines remove karte
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing (Break Logic)
+                    # Input: "S-25-144 - S-25-145"
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # "S-25-144"
+                        end_part = parts[-1].strip()  # "S-25-145"
+
+                        # Prefix (S-25) ani Number (144) vegla kara
+                        prefix = start_part.rsplit('-', 1)[0]
+                        start_num = int(start_part.split('-')[-1])
+                        end_num = int(end_part.split('-')[-1])
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            val = f"{prefix}-{num}"
+                            # One2many madhe create karnya sathi: (0, 0, values)
+                            lines_command.append((0, 0, {'name': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_option_ids = lines_command
+                        
+                except Exception as e:
+                    # Jar format chukla tar error ignore kara
+                    pass
+            else:
+                # Jar range nasel (single value asel), tar ti ekach value add kara
+                if record.lab_id:
+                     record.lab_option_ids = [(5, 0, 0), (0, 0, {'name': record.lab_id})]
+
+    
+      
+
+
         # -----------------------------
         # Compute method
         # -----------------------------
@@ -796,6 +850,12 @@ class Soil(models.Model):
     freeswell_visible = fields.Boolean( string="Free Swell Visible",default=True,)
     freeswell_line_ids = fields.One2many( "soil.free.swell", "parent_id", string="Free Swell Lines",)
 
+    selected_lab_id6 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+
    
    
 
@@ -1347,6 +1407,12 @@ class Soil(models.Model):
 
     soil_name = fields.Char("Name",default="California Bearing Ratio")
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
+
+    selected_lab_id = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
    
     soil_table = fields.One2many('mechanical.cbr.line1','parent_id',string="CBR",default=lambda self: self._default_cbr_child_lines())
 
@@ -1815,6 +1881,12 @@ class Soil(models.Model):
        # FSI
     fsi_name = fields.Char("Name",default="Free Swell Index")
     fsi_visible = fields.Boolean("Free Swell Index Visible",compute="_compute_visible")
+
+    selected_lab_id2 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
   
     wt_sample = fields.Float(string="Weight of the soil sample")
     valume_water = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing distilled water")
@@ -2098,6 +2170,12 @@ class Soil(models.Model):
      # Specific Gravity
     specific_gravity_name = fields.Char("Name",default="Specific Gravity")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
+
+    selected_lab_id4 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
     m1 = fields.Float(string="Mass of Density Bottle (M1) ", digits=(12,2))
     m2 = fields.Float(string="Mass of Bottle & Dry Soil (M2) ", digits=(12,2))
@@ -2996,6 +3074,8 @@ class Soil(models.Model):
                 'target': 'current',
             }
 
+    
+
     gsa_graph_image = fields.Binary(
         string="GSA Graph Image",
         attachment=True,
@@ -3008,100 +3088,6 @@ class Soil(models.Model):
 
 
     
-
-    # def action_generate_gsa_graph(self):
-    #     for record in self:
-    #         # 1. Initialize Plot
-    #         fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
-            
-    #         # 2. Configure Axes limits
-    #         ax.set_xscale('log')
-    #         ax.set_xlim(0.001, 100)  
-    #         ax.set_ylim(0, 110)      
-
-    #         # 3. Labels
-    #         ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
-    #         ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
-
-    #         # 4. Grid
-    #         ax.grid(True, which='major', axis='both', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
-    #         ax.grid(True, which='minor', axis='both', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
-
-    #         # 5. Format X-Axis Ticks
-    #         locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
-    #         ax.xaxis.set_major_locator(locmaj)
-            
-    #         def nice_log_formatter(x, pos):
-    #             if x in [0.001, 0.01, 0.1, 1, 10, 100]:
-    #                 return f"{x:g}" 
-    #             return ""
-    #         ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
-    #         ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
-
-    #         # --- MARKER LIST (Vegvegle Symbols) ---
-    #         # 'o' = Circle, '^' = Triangle Up, 's' = Square, 'D' = Diamond, 'x' = Cross, '*' = Star
-    #         marker_cycle = itertools.cycle(['^', '*', 'D', 'x', 'o', 's', 'v', '+'])
-
-    #         # 6. Plot Data
-    #         data_plotted = False
-            
-    #         if record.gsa_child_lines:
-    #             for sample in record.gsa_child_lines:
-    #                 data_pairs = []
-
-    #                 # Pratyek sample sathi navin symbol ghyaycha
-    #                 current_marker = next(marker_cycle)
-
-    #                 for line in sample.sieve_analysis_child_lines_gsa:
-    #                     if line.sieve_size and line.passing_percent is not None:
-    #                         try:
-    #                             # String clean kara
-    #                             size_str = str(line.sieve_size).lower().replace('mm', '').strip()
-    #                             if 'pan' in size_str:
-    #                                 continue 
-
-    #                             # 5 digit rounding logic
-    #                             size_val = round(float(size_str), 5)
-    #                             pass_val = line.passing_percent
-
-    #                             if 0.001 <= size_val <= 100:
-    #                                 data_pairs.append((size_val, pass_val))
-    #                         except ValueError:
-    #                             continue
-                    
-    #                 # Sort: Smallest -> Largest
-    #                 data_pairs.sort(key=lambda x: x[0]) 
-
-    #                 if data_pairs:
-    #                     sizes = [x[0] for x in data_pairs]
-    #                     passing = [x[1] for x in data_pairs]
-
-    #                     # --- CHANGE: marker=current_marker vaparla ahe ---
-    #                     ax.plot(sizes, passing, marker=current_marker, markersize=6, linewidth=2, label=sample.lab_no or "Sample")
-    #                     data_plotted = True
-
-    #         # Legend
-    #         if data_plotted:
-    #             ax.legend(loc='lower right', fontsize=9)
-
-    #         # 7. Save Image
-    #         buffer = io.BytesIO()
-    #         plt.savefig(buffer, format='png', bbox_inches='tight') 
-    #         plt.close(fig)
-    #         buffer.seek(0)
-            
-    #         record.gsa_graph_image = base64.b64encode(buffer.read())
-    #         buffer.close()
-
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'name': 'Soil Form',
-    #         'res_model': 'mechanical.soil1',
-    #         'res_id': record.id,
-    #         'view_mode': 'form',
-    #         'target': 'current',
-    #     }
-
     def action_generate_gsa_graph(self):
         for record in self:
             # 1. Initialize Plot
@@ -3205,6 +3191,12 @@ class Soil(models.Model):
          # DETERMINATION OF CONSOLIDATION PROPERTIES		
     consolidation_name = fields.Char("Name",default="DETERMINATION OF CONSOLIDATION PROPERTIES")
     consolidation_visible = fields.Boolean("DETERMINATION OF CONSOLIDATION PROPERTIES",compute="_compute_visible")	
+
+    selected_lab_id7 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
     consolidation_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     consolidation_diameter = fields.Float(string="Diameter, D", digits=(8,1))
@@ -3570,6 +3562,12 @@ class Soil(models.Model):
     
     swelling_pressure_name = fields.Char("Name",default="DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD")
     swelling_pressure_visible = fields.Boolean("DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD",compute="_compute_visible")
+
+    selected_lab_id5 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
     swelling_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     swelling_diameter = fields.Float(string="Diameter, D", digits=(8,1))
@@ -4003,6 +4001,12 @@ class Soil(models.Model):
     permeability_falling_name = fields.Char("Name",default="Permeability Falling Head Test")
     permeability_falling_visible = fields.Boolean("Permeability Falling Head Test",compute="_compute_visible")
 
+    selected_lab_id3 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+
     dia_standpipe = fields.Float(string="Dia of Stand Pipe, d (cm)", digits=(8,1))
     dia_soil_sample = fields.Float(string="Dia of Soil Sample, D (cm)", digits=(8,1))
     length_soil = fields.Float(string="Length of Soil Sample, L (cm)", digits=(8,1))
@@ -4209,6 +4213,12 @@ class Soil(models.Model):
 
     triaxial_test_name = fields.Char("Name",default="DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST")
     triaxial_test_visible = fields.Boolean("DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST",compute="_compute_visible")
+
+    selected_lab_id1 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
     dia_triaxial = fields.Float(string="Diameter (mm)", digits=(8, 1))
     
@@ -8369,6 +8379,16 @@ class TriaxialTestLine(models.Model):
                 line.shear_stress_15 = line.pr_1_5 + extra_force
             else:
                 line.shear_stress_15 = 0.0
+
+
+
+class LabOptionLine(models.Model):
+    _name = 'lab.option.line'
+    _description = 'Lab Options'
+    _rec_name = 'name'  # Dropdown मध्ये हे नाव दिसेल
+
+    name = fields.Char(string="Value")
+    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
 
 
 
