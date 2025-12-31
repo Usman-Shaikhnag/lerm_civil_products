@@ -20,12 +20,79 @@ class MechanicalConcreteCube(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master', string="Parameters", compute="_compute_sample_parameters", store=True)
     child_lines = fields.One2many('mechanical.concrete.cube.line','parent_id',string="Parameter")
 
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+
+    lab_cube_ids = fields.One2many(
+        'cube.lab.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+     # --- Button Function ---
+    def action_generate_options_cube(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first (Previous options delete kara)
+                    # (5, 0, 0) command saglya lines remove karte
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing (Break Logic)
+                    # Input: "S-25-144 - S-25-145"
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # "S-25-144"
+                        end_part = parts[-1].strip()  # "S-25-145"
+
+                        # Prefix (S-25) ani Number (144) vegla kara
+                        prefix = start_part.rsplit('-', 1)[0]
+                        start_num = int(start_part.split('-')[-1])
+                        end_num = int(end_part.split('-')[-1])
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            val = f"{prefix}-{num}"
+                            # One2many madhe create karnya sathi: (0, 0, values)
+                            lines_command.append((0, 0, {'lab': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_cube_ids = lines_command
+                        
+                except Exception as e:
+                    # Jar format chukla tar error ignore kara
+                    pass
+            else:
+                # Jar range nasel (single value asel), tar ti ekach value add kara
+                if record.lab_id:
+                     record.lab_cube_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
+
     casting_7_name = fields.Char("Name",default="7 Days")
     # casting_28_visible = fields.Boolean("28 days Visible",compute="_compute_visible")
 
     casting_date_7days = fields.Date(string="Date of Casting")
     testing_date_7days = fields.Date(string="Date of Testing",compute="_compute_testing_date_7days")
     status_7days = fields.Boolean("Done")
+
+
+    selected_lab_cube1 = fields.Many2one(
+        'cube.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_cube_ids)]"
+    )
 
     calc_mode = fields.Boolean(default=True)     
     submit_mode = fields.Boolean(default=False)
@@ -1288,3 +1355,12 @@ class CubeNotes(models.Model):
     parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+
+class LabOptionLine(models.Model):
+    _name = 'cube.lab.line'
+    _description = 'Lab Options'
+    _rec_name = 'lab'  # Dropdown मध्ये हे नाव दिसेल
+
+    lab = fields.Char(string="Lab ID")
+    parent_id = fields.Many2one('mechanical.concrete.cube', string="Parent")
