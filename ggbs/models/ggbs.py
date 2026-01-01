@@ -24,6 +24,75 @@ class GgbsMechanical(models.Model):
 
     notes_id = fields.One2many('ggbs.notes','parent_id',string="Notes")
 
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+
+    lab_ggbs_ids = fields.One2many(
+        'ggbs.lab.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+
+
+    def action_generate_options_ggbs(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # Example: "S-25-001"
+                        end_part = parts[-1].strip()  # Example: "S-25-006"
+
+                        prefix = start_part.rsplit('-', 1)[0]
+                        
+                        # --- CHANGE START ---
+                        # Number cha string part vegla kara length check karnya sathi
+                        start_num_str = start_part.split('-')[-1] # "001" milnar
+                        end_num_str = end_part.split('-')[-1]     # "006" milnar
+                        
+                        # Length calculate kara (Example: "001" chi length 3 ahe)
+                        padding_length = len(start_num_str)
+
+                        start_num = int(start_num_str) # Integer madhe convert: 1
+                        end_num = int(end_num_str)     # Integer madhe convert: 6
+                        # --- CHANGE END ---
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            # zfill use karun zero add kara
+                            # Jar num=1 ahe ani padding_length=3 ahe, tar "001" banel
+                            formatted_num = str(num).zfill(padding_length)
+                            
+                            val = f"{prefix}-{formatted_num}"
+                            lines_command.append((0, 0, {'lab': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_ggbs_ids = lines_command
+                        
+                except Exception as e:
+                    pass
+            else:
+                if record.lab_id:
+                    record.lab_ggbs_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
+
     calc_mode = fields.Boolean(default=True)     
     submit_mode = fields.Boolean(default=False)
 
@@ -96,6 +165,12 @@ class GgbsMechanical(models.Model):
 
     specific_gravity_name1 = fields.Char("Name",default="Density Test")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
+
+    selected_lab_ggbs1 = fields.Many2one(
+        'ggbs.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_ggbs_ids)]"
+    )
 
     temp_specific = fields.Char("Temp.°C" ,required=True)
     humidity_specific= fields.Char("Humidity %")
@@ -229,6 +304,39 @@ class GgbsMechanical(models.Model):
     slag_activity_name = fields.Char("Name",default="Compressive Strength of GGBS+Cement Mortar")
     slag_activity_7_visible = fields.Boolean("Slag Activity Visible",compute="_compute_visible")
 
+    slag_lines_generated = fields.Boolean(string="Slag Lab Lines ",default=False)
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_ggbs_slag_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.slag_index_ids = lines
+                record.slag_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.slag_index_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.ggbs',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
     slag_index_ids = fields.One2many("ggbs.cement.motor.line", "parent_id", string="Test Readings")
 
 
@@ -264,6 +372,40 @@ class GgbsMechanical(models.Model):
 
     slag_activity_cement_name = fields.Char("Name",default="Compressive Strength of Cement")
     slag_index_cement_ids = fields.One2many("ggbs.compressie.cement.line", "parent_id", string="Test Readings")
+
+
+    slag_index_generated = fields.Boolean(string="Compressive Lab Lines ",default=False)
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_ggbs_slag_index_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.slag_index_cement_ids = lines
+                record.slag_index_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.slag_index_cement_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.ggbs',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
 
     def action_calculate_avg_cemet_strength(self):
         for rec in self:
@@ -473,6 +615,12 @@ class GgbsMechanical(models.Model):
 
     fineness_name = fields.Char("Name",default="Fineness by Blaines Air Permeability Method")
     fineness_visible = fields.Boolean("Fineness by Blaines Air Permeability Method Visible",compute="_compute_visible")
+
+    selected_lab_ggbs2 = fields.Many2one(
+        'ggbs.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_ggbs_ids)]"
+    )
 
     temp_fineness = fields.Char("Temp.°C" ,required=True)
     humidity_fineness= fields.Char("Humidity %" ,required=True)
@@ -946,3 +1094,13 @@ class GGBSNotes(models.Model):
     parent_id = fields.Many2one('mechanical.ggbs',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+
+
+class LabOptionLine(models.Model):
+    _name = 'ggbs.lab.line'
+    _description = 'Lab Options'
+    _rec_name = 'lab'  # Dropdown मध्ये हे नाव दिसेल
+
+    lab = fields.Char(string="Lab ID")
+    parent_id = fields.Many2one('mechanical.ggbs', string="Parent")

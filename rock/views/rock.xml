@@ -68,6 +68,17 @@
                     </div>
                     <group/>
 
+                      <div invisible = "usc_visible == False" style="margin-bottom: 10px;">
+                  <field name= 'rock_lines_generated' invisible="1" />
+                  <button name="action_generate_rock_lines"
+                   
+                    type="object"
+                    string="Rock Lab Lines"
+                    class="oe_highlight"
+                    invisible="rock_lines_generated == True"/>
+
+                </div>
+
 
    
 
@@ -78,6 +89,8 @@
                             <field name="usc_visible" invisible="1"/>
                         </h1>
                     </div>
+
+
 
                     <div class="d-flex gap-3" invisible = "usc_visible == False">
                         

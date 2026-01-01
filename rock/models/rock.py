@@ -18,6 +18,20 @@ class MechanicalRock(models.Model):
 
     notes_id = fields.One2many('rock.notes','parent_id',string="Notes")
 
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+
     @api.model
     def default_get(self, fields):
         res = super(MechanicalRock, self).default_get(fields)
@@ -84,6 +98,39 @@ class MechanicalRock(models.Model):
     point_load_constant = fields.Float(string="Point Load  Constant")
     compressive_strength_constant = fields.Float(string="Compressive Strength  Constant")
     compressive_strength_constant_hd = fields.Float(string="Compressive Strength HD  Constant",digits=(12,4))
+
+    rock_lines_generated = fields.Boolean(string="Rock Lab Lines ",default=False)
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_rock_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.rock_child_lines = lines
+                record.rock_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.rock_child_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Rock Form',
+                'res_model': 'mechanical.rock',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
     
 
 
