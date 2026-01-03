@@ -324,12 +324,13 @@ class FineAggregate(models.Model):
 
                 previous_cumulative = cumulative_retained
             # Jar Button Visible ahe (True), tar Submit Mode 'False' ch theva.
-            if record.soudness_visible:
-                record.submit_mode = False
+            # if record.soudness_visible:
+            #     record.submit_mode = False
             
-            # Jar Button Invisible ahe (False), tar automatic 'True' kara.
-            else:
-                record.submit_mode = True
+            # # Jar Button Invisible ahe (False), tar automatic 'True' kara.
+            # else:
+            #     record.submit_mode = True
+        record.submit_mode = True
             
      
     
@@ -442,6 +443,20 @@ class FineAggregate(models.Model):
 
     temp_specific_gravity_water_absorption = fields.Char(string="Temp.°C" ,required=True)
     humidity_temp_specific_gravity_water_absorption= fields.Char(string="Humidity %" ,required=True)
+
+    is_lab_fine_selected = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_lab_fine2')
+    def _onchange_selected_lab_fine2(self):
+        for rec in self:
+            if rec.selected_lab_fine2:
+                rec.is_lab_fine_selected = True
+            else:
+                rec.is_lab_fine_selected = False
+
 
     # wt_basket_and_sample = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm")
     
@@ -677,6 +692,20 @@ class FineAggregate(models.Model):
         domain="[('id', 'in', lab_fine_ids)]"
     )
 
+    is_compacted_density = fields.Boolean(
+        string="Compacted Density Selected",
+        
+    )
+
+    @api.onchange('selected_lab_fine3')
+    def _onchange_selected_lab_fine3(self):
+        for rec in self:
+            if rec.selected_lab_fine3:
+                rec.is_compacted_density = True
+            else:
+                rec.is_compacted_density = False
+
+
 
     
     temp_density = fields.Char(string="Temp.°C" ,required=True)
@@ -777,8 +806,23 @@ class FineAggregate(models.Model):
         domain="[('id', 'in', lab_fine_ids)]"
     )
 
-    temp_density = fields.Char(string="Temp.°C" ,required=True)
-    humidity_density= fields.Char(string="Humidity %" ,required=True)
+    is_loose_density = fields.Boolean(
+        string="LooseDensity Selected",
+        
+    )
+
+    @api.onchange('selected_lab_fine4')
+    def _onchange_selected_lab_fine4(self):
+        for rec in self:
+            if rec.selected_lab_fine4:
+                rec.is_loose_density = True
+            else:
+                rec.is_loose_density = False
+
+
+
+    temp_loose_density = fields.Char(string="Temp.°C" ,required=True)
+    humidity_loose_density= fields.Char(string="Humidity %" ,required=True)
 
 
     capacity_of_cylinder_loose = fields.Float(string="Capacity of Cylinder Use for Test in litre (V)")
@@ -1053,6 +1097,8 @@ class FineAggregate(models.Model):
     temp_soudness = fields.Char(string="Temp.°C" ,required=True)
     humidity_soudness = fields.Char(string="Humidity %" ,required=True)
 
+    soudness_mode = fields.Boolean(default=False)
+
 
 
     sieve_name = fields.Char("Name",default="Gradation of Sample")
@@ -1093,7 +1139,7 @@ class FineAggregate(models.Model):
     def calculate_sieve(self): 
         for record in self:
             
-            record.submit_mode = False
+            record.soudness_mode = False
             record.calc_mode = True
             
 
@@ -1128,7 +1174,7 @@ class FineAggregate(models.Model):
                 print("Updated Passing Percent:", passing_percent)
 
                 previous_cumulative = cumulative_retained
-            record.submit_mode = True
+            record.soudness_mode = True
 
     
 
