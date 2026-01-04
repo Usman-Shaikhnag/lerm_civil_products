@@ -16,6 +16,9 @@ class MechanicalConcreteCube(models.Model):
 
     name = fields.Char("Name", default="Compressive Strength of Concrete Cube")
     cube_visible = fields.Boolean("Compressive Strength of Concrete Cube",compute="_compute_visible")
+    cube_visible_14 = fields.Boolean("Compressive Strength of Concrete Cube",compute="_compute_visible")
+    cube_visible_28= fields.Boolean("Compressive Strength of Concrete Cube",compute="_compute_visible")
+
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master', string="Parameters", compute="_compute_sample_parameters", store=True)
     child_lines = fields.One2many('mechanical.concrete.cube.line','parent_id',string="Parameter")
@@ -39,6 +42,9 @@ class MechanicalConcreteCube(models.Model):
                 record.testing_date_7days = fields.Datetime.to_string(testing_date)
             else:
                 record.testing_date_7days = False
+
+
+            
 
     child_lines14day = fields.One2many('mechanical.concrete.cube.line14','parent_id',string="Parameter")
 
@@ -79,11 +85,16 @@ class MechanicalConcreteCube(models.Model):
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
 
                 # Set average for first line in each group
-                if group:
-                    group[0].average_strength14 = avg
+                # if group:
+                #     group[0].average_strength14 = avg
                 # Reset average for other lines in group
-                for j in range(1, len(group)):
-                    group[j].average_strength14 = 0.0
+                # for j in range(1, len(group)):
+                #     group[j].average_strength14 = 0.0
+
+               
+
+
+                rec.submit_mode = True
 
     average_strength14 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength14", digits=(12,2))
 
@@ -130,6 +141,8 @@ class MechanicalConcreteCube(models.Model):
                         break
                     else:
                         record.average_strength14_conformity = 'fail'
+
+                    
 
     @api.depends('average_strength14','eln_ref','grade')
     def _compute_average_strength14_nabl(self):
@@ -191,11 +204,13 @@ class MechanicalConcreteCube(models.Model):
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
 
                 # Set average for first line in each group
-                if group:
-                    group[0].average_strength28 = avg
+                # if group:
+                #     group[0].average_strength28 = avg
                 # Reset average for other lines in group
-                for j in range(1, len(group)):
-                    group[j].average_strength28 = 0.0
+                # for j in range(1, len(group)):
+                #     group[j].average_strength28 = 0.0
+
+                rec.submit_mode = True
 
     average_strength28 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength28", digits=(12,2))
 
@@ -359,13 +374,29 @@ class MechanicalConcreteCube(models.Model):
                 group = lines[i:i + group_size]
                 strengths = [l.compressive_strength for l in group if l.compressive_strength > 0]
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
+                
 
                 # Set average for first line in each group
-                if group:
-                    group[0].avg_compressive_strength = avg
+                # if group:
+                #     group[0].avg_compressive_strength = avg
                 # Reset average for other lines in group
-                for j in range(1, len(group)):
-                    group[j].avg_compressive_strength = 0.0
+                # for j in range(1, len(group)):
+                #     group[j].avg_compressive_strength = 0.0
+
+
+                   # Jar Button Visible ahe (True), tar Submit Mode 'False' ch theva.
+                # if rec. cube_visible_14:
+                #  rec.submit_mode = False
+
+
+                # elif rec. cube_visible_28:
+                #  rec.submit_mode = False
+            
+            
+            # Jar Button Invisible ahe (False), tar automatic 'True' kara.
+                # else:
+                rec.submit_mode = True
+                
 
     average_strength = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength", digits=(12,2))
 
@@ -414,6 +445,8 @@ class MechanicalConcreteCube(models.Model):
         for rec in self:
             # Convert N/mm² to kN: strength * area / 1000
             rec.days_7_n = (rec.days_7_kmm * rec.area_of_cube) / 1000 if rec.days_7_kmm and rec.area_of_cube else 0.0
+
+
 
     days_28_kmm = fields.Float(string="28 Days", compute="_compute_days_28_kmm", store=True)
     days_28_n = fields.Float(string="28 Days", compute="_compute_days_28_n")
@@ -648,6 +681,8 @@ class MechanicalConcreteCube(models.Model):
 
         for record in self:
             record.cube_visible = False
+            record.cube_visible_14 = False
+            record.cube_visible_28 = False
          
 
             

@@ -8,6 +8,7 @@ class MechanicalBricks(models.Model):
     _description = 'mechanical.bricks'
     _rec_name = "name"
 
+
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
    
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")

@@ -325,6 +325,7 @@ class PPCCementNormalConsistency(models.Model):
     initial_setting_time_visible = fields.Boolean("Setting Time Visible",compute="_compute_visible")
     initial_setting_time_name = fields.Char("Name",default="Setting Time")
 
+
   
     temp_time = fields.Char("Temp.°C" ,required=True)
     humidity_time= fields.Char("Humidity %" ,required=True)

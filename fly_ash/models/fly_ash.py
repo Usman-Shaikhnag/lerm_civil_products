@@ -751,7 +751,22 @@ class FlyaschNormalConsistency(models.Model):
             for line in lines:
                 if line not in [lines[i] for i in range(0, len(lines), group_size)]:
                     line.avg_compressive_strength = 0.0
+         
 
+             # Jar Button Visible ahe (True), tar Submit Mode 'False' ch theva.
+            if line.compressive_strength_visible:
+                line.submit_mode = False
+
+            elif line.lime_visible:
+                line.submit_mode = False
+            
+            # Jar Button Invisible ahe (False), tar automatic 'True' kara.
+            else:
+                line.submit_mode = True
+
+
+
+            
     
 
 
@@ -947,6 +962,7 @@ class FlyaschNormalConsistency(models.Model):
                 break
             else:
                 record.average_28_days_nabl = 'fail'
+
 
    
 

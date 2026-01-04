@@ -368,8 +368,8 @@ class FineAggregate(models.Model):
     water_absorption_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
 
-    temp_specific_gravity_water_absorption = fields.Char(string="Temp.°C" ,required=True)
-    humidity_temp_specific_gravity_water_absorption= fields.Char(string="Humidity %" ,required=True)
+    temp_specific_gravity_water_absorption = fields.Char(string="Temp.°C" )
+    humidity_temp_specific_gravity_water_absorption= fields.Char(string="Humidity %" )
 
     # wt_basket_and_sample = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm")
     
@@ -1230,6 +1230,7 @@ class FineAggregate(models.Model):
         for record in self:
 
             
+            
             record.total_avg_manesium_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ff9f86ce-1f7a-4e3f-83b4-284a413745df')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ff9f86ce-1f7a-4e3f-83b4-284a413745df')]).parameter_table
@@ -1352,6 +1353,7 @@ class FineAggregate(models.Model):
                 result.nabl_status = (
                     'nabl' if self.compacted_density_nabl == 'pass' else 'non-nabl'
                 )
+
 
             # Voids – compacted density
             elif internal_id == "a699d9fd-57f5-4044-97ea-2bea87bf9c44":

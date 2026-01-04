@@ -20,6 +20,7 @@ class MechanicalBricksBurntClay(models.Model):
     submit_mode = fields.Boolean(default=False)
 
 
+
     @api.depends('eln_ref')
     def _compute_size_id(self):
         if self.eln_ref:

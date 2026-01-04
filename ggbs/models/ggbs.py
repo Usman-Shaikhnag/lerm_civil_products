@@ -159,6 +159,9 @@ class GgbsMechanical(models.Model):
                 rec.average_density = 0.0
 
 
+            rec.submit_mode = True
+
+
 
 
     specific_gravity_confirmity = fields.Selection([
@@ -495,6 +498,9 @@ class GgbsMechanical(models.Model):
             ) / 4 if any([
                 rec.first_bed_reading1, rec.first_bed_reading2, rec.second_bed_reading1, rec.second_bed_reading2
             ]) else 0.0
+
+
+            rec.submit_mode = True
 
     apparatus_constant_first = fields.Float(string="Apparatus Constant (K) ", digits=(12, 4))
 

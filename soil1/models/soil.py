@@ -92,16 +92,10 @@ class Soil(models.Model):
                 rec.lab_id = rec.eln_ref.lab_id
             else:
                 rec.lab_id = False
-    # material = fields.Many2one('product.template',string='Material',compute="_compute_material_id",store=True)
-
-    # @api.depends('eln_ref.material')
-    # def _compute_material_id(self):
-    #     for rec in self:
-    #         rec.material = rec.eln_ref.material if rec.eln_ref else False
-
+  
 
     def prefill_data(self):
-        # import wdb; wdb.set_trace()
+        
         return {
             'name': 'Prefill Data',
             'type': 'ir.actions.act_window',
@@ -565,109 +559,109 @@ class Soil(models.Model):
 
 
                # Liquid Limit
-    # liquid_limit_name = fields.Char("Name",default="Liquid Limit")
-    # liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
+    liquid_limit_name = fields.Char("Name",default="Liquid Limit")
+    liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
     # job_no_liquid_limit = fields.Char(string="Job No")
     # material_liquid_limit = fields.Char(String="Material")
     # start_date_liquid_limit = fields.Date("Start Date")
     # end_date_liquid_limit = fields.Date("End Date")
-    # child_liness = fields.One2many('mechanical.liquid.limits.line1','parent_id',string="Liquid Limit")
-    # liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
+    child_liness = fields.One2many('mechanical.liquid.limits.line1','parent_id',string="Liquid Limit")
+    liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
 
    
    
 
-    # @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
-    # def _compute_liquid_limit(self):
-    #     for record in self:
-    #         lines = record.child_liness.filtered(lambda l: l.blwo_no1 is not None and l.moisture_content is not None)
-    #         if not lines or len(lines) < 2:
-    #             record.liquid_limit = 0.0
-    #             continue
+    @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
+    def _compute_liquid_limit(self):
+        for record in self:
+            lines = record.child_liness.filtered(lambda l: l.blwo_no1 is not None and l.moisture_content is not None)
+            if not lines or len(lines) < 2:
+                record.liquid_limit = 0.0
+                continue
 
             # Sort by blwo_no1 ascending
-            # lines_sorted = sorted(lines, key=lambda l: l.blwo_no1)
-            # target = 25.0
+            lines_sorted = sorted(lines, key=lambda l: l.blwo_no1)
+            target = 25.0
 
             # Find the two points around target (just below and just above)
-            # lower = None
-            # upper = None
-            # for i, line in enumerate(lines_sorted):
-            #     if line.blwo_no1 < target:
-            #         lower = line
-            #     elif line.blwo_no1 >= target and lower:
-            #         upper = line
-            #         break
+            lower = None
+            upper = None
+            for i, line in enumerate(lines_sorted):
+                if line.blwo_no1 < target:
+                    lower = line
+                elif line.blwo_no1 >= target and lower:
+                    upper = line
+                    break
 
-            # if lower and upper:
-            #     x1, x2 = lower.blwo_no1, upper.blwo_no1
-            #     y1, y2 = lower.moisture_content, upper.moisture_content
+            if lower and upper:
+                x1, x2 = lower.blwo_no1, upper.blwo_no1
+                y1, y2 = lower.moisture_content, upper.moisture_content
 
-            #     if x2 != x1:
+                if x2 != x1:
                     # Linear interpolation
-            #         ll_value = y1 + (y2 - y1) * (target - x1) / (x2 - x1)
-            #     else:
-            #         ll_value = y1
-            #     record.liquid_limit = ll_value
-            # elif lower:
+                    ll_value = y1 + (y2 - y1) * (target - x1) / (x2 - x1)
+                else:
+                    ll_value = y1
+                record.liquid_limit = ll_value
+            elif lower:
                 # If target above highest value
-    #             record.liquid_limit = lower.moisture_content
-    #         else:
-    #             record.liquid_limit = 0.0
+                record.liquid_limit = lower.moisture_content
+            else:
+                record.liquid_limit = 0.0
 
     
-    # liquid_limit_conformity = fields.Selection([
-    #         ('pass', 'Pass'),
-    #         ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
+    liquid_limit_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
 
-    # @api.depends('liquid_limit','eln_ref','grade')
-    # def _compute_liquid_limit_conformity(self):
+    @api.depends('liquid_limit','eln_ref','grade')
+    def _compute_liquid_limit_conformity(self):
         
-    #     for record in self:
-    #         record.liquid_limit_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
+        for record in self:
+            record.liquid_limit_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
                     
-    #                 lower = record.liquid_limit - record.liquid_limit*mu_value
-    #                 upper = record.liquid_limit + record.liquid_limit*mu_value
-    #                 if lower >= req_min and upper <= req_max:
-    #                     record.liquid_limit_conformity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.liquid_limit_conformity = 'fail'
+                    lower = record.liquid_limit - record.liquid_limit*mu_value
+                    upper = record.liquid_limit + record.liquid_limit*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.liquid_limit_conformity = 'pass'
+                        break
+                    else:
+                        record.liquid_limit_conformity = 'fail'
 
-    # liquid_limit_nabl = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail')], string="NABL", compute="_compute_liquid_limit_nabl", store=True)
+    liquid_limit_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_liquid_limit_nabl", store=True)
 
-    # @api.depends('liquid_limit','eln_ref','grade')
-    # def _compute_liquid_limit_nabl(self):
+    @api.depends('liquid_limit','eln_ref','grade')
+    def _compute_liquid_limit_nabl(self):
         
-    #     for record in self:
-    #         record.liquid_limit_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
+        for record in self:
+            record.liquid_limit_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
-    #         lab_min = line.lab_min_value
-    #         lab_max = line.lab_max_value
-    #         mu_value = line.mu_value
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
             
-    #         lower = record.liquid_limit - record.liquid_limit*mu_value
-    #         upper = record.liquid_limit + record.liquid_limit*mu_value
-    #         if lower >= lab_min and upper <= lab_max:
-    #             record.liquid_limit_nabl = 'pass'
-    #             break
-    #         else:
-    #             record.liquid_limit_nabl = 'fail'
+            lower = record.liquid_limit - record.liquid_limit*mu_value
+            upper = record.liquid_limit + record.liquid_limit*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.liquid_limit_nabl = 'pass'
+                break
+            else:
+                record.liquid_limit_nabl = 'fail'
 
 
-    # graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
+    graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
 
     
 
@@ -675,83 +669,92 @@ class Soil(models.Model):
 
    
 
-    # def generate_line_chart_liquid(self):
-    #     x_value = []
-    #     y_value = []
-    #     for line in self.child_liness:
-    #         if line.blwo_no1 and line.moisture_content is not None:
-    #             x_value.append(line.blwo_no1)
-    #             y_value.append(line.moisture_content)
+    def generate_line_chart_liquid(self):
+        x_value = []
+        y_value = []
+        for line in self.child_liness:
+            if line.blwo_no1 and line.moisture_content is not None:
+                x_value.append(line.blwo_no1)
+                y_value.append(line.moisture_content)
 
-    #     if not x_value or not y_value:
-    #         return False
+        if not x_value or not y_value:
+            return False
 
-    #     plt.figure(figsize=(10, 5))
+        plt.figure(figsize=(10, 5))
 
         # ✅ Blue line with red points
-        # plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-        # plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
 
         # ✅ Labels and title
-        # plt.xlabel('No. of Blows', fontsize=12)
-        # plt.ylabel('Water Content (%)', fontsize=12)
-        # plt.title('LIQUID LIMIT', fontsize=14)
+        plt.xlabel('No. of Blows', fontsize=12)
+        plt.ylabel('Water Content (%)', fontsize=12)
+        plt.title('LIQUID LIMIT', fontsize=14)
 
         # ✅ Axis limits (rounded)
-        # max_y = max(y_value)
-        # y_limit = (int(max_y / 10) + 1) * 10
-        # plt.ylim(bottom=0, top=y_limit)
+        max_y = max(y_value)
+        y_limit = (int(max_y / 10) + 1) * 10
+        plt.ylim(bottom=0, top=y_limit)
 
-        # max_x = max(x_value)
-        # x_limit = (int(max_x / 10) + 1) * 10
-        # plt.xlim(left=0, right=x_limit)
+        max_x = max(x_value)
+        x_limit = (int(max_x / 10) + 1) * 10
+        plt.xlim(left=0, right=x_limit)
 
         # ✅ Minor ticks for fine grid lines
-        # ax = plt.gca()
-        # ax.xaxis.set_minor_locator(MultipleLocator(1))
-        # ax.yaxis.set_minor_locator(MultipleLocator(1))
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(MultipleLocator(1))
+        ax.yaxis.set_minor_locator(MultipleLocator(1))
 
         # ✅ Fine grid
-        # plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
         # 🔹 Highlight Liquid Limit point (DB field value वापरून)
-        # if self.liquid_limit:
-        #     highlight_x = 25                
-        #     highlight_y = self.liquid_limit
+        if self.liquid_limit:
+            highlight_x = 25                # Blows (fixed at 25)
+            highlight_y = self.liquid_limit # Moisture content from field
 
             # Dotted guide lines
-            # plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
-            # plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
+            plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
+            plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
 
             # Point mark
-            # plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
+            plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
 
             # Label
-            # plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
+            plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
 
         # ✅ Save to buffer
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.legend()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
+        buffer = io.BytesIO()
+        plt.tight_layout()
+        plt.legend()
+        plt.savefig(buffer, format='png')
+        plt.close()
+        buffer.seek(0)
 
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
+        return base64.b64encode(buffer.read()).decode('utf-8')
 
 
         
        
     
 
-    # @api.depends('child_liness')
-    # def _compute_graph_image_liquid(self):
-    #     try:
-    #         for record in self:
-    #             chart_image_liquid = record.generate_line_chart_liquid()
-    #             record.graph_image_liquid = chart_image_liquid
-    #     except:
-    #         pass 
+    @api.depends('child_liness')
+    def _compute_graph_image_liquid(self):
+        try:
+            for record in self:
+                chart_image_liquid = record.generate_line_chart_liquid()
+                record.graph_image_liquid = chart_image_liquid
+        except:
+            pass 
+
+
+
+
+
+
+
+
+
 
 
 
@@ -772,7 +775,7 @@ class Soil(models.Model):
 
 
    #  Calculation-NMC, 
-    
+
 
     NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
@@ -793,76 +796,125 @@ class Soil(models.Model):
 
 # Atterbergs Limits (Free Swell)
 
-    freeswell_name = fields.Char(string="Name",default="Atterbergs Limits (Free Swell)",)
-    freeswell_visible = fields.Boolean( string="Free Swell Visible",default=True,)
-    freeswell_line_ids = fields.One2many( "soil.free.swell", "parent_id", string="Free Swell Lines",)
+
+    freeswell_name = fields.Char(string="Name", default="Atterbergs Limits (Free Swell)")
+    freeswell_visible = fields.Boolean(string="Free Swell Visible", default=True)
+    freeswell_line_ids = fields.One2many('soil.free.swell', 'parent_id', string="Free Swell Lines")
+    
+    # ATTERBERG LIMITS
+    Atterbergs_name = fields.Char(string="Name", default="Atterbergs Limits (LL, PL, SL)")
+    Atterbergs_visible = fields.Boolean('Show Atterberg', default=True)
+    pl_visible = fields.Boolean('Show PL', default=True)
+    ll_visible = fields.Boolean('Show LL', default=True)
+    sl_visible = fields.Boolean('Show SL', default=True)
+    
+    # RESULTS
+    moisture_content = fields.Float('NMC (%)', digits=(10,2))
+    plastic_limit = fields.Float('PL (%)', digits=(10,2))
+    liquid_limit = fields.Float('LL (%)', digits=(10,2))
+    shrinkage_limit = fields.Float('SL (%)', digits=(10,2))
+    plasticity_index = fields.Float('PI', digits=(10,2))
+    
+    # ONE2MANYLINES
+    # moisture_name = fields.Char('Moisture Name')
+    # bulk_line_ids = fields.One2many('soil.bulk.line', 'parent_id')
+    # moisture_ids = fields.One2many('soil.moisture.line', 'parent_id')
+    pl_line_ids = fields.One2many('lab.atterberg.pl.line', 'parent_id')
+    ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
+    sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id')
+
+
+
+
+
+
+# === ADD THIS AT TOP OF models/soil.py (BEFORE class) ===
+    import io
+    import base64
+    import numpy as np
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from scipy import stats
+    from odoo import api, fields, models
+
+
+    
+    # === CASAGRANDE GRAPH FIELD ===
+    casagrande_graph = fields.Binary("Casagrande Graph", compute="_compute_casagrande_graph", store=True)
+    
+    @api.depends('ll_line_ids.blows', 'll_line_ids.water_content', 'll_line_ids.m1', 'll_line_ids.m2', 'll_line_ids.m3')
+    def _compute_casagrande_graph(self):
+        for record in self:
+            try:
+                if record.ll_line_ids:
+                    graph = record.generate_casagrande_graph()
+                    record.casagrande_graph = graph
+            except:
+                record.casagrande_graph = False
+
+    def generate_casagrande_graph(self):
+        """Casagrande graph - NO LOGGING, FULLY SAFE"""
+        self.ensure_one()
+        
+        # Filter VALID data only
+        lines = self.ll_line_ids.filtered(lambda l: l.blows and l.blows >= 10 and l.water_content and l.water_content > 0)
+        if len(lines) < 2:
+            return False
+        
+        try:
+            x_data = np.array([float(line.blows) for line in lines])
+            y_data = np.array([float(line.water_content) for line in lines])
+            
+            # Linear regression
+            slope, intercept, _, _, _ = stats.linregress(x_data, y_data)
+            ll_25 = slope * 25 + intercept
+            
+            # Create figure
+            fig = plt.figure(figsize=(10, 6))
+            ax = fig.add_subplot(111)
+            
+            # Grid
+            ax.grid(True, which='both', color='lightgray', linestyle='-', linewidth=0.8, alpha=0.7)
+            
+            # Red points
+            ax.scatter(x_data, y_data, s=120, color='red', edgecolors='darkred', 
+                      linewidth=1.5, zorder=5, label='Test Points')
+            
+            # Blue line
+            x_line = np.linspace(max(8, min(x_data)-2), max(x_data)+3, 100)
+            y_line = slope * x_line + intercept
+            ax.plot(x_line, y_line, color='blue', linewidth=3, zorder=4)
+            
+            # N=25 reference
+            ax.axvline(x=25, color='green', linestyle='--', linewidth=2, alpha=0.8)
+            ax.plot(25, ll_25, marker='*', markersize=15, color='green', 
+                   markeredgecolor='darkgreen', markeredgewidth=2, zorder=10)
+            
+            # Labels
+            ax.set_xlabel('No. of Blows', fontsize=12, fontweight='bold')
+            ax.set_ylabel('Moisture Content (%)', fontsize=12, fontweight='bold')
+            ax.set_title(f'Liquid Limit Determination (LL={ll_25:.1f}%)', fontsize=14, fontweight='bold')
+            ax.legend(loc='upper right')
+            
+            # Axis limits
+            ax.set_xlim(8, max(x_data) + 5)
+            ax.set_ylim(0, max(y_data) + 3)
+            
+            # Save to buffer
+            buffer = io.BytesIO()
+            fig.tight_layout()
+            fig.savefig(buffer, format='png', dpi=100, facecolor='white', bbox_inches='tight')
+            plt.close(fig)
+            buffer.seek(0)
+            
+            return base64.b64encode(buffer.read())
+            
+        except Exception:
+            plt.close('all')
+            return False
 
    
-   
-
-
-
-
-# Atterbergs Limits (Ll,Pl,Sl)
-
-    plastic_line_ids = fields.One2many( 'lab.atterberg.plastic.line', 'test_id', string='Plastic Limit Lines' )
-    liquid_line_ids = fields.One2many('lab.atterberg.liquid.line', 'test_id', string='Liquid Limit Lines')
-    shrinkage_line_ids = fields.One2many( 'lab.atterberg.shrinkage.line', 'test_id', string='Shrinkage Limit Lines')
-
-    # FINAL LIMITS (BOTTOM BLUE ROWS)
-    plastic_limit = fields.Float(string='Plastic Limit (%)',  compute='_compute_limits', store=True)
-    liquid_limit = fields.Float(string='Liquid Limit (%)', compute='_compute_limits', store=True)
-    shrinkage_limit = fields.Float(string='Shrinkage Limit (%)',  compute='_compute_limits', store=True)
-    shrinkage_limit_visible = fields.Boolean( string="Free Swell Visible",default=True,)
-
-
-
-    @api.depends('plastic_line_ids.water_content', 'liquid_line_ids.water_content','shrinkage_line_ids.shrinkage_limit')
-    def _compute_limits(self):
-        for rec in self:
-            # plastic limit = average of plastic water contents
-            if rec.plastic_line_ids:
-                rec.plastic_limit = (
-                    sum(rec.plastic_line_ids.mapped('water_content'))
-                    / len(rec.plastic_line_ids)
-                )
-            else:
-                rec.plastic_limit = 0.0
-
-            # liquid limit = water content at 25 blows (flow curve) [web:31]
-            lines = rec.liquid_line_ids.filtered(lambda l: l.blows)
-            if len(lines) >= 2:
-                xs = [math.log10(l.blows) for l in lines]
-                ys = [l.water_content for l in lines]
-                n = len(xs)
-                sx = sum(xs); sy = sum(ys)
-                sxx = sum(x*x for x in xs)
-                sxy = sum(x*y for x, y in zip(xs, ys))
-                a = (n*sxy - sx*sy) / (n*sxx - sx*sx)
-                b = (sy - a*sx) / n
-                rec.liquid_limit = a * math.log10(25.0) + b
-            else:
-                rec.liquid_limit = 0.0
-
-            # shrinkage limit = average of child shrinkage limits [web:41]
-            if rec.shrinkage_line_ids:
-                rec.shrinkage_limit = (
-                    sum(rec.shrinkage_line_ids.mapped('shrinkage_limit'))
-                    / len(rec.shrinkage_line_ids)
-                )
-            else:
-                rec.shrinkage_limit = 0.0
-
-
-
-
-
-
-
-
-
-
-
 
 
       # Plastic Limit
@@ -1753,9 +1805,6 @@ class Soil(models.Model):
 
 
 
-   
-
-
 
 
        # FSI
@@ -1967,7 +2016,7 @@ class Soil(models.Model):
     volume_wet_table = fields.One2many('mechanical.volume.wet.line1','parent_id',string="Parameter")
     volume_wet_name = fields.Char("Name",default="Volume of wet soil(V1)")
 
-   
+  
 
      # Specific Gravity
     specific_gravity_name = fields.Char("Name",default="Specific Gravity")
@@ -2192,8 +2241,7 @@ class Soil(models.Model):
             else:
                 record.avg_stress_nabl = 'fail'
 
-     
-
+    
     # Consolidation Test (Pc) Test
     consolidation_pc_name = fields.Char("Name",default="Consolidation Test (Pc)")
     consolidation_pc_visible = fields.Boolean("Consolidation Test (Pc) Visible",compute="_compute_visible")
@@ -2633,7 +2681,6 @@ class Soil(models.Model):
     
 
    
-
     def action_generate_gsa_graph(self):
         for record in self:
             # 1. Initialize Plot
@@ -3742,35 +3789,10 @@ class Soil(models.Model):
     triaxial_test_name = fields.Char("Name",default="DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST")
     triaxial_test_visible = fields.Boolean("DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST",compute="_compute_visible")
 
-<<<<<<< HEAD
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Soil Form',
-            'res_model': 'mechanical.soil1',
-            'res_id': 'record.id',
-            'view_mode': 'form',
-            'target': 'current',
-        }
-
-=======
     dia_triaxial = fields.Float(string="Diameter (mm)", digits=(8, 1))
->>>>>>> 8080a3be37a3ff96938e7d790c3e11743c941857
     
+
     # Area automatically calculate hoil
     area1_triaxial = fields.Float(
         string="Area (A): cm²", 
@@ -4060,11 +4082,10 @@ class Soil(models.Model):
 
             record.moisture_visible  = False
             record.gsa_visible = False
-            
+
             record.specific_gravity_visible = False
             record.freeswell_visible = False
-            record.shrinkage_limit_visible = False
-
+           
 
 
 
@@ -4110,8 +4131,8 @@ class Soil(models.Model):
                 if sample.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
                     record.permeability_falling_visible = True
 
-                # if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
-                #     record.specific_gravity_visible = True
+                if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                    record.specific_gravity_visible = True
 
                 if sample.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                     record.direct_shear_visible = True
@@ -4128,8 +4149,8 @@ class Soil(models.Model):
                 if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
                     record.angle_shear_visible = True
 
-                # if sample.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
-                #     record.swelling_pressure_visible = True
+                if sample.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
+                    record.swelling_pressure_visible = True
 
                 if sample.internal_id == '65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d':
                     record.uu_triaxial_angle_visible = True
@@ -4154,16 +4175,14 @@ class Soil(models.Model):
                 if sample.internal_id == '3825ec57-11f8-4249-9fa8-d99f64ffd396':
                     record.freeswell_visible = True
 
-<<<<<<< HEAD
-                if sample.internal_id == 'da6f58e1-f875-44ae-865e-4dbea7bb0875':
-                    record.shrinkage_limit_visible = True
-=======
+
+
                 if sample.internal_id == 'yt25ec57-11f8-4249-9fa8-788889999rtt':
                     record.triaxial_test_visible = True
+                
+               
 
 
-
->>>>>>> 8080a3be37a3ff96938e7d790c3e11743c941857
    
 
 
@@ -5025,7 +5044,7 @@ class DirectShearTestLine(models.Model):
 
     @api.model
     def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
+      
         if vals.get('parent_id'):
             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
@@ -5035,7 +5054,7 @@ class DirectShearTestLine(models.Model):
         return super(DirectShearTestLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+      
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
@@ -5098,6 +5117,7 @@ class UCSTestLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
 
 
 
@@ -5911,7 +5931,17 @@ class SoilSieveAnalysisLineGSA(models.Model):
                 record.cumulative_retained = 0.0
 
 
-    
+    # --------------------------------------------------
+    # COMPUTE % PASSING
+    # --------------------------------------------------
+    # @api.depends('cumulative_retained')
+    # def _compute_passing_percent(self):
+    #     for record in self:
+    #         record.passing_percent = round(
+    #             100 - (record.cumulative_retained or 0.0),
+    #             3
+    #         )
+
 
 
 class SoilHydrometerLineGSA(models.Model):
@@ -6589,7 +6619,27 @@ class ConsolidationBothCycleLine(models.Model):
 
     
 
+#     @api.depends(
+#     'applied_pressure',
+#     'serial_no',
+#     'parent_id.consolidation_output_ids.applied_pressure',
+#     'parent_id.consolidation_output_ids.serial_no',
+# )
+#     def _compute_d_sigma(self):
+#      for line in self:
+#         line.d_sigma = 0.0
 
+#         parent = line.parent_id
+#         if not parent or not line.serial_no or line.serial_no == 1:
+#             continue
+
+#         # Previous row (Excel previous row)
+#         prev = parent.consolidation_output_ids.filtered(
+#             lambda l: l.serial_no == line.serial_no - 1
+#         )[:1]
+
+#         if prev:
+#             line.d_sigma = (line.applied_pressure or 0.0) - (prev.applied_pressure or 0.0)
 
     @api.depends(
         'applied_pressure',
@@ -7623,19 +7673,18 @@ class TriaxialTestLine(models.Model):
             
             current_val = 0.0
             
-            # Parent chya saglya lines la loop lavne (Sequence nusar)
-            # Odoo UI madhe lines display order nusar deto
+          
             for i, line in enumerate(parent.triaxial_test_line_ids):
                 
-                # Pahili line (Index 0) asel tar 0.0 theva (kiva user ne takleli value)
+               
                 if i == 0:
-                    # Jar line navin asel tar 0, nahitar tich value theva
+                   
                     if not line.horizontal_dial:
                         line.horizontal_dial = 0.0
                     current_val = line.horizontal_dial
                 
                 else:
-                    # Second line pasun: Previous Value (current_val) + 25
+                 
                     new_val = current_val + 25.0
                     line.horizontal_dial = new_val
                     current_val = new_val
@@ -7644,7 +7693,7 @@ class TriaxialTestLine(models.Model):
     def _compute_corrected_area(self):
         # Parent groups madhe loop firvu (Optimization)
         for parent in self.mapped('parent_id'):
-            # Parent chya saglya lines sequence nusar ghene
+            
             lines = parent.triaxial_test_line_ids
             
             # Initial Area aani Height Parent madhun ghene
@@ -7652,15 +7701,14 @@ class TriaxialTestLine(models.Model):
             H0 = parent.height_triaxial or 1.0  # Divide by zero talnyasathi default 1
             
             for i, line in enumerate(lines):
-                # --- CONDITION 1: FIRST LINE (Index 0) ---
+               
                 if i == 0:
                     # Formula: area1_triaxial / 100
                     line.corrected_area = A0 / 100.0
                 
-                # --- CONDITION 2: SECOND LINE ONWARDS ---
+               
                 else:
-                    # 1. Strain Calculation: (horizontal_dial / 100) / height_triaxial
-                    # Dial reading la 100 ne divide karun mm conversion (as per your formula)
+                   
                     change_in_length = line.horizontal_dial / 100.0
                     
                     if H0 > 0:
@@ -7730,125 +7778,110 @@ class TriaxialTestLine(models.Model):
 
 
 
+                
 
 
 
 
 
 
-# Atterbergs Limits (Ll,Pl,Sl,  Plastic limit )
 
 
-class LabAtterbergPlasticLine(models.Model):
-    _name = 'lab.atterberg.plastic.line'
 
 
-    test_id = fields.Many2one('lab.atterberg.test', ondelete='cascade')
+# PLASTIC LIMIT LINE (PL Sheet)
+class LabAtterbergPlLine(models.Model):
+    _name = 'lab.atterberg.pl.line'
+    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+   
+    test_no = fields.Integer('Test No.')
+    container_no = fields.Char('Container No.')
+    m1 = fields.Float('M1 (gm)', digits=(10,3))
+    m2 = fields.Float('M2 (gm)', digits=(10,3))
+    m3 = fields.Float('M3 (gm)', digits=(10,3))
+    
+  
+    m3_m2 = fields.Float('M3-M2', digits=(10,3), compute='_compute_pl', store=True)
+    m2_m1 = fields.Float('M2-M1', digits=(10,3), compute='_compute_pl', store=True)
+    water_content = fields.Float('Water Content %', digits=(10,2), compute='_compute_pl', store=True)
 
-    test_no = fields.Integer(string='Test no.')
-    container_no = fields.Integer(string='Container no.')
-    m3 = fields.Float(string='m3 (gm)')  
-    m2 = fields.Float(string='m2 (gm)') 
-    m1 = fields.Float(string='m1 (gm)')  
-
-    m3_m2 = fields.Float(string='(m3-m2) (gm)', compute='_compute_vals', store=True)
-    m2_m1 = fields.Float(string='(m2-m1) (gm)', compute='_compute_vals', store=True)
-    water_content = fields.Float(string='Water Content (%)',
-                                 compute='_compute_vals', store=True)
-
-    @api.depends('m3', 'm2', 'm1')
-    def _compute_vals(self):
+    @api.depends('m1', 'm2', 'm3')
+    def _compute_pl(self):
         for rec in self:
-            rec.m3_m2 = rec.m3 - rec.m2
-            rec.m2_m1 = rec.m2 - rec.m1
-            rec.water_content = ((rec.m3_m2 / rec.m2_m1) * 100 if rec.m2_m1 else 0.0)
+            rec.m3_m2 = rec.m3 - rec.m2 if rec.m3 and rec.m2 else 0.0
+            rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
+            rec.water_content = (rec.m3_m2 / rec.m2_m1 * 100) if rec.m2_m1 else 0.0
+
+
+
+# LIQUID LIMIT LINE (LL Sheet)  
+class LabAtterbergLlLine(models.Model):
+    _name = 'lab.atterberg.ll.line'
+    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+    
+   
+    test_no = fields.Integer('Test No.')
+    blows = fields.Integer('No. of Blows')
+    container_no = fields.Char('Container No.')
+    m1 = fields.Float('M1 (gm)', digits=(10,3))
+    m2 = fields.Float('M2 (gm)', digits=(10,3))
+    m3 = fields.Float('M3 (gm)', digits=(10,3))
+    
+    
+    m3_m2 = fields.Float('M3-M2', digits=(10,3), compute='_compute_ll', store=True)
+    m2_m1 = fields.Float('M2-M1', digits=(10,3), compute='_compute_ll', store=True)
+    water_content = fields.Float('Water Content %', digits=(10,2), compute='_compute_ll', store=True)
+
+    @api.depends('m1', 'm2', 'm3')
+    def _compute_ll(self):
+        for rec in self:
+            rec.m3_m2 = rec.m3 - rec.m2 if rec.m3 and rec.m2 else 0.0
+            rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
+            rec.water_content = (rec.m3_m2 / rec.m2_m1 * 100) if rec.m2_m1 else 0.0
+
+
+
+
+
+class LabAtterbergSlLine(models.Model):
+    _name = 'lab.atterberg.sl.line'
+    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+    
+
+   
+    test_no = fields.Integer('Test No.')
+    container_no = fields.Char('Container No.')
+    m1 = fields.Float('M1 (gm)', digits=(10,3))
+    v1 = fields.Float('V1 (cm3)', digits=(10,3))
+    m2 = fields.Float('M2 (gm)', digits=(10,3))
+    m3 = fields.Float('M3 (gm)', digits=(10,3))
+    v2 = fields.Float('V2 (cm3)', digits=(10,3))
+    
+   
+    m3_m2 = fields.Float('M3-M2', digits=(10,3), compute='_compute_sl', store=True)
+    m2_m1 = fields.Float('M2-M1', digits=(10,3), compute='_compute_sl', store=True)
+    v1_v2 = fields.Float('V1-V2', digits=(10,3), compute='_compute_sl', store=True)
+    water_content = fields.Float('Water Content %', digits=(10,2), compute='_compute_sl', store=True)
+    shrinkage_ratio = fields.Float('Shrinkage Ratio', digits=(10,3), compute='_compute_sl', store=True)
+    shrinkage_limit = fields.Float('SL %', digits=(10,2), compute='_compute_sl', store=True)
+
+    @api.depends('m1', 'm2', 'm3', 'v1', 'v2')
+    def _compute_sl(self):
+        gamma_w = 1.0  
+        for rec in self:
+            rec.m3_m2 = rec.m3 - rec.m2 if rec.m3 and rec.m2 else 0.0
+            rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
+            rec.v1_v2 = rec.v1 - rec.v2 if rec.v1 and rec.v2 else 0.0
+            
+            if rec.m3_m2 and rec.v2:
+                rec.shrinkage_ratio = rec.m3_m2 / (rec.v2 * gamma_w)
+                rec.water_content = ((rec.m1 - rec.m2) / rec.m3_m2) * 100
+                rec.shrinkage_limit = rec.water_content - (rec.shrinkage_ratio * 100)
+            else:
+                rec.shrinkage_ratio = rec.water_content = rec.shrinkage_limit = 0.0
 
     
 
-
-
-# Atterbergs Limits (Ll,Pl,Sl,  Liquid limit)
-
-class LabAtterbergLiquidLine(models.Model):
-    _name = 'lab.atterberg.liquid.line'
-
-
-    test_id = fields.Many2one('lab.atterberg.test', ondelete='cascade')
-
-    test_no = fields.Integer(string='Test no.')
-    blows = fields.Integer(string='Number of blows')
-    container_no = fields.Integer(string='Container no.')
-    m3 = fields.Float(string='m3 (gm)')   # container + wet soil [web:37]
-    m2 = fields.Float(string='m2 (gm)')   # container + dry soil
-    m1 = fields.Float(string='m1 (gm)')   # container only
-
-    m3_m2 = fields.Float(string='(m3-m2) (gm)', compute='_compute_vals', store=True)
-    m2_m1 = fields.Float(string='(m2-m1) (gm)', compute='_compute_vals', store=True)
-    water_content = fields.Float(string='Water Content (%)',
-                                 compute='_compute_vals', store=True)
-
-    @api.depends('m3', 'm2', 'm1')
-    def _compute_vals(self):
-        for rec in self:
-            rec.m3_m2 = rec.m3 - rec.m2
-            rec.m2_m1 = rec.m2 - rec.m1
-            # same water content formula as plastic limit [web:37]
-            rec.water_content = (
-                (rec.m3_m2 / rec.m2_m1) * 100 if rec.m2_m1 else 0.0
-            )
-
-
-
-
-
-
-
-
-
-# Atterbergs Limits (Ll,Pl,Sl,  Shrinkage limit)
-
-class LabAtterbergShrinkageLine(models.Model):
-    _name = 'lab.atterberg.shrinkage.line'
-   
-
-    test_id = fields.Many2one('lab.atterberg.test', ondelete='cascade')
-
-    test_no = fields.Integer(string='Test no.')
-    container_no = fields.Integer(string='Container no.')
-    m1 = fields.Float(string='m1 (gm)')   
-    v1 = fields.Float(string='V1 (cm³)')  
-    m3 = fields.Float(string='m3 (gm)')  
-    m2 = fields.Float(string='m2 (gm)')   
-    v2 = fields.Float(string='V2 (cm³)')  
-
-    m3_m2 = fields.Float(string='(m3-m2) (gm)', compute='_compute_vals', store=True)
-    m2_m1 = fields.Float(string='(m2-m1) (gm)', compute='_compute_vals', store=True)
-    v1_v2 = fields.Float(string='(V1-V2) (cm³)', compute='_compute_vals', store=True)
-    water_content = fields.Float(string='Water Content (%)',
-                                 compute='_compute_vals', store=True)
-    shrinkage_ratio = fields.Float(string='Shrinkage Ratio',
-                                   compute='_compute_vals', store=True)
-    shrinkage_limit = fields.Float(string='Shrinkage Limit (%)',
-                                   compute='_compute_vals', store=True)
-
-    @api.depends('m1', 'm3', 'm2', 'v1', 'v2')
-    def _compute_vals(self):
-        gamma_w = 1.0  # gm/cm³ [web:41]
-        for rec in self:
-            rec.m3_m2 = rec.m3 - rec.m2              # dry soil mass
-            rec.m2_m1 = rec.m2 - rec.m1
-            rec.v1_v2 = rec.v1 - rec.v2
-            if rec.m3_m2:
-                # Ws = w - (V1 - V2)*γw/Wd *100 [web:41]
-                w_init = ((rec.m1 - rec.m3_m2 - rec.m2) / rec.m3_m2) * 100.0
-                ws = w_init - (rec.v1_v2 * gamma_w / rec.m3_m2) * 100.0
-                rec.shrinkage_limit = ws
-                rec.water_content = ws
-                rec.shrinkage_ratio = (
-                    rec.m3_m2 / (rec.v2 * gamma_w) if rec.v2 else 0.0
-                )
-            else:
-                rec.shrinkage_limit = rec.water_content = rec.shrinkage_ratio = 0.0
 
 
 
