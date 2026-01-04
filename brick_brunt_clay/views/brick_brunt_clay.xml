@@ -30,6 +30,7 @@
                         <field name="sample_id" readonly="1" />
                         <field name="eln_ref" readonly="1"/>
                         <!-- <field name="size_id"/> -->
+                        <field name="lab_id" invisible="1" />
                         <field name="parameter_id" invisible="1"/>
                     </group>
                        <div class="custom_table_borders" style="margin-top: 15px;">
@@ -57,6 +58,17 @@
                              border-color: #3b82f6 !important;
                             }
                     </style>
+
+                    <button name="action_generate_options_brick_clay" 
+                            type="object" 
+                            string="Generate Lab ID" 
+                            class="oe_highlight"/>
+
+                    <field name="lab_brick_clay_ids" invisible="1">
+                        <tree editable="bottom">
+                            <field name="lab"/>
+                        </tree>
+                    </field>
                     
 
                     <!--  Compressive Strength  -->
@@ -68,6 +80,16 @@
                             
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not compressive_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_brickclay1"></label></td>
+                                    <td ><field name="selected_lab_brickclay1"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
 
                     <div class="d-flex gap-2" invisible="not compressive_strength_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -165,6 +187,16 @@
                         </h1>
                     </div>
 
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not water_absorption_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_brickclay2"></label></td>
+                                    <td ><field name="selected_lab_brickclay2"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
                     <div class="d-flex gap-2" invisible="not water_absorption_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
@@ -246,6 +278,16 @@
                             
                         </h1>
                     </div>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not dimension_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_brickclay3"></label></td>
+                                    <td ><field name="selected_lab_brickclay3"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
 
                     <div class="d-flex gap-2" invisible="not dimension_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -400,6 +442,16 @@
                             <field name="efforescence_visible" invisible='1'/>
                         </h1>
                     </div>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not efforescence_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_brickclay4"></label></td>
+                                    <td ><field name="selected_lab_brickclay4"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
 
                     <div class="d-flex gap-2" invisible="not efforescence_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">

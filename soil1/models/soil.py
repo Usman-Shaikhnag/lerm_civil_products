@@ -82,6 +82,60 @@ class Soil(models.Model):
             store=True
         )
 
+    lab_option_ids = fields.One2many(
+        'lab.option.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+   
+
+    
+
+    # --- Button Function ---
+    def action_generate_options(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first (Previous options delete kara)
+                    # (5, 0, 0) command saglya lines remove karte
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing (Break Logic)
+                    # Input: "S-25-144 - S-25-145"
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # "S-25-144"
+                        end_part = parts[-1].strip()  # "S-25-145"
+
+                        # Prefix (S-25) ani Number (144) vegla kara
+                        prefix = start_part.rsplit('-', 1)[0]
+                        start_num = int(start_part.split('-')[-1])
+                        end_num = int(end_part.split('-')[-1])
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            val = f"{prefix}-{num}"
+                            # One2many madhe create karnya sathi: (0, 0, values)
+                            lines_command.append((0, 0, {'name': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_option_ids = lines_command
+                        
+                except Exception as e:
+                    # Jar format chukla tar error ignore kara
+                    pass
+            else:
+                # Jar range nasel (single value asel), tar ti ekach value add kara
+                if record.lab_id:
+                     record.lab_option_ids = [(5, 0, 0), (0, 0, {'name': record.lab_id})]
+
+    
+      
+
+
         # -----------------------------
         # Compute method
         # -----------------------------
@@ -118,14 +172,14 @@ class Soil(models.Model):
 
     # Sieve Analysis
     sieve_name = fields.Char("Name",default="Sieve Analysis")
-    sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+    sieve_visible = fields.Boolean("Sieve Analysis Visible")
 
-    @api.model
-    def default_get(self, fields_list):
-        res = super().default_get(fields_list)
-        if self.env.context.get('force_sieve_visible'):
-            res['sieve_visible'] = True
-        return res
+    # @api.model
+    # def default_get(self, fields_list):
+    #     res = super().default_get(fields_list)
+    #     if self.env.context.get('force_sieve_visible'):
+    #         res['sieve_visible'] = True
+    #     return res
 
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line1','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
@@ -914,6 +968,12 @@ class Soil(models.Model):
             plt.close('all')
             return False
 
+    selected_lab_id6 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+
    
 
 
@@ -1460,6 +1520,12 @@ class Soil(models.Model):
 
     soil_name = fields.Char("Name",default="California Bearing Ratio")
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
+
+    selected_lab_id = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
    
     soil_table = fields.One2many('mechanical.cbr.line1','parent_id',string="CBR",default=lambda self: self._default_cbr_child_lines())
 
@@ -1810,6 +1876,12 @@ class Soil(models.Model):
        # FSI
     fsi_name = fields.Char("Name",default="Free Swell Index")
     fsi_visible = fields.Boolean("Free Swell Index Visible",compute="_compute_visible")
+
+    selected_lab_id2 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
   
     wt_sample = fields.Float(string="Weight of the soil sample")
     valume_water = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing distilled water")
@@ -2021,6 +2093,12 @@ class Soil(models.Model):
      # Specific Gravity
     specific_gravity_name = fields.Char("Name",default="Specific Gravity")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
+
+    selected_lab_id4 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
     m1 = fields.Float(string="Mass of Density Bottle (M1) ", digits=(12,2))
     m2 = fields.Float(string="Mass of Bottle & Dry Soil (M2) ", digits=(12,2))
@@ -2587,7 +2665,6 @@ class Soil(models.Model):
         for rec in self:
             lines = rec.uu_triaxial_cohesion_line_ids
 
-            # किमान 2 data points असले पाहिजेत
             if not lines or len(lines) < 2:
                 rec.phi_deg_uu_triaxial_cohesion = 0.0
                 rec.cohesion_uu_triaxial_cohesion = 0.0
@@ -2596,7 +2673,6 @@ class Soil(models.Model):
             slopes = []
             intercepts = []
 
-            # सर्व सलग points वरून slope व intercept काढा
             for i in range(len(lines) - 1):
                 p1 = lines[i]
                 p2 = lines[i + 1]
@@ -2631,9 +2707,102 @@ class Soil(models.Model):
 
     show_sieve = fields.Boolean(default=False)
 
+    gsa_particle_child_lines = fields.One2many('mechanical.gsa.particle.line','parent_id')
+
    
 
     gsa_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+   # --- BUTTON ACTION ---
+    def action_calc_d_values(self):
+        """Button to Calculate and Fetch Values"""
+        self._calculate_all_d_values()
+        return True
+
+    def _calculate_all_d_values(self):
+        for record in self:
+            record.gsa_particle_child_lines.unlink()
+            
+            lines_list = []
+
+            for gsa in record.gsa_child_lines:
+                # --- CALCULATION LOGIC START ---
+                val_d10 = 0.0
+                val_d30 = 0.0
+                val_d60 = 0.0
+                val_cu = 0.0
+                val_cc = 0.0
+                
+                if gsa.sieve_analysis_child_lines_gsa:
+                    clean_data = []
+                    for line in gsa.sieve_analysis_child_lines_gsa:
+                        try:
+                            sz_str = re.sub(r"[^0-9.]", "", str(line.sieve_size))
+                            size_val = float(sz_str) if sz_str else 0.0
+                            pass_val = line.passing_percent
+                            clean_data.append({'size': size_val, 'passing': pass_val})
+                        except:
+                            continue
+
+                    clean_data.sort(key=lambda x: x['passing'], reverse=True)
+                    val_d10 = self._get_interpolated_value(clean_data, 10)
+                    val_d30 = self._get_interpolated_value(clean_data, 30)
+                    val_d60 = self._get_interpolated_value(clean_data, 60)
+
+                    if val_d10 > 0:
+                        val_cu = val_d60 / val_d10
+                        if val_d60 > 0:
+                            val_cc = (val_d30 ** 2) / (val_d60 * val_d10)
+                # --- CALCULATION LOGIC END ---
+
+              
+                
+                fetched_meniscus = getattr(gsa, 'meniscus_corre', 0.5)   # Default 0.5 if not found
+                fetched_dispersion = getattr(gsa, 'dispersion', 1.575)   # Default 1.575 if not found
+                fetched_temp_corre = getattr(gsa, 'temp_corre', 0.0)     
+
+                lines_list.append({
+                    'parent_id': record.id,
+                    'bh_id': gsa.bh_id,
+                    'sample_depth': gsa.sample_depth,
+                    
+                    # Calculated Values
+                    'd_10': val_d10,
+                    'd_30': val_d30,
+                    'd_60': val_d60,
+                    'c_u': round(val_cu, 2),
+                    'c_c': round(val_cc, 2),
+                    
+                    # Fetched Values (Same Name Fields)
+                    'meniscus_corre': fetched_meniscus,
+                    'dispersion': fetched_dispersion,
+                    'temp_corre': fetched_temp_corre,
+                })
+
+            if lines_list:
+                self.env['mechanical.gsa.particle.line'].create(lines_list)
+
+    # Helper Function
+    def _get_interpolated_value(self, data_list, target_percent):
+        upper = None
+        lower = None
+        for i in range(len(data_list) - 1):
+            curr = data_list[i]
+            next_one = data_list[i+1]
+            if curr['passing'] >= target_percent and next_one['passing'] < target_percent:
+                upper = curr
+                lower = next_one
+                break
+        
+        if upper and lower:
+            size2 = upper['size']
+            size1 = lower['size']
+            pass2 = upper['passing']
+            pass1 = lower['passing']
+            if (pass2 - pass1) != 0:
+                result = size2 - ((pass2 - target_percent) * (size2 - size1) / (pass2 - pass1))
+                return round(result, 4)
+        return 0.0
 
    
 
@@ -2667,6 +2836,8 @@ class Soil(models.Model):
                 'target': 'current',
             }
 
+    
+
     gsa_graph_image = fields.Binary(
         string="GSA Graph Image",
         attachment=True,
@@ -2679,8 +2850,11 @@ class Soil(models.Model):
 
 
     
+<<<<<<< HEAD
 
    
+=======
+>>>>>>> daf23e86f44af8e5222634f13394a7a7458acca7
     def action_generate_gsa_graph(self):
         for record in self:
             # 1. Initialize Plot
@@ -2784,6 +2958,12 @@ class Soil(models.Model):
          # DETERMINATION OF CONSOLIDATION PROPERTIES		
     consolidation_name = fields.Char("Name",default="DETERMINATION OF CONSOLIDATION PROPERTIES")
     consolidation_visible = fields.Boolean("DETERMINATION OF CONSOLIDATION PROPERTIES",compute="_compute_visible")	
+
+    selected_lab_id7 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
     consolidation_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     consolidation_diameter = fields.Float(string="Diameter, D", digits=(8,1))
@@ -3149,6 +3329,12 @@ class Soil(models.Model):
     
     swelling_pressure_name = fields.Char("Name",default="DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD")
     swelling_pressure_visible = fields.Boolean("DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD",compute="_compute_visible")
+
+    selected_lab_id5 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
     swelling_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     swelling_diameter = fields.Float(string="Diameter, D", digits=(8,1))
@@ -3582,6 +3768,12 @@ class Soil(models.Model):
     permeability_falling_name = fields.Char("Name",default="Permeability Falling Head Test")
     permeability_falling_visible = fields.Boolean("Permeability Falling Head Test",compute="_compute_visible")
 
+    selected_lab_id3 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+
     dia_standpipe = fields.Float(string="Dia of Stand Pipe, d (cm)", digits=(8,1))
     dia_soil_sample = fields.Float(string="Dia of Soil Sample, D (cm)", digits=(8,1))
     length_soil = fields.Float(string="Length of Soil Sample, L (cm)", digits=(8,1))
@@ -3789,6 +3981,14 @@ class Soil(models.Model):
     triaxial_test_name = fields.Char("Name",default="DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST")
     triaxial_test_visible = fields.Boolean("DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST",compute="_compute_visible")
 
+<<<<<<< HEAD
+=======
+    selected_lab_id1 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+>>>>>>> daf23e86f44af8e5222634f13394a7a7458acca7
 
     dia_triaxial = fields.Float(string="Diameter (mm)", digits=(8, 1))
     
@@ -5526,9 +5726,9 @@ class SoilGSALINE(models.Model):
         ('fine_grained_soil', 'Fine Grained Soil'),
     ], string="Classification")
 
-    meniscus_corre = fields.Float(string="Meniscus Correction, Cm", digits=(12,1))
-    vescosity_water = fields.Float(string="Viscosity of Water at Room Temperature in poise",digits=(12,6),store=True)
-    dispersion = fields.Float(string="Dispersion Agent Correction, x")
+    meniscus_corre = fields.Float(string="Meniscus Correction, Cm", digits=(12,1),default=0.5)
+    vescosity_water = fields.Float(string="Viscosity of Water at Room Temperature in poise",digits=(12,9),store=True,default=0.0093885959)
+    dispersion = fields.Float(string="Dispersion Agent Correction, x",default=1.575,digits=(12,3))
     temp_corre = fields.Float(string="Temperature Correction, Mt",compute="_compute_temp_corre",digits=(12,4))
     specific_gravity = fields.Float(string="Specific gravity",digits=(12,3))
 
@@ -6110,6 +6310,37 @@ class SoilHydrometerLineGSA(models.Model):
                 rec.n_corrected = (passing_075 * rec.n_finner) / 100
             else:
                 rec.n_corrected = 0.0
+
+
+
+class SoilGSALINE1(models.Model):
+    _name = "mechanical.gsa.particle.line"
+    parent_id = fields.Many2one(
+        'mechanical.soil1',
+        string="Parent Soil",
+        ondelete='cascade'
+    )
+
+
+   
+    
+
+
+   
+    bh_id = fields.Char(string="BH ID")
+    sample_depth = fields.Char(string="Sample Depth (m)")
+    d_10 = fields.Float(string="D10",digits=(12,3))
+    d_30 = fields.Float(string="D30")
+    d_60 = fields.Float(string="D60")
+
+    c_u = fields.Float(string="Cu")
+    c_c = fields.Float(string="Cc")
+
+    meniscus_corre = fields.Float(string="Meniscus correction, Cm",digits=(12,1))
+
+    dispersion = fields.Float(string="Dispersing agent correction, x",digits=(12,3))
+
+    temp_corre = fields.Float("Temperature Correction, Mt",digits=(12,4) )
 
 
 
@@ -7774,6 +8005,16 @@ class TriaxialTestLine(models.Model):
                 line.shear_stress_15 = line.pr_1_5 + extra_force
             else:
                 line.shear_stress_15 = 0.0
+
+
+
+class LabOptionLine(models.Model):
+    _name = 'lab.option.line'
+    _description = 'Lab Options'
+    _rec_name = 'name'  # Dropdown मध्ये हे नाव दिसेल
+
+    name = fields.Char(string="Value")
+    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
 
 
 

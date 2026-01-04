@@ -27,6 +27,7 @@
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
                         <field name="eln_ref" readonly="1"/>
+                        <field name="lab_id" invisible="1" />
                         <field name="parameter_id" invisible="1"/>
                     </group>
 
@@ -60,6 +61,17 @@
                             </tree>
                         </field>
                     </div>
+
+                    <button name="action_generate_options_fine" 
+                            type="object" 
+                            string="Generate Lab ID" 
+                            class="oe_highlight"/>
+
+                    <field name="lab_fine_ids" invisible="1">
+                        <tree editable="bottom">
+                            <field name="lab"/>
+                        </tree>
+                    </field>
                   
                
                     <div invisible="sieve_visible == False" >
@@ -69,6 +81,16 @@
 
                         </h1>
                     </div>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_fine1"></label></td>
+                                    <td ><field name="selected_lab_fine1"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
 
 
                        <div class="d-flex gap-2" invisible="not sieve_visible ">
@@ -92,14 +114,7 @@
                             </tbody>
                         </table>
                         
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
-                            <tbody>
-                                <tr>
-                                    <td><field name="calc_mode" class="blue-input" invisible="not sieve_visible"  /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
+                    
                     </div>
 
 
@@ -147,6 +162,11 @@
                                 </button>
                             </div>
 
+                        <div style="width:50%">
+                        <field name="submit_mode" invisible="1"/>
+
+                      </div>
+
 
 
 
@@ -178,15 +198,28 @@
                         </h1>
                     </div>
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not specific_gravity_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_fine2"></label></td>
+                                    <td ><field name="selected_lab_fine2" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
 
                      <div class="d-flex gap-2" invisible="not specific_gravity_visible ">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label for="temp_specific_gravity_water_absorption">Temp.°C</label></td>
+<<<<<<< HEAD
                                     <td><field name="temp_specific_gravity_water_absorption" class="blue-input" invisible="not specific_gravity_visible" required = "1"/></td>
+=======
+                                    <td><field name="temp_specific_gravity_water_absorption" class="blue-input" invisible="not specific_gravity_visible" required = "calc_mode == False or is_lab_fine_selected == True "/></td>
+>>>>>>> daf23e86f44af8e5222634f13394a7a7458acca7
                                 </tr>
-                                
                             </tbody>
                         </table>
                         
@@ -194,7 +227,11 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_temp_specific_gravity_water_absorption">Humidity %</label></td>
+<<<<<<< HEAD
                                     <td><field name="humidity_temp_specific_gravity_water_absorption" class="blue-input" invisible="not specific_gravity_visible"  required = "1"/></td>
+=======
+                                    <td><field name="humidity_temp_specific_gravity_water_absorption" class="blue-input" invisible="not specific_gravity_visible" required = "calc_mode == False or is_lab_fine_selected == True "/></td>
+>>>>>>> daf23e86f44af8e5222634f13394a7a7458acca7
                                 </tr>
                                 
 
@@ -202,6 +239,20 @@
                             </tbody>
                         </table>
                     </div>
+
+                
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><label for="is_lab_fine_selected"></label></td>
+                                    <td><field name="is_lab_fine_selected" class="blue-input"  /></td>
+                                </tr>
+                                
+
+
+                            </tbody>
+                        </table>
+
 
 
 
@@ -349,13 +400,23 @@
                         </h1>
                     </div>
 
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not compacted_density_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_fine3"></label></td>
+                                    <td ><field name="selected_lab_fine3" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
 
                      <div class="d-flex gap-2" invisible="not compacted_density_visible ">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
-                                    <td><label for="temp_density">Temp.°C</label></td>
-                                    <td><field name="temp_density" class="blue-input" invisible="not compacted_density_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><label for="temp_density">Temp.°C compacted</label></td>
+                                    <td><field name="temp_density" class="blue-input" invisible="not compacted_density_visible" required = "calc_mode == False or is_compacted_density == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -364,13 +425,25 @@
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
-                                    <td><label for="humidity_density">Humidity %</label></td>
-                                    <td><field name="humidity_density" class="blue-input" invisible="not compacted_density_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><label for="humidity_density">Humidity % compacted</label></td>
+                                    <td><field name="humidity_density" class="blue-input" invisible="not compacted_density_visible" required = "calc_mode == False or is_compacted_density == True "/></td>
                                 </tr>
                                 
                             </tbody>
                         </table>
                     </div>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"   invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><label for="is_compacted_density"></label></td>
+                                    <td><field name="is_compacted_density"  /></td>
+                                </tr>
+                                
+
+
+                            </tbody>
+                        </table>
 
 
 
@@ -437,13 +510,35 @@
                         </h1>
                     </div>
 
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not loose_density_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_fine4"></label></td>
+                                    <td ><field name="selected_lab_fine4" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><label for="is_loose_density"></label></td>
+                                    <td><field name="is_loose_density"   /></td>
+                                </tr>
+                                
+
+
+                            </tbody>
+                        </table>
+
 
                          <div class="d-flex gap-2" invisible="not loose_density_visible ">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
-                                    <td><label for="temp_density">Temp.°C</label></td>
-                                    <td><field name="temp_density" class="blue-input" invisible="not loose_density_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><label for="temp_loose_density">Temp.°C</label></td>
+                                    <td><field name="temp_loose_density" class="blue-input" invisible="not loose_density_visible" required = "calc_mode == False or is_loose_density == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -452,8 +547,8 @@
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
-                                    <td><label for="humidity_density">Humidity %</label></td>
-                                    <td><field name="humidity_density" class="blue-input" invisible="not loose_density_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><label for="humidity_loose_density">Humidity %</label></td>
+                                    <td><field name="humidity_loose_density" class="blue-input" invisible="not loose_density_visible" required = "calc_mode == False or is_loose_density == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -527,13 +622,24 @@
                     </div>
 
 
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not loose_density_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_fine5"></label></td>
+                                    <td ><field name="selected_lab_fine5" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+
 
                      <div class="d-flex gap-2" invisible="not voids_loose_density_visible ">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label for="temp_density">Temp.°C</label></td>
-                                    <td><field name="temp_density" class="blue-input" invisible="not voids_loose_density_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><field name="temp_density" class="blue-input" invisible="not voids_loose_density_visible" required = "calc_mode == False or is_compacted_density == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -543,7 +649,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_density">Humidity %</label></td>
-                                    <td><field name="humidity_density" class="blue-input" invisible="not voids_loose_density_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><field name="humidity_density" class="blue-input" invisible="not voids_loose_density_visible" required = "calc_mode == False or is_compacted_density == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -635,13 +741,40 @@
                     </h1>
                 </div>
 
+                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not soudness_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_fine6"></label></td>
+                                    <td ><field name="selected_lab_fine6"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                   <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><label for="soudness_mode"></label></td>
+                                    <td><field name="soudness_mode"   /></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="calc_mode"></label></td>
+                                    <td><field name="calc_mode"   /></td>
+                                </tr>
+                                
+
+
+                            </tbody>
+                        </table>
+
 
                       <div class="d-flex gap-2" invisible="not soudness_visible ">
                   <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label for="temp_soudness">Temp.°C</label></td>
-                                    <td><field name="temp_soudness" class="blue-input" invisible="not soudness_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><field name="temp_soudness" class="blue-input" invisible="not soudness_visible"  required = "calc_mode == False or soudness_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -651,7 +784,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_soudness">Humidity %</label></td>
-                                    <td><field name="humidity_soudness" class="blue-input" invisible="not soudness_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><field name="humidity_soudness" class="blue-input" invisible="not soudness_visible" required = "calc_mode == False or soudness_mode == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -772,6 +905,16 @@
                         </h1>
                     </div>
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not soudness_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_fine7"></label></td>
+                                    <td ><field name="selected_lab_fine7"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
                  
                     
                     <field name="quantitative_soundness_lines" invisible = "soudness_visible == False">
@@ -879,10 +1022,7 @@
                             />
                       </div>
                       
-                      <div style="width:50%">
-                        <field name="submit_mode" invisible="1"/>
-
-                      </div>
+                      
                     </div>
 
 

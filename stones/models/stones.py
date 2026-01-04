@@ -76,12 +76,88 @@ class Stones(models.Model):
     stone_type1 = fields.Char(string="Type of Stone")
 
 
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+
+    lab_stone_ids = fields.One2many(
+        'stone.lab.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+
+
+    def action_generate_options_stone(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # Example: "S-25-001"
+                        end_part = parts[-1].strip()  # Example: "S-25-006"
+
+                        prefix = start_part.rsplit('-', 1)[0]
+                        
+                        # --- CHANGE START ---
+                        # Number cha string part vegla kara length check karnya sathi
+                        start_num_str = start_part.split('-')[-1] # "001" milnar
+                        end_num_str = end_part.split('-')[-1]     # "006" milnar
+                        
+                        # Length calculate kara (Example: "001" chi length 3 ahe)
+                        padding_length = len(start_num_str)
+
+                        start_num = int(start_num_str) # Integer madhe convert: 1
+                        end_num = int(end_num_str)     # Integer madhe convert: 6
+                        # --- CHANGE END ---
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            # zfill use karun zero add kara
+                            # Jar num=1 ahe ani padding_length=3 ahe, tar "001" banel
+                            formatted_num = str(num).zfill(padding_length)
+                            
+                            val = f"{prefix}-{formatted_num}"
+                            lines_command.append((0, 0, {'lab': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_stone_ids = lines_command
+                        
+                except Exception as e:
+                    pass
+            else:
+                if record.lab_id:
+                    record.lab_stone_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
+
+
 
    
 #  Scratch hardness According to Moh's Scale
  
     scratch_hardness_name = fields.Char("Name",default="Scratch hardness According to Moh's Scale")
     scratch_hardness_visible = fields.Boolean("Surface Quality",compute="_compute_visible") 
+
+    selected_lab_stone1 = fields.Many2one(
+        'stone.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_stone_ids)]"
+    )
 
     observations1 = fields.Float(string="Observations")
     observations2 = fields.Float(string="Observations")
@@ -107,6 +183,40 @@ class Stones(models.Model):
     compressive_dry_visible = fields.Boolean("Compressive Strength in dry condition   Visible",compute="_compute_visible")
 
     compressive_dry_ids = fields.One2many("mechanical.compressive.dry.line", "parent_id", string="Test Readings")
+
+    compressive_dry_generated = fields.Boolean(string="Compressive Dry Lab Lines ",default=False)
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_compressive_dry_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.compressive_dry_ids = lines
+                record.compressive_dry_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.compressive_dry_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Stone Form',
+                'res_model': 'mechanical.stones',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
     
     @api.onchange('compressive_dry_ids')
     def _onchange_limit_lines(self):
@@ -151,6 +261,39 @@ class Stones(models.Model):
 
     compressive_wet_ids = fields.One2many("mechanical.compressive.wet.line", "parent_id", string="Test Readings")
 
+    compressive_wet_generated = fields.Boolean(string="Compressive Dry Lab Lines ",default=False)
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_compressive_wet_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.compressive_wet_ids = lines
+                record.compressive_wet_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.compressive_wet_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Stone Form',
+                'res_model': 'mechanical.stones',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
     @api.onchange('compressive_wet_ids')
     def _onchange_limits_lines(self):
         if len(self.compressive_wet_ids) > 5:
@@ -194,6 +337,12 @@ class Stones(models.Model):
     app_specific_visible = fields.Boolean(" Porosity,Water Absorption,App. Specific gravity,True Specific gravity",compute="_compute_visible")
     true_specific_visible = fields.Boolean(" Porosity,Water Absorption,App. Specific gravity,True Specific gravity",compute="_compute_visible")
     true_porosity_visible = fields.Boolean(" Porosity,Water Absorption,App. Specific gravity,True Specific gravity",compute="_compute_visible")
+
+    selected_lab_stone2 = fields.Many2one(
+        'stone.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_stone_ids)]"
+    )
 
     #    App. Porosity
     weight_oven_dried = fields.Float(
@@ -497,8 +646,8 @@ class CompressiveDryLine(models.Model):
     blue_input = fields.Boolean(default=True,invisible=True)
     date = fields.Date(string="Date")
     lab_id = fields.Char(string="Lab ID No.) ")
-    room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2),required=True)
-    relative_humidity = fields.Float(string="Relative Humidity (%) ", digits=(12,2),required=True)
+    room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2))
+    relative_humidity = fields.Float(string="Relative Humidity (%) ", digits=(12,2))
     functional_check = fields.Char(string="Functional Checks ")
     stone_type = fields.Char(string="Type of stone) ")
     shape_stone = fields.Char(string="Shape of test piece (Cube/Cylinder) ")
@@ -623,8 +772,8 @@ class CompressiveWetLine(models.Model):
     # sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
     date = fields.Date(string="Date")
     lab_id = fields.Char(string="Lab ID No.) ")
-    room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2),required=True)
-    relative_humidity = fields.Float(string="Relative Humidity (%) ", digits=(12,2),required=True)
+    room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2))
+    relative_humidity = fields.Float(string="Relative Humidity (%) ", digits=(12,2))
     functional_check = fields.Char(string="Functional Checks ")
     stone_type = fields.Char(string="Type of stone) ")
     shape_stone = fields.Char(string="Shape of test piece (Cube/Cylinder) ")
@@ -735,6 +884,15 @@ class StoneNotes(models.Model):
     parent_id = fields.Many2one('mechanical.stones',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+
+class LabOptionLine(models.Model):
+    _name = 'stone.lab.line'
+    _description = 'Lab Options'
+    _rec_name = 'lab'  # Dropdown मध्ये हे नाव दिसेल
+
+    lab = fields.Char(string="Lab ID")
+    parent_id = fields.Many2one('mechanical.stones', string="Parent")
 
 
 

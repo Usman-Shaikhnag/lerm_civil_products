@@ -21,6 +21,7 @@
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1"/>
                         <field name="eln_ref" readonly="1"/>
+                        <field name="lab_id" invisible="1" />
                         <field name="grade" readonly="1"/>
                         <field name="date_of_casting" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
@@ -34,6 +35,18 @@
                       </field>
                     </div>
                     <group/>
+
+
+                    <button name="action_generate_options_ggbs" 
+                            type="object" 
+                            string="Generate Lab ID" 
+                            class="oe_highlight"/>
+
+                    <field name="lab_ggbs_ids" invisible="1">
+                        <tree editable="bottom">
+                            <field name="lab"/>
+                        </tree>
+                    </field>
                      
 
 
@@ -66,6 +79,16 @@
                         </h1>
                     </div>
                     <group/>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not specific_gravity_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_ggbs1"></label></td>
+                                    <td ><field name="selected_lab_ggbs1"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
 
                       <div class="d-flex gap-2" invisible="not specific_gravity_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -213,6 +236,18 @@
                         </h1>
                     </div>
 
+                  
+             <div invisible = "slag_activity_7_visible == False" style="margin-bottom: 10px;">
+                  <field name= 'slag_lines_generated' invisible="1" />
+                  <button name="action_generate_ggbs_slag_lines"
+                   
+                    type="object"
+                    string="Slag Lab Lines"
+                    class="oe_highlight"
+                    invisible="slag_lines_generated == True"/>
+
+                </div>
+
              
 
                     <div class="custom_table_borders" invisible = "slag_activity_7_visible == False">
@@ -253,6 +288,17 @@
                             <field name="slag_activity_7_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <div invisible = "slag_activity_7_visible == False" style="margin-bottom: 10px;">
+                  <field name= 'slag_index_generated' invisible="1" />
+                  <button name="action_generate_ggbs_slag_index_lines"
+                   
+                    type="object"
+                    string="Compressive Lab Lines"
+                    class="oe_highlight"
+                    invisible="slag_index_generated == True"/>
+
+                </div>
 
              
 
@@ -453,6 +499,16 @@
                               <field name="fineness_visible" invisible="1"/>
                           </h1>
                       </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not fineness_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_ggbs2"></label></td>
+                                    <td ><field name="selected_lab_ggbs2"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
 
                       <div class="d-flex gap-2" invisible="not fineness_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">

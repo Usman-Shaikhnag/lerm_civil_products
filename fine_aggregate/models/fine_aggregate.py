@@ -22,6 +22,66 @@ class FineAggregate(models.Model):
 
     notes_id = fields.One2many('fine.notes','parent_id',string="Notes")
 
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+
+    lab_fine_ids = fields.One2many(
+        'fine.lab.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+     # --- Button Function ---
+    def action_generate_options_fine(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first (Previous options delete kara)
+                    # (5, 0, 0) command saglya lines remove karte
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing (Break Logic)
+                    # Input: "S-25-144 - S-25-145"
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # "S-25-144"
+                        end_part = parts[-1].strip()  # "S-25-145"
+
+                        # Prefix (S-25) ani Number (144) vegla kara
+                        prefix = start_part.rsplit('-', 1)[0]
+                        start_num = int(start_part.split('-')[-1])
+                        end_num = int(end_part.split('-')[-1])
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            val = f"{prefix}-{num}"
+                            # One2many madhe create karnya sathi: (0, 0, values)
+                            lines_command.append((0, 0, {'lab': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_fine_ids = lines_command
+                        
+                except Exception as e:
+                    # Jar format chukla tar error ignore kara
+                    pass
+            else:
+                # Jar range nasel (single value asel), tar ti ekach value add kara
+                if record.lab_id:
+                     record.lab_fine_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
+
 
     calc_mode = fields.Boolean(default=True)     
     submit_mode = fields.Boolean(default=False)
@@ -89,6 +149,12 @@ class FineAggregate(models.Model):
 # Sieve Analysis 
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+
+    selected_lab_fine1 = fields.Many2one(
+        'fine.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fine_ids)]"
+    )
 
 
 
@@ -258,12 +324,13 @@ class FineAggregate(models.Model):
 
                 previous_cumulative = cumulative_retained
             # Jar Button Visible ahe (True), tar Submit Mode 'False' ch theva.
-            if record.soudness_visible:
-                record.submit_mode = False
+            # if record.soudness_visible:
+            #     record.submit_mode = False
             
-            # Jar Button Invisible ahe (False), tar automatic 'True' kara.
-            else:
-                record.submit_mode = True
+            # # Jar Button Invisible ahe (False), tar automatic 'True' kara.
+            # else:
+            #     record.submit_mode = True
+        record.submit_mode = True
             
      
     
@@ -365,11 +432,31 @@ class FineAggregate(models.Model):
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
+    selected_lab_fine2 = fields.Many2one(
+        'fine.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fine_ids)]"
+    )
+
     water_absorption_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
 
     temp_specific_gravity_water_absorption = fields.Char(string="Temp.°C" )
     humidity_temp_specific_gravity_water_absorption= fields.Char(string="Humidity %" )
+
+    is_lab_fine_selected = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_lab_fine2')
+    def _onchange_selected_lab_fine2(self):
+        for rec in self:
+            if rec.selected_lab_fine2:
+                rec.is_lab_fine_selected = True
+            else:
+                rec.is_lab_fine_selected = False
+
 
     # wt_basket_and_sample = fields.Float(string="Weight of basket and the sample while suspended in water (A1) gm")
     
@@ -599,6 +686,26 @@ class FineAggregate(models.Model):
     compacted_density_name = fields.Char("Name",default="Compacted Density ")
     compacted_density_visible = fields.Boolean("compacted density  Visible",compute="_compute_visible")
 
+    selected_lab_fine3 = fields.Many2one(
+        'fine.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fine_ids)]"
+    )
+
+    is_compacted_density = fields.Boolean(
+        string="Compacted Density Selected",
+        
+    )
+
+    @api.onchange('selected_lab_fine3')
+    def _onchange_selected_lab_fine3(self):
+        for rec in self:
+            if rec.selected_lab_fine3:
+                rec.is_compacted_density = True
+            else:
+                rec.is_compacted_density = False
+
+
 
     
     temp_density = fields.Char(string="Temp.°C" ,required=True)
@@ -693,8 +800,29 @@ class FineAggregate(models.Model):
     loose_density_name = fields.Char("Name",default="Loose Density ")
     loose_density_visible = fields.Boolean("Loose density  Visible",compute="_compute_visible")
 
-    temp_density = fields.Char(string="Temp.°C" ,required=True)
-    humidity_density= fields.Char(string="Humidity %" ,required=True)
+    selected_lab_fine4 = fields.Many2one(
+        'fine.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fine_ids)]"
+    )
+
+    is_loose_density = fields.Boolean(
+        string="LooseDensity Selected",
+        
+    )
+
+    @api.onchange('selected_lab_fine4')
+    def _onchange_selected_lab_fine4(self):
+        for rec in self:
+            if rec.selected_lab_fine4:
+                rec.is_loose_density = True
+            else:
+                rec.is_loose_density = False
+
+
+
+    temp_loose_density = fields.Char(string="Temp.°C" ,required=True)
+    humidity_loose_density= fields.Char(string="Humidity %" ,required=True)
 
 
     capacity_of_cylinder_loose = fields.Float(string="Capacity of Cylinder Use for Test in litre (V)")
@@ -796,6 +924,12 @@ class FineAggregate(models.Model):
 
     voids_loose_density_name = fields.Char("Name",default="Void In Loose Density ")
     voids_loose_density_visible = fields.Boolean("Void Loose density Visible",compute="_compute_visible")
+
+    selected_lab_fine5 = fields.Many2one(
+        'fine.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fine_ids)]"
+    )
 
     specific_gravity_voids = fields.Float(string="Sp. Gravity of Material (Gs)")
 
@@ -951,11 +1085,19 @@ class FineAggregate(models.Model):
     soudness_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
     magnesium_visible = fields.Boolean("Soudness Test",compute="_compute_visible")
 
+    selected_lab_fine6 = fields.Many2one(
+        'fine.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fine_ids)]"
+    )
+
     soudness_child_lines = fields.One2many('fine.soudness.line','parent_id',string="Parameter")
 
     
     temp_soudness = fields.Char(string="Temp.°C" ,required=True)
     humidity_soudness = fields.Char(string="Humidity %" ,required=True)
+
+    soudness_mode = fields.Boolean(default=False)
 
 
 
@@ -997,7 +1139,7 @@ class FineAggregate(models.Model):
     def calculate_sieve(self): 
         for record in self:
             
-            record.submit_mode = False
+            record.soudness_mode = False
             record.calc_mode = True
             
 
@@ -1032,7 +1174,7 @@ class FineAggregate(models.Model):
                 print("Updated Passing Percent:", passing_percent)
 
                 previous_cumulative = cumulative_retained
-            record.submit_mode = True
+            record.soudness_mode = True
 
     
 
@@ -1056,6 +1198,12 @@ class FineAggregate(models.Model):
 
 
     quantitative_name = fields.Char("Name",default="Quantitatively Examination")
+
+    selected_lab_fine7 = fields.Many2one(
+        'fine.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fine_ids)]"
+    )
 
     quantitative_soundness_lines = fields.One2many('fine.quantitative.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_quantitative_soundness_lines())
 
@@ -1959,6 +2107,16 @@ class fineNotes(models.Model):
     parent_id = fields.Many2one('mechanical.fine.aggregate',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+
+
+class LabOptionLine(models.Model):
+    _name = 'fine.lab.line'
+    _description = 'Lab Options'
+    _rec_name = 'lab'  # Dropdown मध्ये हे नाव दिसेल
+
+    lab = fields.Char(string="Lab ID")
+    parent_id = fields.Many2one('mechanical.fine.aggregate', string="Parent")
 
 
 

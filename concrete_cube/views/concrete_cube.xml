@@ -16,6 +16,7 @@
                                 <field name="eln_ref" readonly="1"/>
                                 <field name="grade" string="Grade" identity="extra"/>   
                                 <field name="size_id" readonly="1"/>
+                                <field name="lab_id" invisible="1" />
                             </group>
 
 
@@ -50,6 +51,17 @@
                             </field>
                         </div>
 
+                         <button name="action_generate_options_cube" 
+                            type="object" 
+                            string="Generate Lab ID" 
+                            class="oe_highlight"/>
+
+                    <field name="lab_cube_ids" invisible="1">
+                        <tree editable="bottom">
+                            <field name="lab"/>
+                        </tree>
+                    </field>
+
 
                         
                         <div style="text-align: center;" invisible="not cube_visible">
@@ -60,6 +72,16 @@
                             <field name="cube_visible_28" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not cube_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_cube1"></label></td>
+                                    <td ><field name="selected_lab_cube1"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
 
 
                         <!-- Test Configuration -->
