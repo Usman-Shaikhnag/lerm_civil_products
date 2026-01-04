@@ -15,6 +15,10 @@ class MechanicalRock(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+    rock_visible = fields.Boolean("rock Test",compute="_compute_visible")
+
+    temp_rock = fields.Char(string="Temp.°C" ,required=True)
+    humidity_rock= fields.Char(string="Humidity %" ,required=True)
 
     notes_id = fields.One2many('rock.notes','parent_id',string="Notes")
 
@@ -23,6 +27,23 @@ class MechanicalRock(models.Model):
             compute="_compute_lab_id",
             store=True
         )
+
+
+
+
+    is_lab_rock = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('lab_id')
+    def _onchange_lab_id(self):
+        for rec in self:
+            if rec.lab_id:
+                rec.is_lab_rock = True
+            else:
+                rec.is_lab_rock = False
+
 
     @api.depends('eln_ref')
     def _compute_lab_id(self):
