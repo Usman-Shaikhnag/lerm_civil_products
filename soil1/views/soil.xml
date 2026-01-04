@@ -1129,7 +1129,7 @@
 
 
                            <!-- Direct Shear Test -->
-                          <div invisible = "direct_shear_visible == False">
+                          <!-- <div invisible = "direct_shear_visible == False">
                         <h1 class="text-center">
                             <field name="direct_shear_name" readonly="1" nolabel="1"/>
                             <field name="direct_shear_visible" invisible="1"/>
@@ -1231,7 +1231,7 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
 
 
                
@@ -1347,7 +1347,7 @@
 
 
                  <!-- Unconfined Compressive Strength (UCS) Test -->
-                          <div invisible = "ucs_visible == False">
+                          <!-- <div invisible = "ucs_visible == False">
                         <h1 class="text-center">
                             <field name="ucs_name" readonly="1" nolabel="1"/>
                             <field name="ucs_visible" invisible="1"/>
@@ -1421,12 +1421,12 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
 
                         
 
                            <!-- Consolidation Test (Cc) -->
-                          <div invisible = "consolidation_pc_visible == False">
+                          <!-- <div invisible = "consolidation_pc_visible == False">
                         <h1 class="text-center">
                             <field name="consolidation_pc_name" readonly="1" nolabel="1"/>
                             <field name="consolidation_pc_visible" invisible="1"/>
@@ -1498,7 +1498,7 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
 
                          
 
@@ -3063,6 +3063,737 @@
                             <field name="pr_1_5"   />
                         </tree>
                     </field>
+
+
+
+
+                    <!--   DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION	 -->
+
+
+                    <div invisible = "soil_light_heavy_visible == False">
+                        <h1 class="text-center">
+                            <field name="soil_light_heavy_name" readonly="1" nolabel="1"/>
+                            <field name="soil_light_heavy_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                     
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "soil_light_heavy_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="empty_wt_proctor">Empty weight of Proctor mould in gm. M</label></td>
+                                    <td ><field name="empty_wt_proctor" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="volumn_proctor">Volumn of Proctor mould in cc. V</label></td>
+                                    <td ><field name="volumn_proctor" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="no_trails">Number of trials. n</label></td>
+                                    <td ><field name="no_trails" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                    <div invisible = "soil_light_heavy_visible == False">
+                    
+                        <field name="soil_light_heavy_lines">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='wet_soil_cylinder' readonly="serial_no % 2 == 0"/>
+                                <field name='wet_soil'/>
+                                <field name='bulk_density_light'/>
+                                <field name='can_no'/>
+                                <field name='wet_soil_can'/>
+                                <field name='dry_soil_can'/>
+                                <field name='empty_mass_can'/>
+                                <field name='moisture_loss'/>
+                                <field name='dry_wt_soil'/>
+                                <field name='moisture_content'/>
+                                <field name='avg_moisture_content' readonly="1"/>
+                                <field name='dry_density' readonly="1"/>
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div invisible = "soil_light_heavy_visible == False">
+                     <button type="object" name="action_calculate_avg_moisture" class="btn btn-primary mb-2">
+                        <i class="fa fa-calculator mr-1"/> Calculate Average Moisture Content
+                    </button>
+                  </div>
+
+                  <div invisible = "soil_light_heavy_visible == False" class="custom_table_borders text-center">
+                        <field name="graph_image_light_heavy" widget="image"  readonly="1"/>
+                    </div>
+                    <group/>
+
+
+
+                     <!--   DETERMINE THE UNCONFINED COMPRESSIVE STRENGTH	 -->
+
+
+                    <div invisible = "ucs_visible == False">
+                        <h1 class="text-center">
+                            <field name="ucs_name" readonly="1" nolabel="1"/>
+                            <field name="ucs_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible = "ucs_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="ucs_diameter">Diameter (mm): </label></td>
+                                    <td ><field name="ucs_diameter" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_area">Area (A):mm2</label></td>
+                                    <td ><field name="ucs_area"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="ucs_height">Height:  mm</label></td>
+                                    <td ><field name="ucs_height" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_volumn">Soil Volume: cm3</label></td>
+                                    <td ><field name="ucs_volumn"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "ucs_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="trail_no_cell">Trial No/Cell Pressure.</label></td>
+                                    <td ><field name="trail_no_cell" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <div class="d-flex gap-2" invisible = "ucs_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="initial_mass_bt">Initial mass of soil (before testing) (g): </label></td>
+                                    <td ><field name="initial_mass_bt" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="initial_mass_at">Initial mass of soil (after testing) (g):  </label></td>
+                                    <td ><field name="initial_mass_at" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="mass_dry_soil">Mass of dry soil (g)  </label></td>
+                                    <td ><field name="mass_dry_soil" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_specific_gravity">Specific Gravity  </label></td>
+                                    <td ><field name="ucs_specific_gravity" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="ucs_moisture_con_at">mositure content after test (%):</label></td>
+                                    <td ><field name="ucs_moisture_con_at"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_bulk_density">Bulk Density of soil (g/cc)  </label></td>
+                                    <td ><field name="ucs_bulk_density"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_dry_density">Dry density of soil (g/cc)  </label></td>
+                                    <td ><field name="ucs_dry_density"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_initial_moist_con">Initial Moisture content  </label></td>
+                                    <td ><field name="ucs_initial_moist_con"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex gap-2" invisible = "ucs_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="w_value">w </label></td>
+                                    <td ><field name="w_value" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="gamma_ratio">γw / γd</label></td>
+                                    <td ><field name="gamma_ratio"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="inv_specific_gravity">1 / Gs</label></td>
+                                    <td ><field name="inv_specific_gravity" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="degree_saturation">S (%)</label></td>
+                                    <td ><field name="degree_saturation"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "ucs_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="ucs_proving_ring">Proving Ring Capacity</label></td>
+                                    <td ><field name="ucs_proving_ring" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_dial_gauge">Least Count of dial guage</label></td>
+                                    <td ><field name="ucs_dial_gauge" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_rate_dis">Displacement Rate (mm/min)</label></td>
+                                    <td ><field name="ucs_rate_dis" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "ucs_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="ucs_room_temp">Room Temperature</label></td>
+                                    <td ><field name="ucs_room_temp" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_temp_correction">Rise/Fall in Temperature (°C)" </label></td>
+                                    <td ><field name="ucs_temp_correction" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_std_temp">Std Calibration Temp</label></td>
+                                    <td ><field name="ucs_std_temp" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="temp_diff">Rise/Fall in Temperature (°C)"</label></td>
+                                    <td ><field name="temp_diff" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="force_percent_change">% Rise/Fall in Force Value</label></td>
+                                    <td ><field name="force_percent_change" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div invisible = "ucs_visible == False">
+                    
+                        <field name="ucs_lines">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='horizontal_read'/>
+                                <field name='corrected_area'/>
+                                <field name='prove_ring_read'/>
+                                <field name='shear_stress'/>
+                                <field name='axial_deformation'/>
+                                <field name='axial_strain'/>
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                    
+                    <div invisible = "ucs_visible == False">
+                                    <button string="Calculate" type="object" name="action_compute_ucs" class="oe_highlight">
+                                        <i class="fa fa-calculator"/> Calculate 
+                                    </button>
+                                </div>  
+                                <group/>
+
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "ucs_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="ucs_max_pr">Max. PR Reading</label></td>
+                                    <td ><field name="ucs_max_pr" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_max_pr_horiz">ucs_max_pr_horiz</label></td>
+                                    <td ><field name="ucs_max_pr_horiz" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_max_pr_area">Corrected area @ Max PR</label></td>
+                                    <td ><field name="ucs_max_pr_area" readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>  
+
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "ucs_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="axial_deform_ucs">Axial Deformation, mm</label></td>
+                                    <td ><field name="axial_deform_ucs" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="axial_strain_ucs">Axial strain %</label></td>
+                                    <td ><field name="axial_strain_ucs" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_max_pr_area">Corrected area @ Max PR</label></td>
+                                    <td ><field name="ucs_max_pr_area" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="axial_force_ucs">Axial force, kN</label></td>
+                                    <td ><field name="axial_force_ucs" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ucs_compressive_stress">Compressive stress (kg/cm²)</label></td>
+                                    <td ><field name="ucs_compressive_stress" readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>  
+
+                        <!-- <div invisible = "ucs_visible == False">
+                                    <button string="Calculate" type="object" name="graph_image_ucs" class="oe_highlight">
+                                        <i class="fa fa-calculator"/> Generate Graph 
+                                    </button>
+                                </div>  
+                                <group/>    -->
+
+                        <div invisible = "ucs_visible == False" class="custom_table_borders text-center">
+                        <field name="graph_image_ucs" widget="image"  readonly="1"/>
+                    </div>
+                    <group/>
+
+
+                    <!-- DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST -->
+
+
+                    <div invisible = "direct_shear_visible == False">
+                        <h1 class="text-center">
+                            <field name="direct_shear_name" readonly="1" nolabel="1"/>
+                            <field name="direct_shear_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="drainage_condition">Drainage Condition</label></td>
+                                    <td ><field name="drainage_condition" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    
+
+                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="shear_box_dimension">Shear Box Inside Dimension:</label></td>
+                                    <td ><field name="shear_box_dimension" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_area">Area (A):cm2</label></td>
+                                    <td ><field name="shear_area"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_height">Height:  mm</label></td>
+                                    <td ><field name="shear_height" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_volumn">Soil Volume: cm3</label></td>
+                                    <td ><field name="shear_volumn"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="initial_mass_soil_cutter">Initial mass of soil and cutter: </label></td>
+                                    <td ><field name="initial_mass_soil_cutter" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="wt_empty_cutter">Empty Weight of cutter: </label></td>
+                                    <td ><field name="wt_empty_cutter"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="final_wt_soil_cutter">Final wt of soil + cutter at shear zone </label></td>
+                                    <td ><field name="final_wt_soil_cutter" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="mass_dry_soil">Mass of dry soil at shear zone (g) </label></td>
+                                    <td ><field name="mass_dry_soil"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="initial_mass_soil">initial Mass of soil:(g)</label></td>
+                                    <td ><field name="initial_mass_soil" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="initial_moisture_content">Initial mositure content:</label></td>
+                                    <td ><field name="initial_moisture_content"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="final_mass_soil">Final Mass of soil:(g)</label></td>
+                                    <td ><field name="final_mass_soil" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="moisture_content_shear">Moisture content at shear zone (%)</label></td>
+                                    <td ><field name="moisture_content_shear"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="density_soil_shear">Density of soil (g/cc) </label></td>
+                                    <td ><field name="density_soil_shear" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dry_density_soil_shear">Dry density of soil (g/cc) </label></td>
+                                    <td ><field name="dry_density_soil_shear"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="normal_stress_settle">Settelement after normal stress: </label></td>
+                                    <td ><field name="normal_stress_settle" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dry_density_stress_settle">Dry density of soil after normal stress: </label></td>
+                                    <td ><field name="dry_density_stress_settle"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="shear_room_temp">Room Temperature</label></td>
+                                    <td ><field name="shear_room_temp" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_temp_correction">Std Calibration Temp</label></td>
+                                    <td ><field name="shear_temp_correction" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_std_temp">Rise/Fall in Temperature (°C)" </label></td>
+                                    <td ><field name="shear_std_temp" class="blue-input"/></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td><label for="shear_temp_diff">Rise/Fall in Temperature (°C)"</label></td>
+                                    <td ><field name="shear_temp_diff"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_force_percent_change">% Rise/Fall in Force Value</label></td>
+                                    <td ><field name="shear_force_percent_change"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="displacement_rate">Displacement rate: mm/min</label></td>
+                                    <td ><field name="displacement_rate" /></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="normal_stress">Normal stress: kg/cm2</label></td>
+                                    <td ><field name="normal_stress" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="area_type">Area Type</label></td>
+                                    <td ><field name="area_type" /></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="non_corrected_area_shear">Non Corrected Area (cm2)</label></td>
+                                    <td ><field name="non_corrected_area_shear" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+
+
+                    <div invisible = "direct_shear_visible == False">
+                    
+                        <field name="direct_shear_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='horizontal_read'/>
+                                <field name='horizontal_dispalacement'/>
+                                <!-- <field name='horizontal_dispalacement_inv' invisible= "1"/> -->
+
+                               <field name="corrected_area" column_invisible="parent.area_type != 'corrected'"/>
+
+                               <field name="non_corrected_area" column_invisible="parent.area_type != 'non_corrected'"/> 
+                               <!-- <field name="selected_area" readonly="1" string="Selected Area"/> -->
+                                <field name='prove_ring_read'/>
+                                <field name='horizontal_shear'/>
+                                <field name='horizontal_shear_temp'/>
+                                <field name='shear_stress'/>
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div invisible = "direct_shear_visible == False">
+                                    <button string="Calculate" type="object" name="action_compute_shear" class="oe_highlight">
+                                        <i class="fa fa-calculator"/> Calculate 
+                                    </button>
+                                </div>  
+                                <group/>
+
+                    <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
+                        <field name="graph_image_shearc1" widget="image"  readonly="1"/>
+                    </div>
+                    <group/>
+
+
+
+                    <!-- input 2 -->
+
+                     <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                          <h3 class="text-center">Input 2</h3><br/>
+                        </div>
+
+                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                     
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <!-- <h3 class="text-center">Input 2</h3><br/> -->
+                            <tbody>
+                                <tr>
+                                    <td><label for="shear_box_dimension_2">Shear Box Inside Dimension:</label></td>
+                                    <td ><field name="shear_box_dimension_2" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_area_2">Area (A):cm2</label></td>
+                                    <td ><field name="shear_area_2"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_height_2">Height:  mm</label></td>
+                                    <td ><field name="shear_height_2" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_volumn_2">Soil Volume: cm3</label></td>
+                                    <td ><field name="shear_volumn_2"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="initial_mass_soil_cutter_2">Initial mass of soil and cutter: </label></td>
+                                    <td ><field name="initial_mass_soil_cutter_2" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="wt_empty_cutter_2">Empty Weight of cutter: </label></td>
+                                    <td ><field name="wt_empty_cutter_2"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="final_wt_soil_cutter_2">Final wt of soil + cutter at shear zone </label></td>
+                                    <td ><field name="final_wt_soil_cutter_2" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="mass_dry_soil_2">Mass of dry soil at shear zone (g) </label></td>
+                                    <td ><field name="mass_dry_soil_2"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="initial_mass_soil_2">initial Mass of soil:(g)</label></td>
+                                    <td ><field name="initial_mass_soil_2" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="initial_moisture_content_2">Initial mositure content:</label></td>
+                                    <td ><field name="initial_moisture_content_2"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="final_mass_soil_2">Final Mass of soil:(g)</label></td>
+                                    <td ><field name="final_mass_soil_2" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="moisture_content_shear_2">Moisture content at shear zone (%)</label></td>
+                                    <td ><field name="moisture_content_shear_2"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="density_soil_shear_2">Density of soil (g/cc) </label></td>
+                                    <td ><field name="density_soil_shear_2" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dry_density_soil_shear_2">Dry density of soil (g/cc) </label></td>
+                                    <td ><field name="dry_density_soil_shear_2"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="normal_stress_settle_2">Settelement after normal stress: </label></td>
+                                    <td ><field name="normal_stress_settle_2" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dry_density_stress_settle_2">Dry density of soil after normal stress: </label></td>
+                                    <td ><field name="dry_density_stress_settle_2"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                   
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="displacement_rate">Displacement rate: mm/min</label></td>
+                                    <td ><field name="displacement_rate" /></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="normal_stress_2">Normal stress: kg/cm2</label></td>
+                                    <td ><field name="normal_stress_2" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+
+                        <!-- input 3 -->
+                        <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                          <h3 class="text-center">Input 3</h3><br/>
+                        </div>
+
+                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                      
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="shear_box_dimension_3">Shear Box Inside Dimension:</label></td>
+                                    <td ><field name="shear_box_dimension_3" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_area_3">Area (A):cm2</label></td>
+                                    <td ><field name="shear_area_3"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_height_3">Height:  mm</label></td>
+                                    <td ><field name="shear_height_3" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="shear_volumn_3">Soil Volume: cm3</label></td>
+                                    <td ><field name="shear_volumn_3"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="initial_mass_soil_cutter_3">Initial mass of soil and cutter: </label></td>
+                                    <td ><field name="initial_mass_soil_cutter_3" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="wt_empty_cutter_3">Empty Weight of cutter: </label></td>
+                                    <td ><field name="wt_empty_cutter_3"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="final_wt_soil_cutter_3">Final wt of soil + cutter at shear zone </label></td>
+                                    <td ><field name="final_wt_soil_cutter_3" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="mass_dry_soil_3">Mass of dry soil at shear zone (g) </label></td>
+                                    <td ><field name="mass_dry_soil_3"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="initial_mass_soil_3">initial Mass of soil:(g)</label></td>
+                                    <td ><field name="initial_mass_soil_3" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="initial_moisture_content_3">Initial mositure content:</label></td>
+                                    <td ><field name="initial_moisture_content_3"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="final_mass_soil_3">Final Mass of soil:(g)</label></td>
+                                    <td ><field name="final_mass_soil_3" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="moisture_content_shear_3">Moisture content at shear zone (%)</label></td>
+                                    <td ><field name="moisture_content_shear_3"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="density_soil_shear_3">Density of soil (g/cc) </label></td>
+                                    <td ><field name="density_soil_shear_3" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dry_density_soil_shear_3">Dry density of soil (g/cc) </label></td>
+                                    <td ><field name="dry_density_soil_shear_3"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="normal_stress_settle_3">Settelement after normal stress: </label></td>
+                                    <td ><field name="normal_stress_settle_3" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dry_density_stress_settle_3">Dry density of soil after normal stress: </label></td>
+                                    <td ><field name="dry_density_stress_settle_3"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                   
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="displacement_rate">Displacement rate: mm/min</label></td>
+                                    <td ><field name="displacement_rate" /></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="normal_stress_3">Normal stress: kg/cm2</label></td>
+                                    <td ><field name="normal_stress_3" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
 
 
