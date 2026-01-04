@@ -193,8 +193,9 @@ class CementNormalConsistency(models.Model):
             else:
                 rec.is_density_cement = False
 
-    temp_specific = fields.Char("Temp.°C" ,required=True)
-    humidity_specific= fields.Char("Humidity %" ,required=True)
+
+    temp_specific = fields.Char("Temp.°C" )
+    humidity_specific= fields.Char("Humidity %" )
 
     temp_water1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
     temp_water2 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")

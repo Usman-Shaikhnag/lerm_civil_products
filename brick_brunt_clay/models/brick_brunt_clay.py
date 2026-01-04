@@ -169,8 +169,22 @@ class MechanicalBricksBurntClay(models.Model):
 
     compressive_strength_child_lines = fields.One2many('mechanical.bricks.clay.compressive.line','parent_id',string="Compressive Strength Test" )
 
-    
+
     avg_compressive_strength = fields.Float(string="Average Compressive Strength ",compute="_compute_avg_compressive_strength")
+
+
+    is_lab_compressive_strength = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_brickclay1')
+    def _onchange_selected_lab_brickclay1(self):
+        for rec in self:
+            if rec.selected_lab_brickclay1:
+                rec.is_lab_compressive_strength = True
+            else:
+                rec.is_lab_compressive_strength = False
+
 
     @api.depends('compressive_strength_child_lines.compressive_strength')
     def _compute_avg_compressive_strength(self):
@@ -255,7 +269,30 @@ class MechanicalBricksBurntClay(models.Model):
     water_absorption_child_lines = fields.One2many('mechanical.bricks.clay.water.absorption.line','parent_id',string="Water Absorption Test")
 
     avg_water_absorption = fields.Float(string="Average Water Absorption ",compute="_compute_avg_water_absorption")
+    
+    is_lab_water_absorption = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
 
+
+    @api.onchange('selected_lab_brickclay2')
+    def _onchange_selected_lab_brickclay2(self):
+        for rec in self:
+            if rec.selected_lab_brickclay2:
+                rec.is_lab_water_absorption = True
+            else:
+                rec.is_lab_water_absorption = False
+
+
+
+    @api.onchange('selected_lab_brickclay2')
+    def _onchange_selected_lab_brickclay2(self):
+        for rec in self:
+            if rec.selected_lab_brickclay2:
+                rec.is_lab_water_absorption = True
+            else:
+                rec.is_lab_water_absorption = False
 
     @api.depends('water_absorption_child_lines.water_absorption')
     def _compute_avg_water_absorption(self):
@@ -266,7 +303,7 @@ class MechanicalBricksBurntClay(models.Model):
                 record.avg_water_absorption = 0.0
 
 
-                record.submit_mode = True
+                # record.submit_mode = True
 
 
 
@@ -363,6 +400,11 @@ class MechanicalBricksBurntClay(models.Model):
     height2 = fields.Float(string="height 2 ")
     height3 = fields.Float(string="height 3 ")
     avg_height = fields.Float(string="Average height ",compute="_compute_average",digits=(12,0))
+    
+    is_lab_dimension = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
 
 
     @api.depends('length1','length2','length3','width1','width2','width3','height1','height2','height3')
@@ -406,7 +448,7 @@ class MechanicalBricksBurntClay(models.Model):
                 record.avg_height = 0.0
 
 
-            record.submit_mode = True
+            # record.submit_mode = True
 
 
     avg_length_conformity = fields.Selection([
@@ -603,8 +645,18 @@ class MechanicalBricksBurntClay(models.Model):
 
     visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
 
-            
-
+    is_lab_efforescence = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+    
+    @api.onchange('selected_lab_brickclay4')
+    def _onchange_selected_lab_brickclay4(self):
+        for rec in self:
+            if rec.selected_lab_brickclay4:
+                rec.is_lab_efforescence = True
+            else:
+                rec.is_lab_efforescence = False
 
 
     ### Compute Visible
@@ -785,7 +837,7 @@ class ClayCompressiveLine(models.Model):
             else:
                 rec.compressive_strength = 0.0
 
-                rec.submit_mode = True
+                # rec.submit_mode = True
 
 
 

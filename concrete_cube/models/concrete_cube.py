@@ -23,6 +23,8 @@ class MechanicalConcreteCube(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master', string="Parameters", compute="_compute_sample_parameters", store=True)
     child_lines = fields.One2many('mechanical.concrete.cube.line','parent_id',string="Parameter")
 
+    
+
     lab_id = fields.Char(
             string="Lab ID",
             compute="_compute_lab_id",
@@ -100,6 +102,24 @@ class MechanicalConcreteCube(models.Model):
     calc_mode = fields.Boolean(default=True)     
     submit_mode = fields.Boolean(default=False)
 
+
+
+    is_lab_casting_7 = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_lab_cube1')
+    def _onchange_selected_lab_cube1(self):
+        for rec in self:
+            if rec.selected_lab_cube1:
+                rec.is_lab_casting_7 = True
+            else:
+                rec.is_lab_casting_7 = False
+
+
+
+
     @api.depends('casting_date_7days')
     def _compute_testing_date_7days(self):
         for record in self:
@@ -125,6 +145,22 @@ class MechanicalConcreteCube(models.Model):
 
     room_temperature14 = fields.Integer(string="Room Temperature (°C)" ,required=True)
     relative_humidity14 = fields.Integer(string="Relative Humidity (%)" ,required=True)
+
+
+    is_lab_casting_14 = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_lab_cube1')
+    def _onchange_selected_lab_cube1(self):
+        for rec in self:
+            if rec.selected_lab_cube1:
+                rec.is_lab_casting_14 = True
+            else:
+                rec.is_lab_casting_14 = False
+
+
 
     @api.depends('casting_date_14days')
     def _compute_testing_date_14days(self):
@@ -161,7 +197,7 @@ class MechanicalConcreteCube(models.Model):
                
 
 
-                rec.submit_mode = True
+                # rec.submit_mode = True
 
     average_strength14 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength14", digits=(12,2))
 
@@ -246,6 +282,23 @@ class MechanicalConcreteCube(models.Model):
     room_temperature28 = fields.Integer(string="Room Temperature (°C)" ,required=True)
     relative_humidity28 = fields.Integer(string="Relative Humidity (%)" ,required=True)
 
+
+    is_lab_casting_28 = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_lab_cube1')
+    def _onchange_selected_lab_cube1(self):
+        for rec in self:
+            if rec.selected_lab_cube1:
+                rec.is_lab_casting_28 = True
+            else:
+                rec.is_lab_casting_28 = False
+
+
+                
+
     @api.depends('casting_date_28days')
     def _compute_testing_date_28days(self):
         for record in self:
@@ -277,7 +330,7 @@ class MechanicalConcreteCube(models.Model):
                 # for j in range(1, len(group)):
                 #     group[j].average_strength28 = 0.0
 
-                rec.submit_mode = True
+                # rec.submit_mode = True
 
     average_strength28 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength28", digits=(12,2))
 
