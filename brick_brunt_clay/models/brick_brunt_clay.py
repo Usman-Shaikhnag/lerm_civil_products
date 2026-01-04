@@ -36,6 +36,7 @@ class MechanicalBricksBurntClay(models.Model):
         string="Generated Options"
     )
 
+
      # --- Button Function ---
     def action_generate_options_brick_clay(self):
         for record in self:
@@ -179,6 +180,8 @@ class MechanicalBricksBurntClay(models.Model):
             else:
                 record.avg_compressive_strength = 0.0
 
+            record.submit_mode = True
+
     avg_compressive_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
@@ -261,6 +264,11 @@ class MechanicalBricksBurntClay(models.Model):
               record.avg_water_absorption = sum(record.water_absorption_child_lines.mapped('water_absorption'))/ len(record.water_absorption_child_lines)
             else:
                 record.avg_water_absorption = 0.0
+
+
+                record.submit_mode = True
+
+
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -396,6 +404,9 @@ class MechanicalBricksBurntClay(models.Model):
                 record.avg_height = height / height_entries
             else:
                 record.avg_height = 0.0
+
+
+            record.submit_mode = True
 
 
     avg_length_conformity = fields.Selection([
@@ -773,6 +784,9 @@ class ClayCompressiveLine(models.Model):
                 rec.compressive_strength = ((rec.load * 1000) / rec.area )
             else:
                 rec.compressive_strength = 0.0
+
+                rec.submit_mode = True
+
 
 
 

@@ -378,6 +378,9 @@ class Stones(models.Model):
             else:
                 record.app_porosity = 0.0
 
+
+                record.submit_mode = True
+
     # Water Absorption
 
     wet_of_oven_water = fields.Float(string="Weight of oven dried test piece in gm) ", digits=(12,4),compute="_compute_wet_values",store=True)
@@ -406,6 +409,10 @@ class Stones(models.Model):
                 )
             else:
                 rec.water_absorption = 0.0
+
+
+                rec.submit_mode = True
+
 
 
      # App. Specific gravity

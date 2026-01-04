@@ -370,7 +370,8 @@ class GgbsMechanical(models.Model):
 
 
    
-
+            # previous_cumulative = cumulative_retained
+            # lines.soudness_mode = True
     
 
     slag_activity_cement_name = fields.Char("Name",default="Compressive Strength of Cement")

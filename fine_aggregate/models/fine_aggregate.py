@@ -28,6 +28,7 @@ class FineAggregate(models.Model):
             store=True
         )
 
+
     @api.depends('eln_ref')
     def _compute_lab_id(self):
         for rec in self:
