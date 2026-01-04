@@ -2850,11 +2850,13 @@ class Soil(models.Model):
 
 
     
-<<<<<<< HEAD
+
+
+
+
+
 
    
-=======
->>>>>>> daf23e86f44af8e5222634f13394a7a7458acca7
     def action_generate_gsa_graph(self):
         for record in self:
             # 1. Initialize Plot
@@ -3981,14 +3983,16 @@ class Soil(models.Model):
     triaxial_test_name = fields.Char("Name",default="DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST")
     triaxial_test_visible = fields.Boolean("DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST",compute="_compute_visible")
 
-<<<<<<< HEAD
-=======
+
+
     selected_lab_id1 = fields.Many2one(
         'lab.option.line',
         string="Select Lab ID",
         domain="[('id', 'in', lab_option_ids)]"
     )
->>>>>>> daf23e86f44af8e5222634f13394a7a7458acca7
+
+
+
 
     dia_triaxial = fields.Float(string="Diameter (mm)", digits=(8, 1))
     
