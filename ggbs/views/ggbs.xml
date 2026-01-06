@@ -90,12 +90,34 @@
                             </tbody>
                         </table>
 
+
+
+                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><label for="is_lab_specific_gravity"></label></td>
+                                    <td><field name="is_lab_specific_gravity"   /></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="calc_mode"></label></td>
+                                    <td><field name="calc_mode"   /></td>
+                                </tr>
+                                
+
+
+                            </tbody>
+                        </table> -->
+
+
+
+<!-- 
                       <div class="d-flex gap-2" invisible="not specific_gravity_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label for="temp_specific">Temp.°C</label></td>
-                                    <td><field name="temp_specific" class="blue-input" invisible="not specific_gravity_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><field name="temp_specific" class="blue-input" invisible="not specific_gravity_visible" required = "calc_mode == False or is_lab_specific_gravity == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -105,13 +127,13 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_specific">Humidity %</label></td>
-                                    <td><field name="humidity_specific" class="blue-input" invisible="not specific_gravity_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><field name="humidity_specific" class="blue-input" invisible="not specific_gravity_visible" required = "calc_mode == False or is_lab_specific_gravity == True "/></td>
                                 </tr>
                                 
                             </tbody>
-                        </table>
+                        </table> -->
 
-                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                         <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
                             <tbody>
                                 <tr>
                                     <td><field name="calc_mode" class="blue-input" invisible="not specific_gravity_visible"  /></td>
@@ -119,7 +141,7 @@
                                 
                             </tbody>
                         </table>
-                    </div>
+                    </div> -->
 
 
                     <div invisible="not specific_gravity_visible">
@@ -510,12 +532,30 @@
                             </tbody>
                         </table>
 
-                      <div class="d-flex gap-2" invisible="not fineness_visible">
+
+                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><label for="is_lab_Fineness"></label></td>
+                                    <td><field name="is_lab_Fineness"   /></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="calc_mode"></label></td>
+                                    <td><field name="calc_mode"   /></td>
+                                </tr>
+                                
+
+
+                            </tbody>
+                        </table> -->
+
+                      <!-- <div class="d-flex gap-2" invisible="not fineness_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label for="temp_fineness">Temp.°C</label></td>
-                                    <td><field name="temp_fineness" class="blue-input" invisible="not fineness_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><field name="temp_fineness" class="blue-input" invisible="not fineness_visible" required = "calc_mode == False or is_lab_Fineness == True "/></td>
                                 </tr>
                                 
                             </tbody>
@@ -525,12 +565,12 @@
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_fineness">Humidity %</label></td>
-                                    <td><field name="humidity_fineness" class="blue-input" invisible="not fineness_visible" required = "calc_mode == False or submit_mode == True "/></td>
+                                    <td><field name="humidity_fineness" class="blue-input" invisible="not fineness_visible" required = "calc_mode == False or is_lab_Fineness == True "/></td>
                                 </tr>
                                 
                             </tbody>
                         </table>
-                    </div>
+                    </div> -->
 
 
                       <div class="custom_table_borders" style="width:100%;" invisible = "fineness_visible == False">
@@ -667,7 +707,7 @@
                       </div>
                       
                       <div style="width:50%">
-                        <field name="submit_mode" invisible="0"/>
+                        <field name="submit_mode" invisible="1"/>
 
                       </div>
                     </div>

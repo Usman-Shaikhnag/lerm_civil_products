@@ -28,6 +28,7 @@ class CementNormalConsistency(models.Model):
     submit_mode = fields.Boolean(default=False)
 
 
+
     @api.model
     def default_get(self, fields):
         res = super(CementNormalConsistency, self).default_get(fields)

@@ -29,6 +29,28 @@
                         <field name="parameter_id" invisible="1"/>
                     </group>
 
+
+
+                      <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    
+
                     <div class="custom_table_borders" style="margin-top: 15px;">
                         <field name="sample_parameters" nolabel="1">
                             <tree>
@@ -85,19 +107,19 @@
                           </tr>
                          <tr>
                            <td><label for="temp_water_after1">Temperature of Water Bath  after One Hour when Flask kept in bath – 0C  </label></td>
-                           <td><field  name="temp_water_after1"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water2 != 0"/></td>
-                           <td><field  name="temp_water_after2"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water2 != 0"/></td>
+                           <td><field  name="temp_water_after1"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water_after1 != 0"/></td>
+                           <td><field  name="temp_water_after2"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water_after2 != 0"/></td>
                          </tr>
                          <tr> 
                            <td><label for="initial_kerosene1">Initial Level of Kerosene after one hour kept in Water Bath(A) – ml</label></td>
-                           <td><field  name="initial_kerosene1"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water2 != 0"/></td>
-                           <td><field  name="initial_kerosene2"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water2 != 0"/></td>
+                           <td><field  name="initial_kerosene1"  colspan="1"  nolabel="1" class="blue-input" decoration-info="initial_kerosene1 != 0"/></td>
+                           <td><field  name="initial_kerosene2"  colspan="1"  nolabel="1" class="blue-input" decoration-info="initial_kerosene2 != 0"/></td>
                          </tr>
                       
                          <tr>
                            <td><label for="mass1">Mass of Cement Sample Added in Flask (M) – gms</label></td>
-                           <td><field  name="mass1"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water2 != 0"/></td>
-                           <td><field  name="mass2"  colspan="1"  nolabel="1" class="blue-input" decoration-info="temp_water2 != 0"/></td>
+                           <td><field  name="mass1"  colspan="1"  nolabel="1" class="blue-input" decoration-info="mass1 != 0"/></td>
+                           <td><field  name="mass2"  colspan="1"  nolabel="1" class="blue-input" decoration-info="mass2 != 0"/></td>
                          </tr>      
 
                          <tr>
@@ -358,6 +380,7 @@
                             </tbody>
                         </table>
                     </div>
+
 
 
                       <div class="custom_table_borders" style="width:100%;" invisible = "fineness_visible == False">

@@ -828,6 +828,27 @@ class Soil(models.Model):
 
 
 
+    # def action_compute_bulk_density(self):
+    #  for rec in self:
+     
+    #     for line in rec.bulk_line_ids:
+    #         w_wet = line.wet_soil_container or 0.0
+    #         w_dry = line.dry_soil_container or 0.0
+    #         w_cont = line.container_weight or 0.0
+    #         dry_soil = w_dry - w_cont
+    #         if dry_soil > 0:
+    #             water = w_wet - w_dry
+    #             rec.moisture_content = (water / dry_soil) * 100.0
+    #         else:
+    #             rec.moisture_content = 0.0
+
+
+        
+     
+
+
+        
+
    #  Calculation-NMC, 
 
 
@@ -3990,6 +4011,7 @@ class Soil(models.Model):
         string="Select Lab ID",
         domain="[('id', 'in', lab_option_ids)]"
     )
+
 
 
 

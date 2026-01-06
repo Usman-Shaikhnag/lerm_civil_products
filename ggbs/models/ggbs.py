@@ -234,7 +234,20 @@ class GgbsMechanical(models.Model):
                 rec.average_density = 0.0
 
 
-            rec.submit_mode = True
+            # rec.submit_mode = True
+
+    #         is_lab_specific_gravity = fields.Boolean(
+    #       string="Lab Fine Selected",
+        
+    #       )
+
+    # @api.onchange('selected_lab_ggbs1')
+    # def _onchange_selected_lab_ggbs1(self):
+    #     for rec in self:
+    #         if rec.selected_lab_ggbs1:
+    #             rec.is_lab_specific_gravity = True
+    #         else:
+    #             rec.is_lab_specific_gravity = False
 
 
 
@@ -649,7 +662,22 @@ class GgbsMechanical(models.Model):
             ]) else 0.0
 
 
-            rec.submit_mode = True
+            # rec.submit_mode = True
+
+
+    #         is_lab_Fineness = fields.Boolean(
+    #       string="Lab Fine Selected",
+        
+    #       )
+
+    # @api.onchange('selected_lab_ggbs2')
+    # def _onchange_selected_lab_ggbs2(self):
+    #     for rec in self:
+    #         if rec.selected_lab_ggbs2:
+    #             rec.is_lab_Fineness = True
+    #         else:
+    #            rec.is_lab_Fineness = False
+
 
     apparatus_constant_first = fields.Float(string="Apparatus Constant (K) ", digits=(12, 4))
 
