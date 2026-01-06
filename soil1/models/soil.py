@@ -827,6 +827,23 @@ class Soil(models.Model):
     bulk_line_ids = fields.One2many('soil.bulk.density','parent_id', string="Bulk Density Lines")
 
 
+    # def action_compute_bulk_density(self):
+    #  for rec in self:
+    #     # 1) Compute horizontal readings for each line
+    #     for line in rec.bulk_line_ids:
+    #         w_wet = line.wet_soil_container or 0.0
+    #         w_dry = line.dry_soil_container or 0.0
+    #         w_cont = line.container_weight or 0.0
+    #         dry_soil = w_dry - w_cont
+    #         if dry_soil > 0:
+    #             water = w_wet - w_dry
+    #             rec.moisture_content = (water / dry_soil) * 100.0
+    #         else:
+    #             rec.moisture_content = 0.0
+
+      
+
+
 
    #  Calculation-NMC, 
 
@@ -836,7 +853,7 @@ class Soil(models.Model):
 
 
     # specific gravity
-    gravity_name = fields.Char(string="Name",default=" SPECIFIC GRAVITY", )
+    specific_gravity_name = fields.Char(string="Name",default=" SPECIFIC GRAVITY", )
     specific_gravity_visible = fields.Boolean( string="Specific Gravity Visible",default=True )
     gravity_line_ids = fields.One2many( "specific.gravity", "parent_id",string="Specific Gravity Lines",)
 
@@ -2091,89 +2108,89 @@ class Soil(models.Model):
   
 
      # Specific Gravity
-    specific_gravity_name = fields.Char("Name",default="Specific Gravity")
-    specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
+    # specific_gravity_name = fields.Char("Name",default="Specific Gravity")
+    # specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
-    selected_lab_id4 = fields.Many2one(
-        'lab.option.line',
-        string="Select Lab ID",
-        domain="[('id', 'in', lab_option_ids)]"
-    )
+    # selected_lab_id4 = fields.Many2one(
+    #     'lab.option.line',
+    #     string="Select Lab ID",
+    #     domain="[('id', 'in', lab_option_ids)]"
+    # )
 
-    m1 = fields.Float(string="Mass of Density Bottle (M1) ", digits=(12,2))
-    m2 = fields.Float(string="Mass of Bottle & Dry Soil (M2) ", digits=(12,2))
-    m3 = fields.Float(string="Mass of Bottle, Soil & Liquid (M3) ", digits=(12,2))
-    m4 = fields.Float(string="Mass of Bottle Full of Liquid (M4) ", digits=(12,2))
+    # m1 = fields.Float(string="Mass of Density Bottle (M1) ", digits=(12,2))
+    # m2 = fields.Float(string="Mass of Bottle & Dry Soil (M2) ", digits=(12,2))
+    # m3 = fields.Float(string="Mass of Bottle, Soil & Liquid (M3) ", digits=(12,2))
+    # m4 = fields.Float(string="Mass of Bottle Full of Liquid (M4) ", digits=(12,2))
 
-    specific_gravity = fields.Float(
-        string="Specific Gravity (G)",
-        compute="_compute_specific_gravity",
-        store=True,
-        digits=(12,2)
-    )
+    # specific_gravity = fields.Float(
+    #     string="Specific Gravity (G)",
+    #     compute="_compute_specific_gravity",
+    #     store=True,
+    #     digits=(12,2)
+    # )
 
-    @api.depends("m1","m2","m3","m4")
-    def _compute_specific_gravity(self):
-        for rec in self:
-            try:
-                numerator = rec.m2 - rec.m1
-                denominator = (rec.m4 - rec.m1) - (rec.m3 - rec.m2)
-                if denominator != 0:
-                    rec.specific_gravity = round(numerator / denominator, 2)
-                else:
-                    rec.specific_gravity = 0.0
-            except Exception:
-                rec.specific_gravity = 0.0
+    # @api.depends("m1","m2","m3","m4")
+    # def _compute_specific_gravity(self):
+    #     for rec in self:
+    #         try:
+    #             numerator = rec.m2 - rec.m1
+    #             denominator = (rec.m4 - rec.m1) - (rec.m3 - rec.m2)
+    #             if denominator != 0:
+    #                 rec.specific_gravity = round(numerator / denominator, 2)
+    #             else:
+    #                 rec.specific_gravity = 0.0
+    #         except Exception:
+    #             rec.specific_gravity = 0.0
 
-    specific_gravity_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
+    # specific_gravity_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
 
-    @api.depends('specific_gravity','eln_ref','grade')
-    def _compute_specific_gravity_conformity(self):
+    # @api.depends('specific_gravity','eln_ref','grade')
+    # def _compute_specific_gravity_conformity(self):
         
-        for record in self:
-            record.specific_gravity_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
+    #     for record in self:
+    #         record.specific_gravity_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
                     
-                    lower = record.specific_gravity - record.specific_gravity*mu_value
-                    upper = record.specific_gravity + record.specific_gravity*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.specific_gravity_conformity = 'pass'
-                        break
-                    else:
-                        record.specific_gravity_conformity = 'fail'
+    #                 lower = record.specific_gravity - record.specific_gravity*mu_value
+    #                 upper = record.specific_gravity + record.specific_gravity*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.specific_gravity_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.specific_gravity_conformity = 'fail'
 
-    specific_gravity_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_specific_gravity_nabl", store=True)
+    # specific_gravity_nabl = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_specific_gravity_nabl", store=True)
 
-    @api.depends('specific_gravity','eln_ref','grade')
-    def _compute_specific_gravity_nabl(self):
+    # @api.depends('specific_gravity','eln_ref','grade')
+    # def _compute_specific_gravity_nabl(self):
         
-        for record in self:
-            record.specific_gravity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
+    #     for record in self:
+    #         record.specific_gravity_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
+    #         # for material in materials:
+    #         #     if material.grade.id == record.grade.id:
+    #         lab_min = line.lab_min_value
+    #         lab_max = line.lab_max_value
+    #         mu_value = line.mu_value
             
-            lower = record.specific_gravity - record.specific_gravity*mu_value
-            upper = record.specific_gravity + record.specific_gravity*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.specific_gravity_nabl = 'pass'
-                break
-            else:
-                record.specific_gravity_nabl = 'fail'
+    #         lower = record.specific_gravity - record.specific_gravity*mu_value
+    #         upper = record.specific_gravity + record.specific_gravity*mu_value
+    #         if lower >= lab_min and upper <= lab_max:
+    #             record.specific_gravity_nabl = 'pass'
+    #             break
+    #         else:
+    #             record.specific_gravity_nabl = 'fail'
 
 
      # Direct Shear Test
@@ -5354,7 +5371,7 @@ class Soil(models.Model):
             record.determination_visible  = False 
             record.shrinkage_limit_visible  = False 
             record.permeability_falling_visible  = False 
-            record.specific_gravity_visible  = False 
+            # record.specific_gravity_visible  = False 
             record.direct_shear_visible  = False 
             record.ucs_visible  = False 
             record.consolidation_visible  = False 
@@ -5421,8 +5438,8 @@ class Soil(models.Model):
                 if sample.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
                     record.permeability_falling_visible = True
 
-                if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
-                    record.specific_gravity_visible = True
+                # if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                #     record.specific_gravity_visible = True
 
                 if sample.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                     record.direct_shear_visible = True
@@ -9319,7 +9336,7 @@ class UcsSoilLine(models.Model):
 
     serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
 
-    horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0) , compute="_compute_all" , store=True)
+    horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0) , compute="_compute_dial_reading" , store=True)
 
     corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,3) , compute="_compute_all" , store=True)
 
@@ -9330,6 +9347,29 @@ class UcsSoilLine(models.Model):
     axial_deformation = fields.Float(string="Axial Deformation" , digits=(8,2) , compute="_compute_all" , store=True)
 
     axial_strain = fields.Float(string="Axial Strain (%)" , digits=(8,3) , compute="_compute_all" , store=True)
+
+    @api.depends('parent_id.ucs_lines')
+    def _compute_dial_reading(self):
+        # Sagle unique parents ghene (Optimization sathi)
+        for parent in self.mapped('parent_id'):
+            
+            current_val = 0.0
+            
+          
+            for i, line in enumerate(parent.ucs_lines):
+                
+               
+                if i == 0:
+                   
+                    if not line.horizontal_read:
+                        line.horizontal_read = 0.0
+                    current_val = line.horizontal_read
+                
+                else:
+                 
+                    new_val = current_val + 25.0
+                    line.horizontal_read = new_val
+                    current_val = new_val
 
     @api.depends('serial_no', 'prove_ring_read',
                  'parent_id.ucs_area', 'parent_id.ucs_dial_gauge', 'parent_id.ucs_height')
