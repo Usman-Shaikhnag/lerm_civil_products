@@ -11,6 +11,7 @@ class TempMonitoring(models.Model):
     project_name = fields.Char("Project Name")
     columns_data = fields.Json(string="Columns", default=list)
     rows_data = fields.Json(string="Rows", default=list)
+    sections_data = fields.Json(string="Sections", default=list)
     graph1 = fields.Binary()
     graph2 = fields.Binary()
 

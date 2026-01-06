@@ -37,6 +37,7 @@ class TemperatureMonitoringController(http.Controller):
         # Extract JSON arrays
         rows = request_json.get('rows', [])
         columns = request_json.get('columns', [])
+        sections = request_json.get('sections', [])
 
         # Extract charts
         graph1 = request_json.get('chart1', None)
@@ -69,6 +70,7 @@ class TemperatureMonitoringController(http.Controller):
         temp_record.sudo().write({
             'columns_data': columns,
             'rows_data': rows,
+            'sections_data': sections,
             'graph1': graph1_decoded,
             'graph2': graph2_decoded,
         })
@@ -147,7 +149,7 @@ class TemperatureMonitoringController(http.Controller):
     #             'error': str(e)
     #         }
 
-    @http.route('/api/temp_monitoring/verify', type='json', auth='public', methods=['POST'], csrf=False,cors='*')
+    @http.route('/api/temp_monitoring/verify', type='json', auth='public', methods=['POST', 'OPTIONS'], csrf=False,cors='*')
     def verify_and_get_data(self, **post):
         # import wdb; wdb.set_trace()
         data = request.httprequest.get_data()

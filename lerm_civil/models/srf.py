@@ -1383,40 +1383,6 @@ class CreateSampleWizard(models.TransientModel):
                 parameters_result = []
                 eln_tech_ids = []
 
-<<<<<<< HEAD
-                sample = self.env['lerm.srf.sample'].sudo().search([('id','=',id)])
-                if sample.state == '1-allotment_pending':
-                    for parameter in sample.parameters:
-                        parameters_result.append((0,0,{'parameter':parameter.id,'unit': parameter.unit.id,'test_method':parameter.test_method.id}))
-                    # import wdb; wdb.set_trace()
-                    eln_id = self.env['lerm.eln'].sudo().create({
-                        'srf_id': sample.srf_id.id,
-                        'srf_date':sample.srf_id.srf_date,
-                        'kes_no':sample.kes_no,
-                        'discipline':sample.discipline_id.id,
-                        # 'lab_l_id': sample.lab_l_id.id,
-                        'lab_no_value': sample.lab_no_value,
-                        'group': sample.group_id.id,
-                        'material': sample.material_id.id,
-                        'witness_name': sample.witness,
-                        # 'department_id': sample.department_id.id,
-                        'sample_id':sample.id,
-                        'parameters':parameters,
-                        'technician': self.technicians.id,
-                        'parameters_result':parameters_result,
-                        'conformity':sample.conformity,
-                        'has_witness':sample.has_witness,
-                        'size_id':sample.size_id.id,
-                        'grade_id':sample.grade_id.id,
-                        'department_id':sample.department_id,
-                        'casting_date':sample.casting_date,
-                        'days_casting':sample.days_casting,
-                        'quantity':sample.quantity,
-                        'uom_id':sample.uom_id.id,
-                        'quantity_received':sample.quantity_received,
-                        'quantity_consumed':sample.quantity_consumed,
-                        'quantity_balance':sample.quantity_balance
-=======
                 if self.allocation_type == 'parameter':
                     # enforce single-sample mode (recommended)
                     if len(active_ids) > 1:
@@ -1445,7 +1411,6 @@ class CreateSampleWizard(models.TransientModel):
                         # unassigned ONLY if neither wizard nor existing ELN has technician
                         if not wizard_tech and not existing_tech:
                             unassigned_lines.append(line)
->>>>>>> 1e360a8ca67ecf48a92f7922c7efef54511d7f6e
 
 
                     if len(assigned_lines) == 0:
