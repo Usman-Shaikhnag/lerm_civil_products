@@ -21,6 +21,7 @@
                        <field name="grade"/>
                     </group>
 
+
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
@@ -80,7 +81,53 @@
                 </div>
 
 
+
+                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><label for="is_lab_rock"></label></td>
+                                    <td><field name="is_lab_rock"   /></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="calc_mode"></label></td>
+                                    <td><field name="calc_mode"   /></td>
+                                </tr>
+                                 <!-- <tr>
+                                    <td><label for="usc_visible"></label></td>
+                                    <td><field name="usc_visible"   /></td>
+                                </tr> -->
+                                
+                                
+
+
+                            </tbody>
+                        </table>
    
+                 <div class="d-flex gap-2" invisible="not usc_visible ">
+                  <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_rock">Temp.°C</label></td>
+                                    <td><field name="temp_rock" class="blue-input" invisible="not usc_visible"  required = "calc_mode == False or is_lab_rock == True "/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_rock">Humidity %</label></td>
+                                    <td><field name="humidity_rock" class="blue-input" invisible="not usc_visible" required = "calc_mode == False or is_lab_rock == True "/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>  
+
+
+
 
 
                          <div invisible = "usc_visible == False">
