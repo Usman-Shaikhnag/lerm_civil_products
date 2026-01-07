@@ -153,11 +153,34 @@ class Stones(models.Model):
     scratch_hardness_name = fields.Char("Name",default="Scratch hardness According to Moh's Scale")
     scratch_hardness_visible = fields.Boolean("Surface Quality",compute="_compute_visible") 
 
+
+    temp_scratch_hardness = fields.Char(string="Temp.°C" ,required=True)
+    humidity_scratch_hardness= fields.Char(string="Humidity %" ,required=True)
+
+
+
     selected_lab_stone1 = fields.Many2one(
         'stone.lab.line',
         string="Select Lab ID",
         domain="[('id', 'in', lab_stone_ids)]"
     )
+
+    
+    is_scratch_hardness = fields.Boolean(
+        string="Compacted Density Selected",
+        
+    )
+
+    @api.onchange('selected_lab_stone1')
+    def _onchange_selected_lab_stone1(self):
+        for rec in self:
+            if rec.selected_lab_stone1:
+                rec.is_scratch_hardness = True
+            else:
+                rec.is_scratch_hardness= False
+
+
+
 
     observations1 = fields.Float(string="Observations")
     observations2 = fields.Float(string="Observations")
@@ -186,6 +209,15 @@ class Stones(models.Model):
 
     compressive_dry_generated = fields.Boolean(string="Compressive Dry Lab Lines ",default=False)
     show_sieve = fields.Boolean(default=False)
+
+
+
+    temp_compressive_dry = fields.Char(string="Temp.°C" ,required=True)
+    humidity_compressive_dry= fields.Char(string="Humidity %" ,required=True)
+
+
+
+   
 
     def action_generate_compressive_dry_lines(self):
         for record in self:
@@ -264,6 +296,13 @@ class Stones(models.Model):
     compressive_wet_generated = fields.Boolean(string="Compressive Dry Lab Lines ",default=False)
     show_sieve = fields.Boolean(default=False)
 
+      
+    temp_compressive_satuarted = fields.Char(string="Temp.°C" ,required=True)
+    humidity_compressive_satuarted= fields.Char(string="Humidity %" ,required=True)
+    
+
+
+
     def action_generate_compressive_wet_lines(self):
         for record in self:
             if record.lab_id and ' - ' in record.lab_id:
@@ -338,11 +377,35 @@ class Stones(models.Model):
     true_specific_visible = fields.Boolean(" Porosity,Water Absorption,App. Specific gravity,True Specific gravity",compute="_compute_visible")
     true_porosity_visible = fields.Boolean(" Porosity,Water Absorption,App. Specific gravity,True Specific gravity",compute="_compute_visible")
 
+
+    temp_porosity = fields.Char(string="Temp.°C" ,required=True)
+    humidity_porosity= fields.Char(string="Humidity %" ,required=True)
+
+
+
     selected_lab_stone2 = fields.Many2one(
         'stone.lab.line',
         string="Select Lab ID",
         domain="[('id', 'in', lab_stone_ids)]"
     )
+
+
+    is_porosity = fields.Boolean(
+        string="Compacted Density Selected",
+        
+    )
+
+    @api.onchange('selected_lab_stone2')
+    def _onchange_selected_lab_stone2(self):
+        for rec in self:
+            if rec.selected_lab_stone2:
+                rec.is_porosity = True
+            else:
+                rec.is_porosity= False
+
+
+
+
 
     #    App. Porosity
     weight_oven_dried = fields.Float(
@@ -379,7 +442,7 @@ class Stones(models.Model):
                 record.app_porosity = 0.0
 
 
-                record.submit_mode = True
+                # record.submit_mode = True
 
     # Water Absorption
 
@@ -411,7 +474,7 @@ class Stones(models.Model):
                 rec.water_absorption = 0.0
 
 
-                rec.submit_mode = True
+                # rec.submit_mode = True
 
 
 
@@ -766,6 +829,7 @@ class CompressiveDryLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
 
 
 

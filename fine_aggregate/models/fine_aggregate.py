@@ -1171,6 +1171,7 @@ class FineAggregate(models.Model):
                     'passing_percent': round(passing_percent, 2),
                 })
 
+
                 print("Updated Cumulative Retained:", cumulative_retained)
                 print("Updated Passing Percent:", passing_percent)
 
