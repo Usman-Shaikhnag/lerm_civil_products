@@ -172,7 +172,7 @@ class GgbsMechanical(models.Model):
         domain="[('id', 'in', lab_ggbs_ids)]"
     )
 
-    temp_specific = fields.Char("Temp.°C" ,required=True)
+    temp_specific = fields.Char("Temp.°C" )
     humidity_specific= fields.Char("Humidity %")
 
     temp_water1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
@@ -234,7 +234,20 @@ class GgbsMechanical(models.Model):
                 rec.average_density = 0.0
 
 
-            rec.submit_mode = True
+            # rec.submit_mode = True
+
+    #         is_lab_specific_gravity = fields.Boolean(
+    #       string="Lab Fine Selected",
+        
+    #       )
+
+    # @api.onchange('selected_lab_ggbs1')
+    # def _onchange_selected_lab_ggbs1(self):
+    #     for rec in self:
+    #         if rec.selected_lab_ggbs1:
+    #             rec.is_lab_specific_gravity = True
+    #         else:
+    #             rec.is_lab_specific_gravity = False
 
 
 
@@ -441,8 +454,8 @@ class GgbsMechanical(models.Model):
 
     sai1 = fields.Float(string="Slag Activity Index",digits=(12,2),compute="_compute_slag_activity_index")
 
-    temp_7day = fields.Char("7 Days Temp.°C" ,required=True)
-    humidity_7day= fields.Char("7 Days Humidity %" ,required=True)
+    temp_7day = fields.Char("7 Days Temp.°C" )
+    humidity_7day= fields.Char("7 Days Humidity %" )
 
     day_7_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -501,8 +514,8 @@ class GgbsMechanical(models.Model):
                         record.day_7_nabl = 'fail'
 
     sai2 = fields.Float(string="Slag Activity Index",digits=(12,2),compute="_compute_slag_activity_index")
-    temp_28day = fields.Char("28 Days Temp.°C" ,required=True)
-    humidity_28day= fields.Char("28 Days Humidity %" ,required=True)
+    temp_28day = fields.Char("28 Days Temp.°C" )
+    humidity_28day= fields.Char("28 Days Humidity %" )
 
     day_28_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -626,8 +639,8 @@ class GgbsMechanical(models.Model):
         domain="[('id', 'in', lab_ggbs_ids)]"
     )
 
-    temp_fineness = fields.Char("Temp.°C" ,required=True)
-    humidity_fineness= fields.Char("Humidity %" ,required=True)
+    temp_fineness = fields.Char("Temp.°C" )
+    humidity_fineness= fields.Char("Humidity %" )
 
     density_cement = fields.Float(string="Density of Cement (g/cc)", digits=(12, 3))
     
@@ -649,7 +662,22 @@ class GgbsMechanical(models.Model):
             ]) else 0.0
 
 
-            rec.submit_mode = True
+            # rec.submit_mode = True
+
+
+    #         is_lab_Fineness = fields.Boolean(
+    #       string="Lab Fine Selected",
+        
+    #       )
+
+    # @api.onchange('selected_lab_ggbs2')
+    # def _onchange_selected_lab_ggbs2(self):
+    #     for rec in self:
+    #         if rec.selected_lab_ggbs2:
+    #             rec.is_lab_Fineness = True
+    #         else:
+    #            rec.is_lab_Fineness = False
+
 
     apparatus_constant_first = fields.Float(string="Apparatus Constant (K) ", digits=(12, 4))
 

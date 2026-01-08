@@ -161,7 +161,7 @@
 
 
                        <!-- Liquid Limit-->
-                    <div invisible = "liquid_limit_visible == False">
+                    <!-- <div invisible = "liquid_limit_visible == False">
                         <h1 class="text-center">
                             <field name="liquid_limit_name" readonly="1" nolabel="1"/>
                             <field name="liquid_limit_visible" invisible="1"/>
@@ -210,11 +210,11 @@
 
                     <div invisible = "liquid_limit_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image_liquid" widget="image" readonly="1"/>
-                    </div>
+                    </div> -->
 
 
                     <!-- Plastic Limit -->
-                    <div invisible = "plastic_limit_visible == False">
+                    <!-- <div invisible = "plastic_limit_visible == False">
                         <h1 class="text-center">
                             <field name="plastic_limit_name" readonly="1" nolabel="1"/>
                             <field name="plastic_limit_visible" invisible="1"/>
@@ -284,7 +284,7 @@
                             </tbody>
                         </table>
                     </div>
-
+ -->
 
                      <!-- Heavy Compaction MDD -->
                     <div invisible = "heavy_visible == False">
@@ -1187,6 +1187,7 @@
                             </tbody>
                         </table>
 
+
                     <div invisible = "angle_shear_visible == False">
                         <h1 class="text-center">
                             <field name="angle_shear_name" readonly="1" nolabel="1"/>
@@ -1551,12 +1552,23 @@
                         </field>
                     </div>
 
-    
+
+
+
+             <!-- <h1>NMC</h1> -->
+                     
+
+    <div invisible="moisture_visible == False">
+                  <h1 class="text-center">
+                   NMC
+               </h1>
+                   </div>
+
+
+
                    <div invisible = "moisture_visible == False">
                         <field name="moisture_ids">
 
-
-                        <!-- <h1>NMC</h1> -->
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name= 'date' width="60px"/>
                                 <field name='lab_id'  width="50px"/>
@@ -1571,12 +1583,8 @@
                         </field>
                     </div>
 
-                    <!-- <div invisible = "moisture_visible == False">
-                                    <button string="Calculate" type="object" name="action_compute_bulk_density" class="oe_highlight">
-                                        <i class="fa fa-calculator"/> Calculate 
-                                    </button>
-                                </div>  
-                                <group/> -->
+                    
+
 
 
                  <div invisible="gsa_visible == False">
@@ -1999,35 +2007,17 @@
 </div>
 
 
-<!-- <group string="RESULTS" invisible="freeswell_visible == False">
-    <field name="moisture_content" string="NMC (%)"/>
-    <field name="plastic_limit" string="PL (%)"/>
-    <field name="liquid_limit" string="LL (%)"/>
-    <field name="shrinkage_limit" string="SL (%)"/>
-    <field name="plasticity_index" string="PI"/>
-</group> -->
-
-
-<div invisible="pl_visible == False">
-    <field name="pl_line_ids" nolabel="1">
-        <tree editable="bottom" class="custom_table_borders">
-            <field name="test_no" string="Test No." width="70px"/>
-            <field name="container_no" string="Container No." width="100px"/>
-            <field name="m1" string="M1 (gm)" width="90px"/>
-            <field name="m2" string="M2 (gm)" width="90px"/>
-            <field name="m3" string="M3 (gm)" width="90px"/>
-            <field name="m3_m2" string="M3-M2" width="90px"/>
-            <field name="m2_m1" string="M2-M1" width="90px"/>
-            <field name="water_content" string="Water Content %" width="110px" sum="Average"/>
-        </tree>
-    </field>
-</div>
-
 
 <div invisible="ll_visible == False">
+
+<h1 class="text-center">
+        <field name="Atterbergs_name_ll" readonly="1" nolabel="1"/>
+</h1>
+
     <field name="ll_line_ids" nolabel="1">
         <tree editable="bottom" class="custom_table_borders">
-            <field name="test_no" string="Test No." width="70px"/>
+           
+            <field name="test_no" string="Sr.No" width="50px"/>
             <field name="blows" string="No. of Blows" width="100px"/>
             <field name="container_no" string="Container No." width="100px"/>
             <field name="m1" string="M1 (gm)" width="90px"/>
@@ -2035,24 +2025,82 @@
             <field name="m3" string="M3 (gm)" width="90px"/>
             <field name="m3_m2" string="M3-M2" width="90px"/>
             <field name="m2_m1" string="M2-M1" width="90px"/>
-            <field name="water_content" string="Water Content %" width="110px" sum="Average"/>
+            <field name="water_content" string="Water Content %" width="110px" />
+        </tree>
+    </field>
+</div>
+
+<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not ll_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="liquid_avg">LIQUID LIMIT</label></td>
+                                    <td><field name="liquid_avg" class="blue-input"  /></td>
+                                </tr>
+                                
+                            </tbody>
+</table>
+
+
+
+
+<div invisible="pl_visible == False">
+
+<h1 class="text-center">
+        <field name="Atterbergs_name_pl" readonly="1" nolabel="1"/>
+</h1>
+    <field name="pl_line_ids" nolabel="1">
+   
+        <tree editable="bottom" class="custom_table_borders">
+          
+            <field name="test_no" string="Sr.No" width="50px"/>
+
+            <field name="container_no" string="Container No." width="100px"/>
+
+            <field name="m3" string="M3 (gm)" width="90px"/>
+            <field name="m2" string="M2 (gm)" width="90px"/>
+            <field name="m1" string="M1 (gm)" width="90px"/>
+            <field name="m3_m2" string="M3-M2" width="90px"/>
+            <field name="m2_m1" string="M2-M1" width="90px"/>
+            <field name="water_content" string="Water Content %" width="110px"/>
+           
         </tree>
     </field>
 </div>
 
 
+
+<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not pl_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="plastic_avg">LIQUID LIMIT</label></td>
+                                    <td><field name="plastic_avg" class="blue-input"  /></td>
+                                </tr>
+                                
+                            </tbody>
+</table>
+
+
+
 <div invisible="sl_visible == False">
+
+<h1 class="text-center">
+        <field name="Atterbergs_name_sl" readonly="1" nolabel="1"/>
+</h1>
+
     <field name="sl_line_ids" nolabel="1">
         <tree editable="bottom" class="custom_table_borders">
-            <field name="test_no" string="Test No." width="70px"/>
+           
+
+            <field name="test_no" string="Sr.No" width="35px"/>
             <field name="container_no" string="Container No." width="100px"/>
             <field name="m1" string="M1 (gm)" width="80px"/>
             <field name="v1" string="V1 (cm3)" width="80px"/>
-            <field name="m2" string="M2 (gm)" width="80px"/>
+
             <field name="m3" string="M3 (gm)" width="80px"/>
-            <field name="v2" string="V2 (cm3)" width="80px"/>
+            <field name="m2" string="M2 (gm)" width="80px"/>
             <field name="m3_m2" string="M3-M2" width="85px"/>
             <field name="m2_m1" string="M2-M1" width="85px"/>
+            <field name="v2" string="V2 (cm3)" width="80px"/>
             <field name="v1_v2" string="V1-V2" width="85px"/>
             <field name="water_content" string="Water Content %" width="100px"/>
             <field name="shrinkage_ratio" string="Shrinkage Ratio" width="110px"/>
@@ -2062,6 +2110,15 @@
 </div>
 
 
+<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sl_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="shrinkage_avg"> SHRINKAGE LIMIT</label></td>
+                                    <td><field name="shrinkage_avg" class="blue-input"  /></td>
+                                </tr>
+                                
+                            </tbody>
+</table>
 
 
 

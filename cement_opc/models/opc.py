@@ -98,6 +98,7 @@ class CementNormalConsistency(models.Model):
 
 
 
+
     @api.model
     def default_get(self, fields):
         res = super(CementNormalConsistency, self).default_get(fields)

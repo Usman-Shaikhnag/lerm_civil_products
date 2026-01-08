@@ -70,19 +70,32 @@
                     <group/>
 
                       <div invisible = "usc_visible == False" style="margin-bottom: 10px;">
-                  <field name= 'rock_lines_generated' invisible="1" />
-                  <button name="action_generate_rock_lines"
-                   
-                    type="object"
-                    string="Rock Lab Lines"
-                    class="oe_highlight"
-                    invisible="rock_lines_generated == True"/>
+                            <field name= 'rock_lines_generated' invisible="1" />
+                            <button name="action_generate_rock_lines"
+                            
+                                type="object"
+                                string="Rock Lab Lines"
+                                class="oe_highlight"
+                                invisible="rock_lines_generated == True"/>
 
-                </div>
+                            </div>
 
 
 
-                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="usc_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="is_lab_rock"></label></td>
+                                    <td><field name="is_lab_rock"   /></td>
+                                </tr>
+
+                             
+
+
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
                             <tbody>
                                 <tr>
                                     <td><label for="is_lab_rock"></label></td>
@@ -98,11 +111,11 @@
                                     <td><field name="usc_visible"   /></td>
                                 </tr> -->
                                 
-                                
 
 
                             </tbody>
                         </table>
+   
    
                  <div class="d-flex gap-2" invisible="not usc_visible ">
                   <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
