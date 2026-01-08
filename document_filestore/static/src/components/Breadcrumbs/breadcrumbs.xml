@@ -1,0 +1,17 @@
+<templates>
+  <t t-name="document_filestore.Breadcrumbs" owl="1">
+    <div class="o-drive__breadcrumbs">
+      <t t-foreach="props.breadcrumbs" t-as="crumb" t-key="crumb.id" t-foreach-index="i">
+
+        <span class="crumb" t-on-click="() => this.handleCrumbClick(crumb.id)">
+          <t t-esc="crumb.name or 'My Drive'"/> /
+        </span>
+
+        <t t-if="i &gt; props.breadcrumbs.length - 1">
+          <span class="sep">/</span>
+        </t>
+
+      </t>
+    </div>
+  </t>
+</templates>
