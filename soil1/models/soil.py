@@ -3161,9 +3161,9 @@ class Soil(models.Model):
     consolidation_graph_1_2 = fields.Binary(string="Graph 0.1-0.2")
     consolidation_graph_2_5 = fields.Binary(string="Graph 0.2-0.5")
     consolidation_graph_5_10 = fields.Binary(string="Graph 0.5-1.0")
-    consolidation_graph_10_20 = fields.Binary(string="Graph 1.0-2.0")
-    consolidation_graph_20_40 = fields.Binary(string="Graph 2.0-4.0")
-    consolidation_graph_40_80 = fields.Binary(string="Graph 4.0-8.0")
+    # consolidation_graph_10_20 = fields.Binary(string="Graph 1.0-2.0")
+    # consolidation_graph_20_40 = fields.Binary(string="Graph 2.0-4.0")
+    # consolidation_graph_40_80 = fields.Binary(string="Graph 4.0-8.0")
 
 
 
@@ -3172,19 +3172,20 @@ class Soil(models.Model):
             sorted_lines = sorted(record.consolidation_ids, key=lambda x: x.sqrt_time if x.sqrt_time else 0)
 
             graph_configs = [
-                ('load_0_05_0_1', '1st Cycle Loading - (0.05 - 0.1)', 'consolidation_graph_05_1', (10, 6)),
-                ('load_0_1_0_2',  '1st Cycle Loading - (0.1 - 0.2)',  'consolidation_graph_1_2', (10, 6)),
-                ('load_0_2_0_5',  '1st Cycle Loading - (0.2 - 0.5)',  'consolidation_graph_2_5', (10, 6)),
-                ('load_0_5_1_0',  '1st Cycle Loading - (0.5 - 1.0)',  'consolidation_graph_5_10', (10, 6)),
+                ('load_0_05_0_1', '1st Cycle Loading - (0.05 - 0.1)', 'consolidation_graph_05_1', (10, 5)),
+                ('load_0_1_0_2',  '1st Cycle Loading - (0.1 - 0.2)',  'consolidation_graph_1_2', (10, 5)),
+                ('load_0_2_0_5',  '1st Cycle Loading - (0.2 - 0.5)',  'consolidation_graph_2_5', (10, 5)),
+                ('load_0_5_1_0',  '1st Cycle Loading - (0.5 - 1.0)',  'consolidation_graph_5_10', (10, 5)),
                 
-                ('load_1_0_2_0',  '1st Cycle Loading - (1.0 - 2.0)',  'consolidation_graph_10_20', (20, 8)),
-                ('load_2_0_4_0',  '1st Cycle Loading - (2.0 - 4.0)',  'consolidation_graph_20_40', (20, 8)),
-                ('load_4_0_8_0',  '1st Cycle Loading - (4.0 - 8.0)',  'consolidation_graph_40_80', (20, 8)),
+                # ('load_1_0_2_0',  '1st Cycle Loading - (1.0 - 2.0)',  'consolidation_graph_10_20', (20, 6)),
+                # ('load_2_0_4_0',  '1st Cycle Loading - (2.0 - 4.0)',  'consolidation_graph_20_40', (20, 6)),
+                # ('load_4_0_8_0',  '1st Cycle Loading - (4.0 - 8.0)',  'consolidation_graph_40_80', (20, 6)),
             ]
 
             for line_field, title, image_field, fig_size in graph_configs:
                 image_data = self._plot_graph(sorted_lines, line_field, title, fig_size)
                 record[image_field] = image_data
+                
 
     def _plot_graph(self, lines, y_field_name, title, fig_size):
         """
@@ -3199,9 +3200,11 @@ class Soil(models.Model):
             if line.sqrt_time is not None and y_val is not None:
                 x_values.append(line.sqrt_time)
                 y_values.append(y_val)
+            
 
         if not x_values or not y_values:
             return False
+           
 
         # --- Plotting Logic ---
         
@@ -3224,6 +3227,9 @@ class Soil(models.Model):
         else:
             ax.plot(x_values, y_values, marker='o', markersize=6, linestyle='-', color='black', linewidth=1.5)
 
+            
+    
+
         # Formatting
         ax.set_xlim(0, 20)
         ax.set_xticks(range(0, 21, 2))
@@ -3244,6 +3250,121 @@ class Soil(models.Model):
         buf.seek(0)
         
         return base64.b64encode(buf.getvalue())
+    
+
+
+
+
+    graph_1_0_2_0 = fields.Binary(string="Graph (1.0–2.0 kg/cm²)")
+    graph_2_0_4_0 = fields.Binary(string="Graph (2.0–4.0 kg/cm²)")
+    graph_4_0_8_0 = fields.Binary(string="Graph (4.0–8.0 kg/cm²)")
+
+    
+
+    # ---------------------------------------------------------
+    # COMMON GRAPH PLOTTER (FORMATTED & SMOOTH)
+    # ---------------------------------------------------------
+    def _plotted_graph(self, lines, y_field_name, title, fig_size=(10, 5)):
+
+        lines = lines.sorted('sqrt_time')
+
+        x_values = []
+        y_values = []
+
+        for line in lines:
+            y_val = getattr(line, y_field_name, None)
+            if line.sqrt_time is not None and y_val is not None:
+                x_values.append(line.sqrt_time)
+                y_values.append(y_val)
+
+        if not x_values:
+            return False
+
+        can_smooth = HAS_SCIPY and len(x_values) >= 4
+
+        fig, ax = plt.subplots(figsize=fig_size)
+
+        if can_smooth:
+            try:
+                x_np = np.array(x_values)
+                y_np = np.array(y_values)
+
+                x_new = np.linspace(x_np.min(), x_np.max(), 300)
+                spline = make_interp_spline(x_np, y_np, k=3)
+                y_smooth = spline(x_new)
+
+                ax.plot(x_new, y_smooth, color='black', linewidth=1.5)
+                ax.plot(x_values, y_values, 'o', color='black', markersize=6)
+            except Exception:
+                ax.plot(x_values, y_values, 'o-', color='black', linewidth=1.5)
+        else:
+            ax.plot(x_values, y_values, 'o-', color='black', linewidth=1.5)
+
+        # -------- LAB STANDARD FORMATTING --------
+        ax.set_xlim(0, 20)
+        ax.set_xticks(range(0, 21, 2))
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+
+        ax.minorticks_on()
+        ax.grid(which='major', linestyle='-', linewidth=0.5, color='gray')
+        ax.grid(which='minor', linestyle=':', linewidth=0.5, color='lightgray')
+
+        ax.set_title(title, fontsize=16)
+        ax.set_xlabel('SQRT (Time in minutes)', fontsize=12)
+        ax.set_ylabel('Dial Gauge Reading (mm)', fontsize=12)
+
+        # Save Image
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png', dpi=100, bbox_inches='tight')
+        plt.close(fig)
+        buf.seek(0)
+
+        return base64.b64encode(buf.getvalue())
+
+    # ---------------------------------------------------------
+    # BUTTON ACTIONS (USING SAME PLOTTER)
+    # ---------------------------------------------------------
+    def action_generate_graph_1_0_2_0(self):
+        for rec in self:
+            rec.graph_1_0_2_0 = rec._plotted_graph(
+                rec.consolidation_ids,
+                'load_1_0_2_0',
+                '1st Cycle Loading – (1.0–2.0 kg/cm²)'
+            )
+
+    def action_generate_graph_2_0_4_0(self):
+        for rec in self:
+            rec.graph_2_0_4_0 = rec._plotted_graph(
+                rec.consolidation_ids,
+                'load_2_0_4_0',
+                '1st Cycle Loading – (2.0–4.0 kg/cm²)'
+            )
+
+    def action_generate_graph_4_0_8_0(self):
+        for rec in self:
+            rec.graph_4_0_8_0 = rec._plotted_graph(
+                rec.consolidation_ids,
+                'load_4_0_8_0',
+                '1st Cycle Loading – (4.0–8.0 kg/cm²)'
+            )
+
+
+    def action_generate_all_graphs(self):
+     for rec in self:
+        rec.action_generate_graph()
+        rec.action_generate_graph_1_0_2_0()
+        rec.action_generate_graph_2_0_4_0()
+        rec.action_generate_graph_4_0_8_0()
+
+
+    
+
+   
+
+
+    
+
+
 
     
     @api.model
@@ -4299,6 +4420,12 @@ class Soil(models.Model):
     soil_light_heavy_name = fields.Char("Name",default="DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION")
     soil_light_heavy_visible = fields.Boolean("DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION",compute="_compute_visible")
 
+    selected_lab_id8 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+
     empty_wt_proctor = fields.Float(string="Empty weight of Proctor mould in gm. M" , digits=(8,0))
     volumn_proctor = fields.Float(string="Volumn of Proctor mould in cc. V" , digits=(8,0))
     no_trails = fields.Float(string="Number of trials. n" , digits=(8,0))
@@ -4401,6 +4528,12 @@ class Soil(models.Model):
 
     ucs_name = fields.Char("Name",default="Unconfined Compressive Strength (UCS) Test")
     ucs_visible = fields.Boolean("Unconfined Compressive Strength (UCS) Test Visible",compute="_compute_visible")
+
+    selected_lab_id9 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
     ucs_diameter = fields.Float(string="Diameter (mm): ", digits=(12,0))
     ucs_area = fields.Float(string="Area (A):mm2", digits=(12,2), compute="_compute_ucs_area", store=True)
@@ -4755,6 +4888,12 @@ class Soil(models.Model):
 
     direct_shear_name = fields.Char("Name",default="DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST")
     direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
+
+    selected_lab_id10 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
     shear_box_dimension = fields.Float(string="Shear Box Inside Dimension:", digits=(12,0))
     shear_area = fields.Float(string="Area (A):cm2", digits=(12,0) , compute="_compute_shear_area", store=True)
