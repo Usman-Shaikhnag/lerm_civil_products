@@ -1,0 +1,42 @@
+<templates>
+  <t t-name="document_filestore.UploadModal" owl="1">
+    <t t-if="props.isOpen">
+      <div class="modal d-block" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <h5 class="modal-title">Upload File</h5>
+              <button type="button" class="btn-close" t-on-click="props.onClose" />
+            </div>
+
+            <div class="modal-body">
+              <t t-if="state.isUploading">
+                <p>Uploading... <t t-esc="state.uploadProgress"/>%</p>
+                <div class="progress">
+                  <div class="progress-bar"
+                       t-att-style="'width:' + state.uploadProgress + '%'" />
+                </div>
+              </t>
+              <t t-else="">
+                <p>Upload to:
+                  <strong>
+                    <t t-esc="props.currentFolderName or 'My Drive'" />
+                  </strong>
+                </p>
+                <input type="file" class="form-control" t-ref="fileInput" t-on-change="handleFileSelect"/>
+              </t>
+            </div>
+
+            <div class="modal-footer">
+              <button class="btn btn-secondary" t-on-click="props.onClose" t-att-disabled="state.isUploading">
+                Close
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </t>
+  </t>
+</templates>

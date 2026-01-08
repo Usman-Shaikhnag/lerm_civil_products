@@ -1,0 +1,57 @@
+<templates>
+  <t t-name="document_filestore.FolderMenu" owl="1">
+    <div t-ref="menuRef">
+
+      <button
+        class="menu-btn p-1 rounded btn btn-sm btn-link"
+        aria-label="Folder options"
+        t-on-click.stop="handleToggleMenu"
+      >
+        <i class="fa fa-ellipsis-v text-muted-foreground" />
+      </button>
+
+      <t t-if="state.isOpen">
+        <div class="menu-dropdown" t-on-click.stop="">
+
+          <!-- <t t-if="props.access == 'full'"> -->
+          <t t-if="isOwner()">
+            <button
+              t-on-click="handleUserRightsClick"
+              class="menu-item border-bottom"
+              t-att-disabled="isRoot"
+            >
+              <i class="fa fa-lock" /> <span>Manage Access</span>
+            </button>
+          </t>
+
+          <!-- Rename (Disabled for root) -->
+          <t t-if="props.access != 'view'">
+            <button
+              t-on-click="handleRenameClick"
+              class="menu-item border-bottom"
+              t-att-disabled="isRoot"
+            >
+              <i class="fa fa-pencil" /> <span>Rename</span>
+            </button>
+          </t>
+
+          <!-- Delete (Disabled for root) -->
+          <t t-if="props.access == 'full'">
+            <button
+              t-on-click="handleDeleteClick"
+              class="menu-item destructive"
+              t-att-disabled="isRoot"
+            >
+              <i class="fa fa-trash-o" /> <span>Delete</span>
+            </button>
+          </t>
+          <!-- Read Only visual -->
+          <t t-if="props.access == 'view'">
+            <span class="menu-item text-muted">View Only</span>
+          </t>
+        </div>
+      </t>
+
+    </div>
+  </t>
+</templates>
