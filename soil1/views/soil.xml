@@ -2320,27 +2320,82 @@
                             </tbody>
                         </table>
                     </div>
+                    <group/>
+                    
 
                     <div invisible="not consolidation_visible">
                         <button name="action_generate_graph" 
                                 string="Generate Graph" 
                                 type="object" 
-                                class="oe_highlight"/>
+                                class="oe_highlight" invisible= "1"/>
+
+                        <button name="action_generate_graph_1_0_2_0" 
+                                string="Generate Graph (1.0–2.0)" 
+                                type="object" 
+                                class="oe_highlight" invisible= "1"/>
+                        <button name="action_generate_graph_2_0_4_0" 
+                                string="Generate Graph (2.0–4.0)" 
+                                type="object" 
+                                class="oe_highlight" invisible= "1"/>
+                        <button name="action_generate_graph_4_0_8_0" 
+                                string="Generate Graph (4.0–8.0)" 
+                                type="object" 
+                                class="oe_highlight" invisible= "1"/>
+
+                        <button name="action_generate_all_graphs"
+                                string="Generate All Graphs"
+                                type="object"
+                                class="btn-primary"/>
                     </div>
 
-                    <div invisible="not consolidation_visible">
-                        <field name="consolidation_graph_05_1" widget="image" readonly="1"/>
-                    </div>
+                    <notebook invisible="not consolidation_visible">
 
-                     <div invisible="not consolidation_visible">
-                        <field name="consolidation_graph_1_2" widget="image" readonly="1"/>
-                    </div>
-                     <div invisible="not consolidation_visible">
-                        <field name="consolidation_graph_2_5" widget="image" readonly="1"/>
-                    </div>
-                     <div invisible="not consolidation_visible">
-                        <field name="consolidation_graph_5_10" widget="image" readonly="1"/>
-                    </div>
+                      <page string="Load 0.05 – 0.1">
+                        <div style="text-align: center;">
+                          <field name="consolidation_graph_05_1" widget="image" readonly="1" />
+                        </div>
+                      </page>
+
+                      <page string="Load 0.1 – 0.2">
+                       <div style="text-align: center;">
+                          <field name="consolidation_graph_1_2" widget="image" readonly="1"/>
+                        </div>
+                      </page>
+
+                      <page string="Load 0.2 – 0.5">
+                        <div style="text-align: center;">
+                          <field name="consolidation_graph_2_5" widget="image" readonly="1"/>
+                        </div>
+                      </page>
+
+                      <page string="Load 0.5 – 1.0">
+                        <div style="text-align: center;">
+                          <field name="consolidation_graph_5_10" widget="image" readonly="1"/>
+                        </div>
+                     </page>
+
+                       <page string="Load 1.0 – 2.0">
+                         <div style="text-align: center;">
+                           <field name="graph_1_0_2_0" widget="image" readonly="1" />
+                          </div>
+                      </page>
+
+                      <page string="Load 2.0 – 4.0">
+                        <div style="text-align: center;">
+                          <field name="graph_2_0_4_0" widget="image" readonly="1"/>
+                        </div>
+                      </page>
+
+                     <page string="Load 4.0 – 8.0">
+                       <div style="text-align: center;">
+                         <field name="graph_4_0_8_0" widget="image" readonly="1"/>
+                        </div>
+                     </page>
+
+                 </notebook>
+
+                
+
 
                 
 
@@ -2599,7 +2654,7 @@
                         </h1>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not permeability_falling_visible">
                             <tbody>
                                 <tr>
                                     <td><label for="selected_lab_id3"></label></td>
@@ -3084,6 +3139,17 @@
                         </h1>
                     </div>
 
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_light_heavy_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="selected_lab_id8"></label></td>
+                                <td><field name="selected_lab_id8"/> </td>
+                            </tr>
+                           
+                            
+                        </tbody>
+                    </table>
+
                      
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "soil_light_heavy_visible == False">
                             <tbody>
@@ -3147,6 +3213,19 @@
                             <field name="ucs_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not ucs_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="selected_lab_id9"></label></td>
+                                <td><field name="selected_lab_id9"/> </td>
+                            </tr>
+                           
+                            
+                        </tbody>
+                    </table>
+
+
 
                     <div class="d-flex gap-2" invisible = "ucs_visible == False">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -3389,6 +3468,17 @@
                             <field name="direct_shear_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="selected_lab_id10"></label></td>
+                                <td><field name="selected_lab_id10"/> </td>
+                            </tr>
+                           
+                            
+                        </tbody>
+                    </table>
 
                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
                             <tbody>
