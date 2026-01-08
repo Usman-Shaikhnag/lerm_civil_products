@@ -16,9 +16,74 @@ class MechanicalConcreteCube(models.Model):
 
     name = fields.Char("Name", default="Compressive Strength of Concrete Cube")
     cube_visible = fields.Boolean("Compressive Strength of Concrete Cube",compute="_compute_visible")
+    cube_visible_14 = fields.Boolean("Compressive Strength of Concrete Cube",compute="_compute_visible")
+    cube_visible_28= fields.Boolean("Compressive Strength of Concrete Cube",compute="_compute_visible")
+
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master', string="Parameters", compute="_compute_sample_parameters", store=True)
     child_lines = fields.One2many('mechanical.concrete.cube.line','parent_id',string="Parameter")
+
+    
+
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+
+    lab_cube_ids = fields.One2many(
+        'cube.lab.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+     # --- Button Function ---
+    def action_generate_options_cube(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first (Previous options delete kara)
+                    # (5, 0, 0) command saglya lines remove karte
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing (Break Logic)
+                    # Input: "S-25-144 - S-25-145"
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # "S-25-144"
+                        end_part = parts[-1].strip()  # "S-25-145"
+
+                        # Prefix (S-25) ani Number (144) vegla kara
+                        prefix = start_part.rsplit('-', 1)[0]
+                        start_num = int(start_part.split('-')[-1])
+                        end_num = int(end_part.split('-')[-1])
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            val = f"{prefix}-{num}"
+                            # One2many madhe create karnya sathi: (0, 0, values)
+                            lines_command.append((0, 0, {'lab': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_cube_ids = lines_command
+                        
+                except Exception as e:
+                    # Jar format chukla tar error ignore kara
+                    pass
+            else:
+                # Jar range nasel (single value asel), tar ti ekach value add kara
+                if record.lab_id:
+                     record.lab_cube_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
 
     casting_7_name = fields.Char("Name",default="7 Days")
     # casting_28_visible = fields.Boolean("28 days Visible",compute="_compute_visible")
@@ -27,8 +92,33 @@ class MechanicalConcreteCube(models.Model):
     testing_date_7days = fields.Date(string="Date of Testing",compute="_compute_testing_date_7days")
     status_7days = fields.Boolean("Done")
 
+
+    selected_lab_cube1 = fields.Many2one(
+        'cube.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_cube_ids)]"
+    )
+
     calc_mode = fields.Boolean(default=True)     
     submit_mode = fields.Boolean(default=False)
+
+
+
+    is_lab_casting_7 = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_lab_cube1')
+    def _onchange_selected_lab_cube1(self):
+        for rec in self:
+            if rec.selected_lab_cube1:
+                rec.is_lab_casting_7 = True
+            else:
+                rec.is_lab_casting_7 = False
+
+
+
 
     @api.depends('casting_date_7days')
     def _compute_testing_date_7days(self):
@@ -39,6 +129,9 @@ class MechanicalConcreteCube(models.Model):
                 record.testing_date_7days = fields.Datetime.to_string(testing_date)
             else:
                 record.testing_date_7days = False
+
+
+            
 
     child_lines14day = fields.One2many('mechanical.concrete.cube.line14','parent_id',string="Parameter")
 
@@ -52,6 +145,22 @@ class MechanicalConcreteCube(models.Model):
 
     room_temperature14 = fields.Integer(string="Room Temperature (°C)" ,required=True)
     relative_humidity14 = fields.Integer(string="Relative Humidity (%)" ,required=True)
+
+
+    is_lab_casting_14 = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_lab_cube1')
+    def _onchange_selected_lab_cube1(self):
+        for rec in self:
+            if rec.selected_lab_cube1:
+                rec.is_lab_casting_14 = True
+            else:
+                rec.is_lab_casting_14 = False
+
+
 
     @api.depends('casting_date_14days')
     def _compute_testing_date_14days(self):
@@ -79,11 +188,16 @@ class MechanicalConcreteCube(models.Model):
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
 
                 # Set average for first line in each group
-                if group:
-                    group[0].average_strength14 = avg
+                # if group:
+                #     group[0].average_strength14 = avg
                 # Reset average for other lines in group
-                for j in range(1, len(group)):
-                    group[j].average_strength14 = 0.0
+                # for j in range(1, len(group)):
+                #     group[j].average_strength14 = 0.0
+
+               
+
+
+                # rec.submit_mode = True
 
     average_strength14 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength14", digits=(12,2))
 
@@ -131,6 +245,8 @@ class MechanicalConcreteCube(models.Model):
                     else:
                         record.average_strength14_conformity = 'fail'
 
+                    
+
     @api.depends('average_strength14','eln_ref','grade')
     def _compute_average_strength14_nabl(self):
         
@@ -166,6 +282,23 @@ class MechanicalConcreteCube(models.Model):
     room_temperature28 = fields.Integer(string="Room Temperature (°C)" ,required=True)
     relative_humidity28 = fields.Integer(string="Relative Humidity (%)" ,required=True)
 
+
+    is_lab_casting_28 = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_lab_cube1')
+    def _onchange_selected_lab_cube1(self):
+        for rec in self:
+            if rec.selected_lab_cube1:
+                rec.is_lab_casting_28 = True
+            else:
+                rec.is_lab_casting_28 = False
+
+
+                
+
     @api.depends('casting_date_28days')
     def _compute_testing_date_28days(self):
         for record in self:
@@ -191,11 +324,13 @@ class MechanicalConcreteCube(models.Model):
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
 
                 # Set average for first line in each group
-                if group:
-                    group[0].average_strength28 = avg
+                # if group:
+                #     group[0].average_strength28 = avg
                 # Reset average for other lines in group
-                for j in range(1, len(group)):
-                    group[j].average_strength28 = 0.0
+                # for j in range(1, len(group)):
+                #     group[j].average_strength28 = 0.0
+
+                # rec.submit_mode = True
 
     average_strength28 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength28", digits=(12,2))
 
@@ -359,13 +494,29 @@ class MechanicalConcreteCube(models.Model):
                 group = lines[i:i + group_size]
                 strengths = [l.compressive_strength for l in group if l.compressive_strength > 0]
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
+                
 
                 # Set average for first line in each group
-                if group:
-                    group[0].avg_compressive_strength = avg
+                # if group:
+                #     group[0].avg_compressive_strength = avg
                 # Reset average for other lines in group
-                for j in range(1, len(group)):
-                    group[j].avg_compressive_strength = 0.0
+                # for j in range(1, len(group)):
+                #     group[j].avg_compressive_strength = 0.0
+
+
+                   # Jar Button Visible ahe (True), tar Submit Mode 'False' ch theva.
+                # if rec. cube_visible_14:
+                #  rec.submit_mode = False
+
+
+                # elif rec. cube_visible_28:
+                #  rec.submit_mode = False
+            
+            
+            # Jar Button Invisible ahe (False), tar automatic 'True' kara.
+                # else:
+                rec.submit_mode = True
+                
 
     average_strength = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength", digits=(12,2))
 
@@ -414,6 +565,8 @@ class MechanicalConcreteCube(models.Model):
         for rec in self:
             # Convert N/mm² to kN: strength * area / 1000
             rec.days_7_n = (rec.days_7_kmm * rec.area_of_cube) / 1000 if rec.days_7_kmm and rec.area_of_cube else 0.0
+
+
 
     days_28_kmm = fields.Float(string="28 Days", compute="_compute_days_28_kmm", store=True)
     days_28_n = fields.Float(string="28 Days", compute="_compute_days_28_n")
@@ -648,6 +801,8 @@ class MechanicalConcreteCube(models.Model):
 
         for record in self:
             record.cube_visible = False
+            record.cube_visible_14 = False
+            record.cube_visible_28 = False
          
 
             
@@ -1288,3 +1443,12 @@ class CubeNotes(models.Model):
     parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+
+class LabOptionLine(models.Model):
+    _name = 'cube.lab.line'
+    _description = 'Lab Options'
+    _rec_name = 'lab'  # Dropdown मध्ये हे नाव दिसेल
+
+    lab = fields.Char(string="Lab ID")
+    parent_id = fields.Many2one('mechanical.concrete.cube', string="Parent")

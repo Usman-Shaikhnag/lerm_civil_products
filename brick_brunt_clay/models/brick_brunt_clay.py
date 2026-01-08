@@ -16,8 +16,70 @@ class MechanicalBricksBurntClay(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+
+    lab_brick_clay_ids = fields.One2many(
+        'brick.clay.lab.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+
+     # --- Button Function ---
+    def action_generate_options_brick_clay(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first (Previous options delete kara)
+                    # (5, 0, 0) command saglya lines remove karte
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing (Break Logic)
+                    # Input: "S-25-144 - S-25-145"
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # "S-25-144"
+                        end_part = parts[-1].strip()  # "S-25-145"
+
+                        # Prefix (S-25) ani Number (144) vegla kara
+                        prefix = start_part.rsplit('-', 1)[0]
+                        start_num = int(start_part.split('-')[-1])
+                        end_num = int(end_part.split('-')[-1])
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            val = f"{prefix}-{num}"
+                            # One2many madhe create karnya sathi: (0, 0, values)
+                            lines_command.append((0, 0, {'lab': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_brick_clay_ids = lines_command
+                        
+                except Exception as e:
+                    # Jar format chukla tar error ignore kara
+                    pass
+            else:
+                # Jar range nasel (single value asel), tar ti ekach value add kara
+                if record.lab_id:
+                     record.lab_brick_clay_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
+
     calc_mode = fields.Boolean(default=True)     # Calculate चालू असताना True
     submit_mode = fields.Boolean(default=False)
+
 
 
     @api.depends('eln_ref')
@@ -96,13 +158,33 @@ class MechanicalBricksBurntClay(models.Model):
     compressive_strength_name = fields.Char("Name",default=" Compressive Strength")
     compressive_strength_visible = fields.Boolean("Compressive Strength",compute="_compute_visible")
 
+    selected_lab_brickclay1 = fields.Many2one(
+        'brick.clay.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_brick_clay_ids)]"
+    )
+
     temp_compressive_strength = fields.Char("Temp °c" )
     humidity_compressive_strength = fields.Char("Humidity %" )
 
     compressive_strength_child_lines = fields.One2many('mechanical.bricks.clay.compressive.line','parent_id',string="Compressive Strength Test" )
 
-    
+
     avg_compressive_strength = fields.Float(string="Average Compressive Strength ",compute="_compute_avg_compressive_strength")
+
+
+    is_lab_compressive_strength = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_brickclay1')
+    def _onchange_selected_lab_brickclay1(self):
+        for rec in self:
+            if rec.selected_lab_brickclay1:
+                rec.is_lab_compressive_strength = True
+            else:
+                rec.is_lab_compressive_strength = False
+
 
     @api.depends('compressive_strength_child_lines.compressive_strength')
     def _compute_avg_compressive_strength(self):
@@ -111,6 +193,8 @@ class MechanicalBricksBurntClay(models.Model):
               record.avg_compressive_strength = sum(record.compressive_strength_child_lines.mapped('compressive_strength'))/ len(record.compressive_strength_child_lines)
             else:
                 record.avg_compressive_strength = 0.0
+
+            record.submit_mode = True
 
     avg_compressive_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -173,13 +257,42 @@ class MechanicalBricksBurntClay(models.Model):
     water_absorption_name = fields.Char("Name",default=" Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption",compute="_compute_visible")
 
+    selected_lab_brickclay2 = fields.Many2one(
+        'brick.clay.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_brick_clay_ids)]"
+    )
+
     temp_water_absorption = fields.Char("Temp °c" ,required=True)
     humidity_water_absorption = fields.Char("Humidity %" ,required=True)
 
     water_absorption_child_lines = fields.One2many('mechanical.bricks.clay.water.absorption.line','parent_id',string="Water Absorption Test")
 
     avg_water_absorption = fields.Float(string="Average Water Absorption ",compute="_compute_avg_water_absorption")
+    
+    is_lab_water_absorption = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
 
+
+    @api.onchange('selected_lab_brickclay2')
+    def _onchange_selected_lab_brickclay2(self):
+        for rec in self:
+            if rec.selected_lab_brickclay2:
+                rec.is_lab_water_absorption = True
+            else:
+                rec.is_lab_water_absorption = False
+
+
+
+    @api.onchange('selected_lab_brickclay2')
+    def _onchange_selected_lab_brickclay2(self):
+        for rec in self:
+            if rec.selected_lab_brickclay2:
+                rec.is_lab_water_absorption = True
+            else:
+                rec.is_lab_water_absorption = False
 
     @api.depends('water_absorption_child_lines.water_absorption')
     def _compute_avg_water_absorption(self):
@@ -188,6 +301,11 @@ class MechanicalBricksBurntClay(models.Model):
               record.avg_water_absorption = sum(record.water_absorption_child_lines.mapped('water_absorption'))/ len(record.water_absorption_child_lines)
             else:
                 record.avg_water_absorption = 0.0
+
+
+                # record.submit_mode = True
+
+
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -249,6 +367,12 @@ class MechanicalBricksBurntClay(models.Model):
     dimension_name = fields.Char("Name",default="Dimension Test")
     dimension_visible = fields.Boolean("Dimension Test",compute="_compute_visible")
 
+    selected_lab_brickclay3 = fields.Many2one(
+        'brick.clay.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_brick_clay_ids)]"
+    )
+
     length_name = fields.Char("Name",default="Length")
     length_visible = fields.Boolean("Length",compute="_compute_visible")
 
@@ -276,6 +400,11 @@ class MechanicalBricksBurntClay(models.Model):
     height2 = fields.Float(string="height 2 ")
     height3 = fields.Float(string="height 3 ")
     avg_height = fields.Float(string="Average height ",compute="_compute_average",digits=(12,0))
+    
+    is_lab_dimension = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
 
 
     @api.depends('length1','length2','length3','width1','width2','width3','height1','height2','height3')
@@ -317,6 +446,9 @@ class MechanicalBricksBurntClay(models.Model):
                 record.avg_height = height / height_entries
             else:
                 record.avg_height = 0.0
+
+
+            # record.submit_mode = True
 
 
     avg_length_conformity = fields.Selection([
@@ -501,14 +633,30 @@ class MechanicalBricksBurntClay(models.Model):
     efforescence_visible = fields.Boolean("Efforescence Visible",compute="_compute_visible")
     visual_observation_name_efforescence = fields.Char("Name",default="Efforescence")
 
+    selected_lab_brickclay4 = fields.Many2one(
+        'brick.clay.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_brick_clay_ids)]"
+    )
+
     temp_efforescence = fields.Char("Temp °c" ,required=True)
     humidity_efforescence = fields.Char("Humidity %" ,required=True)
 
 
     visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
 
-            
-
+    is_lab_efforescence = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+    
+    @api.onchange('selected_lab_brickclay4')
+    def _onchange_selected_lab_brickclay4(self):
+        for rec in self:
+            if rec.selected_lab_brickclay4:
+                rec.is_lab_efforescence = True
+            else:
+                rec.is_lab_efforescence = False
 
 
     ### Compute Visible
@@ -689,6 +837,9 @@ class ClayCompressiveLine(models.Model):
             else:
                 rec.compressive_strength = 0.0
 
+                # rec.submit_mode = True
+
+
 
 
 
@@ -764,3 +915,13 @@ class BrickBurntClayNotes(models.Model):
     parent_id = fields.Many2one('mechanical.bricks.burnt.clay',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+
+
+class LabOptionLine(models.Model):
+    _name = 'brick.clay.lab.line'
+    _description = 'Lab Options'
+    _rec_name = 'lab'  # Dropdown मध्ये हे नाव दिसेल
+
+    lab = fields.Char(string="Lab ID")
+    parent_id = fields.Many2one('mechanical.bricks.burnt.clay', string="Parent")

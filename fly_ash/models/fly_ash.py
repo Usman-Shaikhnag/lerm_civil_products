@@ -729,7 +729,32 @@ class FlyaschNormalConsistency(models.Model):
     temp_compressive_strength = fields.Char("Temp °c" ,required=True)
     humidity_compressive_strength = fields.Char("Humidity %" ,required=True)
 
-    compressive_strength_child_lines = fields.One2many('flyash.compressive.strength.line','parent_id',string="Compressive Strength Test")
+    compressive_strength_child_lines = fields.One2many('flyash.compressive.strength.line','parent_id',string="Compressive Strength Test")\
+    
+
+    # selected_lab_flyash1 = fields.Many2one(
+    #     'flyash.lab.line',
+    #     string="Select Lab ID",
+    #     domain="[('id', 'in', lab_flyash_ids)]"
+    # )
+
+    
+    # is_compressive_strength = fields.Boolean(
+    #     string="Compacted Density Selected",
+        
+    # )
+
+    # @api.onchange('selected_lab_flyash1')
+    # def _onchange_selected_lab_flyash1(self):
+    #     for rec in self:
+    #         if rec.selected_lab_flyash1:
+    #             rec.is_compressive_strength = True
+    #         else:
+    #             rec.is_compressive_strength= False
+
+
+
+
 
     def action_calculate_avg_strength(self):
         for rec in self:
@@ -751,7 +776,22 @@ class FlyaschNormalConsistency(models.Model):
             for line in lines:
                 if line not in [lines[i] for i in range(0, len(lines), group_size)]:
                     line.avg_compressive_strength = 0.0
+         
 
+             # Jar Button Visible ahe (True), tar Submit Mode 'False' ch theva.
+            if line.compressive_strength_visible:
+                line.submit_mode = False
+
+            elif line.lime_visible:
+                line.submit_mode = False
+            
+            # Jar Button Invisible ahe (False), tar automatic 'True' kara.
+            else:
+                line.submit_mode = True
+
+
+
+            
     
 
 
@@ -948,7 +988,9 @@ class FlyaschNormalConsistency(models.Model):
             else:
                 record.average_28_days_nabl = 'fail'
 
+
    
+
 
 
     #  Determination of Lime Reactivity of Flyash	

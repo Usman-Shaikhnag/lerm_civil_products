@@ -21,9 +21,11 @@
                     </group>
 
                     <group>
+
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
                         <field name="eln_ref" readonly="1"/>
+                        <field name="lab_id" invisible="1" />
                         <field name="size_id"/>
                         
                         <field name="parameter_id" invisible="1"/>
@@ -38,6 +40,17 @@
                         </field>
                     </div>
                     <group/>
+
+                     <button name="action_generate_options_stone" 
+                            type="object" 
+                            string="Generate Lab ID" 
+                            class="oe_highlight"/>
+
+                    <field name="lab_stone_ids" invisible="1">
+                        <tree editable="bottom">
+                            <field name="lab"/>
+                        </tree>
+                    </field>
 
                     <style>
                         .blue-input input {
@@ -115,7 +128,44 @@
                     </div>
                     <group/>
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not scratch_hardness_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_stone1"></label></td>
+                                    <td ><field name="selected_lab_stone1"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
                  
+                
+            
+
+
+                  <div class="d-flex gap-2" invisible="not scratch_hardness_visible ">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_scratch_hardness">Temp.°C compacted</label></td>
+                                    <td><field name="temp_scratch_hardness" class="blue-input" invisible="not scratch_hardness_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_scratch_hardness">Humidity % compacted</label></td>
+                                    <td><field name="humidity_scratch_hardness" class="blue-input" invisible="not scratch_hardness_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
 
                     <div invisible="not scratch_hardness_visible">
                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
@@ -164,6 +214,44 @@
                             <field name="compressive_dry_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                     <div invisible = "compressive_dry_visible == False" style="margin-bottom: 10px;">
+                  <field name= 'compressive_dry_generated' invisible="1" />
+                  <button name="action_generate_compressive_dry_lines"
+                   
+                    type="object"
+                    string="compressive Dry Lab Lines"
+                    class="oe_highlight"
+                    invisible="compressive_dry_generated == True"/>
+
+                </div>
+
+                
+
+
+                    <div class="d-flex gap-2" invisible="not compressive_dry_visible ">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_compressive_dry">Temp.°C compacted</label></td>
+                                    <td><field name="temp_compressive_dry" class="blue-input" invisible="not compressive_dry_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_compressive_dry">Humidity % compacted</label></td>
+                                    <td><field name="humidity_compressive_dry" class="blue-input" invisible="not compressive_dry_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
 
 
                     <div class="d-flex gap-2" invisible = "compressive_dry_visible == False">
@@ -265,6 +353,42 @@
                         </h1>
                     </div>
 
+                     <div invisible = "compressive_wet_visible == False" style="margin-bottom: 10px;">
+                  <field name= 'compressive_wet_generated' invisible="1" />
+                  <button name="action_generate_compressive_wet_lines"
+                   
+                    type="object"
+                    string="compressive wet Lab Lines"
+                    class="oe_highlight"
+                    invisible="compressive_wet_generated == True"/>
+
+                </div>
+
+
+                       <div class="d-flex gap-2" invisible="not compressive_wet_visible ">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_compressive_satuarted">Temp.°C compacted</label></td>
+                                    <td><field name="temp_compressive_satuarted" class="blue-input" invisible="not compressive_wet_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_compressive_satuarted">Humidity % compacted</label></td>
+                                    <td><field name="humidity_compressive_satuarted" class="blue-input" invisible="not compressive_wet_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
                     <div class="d-flex gap-2" invisible="compressive_wet_visible == False">
                         
 
@@ -362,7 +486,45 @@
                         </h1>
                     </div>
 
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not (porosity_visible or water_absorption_visible or app_specific_visible or true_specific_visible)">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_stone2"></label></td>
+                                    <td ><field name="selected_lab_stone2"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
             
+
+
+
+
+                 <div class="d-flex gap-2" invisible="not porosity_visible ">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_porosity">Temp.°C compacted</label></td>
+                                    <td><field name="temp_porosity" class="blue-input" invisible="not porosity_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_porosity">Humidity % compacted</label></td>
+                                    <td><field name="humidity_porosity" class="blue-input" invisible="not porosity_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
 
 
                 <div invisible="not (porosity_visible or water_absorption_visible or app_specific_visible or true_specific_visible)">

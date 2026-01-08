@@ -28,6 +28,75 @@ class PaverBlock(models.Model):
     calc_mode = fields.Boolean(default=True)     
     submit_mode = fields.Boolean(default=False)
 
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+
+    lab_paver_ids = fields.One2many(
+        'paver.lab.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+     # --- Button Function ---
+    def action_generate_options_paver(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # Example: "S-25-001"
+                        end_part = parts[-1].strip()  # Example: "S-25-006"
+
+                        prefix = start_part.rsplit('-', 1)[0]
+                        
+                        # --- CHANGE START ---
+                        # Number cha string part vegla kara length check karnya sathi
+                        start_num_str = start_part.split('-')[-1] # "001" milnar
+                        end_num_str = end_part.split('-')[-1]     # "006" milnar
+                        
+                        # Length calculate kara (Example: "001" chi length 3 ahe)
+                        padding_length = len(start_num_str)
+
+                        start_num = int(start_num_str) # Integer madhe convert: 1
+                        end_num = int(end_num_str)     # Integer madhe convert: 6
+                        # --- CHANGE END ---
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            # zfill use karun zero add kara
+                            # Jar num=1 ahe ani padding_length=3 ahe, tar "001" banel
+                            formatted_num = str(num).zfill(padding_length)
+                            
+                            val = f"{prefix}-{formatted_num}"
+                            lines_command.append((0, 0, {'lab': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_paver_ids = lines_command
+                        
+                except Exception as e:
+                    pass
+            else:
+                if record.lab_id:
+                    record.lab_paver_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
+
 
     @api.model
     def default_get(self, fields):
@@ -81,6 +150,25 @@ class PaverBlock(models.Model):
     dimension_name = fields.Char("Name",default="Dimension Test")
     dimension_visible = fields.Boolean("Dimension Test",compute="_compute_visible")
 
+    selected_dimension = fields.Many2one(
+        'paver.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_paver_ids)]"
+    )
+
+    is_dimension = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_dimension')
+    def _onchange_selected_dimension(self):
+        for rec in self:
+            if rec.selected_dimension:
+                rec.is_dimension = True
+            else:
+                rec.is_dimension = False
+
     length_name = fields.Char("Name",default="Length")
     length_visible = fields.Boolean("Length",compute="_compute_visible")
 
@@ -90,8 +178,8 @@ class PaverBlock(models.Model):
     thickness_name = fields.Char("Name",default="Thickness")
     thickness_visible = fields.Boolean("Thickness",compute="_compute_visible")
 
-    temp_dimension = fields.Char("Temp °c" ,required=True)
-    humidity_dimension = fields.Char("Humidity %" ,required=True)
+    temp_dimension = fields.Char("Temp °c" )
+    humidity_dimension = fields.Char("Humidity %" )
 
     dimension_child_lines = fields.One2many('paver.dimension.line','parent_id',string="Dimension Test")
 
@@ -285,8 +373,27 @@ class PaverBlock(models.Model):
     water_absorption_name = fields.Char("Name",default=" Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption",compute="_compute_visible")
 
-    temp_water_absorption = fields.Char("Temp °c" ,required=True)
-    humidity_water_absorption = fields.Char("Humidity %" ,required=True)
+    selected_water_absorption = fields.Many2one(
+        'paver.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_paver_ids)]"
+    )
+
+    is_water_absorption = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_water_absorption')
+    def _onchange_selected_water_absorption(self):
+        for rec in self:
+            if rec.selected_water_absorption:
+                rec.is_water_absorption = True
+            else:
+                rec.is_water_absorption = False
+
+    temp_water_absorption = fields.Char("Temp °c" )
+    humidity_water_absorption = fields.Char("Humidity %" )
 
     water_absorption_child_lines = fields.One2many('paver.water.absorption.line','parent_id',string="Water Absorption Test")
 
@@ -361,8 +468,27 @@ class PaverBlock(models.Model):
     compressive_strength_name = fields.Char("Name",default=" Compressive Strength")
     compressive_strength_visible = fields.Boolean("Compressive Strength",compute="_compute_visible")
 
-    temp_compressive_strength = fields.Char("Temp °c" ,required=True)
-    humidity_compressive_strength = fields.Char("Humidity %" ,required=True)
+    temp_compressive_strength = fields.Char("Temp °c" )
+    humidity_compressive_strength = fields.Char("Humidity %" )
+
+    selected_compressive_strength = fields.Many2one(
+        'paver.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_paver_ids)]"
+    )
+
+    is_compressive_strength = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_compressive_strength')
+    def _onchange_selected_compressive_strength(self):
+        for rec in self:
+            if rec.selected_compressive_strength:
+                rec.is_compressive_strength = True
+            else:
+                rec.is_compressive_strength = False
 
     # correction_factore = fields.Float(string=" Correction Factor")
 
@@ -833,3 +959,14 @@ class PaverBlockNotes(models.Model):
     parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+
+
+
+class LabOptionLine(models.Model):
+    _name = 'paver.lab.line'
+    _description = 'Lab Options'
+    _rec_name = 'lab'  # Dropdown मध्ये हे नाव दिसेल
+
+    lab = fields.Char(string="Lab ID")
+    parent_id = fields.Many2one('mechanical.paver.block', string="Parent")

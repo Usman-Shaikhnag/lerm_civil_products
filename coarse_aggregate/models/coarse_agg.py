@@ -32,7 +32,7 @@ class CoarseAggregateMechanical(models.Model):
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
 
     calc_mode = fields.Boolean(default=True)     # Calculate चालू असताना True
-    submit_mode = fields.Boolean(default=False)  
+    
 
     notes_id = fields.One2many(
     'coarse.aggregate.notes',
@@ -40,6 +40,79 @@ class CoarseAggregateMechanical(models.Model):
     string="Notes",
     default=lambda self: self._default_notes_lines()
 )
+   
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+
+    lab_coarse_ids = fields.One2many(
+        'coarse.lab.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+     # --- Button Function ---
+    def action_generate_options_coarse(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # Example: "S-25-001"
+                        end_part = parts[-1].strip()  # Example: "S-25-006"
+
+                        prefix = start_part.rsplit('-', 1)[0]
+                        
+                        # --- CHANGE START ---
+                        # Number cha string part vegla kara length check karnya sathi
+                        start_num_str = start_part.split('-')[-1] # "001" milnar
+                        end_num_str = end_part.split('-')[-1]     # "006" milnar
+                        
+                        # Length calculate kara (Example: "001" chi length 3 ahe)
+                        padding_length = len(start_num_str)
+
+                        start_num = int(start_num_str) # Integer madhe convert: 1
+                        end_num = int(end_num_str)     # Integer madhe convert: 6
+                        # --- CHANGE END ---
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            # zfill use karun zero add kara
+                            # Jar num=1 ahe ani padding_length=3 ahe, tar "001" banel
+                            formatted_num = str(num).zfill(padding_length)
+                            
+                            val = f"{prefix}-{formatted_num}"
+                            lines_command.append((0, 0, {'lab': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_coarse_ids = lines_command
+                        
+                except Exception as e:
+                    pass
+            else:
+                if record.lab_id:
+                    record.lab_coarse_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
+
+
+    calc_mode = fields.Boolean(default=True)     
+    submit_mode = fields.Boolean(default=False)
 
 
 
@@ -155,6 +228,25 @@ class CoarseAggregateMechanical(models.Model):
 
     crushing_value_name = fields.Char("Name",default="Crushing Value")
     crushing_visible = fields.Boolean("Crushing Visible",compute="_compute_visible")
+
+    crushing_value_lab1 = fields.Many2one(
+        'coarse.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_coarse_ids)]"
+    )
+
+    crushing_value_selected = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('crushing_value_selected')
+    def _onchange_crushing_value_selected(self):
+        for rec in self:
+            if rec.crushing_value_selected:
+                rec.crushing_value_lab1 = True
+            else:
+                rec.crushing_value_lab1 = False
 
 
     wt_of_empty_cylinder = fields.Float(string="Weight of Empty Cylinder (W1) – gms.")
@@ -279,6 +371,25 @@ class CoarseAggregateMechanical(models.Model):
 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
+
+    specific_gravity_lab1 = fields.Many2one(
+        'coarse.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_coarse_ids)]"
+    )
+
+    specific_gravity_selected = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('specific_gravity_selected')
+    def _onchange_specific_gravity_selected(self):
+        for rec in self:
+            if rec.specific_gravity_selected:
+                rec.specific_gravity_lab1 = True
+            else:
+                rec.specific_gravity_lab1 = False
 
     water_absorption_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
@@ -513,6 +624,25 @@ class CoarseAggregateMechanical(models.Model):
     impact_value_name = fields.Char("Name",default=" Impact Value")
     impact_visible = fields.Boolean("Impact Visible",compute="_compute_visible")
 
+    impact_lab1 = fields.Many2one(
+        'coarse.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_coarse_ids)]"
+    )
+
+    impact_selected = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange(' impact_selected')
+    def _onchange_impact_selected(self):
+        for rec in self:
+            if rec. impact_selected:
+                rec. impact_lab1 = True
+            else:
+                rec. impact_lab1 = False
+
 
     wt_of_empty_cup = fields.Float(string="Weight of Empty Cup (W1) – gms.		")
     wt_of_cup_aggregate = fields.Float(string="Weight of Cup + Aggregate (W2) – gms.")
@@ -664,6 +794,25 @@ class CoarseAggregateMechanical(models.Model):
 
     name_10fine = fields.Char(default="10% Fine Value")
     fine10_visible = fields.Boolean("10% Fine Visible",compute="_compute_visible")
+
+    fine10_lab1 = fields.Many2one(
+        'coarse.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_coarse_ids)]"
+    )
+
+    fine10_selected = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange(' fine10_selected')
+    def _onchange_fine10_selected(self):
+        for rec in self:
+            if rec. fine10_selected:
+                rec. fine10_lab1 = True
+            else:
+                rec. fine10_lab1 = False
 
     wt_of_empty_cylinder_10fine = fields.Float(string="Weight of Empty Cylinder (W1) – gms.")
     wt_of_cylinder_aggregate_10fine = fields.Float(string="Weight of Cylinder + Aggregate (W2) – gms.")
@@ -841,6 +990,14 @@ class CoarseAggregateMechanical(models.Model):
     elongation_name = fields.Char(default="Elongation Index")
     elongation_visible = fields.Boolean(compute="_compute_visible")
 
+    submit_mode_elongation = fields.Boolean(default=False)
+
+    elongation_lab1 = fields.Many2one(
+        'coarse.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_coarse_ids)]"
+    )
+
     elongation_table = fields.One2many('mechanical.elongation.index.line','parent_id',string="Elongation Index",default=lambda self: self.default_elongation_sizes())
 
     total_weight_retained_el = fields.Float('Total Weight Retained on each Sieve (W’n) gms',compute="_compute_total_weight_retained_el",store=True)
@@ -907,13 +1064,14 @@ class CoarseAggregateMechanical(models.Model):
             record.elongation_index = round(record.total_total_percent_retained_el / 100,2)
 
     def action_compute_elongation_index(self):
-     for record in self:
-        # record.calc_mode_elongation = True
-        # record.submit_mode_elongation = False
-        if record.total_total_percent_retained_el:
-            record.elongation_index = round(record.total_total_percent_retained_el / 100, 2)
-        else:
-            record.elongation_index = 0.0
+        for record in self:
+            # record.calc_mode_elongation = True
+            # record.submit_mode_elongation = False
+            if record.total_total_percent_retained_el:
+                record.elongation_index = round(record.total_total_percent_retained_el / 100, 2)
+            else:
+                record.elongation_index = 0.0
+        record.submit_mode_elongation = True
     
     elongation_index_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -978,6 +1136,14 @@ class CoarseAggregateMechanical(models.Model):
 
     flakiness_name = fields.Char("Name",default="Flakiness Index")
     flakiness_visible = fields.Boolean("Flakiness Visible",compute="_compute_visible")
+
+    submit_mode_flakiness = fields.Boolean(default=False)
+
+    flakiness_lab1 = fields.Many2one(
+        'coarse.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_coarse_ids)]"
+    )
 
     flakiness_table = fields.One2many('mechanical.flakiness.index.line','parent_id',string="Flakiness Index",default=lambda self: self.default_flakiness_sizes())
 
@@ -1045,11 +1211,12 @@ class CoarseAggregateMechanical(models.Model):
             record.flakiness_index = round(record.total_total_percent_retained_fl / 100,2)
 
     def action_compute_flakiness_index(self):
-     for record in self:
-        if record.total_total_percent_retained_fl:
-            record.flakiness_index = round(record.total_total_percent_retained_fl / 100, 2)
-        else:
-            record.elongation_index = 0.0
+        for record in self:
+            if record.total_total_percent_retained_fl:
+                record.flakiness_index = round(record.total_total_percent_retained_fl / 100, 2)
+            else:
+                record.elongation_index = 0.0
+        record.submit_mode_flakiness = True
     
     flakiness_index_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -1121,6 +1288,25 @@ class CoarseAggregateMechanical(models.Model):
 
     compacted_density_name = fields.Char("Name",default="Compacted Density ")
     compacted_density_visible = fields.Boolean("compacted density  Visible",compute="_compute_visible")
+
+    compacted_density_lab1 = fields.Many2one(
+        'coarse.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_coarse_ids)]"
+    )
+
+    compacted_density_selected = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange(' compacted_density_selected')
+    def _onchange_compacted_density_selected(self):
+        for rec in self:
+            if rec. compacted_density_selected:
+                rec. compacted_density_lab1 = True
+            else:
+                rec. compacted_density_lab1 = False
 
 
     capacity_of_cylinderr = fields.Float(string="Capacity of Cylinder Use for Test in litre (V)")
@@ -1442,6 +1628,25 @@ class CoarseAggregateMechanical(models.Model):
 
     rate_of_evaporation_visible = fields.Boolean(compute="_compute_visible")
 
+    rate_of_evaporation_lab1 = fields.Many2one(
+        'coarse.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_coarse_ids)]"
+    )
+
+    rate_of_evaporation_selected = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange(' rate_of_evaporation_selected')
+    def _onchange_rate_of_evaporation_selected(self):
+        for rec in self:
+            if rec. rate_of_evaporation_selected:
+                rec. rate_of_evaporation_lab1 = True
+            else:
+                rec. rate_of_evaporation_lab1 = False
+
     rate_of_evaporation_table = fields.One2many('mechanical.rate.of.evaporation.line','parent_id',string="Rate of Evaporation")
 
     avg_rate_evaporation = fields.Float('Average Rate Of Evaporation',compute="_compute_avg_rate_evaporation")
@@ -1525,6 +1730,25 @@ class CoarseAggregateMechanical(models.Model):
 
     abrasion_value_name = fields.Char("Name",default="Abrasion Value By Los Angeles+")
     abrasion_value_visible = fields.Boolean("Abrasion Value Visible",compute="_compute_visible")
+
+    abrasion_value_lab1 = fields.Many2one(
+        'coarse.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_coarse_ids)]"
+    )
+
+    abrasion_value_selected = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange(' abrasion_value_selected')
+    def _onchange_abrasion_value_selected(self):
+        for rec in self:
+            if rec. abrasion_value_selected:
+                rec. abrasion_value_lab1 = True
+            else:
+                rec. abrasion_value_lab1 = False
 
     abrasion_value_child_lines = fields.One2many('mechanical.abrasion.value.line','parent_id',string="Parameter",default=lambda self: self._default_abrasion_value_child_lines())
 
@@ -1676,6 +1900,14 @@ class CoarseAggregateMechanical(models.Model):
     weight_of_sample = fields.Float(string="Weight of Sample in gms")
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+
+    sieve_analysis_lab1 = fields.Many2one(
+        'coarse.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_coarse_ids)]"
+    )
+
+
 
     sieve_analysis_child_lines = fields.One2many('mechanical.coarse.aggregate.sieve.analysis.line','parent_id',string="Parameter",default=lambda self: self._default_sieve_analysis_child_lines())
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
@@ -1846,6 +2078,9 @@ class CoarseAggregateMechanical(models.Model):
             for line, specific_limit in zip(self.sieve_analysis_child_lines, specific_limits):
                 line.specific_limits = specific_limit
 
+    
+    submit_mode_sieve = fields.Boolean(default=False)
+
 
    
 
@@ -1853,7 +2088,7 @@ class CoarseAggregateMechanical(models.Model):
     def calculate_sieve(self): 
         for record in self:
             record.calc_mode = True
-            record.submit_mode = False
+            record.submit_mode_sieve = False
             # import wdb; wdb.set_trace()
             record.populate_sieve_analysis_lines()  # replace default_get call
             for line in record.sieve_analysis_child_lines:
@@ -1864,6 +2099,8 @@ class CoarseAggregateMechanical(models.Model):
                     previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
                     line.write({'cumulative_retained': previous_line_record + line.percent_retained,
                                 'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
+
+        record.submit_mode_sieve = True
                 
                     
               
@@ -2056,6 +2293,14 @@ class CoarseAggregateMechanical(models.Model):
     soudness_name = fields.Char("Name",default="Soundness Test ")
     soudness_visible = fields.Boolean("Soundness Test",compute="_compute_visible")
 
+    soudness_lab1 = fields.Many2one(
+        'coarse.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_coarse_ids)]"
+    )
+
+    submit_mode_soudness = fields.Boolean(default=False)
+
     soudness_magnesium_name = fields.Char("Name",default="Soundness Magnesium Test ")
     soudness_magnesium_visible = fields.Boolean("Soundness Test",compute="_compute_visible")
 
@@ -2139,6 +2384,7 @@ class CoarseAggregateMechanical(models.Model):
                 print("Updated Passing Percent:", passing_percent)
 
                 previous_cumulative = cumulative_retained
+        record.submit_mode_soudness = True
 
 
     ouantitative_name = fields.Char("Name",default="Quantitatively Examination :-")
@@ -3367,6 +3613,15 @@ class CoarseAggregateNotes(models.Model):
     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+
+class LabOptionLine(models.Model):
+    _name = 'coarse.lab.line'
+    _description = 'Lab Options'
+    _rec_name = 'lab'  # Dropdown मध्ये हे नाव दिसेल
+
+    lab = fields.Char(string="Lab ID")
+    parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent")
 
 
 

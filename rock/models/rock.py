@@ -16,7 +16,44 @@ class MechanicalRock(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+
     notes_id = fields.One2many('rock.notes','parent_id',string="Notes")
+    
+    calc_mode = fields.Boolean(default=True)
+
+
+    temp_rock = fields.Char(string="Temp.°C" )
+    humidity_rock= fields.Char(string="Humidity %" )
+
+
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+    
+
+    is_lab_rock = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('lab_id')
+    def _onchange_lab_id(self):
+        for rec in self:
+            if rec.lab_id:
+                rec.is_lab_rock = True
+            else:
+                rec.is_lab_rock = False
+
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
 
     @api.model
     def default_get(self, fields):
@@ -84,6 +121,39 @@ class MechanicalRock(models.Model):
     point_load_constant = fields.Float(string="Point Load  Constant")
     compressive_strength_constant = fields.Float(string="Compressive Strength  Constant")
     compressive_strength_constant_hd = fields.Float(string="Compressive Strength HD  Constant",digits=(12,4))
+
+    rock_lines_generated = fields.Boolean(string="Rock Lab Lines ",default=False)
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_rock_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.rock_child_lines = lines
+                record.rock_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.rock_child_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Rock Form',
+                'res_model': 'mechanical.rock',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
     
 
 

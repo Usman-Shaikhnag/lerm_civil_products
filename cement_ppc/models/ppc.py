@@ -28,6 +28,75 @@ class PPCCementNormalConsistency(models.Model):
     calc_mode = fields.Boolean(default=True)     
     submit_mode = fields.Boolean(default=False)
 
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+
+    lab_ppc_ids = fields.One2many(
+        'ppc.lab.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+    def action_generate_options_ppc(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # Example: "S-25-001"
+                        end_part = parts[-1].strip()  # Example: "S-25-006"
+
+                        prefix = start_part.rsplit('-', 1)[0]
+                        
+                        # --- CHANGE START ---
+                        # Number cha string part vegla kara length check karnya sathi
+                        start_num_str = start_part.split('-')[-1] # "001" milnar
+                        end_num_str = end_part.split('-')[-1]     # "006" milnar
+                        
+                        # Length calculate kara (Example: "001" chi length 3 ahe)
+                        padding_length = len(start_num_str)
+
+                        start_num = int(start_num_str) # Integer madhe convert: 1
+                        end_num = int(end_num_str)     # Integer madhe convert: 6
+                        # --- CHANGE END ---
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            # zfill use karun zero add kara
+                            # Jar num=1 ahe ani padding_length=3 ahe, tar "001" banel
+                            formatted_num = str(num).zfill(padding_length)
+                            
+                            val = f"{prefix}-{formatted_num}"
+                            lines_command.append((0, 0, {'lab': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_ppc_ids = lines_command
+                        
+                except Exception as e:
+                    pass
+            else:
+                if record.lab_id:
+                    record.lab_ppc_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
+
+
     @api.model
     def default_get(self, fields):
         res = super(PPCCementNormalConsistency, self).default_get(fields)
@@ -104,8 +173,28 @@ class PPCCementNormalConsistency(models.Model):
     density_cement_name = fields.Char("Name",default="Density of Cement (Le-Chatlier Flask)")
     density_cement_visible = fields.Boolean("Density of Cement (Le-Chatlier Flask) Visible",compute="_compute_visible")
 
-    temp_specific1 = fields.Char("Temp.°C" ,required=True)
-    humidity_specific1= fields.Char("Humidity %", required=True)
+    temp_specific1 = fields.Char("Temp.°C" )
+    humidity_specific1= fields.Char("Humidity %")
+
+    selected_density_cement = fields.Many2one(
+        'ppc.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_ppc_ids)]"
+    )
+
+    is_density_cement = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_density_cement')
+    def _onchange_selected_density_cement(self):
+        for rec in self:
+            if rec.selected_density_cement:
+                rec.is_density_cement = True
+            else:
+                rec.is_density_cement = False
+
     
 
     temp_water1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
@@ -242,8 +331,50 @@ class PPCCementNormalConsistency(models.Model):
     consistency_cement_name = fields.Char("Name",default="Consistency of cement")
     consistency_cement_visible = fields.Boolean("Consistency of cement Visible",compute="_compute_visible")
 
-    temp_consistency = fields.Char("Temp.°C" ,required=True)
-    humidity_consistency= fields.Char("Humidity %" ,required=True)
+    temp_consistency = fields.Char("Temp.°C" )
+    humidity_consistency= fields.Char("Humidity %" )
+
+    is_consistency_cement = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_opc_consistency_cement1(self):
+        for record in self:
+
+            record.is_consistency_cement = True
+
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.consistency_cement_lines = lines
+                record.is_consistency_cement = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.consistency_cement_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'OPC Form',
+                'res_model': 'cement.ppc',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
 
     consistency_cement_lines = fields.One2many('ppc.consistensy.cement.line','parent_id',string="Consistency")
 
@@ -321,13 +452,55 @@ class PPCCementNormalConsistency(models.Model):
 
     intial_time_lines = fields.One2many('ppc.initial.time.line','parent_id',string="Initial Time")
 
+    is_intial_time = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_opc_intial_time1(self):
+        for record in self:
+
+            record.is_intial_time = True
+
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.intial_time_lines = lines
+                record.is_intial_time = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.intial_time_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'OPC Form',
+                'res_model': 'cement.ppc',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
 
     initial_setting_time_visible = fields.Boolean("Setting Time Visible",compute="_compute_visible")
     initial_setting_time_name = fields.Char("Name",default="Setting Time")
 
+
   
-    temp_time = fields.Char("Temp.°C" ,required=True)
-    humidity_time= fields.Char("Humidity %" ,required=True)
+    temp_time = fields.Char("Temp.°C" )
+    humidity_time= fields.Char("Humidity %" )
     avg_initial_time = fields.Float("Average Intial Time",compute="_compute_avg_initial_time",store=True,digits=(12,4))
 
     @api.depends('intial_time_lines.initial')
@@ -340,8 +513,8 @@ class PPCCementNormalConsistency(models.Model):
             else:
                 rec.avg_initial_time = 0
 
-    temp_time_final = fields.Char("Temp.°C" ,required=True)
-    humidity_time_final = fields.Char("Humidity %" ,required=True)
+    temp_time_final = fields.Char("Temp.°C" )
+    humidity_time_final = fields.Char("Humidity %" )
 
     avg_final_time = fields.Float("Average Final Time",compute="_compute_avg_final_time",store=True,digits=(12,4))
 
@@ -470,8 +643,27 @@ class PPCCementNormalConsistency(models.Model):
     fineness_name = fields.Char("Name",default="Fineness by Blaines Air Permeability Method")
     fineness_visible = fields.Boolean("Fineness by Blaines Air Permeability Method Visible",compute="_compute_visible")
 
-    temp_fineness = fields.Char("Temp.°C" ,required=True)
-    humidity_fineness= fields.Char("Humidity %" ,required=True)
+    selected_fineness = fields.Many2one(
+        'ppc.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_ppc_ids)]"
+    )
+
+    is_fineness = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_fineness')
+    def _onchange_selected_fineness(self):
+        for rec in self:
+            if rec.selected_fineness:
+                rec.is_fineness = True
+            else:
+                rec.is_fineness = False
+
+    temp_fineness = fields.Char("Temp.°C" )
+    humidity_fineness= fields.Char("Humidity %" )
 
     density_cement = fields.Float(string="Density of Cement (g/cc)", digits=(12, 3))
     
@@ -577,6 +769,39 @@ class PPCCementNormalConsistency(models.Model):
     compressive_name = fields.Char("Name",default="Cement Compressive Strength")
     compressive_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
 
+    compressive_generated1 = fields.Boolean(string="Compressive Lab Lines ",default=False)
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_opc_compressive_lines1(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.ppc_compressive_ids = lines
+                record.compressive_generated1 = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.ppc_compressive_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'OPC Form',
+                'res_model': 'cement.ppc',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
     ppc_compressive_ids = fields.One2many("mechanical.ppc.compressive.line", "parent_id", string="Test Readings")
 
     def action_calculate_avg_strength(self):
@@ -595,6 +820,7 @@ class PPCCementNormalConsistency(models.Model):
             for line in lines:
                 if line not in [lines[i] for i in range(0, len(lines), group_size)]:
                     line.avg_compressive_strength = 0.0
+            rec.compressive_generated1 = True
 
     avg_3_days = fields.Float(string="Avg Strength (3 Days)", compute="_compute_avg_strengths", store=True)
 
@@ -662,7 +888,7 @@ class PPCCementNormalConsistency(models.Model):
 
     avg_7_days = fields.Float(string="Avg Strength (7 Days)", compute="_compute_avg_strengths", store=True)
 
-    temp_7_days = fields.Char("Temp.°C" ,required=True)
+    temp_7_days = fields.Char("Temp.°C",required=True )
     humidity_7_days= fields.Char("Humidity %" ,required=True)
 
     avg_7_days_conformity = fields.Selection([
@@ -799,8 +1025,27 @@ class PPCCementNormalConsistency(models.Model):
     soundness_autoclave_name = fields.Char("Name",default="Soundness by Autoclave Test")
     soundness_autoclave_visible = fields.Boolean("Soundness by Autoclave Test Visible",compute="_compute_visible")
 
-    temp_soundness_autoclave = fields.Char("Temp.°C" ,required=True)
-    humidity_soundness_autoclave= fields.Char("Humidity %" ,required=True)
+    temp_soundness_autoclave = fields.Char("Temp.°C" )
+    humidity_soundness_autoclave= fields.Char("Humidity %" )
+
+    selected_soundness_autoclave = fields.Many2one(
+        'ppc.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_ppc_ids)]"
+    )
+
+    is_soundness_autoclave = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    @api.onchange('selected_soundness_autoclave')
+    def _onchange_selected_soundness_autoclave(self):
+        for rec in self:
+            if rec.selected_soundness_autoclave:
+                rec.is_soundness_autoclave = True
+            else:
+                rec.is_soundness_autoclave = False
 
     ppc_autoclave_ids = fields.One2many("mechanical.ppc.autoclave.line", "parent_id", string="Test Readings")
 
@@ -879,8 +1124,41 @@ class PPCCementNormalConsistency(models.Model):
     soundness_le_method_name = fields.Char("Name",default="Soundness of Cement By Le-Chattelier Method")
     soundness_le_method_visible = fields.Boolean("Soundness of Cement By Le-Chattelier Method Visible",compute="_compute_visible")
 
-    temp_soundness_le_method = fields.Char("Temp.°C" ,required=True)
-    humidity_soundness_le_method= fields.Char("Humidity %" ,required=True)
+    temp_soundness_le_method = fields.Char("Temp.°C" )
+    humidity_soundness_le_method= fields.Char("Humidity %" )
+
+    soundness_le_method_generated = fields.Boolean(string="Compressive Lab Lines ",default=False)
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_ggbs_soundness_le_method_lines1(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.ppc_le_method_ids = lines
+                record.soundness_le_method_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.ppc_le_method_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'OPC Form',
+                'res_model': 'cement.ppc',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
 
     ppc_le_method_ids = fields.One2many("mechanical.ppc.lemethod.line", "parent_id", string="Test Readings")
 
@@ -912,6 +1190,7 @@ class PPCCementNormalConsistency(models.Model):
             for line in lines:
                 if line not in [lines[i] for i in range(0, len(lines), group_size)]:
                     line.avg_expansion = 0.0
+            rec.soundness_le_method_generated = True
 
     avg_expantion1_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -1532,4 +1811,14 @@ class cementppcNotes(models.Model):
     parent_id = fields.Many2one('cement.ppc',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+
+
+class LabOptionLine(models.Model):
+    _name = 'ppc.lab.line'
+    _description = 'Lab Options'
+    _rec_name = 'lab'  # Dropdown मध्ये हे नाव दिसेल
+
+    lab = fields.Char(string="Lab ID")
+    parent_id = fields.Many2one('cement.ppc', string="Parent")
 

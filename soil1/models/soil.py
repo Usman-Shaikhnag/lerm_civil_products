@@ -82,6 +82,60 @@ class Soil(models.Model):
             store=True
         )
 
+    lab_option_ids = fields.One2many(
+        'lab.option.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+   
+
+    
+
+    # --- Button Function ---
+    def action_generate_options(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first (Previous options delete kara)
+                    # (5, 0, 0) command saglya lines remove karte
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing (Break Logic)
+                    # Input: "S-25-144 - S-25-145"
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # "S-25-144"
+                        end_part = parts[-1].strip()  # "S-25-145"
+
+                        # Prefix (S-25) ani Number (144) vegla kara
+                        prefix = start_part.rsplit('-', 1)[0]
+                        start_num = int(start_part.split('-')[-1])
+                        end_num = int(end_part.split('-')[-1])
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            val = f"{prefix}-{num}"
+                            # One2many madhe create karnya sathi: (0, 0, values)
+                            lines_command.append((0, 0, {'name': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_option_ids = lines_command
+                        
+                except Exception as e:
+                    # Jar format chukla tar error ignore kara
+                    pass
+            else:
+                # Jar range nasel (single value asel), tar ti ekach value add kara
+                if record.lab_id:
+                     record.lab_option_ids = [(5, 0, 0), (0, 0, {'name': record.lab_id})]
+
+    
+      
+
+
         # -----------------------------
         # Compute method
         # -----------------------------
@@ -92,15 +146,10 @@ class Soil(models.Model):
                 rec.lab_id = rec.eln_ref.lab_id
             else:
                 rec.lab_id = False
-    # material = fields.Many2one('product.template',string='Material',compute="_compute_material_id",store=True)
-
-    # @api.depends('eln_ref.material')
-    # def _compute_material_id(self):
-    #     for rec in self:
-    #         rec.material = rec.eln_ref.material if rec.eln_ref else False
+  
 
     def prefill_data(self):
-        # import wdb; wdb.set_trace()
+        
         return {
             'name': 'Prefill Data',
             'type': 'ir.actions.act_window',
@@ -123,14 +172,14 @@ class Soil(models.Model):
 
     # Sieve Analysis
     sieve_name = fields.Char("Name",default="Sieve Analysis")
-    sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+    sieve_visible = fields.Boolean("Sieve Analysis Visible")
 
-    @api.model
-    def default_get(self, fields_list):
-        res = super().default_get(fields_list)
-        if self.env.context.get('force_sieve_visible'):
-            res['sieve_visible'] = True
-        return res
+    # @api.model
+    # def default_get(self, fields_list):
+    #     res = super().default_get(fields_list)
+    #     if self.env.context.get('force_sieve_visible'):
+    #         res['sieve_visible'] = True
+    #     return res
 
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line1','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
@@ -554,6 +603,7 @@ class Soil(models.Model):
 
 
 
+   
 
 
 
@@ -564,109 +614,106 @@ class Soil(models.Model):
 
 
                # Liquid Limit
-    liquid_limit_name = fields.Char("Name",default="Liquid Limit")
-    liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
-    # job_no_liquid_limit = fields.Char(string="Job No")
-    # material_liquid_limit = fields.Char(String="Material")
-    # start_date_liquid_limit = fields.Date("Start Date")
-    # end_date_liquid_limit = fields.Date("End Date")
-    child_liness = fields.One2many('mechanical.liquid.limits.line1','parent_id',string="Liquid Limit")
-    liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
+    # liquid_limit_name = fields.Char("Name",default="Liquid Limit")
+    # liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
+  
+    # child_liness = fields.One2many('mechanical.liquid.limits.line1','parent_id',string="Liquid Limit")
+    # liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
 
    
    
 
-    @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
-    def _compute_liquid_limit(self):
-        for record in self:
-            lines = record.child_liness.filtered(lambda l: l.blwo_no1 is not None and l.moisture_content is not None)
-            if not lines or len(lines) < 2:
-                record.liquid_limit = 0.0
-                continue
+    # @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
+    # def _compute_liquid_limit(self):
+    #     for record in self:
+    #         lines = record.child_liness.filtered(lambda l: l.blwo_no1 is not None and l.moisture_content is not None)
+    #         if not lines or len(lines) < 2:
+    #             record.liquid_limit = 0.0
+    #             continue
 
-            # Sort by blwo_no1 ascending
-            lines_sorted = sorted(lines, key=lambda l: l.blwo_no1)
-            target = 25.0
+    #         # Sort by blwo_no1 ascending
+    #         lines_sorted = sorted(lines, key=lambda l: l.blwo_no1)
+    #         target = 25.0
 
-            # Find the two points around target (just below and just above)
-            lower = None
-            upper = None
-            for i, line in enumerate(lines_sorted):
-                if line.blwo_no1 < target:
-                    lower = line
-                elif line.blwo_no1 >= target and lower:
-                    upper = line
-                    break
+    #         # Find the two points around target (just below and just above)
+    #         lower = None
+    #         upper = None
+    #         for i, line in enumerate(lines_sorted):
+    #             if line.blwo_no1 < target:
+    #                 lower = line
+    #             elif line.blwo_no1 >= target and lower:
+    #                 upper = line
+    #                 break
 
-            if lower and upper:
-                x1, x2 = lower.blwo_no1, upper.blwo_no1
-                y1, y2 = lower.moisture_content, upper.moisture_content
+    #         if lower and upper:
+    #             x1, x2 = lower.blwo_no1, upper.blwo_no1
+    #             y1, y2 = lower.moisture_content, upper.moisture_content
 
-                if x2 != x1:
-                    # Linear interpolation
-                    ll_value = y1 + (y2 - y1) * (target - x1) / (x2 - x1)
-                else:
-                    ll_value = y1
-                record.liquid_limit = ll_value
-            elif lower:
-                # If target above highest value
-                record.liquid_limit = lower.moisture_content
-            else:
-                record.liquid_limit = 0.0
+    #             if x2 != x1:
+    #                 # Linear interpolation
+    #                 ll_value = y1 + (y2 - y1) * (target - x1) / (x2 - x1)
+    #             else:
+    #                 ll_value = y1
+    #             record.liquid_limit = ll_value
+    #         elif lower:
+    #             # If target above highest value
+    #             record.liquid_limit = lower.moisture_content
+    #         else:
+    #             record.liquid_limit = 0.0
 
     
-    liquid_limit_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
+    # liquid_limit_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
 
-    @api.depends('liquid_limit','eln_ref','grade')
-    def _compute_liquid_limit_conformity(self):
+    # @api.depends('liquid_limit','eln_ref','grade')
+    # def _compute_liquid_limit_conformity(self):
         
-        for record in self:
-            record.liquid_limit_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
+    #     for record in self:
+    #         record.liquid_limit_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
                     
-                    lower = record.liquid_limit - record.liquid_limit*mu_value
-                    upper = record.liquid_limit + record.liquid_limit*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.liquid_limit_conformity = 'pass'
-                        break
-                    else:
-                        record.liquid_limit_conformity = 'fail'
+    #                 lower = record.liquid_limit - record.liquid_limit*mu_value
+    #                 upper = record.liquid_limit + record.liquid_limit*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.liquid_limit_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.liquid_limit_conformity = 'fail'
 
-    liquid_limit_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_liquid_limit_nabl", store=True)
+    # liquid_limit_nabl = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_liquid_limit_nabl", store=True)
 
-    @api.depends('liquid_limit','eln_ref','grade')
-    def _compute_liquid_limit_nabl(self):
+    # @api.depends('liquid_limit','eln_ref','grade')
+    # def _compute_liquid_limit_nabl(self):
         
-        for record in self:
-            record.liquid_limit_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
+    #     for record in self:
+    #         record.liquid_limit_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
+    #         # for material in materials:
+    #         #     if material.grade.id == record.grade.id:
+    #         lab_min = line.lab_min_value
+    #         lab_max = line.lab_max_value
+    #         mu_value = line.mu_value
             
-            lower = record.liquid_limit - record.liquid_limit*mu_value
-            upper = record.liquid_limit + record.liquid_limit*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.liquid_limit_nabl = 'pass'
-                break
-            else:
-                record.liquid_limit_nabl = 'fail'
+    #         lower = record.liquid_limit - record.liquid_limit*mu_value
+    #         upper = record.liquid_limit + record.liquid_limit*mu_value
+    #         if lower >= lab_min and upper <= lab_max:
+    #             record.liquid_limit_nabl = 'pass'
+    #             break
+    #         else:
+    #             record.liquid_limit_nabl = 'fail'
 
 
-    graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
+    # graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
 
     
 
@@ -674,83 +721,92 @@ class Soil(models.Model):
 
    
 
-    def generate_line_chart_liquid(self):
-        x_value = []
-        y_value = []
-        for line in self.child_liness:
-            if line.blwo_no1 and line.moisture_content is not None:
-                x_value.append(line.blwo_no1)
-                y_value.append(line.moisture_content)
+    # def generate_line_chart_liquid(self):
+    #     x_value = []
+    #     y_value = []
+    #     for line in self.child_liness:
+    #         if line.blwo_no1 and line.moisture_content is not None:
+    #             x_value.append(line.blwo_no1)
+    #             y_value.append(line.moisture_content)
 
-        if not x_value or not y_value:
-            return False
+    #     if not x_value or not y_value:
+    #         return False
 
-        plt.figure(figsize=(10, 5))
+    #     plt.figure(figsize=(10, 5))
 
-        # ✅ Blue line with red points
-        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+    #     # ✅ Blue line with red points
+    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
 
-        # ✅ Labels and title
-        plt.xlabel('No. of Blows', fontsize=12)
-        plt.ylabel('Water Content (%)', fontsize=12)
-        plt.title('LIQUID LIMIT', fontsize=14)
+    #     # ✅ Labels and title
+    #     plt.xlabel('No. of Blows', fontsize=12)
+    #     plt.ylabel('Water Content (%)', fontsize=12)
+    #     plt.title('LIQUID LIMIT', fontsize=14)
 
-        # ✅ Axis limits (rounded)
-        max_y = max(y_value)
-        y_limit = (int(max_y / 10) + 1) * 10
-        plt.ylim(bottom=0, top=y_limit)
+    #     # ✅ Axis limits (rounded)
+    #     max_y = max(y_value)
+    #     y_limit = (int(max_y / 10) + 1) * 10
+    #     plt.ylim(bottom=0, top=y_limit)
 
-        max_x = max(x_value)
-        x_limit = (int(max_x / 10) + 1) * 10
-        plt.xlim(left=0, right=x_limit)
+    #     max_x = max(x_value)
+    #     x_limit = (int(max_x / 10) + 1) * 10
+    #     plt.xlim(left=0, right=x_limit)
 
-        # ✅ Minor ticks for fine grid lines
-        ax = plt.gca()
-        ax.xaxis.set_minor_locator(MultipleLocator(1))
-        ax.yaxis.set_minor_locator(MultipleLocator(1))
+    #     # ✅ Minor ticks for fine grid lines
+    #     ax = plt.gca()
+    #     ax.xaxis.set_minor_locator(MultipleLocator(1))
+    #     ax.yaxis.set_minor_locator(MultipleLocator(1))
 
-        # ✅ Fine grid
-        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+    #     # ✅ Fine grid
+    #     plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
-        # 🔹 Highlight Liquid Limit point (DB field value वापरून)
-        if self.liquid_limit:
-            highlight_x = 25                # Blows (fixed at 25)
-            highlight_y = self.liquid_limit # Moisture content from field
+    #     # 🔹 Highlight Liquid Limit point (DB field value वापरून)
+    #     if self.liquid_limit:
+    #         highlight_x = 25                # Blows (fixed at 25)
+    #         highlight_y = self.liquid_limit # Moisture content from field
 
-            # Dotted guide lines
-            plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
-            plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
+    #         # Dotted guide lines
+    #         plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
+    #         plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
 
-            # Point mark
-            plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
+    #         # Point mark
+    #         plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
 
-            # Label
-            plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
+    #         # Label
+    #         plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
 
-        # ✅ Save to buffer
-        buffer = io.BytesIO()
-        plt.tight_layout()
-        plt.legend()
-        plt.savefig(buffer, format='png')
-        plt.close()
-        buffer.seek(0)
+    #     # ✅ Save to buffer
+    #     buffer = io.BytesIO()
+    #     plt.tight_layout()
+    #     plt.legend()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
 
-        return base64.b64encode(buffer.read()).decode('utf-8')
+    #     return base64.b64encode(buffer.read()).decode('utf-8')
 
 
         
        
     
 
-    @api.depends('child_liness')
-    def _compute_graph_image_liquid(self):
-        try:
-            for record in self:
-                chart_image_liquid = record.generate_line_chart_liquid()
-                record.graph_image_liquid = chart_image_liquid
-        except:
-            pass 
+    # @api.depends('child_liness')
+    # def _compute_graph_image_liquid(self):
+    #     try:
+    #         for record in self:
+    #             chart_image_liquid = record.generate_line_chart_liquid()
+    #             record.graph_image_liquid = chart_image_liquid
+    #     except:
+    #         pass 
+
+
+
+
+
+
+
+
+
 
 
 
@@ -770,15 +826,17 @@ class Soil(models.Model):
 
 
 
-   #  Calculation-NMC, 
-    
 
-    # NMC_name = fields.Char( string="Name",default=" NMC" )
+
+   #  Calculation-NMC, 
+
+
+    NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
 
 
     # specific gravity
-    gravity_name = fields.Char(string="Name",default=" SPECIFIC GRAVITY", )
+    specific_gravity_name = fields.Char(string="Name",default=" SPECIFIC GRAVITY", )
     specific_gravity_visible = fields.Boolean( string="Specific Gravity Visible",default=True )
     gravity_line_ids = fields.One2many( "specific.gravity", "parent_id",string="Specific Gravity Lines",)
 
@@ -792,13 +850,171 @@ class Soil(models.Model):
 
 # Atterbergs Limits (Free Swell)
 
-    freeswell_name = fields.Char(string="Name",default="Atterbergs Limits (Free Swell)",)
-    freeswell_visible = fields.Boolean( string="Free Swell Visible",default=True,)
-    freeswell_line_ids = fields.One2many( "soil.free.swell", "parent_id", string="Free Swell Lines",)
+
+    freeswell_name = fields.Char(string="Name", default="Atterbergs Limits (Free Swell)")
+    freeswell_visible = fields.Boolean(string="Free Swell Visible", default=True)
+    freeswell_line_ids = fields.One2many('soil.free.swell', 'parent_id', string="Free Swell Lines")
+    
+    # ATTERBERG LIMITS
+    Atterbergs_name = fields.Char(string="Name", default="Atterbergs Limits (LL, PL, SL)")
+
+    Atterbergs_name_ll = fields.Char(string="Name", default="Liquid Limits")
+
+    Atterbergs_name_pl = fields.Char(string="Name", default="Plastic Limits")
+    
+    Atterbergs_name_sl = fields.Char(string="Name", default="Shrinkage Limits")
+
+
+    Atterbergs_visible = fields.Boolean('Show Atterberg', default=True)
+    pl_visible = fields.Boolean('Show PL', default=True)
+    ll_visible = fields.Boolean('Show LL', default=True)
+    sl_visible = fields.Boolean('Show SL', default=True)
+    
+    # RESULTS
+    moisture_content = fields.Float('NMC (%)', digits=(10,2))
+    plastic_limit = fields.Float('PL (%)', digits=(10,2))
+    liquid_limit = fields.Float('LL (%)', digits=(10,2))
+    shrinkage_limit = fields.Float('SL (%)', digits=(10,2))
+    plasticity_index = fields.Float('PI', digits=(10,2))
+    
+  
+    pl_line_ids = fields.One2many('lab.atterberg.pl.line', 'parent_id')
+    ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
+    sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id')
+
+    liquid_avg = fields.Float( string='Liquid Limit Avg' , digits=(10,0) ,compute='_compute_liquid_avg',store=True,)
+    
+
+    @api.depends('ll_line_ids.water_content')
+    def _compute_liquid_avg(self):
+        for line in self:
+            if line.ll_line_ids:
+                vals = line.ll_line_ids.mapped("water_content")
+                line.liquid_avg = sum(vals) / len(vals)
+                
+
+            else:
+                line.liquid_avg = 0.0
+                
+
+
+    plastic_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_plastic_avg")
+
+
+    @api.depends('pl_line_ids.water_content')
+    def _compute_plastic_avg(self):
+        for line in self:
+            if line.pl_line_ids:
+                vals = line.pl_line_ids.mapped("water_content")
+                line.plastic_avg = sum(vals) / len(vals)
+                
+
+            else:
+                line.plastic_avg = 0.0
+
+
+
+     
+    shrinkage_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_shrinkage_avg")
+
+
+    @api.depends('sl_line_ids.water_content')
+    def _compute_shrinkage_avg(self):
+        for line in self:
+            if line.sl_line_ids:
+                vals = line.sl_line_ids.mapped("water_content")
+                line.shrinkage_avg = sum(vals) / len(vals)
+                
+
+            else:
+                line.shrinkage_avg = 0.0
+
+           
+
+
+
+
+    # === CASAGRANDE GRAPH FIELD ===
+    casagrande_graph = fields.Binary("Casagrande Graph", compute="_compute_casagrande_graph", store=True)
+    
+    @api.depends('ll_line_ids.blows', 'll_line_ids.water_content', 'll_line_ids.m1', 'll_line_ids.m2', 'll_line_ids.m3')
+    def _compute_casagrande_graph(self):
+        for record in self:
+            try:
+                if record.ll_line_ids:
+                    graph = record.generate_casagrande_graph()
+                    record.casagrande_graph = graph
+            except:
+                record.casagrande_graph = False
+
+    def generate_casagrande_graph(self):
+        """Casagrande graph - NO LOGGING, FULLY SAFE"""
+        self.ensure_one()
+        
+        # Filter VALID data only
+        lines = self.ll_line_ids.filtered(lambda l: l.blows and l.blows >= 10 and l.water_content and l.water_content > 0)
+        if len(lines) < 2:
+            return False
+        
+        try:
+            x_data = np.array([float(line.blows) for line in lines])
+            y_data = np.array([float(line.water_content) for line in lines])
+            
+            # Linear regression
+            slope, intercept, _, _, _ = stats.linregress(x_data, y_data)
+            ll_25 = slope * 25 + intercept
+            
+            # Create figure
+            fig = plt.figure(figsize=(10, 6))
+            ax = fig.add_subplot(111)
+            
+            # Grid
+            ax.grid(True, which='both', color='lightgray', linestyle='-', linewidth=0.8, alpha=0.7)
+            
+            # Red points
+            ax.scatter(x_data, y_data, s=120, color='red', edgecolors='darkred', 
+                      linewidth=1.5, zorder=5, label='Test Points')
+            
+            # Blue line
+            x_line = np.linspace(max(8, min(x_data)-2), max(x_data)+3, 100)
+            y_line = slope * x_line + intercept
+            ax.plot(x_line, y_line, color='blue', linewidth=3, zorder=4)
+            
+            # N=25 reference
+            ax.axvline(x=25, color='green', linestyle='--', linewidth=2, alpha=0.8)
+            ax.plot(25, ll_25, marker='*', markersize=15, color='green', 
+                   markeredgecolor='darkgreen', markeredgewidth=2, zorder=10)
+            
+            # Labels
+            ax.set_xlabel('No. of Blows', fontsize=12, fontweight='bold')
+            ax.set_ylabel('Moisture Content (%)', fontsize=12, fontweight='bold')
+            ax.set_title(f'Liquid Limit Determination (LL={ll_25:.1f}%)', fontsize=14, fontweight='bold')
+            ax.legend(loc='upper right')
+            
+            # Axis limits
+            ax.set_xlim(8, max(x_data) + 5)
+            ax.set_ylim(0, max(y_data) + 3)
+            
+            # Save to buffer
+            buffer = io.BytesIO()
+            fig.tight_layout()
+            fig.savefig(buffer, format='png', dpi=100, facecolor='white', bbox_inches='tight')
+            plt.close(fig)
+            buffer.seek(0)
+            
+            return base64.b64encode(buffer.read())
+            
+        except Exception:
+            plt.close('all')
+            return False
+
+    selected_lab_id6 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
    
-   
-
 
 
 
@@ -1347,6 +1563,12 @@ class Soil(models.Model):
 
     soil_name = fields.Char("Name",default="California Bearing Ratio")
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
+
+    selected_lab_id = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
    
     soil_table = fields.One2many('mechanical.cbr.line1','parent_id',string="CBR",default=lambda self: self._default_cbr_child_lines())
 
@@ -1692,129 +1914,17 @@ class Soil(models.Model):
 
 
 
-    # chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
-
-    # ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
-    # pt_2mm = fields.Float("PT at 2.5mm",default=1370)
-    # cbr_2mm = fields.Float("CBR at 2.5mm",compute="_compute_cbr_2mm")
-
-    # ps_5mm = fields.Float("PS for 5mm",compute="_compute_ps_5mm")
-    # pt_5mm = fields.Float("PT at 5mm",default=2055)
-    # cbr_5mm = fields.Float("CBR at 5mm",compute="_compute_cbr_5mm")
-
-    # cbr_result = fields.Float("CBR",compute="_compute_final_cbr")
-
-    # @api.depends('soil_table')
-    # def _compute_ps_2mm(self):
-    #     for record in self:
-    #         if record.soil_table and len(record.soil_table) >= 6:
-    #             fifth_row = record.soil_table[5] 
-    #             record.ps_2mm = fifth_row.load
-    #         else:
-    #             record.ps_2mm = 0
-
-
-    # @api.depends('soil_table')
-    # def _compute_ps_5mm(self):
-    #     for record in self:
-    #         if record.soil_table and len(record.soil_table) >= 9:
-    #             fifth_row = record.soil_table[8] 
-    #             record.ps_5mm = fifth_row.load
-    #         else:
-    #             record.ps_5mm = 0
-
-    # @api.depends('pt_2mm','ps_2mm')
-    # def _compute_cbr_2mm(self):
-    #     for record in self:
-    #         if record.pt_2mm != 0:
-    #             record.cbr_2mm = round((record.ps_2mm/record.pt_2mm)*100,2)
-    #         else:
-    #             record.cbr_2mm = 0
-
-    # @api.depends('pt_5mm','ps_5mm')
-    # def _compute_cbr_5mm(self):
-    #     for record in self:
-    #         if record.pt_5mm != 0:
-    #             record.cbr_5mm = round((record.ps_5mm/record.pt_5mm)*100,2)
-    #         else:
-    #             record.cbr_5mm = 0
-
-    # @api.depends('cbr_5mm','cbr_2mm')
-    # def _compute_final_cbr(self):
-    #     for record in self:
-    #         if record.cbr_5mm > record.cbr_2mm:
-    #             record.cbr_result = record.cbr_5mm
-    #         else:
-    #             record.cbr_result = record.cbr_2mm
-
-
-   
-
-    # chart_image_cbr = fields.Binary(
-    # "Line Chart",
-    # compute="_compute_chart_image_cbr",
-    # store=True
-    #   )
-
-    # def generate_line_chart_cbr(self):
-    #     # Prepare data
-    #     x_values = []
-    #     y_values = []
-    #     for line in self.soil_table:
-    #         x_values.append(line.penetration)
-    #         y_values.append(line.load)
-
-    #     if not x_values or not y_values:
-    #         return False
-
-    #     plt.figure(figsize=(10, 5))
-
-    #     # ✅ Blue curve with red points
-    #     plt.plot(x_values, y_values, color='blue', linestyle='-', linewidth=2, label='Curve')
-    #     plt.scatter(x_values, y_values, color='red', edgecolors='black', s=60, zorder=5, label='Points')
-
-    #     # ✅ Axis labels and title
-    #     plt.xlabel('Penetration (mm)', fontsize=12)
-    #     plt.ylabel('Load (kg)', fontsize=12)
-    #     plt.title('CBR (California Bearing Ratio)', fontsize=14)
-
-    #     # ✅ Axis range
-    #     plt.xlim(left=0, right=max(x_values) + 2)
-    #     plt.ylim(bottom=0, top=max(y_values) + (max(y_values) * 0.1))
-
-    #     # ✅ Grid (major + minor)
-    #     ax = plt.gca()
-    #     ax.xaxis.set_minor_locator(MultipleLocator(0.5))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(5))
-    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
-
-    #     # ✅ Save image
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.legend()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
-
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
-
-
-    # @api.depends('soil_table')
-    # def _compute_chart_image_cbr(self):
-    #     try:
-    #         for record in self:
-    #             chart_image = record.generate_line_chart_cbr()
-    #             record.chart_image_cbr = chart_image
-    #     except:
-    #         pass
-
-
-
 
 
        # FSI
     fsi_name = fields.Char("Name",default="Free Swell Index")
     fsi_visible = fields.Boolean("Free Swell Index Visible",compute="_compute_visible")
+
+    selected_lab_id2 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
   
     wt_sample = fields.Float(string="Weight of the soil sample")
     valume_water = fields.Float(string="The volume of soil specimen read from the graduated cylinder containing distilled water")
@@ -2021,645 +2131,418 @@ class Soil(models.Model):
     volume_wet_table = fields.One2many('mechanical.volume.wet.line1','parent_id',string="Parameter")
     volume_wet_name = fields.Char("Name",default="Volume of wet soil(V1)")
 
-    # Permeability Falling Head Test
-    # permeability_falling_name = fields.Char("Name",default="Permeability Falling Head Test")
-    # permeability_falling_visible = fields.Boolean("Permeability Falling Head Test Visible",compute="_compute_visible")
+  
 
-   
-    # length = fields.Float(string="Length of Soil Specimen (L) [cm]", digits=(12,2))
-    # diameter_mold = fields.Float(string="Diameter of Mold (D) [cm]", digits=(12,2))
-    # diameter_standpipe = fields.Float(string="Diameter of Stand Pipe (d) [cm]", digits=(12,2))
+     # Specific Gravity
+    # specific_gravity_name = fields.Char("Name",default="Specific Gravity")
+    # specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
-    # # Child lines
-    # test_line_ids = fields.One2many("mechanical.permeability.line1", "parent_id", string="Test Readings")
+    # selected_lab_id4 = fields.Many2one(
+    #     'lab.option.line',
+    #     string="Select Lab ID",
+    #     domain="[('id', 'in', lab_option_ids)]"
+    # )
 
-    # # Average K
-    # avg_k = fields.Float(string="Average Permeability (k) [cm/s]", compute="_compute_avg_k", store=True, digits=(12,2))
+    # m1 = fields.Float(string="Mass of Density Bottle (M1) ", digits=(12,2))
+    # m2 = fields.Float(string="Mass of Bottle & Dry Soil (M2) ", digits=(12,2))
+    # m3 = fields.Float(string="Mass of Bottle, Soil & Liquid (M3) ", digits=(12,2))
+    # m4 = fields.Float(string="Mass of Bottle Full of Liquid (M4) ", digits=(12,2))
 
-    # @api.depends("test_line_ids.k_value")
-    # def _compute_avg_k(self):
+    # specific_gravity = fields.Float(
+    #     string="Specific Gravity (G)",
+    #     compute="_compute_specific_gravity",
+    #     store=True,
+    #     digits=(12,2)
+    # )
+
+    # @api.depends("m1","m2","m3","m4")
+    # def _compute_specific_gravity(self):
     #     for rec in self:
-    #         if rec.test_line_ids:
-    #             vals = rec.test_line_ids.mapped("k_value")
-    #             rec.avg_k = sum(vals) / len(vals)
-    #         else:
-    #             rec.avg_k = 0.0
+    #         try:
+    #             numerator = rec.m2 - rec.m1
+    #             denominator = (rec.m4 - rec.m1) - (rec.m3 - rec.m2)
+    #             if denominator != 0:
+    #                 rec.specific_gravity = round(numerator / denominator, 2)
+    #             else:
+    #                 rec.specific_gravity = 0.0
+    #         except Exception:
+    #             rec.specific_gravity = 0.0
 
-    # avg_k_conformity = fields.Selection([
+    # specific_gravity_conformity = fields.Selection([
     #         ('pass', 'Pass'),
-    #         ('fail', 'Fail')], string="Conformity", compute="_compute_avg_k_conformity", store=True)
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
 
-    # @api.depends('avg_k','eln_ref','grade')
-    # def _compute_avg_k_conformity(self):
+    # @api.depends('specific_gravity','eln_ref','grade')
+    # def _compute_specific_gravity_conformity(self):
         
     #     for record in self:
-    #         record.avg_k_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table
+    #         record.specific_gravity_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
     #         for material in materials:
     #             if material.grade.id == record.grade.id:
     #                 req_min = material.req_min
     #                 req_max = material.req_max
     #                 mu_value = line.mu_value
                     
-    #                 lower = record.avg_k - record.avg_k*mu_value
-    #                 upper = record.avg_k + record.avg_k*mu_value
+    #                 lower = record.specific_gravity - record.specific_gravity*mu_value
+    #                 upper = record.specific_gravity + record.specific_gravity*mu_value
     #                 if lower >= req_min and upper <= req_max:
-    #                     record.avg_k_conformity = 'pass'
+    #                     record.specific_gravity_conformity = 'pass'
     #                     break
     #                 else:
-    #                     record.avg_k_conformity = 'fail'
+    #                     record.specific_gravity_conformity = 'fail'
 
-    # avg_k_nabl = fields.Selection([
+    # specific_gravity_nabl = fields.Selection([
     #     ('pass', 'Pass'),
-    #     ('fail', 'Fail')], string="NABL", compute="_compute_avg_k_nabl", store=True)
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_specific_gravity_nabl", store=True)
 
-    # @api.depends('avg_k','eln_ref','grade')
-    # def _compute_avg_k_nabl(self):
+    # @api.depends('specific_gravity','eln_ref','grade')
+    # def _compute_specific_gravity_nabl(self):
         
     #     for record in self:
-    #         record.avg_k_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table
+    #         record.specific_gravity_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
     #         # for material in materials:
     #         #     if material.grade.id == record.grade.id:
     #         lab_min = line.lab_min_value
     #         lab_max = line.lab_max_value
     #         mu_value = line.mu_value
             
-    #         lower = record.avg_k - record.avg_k*mu_value
-    #         upper = record.avg_k + record.avg_k*mu_value
+    #         lower = record.specific_gravity - record.specific_gravity*mu_value
+    #         upper = record.specific_gravity + record.specific_gravity*mu_value
     #         if lower >= lab_min and upper <= lab_max:
-    #             record.avg_k_nabl = 'pass'
+    #             record.specific_gravity_nabl = 'pass'
     #             break
     #         else:
-    #             record.avg_k_nabl = 'fail'
-
-     # Specific Gravity
-    specific_gravity_name = fields.Char("Name",default="Specific Gravity")
-    specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
-
-    m1 = fields.Float(string="Mass of Density Bottle (M1) ", digits=(12,2))
-    m2 = fields.Float(string="Mass of Bottle & Dry Soil (M2) ", digits=(12,2))
-    m3 = fields.Float(string="Mass of Bottle, Soil & Liquid (M3) ", digits=(12,2))
-    m4 = fields.Float(string="Mass of Bottle Full of Liquid (M4) ", digits=(12,2))
-
-    specific_gravity = fields.Float(
-        string="Specific Gravity (G)",
-        compute="_compute_specific_gravity",
-        store=True,
-        digits=(12,2)
-    )
-
-    @api.depends("m1","m2","m3","m4")
-    def _compute_specific_gravity(self):
-        for rec in self:
-            try:
-                numerator = rec.m2 - rec.m1
-                denominator = (rec.m4 - rec.m1) - (rec.m3 - rec.m2)
-                if denominator != 0:
-                    rec.specific_gravity = round(numerator / denominator, 2)
-                else:
-                    rec.specific_gravity = 0.0
-            except Exception:
-                rec.specific_gravity = 0.0
-
-    specific_gravity_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
-
-    @api.depends('specific_gravity','eln_ref','grade')
-    def _compute_specific_gravity_conformity(self):
-        
-        for record in self:
-            record.specific_gravity_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.specific_gravity - record.specific_gravity*mu_value
-                    upper = record.specific_gravity + record.specific_gravity*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.specific_gravity_conformity = 'pass'
-                        break
-                    else:
-                        record.specific_gravity_conformity = 'fail'
-
-    specific_gravity_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_specific_gravity_nabl", store=True)
-
-    @api.depends('specific_gravity','eln_ref','grade')
-    def _compute_specific_gravity_nabl(self):
-        
-        for record in self:
-            record.specific_gravity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.specific_gravity - record.specific_gravity*mu_value
-            upper = record.specific_gravity + record.specific_gravity*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.specific_gravity_nabl = 'pass'
-                break
-            else:
-                record.specific_gravity_nabl = 'fail'
+    #             record.specific_gravity_nabl = 'fail'
 
 
      # Direct Shear Test
-    direct_shear_name = fields.Char("Name",default="Direct Shear Test")
-    direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
+    # direct_shear_name = fields.Char("Name",default="Direct Shear Test")
+    # direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
 
-    proving_ring_constant = fields.Float(string="Proving Ring Constant (k)", digits=(12,3))
+    # proving_ring_constant = fields.Float(string="Proving Ring Constant (k)", digits=(12,3))
 
-    direct_shear_ids = fields.One2many("mechanical.direct.shear.test.line1", "parent_id", string="Test Readings")
+    # direct_shear_ids = fields.One2many("mechanical.direct.shear.test.line1", "parent_id", string="Test Readings")
 
-    avg_shear_stress = fields.Float(
-        string="Average Shear Stress (τ_avg) ",
-        compute="_compute_avg_shear_stress",
-        store=True,
-        digits=(12,2))
+    # avg_shear_stress = fields.Float(
+    #     string="Average Shear Stress (τ_avg) ",
+    #     compute="_compute_avg_shear_stress",
+    #     store=True,
+    #     digits=(12,2))
 
-    @api.depends("direct_shear_ids.shear_stress")
-    def _compute_avg_shear_stress(self):
-        for rec in self:
-            vals = [line.shear_stress for line in rec.direct_shear_ids if line.shear_stress is not None]
-            rec.avg_shear_stress = round(sum(vals)/len(vals), 2) if vals else 0.0
+    # @api.depends("direct_shear_ids.shear_stress")
+    # def _compute_avg_shear_stress(self):
+    #     for rec in self:
+    #         vals = [line.shear_stress for line in rec.direct_shear_ids if line.shear_stress is not None]
+    #         rec.avg_shear_stress = round(sum(vals)/len(vals), 2) if vals else 0.0
     
-    avg_shear_stress_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_shear_stress_conformity", store=True)
+    # avg_shear_stress_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_avg_shear_stress_conformity", store=True)
 
-    @api.depends('avg_shear_stress','eln_ref','grade')
-    def _compute_avg_shear_stress_conformity(self):
+    # @api.depends('avg_shear_stress','eln_ref','grade')
+    # def _compute_avg_shear_stress_conformity(self):
         
-        for record in self:
-            record.avg_shear_stress_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
+    #     for record in self:
+    #         record.avg_shear_stress_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
                     
-                    lower = record.avg_shear_stress - record.avg_shear_stress*mu_value
-                    upper = record.avg_shear_stress + record.avg_shear_stress*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_shear_stress_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_shear_stress_conformity = 'fail'
+    #                 lower = record.avg_shear_stress - record.avg_shear_stress*mu_value
+    #                 upper = record.avg_shear_stress + record.avg_shear_stress*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.avg_shear_stress_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.avg_shear_stress_conformity = 'fail'
 
-    avg_shear_stress_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_avg_shear_stress_nabl", store=True)
+    # avg_shear_stress_nabl = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_avg_shear_stress_nabl", store=True)
 
-    @api.depends('avg_shear_stress','eln_ref','grade')
-    def _compute_avg_shear_stress_nabl(self):
+    # @api.depends('avg_shear_stress','eln_ref','grade')
+    # def _compute_avg_shear_stress_nabl(self):
         
-        for record in self:
-            record.avg_shear_stress_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
+    #     for record in self:
+    #         record.avg_shear_stress_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table
+    #         # for material in materials:
+    #         #     if material.grade.id == record.grade.id:
+    #         lab_min = line.lab_min_value
+    #         lab_max = line.lab_max_value
+    #         mu_value = line.mu_value
             
-            lower = record.avg_shear_stress - record.avg_shear_stress*mu_value
-            upper = record.avg_shear_stress + record.avg_shear_stress*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_shear_stress_nabl = 'pass'
-                break
-            else:
-                record.avg_shear_stress_nabl = 'fail'
+    #         lower = record.avg_shear_stress - record.avg_shear_stress*mu_value
+    #         upper = record.avg_shear_stress + record.avg_shear_stress*mu_value
+    #         if lower >= lab_min and upper <= lab_max:
+    #             record.avg_shear_stress_nabl = 'pass'
+    #             break
+    #         else:
+    #             record.avg_shear_stress_nabl = 'fail'
 
 
       # Unconfined Compressive Strength (UCS) Test
-    ucs_name = fields.Char("Name",default="Unconfined Compressive Strength (UCS) Test")
-    ucs_visible = fields.Boolean("Unconfined Compressive Strength (UCS) Test Visible",compute="_compute_visible")
+    # ucs_name = fields.Char("Name",default="Unconfined Compressive Strength (UCS) Test")
+    # ucs_visible = fields.Boolean("Unconfined Compressive Strength (UCS) Test Visible",compute="_compute_visible")
 
-    initial_diameter = fields.Float(string="Initial Diameter of Specimen (D0) ", digits=(12,3))
-    initial_length = fields.Float(string="Initial Length of Specimen (L0) ", digits=(12,3))
-    initial_density = fields.Float(string="Initial Density of Specimen ", digits=(12,3))
-    proving_ring_constant = fields.Float(string="Proving Ring Constant (K) ", digits=(12,3))
+    # initial_diameter = fields.Float(string="Initial Diameter of Specimen (D0) ", digits=(12,3))
+    # initial_length = fields.Float(string="Initial Length of Specimen (L0) ", digits=(12,3))
+    # initial_density = fields.Float(string="Initial Density of Specimen ", digits=(12,3))
+    # proving_ring_constant = fields.Float(string="Proving Ring Constant (K) ", digits=(12,3))
 
-    ucs_ids = fields.One2many("mechanical.ucs.test.line1", "parent_id", string="Test Readings")
+    # ucs_ids = fields.One2many("mechanical.ucs.test.line1", "parent_id", string="Test Readings")
 
-    avg_stress = fields.Float(string="Average Stress", compute="_compute_avg_stress", store=True, digits=(12,3))
-    avg_strain = fields.Float(string="Average Axial Strain", compute="_compute_avg_stress", store=True, digits=(12,3))
+    # avg_stress = fields.Float(string="Average Stress", compute="_compute_avg_stress", store=True, digits=(12,3))
+    # avg_strain = fields.Float(string="Average Axial Strain", compute="_compute_avg_stress", store=True, digits=(12,3))
 
-    @api.depends("ucs_ids.stress", "ucs_ids.axial_strain")
-    def _compute_avg_stress(self):
-        for rec in self:
-            stresses = [line.stress for line in rec.ucs_ids if line.stress is not None]
-            strains = [line.axial_strain for line in rec.ucs_ids if line.axial_strain is not None]
-            rec.avg_stress = round(sum(stresses)/len(stresses),3) if stresses else 0.0
-            rec.avg_strain = round(sum(strains)/len(strains),3) if strains else 0.0
+    # @api.depends("ucs_ids.stress", "ucs_ids.axial_strain")
+    # def _compute_avg_stress(self):
+    #     for rec in self:
+    #         stresses = [line.stress for line in rec.ucs_ids if line.stress is not None]
+    #         strains = [line.axial_strain for line in rec.ucs_ids if line.axial_strain is not None]
+    #         rec.avg_stress = round(sum(stresses)/len(stresses),3) if stresses else 0.0
+    #         rec.avg_strain = round(sum(strains)/len(strains),3) if strains else 0.0
 
-    avg_stress_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_stress_conformity", store=True)
-
-    @api.depends('avg_stress','eln_ref','grade')
-    def _compute_avg_stress_conformity(self):
-        
-        for record in self:
-            record.avg_stress_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_stress - record.avg_stress*mu_value
-                    upper = record.avg_stress + record.avg_stress*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_stress_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_stress_conformity = 'fail'
-
-    avg_stress_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_avg_stress_nabl", store=True)
-
-    @api.depends('avg_stress','eln_ref','grade')
-    def _compute_avg_stress_nabl(self):
-        
-        for record in self:
-            record.avg_stress_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_stress - record.avg_stress*mu_value
-            upper = record.avg_stress + record.avg_stress*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_stress_nabl = 'pass'
-                break
-            else:
-                record.avg_stress_nabl = 'fail'
-
-     # Consolidation Test (Cc) Test
-    # consolidation_name = fields.Char("Name",default="Consolidation Test (Cc)")
-    # consolidation_visible = fields.Boolean("Consolidation Test (Cc) Visible",compute="_compute_visible")
-
-    # initial_height = fields.Float(string="Initial Height H0 ", digits=(12,3))
-    # diameter = fields.Float(string="Diameter D0 ", digits=(12,3))
-    # area = fields.Float(string="Area ", compute="_compute_area", store=True, digits=(12,3))
-    # initial_void_ratio = fields.Float(string="Initial Void Ratio e0", digits=(12,3))
-
-    # consolidation_name_ids = fields.One2many("mechanical.consolidation.test.line1", "parent_id", string="Test Lines")
-
-    # compression_index = fields.Float(string="Compression Index Cc", compute="_compute_cc", store=True, digits=(12,3))
-
-    # compression_index_conformity = fields.Selection([
+    # avg_stress_conformity = fields.Selection([
     #         ('pass', 'Pass'),
-    #         ('fail', 'Fail')], string="Conformity", compute="_compute_compression_index_conformity", store=True)
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_avg_stress_conformity", store=True)
 
-    # @api.depends('compression_index','eln_ref','grade')
-    # def _compute_compression_index_conformity(self):
+    # @api.depends('avg_stress','eln_ref','grade')
+    # def _compute_avg_stress_conformity(self):
         
     #     for record in self:
-    #         record.compression_index_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table
+    #         record.avg_stress_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).parameter_table
     #         for material in materials:
     #             if material.grade.id == record.grade.id:
     #                 req_min = material.req_min
     #                 req_max = material.req_max
     #                 mu_value = line.mu_value
                     
-    #                 lower = record.compression_index - record.compression_index*mu_value
-    #                 upper = record.compression_index + record.compression_index*mu_value
+    #                 lower = record.avg_stress - record.avg_stress*mu_value
+    #                 upper = record.avg_stress + record.avg_stress*mu_value
     #                 if lower >= req_min and upper <= req_max:
-    #                     record.compression_index_conformity = 'pass'
+    #                     record.avg_stress_conformity = 'pass'
     #                     break
     #                 else:
-    #                     record.compression_index_conformity = 'fail'
+    #                     record.avg_stress_conformity = 'fail'
 
-    # compression_index_nabl = fields.Selection([
+    # avg_stress_nabl = fields.Selection([
     #     ('pass', 'Pass'),
-    #     ('fail', 'Fail')], string="NABL", compute="_compute_compression_index_nabl", store=True)
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_avg_stress_nabl", store=True)
 
-    # @api.depends('compression_index','eln_ref','grade')
-    # def _compute_compression_index_nabl(self):
+    # @api.depends('avg_stress','eln_ref','grade')
+    # def _compute_avg_stress_nabl(self):
         
     #     for record in self:
-    #         record.compression_index_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table
+    #         record.avg_stress_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).parameter_table
     #         # for material in materials:
     #         #     if material.grade.id == record.grade.id:
     #         lab_min = line.lab_min_value
     #         lab_max = line.lab_max_value
     #         mu_value = line.mu_value
             
-    #         lower = record.compression_index - record.compression_index*mu_value
-    #         upper = record.compression_index + record.compression_index*mu_value
+    #         lower = record.avg_stress - record.avg_stress*mu_value
+    #         upper = record.avg_stress + record.avg_stress*mu_value
     #         if lower >= lab_min and upper <= lab_max:
-    #             record.compression_index_nabl = 'pass'
+    #             record.avg_stress_nabl = 'pass'
     #             break
     #         else:
-    #             record.compression_index_nabl = 'fail'
+    #             record.avg_stress_nabl = 'fail'
 
-    # @api.depends("diameter")
-    # def _compute_area(self):
-    #     for rec in self:
-    #         if rec.diameter:
-    #             radius = rec.diameter / 2.0 / 10  # mm to cm
-    #             rec.area = math.pi * radius**2
-    #         else:
-    #             rec.area = 0.0
-
-    # @api.depends("consolidation_name_ids.void_ratio")
-    # def _compute_cc(self):
-    #     # Simple approximation: slope of virgin compression line
-    #     for rec in self:
-    #         lines = sorted(rec.consolidation_name_ids, key=lambda l: l.stress or 0)
-    #         if len(lines) >= 2:
-    #             e1, e2 = lines[0].void_ratio, lines[-1].void_ratio
-    #             sigma1, sigma2 = lines[0].stress, lines[-1].stress
-    #             if sigma1 > 0 and sigma2 > 0:
-    #                 rec.compression_index = round((e1 - e2) / (math.log10(sigma2) - math.log10(sigma1)), 3)
-    #             else:
-    #                 rec.compression_index = 0.0
-    #         else:
-    #             rec.compression_index = 0.0
-
+    
     # Consolidation Test (Pc) Test
-    consolidation_pc_name = fields.Char("Name",default="Consolidation Test (Pc)")
-    consolidation_pc_visible = fields.Boolean("Consolidation Test (Pc) Visible",compute="_compute_visible")
+    # consolidation_pc_name = fields.Char("Name",default="Consolidation Test (Pc)")
+    # consolidation_pc_visible = fields.Boolean("Consolidation Test (Pc) Visible",compute="_compute_visible")
 
-    initial_height_pc = fields.Float(string="Initial Height H0 ")
-    diameter_pc = fields.Float(string="Diameter D0 ")
-    area_pc = fields.Float(string="Area ", compute="_compute_area_pc", store=True)
-    initial_void_ratio_pc = fields.Float(string="Initial Void Ratio e0")
+    # initial_height_pc = fields.Float(string="Initial Height H0 ")
+    # diameter_pc = fields.Float(string="Diameter D0 ")
+    # area_pc = fields.Float(string="Area ", compute="_compute_area_pc", store=True)
+    # initial_void_ratio_pc = fields.Float(string="Initial Void Ratio e0")
 
-    consolidation_pc_ids = fields.One2many("mechanical.consolidation.test.pc.line1", "parent_id", string="Test Lines")
+    # consolidation_pc_ids = fields.One2many("mechanical.consolidation.test.pc.line1", "parent_id", string="Test Lines")
 
-    preconsolidation_pressure = fields.Float(string="Preconsolidation Pressure Pc ", compute="_compute_preconsolidation_pressure", store=True)
+    # preconsolidation_pressure = fields.Float(string="Preconsolidation Pressure Pc ", compute="_compute_preconsolidation_pressure", store=True)
 
-    preconsolidation_pressure_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_preconsolidation_pressure_conformity", store=True)
+    # preconsolidation_pressure_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_preconsolidation_pressure_conformity", store=True)
 
-    @api.depends('preconsolidation_pressure','eln_ref','grade')
-    def _compute_preconsolidation_pressure_conformity(self):
+    # @api.depends('preconsolidation_pressure','eln_ref','grade')
+    # def _compute_preconsolidation_pressure_conformity(self):
         
-        for record in self:
-            record.preconsolidation_pressure_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
+    #     for record in self:
+    #         record.preconsolidation_pressure_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
                     
-                    lower = record.preconsolidation_pressure - record.preconsolidation_pressure*mu_value
-                    upper = record.preconsolidation_pressure + record.preconsolidation_pressure*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.preconsolidation_pressure_conformity = 'pass'
-                        break
-                    else:
-                        record.preconsolidation_pressure_conformity = 'fail'
+    #                 lower = record.preconsolidation_pressure - record.preconsolidation_pressure*mu_value
+    #                 upper = record.preconsolidation_pressure + record.preconsolidation_pressure*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.preconsolidation_pressure_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.preconsolidation_pressure_conformity = 'fail'
 
-    preconsolidation_pressure_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_preconsolidation_pressure_nabl", store=True)
+    # preconsolidation_pressure_nabl = fields.Selection([
+    #     ('pass', 'Pass'),
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_preconsolidation_pressure_nabl", store=True)
 
-    @api.depends('preconsolidation_pressure','eln_ref','grade')
-    def _compute_preconsolidation_pressure_nabl(self):
+    # @api.depends('preconsolidation_pressure','eln_ref','grade')
+    # def _compute_preconsolidation_pressure_nabl(self):
         
-        for record in self:
-            record.preconsolidation_pressure_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
+    #     for record in self:
+    #         record.preconsolidation_pressure_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')]).parameter_table
+    #         # for material in materials:
+    #         #     if material.grade.id == record.grade.id:
+    #         lab_min = line.lab_min_value
+    #         lab_max = line.lab_max_value
+    #         mu_value = line.mu_value
             
-            lower = record.preconsolidation_pressure - record.preconsolidation_pressure*mu_value
-            upper = record.preconsolidation_pressure + record.preconsolidation_pressure*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.preconsolidation_pressure_nabl = 'pass'
-                break
-            else:
-                record.preconsolidation_pressure_nabl = 'fail'
+    #         lower = record.preconsolidation_pressure - record.preconsolidation_pressure*mu_value
+    #         upper = record.preconsolidation_pressure + record.preconsolidation_pressure*mu_value
+    #         if lower >= lab_min and upper <= lab_max:
+    #             record.preconsolidation_pressure_nabl = 'pass'
+    #             break
+    #         else:
+    #             record.preconsolidation_pressure_nabl = 'fail'
 
-    @api.depends("diameter_pc")
-    def _compute_area_pc(self):
-        for rec in self:
-            if rec.diameter_pc:
-                radius = rec.diameter_pc / 2.0 / 10  # mm to cm
-                rec.area_pc = math.pi * radius**2
-            else:
-                rec.area_pc = 0.0
+    # @api.depends("diameter_pc")
+    # def _compute_area_pc(self):
+    #     for rec in self:
+    #         if rec.diameter_pc:
+    #             radius = rec.diameter_pc / 2.0 / 10  # mm to cm
+    #             rec.area_pc = math.pi * radius**2
+    #         else:
+    #             rec.area_pc = 0.0
 
-    @api.depends('consolidation_pc_ids.void_ratio_pc')
-    def _compute_preconsolidation_pressure(self):
-        for record in self:
-            if record.consolidation_pc_ids:
-                total_preconsolidation_pressure = sum(record.consolidation_pc_ids.mapped('void_ratio_pc'))
-                average = total_preconsolidation_pressure / len(record.consolidation_pc_ids)
-                record.preconsolidation_pressure = (average)  # ⬅️ Rounds to nearest integer
-            else:
-                record.preconsolidation_pressure = 0.0
+    # @api.depends('consolidation_pc_ids.void_ratio_pc')
+    # def _compute_preconsolidation_pressure(self):
+    #     for record in self:
+    #         if record.consolidation_pc_ids:
+    #             total_preconsolidation_pressure = sum(record.consolidation_pc_ids.mapped('void_ratio_pc'))
+    #             average = total_preconsolidation_pressure / len(record.consolidation_pc_ids)
+    #             record.preconsolidation_pressure = (average)  # ⬅️ Rounds to nearest integer
+    #         else:
+    #             record.preconsolidation_pressure = 0.0
 
 
      # Direct Shear Test (Angle of Friction)
-    angle_shear_name = fields.Char("Name",default="Direct Shear Test (Angle of Friction)")
-    angle_shear_visible = fields.Boolean("Direct Shear Test (Angle of Friction) Visible",compute="_compute_visible")
+    # angle_shear_name = fields.Char("Name",default="Direct Shear Test (Angle of Friction)")
+    # angle_shear_visible = fields.Boolean("Direct Shear Test (Angle of Friction) Visible",compute="_compute_visible")
      
 
-    angleshear_line_ids = fields.One2many('mechanical.soil.direct.shear.line1', 'parent_id', string="Test lines")
-    phi_deg = fields.Float(string="Angle of Internal Friction φ (°)", compute="_compute_phi_cohesion_direct", store=True)
-    cohesion = fields.Float(string="Cohesion c (kPa)", compute="_compute_phi_cohesion_direct", store=True)
+    # angleshear_line_ids = fields.One2many('mechanical.soil.direct.shear.line1', 'parent_id', string="Test lines")
+    # phi_deg = fields.Float(string="Angle of Internal Friction φ (°)", compute="_compute_phi_cohesion_direct", store=True)
+    # cohesion = fields.Float(string="Cohesion c (kPa)", compute="_compute_phi_cohesion_direct", store=True)
 
-    phi_deg_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_phi_deg_conformity", store=True)
-
-    @api.depends('phi_deg','eln_ref','grade')
-    def _compute_phi_deg_conformity(self):
-        
-        for record in self:
-            record.phi_deg_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.phi_deg - record.phi_deg*mu_value
-                    upper = record.phi_deg + record.phi_deg*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.phi_deg_conformity = 'pass'
-                        break
-                    else:
-                        record.phi_deg_conformity = 'fail'
-
-    phi_deg_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_phi_deg_nabl", store=True)
-
-    @api.depends('phi_deg','eln_ref','grade')
-    def _compute_phi_deg_nabl(self):
-        
-        for record in self:
-            record.phi_deg_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.phi_deg - record.phi_deg*mu_value
-            upper = record.phi_deg + record.phi_deg*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.phi_deg_nabl = 'pass'
-                break
-            else:
-                record.phi_deg_nabl = 'fail'
-
-    @api.depends('angleshear_line_ids.normal_stress', 'angleshear_line_ids.shear_strength')
-    def _compute_phi_cohesion_direct(self):
-        for rec in self:
-            lines = rec.angleshear_line_ids.filtered(lambda l: l.normal_stress is not None and l.shear_strength is not None)
-            n = len(lines)
-            if n < 2:
-                rec.phi_deg = 0.0
-                rec.cohesion = 0.0
-                continue
-
-            # Ordinary least squares for tau = c + m*sigma
-            sigma = [l.normal_stress for l in lines]
-            tau = [l.shear_strength for l in lines]
-
-            sum_sigma = sum(sigma)
-            sum_tau = sum(tau)
-            sum_sigma_tau = sum(s * t for s, t in zip(sigma, tau))
-            sum_sigma2 = sum(s * s for s in sigma)
-
-            denom = (n * sum_sigma2) - (sum_sigma ** 2)
-            if abs(denom) < 1e-12:
-                # degenerate case: all sigma equal
-                # fallback to two-point if possible
-                rec.phi_deg = 0.0
-                rec.cohesion = 0.0
-                continue
-
-            m = (n * sum_sigma_tau - sum_sigma * sum_tau) / denom  # m = tan(phi)
-            c = (sum_tau - m * sum_sigma) / n
-
-            # convert m to degrees
-            phi_rad = math.atan(m)
-            phi_deg = phi_rad * 180.0 / math.pi
-
-            rec.phi_deg = phi_deg
-            rec.cohesion = c
-
-      # Swelling Pressure by Consolidometer Method
-    # swelling_pressure_name = fields.Char("Name",default="Swelling Pressure by Consolidometer Method")
-    # swelling_pressure_visible = fields.Boolean("Swelling Pressure by Consolidometer Method Visible",compute="_compute_visible")
-
-    # swelling_pressure_line_ids = fields.One2many(
-    #     'mechanical.swelling.line1',
-    #     'parent_id',
-    #     string="swelling_pressure Table"
-    # )
-
-    # # Final result (average swelling pressure)
-    # avg_swelling_pressure = fields.Float(
-    #     string="Average Swelling ",
-    #     compute="_compute_avg_swelling_pressure",
-    #     store=True
-    # )
-
-
-    # avg_swelling_pressure_conformity = fields.Selection([
+    # phi_deg_conformity = fields.Selection([
     #         ('pass', 'Pass'),
-    #         ('fail', 'Fail')], string="Conformity", compute="_compute_avg_swelling_pressure_conformity", store=True)
+    #         ('fail', 'Fail')], string="Conformity", compute="_compute_phi_deg_conformity", store=True)
 
-    # @api.depends('avg_swelling_pressure','eln_ref','grade')
-    # def _compute_avg_swelling_pressure_conformity(self):
+    # @api.depends('phi_deg','eln_ref','grade')
+    # def _compute_phi_deg_conformity(self):
         
     #     for record in self:
-    #         record.avg_swelling_pressure_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table
+    #         record.phi_deg_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table
     #         for material in materials:
     #             if material.grade.id == record.grade.id:
     #                 req_min = material.req_min
     #                 req_max = material.req_max
     #                 mu_value = line.mu_value
                     
-    #                 lower = record.avg_swelling_pressure - record.avg_swelling_pressure*mu_value
-    #                 upper = record.avg_swelling_pressure + record.avg_swelling_pressure*mu_value
+    #                 lower = record.phi_deg - record.phi_deg*mu_value
+    #                 upper = record.phi_deg + record.phi_deg*mu_value
     #                 if lower >= req_min and upper <= req_max:
-    #                     record.avg_swelling_pressure_conformity = 'pass'
+    #                     record.phi_deg_conformity = 'pass'
     #                     break
     #                 else:
-    #                     record.avg_swelling_pressure_conformity = 'fail'
+    #                     record.phi_deg_conformity = 'fail'
 
-    # avg_swelling_pressure_nabl = fields.Selection([
+    # phi_deg_nabl = fields.Selection([
     #     ('pass', 'Pass'),
-    #     ('fail', 'Fail')], string="NABL", compute="_compute_avg_swelling_pressure_nabl", store=True)
+    #     ('fail', 'Fail')], string="NABL", compute="_compute_phi_deg_nabl", store=True)
 
-    # @api.depends('avg_swelling_pressure','eln_ref','grade')
-    # def _compute_avg_swelling_pressure_nabl(self):
+    # @api.depends('phi_deg','eln_ref','grade')
+    # def _compute_phi_deg_nabl(self):
         
     #     for record in self:
-    #         record.avg_swelling_pressure_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table
+    #         record.phi_deg_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table
     #         # for material in materials:
     #         #     if material.grade.id == record.grade.id:
     #         lab_min = line.lab_min_value
     #         lab_max = line.lab_max_value
     #         mu_value = line.mu_value
             
-    #         lower = record.avg_swelling_pressure - record.avg_swelling_pressure*mu_value
-    #         upper = record.avg_swelling_pressure + record.avg_swelling_pressure*mu_value
+    #         lower = record.phi_deg - record.phi_deg*mu_value
+    #         upper = record.phi_deg + record.phi_deg*mu_value
     #         if lower >= lab_min and upper <= lab_max:
-    #             record.avg_swelling_pressure_nabl = 'pass'
+    #             record.phi_deg_nabl = 'pass'
     #             break
     #         else:
-    #             record.avg_swelling_pressure_nabl = 'fail'
+    #             record.phi_deg_nabl = 'fail'
 
-    # @api.depends('swelling_pressure_line_ids.swelling_pressure')
-    # def _compute_avg_swelling_pressure(self):
+    # @api.depends('angleshear_line_ids.normal_stress', 'angleshear_line_ids.shear_strength')
+    # def _compute_phi_cohesion_direct(self):
     #     for rec in self:
-    #         if rec.swelling_pressure_line_ids:
-    #             total = sum(rec.swelling_pressure_line_ids.mapped('swelling_pressure'))
-    #             rec.avg_swelling_pressure = total / len(rec.swelling_pressure_line_ids)
-    #         else:
-    #             rec.avg_swelling_pressure = 0.0
+    #         lines = rec.angleshear_line_ids.filtered(lambda l: l.normal_stress is not None and l.shear_strength is not None)
+    #         n = len(lines)
+    #         if n < 2:
+    #             rec.phi_deg = 0.0
+    #             rec.cohesion = 0.0
+    #             continue
+
+    #         # Ordinary least squares for tau = c + m*sigma
+    #         sigma = [l.normal_stress for l in lines]
+    #         tau = [l.shear_strength for l in lines]
+
+    #         sum_sigma = sum(sigma)
+    #         sum_tau = sum(tau)
+    #         sum_sigma_tau = sum(s * t for s, t in zip(sigma, tau))
+    #         sum_sigma2 = sum(s * s for s in sigma)
+
+    #         denom = (n * sum_sigma2) - (sum_sigma ** 2)
+    #         if abs(denom) < 1e-12:
+    #             # degenerate case: all sigma equal
+    #             # fallback to two-point if possible
+    #             rec.phi_deg = 0.0
+    #             rec.cohesion = 0.0
+    #             continue
+
+    #         m = (n * sum_sigma_tau - sum_sigma * sum_tau) / denom  # m = tan(phi)
+    #         c = (sum_tau - m * sum_sigma) / n
+
+    #         # convert m to degrees
+    #         phi_rad = math.atan(m)
+    #         phi_deg = phi_rad * 180.0 / math.pi
+
+    #         rec.phi_deg = phi_deg
+    #         rec.cohesion = c
+
+    
 
      # Unconsolidated Undrained Triaxial Test (Angle of Friction)
     uu_triaxial_angle_name = fields.Char("Name",default="Unconsolidated Undrained Triaxial Test (Angle of Friction)")
@@ -2825,7 +2708,6 @@ class Soil(models.Model):
         for rec in self:
             lines = rec.uu_triaxial_cohesion_line_ids
 
-            # किमान 2 data points असले पाहिजेत
             if not lines or len(lines) < 2:
                 rec.phi_deg_uu_triaxial_cohesion = 0.0
                 rec.cohesion_uu_triaxial_cohesion = 0.0
@@ -2834,7 +2716,6 @@ class Soil(models.Model):
             slopes = []
             intercepts = []
 
-            # सर्व सलग points वरून slope व intercept काढा
             for i in range(len(lines) - 1):
                 p1 = lines[i]
                 p2 = lines[i + 1]
@@ -2869,9 +2750,102 @@ class Soil(models.Model):
 
     show_sieve = fields.Boolean(default=False)
 
+    gsa_particle_child_lines = fields.One2many('mechanical.gsa.particle.line','parent_id')
+
    
 
     gsa_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+   # --- BUTTON ACTION ---
+    def action_calc_d_values(self):
+        """Button to Calculate and Fetch Values"""
+        self._calculate_all_d_values()
+        return True
+
+    def _calculate_all_d_values(self):
+        for record in self:
+            record.gsa_particle_child_lines.unlink()
+            
+            lines_list = []
+
+            for gsa in record.gsa_child_lines:
+                # --- CALCULATION LOGIC START ---
+                val_d10 = 0.0
+                val_d30 = 0.0
+                val_d60 = 0.0
+                val_cu = 0.0
+                val_cc = 0.0
+                
+                if gsa.sieve_analysis_child_lines_gsa:
+                    clean_data = []
+                    for line in gsa.sieve_analysis_child_lines_gsa:
+                        try:
+                            sz_str = re.sub(r"[^0-9.]", "", str(line.sieve_size))
+                            size_val = float(sz_str) if sz_str else 0.0
+                            pass_val = line.passing_percent
+                            clean_data.append({'size': size_val, 'passing': pass_val})
+                        except:
+                            continue
+
+                    clean_data.sort(key=lambda x: x['passing'], reverse=True)
+                    val_d10 = self._get_interpolated_value(clean_data, 10)
+                    val_d30 = self._get_interpolated_value(clean_data, 30)
+                    val_d60 = self._get_interpolated_value(clean_data, 60)
+
+                    if val_d10 > 0:
+                        val_cu = val_d60 / val_d10
+                        if val_d60 > 0:
+                            val_cc = (val_d30 ** 2) / (val_d60 * val_d10)
+                # --- CALCULATION LOGIC END ---
+
+              
+                
+                fetched_meniscus = getattr(gsa, 'meniscus_corre', 0.5)   # Default 0.5 if not found
+                fetched_dispersion = getattr(gsa, 'dispersion', 1.575)   # Default 1.575 if not found
+                fetched_temp_corre = getattr(gsa, 'temp_corre', 0.0)     
+
+                lines_list.append({
+                    'parent_id': record.id,
+                    'bh_id': gsa.bh_id,
+                    'sample_depth': gsa.sample_depth,
+                    
+                    # Calculated Values
+                    'd_10': val_d10,
+                    'd_30': val_d30,
+                    'd_60': val_d60,
+                    'c_u': round(val_cu, 2),
+                    'c_c': round(val_cc, 2),
+                    
+                    # Fetched Values (Same Name Fields)
+                    'meniscus_corre': fetched_meniscus,
+                    'dispersion': fetched_dispersion,
+                    'temp_corre': fetched_temp_corre,
+                })
+
+            if lines_list:
+                self.env['mechanical.gsa.particle.line'].create(lines_list)
+
+    # Helper Function
+    def _get_interpolated_value(self, data_list, target_percent):
+        upper = None
+        lower = None
+        for i in range(len(data_list) - 1):
+            curr = data_list[i]
+            next_one = data_list[i+1]
+            if curr['passing'] >= target_percent and next_one['passing'] < target_percent:
+                upper = curr
+                lower = next_one
+                break
+        
+        if upper and lower:
+            size2 = upper['size']
+            size1 = lower['size']
+            pass2 = upper['passing']
+            pass1 = lower['passing']
+            if (pass2 - pass1) != 0:
+                result = size2 - ((pass2 - target_percent) * (size2 - size1) / (pass2 - pass1))
+                return round(result, 4)
+        return 0.0
 
    
 
@@ -2905,6 +2879,8 @@ class Soil(models.Model):
                 'target': 'current',
             }
 
+    
+
     gsa_graph_image = fields.Binary(
         string="GSA Graph Image",
         attachment=True,
@@ -2918,99 +2894,12 @@ class Soil(models.Model):
 
     
 
-    # def action_generate_gsa_graph(self):
-    #     for record in self:
-    #         # 1. Initialize Plot
-    #         fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
-            
-    #         # 2. Configure Axes limits
-    #         ax.set_xscale('log')
-    #         ax.set_xlim(0.001, 100)  
-    #         ax.set_ylim(0, 110)      
 
-    #         # 3. Labels
-    #         ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
-    #         ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
 
-    #         # 4. Grid
-    #         ax.grid(True, which='major', axis='both', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
-    #         ax.grid(True, which='minor', axis='both', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
 
-    #         # 5. Format X-Axis Ticks
-    #         locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
-    #         ax.xaxis.set_major_locator(locmaj)
-            
-    #         def nice_log_formatter(x, pos):
-    #             if x in [0.001, 0.01, 0.1, 1, 10, 100]:
-    #                 return f"{x:g}" 
-    #             return ""
-    #         ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
-    #         ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
 
-    #         # --- MARKER LIST (Vegvegle Symbols) ---
-    #         # 'o' = Circle, '^' = Triangle Up, 's' = Square, 'D' = Diamond, 'x' = Cross, '*' = Star
-    #         marker_cycle = itertools.cycle(['^', '*', 'D', 'x', 'o', 's', 'v', '+'])
 
-    #         # 6. Plot Data
-    #         data_plotted = False
-            
-    #         if record.gsa_child_lines:
-    #             for sample in record.gsa_child_lines:
-    #                 data_pairs = []
-
-    #                 # Pratyek sample sathi navin symbol ghyaycha
-    #                 current_marker = next(marker_cycle)
-
-    #                 for line in sample.sieve_analysis_child_lines_gsa:
-    #                     if line.sieve_size and line.passing_percent is not None:
-    #                         try:
-    #                             # String clean kara
-    #                             size_str = str(line.sieve_size).lower().replace('mm', '').strip()
-    #                             if 'pan' in size_str:
-    #                                 continue 
-
-    #                             # 5 digit rounding logic
-    #                             size_val = round(float(size_str), 5)
-    #                             pass_val = line.passing_percent
-
-    #                             if 0.001 <= size_val <= 100:
-    #                                 data_pairs.append((size_val, pass_val))
-    #                         except ValueError:
-    #                             continue
-                    
-    #                 # Sort: Smallest -> Largest
-    #                 data_pairs.sort(key=lambda x: x[0]) 
-
-    #                 if data_pairs:
-    #                     sizes = [x[0] for x in data_pairs]
-    #                     passing = [x[1] for x in data_pairs]
-
-    #                     # --- CHANGE: marker=current_marker vaparla ahe ---
-    #                     ax.plot(sizes, passing, marker=current_marker, markersize=6, linewidth=2, label=sample.lab_no or "Sample")
-    #                     data_plotted = True
-
-    #         # Legend
-    #         if data_plotted:
-    #             ax.legend(loc='lower right', fontsize=9)
-
-    #         # 7. Save Image
-    #         buffer = io.BytesIO()
-    #         plt.savefig(buffer, format='png', bbox_inches='tight') 
-    #         plt.close(fig)
-    #         buffer.seek(0)
-            
-    #         record.gsa_graph_image = base64.b64encode(buffer.read())
-    #         buffer.close()
-
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'name': 'Soil Form',
-    #         'res_model': 'mechanical.soil1',
-    #         'res_id': record.id,
-    #         'view_mode': 'form',
-    #         'target': 'current',
-    #     }
-
+   
     def action_generate_gsa_graph(self):
         for record in self:
             # 1. Initialize Plot
@@ -3114,6 +3003,12 @@ class Soil(models.Model):
          # DETERMINATION OF CONSOLIDATION PROPERTIES		
     consolidation_name = fields.Char("Name",default="DETERMINATION OF CONSOLIDATION PROPERTIES")
     consolidation_visible = fields.Boolean("DETERMINATION OF CONSOLIDATION PROPERTIES",compute="_compute_visible")	
+
+    selected_lab_id7 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
     consolidation_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     consolidation_diameter = fields.Float(string="Diameter, D", digits=(8,1))
@@ -3479,6 +3374,12 @@ class Soil(models.Model):
     
     swelling_pressure_name = fields.Char("Name",default="DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD")
     swelling_pressure_visible = fields.Boolean("DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD",compute="_compute_visible")
+
+    selected_lab_id5 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
 
     swelling_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     swelling_diameter = fields.Float(string="Diameter, D", digits=(8,1))
@@ -3912,6 +3813,12 @@ class Soil(models.Model):
     permeability_falling_name = fields.Char("Name",default="Permeability Falling Head Test")
     permeability_falling_visible = fields.Boolean("Permeability Falling Head Test",compute="_compute_visible")
 
+    selected_lab_id3 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+
     dia_standpipe = fields.Float(string="Dia of Stand Pipe, d (cm)", digits=(8,1))
     dia_soil_sample = fields.Float(string="Dia of Soil Sample, D (cm)", digits=(8,1))
     length_soil = fields.Float(string="Length of Soil Sample, L (cm)", digits=(8,1))
@@ -4119,8 +4026,21 @@ class Soil(models.Model):
     triaxial_test_name = fields.Char("Name",default="DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST")
     triaxial_test_visible = fields.Boolean("DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST",compute="_compute_visible")
 
+
+
+    selected_lab_id1 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+
+
+
+
+
     dia_triaxial = fields.Float(string="Diameter (mm)", digits=(8, 1))
     
+
     # Area automatically calculate hoil
     area1_triaxial = fields.Float(
         string="Area (A): cm²", 
@@ -4373,6 +4293,1090 @@ class Soil(models.Model):
             rec.rise_force_triaxial_test = rec.humidity_triaxial_test * diff
 
 
+    #  DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION	
+
+    soil_light_heavy_name = fields.Char("Name",default="DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION")
+    soil_light_heavy_visible = fields.Boolean("DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION",compute="_compute_visible")
+
+    empty_wt_proctor = fields.Float(string="Empty weight of Proctor mould in gm. M" , digits=(8,0))
+    volumn_proctor = fields.Float(string="Volumn of Proctor mould in cc. V" , digits=(8,0))
+    no_trails = fields.Float(string="Number of trials. n" , digits=(8,0))
+
+    soil_light_heavy_lines = fields.One2many('soil.light.heavy.compaction.line', 'parent_id', string="Light/Heavy Compaction Lines")
+    
+
+
+    def action_calculate_avg_moisture(self):
+        for rec in self:
+            lines = rec.soil_light_heavy_lines.sorted(key=lambda l: l.serial_no)  
+            group_size = 2
+
+            for i in range(0, len(lines), group_size):
+                group = lines[i:i + group_size]
+                strengths = [l.moisture_content for l in group if l.moisture_content > 0]
+                avg = sum(strengths) / len(strengths) if strengths else 0.0
+
+                if group:
+                    group[0].avg_moisture_content = avg
+
+            for line in lines:
+                if line not in [lines[i] for i in range(0, len(lines), group_size)]:
+                    line.avg_moisture_content = 0.0
+
+            
+
+    graph_image_light_heavy = fields.Binary("Compaction Curve Graph", compute="_compute_graph_image_light_heavy", store=True)
+
+    @api.depends('soil_light_heavy_lines.moisture_content', 'soil_light_heavy_lines.dry_density')
+    def _compute_graph_image_light_heavy(self):
+     for record in self:
+        if record.soil_light_heavy_lines:
+            record.graph_image_light_heavy = record.generate_compaction_curve()
+        else:
+            record.graph_image_light_heavy = False
+
+    def generate_compaction_curve(self):
+     self.ensure_one()
+    
+     lines = self.soil_light_heavy_lines.filtered(lambda l: l.moisture_content and l.dry_density)
+     if len(lines) < 2:
+        return False
+    
+     x_vals = np.array(lines.mapped('moisture_content'), dtype=float)
+     y_vals = np.array(lines.mapped('dry_density'), dtype=float)
+    
+     max_idx = np.argmax(y_vals)
+     max_density = y_vals[max_idx]
+     omc = x_vals[max_idx]
+     
+     from scipy.interpolate import CubicSpline
+     cs = CubicSpline(x_vals, y_vals, bc_type='natural')
+     x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
+     y_smooth = cs(x_smooth)
+    
+     import matplotlib
+     matplotlib.use('Agg')
+     import matplotlib.pyplot as plt
+    
+     fig, ax = plt.subplots(figsize=(10, 5), dpi=110)
+    
+     # Test data curve
+     ax.plot(x_smooth, y_smooth, color='green', linewidth=2, label='Test Data')
+     ax.scatter(x_vals, y_vals, color='green', s=80, zorder=5, label='Test Points')
+    
+     # Maximum density line
+     ax.axhline(y=max_density, color='blue', linestyle='-', linewidth=2.5, label=f'Max Dry Density: {max_density:.2f}')
+     ax.axvline(x=omc, color='red', linestyle='--', alpha=0.7, linewidth=2, label=f'OMC: {omc:.1f}%')
+    
+     # Data point labels
+     for x, y in zip(x_vals, y_vals):
+        ax.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+                   xytext=(0, 10), ha='center', fontsize=9, fontweight='bold')
+    
+     ax.set_xlim(0, 40)
+    
+     # FIXED Y-AXIS: Custom ticks matching your screenshot [file:40]
+     ax.set_ylim(0, 2.0)
+     ax.set_yticks([0.0, 0.25, 0.50, 0.75, 1.00, 1.20, 1.40, 1.60 , 1.80,  2.00])
+     ax.set_yticklabels(['0.00', '0.25', '0.50', '0.75', '1.00', '1.20', '1.40', '1.60' , '1.80', ' 2.00'])
+    
+     ax.set_xlabel('Moisture Content (%)', fontsize=12, fontweight='bold')
+     ax.set_ylabel('Dry Density (g/cm³)', fontsize=12, fontweight='bold')
+     ax.set_title('Moisture Density Test Results\n', fontsize=14, fontweight='bold', pad=20)
+    
+     ax.grid(True, alpha=0.3)
+     ax.legend(loc='upper left', fontsize=8, framealpha=0.95, bbox_to_anchor=(0.02, 0.98))
+    
+     buf = BytesIO()
+     fig.tight_layout()
+     fig.savefig(buf, format='png', dpi=100, bbox_inches='tight',  facecolor='white')
+     plt.close(fig)
+     buf.seek(0)
+     return base64.b64encode(buf.read())
+    
+
+
+    # DETERMINE THE UNCONFINED COMPRESSIVE STRENGTH		
+
+    ucs_name = fields.Char("Name",default="Unconfined Compressive Strength (UCS) Test")
+    ucs_visible = fields.Boolean("Unconfined Compressive Strength (UCS) Test Visible",compute="_compute_visible")
+
+    ucs_diameter = fields.Float(string="Diameter (mm): ", digits=(12,0))
+    ucs_area = fields.Float(string="Area (A):mm2", digits=(12,2), compute="_compute_ucs_area", store=True)
+    ucs_height = fields.Float(string="Height:  mm", digits=(12,0))
+    ucs_volumn = fields.Float(string="Soil Volume: cm3", digits=(12,2) , compute="_compute_ucs_volumn", store=True )
+
+    @api.depends('ucs_diameter')
+    def _compute_ucs_area(self):
+        for line in self:
+            if line.ucs_diameter:    
+                line.ucs_area =  (pi / 4) * line.ucs_diameter * line.ucs_diameter
+            else:
+                line.ucs_area = 0.0
+
+
+    @api.depends('ucs_diameter', 'ucs_height')
+    def _compute_ucs_volumn(self):
+        for line in self:
+            if line.ucs_diameter and line.ucs_height:
+              radius_sq = line.ucs_diameter ** 2
+              area = (pi / 4) * radius_sq
+              line.ucs_volumn = area * line.ucs_height
+            else:
+              line.ucs_volumn = 0.0
+
+    trail_no_cell = fields.Float(string="Trial No/Cell Pressure.")
+    initial_mass_bt = fields.Float(string="Initial mass of soil (before testing) (g):", digits=(12,3))
+    initial_mass_at = fields.Float(string="Initial mass of soil (after testing) (g): ", digits=(12,3))
+    mass_dry_soil = fields.Float(string="Mass of dry soil (g)", digits=(12,3))
+
+
+    ucs_moisture_con_at = fields.Float(string="mositure content after test (%):", digits=(12,2) , compute="_compute_ucs_moisture_con_at", store=True )
+    ucs_bulk_density = fields.Float(string="Bulk Density of soil (g/cc)", digits=(12,2) , compute="_compute_ucs_bulk_density", store=True ) 
+    ucs_dry_density = fields.Float(string="Dry density of soil (g/cc)	", digits=(12,2) , compute="_compute_ucs_dry_density", store=True )
+
+    ucs_specific_gravity = fields.Float(string="Specific Gravity", digits=(12,2))
+
+    ucs_initial_moist_con = fields.Float(string="Initial Moisture content", digits=(12,2) , compute="_compute_ucs_initial_moist_con", store=True )  
+
+    @api.depends('initial_mass_at', 'mass_dry_soil')
+    def _compute_ucs_moisture_con_at(self):
+        for line in self:
+            if line.initial_mass_at and line.mass_dry_soil:
+              water_mass  = line.initial_mass_at - line.mass_dry_soil
+              line.ucs_moisture_con_at = (water_mass / line.mass_dry_soil) * 100
+            else:
+              line.ucs_moisture_con_at = 0.0 
+
+    @api.depends('initial_mass_bt','ucs_diameter', 'ucs_height')
+    def _compute_ucs_bulk_density(self):
+        for line in self:
+            if line.initial_mass_bt and line.ucs_diameter and line.ucs_height:
+              radius_sq = line.ucs_diameter ** 2
+              area = (pi / 4) * radius_sq
+              volumn = area * line.ucs_height
+              
+              line.ucs_bulk_density = line.initial_mass_bt / (volumn/1000)
+            else:
+              line.ucs_bulk_density = 0.0  
+
+    @api.depends('initial_mass_bt','ucs_diameter', 'ucs_height','initial_mass_at', 'mass_dry_soil',)
+    def _compute_ucs_dry_density(self):
+        for line in self:
+            if line.initial_mass_bt and line.ucs_diameter and line.ucs_height and line.initial_mass_at and line.mass_dry_soil:
+              radius_sq = line.ucs_diameter ** 2
+              area = (pi / 4) * radius_sq
+              volumn = area * line.ucs_height
+              ucs_bulk_density = line.initial_mass_bt / (volumn/1000)
+              water_mass  = line.initial_mass_at - line.mass_dry_soil
+              ucs_moisture_con_at = (water_mass / line.mass_dry_soil) * 100
+
+              line.ucs_dry_density = ucs_bulk_density /(1 + ucs_moisture_con_at/100)
+            else:
+              line.ucs_dry_density = 0.0  
+
+    @api.depends('initial_mass_bt', 'mass_dry_soil')
+    def _compute_ucs_initial_moist_con(self):
+        for line in self:
+            if line.initial_mass_bt and line.mass_dry_soil:
+              water_mass  = line.initial_mass_bt - line.mass_dry_soil
+              line.ucs_initial_moist_con = (water_mass / line.mass_dry_soil) * 100
+            else:
+              line.ucs_initial_moist_con = 0.0        
+
+    ucs_proving_ring = fields.Float(string="Proving Ring Capacity", digits=(12,0))   
+
+    ucs_dial_gauge = fields.Float(string="Least Count of dial guage", digits=(12,2))
+
+    ucs_rate_dis = fields.Float(string="Displacement Rate (mm/min)", digits=(12,2))  
+
+    ucs_room_temp = fields.Float(string="Room Temperature", digits=(12,0))
+    ucs_std_temp = fields.Float(string="Std Calibration Temp")
+    ucs_temp_correction = fields.Float(string="Temp correction per °C", digits=(12,3))
+
+    temp_diff = fields.Float(string="Rise/Fall in Temperature (°C)" , compute="_compute_temp_effect",store=True)
+
+    force_percent_change = fields.Float(string="% Rise/Fall in Force Value",compute="_compute_temp_effect",store=True)
+
+    @api.depends('ucs_room_temp', 'ucs_std_temp', 'ucs_temp_correction')
+    def _compute_temp_effect(self):
+        for line in self:
+            if line.ucs_room_temp and line.ucs_std_temp:
+                line.temp_diff = line.ucs_room_temp - line.ucs_std_temp
+                line.force_percent_change = (line.temp_diff * line.ucs_temp_correction)
+            else:
+                line.temp_diff = 0.0
+                line.force_percent_change = 0.0  
+                
+    w_value = fields.Float(string="w", digits=(12,2),   compute="_compute_soil_parameters", store=True)
+
+    gamma_ratio = fields.Float(string="γw / γd", digits=(12,2),compute="_compute_soil_parameters", store=True)
+
+    inv_specific_gravity = fields.Float(string="1 / Gs", digits=(12,2),compute="_compute_soil_parameters", store=True)
+
+    degree_saturation = fields.Float(string="S (%)", digits=(12,2),compute="_compute_soil_parameters", store=True) 
+
+    @api.depends('ucs_moisture_con_at','ucs_bulk_density','ucs_dry_density','ucs_specific_gravity')
+    def _compute_soil_parameters(self):
+     for line in self:
+        # w (decimal)
+        if line.ucs_moisture_con_at:
+            w = line.ucs_moisture_con_at / 100
+            line.w_value = w
+        else:
+            w = 0.0
+            line.w_value = 0.0
+
+        # γw / γd
+        if line.ucs_bulk_density and line.ucs_dry_density:
+            line.gamma_ratio = (
+                1 / line.ucs_dry_density
+            )
+        else:
+            line.gamma_ratio = 0.0
+
+        # 1 / Gs
+        if line.ucs_specific_gravity:
+            line.inv_specific_gravity = 1 / line.ucs_specific_gravity
+        else:
+            line.inv_specific_gravity = 0.0
+
+        # Degree of saturation S (%)
+        if (w and line.ucs_specific_gravity
+                and line.ucs_bulk_density
+                and line.ucs_dry_density
+                and line.gamma_ratio != 0):
+
+            line.degree_saturation = (w / (line.gamma_ratio - line.inv_specific_gravity)) * 100
+        else:
+            line.degree_saturation = 0.0
+   
+  
+    ucs_lines = fields.One2many('ucs.soil.line', 'parent_id',  string="DETERMINE THE UNCONFINED COMPRESSIVE STRENGTH",default=lambda self: self.default_ucs_reading())	
+
+    @api.model
+    def default_ucs_reading(self):
+        default_lines = [
+            (0, 0, {'horizontal_read':'0' ,'shear_stress': '0.000','axial_deformation':'0' ,'axial_strain': '0.000',}),
+            
+        ]
+        return default_lines
+
+
+    def action_compute_ucs(self):
+     """Compute and SAVE UCS line values and max PR values."""
+     for rec in self:
+        # 1) Compute horizontal readings for each line
+        for line in rec.ucs_lines:
+            if line.serial_no <= 1:
+                horiz = 0.0
+            else:
+                horiz = 25.0 * (line.serial_no - 1)
+            line.horizontal_read = horiz
+
+        # 2) MAX PR + VLOOKUP-like behaviour (once per record)
+        lines = rec.ucs_lines.sorted(lambda l: l.horizontal_read)
+
+        if not lines:
+            rec.ucs_max_pr = 0.0
+            rec.ucs_max_pr_horiz = 0.0
+            rec.ucs_max_pr_area = 0.0
+            continue
+
+        # Excel range starts from row with horiz > 0 (skip first row with 0)
+        data_lines = lines.filtered(lambda l: l.horizontal_read > 0)
+
+        if not data_lines:
+            rec.ucs_max_pr = 0.0
+            rec.ucs_max_pr_horiz = 0.0
+            rec.ucs_max_pr_area = 0.0
+            continue
+
+        # MAX(M22:M105)
+        max_pr = max(data_lines.mapped('prove_ring_read'))
+        rec.ucs_max_pr = max_pr
+
+        # VLOOKUP(BM21, M22:BN…, 2, FALSE) → first row (top-down) with that PR
+        line_max = False
+        for l in data_lines:
+            if l.prove_ring_read == max_pr:
+                line_max = l
+                break
+
+        if line_max:
+            rec.ucs_max_pr_horiz = line_max.horizontal_read   # e.g. 525
+            rec.ucs_max_pr_area = line_max.corrected_area     # e.g. 12.183
+        else:
+            rec.ucs_max_pr_horiz = 0.0
+            rec.ucs_max_pr_area = 0.0
+
+     return True
+
+
+
+    ucs_max_pr = fields.Float(string="Max. PR Reading", digits=(12, 2))
+    ucs_max_pr_horiz = fields.Float(string="Horizontal dial @ Max PR", digits=(12, 2))
+    ucs_max_pr_area = fields.Float(string="Corrected area @ Max PR", digits=(12, 3))
+
+
+    axial_deform_ucs = fields.Float(string="Axial Deformation, mm" , digits=(8,1) , compute="_compute_axial_deform_ucs" , store=True)
+
+    @api.depends('ucs_max_pr_horiz', 'ucs_dial_gauge')
+    def _compute_axial_deform_ucs(self):
+     for line in self:
+        if line.ucs_max_pr_horiz and line.ucs_dial_gauge :
+            line.axial_deform_ucs = line.ucs_max_pr_horiz * line.ucs_dial_gauge
+        else:
+            line.axial_deform_ucs = 0.0
+
+
+    axial_strain_ucs = fields.Float(string="Axial strain %" , digits=(8,2) , compute="_compute_axial_strain_ucs" , store=True)
+
+    @api.depends('ucs_max_pr_horiz', 'ucs_dial_gauge','ucs_height')
+    def _compute_axial_strain_ucs(self):
+     for line in self:
+        if line.ucs_max_pr_horiz and line.ucs_dial_gauge and line.ucs_height :
+            axial_deform_ucs = line.ucs_max_pr_horiz * line.ucs_dial_gauge
+            line.axial_strain_ucs = (axial_deform_ucs / line.ucs_height) * 100
+        else:
+            line.axial_strain_ucs = 0.0
+
+    axial_force_ucs = fields.Float(string="Axial force, kN" , digits=(8,2) , compute="_compute_axial_force_ucs" , store=True)
+
+    @api.depends('ucs_max_pr')
+    def _compute_axial_force_ucs(self):
+     for line in self:
+        if line.ucs_max_pr :
+            line.axial_force_ucs = (((line.ucs_max_pr * 5) * 1.6825) + 14.258) / 1000
+        else:
+            line.axial_force_ucs = 0.0
+            
+
+    ucs_compressive_stress = fields.Float("Compressive stress (kg/cm²)", digits=(12, 2), compute="_compute_ucs_compressive_stress" , store=True)
+
+    @api.depends('ucs_max_pr','ucs_max_pr_area','force_percent_change')
+    def _compute_ucs_compressive_stress(self):
+     for line in self:
+        if line.ucs_max_pr and line.ucs_max_pr_area and line.force_percent_change :
+            axial_force_ucs = (((line.ucs_max_pr * 5) * 1.6825) + 14.258) / 1000
+            line.ucs_compressive_stress = (((axial_force_ucs * 1000) / 9.81)/ line.ucs_max_pr_area) + ((((axial_force_ucs*1000/9.81)/9.81)/line.ucs_max_pr_area) * line.force_percent_change)
+        else:
+            line.ucs_compressive_stress = 0.0
+
+
+    graph_image_ucs = fields.Binary("Compaction Curve Graph", compute="_compute_graph_image_ucs", store=True)
+
+    @api.depends('ucs_lines.shear_stress', 'ucs_lines.axial_strain')
+    def _compute_graph_image_ucs(self):
+     for record in self:
+        if record.ucs_lines:
+            record.graph_image_ucs = record._generate_ucs_graph()
+        else:
+            record.graph_image_ucs = False
+
+    def _generate_ucs_graph(self):
+     """Generate smooth UCS curve  (Axial Stress vs Axial Strain)."""
+     self.ensure_one()
+
+     # 1) Collect data (allow zero first point)
+     lines = self.ucs_lines.filtered(
+        lambda l: (l.shear_stress is not None) and (l.axial_strain is not None)
+     )
+     if len(lines) < 3:
+        return False
+
+     strain = np.array(lines.mapped('axial_strain'), dtype=float)
+     stress = np.array(lines.mapped('shear_stress'), dtype=float)
+
+     # 2) Ensure origin (0,0) is present
+     if not np.any((strain == 0.0) & (stress == 0.0)):
+        strain = np.insert(strain, 0, 0.0)
+        stress = np.insert(stress, 0, 0.0)
+
+     # Sort by strain
+     order = np.argsort(strain)
+     strain = strain[order]
+     stress = stress[order]
+
+     # 3) Cut at peak stress (remove tail)
+     peak_idx = int(np.argmax(stress))
+     strain_peak = strain[:peak_idx + 1]
+     stress_peak = stress[:peak_idx + 1]
+
+     # 4) Rescale strain so last point ≈ 9 %
+     if strain_peak[-1] > 0:
+        scale = 9.0 / strain_peak[-1]
+        strain_scaled = strain_peak * scale
+     else:
+        strain_scaled = strain_peak
+
+     # 5) Cubic spline on unique X
+     x_unique, idx_unique = np.unique(strain_scaled, return_index=True)
+     y_unique = stress_peak[idx_unique]
+     if len(x_unique) < 3:
+        return False
+
+     cs = CubicSpline(x_unique, y_unique, bc_type='natural')
+     x_smooth = np.linspace(x_unique.min(), x_unique.max(), 400)
+     y_smooth = cs(x_smooth)
+
+     # 6) Plot
+     fig, ax = plt.subplots(figsize=(10, 5), dpi=110)
+
+     ax.plot(x_smooth, y_smooth, color='#86b93b', linewidth=2.5)
+     ax.scatter(strain_scaled, stress_peak, color='#86b93b', s=20, zorder=5)
+
+     ax.set_xlabel('Axial Strain (%)', fontsize=11, fontweight='bold')
+     ax.set_ylabel('Axial Stress (kg/sq.cm)', fontsize=11, fontweight='bold')
+     ax.set_title('Unconfined Compression Test', fontsize=13, fontweight='bold')
+
+     # Axes 0–9 and 0–1, ticks every 1 and 0.1
+     ax.set_xlim(0, 10.0)
+     ax.set_xticks(np.arange(0, 9.1, 1.0))
+     ax.set_xticklabels([f'{v:.0f}' for v in np.arange(0, 9.1, 1.0)])
+
+     ax.set_ylim(0, 1.0)
+     ax.set_yticks(np.arange(0, 1.01, 0.1))
+     ax.set_yticklabels([f'{v:.1f}' for v in np.arange(0, 1.01, 0.1)])
+
+     ax.grid(True, alpha=0.3)
+
+     buf = BytesIO()
+     fig.tight_layout()
+     fig.savefig(buf, format='png', dpi=100, bbox_inches='tight', facecolor='white')
+     plt.close(fig)
+     buf.seek(0)
+     return base64.b64encode(buf.read())
+    
+
+
+    # DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST									
+
+    direct_shear_name = fields.Char("Name",default="DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST")
+    direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
+
+    shear_box_dimension = fields.Float(string="Shear Box Inside Dimension:", digits=(12,0))
+    shear_area = fields.Float(string="Area (A):cm2", digits=(12,0) , compute="_compute_shear_area", store=True)
+
+    @api.depends('shear_box_dimension')
+    def _compute_shear_area(self):
+        for line in self:
+            if line.shear_box_dimension:    
+                line.shear_area =  line.shear_box_dimension ** 2 
+            else:
+                line.shear_area = 0.0
+
+    shear_height = fields.Float(string="Shear Box Height:  cm", digits=(12,1))
+    shear_volumn = fields.Float(string="Soil Volume: cm3", digits=(12,0) , compute="_compute_shear_volumn", store=True )
+
+    @api.depends('shear_box_dimension', 'shear_height')
+    def _compute_shear_volumn(self):
+        for line in self:
+            if line.shear_box_dimension and line.shear_height:
+              area = line.shear_box_dimension ** 2
+              line.shear_volumn = area * line.shear_height
+            else:
+              line.shear_volumn = 0.0
+
+    initial_mass_soil_cutter = fields.Float(string="Initial mass of soil and cutter: ", digits=(12,2))
+    wt_empty_cutter = fields.Float(string="Empty Weight of cutter: ", digits=(12,3))
+
+    initial_mass_soil = fields.Float(string="initial Mass of soil:(g)", digits=(12,3) , compute="_compute_initial_mass_soil", store=True )
+
+    @api.depends('initial_mass_soil_cutter', 'wt_empty_cutter')
+    def _compute_initial_mass_soil(self):
+        for line in self:
+            if line.initial_mass_soil_cutter and line.wt_empty_cutter:
+              line.initial_mass_soil = line.initial_mass_soil_cutter - line.wt_empty_cutter
+            else:
+              line.initial_mass_soil = 0.0 
+
+    initial_moisture_content= fields.Float(string="Initial mositure content:", digits=(12,2) , compute="_compute_initial_moisture_content", store=True )
+
+    mass_dry_soil = fields.Float(string="Mass of dry soil at shear zone (g)", digits=(12,1) )
+
+    @api.depends('initial_mass_soil_cutter', 'wt_empty_cutter','mass_dry_soil')
+    def _compute_initial_moisture_content(self):
+        for line in self:
+            if line.initial_mass_soil_cutter and line.wt_empty_cutter and line.mass_dry_soil:
+              initial_mass_soil = line.initial_mass_soil_cutter - line.wt_empty_cutter
+              line.initial_moisture_content = ((initial_mass_soil - line.mass_dry_soil) / line.mass_dry_soil ) * 100
+            else:
+              line.initial_moisture_content = 0.0 
+
+    final_wt_soil_cutter = fields.Float(string="Final wt of soil + cutter at shear zone", digits=(12,3))
+    final_mass_soil = fields.Float(string="Final Mass of soil:(g) ", digits=(12,2) , compute="_compute_final_mass_soil", store=True)
+
+    @api.depends('final_wt_soil_cutter', 'wt_empty_cutter')
+    def _compute_final_mass_soil(self):
+        for line in self:
+            if line.final_wt_soil_cutter and line.wt_empty_cutter:
+              line.final_mass_soil = line.final_wt_soil_cutter - line.wt_empty_cutter
+            else:
+              line.final_mass_soil = 0.0 
+    
+
+    moisture_content_shear = fields.Float(string="Moisture content at shear zone (%)", digits=(12,2) , compute="_compute_moisture_content_shear", store=True)
+
+    @api.depends('final_wt_soil_cutter', 'wt_empty_cutter','mass_dry_soil')
+    def _compute_moisture_content_shear(self):
+        for line in self:
+            if line.final_wt_soil_cutter and line.wt_empty_cutter and line.mass_dry_soil:
+              final_mass_soil = line.final_wt_soil_cutter - line.wt_empty_cutter
+              line.moisture_content_shear = ((final_mass_soil - line.mass_dry_soil) / line.mass_dry_soil ) * 100
+            else:
+              line.moisture_content_shear = 0.0
+
+
+    density_soil_shear = fields.Float(string="Density of soil (g/cc)", digits=(12,2) , compute="_compute_density_soil_shear", store=True)
+
+    @api.depends('shear_box_dimension', 'shear_height','initial_mass_soil_cutter', 'wt_empty_cutter')
+    def _compute_density_soil_shear(self):
+        for line in self:
+            if line.shear_box_dimension and line.shear_height and line.initial_mass_soil_cutter and line.wt_empty_cutter:
+              shear_volumn = line.shear_box_dimension ** 2 * line.shear_height
+              initial_mass_soil = line.initial_mass_soil_cutter - line.wt_empty_cutter
+              if shear_volumn > 0:
+                line.density_soil_shear = initial_mass_soil / shear_volumn
+              else:
+                line.density_soil_shear = 0.0
+            else:
+                line.density_soil_shear = 0.0
+
+    dry_density_soil_shear = fields.Float(string="Dry density of soil (g/cc)", digits=(12,2) , compute="_compute_dry_density_soil_shear", store=True)
+
+    @api.depends('shear_box_dimension', 'shear_height','initial_mass_soil_cutter', 'wt_empty_cutter','mass_dry_soil')
+    def _compute_dry_density_soil_shear(self):
+        for line in self:
+              shear_volumn = line.shear_box_dimension ** 2 * line.shear_height
+
+              initial_mass_soil = line.initial_mass_soil_cutter - line.wt_empty_cutter
+
+              
+              if shear_volumn > 0 and line.mass_dry_soil > 0 and initial_mass_soil >= line.mass_dry_soil:
+
+                initial_moisture_content = ((initial_mass_soil - line.mass_dry_soil) / line.mass_dry_soil ) * 100
+
+                density_soil_shear = initial_mass_soil / shear_volumn
+
+                line.dry_density_soil_shear = density_soil_shear / (1 + initial_moisture_content / 100)
+              else:
+                line.dry_density_soil_shear = 0.0
+
+    
+
+    normal_stress_settle = fields.Float(string="Settelement after normal stress:", digits=(12,2) )
+
+    dry_density_stress_settle = fields.Float(string="Dry density of soil after normal stress:", digits=(12,3) , 
+    compute="_compute_dry_density_stress_settle", store=True)
+
+    @api.depends('mass_dry_soil', 'shear_area', 'shear_height', 'normal_stress_settle')
+    def _compute_dry_density_stress_settle(self):
+     for line in self:
+        # Make sure all values are positive and valid
+        if (
+            line.mass_dry_soil > 0 and
+            line.shear_area > 0 and
+            line.shear_height > 0 and
+            line.normal_stress_settle >= 0 and
+            line.shear_height > (line.normal_stress_settle / 10)  # Height must be greater than settlement in cm
+        ):
+            # Adjusted height after settlement (cm)
+            adjusted_height = line.shear_height - (line.normal_stress_settle / 10)
+
+            # New volume = area * adjusted height
+            shear_volumn = line.shear_area * adjusted_height
+
+            # Dry density after settlement = dry mass / adjusted volume
+            line.dry_density_stress_settle = line.mass_dry_soil / shear_volumn
+        else:
+            line.dry_density_stress_settle = 0.0
+
+
+    drainage_condition = fields.Selection([
+    ('UU', 'UU'),
+    ('CU', 'CU'),
+    ('CD', 'CD'),], string="Drainage Condition", default='UU')
+
+    displacement_rate = fields.Float(string="Displacement rate: mm/min", digits=(12,2) , compute="_compute_displacement_rate", store=True )
+    normal_stress = fields.Float(string="Normal stress: kg/cm2", digits=(12,1))
+
+    @api.depends('drainage_condition')  # or any fields that affect displacement_rate
+    def _compute_displacement_rate(self):
+        for record in self:
+            if record.drainage_condition == 'UU':
+                record.displacement_rate = 1.25
+            elif record.drainage_condition == 'CU':
+                record.displacement_rate = 0.5
+            else:
+                record.displacement_rate = 0.25
+
+    shear_room_temp = fields.Float(string="Room Temperature", digits=(12,1))
+    shear_std_temp = fields.Float(string="Std Temp During calibr'n")
+    shear_temp_correction = fields.Float(string="Temperature correction fro each deg C rise/fall (+/-)", digits=(12,3))
+
+    shear_temp_diff = fields.Float(string="Rise/Fall in Temperature (°C)" , compute="_compute_shear_temp_effect",store=True)
+
+    shear_force_percent_change = fields.Float(string="% Rise/Fall in Force Value",digits=(12,3) ,compute="_compute_shear_temp_effect",store=True)
+
+    @api.depends('shear_room_temp', 'shear_std_temp', 'shear_temp_correction')
+    def _compute_shear_temp_effect(self):
+     for line in self:
+        if line.shear_room_temp is not None and line.shear_std_temp is not None:
+            line.shear_temp_diff = line.shear_room_temp - line.shear_std_temp
+            line.shear_force_percent_change = line.shear_temp_diff * line.shear_temp_correction
+        else:
+            line.shear_temp_diff = 0.0
+            line.shear_force_percent_change = 0.0
+
+
+
+    direct_shear_ids = fields.One2many("direct.shear.test.line", "parent_id", string="Test Readings",default=lambda self: self.default_shear_reading())		
+
+    @api.model
+    def default_shear_reading(self):
+        default_lines = [
+            (0, 0, {'horizontal_read':'0','horizontal_dispalacement' : '0' ,'horizontal_shear': '0.000','horizontal_shear_temp':'0' ,'shear_stress': '0.000',}),
+            (0, 0, {'horizontal_read':'25',}),
+            (0, 0, {'horizontal_read':'50',}),
+            (0, 0, {'horizontal_read':'75',}),
+            (0, 0, {'horizontal_read':'100',}),
+            (0, 0, {'horizontal_read':'125',}),
+            (0, 0, {'horizontal_read':'150',}),
+            (0, 0, {'horizontal_read':'175',}),
+            (0, 0, {'horizontal_read':'200',}),
+            (0, 0, {'horizontal_read':'225',}),
+            (0, 0, {'horizontal_read':'250',}),
+            (0, 0, {'horizontal_read':'275',}),
+            (0, 0, {'horizontal_read':'300',}),
+            (0, 0, {'horizontal_read':'325',}),
+            (0, 0, {'horizontal_read':'350',}),
+            (0, 0, {'horizontal_read':'375',}),
+            (0, 0, {'horizontal_read':'400',}),
+            (0, 0, {'horizontal_read':'425',}),
+            (0, 0, {'horizontal_read':'450',}),
+            (0, 0, {'horizontal_read':'475',}),
+            (0, 0, {'horizontal_read':'500',}),
+            (0, 0, {'horizontal_read':'525',}),
+            (0, 0, {'horizontal_read':'550',}),
+            (0, 0, {'horizontal_read':'575',}),
+            (0, 0, {'horizontal_read':'600',}),
+            (0, 0, {'horizontal_read':'625',}),
+            (0, 0, {'horizontal_read':'650',}),
+            (0, 0, {'horizontal_read':'675',}),
+            (0, 0, {'horizontal_read':'700',}),
+            (0, 0, {'horizontal_read':'725',}),
+            (0, 0, {'horizontal_read':'750',}),
+            (0, 0, {'horizontal_read':'775',}),
+            (0, 0, {'horizontal_read':'800',}),
+            (0, 0, {'horizontal_read':'825',}),
+            (0, 0, {'horizontal_read':'850',}),
+            (0, 0, {'horizontal_read':'875',}),
+            (0, 0, {'horizontal_read':'900',}),
+            (0, 0, {'horizontal_read':'925',}),
+            (0, 0, {'horizontal_read':'950',}),
+            (0, 0, {'horizontal_read':'975',}),
+            (0, 0, {'horizontal_read':'1000',}),
+            (0, 0, {'horizontal_read':'1025',}),
+            (0, 0, {'horizontal_read':'1050',}),
+            (0, 0, {'horizontal_read':'1075',}),
+            (0, 0, {'horizontal_read':'1100',}),
+
+            
+        ]
+        return default_lines
+
+    area_type = fields.Selection([
+        ('corrected', 'Corrected Area'),
+        ('non_corrected', 'Non Corrected Area')
+    ], string='Area Type', default='corrected')
+
+    non_corrected_area_shear = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0))
+
+    def action_compute_shear(self):
+     for rec in self:
+        # 1) Compute horizontal readings for each line
+        for line in rec.direct_shear_ids:
+            if line.serial_no <= 1:
+                horiz = 0.0
+            else:
+                horiz = 25.0 * (line.serial_no - 1)
+            line.horizontal_read = horiz
+
+
+    graph_image_shearc1 = fields.Binary("Direct shear Curve Graph", compute="_compute_graph_image_shearc1", store=True)
+
+    @api.depends('direct_shear_ids.shear_stress', 'direct_shear_ids.horizontal_dispalacement')
+    def _compute_graph_image_shearc1(self):
+     for record in self:
+        if record.direct_shear_ids:
+            record.graph_image_shearc1 = record._generate_shear_c1_graph()
+        else:
+            record.graph_image_shearc1 = False
+
+    def _generate_shear_c1_graph(self):
+      """Generate EXACT graph matching image: thick green line, scatter, sharp peak, grid"""
+      self.ensure_one()
+    
+      # 1) Filter valid data (matches image data points)
+      lines = self.direct_shear_ids.filtered(
+        lambda l: l.shear_stress >= 0 and l.horizontal_dispalacement >= 0
+      )
+      if len(lines) < 4:  # Need peak + tail
+          return False
+    
+      strain_raw = np.array([l.horizontal_dispalacement for l in lines], dtype=float)
+      stress_raw = np.array([l.shear_stress for l in lines], dtype=float)
+    
+      # 2) Include origin
+      strain = np.concatenate([[0.0], strain_raw])
+      stress = np.concatenate([[0.0], stress_raw])
+    
+      # 3) Sort + find sharp peak (image shows abrupt drop at ~2.5%)
+      order = np.argsort(strain)
+      strain = strain[order]
+      stress = stress[order]
+    
+      peak_idx = np.argmax(stress)  # Sharp peak like image
+      strain_peak = strain[:peak_idx+1]
+      stress_peak = stress[:peak_idx+1]
+    
+      # 4) Scale strain to ~7% max (image scale)
+      if strain_peak[-1] > 0:
+        scale_factor = 7.0 / strain_peak[-1]
+        strain_scaled = strain_peak * scale_factor
+      else:
+        strain_scaled = strain_peak
+    
+      # 5) Spline smoothing (sharp peak preserved)
+      x_unique, idx = np.unique(strain_scaled, return_index=True)
+      y_unique = stress_peak[idx]
+      if len(x_unique) < 3:
+          return False
+    
+      cs = CubicSpline(x_unique, y_unique, bc_type=((1, 0.0), (1, 0.0)))  # Flat peak
+      x_smooth = np.linspace(0, max(8.0, x_unique.max()), 500)
+      y_smooth = cs(x_smooth)
+    
+      # 6) EXACT plot matching image
+      fig, ax = plt.subplots(figsize=(8, 4.5), dpi=120, facecolor='white')
+    
+      # Thick green line + points (image style)
+      ax.plot(x_smooth, y_smooth, color='#2E8B57', linewidth=3.5, zorder=2)  # Forest green
+      ax.scatter(strain_scaled, stress_peak, color='#228B22', s=35, zorder=3, 
+               edgecolors='white', linewidth=0.8)
+    
+      # Axes matching image
+      ax.set_xlim(0, 8.0)
+      ax.set_xticks([0,1,2,3,4,5,6,7,8])
+      ax.set_xlabel('Strain (%)', fontsize=10, fontweight='bold', color='black')
+    
+      ax.set_ylim(0, 0.30)
+      ax.set_yticks([0, 0.050, 0.100, 0.150, 0.200, 0.250, 0.300])
+      ax.set_ylabel('Shear stress (kg/sq.cm)', fontsize=10, fontweight='bold', color='black')
+      
+      ax.set_title('Direct shear Curve Graph', fontsize=12, fontweight='bold', pad=15)
+      ax.grid(True, alpha=0.4, linewidth=0.8)
+    
+      # Tight layout matching image margins
+      fig.tight_layout(pad=1.2)
+      buf = BytesIO()
+      fig.savefig(buf, format='png', dpi=120, bbox_inches='tight', facecolor='white', 
+                edgecolor='none')
+      plt.close(fig)
+      buf.seek(0)
+      return base64.b64encode(buf.getvalue())
+    
+
+
+    # input 2
+
+    shear_box_dimension_2 = fields.Float(string="Shear Box Inside Dimension:", digits=(12,0))
+    shear_area_2 = fields.Float(string="Area (A):cm2", digits=(12,0) , compute="_compute_shear_area_2", store=True)
+
+    @api.depends('shear_box_dimension_2')
+    def _compute_shear_area_2(self):
+        for line in self:
+            if line.shear_box_dimension_2:    
+                line.shear_area_2 =  line.shear_box_dimension_2 ** 2 
+            else:
+                line.shear_area_2 = 0.0
+
+    shear_height_2 = fields.Float(string="Shear Box Height:  cm", digits=(12,1))
+    shear_volumn_2 = fields.Float(string="Soil Volume: cm3", digits=(12,0) , compute="_compute_shear_volumn_2", store=True )
+
+    @api.depends('shear_box_dimension_2', 'shear_height_2')
+    def _compute_shear_volumn_2(self):
+        for line in self:
+            if line.shear_box_dimension_2 and line.shear_height_2:
+              area = line.shear_box_dimension_2 ** 2
+              line.shear_volumn_2 = area * line.shear_height_2
+            else:
+              line.shear_volumn_2 = 0.0
+
+    initial_mass_soil_cutter_2 = fields.Float(string="Initial mass of soil and cutter: ", digits=(12,2))
+    wt_empty_cutter_2 = fields.Float(string="Empty Weight of cutter: ", digits=(12,3))
+
+    initial_mass_soil_2 = fields.Float(string="initial Mass of soil:(g)", digits=(12,3) , compute="_compute_initial_mass_soil_2", store=True )
+
+    @api.depends('initial_mass_soil_cutter_2', 'wt_empty_cutter_2')
+    def _compute_initial_mass_soil_2(self):
+        for line in self:
+            if line.initial_mass_soil_cutter_2 and line.wt_empty_cutter_2:
+              line.initial_mass_soil_2 = line.initial_mass_soil_cutter_2 - line.wt_empty_cutter_2
+            else:
+              line.initial_mass_soil_2 = 0.0 
+
+    initial_moisture_content_2= fields.Float(string="Initial mositure content:", digits=(12,2) , compute="_compute_initial_moisture_content_2", store=True )
+
+    mass_dry_soil_2 = fields.Float(string="Mass of dry soil at shear zone (g)", digits=(12,1) )
+
+    @api.depends('initial_mass_soil_cutter_2', 'wt_empty_cutter_2','mass_dry_soil_2')
+    def _compute_initial_moisture_content_2(self):
+        for line in self:
+            if line.initial_mass_soil_cutter_2 and line.wt_empty_cutter_2 and line.mass_dry_soil_2:
+              initial_mass_soil_2 = line.initial_mass_soil_cutter_2 - line.wt_empty_cutter_2
+              line.initial_moisture_content_2 = ((initial_mass_soil_2 - line.mass_dry_soil_2) / line.mass_dry_soil_2 ) * 100
+            else:
+              line.initial_moisture_content_2 = 0.0 
+
+    final_wt_soil_cutter_2 = fields.Float(string="Final wt of soil + cutter at shear zone", digits=(12,3))
+    final_mass_soil_2 = fields.Float(string="Final Mass of soil:(g) ", digits=(12,2) , compute="_compute_final_mass_soil_2", store=True)
+
+    @api.depends('final_wt_soil_cutter_2', 'wt_empty_cutter_2')
+    def _compute_final_mass_soil_2(self):
+        for line in self:
+            if line.final_wt_soil_cutter_2 and line.wt_empty_cutter_2:
+              line.final_mass_soil_2 = line.final_wt_soil_cutter_2 - line.wt_empty_cutter_2
+            else:
+              line.final_mass_soil_2 = 0.0 
+    
+
+    moisture_content_shear_2 = fields.Float(string="Moisture content at shear zone (%)", digits=(12,2) , compute="_compute_moisture_content_shear_2", store=True)
+
+    @api.depends('final_wt_soil_cutter_2', 'wt_empty_cutter_2','mass_dry_soil_2')
+    def _compute_moisture_content_shear_2(self):
+        for line in self:
+            if line.final_wt_soil_cutter_2 and line.wt_empty_cutter_2 and line.mass_dry_soil_2:
+              final_mass_soil_2 = line.final_wt_soil_cutter_2 - line.wt_empty_cutter_2
+              line.moisture_content_shear_2 = ((final_mass_soil_2 - line.mass_dry_soil_2) / line.mass_dry_soil_2 ) * 100
+            else:
+              line.moisture_content_shear_2 = 0.0
+
+
+    density_soil_shear_2 = fields.Float(string="Density of soil (g/cc)", digits=(12,2) , compute="_compute_density_soil_shear_2", store=True)
+
+    @api.depends('shear_box_dimension_2', 'shear_height_2','initial_mass_soil_cutter_2', 'wt_empty_cutter_2')
+    def _compute_density_soil_shear_2(self):
+        for line in self:
+            if line.shear_box_dimension_2 and line.shear_height_2 and line.initial_mass_soil_cutter_2 and line.wt_empty_cutter_2:
+              shear_volumn_2 = line.shear_box_dimension_2 ** 2 * line.shear_height_2
+              initial_mass_soil_2 = line.initial_mass_soil_cutter_2 - line.wt_empty_cutter_2
+              if shear_volumn_2 > 0:
+                line.density_soil_shear_2 = initial_mass_soil_2 / shear_volumn_2
+              else:
+                line.density_soil_shear_2 = 0.0
+            else:
+                line.density_soil_shear_2 = 0.0
+
+    dry_density_soil_shear_2 = fields.Float(string="Dry density of soil (g/cc)", digits=(12,2) , compute="_compute_dry_density_soil_shear_2", store=True)
+
+    @api.depends('shear_box_dimension_2', 'shear_height_2','initial_mass_soil_cutter_2', 'wt_empty_cutter_2','mass_dry_soil_2')
+    def _compute_dry_density_soil_shear_2(self):
+        for line in self:
+              shear_volumn_2 = line.shear_box_dimension_2 ** 2 * line.shear_height_2
+
+              initial_mass_soil_2 = line.initial_mass_soil_cutter_2 - line.wt_empty_cutter_2
+
+              
+              if shear_volumn_2 > 0 and line.mass_dry_soil_2 > 0 and initial_mass_soil_2 >= line.mass_dry_soil_2:
+
+                initial_moisture_content_2 = ((initial_mass_soil_2 - line.mass_dry_soil_2) / line.mass_dry_soil_2 ) * 100
+
+                density_soil_shear_2 = initial_mass_soil_2 / shear_volumn_2
+
+                line.dry_density_soil_shear_2 = density_soil_shear_2 / (1 + initial_moisture_content_2 / 100)
+              else:
+                line.dry_density_soil_shear_2 = 0.0
+
+    
+
+    normal_stress_settle_2 = fields.Float(string="Settelement after normal stress:", digits=(12,2) )
+
+    dry_density_stress_settle_2 = fields.Float(string="Dry density of soil after normal stress:", digits=(12,3) , 
+    compute="_compute_dry_density_stress_settle_2", store=True)
+
+    @api.depends('mass_dry_soil_2', 'shear_area_2', 'shear_height_2', 'normal_stress_settle_2')
+    def _compute_dry_density_stress_settle_2(self):
+     for line in self:
+        # Make sure all values are positive and valid
+        if (
+            line.mass_dry_soil_2 > 0 and
+            line.shear_area_2 > 0 and
+            line.shear_height_2 > 0 and
+            line.normal_stress_settle_2 >= 0 and
+            line.shear_height_2 > (line.normal_stress_settle_2 / 10)  # Height must be greater than settlement in cm
+        ):
+            # Adjusted height after settlement (cm)
+            adjusted_height = line.shear_height_2 - (line.normal_stress_settle_2 / 10)
+
+            # New volume = area * adjusted height
+            shear_volumn_2 = line.shear_area_2 * adjusted_height
+
+            # Dry density after settlement = dry mass / adjusted volume
+            line.dry_density_stress_settle_2 = line.mass_dry_soil_2 / shear_volumn_2
+        else:
+            line.dry_density_stress_settle_2 = 0.0
+
+
+    
+    normal_stress_2 = fields.Float(string="Normal stress: kg/cm2", digits=(12,1))
+
+
+    # input 3
+
+    shear_box_dimension_3 = fields.Float(string="Shear Box Inside Dimension:", digits=(12,0))
+    shear_area_3 = fields.Float(string="Area (A):cm2", digits=(12,0) , compute="_compute_shear_area_3", store=True)
+
+    @api.depends('shear_box_dimension_3')
+    def _compute_shear_area_3(self):
+        for line in self:
+            if line.shear_box_dimension_3:    
+                line.shear_area_3 =  line.shear_box_dimension_3 ** 2 
+            else:
+                line.shear_area_3 = 0.0
+
+    shear_height_3 = fields.Float(string="Shear Box Height:  cm", digits=(12,1))
+    shear_volumn_3 = fields.Float(string="Soil Volume: cm3", digits=(12,0) , compute="_compute_shear_volumn_3", store=True )
+
+    @api.depends('shear_box_dimension_3', 'shear_height_3')
+    def _compute_shear_volumn_3(self):
+        for line in self:
+            if line.shear_box_dimension_3 and line.shear_height_3:
+              area = line.shear_box_dimension_3 ** 2
+              line.shear_volumn_3 = area * line.shear_height_3
+            else:
+              line.shear_volumn_3 = 0.0
+
+    initial_mass_soil_cutter_3 = fields.Float(string="Initial mass of soil and cutter: ", digits=(12,2))
+    wt_empty_cutter_3 = fields.Float(string="Empty Weight of cutter: ", digits=(12,3))
+
+    initial_mass_soil_3 = fields.Float(string="initial Mass of soil:(g)", digits=(12,3) , compute="_compute_initial_mass_soil_3", store=True )
+
+    @api.depends('initial_mass_soil_cutter_3', 'wt_empty_cutter_3')
+    def _compute_initial_mass_soil_3(self):
+        for line in self:
+            if line.initial_mass_soil_cutter_3 and line.wt_empty_cutter_3:
+              line.initial_mass_soil_3 = line.initial_mass_soil_cutter_3 - line.wt_empty_cutter_3
+            else:
+              line.initial_mass_soil_3 = 0.0 
+
+    initial_moisture_content_3= fields.Float(string="Initial mositure content:", digits=(12,2) , compute="_compute_initial_moisture_content_3", store=True )
+
+    mass_dry_soil_3 = fields.Float(string="Mass of dry soil at shear zone (g)", digits=(12,1) )
+
+    @api.depends('initial_mass_soil_cutter_3', 'wt_empty_cutter_3','mass_dry_soil_3')
+    def _compute_initial_moisture_content_3(self):
+        for line in self:
+            if line.initial_mass_soil_cutter_3 and line.wt_empty_cutter_3 and line.mass_dry_soil_3:
+              initial_mass_soil_3 = line.initial_mass_soil_cutter_3 - line.wt_empty_cutter_3
+              line.initial_moisture_content_3 = ((initial_mass_soil_3 - line.mass_dry_soil_3) / line.mass_dry_soil_3 ) * 100
+            else:
+              line.initial_moisture_content_3 = 0.0  
+
+    final_wt_soil_cutter_3 = fields.Float(string="Final wt of soil + cutter at shear zone", digits=(12,3))
+    final_mass_soil_3 = fields.Float(string="Final Mass of soil:(g) ", digits=(12,2) , compute="_compute_final_mass_soil_3", store=True)
+
+    @api.depends('final_wt_soil_cutter_3', 'wt_empty_cutter_3')
+    def _compute_final_mass_soil_3(self):
+        for line in self:
+            if line.final_wt_soil_cutter_3 and line.wt_empty_cutter_3:
+              line.final_mass_soil_3 = line.final_wt_soil_cutter_3 - line.wt_empty_cutter_3
+            else:
+              line.final_mass_soil_3 = 0.0 
+    
+
+    moisture_content_shear_3 = fields.Float(string="Moisture content at shear zone (%)", digits=(12,2) , compute="_compute_moisture_content_shear_3", store=True)
+
+    @api.depends('final_wt_soil_cutter_3', 'wt_empty_cutter_3','mass_dry_soil_3')
+    def _compute_moisture_content_shear_3(self):
+        for line in self:
+            if line.final_wt_soil_cutter_3 and line.wt_empty_cutter_3 and line.mass_dry_soil_3:
+              final_mass_soil_3 = line.final_wt_soil_cutter_3 - line.wt_empty_cutter_3
+              line.moisture_content_shear_3 = ((final_mass_soil_3 - line.mass_dry_soil_3) / line.mass_dry_soil_3 ) * 100
+            else:
+              line.moisture_content_shear_3 = 0.0
+
+
+    density_soil_shear_3 = fields.Float(string="Density of soil (g/cc)", digits=(12,2) , compute="_compute_density_soil_shear_3", store=True)
+
+    @api.depends('shear_box_dimension_3', 'shear_height_3','initial_mass_soil_cutter_3', 'wt_empty_cutter_3')
+    def _compute_density_soil_shear_3(self):
+        for line in self:
+            if line.shear_box_dimension_3 and line.shear_height_3 and line.initial_mass_soil_cutter_3 and line.wt_empty_cutter_3:
+              shear_volumn_3 = line.shear_box_dimension_3 ** 2 * line.shear_height_3
+              initial_mass_soil_3 = line.initial_mass_soil_cutter_3 - line.wt_empty_cutter_3
+              if shear_volumn_3 > 0:
+                line.density_soil_shear_2 = initial_mass_soil_3 / shear_volumn_3
+              else:
+                line.density_soil_shear_3 = 0.0
+            else:
+                line.density_soil_shear_3 = 0.0
+
+    dry_density_soil_shear_3 = fields.Float(string="Dry density of soil (g/cc)", digits=(12,2) , compute="_compute_dry_density_soil_shear_3", store=True)
+
+    @api.depends('shear_box_dimension_3', 'shear_height_3','initial_mass_soil_cutter_3', 'wt_empty_cutter_3','mass_dry_soil_3')
+    def _compute_dry_density_soil_shear_3(self):
+        for line in self:
+              shear_volumn_3 = line.shear_box_dimension_3 ** 2 * line.shear_height_3
+
+              initial_mass_soil_3 = line.initial_mass_soil_cutter_3 - line.wt_empty_cutter_3
+
+              
+              if shear_volumn_3 > 0 and line.mass_dry_soil_3 > 0 and initial_mass_soil_3 >= line.mass_dry_soil_3:
+
+                initial_moisture_content_3 = ((initial_mass_soil_3 - line.mass_dry_soil_3) / line.mass_dry_soil_3 ) * 100
+
+                density_soil_shear_3 = initial_mass_soil_3 / shear_volumn_3
+
+                line.dry_density_soil_shear_3 = density_soil_shear_3 / (1 + initial_moisture_content_3 / 100)
+              else:
+                line.dry_density_soil_shear_3 = 0.0
+
+    
+
+    normal_stress_settle_3 = fields.Float(string="Settelement after normal stress:", digits=(12,2) )
+
+    dry_density_stress_settle_3 = fields.Float(string="Dry density of soil after normal stress:", digits=(12,3) , 
+    compute="_compute_dry_density_stress_settle_3", store=True)
+
+    @api.depends('mass_dry_soil_3', 'shear_area_3', 'shear_height_3', 'normal_stress_settle_3')
+    def _compute_dry_density_stress_settle_3(self):
+     for line in self:
+        # Make sure all values are positive and valid
+        if (
+            line.mass_dry_soil_3 > 0 and
+            line.shear_area_3 > 0 and
+            line.shear_height_3 > 0 and
+            line.normal_stress_settle_3 >= 0 and
+            line.shear_height_3 > (line.normal_stress_settle_3 / 10)  # Height must be greater than settlement in cm
+        ):
+            # Adjusted height after settlement (cm)
+            adjusted_height = line.shear_height_3 - (line.normal_stress_settle_3 / 10)
+
+            # New volume = area * adjusted height
+            shear_volumn_3 = line.shear_area_3 * adjusted_height
+
+            # Dry density after settlement = dry mass / adjusted volume
+            line.dry_density_stress_settle_3 = line.mass_dry_soil_3 / shear_volumn_3
+        else:
+            line.dry_density_stress_settle_3 = 0.0
+
+
+    
+    normal_stress_3 = fields.Float(string="Normal stress: kg/cm2", digits=(12,1))
+
+
 
    
 
@@ -4383,7 +5387,7 @@ class Soil(models.Model):
         for record in self:
             record.sieve_visible = False
             # water_content_visible = False
-            record.liquid_limit_visible = False
+            # record.liquid_limit_visible = False
             record.plastic_limit_visible = False
             record.heavy_visible = False
             record.omc_visible = False
@@ -4394,12 +5398,12 @@ class Soil(models.Model):
             record.determination_visible  = False 
             record.shrinkage_limit_visible  = False 
             record.permeability_falling_visible  = False 
-            record.specific_gravity_visible  = False 
+            # record.specific_gravity_visible  = False 
             record.direct_shear_visible  = False 
             record.ucs_visible  = False 
             record.consolidation_visible  = False 
-            record.consolidation_pc_visible  = False 
-            record.angle_shear_visible  = False 
+            # record.consolidation_pc_visible  = False 
+            # record.angle_shear_visible  = False 
             record.swelling_pressure_visible  = False 
             record.uu_triaxial_angle_visible  = False
             record.uu_triaxial_cohesion_visible  = False
@@ -4414,6 +5418,8 @@ class Soil(models.Model):
             record.specific_gravity_visible = False
             record.freeswell_visible = False
 
+            record.soil_light_heavy_visible = False
+           
 
 
 
@@ -4426,8 +5432,8 @@ class Soil(models.Model):
                     record.sieve_visible = True
 
                
-                if sample.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
-                    record.liquid_limit_visible = True
+                # if sample.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
+                #     record.liquid_limit_visible = True
 
                 if sample.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
                     record.plastic_limit_visible = True
@@ -4459,8 +5465,8 @@ class Soil(models.Model):
                 if sample.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
                     record.permeability_falling_visible = True
 
-                if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
-                    record.specific_gravity_visible = True
+                # if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                #     record.specific_gravity_visible = True
 
                 if sample.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                     record.direct_shear_visible = True
@@ -4471,11 +5477,11 @@ class Soil(models.Model):
                 if sample.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
                     record.consolidation_visible = True
 
-                if sample.internal_id == '98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r':
-                    record.consolidation_pc_visible = True
+                # if sample.internal_id == '98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r':
+                #     record.consolidation_pc_visible = True
 
-                if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
-                    record.angle_shear_visible = True
+                # if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
+                #     record.angle_shear_visible = True
 
                 if sample.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
                     record.swelling_pressure_visible = True
@@ -4503,12 +5509,18 @@ class Soil(models.Model):
                 if sample.internal_id == '3825ec57-11f8-4249-9fa8-d99f64ffd396':
                     record.freeswell_visible = True
 
+
+
                 if sample.internal_id == 'yt25ec57-11f8-4249-9fa8-788889999rtt':
                     record.triaxial_test_visible = True
 
+                if sample.internal_id == 'c800e59a-b847-4049-9e2b-673fcd1fcde5':
+                    record.soil_light_heavy_visible = True
+                
+               
 
 
-   
+
 
 
 
@@ -5330,212 +6342,102 @@ class VolumeWetLINE(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
-# class SoilPermeabilityLine(models.Model):
-#     _name = "mechanical.permeability.line1"
+
+
+
+
+
+
+# class DirectShearTestLine(models.Model):
+#     _name = "mechanical.direct.shear.test.line1"
 #     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
 #     serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
 
-#     h1 = fields.Float(string="Initial Head (h1) [cm]", digits=(12,2))
-#     h2 = fields.Float(string="Final Head (h2) [cm]", digits=(12,2))
-#     t = fields.Float(string="Time Interval (t) [s]", digits=(12,2))
+#     ao = fields.Float(string="Area of Sample (Ao) [cm²]", digits=(12,3))
+#     delta = fields.Float(string="Horizontal Dial Gauge (δ) [mm]", digits=(12,3))
+#     proving_ring_reading = fields.Float(string="Proving Ring Reading", digits=(12,3))
+#     normal_stress = fields.Float(string="Normal Stress [kg/cm²]", digits=(12,3))
 
-#     k_value = fields.Float(string="Permeability (k) [cm/s]", compute="_compute_k_value", store=True, digits=(12,2))
+#     horizontal_load = fields.Float(string="Horizontal Load [kg]", compute="_compute_shear", store=True, digits=(12,3))
+#     corrected_area = fields.Float(string="Corrected Area [cm²]", compute="_compute_shear", store=True, digits=(12,3))
+#     shear_stress = fields.Float(string="Shear Stress (τ) [kg/cm²]", compute="_compute_shear", store=True, digits=(12,3))
 
-#     @api.depends("h1","h2","t","parent_id.length","parent_id.diameter_mold","parent_id.diameter_standpipe")
-#     def _compute_k_value(self):
+#     @api.depends("ao","delta","proving_ring_reading","parent_id.proving_ring_constant")
+#     def _compute_shear(self):
 #         for rec in self:
-#             rec.k_value = 0.0
-#             if all([rec.h1, rec.h2, rec.t, rec.parent_id.length, rec.parent_id.diameter_mold, rec.parent_id.diameter_standpipe]):
-#                 # Areas
-#                 A = math.pi * rec.parent_id.diameter_mold**2 / 4.0
-#                 a = math.pi * rec.parent_id.diameter_standpipe**2 / 4.0
-#                 L = rec.parent_id.length
-#                 t = rec.t
+#             k = rec.parent_id.proving_ring_constant or 0
+#             # Horizontal Load
+#             rec.horizontal_load = rec.proving_ring_reading * k
+#             # Corrected Area
+#             rec.corrected_area = rec.ao * (1 - rec.delta/100)
+#             # Shear Stress (sign preserved)
+#             if rec.corrected_area != 0:
+#                 rec.shear_stress = rec.horizontal_load / rec.corrected_area
+#             else:
+#                 rec.shear_stress = 0.0
 
-#                 if rec.h1 != rec.h2 and A > 0 and a > 0 and L > 0 and t > 0:
-#                     h1, h2 = rec.h1, rec.h2
-#                     if h1 < h2:
-#                         h1, h2 = h2, h1  # swap to ensure positive log
-#                     k = (2.303 * a * L) / (A * t) * math.log10(h1 / h2)
-#                     rec.k_value = round(k, 2)
-
-    
+   
 
 #     @api.model
 #     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
+      
 #         if vals.get('parent_id'):
 #             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
 #             if existing_records:
 #                 max_serial_no = max(existing_records.mapped('serial_no'))
 #                 vals['serial_no'] = max_serial_no + 1
 
-#         return super(SoilPermeabilityLine, self).create(vals)
+#         return super(DirectShearTestLine, self).create(vals)
 
 #     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
+      
 #         records = self.sorted('id')
 #         for index, record in enumerate(records):
 #             record.serial_no = index + 1
 
 
 
-
-class DirectShearTestLine(models.Model):
-    _name = "mechanical.direct.shear.test.line1"
-    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
-
-    serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
-
-    ao = fields.Float(string="Area of Sample (Ao) [cm²]", digits=(12,3))
-    delta = fields.Float(string="Horizontal Dial Gauge (δ) [mm]", digits=(12,3))
-    proving_ring_reading = fields.Float(string="Proving Ring Reading", digits=(12,3))
-    normal_stress = fields.Float(string="Normal Stress [kg/cm²]", digits=(12,3))
-
-    horizontal_load = fields.Float(string="Horizontal Load [kg]", compute="_compute_shear", store=True, digits=(12,3))
-    corrected_area = fields.Float(string="Corrected Area [cm²]", compute="_compute_shear", store=True, digits=(12,3))
-    shear_stress = fields.Float(string="Shear Stress (τ) [kg/cm²]", compute="_compute_shear", store=True, digits=(12,3))
-
-    @api.depends("ao","delta","proving_ring_reading","parent_id.proving_ring_constant")
-    def _compute_shear(self):
-        for rec in self:
-            k = rec.parent_id.proving_ring_constant or 0
-            # Horizontal Load
-            rec.horizontal_load = rec.proving_ring_reading * k
-            # Corrected Area
-            rec.corrected_area = rec.ao * (1 - rec.delta/100)
-            # Shear Stress (sign preserved)
-            if rec.corrected_area != 0:
-                rec.shear_stress = rec.horizontal_load / rec.corrected_area
-            else:
-                rec.shear_stress = 0.0
-
-   
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(DirectShearTestLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-
-class UCSTestLine(models.Model):
-    _name = "mechanical.ucs.test.line1"
-    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
-
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-
-    dial_gauge = fields.Float(string="Dial Gauge Reading [mm]", digits=(12,3))
-    proving_ring_reading = fields.Float(string="Proving Ring Reading [Division]", digits=(12,3))
-    deformation = fields.Float(string="Deformation [mm]", digits=(12,3))
-    
-    load = fields.Float(string="Load [Kg]")  # now user input
-    corrected_area = fields.Float(string="Corrected Area [cm²]", compute="_compute_corrected_area", store=True, digits=(12,3))
-    axial_strain = fields.Float(string="Axial Strain", compute="_compute_axial_strain", store=True, digits=(12,3))
-    stress = fields.Float(string="Stress [Kg/cm²]", compute="_compute_stress", store=True, digits=(12,3))
-
-    @api.depends("parent_id.initial_diameter")
-    def _compute_corrected_area(self):
-        for rec in self:
-            if rec.parent_id.initial_diameter:
-                radius = rec.parent_id.initial_diameter / 2.0
-                rec.corrected_area = 3.1416 * radius * radius
-            else:
-                rec.corrected_area = 0.0
-
-    @api.depends("deformation","parent_id.initial_length")
-    def _compute_axial_strain(self):
-        for rec in self:
-            L0 = rec.parent_id.initial_length or 1
-            rec.axial_strain = rec.deformation / L0
-
-    @api.depends("load","corrected_area")
-    def _compute_stress(self):
-        for rec in self:
-            if rec.corrected_area != 0:
-                rec.stress = rec.load / rec.corrected_area
-            else:
-                rec.stress = 0.0
-    
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(UCSTestLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-
-# class ConsolidationTestLine(models.Model):
-#     _name = "mechanical.consolidation.test.line1"
+# class UCSTestLine(models.Model):
+#     _name = "mechanical.ucs.test.line1"
 #     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
 #     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
-#     load = fields.Float(string="Load [Kg]")
-#     dial_gauge = fields.Float(string="Dial Gauge δ [mm]")
-#     delta_h = fields.Float(string="ΔH [mm]", compute="_compute_corrected_height", store=True)
-#     corrected_height = fields.Float(string="Corrected Height H [mm]", compute="_compute_corrected_height", store=True)
-#     stress = fields.Float(string="Stress σ [Kg/cm²]", compute="_compute_stress", store=True, digits=(12,3))
-#     strain = fields.Float(string="Strain ε", compute="_compute_strain", store=True, digits=(12,3))
-#     void_ratio = fields.Float(string="Void Ratio e", compute="_compute_void_ratio", store=True, digits=(12,3))
 
-#     @api.depends("dial_gauge","parent_id.initial_height")
-#     def _compute_corrected_height(self):
+#     dial_gauge = fields.Float(string="Dial Gauge Reading [mm]", digits=(12,3))
+#     proving_ring_reading = fields.Float(string="Proving Ring Reading [Division]", digits=(12,3))
+#     deformation = fields.Float(string="Deformation [mm]", digits=(12,3))
+    
+#     load = fields.Float(string="Load [Kg]")  # now user input
+#     corrected_area = fields.Float(string="Corrected Area [cm²]", compute="_compute_corrected_area", store=True, digits=(12,3))
+#     axial_strain = fields.Float(string="Axial Strain", compute="_compute_axial_strain", store=True, digits=(12,3))
+#     stress = fields.Float(string="Stress [Kg/cm²]", compute="_compute_stress", store=True, digits=(12,3))
+
+#     @api.depends("parent_id.initial_diameter")
+#     def _compute_corrected_area(self):
 #         for rec in self:
-#             H0 = rec.parent_id.initial_height or 1
-#             rec.delta_h = rec.dial_gauge
-#             rec.corrected_height = H0 - rec.delta_h
+#             if rec.parent_id.initial_diameter:
+#                 radius = rec.parent_id.initial_diameter / 2.0
+#                 rec.corrected_area = 3.1416 * radius * radius
+#             else:
+#                 rec.corrected_area = 0.0
 
-#     @api.depends("load","parent_id.area")
+#     @api.depends("deformation","parent_id.initial_length")
+#     def _compute_axial_strain(self):
+#         for rec in self:
+#             L0 = rec.parent_id.initial_length or 1
+#             rec.axial_strain = rec.deformation / L0
+
+#     @api.depends("load","corrected_area")
 #     def _compute_stress(self):
 #         for rec in self:
-#             A = rec.parent_id.area or 1
-#             rec.stress = rec.load / A if A !=0 else 0.0
-
-#     @api.depends("delta_h","parent_id.initial_height")
-#     def _compute_strain(self):
-#         for rec in self:
-#             H0 = rec.parent_id.initial_height or 1
-#             rec.strain = rec.delta_h / H0 if H0 !=0 else 0.0
-
-#     @api.depends("parent_id.initial_void_ratio","stress")
-#     def _compute_void_ratio(self):
-#         for rec in self:
-#             e0 = rec.parent_id.initial_void_ratio or 0.0
-#             sigma0 = 1.0  # reference stress (usually 1 Kg/cm²)
-#             if rec.stress > 0:
-#                 rec.void_ratio = e0 - 0.1 * math.log10(rec.stress/sigma0)  # factor 0.1 placeholder, modify as per standard
+#             if rec.corrected_area != 0:
+#                 rec.stress = rec.load / rec.corrected_area
 #             else:
-#                 rec.void_ratio = e0
-
-
+#                 rec.stress = 0.0
     
+
 #     @api.model
 #     def create(self, vals):
 #         # Set the serial_no based on the existing records for the same parent
@@ -5545,7 +6447,7 @@ class UCSTestLine(models.Model):
 #                 max_serial_no = max(existing_records.mapped('serial_no'))
 #                 vals['serial_no'] = max_serial_no + 1
 
-#         return super(ConsolidationTestLine, self).create(vals)
+#         return super(UCSTestLine, self).create(vals)
 
 #     def _reorder_serial_numbers(self):
 #         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -5555,121 +6457,82 @@ class UCSTestLine(models.Model):
 
 
 
-class ConsolidationPCTestLine(models.Model):
-    _name = "mechanical.consolidation.test.pc.line1"
-    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
-
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-   
-    load_pc = fields.Float(string="Load [Kg]")
-    dial_gauge_pc = fields.Float(string="Dial Gauge δ [mm]")
-    delta_h_pc = fields.Float(string="ΔH [mm]", compute="_compute_corrected_height_pc", store=True)
-    corrected_height_pc = fields.Float(string="Corrected Height H [mm]", compute="_compute_corrected_height_pc", store=True)
-    stress_pc = fields.Float(string="Stress σ [Kg/cm²]", compute="_compute_stress_pc", store=True)
-    strain_pc = fields.Float(string="Strain ε", compute="_compute_strain_pc", store=True)
-    void_ratio_pc = fields.Float(string="Void Ratio e", compute="_compute_void_ratio_pc", store=True)
-
-    @api.depends("dial_gauge_pc","parent_id.initial_height_pc")
-    def _compute_corrected_height_pc(self):
-        for rec in self:
-            H0 = rec.parent_id.initial_height_pc or 1
-            rec.delta_h_pc = rec.dial_gauge_pc
-            rec.corrected_height_pc = H0 - rec.delta_h_pc
-
-    @api.depends("load_pc","parent_id.area_pc")
-    def _compute_stress_pc(self):
-        for rec in self:
-            A = rec.parent_id.area_pc or 1
-            rec.stress_pc = rec.load_pc / A if A!=0 else 0.0
-
-    @api.depends("delta_h_pc","parent_id.initial_height_pc")
-    def _compute_strain_pc(self):
-        for rec in self:
-            H0 = rec.parent_id.initial_height_pc or 1
-            rec.strain_pc = rec.delta_h_pc / H0 if H0 !=0 else 0.0
 
 
-    @api.depends("parent_id.initial_void_ratio_pc","stress_pc")
-    def _compute_void_ratio_pc(self):
-        for rec in self:
-            e0 = rec.parent_id.initial_void_ratio_pc or 0.0
-            sigma0 = 1.0  # reference stress_pc (usually 1 Kg/cm²)
-            if rec.stress_pc > 0:
-                rec.void_ratio_pc = e0 - 0.1 * math.log10(rec.stress_pc / sigma0)  # factor can be adjusted per standard
-            else:
-                rec.void_ratio_pc = e0
-    
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(ConsolidationPCTestLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
 
 
-class DirectShearLine(models.Model):
-    _name = "mechanical.soil.direct.shear.line1"
-    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-    normal_stress = fields.Float(string="Normal stress σ (kPa)")
-    shear_strength = fields.Float(string="Shear stress τ (kPa)")
-
-   
-
-    
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(DirectShearLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-# class SwellingPressureLine(models.Model):
-#     _name = "mechanical.swelling.line1"
+# class ConsolidationPCTestLine(models.Model):
+#     _name = "mechanical.consolidation.test.pc.line1"
 #     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
 #     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
-#     dial_gauge_reading = fields.Float(string="Dial Gauge Reading (mm)")
-#     load_applied = fields.Float(string="Load Applied (kg)")
-#     area_of_sample = fields.Float(string="Area of Sample (cm²)", required=True)
+   
+#     load_pc = fields.Float(string="Load [Kg]")
+#     dial_gauge_pc = fields.Float(string="Dial Gauge δ [mm]")
+#     delta_h_pc = fields.Float(string="ΔH [mm]", compute="_compute_corrected_height_pc", store=True)
+#     corrected_height_pc = fields.Float(string="Corrected Height H [mm]", compute="_compute_corrected_height_pc", store=True)
+#     stress_pc = fields.Float(string="Stress σ [Kg/cm²]", compute="_compute_stress_pc", store=True)
+#     strain_pc = fields.Float(string="Strain ε", compute="_compute_strain_pc", store=True)
+#     void_ratio_pc = fields.Float(string="Void Ratio e", compute="_compute_void_ratio_pc", store=True)
 
-#     swelling_pressure = fields.Float(
-#         string="Swelling Pressure (kg/cm²)",
-#         compute="_compute_swelling_pressure",
-#         store=True
-#      )
+#     @api.depends("dial_gauge_pc","parent_id.initial_height_pc")
+#     def _compute_corrected_height_pc(self):
+#         for rec in self:
+#             H0 = rec.parent_id.initial_height_pc or 1
+#             rec.delta_h_pc = rec.dial_gauge_pc
+#             rec.corrected_height_pc = H0 - rec.delta_h_pc
 
-#     @api.depends('load_applied', 'area_of_sample')
-#     def _compute_swelling_pressure(self):
-#         for line in self:
-#             if line.area_of_sample > 0:
-#                 line.swelling_pressure = line.load_applied / line.area_of_sample
+#     @api.depends("load_pc","parent_id.area_pc")
+#     def _compute_stress_pc(self):
+#         for rec in self:
+#             A = rec.parent_id.area_pc or 1
+#             rec.stress_pc = rec.load_pc / A if A!=0 else 0.0
+
+#     @api.depends("delta_h_pc","parent_id.initial_height_pc")
+#     def _compute_strain_pc(self):
+#         for rec in self:
+#             H0 = rec.parent_id.initial_height_pc or 1
+#             rec.strain_pc = rec.delta_h_pc / H0 if H0 !=0 else 0.0
+
+
+#     @api.depends("parent_id.initial_void_ratio_pc","stress_pc")
+#     def _compute_void_ratio_pc(self):
+#         for rec in self:
+#             e0 = rec.parent_id.initial_void_ratio_pc or 0.0
+#             sigma0 = 1.0  # reference stress_pc (usually 1 Kg/cm²)
+#             if rec.stress_pc > 0:
+#                 rec.void_ratio_pc = e0 - 0.1 * math.log10(rec.stress_pc / sigma0)  # factor can be adjusted per standard
 #             else:
-#                 line.swelling_pressure = 0.0
+#                 rec.void_ratio_pc = e0
+    
+#     @api.model
+#     def create(self, vals):
+#         # Set the serial_no based on the existing records for the same parent
+#         if vals.get('parent_id'):
+#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+#             if existing_records:
+#                 max_serial_no = max(existing_records.mapped('serial_no'))
+#                 vals['serial_no'] = max_serial_no + 1
+
+#         return super(ConsolidationPCTestLine, self).create(vals)
+
+#     def _reorder_serial_numbers(self):
+#         # Reorder the serial numbers based on the positions of the records in child_lines
+#         records = self.sorted('id')
+#         for index, record in enumerate(records):
+#             record.serial_no = index + 1
+
+
+# class DirectShearLine(models.Model):
+#     _name = "mechanical.soil.direct.shear.line1"
+#     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+#     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+#     normal_stress = fields.Float(string="Normal stress σ (kPa)")
+#     shear_strength = fields.Float(string="Shear stress τ (kPa)")
 
    
 
@@ -5683,13 +6546,16 @@ class DirectShearLine(models.Model):
 #                 max_serial_no = max(existing_records.mapped('serial_no'))
 #                 vals['serial_no'] = max_serial_no + 1
 
-#         return super(SwellingPressureLine, self).create(vals)
+#         return super(DirectShearLine, self).create(vals)
 
 #     def _reorder_serial_numbers(self):
 #         # Reorder the serial numbers based on the positions of the records in child_lines
 #         records = self.sorted('id')
 #         for index, record in enumerate(records):
 #             record.serial_no = index + 1
+
+
+
 
 
 class UUTriaxialLine(models.Model):
@@ -5997,9 +6863,9 @@ class SoilGSALINE(models.Model):
         ('fine_grained_soil', 'Fine Grained Soil'),
     ], string="Classification")
 
-    meniscus_corre = fields.Float(string="Meniscus Correction, Cm", digits=(12,1))
-    vescosity_water = fields.Float(string="Viscosity of Water at Room Temperature in poise",digits=(12,6),store=True)
-    dispersion = fields.Float(string="Dispersion Agent Correction, x")
+    meniscus_corre = fields.Float(string="Meniscus Correction, Cm", digits=(12,1),default=0.5)
+    vescosity_water = fields.Float(string="Viscosity of Water at Room Temperature in poise",digits=(12,9),store=True,default=0.0093885959)
+    dispersion = fields.Float(string="Dispersion Agent Correction, x",default=1.575,digits=(12,3))
     temp_corre = fields.Float(string="Temperature Correction, Mt",compute="_compute_temp_corre",digits=(12,4))
     specific_gravity = fields.Float(string="Specific gravity",digits=(12,3))
 
@@ -6581,6 +7447,37 @@ class SoilHydrometerLineGSA(models.Model):
                 rec.n_corrected = (passing_075 * rec.n_finner) / 100
             else:
                 rec.n_corrected = 0.0
+
+
+
+class SoilGSALINE1(models.Model):
+    _name = "mechanical.gsa.particle.line"
+    parent_id = fields.Many2one(
+        'mechanical.soil1',
+        string="Parent Soil",
+        ondelete='cascade'
+    )
+
+
+   
+    
+
+
+   
+    bh_id = fields.Char(string="BH ID")
+    sample_depth = fields.Char(string="Sample Depth (m)")
+    d_10 = fields.Float(string="D10",digits=(12,3))
+    d_30 = fields.Float(string="D30")
+    d_60 = fields.Float(string="D60")
+
+    c_u = fields.Float(string="Cu")
+    c_c = fields.Float(string="Cc")
+
+    meniscus_corre = fields.Float(string="Meniscus correction, Cm",digits=(12,1))
+
+    dispersion = fields.Float(string="Dispersing agent correction, x",digits=(12,3))
+
+    temp_corre = fields.Float("Temperature Correction, Mt",digits=(12,4) )
 
 
 
@@ -8144,19 +9041,18 @@ class TriaxialTestLine(models.Model):
             
             current_val = 0.0
             
-            # Parent chya saglya lines la loop lavne (Sequence nusar)
-            # Odoo UI madhe lines display order nusar deto
+          
             for i, line in enumerate(parent.triaxial_test_line_ids):
                 
-                # Pahili line (Index 0) asel tar 0.0 theva (kiva user ne takleli value)
+               
                 if i == 0:
-                    # Jar line navin asel tar 0, nahitar tich value theva
+                   
                     if not line.horizontal_dial:
                         line.horizontal_dial = 0.0
                     current_val = line.horizontal_dial
                 
                 else:
-                    # Second line pasun: Previous Value (current_val) + 25
+                 
                     new_val = current_val + 25.0
                     line.horizontal_dial = new_val
                     current_val = new_val
@@ -8165,7 +9061,7 @@ class TriaxialTestLine(models.Model):
     def _compute_corrected_area(self):
         # Parent groups madhe loop firvu (Optimization)
         for parent in self.mapped('parent_id'):
-            # Parent chya saglya lines sequence nusar ghene
+            
             lines = parent.triaxial_test_line_ids
             
             # Initial Area aani Height Parent madhun ghene
@@ -8173,15 +9069,14 @@ class TriaxialTestLine(models.Model):
             H0 = parent.height_triaxial or 1.0  # Divide by zero talnyasathi default 1
             
             for i, line in enumerate(lines):
-                # --- CONDITION 1: FIRST LINE (Index 0) ---
+               
                 if i == 0:
                     # Formula: area1_triaxial / 100
                     line.corrected_area = A0 / 100.0
                 
-                # --- CONDITION 2: SECOND LINE ONWARDS ---
+               
                 else:
-                    # 1. Strain Calculation: (horizontal_dial / 100) / height_triaxial
-                    # Dial reading la 100 ne divide karun mm conversion (as per your formula)
+                   
                     change_in_length = line.horizontal_dial / 100.0
                     
                     if H0 > 0:
@@ -8250,22 +9145,426 @@ class TriaxialTestLine(models.Model):
 
 
 
+class LabOptionLine(models.Model):
+    _name = 'lab.option.line'
+    _description = 'Lab Options'
+    _rec_name = 'name'  # Dropdown मध्ये हे नाव दिसेल
 
+    name = fields.Char(string="Value")
+    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+
+
+
+
+                
+
+
+
+
+
+
+
+
+
+
+# PLASTIC LIMIT LINE (PL Sheet)
+class LabAtterbergPlLine(models.Model):
+    _name = 'lab.atterberg.pl.line'
+    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+   
+    test_no = fields.Integer('Test No.')
+    container_no = fields.Char('Container No.')
+    m1 = fields.Float('M1 (gm)', digits=(10,3))
+    m2 = fields.Float('M2 (gm)', digits=(10,3))
+    m3 = fields.Float('M3 (gm)', digits=(10,3))
+    
+  
+    m3_m2 = fields.Float('M3-M2', digits=(10,3), compute='_compute_pl', store=True)
+    m2_m1 = fields.Float('M2-M1', digits=(10,3), compute='_compute_pl', store=True)
+    water_content = fields.Float('Water Content %', digits=(10,2), compute='_compute_pl', store=True)
+
+    @api.depends('m1', 'm2', 'm3')
+    def _compute_pl(self):
+        for rec in self:
+            rec.m3_m2 = rec.m3 - rec.m2 if rec.m3 and rec.m2 else 0.0
+            rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
+            rec.water_content = (rec.m3_m2 / rec.m2_m1 * 100) if rec.m2_m1 else 0.0
+
+
+
+# LIQUID LIMIT LINE (LL Sheet)  
+class LabAtterbergLlLine(models.Model):
+    _name = 'lab.atterberg.ll.line'
+    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+    
+   
+    test_no = fields.Integer('Test No.')
+    blows = fields.Integer('No. of Blows')
+    container_no = fields.Char('Container No.')
+    m1 = fields.Float('M1 (gm)', digits=(10,3))
+    m2 = fields.Float('M2 (gm)', digits=(10,3))
+    m3 = fields.Float('M3 (gm)', digits=(10,3))
+    
+    
+    m3_m2 = fields.Float('M3-M2', digits=(10,3), compute='_compute_ll', store=True)
+    m2_m1 = fields.Float('M2-M1', digits=(10,3), compute='_compute_ll', store=True)
+    water_content = fields.Float('Water Content %', digits=(10,2), compute='_compute_ll', store=True)
+
+    @api.depends('m1', 'm2', 'm3')
+    def _compute_ll(self):
+        for rec in self:
+            rec.m3_m2 = rec.m3 - rec.m2 if rec.m3 and rec.m2 else 0.0
+            rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
+            rec.water_content = (rec.m3_m2 / rec.m2_m1 * 100) if rec.m2_m1 else 0.0
+
+
+
+
+
+class LabAtterbergSlLine(models.Model):
+    _name = 'lab.atterberg.sl.line'
+    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+    
+
+   
+    test_no = fields.Integer('Test No.')
+    container_no = fields.Char('Container No.')
+    m1 = fields.Float('M1 (gm)', digits=(10,3))
+    v1 = fields.Float('V1 (cm3)', digits=(10,3))
+    m2 = fields.Float('M2 (gm)', digits=(10,3))
+    m3 = fields.Float('M3 (gm)', digits=(10,3))
+    v2 = fields.Float('V2 (cm3)', digits=(10,3))
+    
+   
+    m3_m2 = fields.Float('M3-M2', digits=(10,3), compute='_compute_sl', store=True)
+    m2_m1 = fields.Float('M2-M1', digits=(10,3), compute='_compute_sl', store=True)
+    v1_v2 = fields.Float('V1-V2', digits=(10,3), compute='_compute_sl', store=True)
+    water_content = fields.Float('Water Content %', digits=(10,2), compute='_compute_sl', store=True)
+    shrinkage_ratio = fields.Float('Shrinkage Ratio', digits=(10,3), compute='_compute_sl', store=True)
+    shrinkage_limit = fields.Float('SL %', digits=(10,2), compute='_compute_sl', store=True)
+
+    @api.depends('m1', 'm2', 'm3', 'v1', 'v2')
+    def _compute_sl(self):
+        gamma_w = 1.0  
+        for rec in self:
+            rec.m3_m2 = rec.m3 - rec.m2 if rec.m3 and rec.m2 else 0.0
+            rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
+            rec.v1_v2 = rec.v1 - rec.v2 if rec.v1 and rec.v2 else 0.0
+            
+            if rec.m3_m2 and rec.v2:
+                rec.shrinkage_ratio = rec.m3_m2 / (rec.v2 * gamma_w)
+                rec.water_content = ((rec.m1 - rec.m2) / rec.m3_m2) * 100
+                rec.shrinkage_limit = rec.water_content - (rec.shrinkage_ratio * 100)
+            else:
+                rec.shrinkage_ratio = rec.water_content = rec.shrinkage_limit = 0.0
+
+
+
+
+
+class SoilLightHeavyCompactionLine(models.Model):
+    _name = "soil.light.heavy.compaction.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="Trial No",readonly=True, copy=False, default=1)
+
+    wet_soil_cylinder = fields.Float(string="Wet mass of soil + cylinder gm" , digits=(8,0) )
+
+    wet_soil = fields.Float(string="Wet mass of soil  gm" , digits=(8,0) , compute="_compute_wet_soil" , store=True)
+
+    bulk_density_light = fields.Float(string="Bulk density of soil  g/cc" , digits=(8,2) , compute="_compute_bulk_density_light" , store=True)
+
+    can_no = fields.Float(string="Can no." , digits=(8,0))
+
+    wet_soil_can = fields.Float(string="Wet soil + can" , digits=(8,3))
+    dry_soil_can = fields.Float(string="Dry soil + Can" , digits=(8,3))
+    empty_mass_can = fields.Float(string="Empty mass of can" , digits=(8,3))
+
+    moisture_loss = fields.Float(string="Moisture loss" , digits=(8,3) , compute="_compute_moisture_fields" , store=True)
+    dry_wt_soil = fields.Float(string="Dry wt. of soil, gm" , digits=(8,3), compute="_compute_moisture_fields" , store=True)
+    moisture_content = fields.Float(string="Moisture content" , digits=(8,2), compute="_compute_moisture_fields" , store=True)
+
+    avg_moisture_content = fields.Float(string="Average moisture content" , digits=(8,2))
+
+    dry_density = fields.Float(string="Dry density" , digits=(8,2), compute="_compute_dry_density" , store=True)
+
+
+    @api.depends('parent_id.empty_wt_proctor', 'wet_soil_cylinder')
+    def _compute_wet_soil(self):
+     for line in self:
+        empty_wt_proctor = line.parent_id.empty_wt_proctor if line.parent_id else 0.0
+        if line.wet_soil_cylinder and empty_wt_proctor and line.wet_soil_cylinder > empty_wt_proctor:
+            line.wet_soil = line.wet_soil_cylinder - empty_wt_proctor
+        else:
+            line.wet_soil = 0.0
+
+    @api.depends('parent_id.empty_wt_proctor', 'parent_id.volumn_proctor', 'wet_soil_cylinder')
+    def _compute_bulk_density_light(self):
+     for line in self:
+        empty_wt_proctor = line.parent_id.empty_wt_proctor if line.parent_id else 0.0
+        volumn_proctor = line.parent_id.volumn_proctor if line.parent_id else 0.0
+        
+        if (line.wet_soil_cylinder and empty_wt_proctor and volumn_proctor and 
+            line.wet_soil_cylinder > empty_wt_proctor and volumn_proctor > 0):
+            
+            wet_soil = line.wet_soil_cylinder - empty_wt_proctor
+            line.bulk_density_light = wet_soil / volumn_proctor
+        else:
+            line.bulk_density_light = 0.0
+
+    @api.depends('wet_soil_can', 'dry_soil_can', 'empty_mass_can')
+    def _compute_moisture_fields(self):
+        for line in self:
+            if line.empty_mass_can:
+                wet_can = line.wet_soil_can - line.empty_mass_can
+                dry_can = line.dry_soil_can - line.empty_mass_can
+                line.moisture_loss = wet_can - dry_can
+                line.dry_wt_soil = dry_can
+                line.moisture_content = (line.moisture_loss / line.dry_wt_soil * 100) if line.dry_wt_soil else 0.0
+            else:
+                line.moisture_loss = line.dry_wt_soil = line.moisture_content = 0.0
+
+    
+
+
+    @api.depends('bulk_density_light', 'avg_moisture_content')
+    def _compute_dry_density(self):
+     
+     for line in self:
+        if (line.bulk_density_light and 
+            line.avg_moisture_content is not None and 
+            line.avg_moisture_content >= 0):
+            
+            # γ_d = γ / (1 + w) where γ = bulk density, w = moisture content decimal
+            line.dry_density = line.bulk_density_light / (1 + line.avg_moisture_content / 100)
+        else:
+            line.dry_density = 0.0
+
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilLightHeavyCompactionLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+class UcsSoilLine(models.Model):
+    _name = "ucs.soil.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
+
+    horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0) , compute="_compute_dial_reading" , store=True)
+
+    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,3) , compute="_compute_all" , store=True)
+
+    prove_ring_read = fields.Float(string="Proving ring reading" , digits=(8,1), store=True)
+
+    shear_stress = fields.Float(string="Shear stress (kg/sq.cm)" , digits=(8,3) , compute="_compute_all" , store=True)
+
+    axial_deformation = fields.Float(string="Axial Deformation" , digits=(8,2) , compute="_compute_all" , store=True)
+
+    axial_strain = fields.Float(string="Axial Strain (%)" , digits=(8,3) , compute="_compute_all" , store=True)
+
+    @api.depends('parent_id.ucs_lines')
+    def _compute_dial_reading(self):
+        # Sagle unique parents ghene (Optimization sathi)
+        for parent in self.mapped('parent_id'):
+            
+            current_val = 0.0
+            
+          
+            for i, line in enumerate(parent.ucs_lines):
+                
+               
+                if i == 0:
+                   
+                    if not line.horizontal_read:
+                        line.horizontal_read = 0.0
+                    current_val = line.horizontal_read
+                
+                else:
+                 
+                    new_val = current_val + 25.0
+                    line.horizontal_read = new_val
+                    current_val = new_val
+
+    @api.depends('serial_no', 'prove_ring_read',
+                 'parent_id.ucs_area', 'parent_id.ucs_dial_gauge', 'parent_id.ucs_height')
+    def _compute_all(self):
+        """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
+        for rec in self:
+            # 1) Horizontal dial (0,25,50,...)
+            if rec.serial_no <= 1:
+                horiz = 0.0
+            else:
+                horiz = 25.0 * (rec.serial_no - 1)
+            rec.horizontal_read = horiz
+
+            # 2) Axial deformation = horiz * B$23
+            lc = rec.parent_id.ucs_dial_gauge or 0.01
+            deform = horiz * lc
+            rec.axial_deformation = deform
+
+            # 3) Axial strain (%) = deform / B$13 * 100
+            height = rec.parent_id.ucs_height or 0.0
+            rec.axial_strain = (deform / height) * 100 if height else 0.0
+
+            # 4) Corrected area
+            a0 = (rec.parent_id.ucs_area or 0.0) / 100.0
+            if rec.serial_no == 1 or horiz <= 0:
+                rec.corrected_area = a0
+            else:
+                strain_dec = (horiz * (rec.parent_id.ucs_dial_gauge or 0.001)) / (height or 76.2)
+                rec.corrected_area = a0 / (1 - strain_dec) if (1 - strain_dec) > 0.01 else a0 * 1.05
+
+            # 5) Shear stress = ((PR*5)*1.682+13.644)/(9.81*Ac)
+            pr = rec.prove_ring_read or 0.0
+            ac = rec.corrected_area or 1.0
+            rec.shear_stress = (((pr * 5.0) * 1.682) + 13.644) / (9.81 * ac)
 
 
 
 
     
 
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(UcsSoilLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
+class DirectShearTestLine(models.Model):
+    _name = "direct.shear.test.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
+
+    horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0) , compute="_compute_all" , store=True)
+
+    horizontal_dispalacement = fields.Float(string="Horizantal  Displacement (mm)" , digits=(8,2) , compute="_compute_all" , store=True)
+
+    horizontal_dispalacement_inv = fields.Float(string="Horizantal  Displacement inv (mm)" , digits=(8,2) , compute="_compute_all" , store=True)
+
+    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,2) , compute="_compute_all" , store=True)
+
+    non_corrected_area = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0) , compute="_compute_all" , store=True)
+
+    selected_area = fields.Float(string="Area Type", compute="_compute_all" , store=True)
+
+    prove_ring_read = fields.Float(string="Proving ring reading" , digits=(8,0))
+
+    horizontal_shear = fields.Float(string="Horizantal Shear force (kg)" , digits=(8,3), compute="_compute_all" , store=True)
+
+    horizontal_shear_temp = fields.Float(string="Horizantal Shear force with temp Correction (kg)" , digits=(8,3), compute="_compute_all" , store=True)
+
+    shear_stress = fields.Float(string="Shear stress (kg/sq.cm)" , digits=(8,3), compute="_compute_all" , store=True)
 
 
+    @api.depends('serial_no', 'prove_ring_read','parent_id.shear_area','parent_id.shear_force_percent_change' , 'parent_id.non_corrected_area_shear')
+    def _compute_all(self):
+        """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
+        for rec in self:
+            # 1) Horizontal dial (0,25,50,...)
+            if rec.serial_no <= 1:
+                horiz = 0.0
+            else:
+                horiz = 25.0 * (rec.serial_no - 1)
+            rec.horizontal_read = horiz
+
+            # 2) horizontal_dispalacement = horiz * B$23
+            horizontal_dispalacement = horiz * 0.01
+            rec.horizontal_dispalacement = horizontal_dispalacement
+
+            # 2) horizontal_dispalacement inv
+            horizontal_dispalacement_inv = horizontal_dispalacement / 10
+            rec.horizontal_dispalacement_inv = horizontal_dispalacement_inv
+
+            # 3) Corrected Area 
+            if rec.serial_no == 1:
+             area = rec.parent_id.shear_area
+             rec.corrected_area = area * (1 - (horizontal_dispalacement/6))
+        
+            # ROW 2+ : F2/(1+E3) → previous_corrected / (1 + current_inv)
+            elif rec.serial_no > 1:
+              prev_line = self.search([
+                ('parent_id', '=', rec.parent_id.id),
+                ('serial_no', '=', rec.serial_no - 1) ], limit=1)
+              if prev_line.corrected_area:
+                rec.corrected_area = prev_line.corrected_area * (1 - (horizontal_dispalacement_inv/6))
+
+             # 4) Non Corrected Area 
+            non_corrected = rec.parent_id.non_corrected_area_shear
+            rec.non_corrected_area = non_corrected
+
+            if rec.parent_id.area_type == 'corrected':
+              rec.selected_area = rec.corrected_area
+            else:
+              rec.selected_area = non_corrected 
 
 
+            # 5) HORIZONTAL SHEAR FORCE (kg) 
+            if rec.prove_ring_read:
+               rec.horizontal_shear = ((rec.prove_ring_read * 0.8555) + 9.6658) / 9.81
+            else:
+                rec.horizontal_shear = 0.0
 
+            # 6) HORIZONTAL SHEAR FORCE WITH TEMP CORRECTION (kg)
+            shear_force_parent_change = rec.parent_id.shear_force_percent_change or 0.0
+            if rec.horizontal_shear:
+               rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * shear_force_parent_change)
+            else:
+               rec.horizontal_shear_temp = 0.0
 
+            # 7) SHEAR STRESS (kg/cm²) = temp_force / corrected_area
+            if rec.horizontal_shear_temp and rec.corrected_area:
+              rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area  # Final column ✓
 
+           
+        
+            
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(DirectShearTestLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
     
 

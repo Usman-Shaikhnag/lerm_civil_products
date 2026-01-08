@@ -724,6 +724,28 @@
                         </h1>
                     </div>
 
+
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not loose_density_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="selected_lab_flyash1"></label></td>
+                                    <td ><field name="selected_lab_flyash1" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><label for="is_compressive_strength"></label></td>
+                                    <td><field name="is_compressive_strength"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+
                     <div class="d-flex gap-2" invisible="not compressive_strength_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
@@ -1117,6 +1139,7 @@
                 </form>
             </field>
         </record>
+
 
         <record id="action_flyash_prefill_data_wizard" model="ir.actions.act_window">
             <field name="name">Prefill Data</field>
