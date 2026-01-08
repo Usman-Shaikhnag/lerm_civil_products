@@ -870,6 +870,7 @@ class Soil(models.Model):
     ll_visible = fields.Boolean('Show LL', default=True)
     sl_visible = fields.Boolean('Show SL', default=True)
     
+    
     # RESULTS
     moisture_content = fields.Float('NMC (%)', digits=(10,2))
     plastic_limit = fields.Float('PL (%)', digits=(10,2))
