@@ -33,19 +33,8 @@ class MechanicalRock(models.Model):
         )
     
 
-    is_lab_rock = fields.Boolean(
-        string="Lab Fine Selected",
-        
-    )
-
-    @api.onchange('lab_id')
-    def _onchange_lab_id(self):
-        for rec in self:
-            if rec.lab_id:
-                rec.is_lab_rock = True
-            else:
-                rec.is_lab_rock = False
-
+   
+    
 
     @api.depends('eln_ref')
     def _compute_lab_id(self):
