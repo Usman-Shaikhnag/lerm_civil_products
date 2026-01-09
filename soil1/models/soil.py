@@ -8547,7 +8547,20 @@ class SoilLightHeavyCompactionLine(models.Model):
     _name = "soil.light.heavy.compaction.line"
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
-    serial_no = fields.Integer(string="Trial No",readonly=True, copy=False, default=1)
+    serial_no = fields.Integer(string="Trial No",readonly=True,compute="_compute_serial_no")
+
+    @api.depends('parent_id.soil_light_heavy_lines')
+    def _compute_serial_no(self):
+     for record in self:
+        parent = record.parent_id
+        if not parent:
+            continue
+
+        # IMPORTANT: DO NOT SORT BY ID
+        lines = parent.soil_light_heavy_lines
+
+        for idx, line in enumerate(lines, start=1):
+            line.serial_no = idx
 
     wet_soil_cylinder = fields.Float(string="Wet mass of soil + cylinder gm" , digits=(8,0) )
 
@@ -8624,22 +8637,22 @@ class SoilLightHeavyCompactionLine(models.Model):
 
     
 
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
+    # @api.model
+    # def create(self, vals):
+    #     # Set the serial_no based on the existing records for the same parent
+    #     if vals.get('parent_id'):
+    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+    #         if existing_records:
+    #             max_serial_no = max(existing_records.mapped('serial_no'))
+    #             vals['serial_no'] = max_serial_no + 1
 
-        return super(SoilLightHeavyCompactionLine, self).create(vals)
+    #     return super(SoilLightHeavyCompactionLine, self).create(vals)
 
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
+    # def _reorder_serial_numbers(self):
+    #     # Reorder the serial numbers based on the positions of the records in child_lines
+    #     records = self.sorted('id')
+    #     for index, record in enumerate(records):
+    #         record.serial_no = index + 1
 
 class UcsSoilLine(models.Model):
     _name = "ucs.soil.line"
