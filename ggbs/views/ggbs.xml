@@ -83,8 +83,8 @@
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not specific_gravity_visible">
                             <tbody>
                                 <tr>
-                                    <td><label for="selected_lab_ggbs1"></label></td>
-                                    <td ><field name="selected_lab_ggbs1"/></td>
+                                    <td><label for="selected_lab_specific_gravity1"></label></td>
+                                    <td ><field name="selected_lab_specific_gravity1"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -92,7 +92,7 @@
 
 
 
-                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
                             <tbody>
                                 <tr>
                                     <td><label for="is_lab_specific_gravity"></label></td>
@@ -107,11 +107,11 @@
 
 
                             </tbody>
-                        </table> -->
+                        </table>
 
 
 
-<!-- 
+
                       <div class="d-flex gap-2" invisible="not specific_gravity_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
@@ -131,9 +131,9 @@
                                 </tr>
                                 
                             </tbody>
-                        </table> -->
+                        </table> 
 
-                         <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
                             <tbody>
                                 <tr>
                                     <td><field name="calc_mode" class="blue-input" invisible="not specific_gravity_visible"  /></td>
@@ -141,7 +141,7 @@
                                 
                             </tbody>
                         </table>
-                    </div> -->
+                    </div> 
 
 
                     <div invisible="not specific_gravity_visible">
@@ -270,6 +270,31 @@
 
                 </div>
 
+
+                  <div class="d-flex gap-2" invisible="not slag_activity_7_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_7day">7 Days Temp.°C</label></td>
+                                    <td><field name="temp_7day" class="blue-input" invisible="not slag_activity_7_visible" required = "calc_mode == False or slag_lines_generated == True "/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_7day">7 Days Humidity %</label></td>
+                                    <td><field name="humidity_7day" class="blue-input" invisible="not slag_activity_7_visible" required = "calc_mode == False or slag_lines_generated == True "/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
+
+
              
 
                     <div class="custom_table_borders" invisible = "slag_activity_7_visible == False">
@@ -322,6 +347,30 @@
 
                 </div>
 
+
+                 <div class="d-flex gap-2" invisible="not slag_activity_7_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_28day">28 Days Temp.°C</label></td>
+                                    <td><field name="temp_28day" class="blue-input" invisible="not slag_activity_7_visible" required = "calc_mode == False or slag_index_generated == True "/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_28day">28 Days Humidity %</label></td>
+                                    <td><field name="humidity_28day" class="blue-input" invisible="not slag_activity_7_visible" required = "calc_mode == False or slag_index_generated == True " /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
+
              
 
                     <div class="custom_table_borders" invisible = "slag_activity_7_visible == False">
@@ -369,51 +418,8 @@
                         </table>
 
 
-                   <div class="d-flex gap-2" invisible="not slag_activity_7_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="temp_7day">7 Days Temp.°C</label></td>
-                                    <td><field name="temp_7day" class="blue-input" invisible="not slag_activity_7_visible" required = "calc_mode == False or submit_mode == True "/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="humidity_7day">7 Days Humidity %</label></td>
-                                    <td><field name="humidity_7day" class="blue-input" invisible="not slag_activity_7_visible" required = "calc_mode == False or submit_mode == True "/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                    </div>
-
-                    <div class="d-flex gap-2" invisible="not slag_activity_7_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="temp_28day">28 Days Temp.°C</label></td>
-                                    <td><field name="temp_28day" class="blue-input" invisible="not slag_activity_7_visible" required = "calc_mode == False or submit_mode == True "/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="humidity_28day">28 Days Humidity %</label></td>
-                                    <td><field name="humidity_28day" class="blue-input" invisible="not slag_activity_7_visible" required = "calc_mode == False or submit_mode == True " /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                    </div>
+                 
+                   
 
 
                    <div class="custom_table_borders" style="width:100%;" invisible = "slag_activity_7_visible == False">
@@ -546,7 +552,7 @@
                         </table>
 
 
-                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
                             <tbody>
                                 <tr>
                                     <td><label for="is_lab_Fineness"></label></td>
@@ -561,9 +567,9 @@
 
 
                             </tbody>
-                        </table> -->
+                        </table>
 
-                      <!-- <div class="d-flex gap-2" invisible="not fineness_visible">
+                      <div class="d-flex gap-2" invisible="not fineness_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -583,7 +589,7 @@
                                 
                             </tbody>
                         </table>
-                    </div> -->
+                    </div>
 
 
                       <div class="custom_table_borders" style="width:100%;" invisible = "fineness_visible == False">

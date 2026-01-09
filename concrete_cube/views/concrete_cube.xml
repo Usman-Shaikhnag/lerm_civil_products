@@ -165,7 +165,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="room_temperature">Room Temperature</label></td>
-                                    <td><field name="room_temperature" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or is_lab_casting_7 == True "/>°C</td>
+                                    <td><field name="room_temperature" class="blue-input" invisible="not status_7days" required = "calc_mode == False or is_lab_casting_7 == True "/>°C</td>
                                                                                             
                                 </tr> 
                             </tbody>
@@ -175,7 +175,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="relative_humidity">Relative Humidity</label></td>
-                                    <td><field name="relative_humidity" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or is_lab_casting_7 == True "/> %</td>
+                                    <td><field name="relative_humidity" class="blue-input" invisible="not status_7days" required = "calc_mode == False or is_lab_casting_7 == True "/> %</td>
                                 </tr>
                                 
                             </tbody>
@@ -301,7 +301,7 @@
 
                     </div>
 
-
+<!-- 
                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
                             <tbody>
                                 <tr>
@@ -317,14 +317,15 @@
 
 
                             </tbody>
-                        </table>
+                        </table> -->
 
                      <div class="d-flex gap-2"  invisible="status_14days == False">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label for="room_temperature14">Room Temperature</label></td>
-                                    <td><field name="room_temperature14" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or is_lab_casting_14 == True "/>°C</td>
+                                    <td><field name="room_temperature14" class="blue-input" invisible="not status_14days" required = "calc_mode == False or is_lab_casting_7 == True "/>°C</td>
+                                     <!-- required = "calc_mode == False or is_lab_casting_14 == True " -->
                                 </tr> 
                             </tbody>
                         </table>
@@ -333,7 +334,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="relative_humidity14">Relative Humidity</label></td>
-                                    <td><field name="relative_humidity14" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or is_lab_casting_14 == True "/> %</td>
+                                    <td><field name="relative_humidity14" class="blue-input" invisible="not status_14days" required = "calc_mode == False or is_lab_casting_7 == True " /> %</td>
                                 </tr>
                                 
                             </tbody>
@@ -442,7 +443,7 @@
                     </div>
 
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                    <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
                             <tbody>
                                 <tr>
                                     <td><label for="is_lab_casting_28"></label></td>
@@ -457,17 +458,19 @@
 
 
                             </tbody>
-                        </table>
+                        </table> -->
 
 
 
                      <div class="d-flex gap-2"  invisible="status_28days == False">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                       
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="room_temperature28">Room Temperature</label></td>
-                                    <td><field name="room_temperature28" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or is_lab_casting_28 == True "/>°C</td>
-                                </tr> 
+                                    <td><field name="room_temperature28" class="blue-input" invisible="not status_28days" required = "calc_mode == False or is_lab_casting_7 == True " /> %</td>
+                                </tr>
+                                
                             </tbody>
                         </table>
                         
@@ -475,7 +478,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="relative_humidity28">Relative Humidity</label></td>
-                                    <td><field name="relative_humidity28" class="blue-input" invisible="not cube_visible" required = "calc_mode == False or is_lab_casting_28 == True "/> %</td>
+                                    <td><field name="relative_humidity28" class="blue-input" invisible="not status_28days" required = "calc_mode == False or is_lab_casting_7 == True " /> %</td>
                                 </tr>
                                 
                             </tbody>

@@ -37,45 +37,54 @@ class MechanicalBricksBurntClay(models.Model):
     )
 
 
-     # --- Button Function ---
+
     def action_generate_options_brick_clay(self):
         for record in self:
             # Step 1: Check if lab_id exists and has hyphen
             if record.lab_id and '-' in record.lab_id:
                 try:
-                    # Step 2: Clear old lines first (Previous options delete kara)
-                    # (5, 0, 0) command saglya lines remove karte
+                    # Step 2: Clear old lines first
                     lines_command = [(5, 0, 0)]
                     
-                    # Step 3: String Parsing (Break Logic)
-                    # Input: "S-25-144 - S-25-145"
+                    # Step 3: String Parsing
                     parts = record.lab_id.split(' - ')
                     
                     if len(parts) >= 2:
-                        start_part = parts[0].strip() # "S-25-144"
-                        end_part = parts[-1].strip()  # "S-25-145"
+                        start_part = parts[0].strip() # Example: "S-25-001"
+                        end_part = parts[-1].strip()  # Example: "S-25-006"
 
-                        # Prefix (S-25) ani Number (144) vegla kara
                         prefix = start_part.rsplit('-', 1)[0]
-                        start_num = int(start_part.split('-')[-1])
-                        end_num = int(end_part.split('-')[-1])
+                        
+                        # --- CHANGE START ---
+                        # Number cha string part vegla kara length check karnya sathi
+                        start_num_str = start_part.split('-')[-1] # "001" milnar
+                        end_num_str = end_part.split('-')[-1]     # "006" milnar
+                        
+                        # Length calculate kara (Example: "001" chi length 3 ahe)
+                        padding_length = len(start_num_str)
+
+                        start_num = int(start_num_str) # Integer madhe convert: 1
+                        end_num = int(end_num_str)     # Integer madhe convert: 6
+                        # --- CHANGE END ---
 
                         # Step 4: Loop ani Create Lines
                         for num in range(start_num, end_num + 1):
-                            val = f"{prefix}-{num}"
-                            # One2many madhe create karnya sathi: (0, 0, values)
+                            # zfill use karun zero add kara
+                            # Jar num=1 ahe ani padding_length=3 ahe, tar "001" banel
+                            formatted_num = str(num).zfill(padding_length)
+                            
+                            val = f"{prefix}-{formatted_num}"
                             lines_command.append((0, 0, {'lab': val}))
 
                         # Step 5: Assign to One2many field
                         record.lab_brick_clay_ids = lines_command
                         
                 except Exception as e:
-                    # Jar format chukla tar error ignore kara
                     pass
             else:
-                # Jar range nasel (single value asel), tar ti ekach value add kara
                 if record.lab_id:
-                     record.lab_brick_clay_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
+                    record.lab_brick_clay_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
+
 
     calc_mode = fields.Boolean(default=True)     # Calculate चालू असताना True
     submit_mode = fields.Boolean(default=False)
@@ -263,8 +272,8 @@ class MechanicalBricksBurntClay(models.Model):
         domain="[('id', 'in', lab_brick_clay_ids)]"
     )
 
-    temp_water_absorption = fields.Char("Temp °c" ,required=True)
-    humidity_water_absorption = fields.Char("Humidity %" ,required=True)
+    temp_water_absorption = fields.Char("Temp °c")
+    humidity_water_absorption = fields.Char("Humidity %")
 
     water_absorption_child_lines = fields.One2many('mechanical.bricks.clay.water.absorption.line','parent_id',string="Water Absorption Test")
 
@@ -382,8 +391,8 @@ class MechanicalBricksBurntClay(models.Model):
     height_name = fields.Char("Name",default="height")
     height_visible = fields.Boolean("height",compute="_compute_visible")
 
-    temp_dimension = fields.Char("Temp °c" ,required=True)
-    humidity_dimension = fields.Char("Humidity %" ,required=True)
+    temp_dimension = fields.Char("Temp °c")
+    humidity_dimension = fields.Char("Humidity %")
 
     
     length1 = fields.Float(string="Length  ")
@@ -405,6 +414,14 @@ class MechanicalBricksBurntClay(models.Model):
         string="Lab Fine Selected",
         
     )
+
+    @api.onchange('selected_lab_brickclay3')
+    def _onchange_selected_lab_brickclay3(self):
+        for rec in self:
+            if rec.selected_lab_brickclay3:
+                rec.is_lab_dimension = True
+            else:
+                rec.is_lab_dimension = False
 
 
     @api.depends('length1','length2','length3','width1','width2','width3','height1','height2','height3')
@@ -639,8 +656,8 @@ class MechanicalBricksBurntClay(models.Model):
         domain="[('id', 'in', lab_brick_clay_ids)]"
     )
 
-    temp_efforescence = fields.Char("Temp °c" ,required=True)
-    humidity_efforescence = fields.Char("Humidity %" ,required=True)
+    temp_efforescence = fields.Char("Temp °c")
+    humidity_efforescence = fields.Char("Humidity %")
 
 
     visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')

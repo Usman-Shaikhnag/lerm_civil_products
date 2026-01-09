@@ -166,11 +166,23 @@ class GgbsMechanical(models.Model):
     specific_gravity_name1 = fields.Char("Name",default="Density Test")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
-    selected_lab_ggbs1 = fields.Many2one(
+    selected_lab_specific_gravity1 = fields.Many2one(
         'ggbs.lab.line',
         string="Select Lab ID",
         domain="[('id', 'in', lab_ggbs_ids)]"
     )
+
+    is_lab_specific_gravity = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_specific_gravity1')
+    def _onchange_selected_lab_specific_gravity1(self):
+        for rec in self:
+            if rec.selected_lab_specific_gravity1:
+                rec.is_lab_specific_gravity = True
+            else:
+                rec.is_lab_specific_gravity = False
 
     temp_specific = fields.Char("Temp.°C" )
     humidity_specific= fields.Char("Humidity %")
@@ -665,18 +677,18 @@ class GgbsMechanical(models.Model):
             # rec.submit_mode = True
 
 
-    #         is_lab_Fineness = fields.Boolean(
-    #       string="Lab Fine Selected",
-        
-    #       )
+    is_lab_Fineness = fields.Boolean(
+        string="Lab Fine Selected",
+    
+        )
 
-    # @api.onchange('selected_lab_ggbs2')
-    # def _onchange_selected_lab_ggbs2(self):
-    #     for rec in self:
-    #         if rec.selected_lab_ggbs2:
-    #             rec.is_lab_Fineness = True
-    #         else:
-    #            rec.is_lab_Fineness = False
+    @api.onchange('selected_lab_ggbs2')
+    def _onchange_selected_lab_ggbs2(self):
+        for rec in self:
+            if rec.selected_lab_ggbs2:
+                rec.is_lab_Fineness = True
+            else:
+               rec.is_lab_Fineness = False
 
 
     apparatus_constant_first = fields.Float(string="Apparatus Constant (K) ", digits=(12, 4))
