@@ -407,6 +407,8 @@ class MechanicalBricksBurntClay(models.Model):
     )
 
 
+
+
     @api.depends('length1','length2','length3','width1','width2','width3','height1','height2','height3')
     def _compute_average(self):
         for record in self:
@@ -749,7 +751,7 @@ class MechanicalBricksBurntClay(models.Model):
 
              #  Efforescence
             if result.parameter.internal_id == '3e9d3877-e657-4409-8e7c-12c066f3cf26':
-                result.result_char = (self.visual_observation_1).upper()
+                result.result_char = (self.visual_observation_1)
                 result.calculated = True
                 # if self.avg_compressive_strength_nabl == 'pass':
                 #     result.nabl_status = 'nabl'

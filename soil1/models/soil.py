@@ -62,6 +62,7 @@ from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 
 
 
+
 class Soil(models.Model):
     _name = "mechanical.soil1"
     _inherit = "lerm.eln"
@@ -174,14 +175,9 @@ class Soil(models.Model):
     sieve_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible")
 
-    # @api.model
-    # def default_get(self, fields_list):
-    #     res = super().default_get(fields_list)
-    #     if self.env.context.get('force_sieve_visible'):
-    #         res['sieve_visible'] = True
-    #     return res
 
- 
+
+
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line1','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
 
     boulder = fields.Float(string="% Boulders ",compute="_compute_boulder")
@@ -599,205 +595,7 @@ class Soil(models.Model):
         buffer.seek(0)
 
         return base64.b64encode(buffer.read())
-
-
-
-
-   
-
-
-
-
-   
-
-
-
-
-               # Liquid Limit
-    # liquid_limit_name = fields.Char("Name",default="Liquid Limit")
-    # liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
-  
-    # child_liness = fields.One2many('mechanical.liquid.limits.line1','parent_id',string="Liquid Limit")
-    # liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
-
-   
-   
-
-    # @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
-    # def _compute_liquid_limit(self):
-    #     for record in self:
-    #         lines = record.child_liness.filtered(lambda l: l.blwo_no1 is not None and l.moisture_content is not None)
-    #         if not lines or len(lines) < 2:
-    #             record.liquid_limit = 0.0
-    #             continue
-
-    #         # Sort by blwo_no1 ascending
-    #         lines_sorted = sorted(lines, key=lambda l: l.blwo_no1)
-    #         target = 25.0
-
-    #         # Find the two points around target (just below and just above)
-    #         lower = None
-    #         upper = None
-    #         for i, line in enumerate(lines_sorted):
-    #             if line.blwo_no1 < target:
-    #                 lower = line
-    #             elif line.blwo_no1 >= target and lower:
-    #                 upper = line
-    #                 break
-
-    #         if lower and upper:
-    #             x1, x2 = lower.blwo_no1, upper.blwo_no1
-    #             y1, y2 = lower.moisture_content, upper.moisture_content
-
-    #             if x2 != x1:
-    #                 # Linear interpolation
-    #                 ll_value = y1 + (y2 - y1) * (target - x1) / (x2 - x1)
-    #             else:
-    #                 ll_value = y1
-    #             record.liquid_limit = ll_value
-    #         elif lower:
-    #             # If target above highest value
-    #             record.liquid_limit = lower.moisture_content
-    #         else:
-    #             record.liquid_limit = 0.0
-
     
-    # liquid_limit_conformity = fields.Selection([
-    #         ('pass', 'Pass'),
-    #         ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
-
-    # @api.depends('liquid_limit','eln_ref','grade')
-    # def _compute_liquid_limit_conformity(self):
-        
-    #     for record in self:
-    #         record.liquid_limit_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
-                    
-    #                 lower = record.liquid_limit - record.liquid_limit*mu_value
-    #                 upper = record.liquid_limit + record.liquid_limit*mu_value
-    #                 if lower >= req_min and upper <= req_max:
-    #                     record.liquid_limit_conformity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.liquid_limit_conformity = 'fail'
-
-    # liquid_limit_nabl = fields.Selection([
-    #     ('pass', 'Pass'),
-    #     ('fail', 'Fail')], string="NABL", compute="_compute_liquid_limit_nabl", store=True)
-
-    # @api.depends('liquid_limit','eln_ref','grade')
-    # def _compute_liquid_limit_nabl(self):
-        
-    #     for record in self:
-    #         record.liquid_limit_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
-    #         # for material in materials:
-    #         #     if material.grade.id == record.grade.id:
-    #         lab_min = line.lab_min_value
-    #         lab_max = line.lab_max_value
-    #         mu_value = line.mu_value
-            
-    #         lower = record.liquid_limit - record.liquid_limit*mu_value
-    #         upper = record.liquid_limit + record.liquid_limit*mu_value
-    #         if lower >= lab_min and upper <= lab_max:
-    #             record.liquid_limit_nabl = 'pass'
-    #             break
-    #         else:
-    #             record.liquid_limit_nabl = 'fail'
-
-
-    # graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
-
-    
-
-
-
-   
-
-    # def generate_line_chart_liquid(self):
-    #     x_value = []
-    #     y_value = []
-    #     for line in self.child_liness:
-    #         if line.blwo_no1 and line.moisture_content is not None:
-    #             x_value.append(line.blwo_no1)
-    #             y_value.append(line.moisture_content)
-
-    #     if not x_value or not y_value:
-    #         return False
-
-    #     plt.figure(figsize=(10, 5))
-
-    #     # ✅ Blue line with red points
-    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
-
-    #     # ✅ Labels and title
-    #     plt.xlabel('No. of Blows', fontsize=12)
-    #     plt.ylabel('Water Content (%)', fontsize=12)
-    #     plt.title('LIQUID LIMIT', fontsize=14)
-
-    #     # ✅ Axis limits (rounded)
-    #     max_y = max(y_value)
-    #     y_limit = (int(max_y / 10) + 1) * 10
-    #     plt.ylim(bottom=0, top=y_limit)
-
-    #     max_x = max(x_value)
-    #     x_limit = (int(max_x / 10) + 1) * 10
-    #     plt.xlim(left=0, right=x_limit)
-
-    #     # ✅ Minor ticks for fine grid lines
-    #     ax = plt.gca()
-    #     ax.xaxis.set_minor_locator(MultipleLocator(1))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(1))
-
-    #     # ✅ Fine grid
-    #     plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
-
-    #     # 🔹 Highlight Liquid Limit point (DB field value वापरून)
-    #     if self.liquid_limit:
-    #         highlight_x = 25                # Blows (fixed at 25)
-    #         highlight_y = self.liquid_limit # Moisture content from field
-
-    #         # Dotted guide lines
-    #         plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
-    #         plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
-
-    #         # Point mark
-    #         plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
-
-    #         # Label
-    #         plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
-
-    #     # ✅ Save to buffer
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.legend()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
-
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
-
-
-        
-       
-    
-
-    # @api.depends('child_liness')
-    # def _compute_graph_image_liquid(self):
-    #     try:
-    #         for record in self:
-    #             chart_image_liquid = record.generate_line_chart_liquid()
-    #             record.graph_image_liquid = chart_image_liquid
-    #     except:
-    #         pass 
 
 
 
@@ -1397,7 +1195,7 @@ class Soil(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')]).parameter_table
             # for material in materials:
-            #     if material.grade.id == record.grade.id:
+            # if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value

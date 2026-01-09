@@ -1258,7 +1258,6 @@ class FlyaschNormalConsistency(models.Model):
                     record.compressive_strength_visible = True
 
 
-
                 
                 # lime reactivity
                 if sample.internal_id == '320147vbfd-c97d-4d83-a9f2-2eb112eae116':
