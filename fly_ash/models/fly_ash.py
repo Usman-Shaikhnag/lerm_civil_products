@@ -27,6 +27,78 @@ class FlyaschNormalConsistency(models.Model):
 
     notes_id = fields.One2many('flyash.notes','parent_id',string="Notes")
 
+    lab_id = fields.Char(
+            string="Lab ID",
+            compute="_compute_lab_id",
+            store=True
+        )
+
+    @api.depends('eln_ref')
+    def _compute_lab_id(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.lab_id = rec.eln_ref.lab_id
+            else:
+                rec.lab_id = False
+
+    lab_fly_ash_ids = fields.One2many(
+        'fly.ash.lab.line', 
+        'parent_id', 
+        string="Generated Options"
+    )
+
+
+
+    def action_generate_options_fly_ash(self):
+        for record in self:
+            # Step 1: Check if lab_id exists and has hyphen
+            if record.lab_id and '-' in record.lab_id:
+                try:
+                    # Step 2: Clear old lines first
+                    lines_command = [(5, 0, 0)]
+                    
+                    # Step 3: String Parsing
+                    parts = record.lab_id.split(' - ')
+                    
+                    if len(parts) >= 2:
+                        start_part = parts[0].strip() # Example: "S-25-001"
+                        end_part = parts[-1].strip()  # Example: "S-25-006"
+
+                        prefix = start_part.rsplit('-', 1)[0]
+                        
+                        # --- CHANGE START ---
+                        # Number cha string part vegla kara length check karnya sathi
+                        start_num_str = start_part.split('-')[-1] # "001" milnar
+                        end_num_str = end_part.split('-')[-1]     # "006" milnar
+                        
+                        # Length calculate kara (Example: "001" chi length 3 ahe)
+                        padding_length = len(start_num_str)
+
+                        start_num = int(start_num_str) # Integer madhe convert: 1
+                        end_num = int(end_num_str)     # Integer madhe convert: 6
+                        # --- CHANGE END ---
+
+                        # Step 4: Loop ani Create Lines
+                        for num in range(start_num, end_num + 1):
+                            # zfill use karun zero add kara
+                            # Jar num=1 ahe ani padding_length=3 ahe, tar "001" banel
+                            formatted_num = str(num).zfill(padding_length)
+                            
+                            val = f"{prefix}-{formatted_num}"
+                            lines_command.append((0, 0, {'lab': val}))
+
+                        # Step 5: Assign to One2many field
+                        record.lab_fly_ash_ids = lines_command
+                        
+                except Exception as e:
+                    pass
+            else:
+                if record.lab_id:
+                    record.lab_fly_ash_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
+
+
+   
+
     calc_mode = fields.Boolean(default=True)     
     submit_mode = fields.Boolean(default=False)
 
@@ -94,8 +166,27 @@ class FlyaschNormalConsistency(models.Model):
     normal_consistency_name = fields.Char("Name",default="Consistency - %")
     normal_consistency_visible = fields.Boolean("Normal Consistency Visible",compute="_compute_visible")
 
-    temp_percent_consistency = fields.Char("Temp °c" ,required=True)
-    humidity_percent_consistency = fields.Char("Humidity %" ,required=True)
+    selected_lab_normal_consistency1 = fields.Many2one(
+        'fly.ash.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fly_ash_ids)]"
+    )
+
+    is_lab_normal_consistency = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_normal_consistency1')
+    def _onchange_selected_lab_normal_consistency1(self):
+        for rec in self:
+            if rec.selected_lab_normal_consistency1:
+                rec.is_lab_normal_consistency = True
+            else:
+                rec.is_lab_normal_consistency = False
+
+
+    temp_percent_consistency = fields.Char("Temp °c" )
+    humidity_percent_consistency = fields.Char("Humidity %" )
 
     consistency_child_lines = fields.One2many('consistency.line','parent_id' ,string="Parameter")
 
@@ -177,12 +268,30 @@ class FlyaschNormalConsistency(models.Model):
     initial_setting_time_visible = fields.Boolean("Setting Time Visible",compute="_compute_visible")
     initial_setting_time_name = fields.Char("Name",default="Setting Time")
 
+    selected_lab_setting_time1 = fields.Many2one(
+        'fly.ash.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fly_ash_ids)]"
+    )
+
+    is_lab_setting_time = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_setting_time1')
+    def _onchange_selected_lab_setting_time1(self):
+        for rec in self:
+            if rec.selected_lab_setting_time1:
+                rec.is_lab_setting_time = True
+            else:
+                rec.is_lab_setting_time = False
+
     final_setting_time_visible = fields.Boolean("Setting Time Visible",compute="_compute_visible")
     final_setting_time_name = fields.Char("Name",default="Setting Time")
 
 
-    temp_setting_time = fields.Char("Temp °c" ,required=True)
-    humidity_setting_time = fields.Char("Humidity %" ,required=True)
+    temp_setting_time = fields.Char("Temp °c" )
+    humidity_setting_time = fields.Char("Humidity %" )
 
     intial_time_lines = fields.One2many('setting.time.line','parent_id',string="Initial Time")
 
@@ -215,9 +324,27 @@ class FlyaschNormalConsistency(models.Model):
     soundness_visible = fields.Boolean("Soundness By Le-Chatelier Test",compute="_compute_visible")
     soundness_name = fields.Char("Name",default="Soundness By Le-Chatelier Test")
 
+    selected_lab_soundness1 = fields.Many2one(
+        'fly.ash.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fly_ash_ids)]"
+    )
 
-    temp_soundness = fields.Char("Temp °c" ,required=True)
-    humidity_soundness = fields.Char("Humidity %" ,required=True)
+    is_lab_soundness = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_soundness1')
+    def _onchange_selected_lab_soundness1(self):
+        for rec in self:
+            if rec.selected_lab_soundness1:
+                rec.is_lab_soundness = True
+            else:
+                rec.is_lab_soundness = False
+
+
+    temp_soundness = fields.Char("Temp °c" )
+    humidity_soundness = fields.Char("Humidity %" )
 
     soundness_child_lines = fields.One2many('soundness.le.chatelier.line','parent_id',string="Soundness By Le-Chatelier Test")
 
@@ -293,9 +420,27 @@ class FlyaschNormalConsistency(models.Model):
     sound_auto_visible = fields.Boolean("Soundness By AutoClave Test",compute="_compute_visible")
     sound_auto_name = fields.Char("Name",default="Soundness By AutoClave Test")
 
+    selected_lab_sound_auto1 = fields.Many2one(
+        'fly.ash.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fly_ash_ids)]"
+    )
 
-    temp_sound_auto = fields.Char("Temp °c" ,required=True)
-    humidity_sound_auto = fields.Char("Humidity %" ,required=True)
+    is_lab_sound_auto = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_sound_auto1')
+    def _onchange_selected_lab_sound_auto1(self):
+        for rec in self:
+            if rec.selected_lab_sound_auto1:
+                rec.is_lab_sound_auto = True
+            else:
+                rec.is_lab_sound_auto = False
+
+
+    temp_sound_auto = fields.Char("Temp °c" )
+    humidity_sound_auto = fields.Char("Humidity %" )
 
     sound_auto_child_lines = fields.One2many('soundness.autoclave.line','parent_id',string="AutoClave Test")
 
@@ -380,9 +525,27 @@ class FlyaschNormalConsistency(models.Model):
 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity Test")
     specific_gravity_visible = fields.Boolean("Specific Gravity Test",compute="_compute_visible")
+
+    selected_lab_specific_gravity1 = fields.Many2one(
+        'fly.ash.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fly_ash_ids)]"
+    )
+
+    is_lab_specific_gravity = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_specific_gravity1')
+    def _onchange_selected_lab_specific_gravity1(self):
+        for rec in self:
+            if rec.selected_lab_specific_gravity1:
+                rec.is_lab_specific_gravity = True
+            else:
+                rec.is_lab_specific_gravity = False
        
-    temp_specific_gravity = fields.Char("Temp °c" ,required=True)
-    humidity_specific_gravity = fields.Char("Humidity %" ,required=True)  
+    temp_specific_gravity = fields.Char("Temp °c" )
+    humidity_specific_gravity = fields.Char("Humidity %" )  
 
     temp_water_1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0°C")
     temp_water_2 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0°C")
@@ -520,8 +683,27 @@ class FlyaschNormalConsistency(models.Model):
     fineness_blain_name = fields.Char("Name",default="Fineness by Blaines Air Permeability Method")
     fineness_blain_visible = fields.Boolean("Fineness by Blaines Air Permeability Method Visible",compute="_compute_visible")
 
-    temp_fineness_blain = fields.Char("Temp °c" ,required=True)
-    humidity_fineness_blain = fields.Char("Humidity %" ,required=True) 
+    selected_lab_fineness_blain1 = fields.Many2one(
+        'fly.ash.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fly_ash_ids)]"
+    )
+
+    is_lab_fineness_blain = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_fineness_blain1')
+    def _onchange_selected_lab_fineness_blain1(self):
+        for rec in self:
+            if rec.selected_lab_fineness_blain1:
+                rec.is_lab_fineness_blain = True
+            else:
+                rec.is_lab_fineness_blain = False
+       
+
+    temp_fineness_blain = fields.Char("Temp °c" )
+    humidity_fineness_blain = fields.Char("Humidity %" ) 
 
     density_pozzolana = fields.Float(string="Density of pozzolana (ƍ) – gm/cc", digits=(12, 3))
 
@@ -644,9 +826,28 @@ class FlyaschNormalConsistency(models.Model):
 
     fineness_name = fields.Char("Name",default="Particles retained on 45 micron IS sieve (wet sieving) - %")
     fineness_visible = fields.Boolean("Particles retained on 45 micron IS sieve (wet sieving) - %",compute="_compute_visible")
+
+    selected_lab_fineness1 = fields.Many2one(
+        'fly.ash.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fly_ash_ids)]"
+    )
+
+    is_lab_fineness = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_fineness1')
+    def _onchange_selected_lab_fineness1(self):
+        for rec in self:
+            if rec.selected_lab_fineness1:
+                rec.is_lab_fineness = True
+            else:
+                rec.is_lab_fineness = False
        
-    temp_fineness = fields.Char("Temp °c" ,required=True)
-    humidity_fineness = fields.Char("Humidity %" ,required=True) 
+       
+    temp_fineness = fields.Char("Temp °c" )
+    humidity_fineness = fields.Char("Humidity %" ) 
 
     fineness_child_lines = fields.One2many('particles.retained.line','parent_id',string="Fineness By Sieving Test") 
 
@@ -726,8 +927,94 @@ class FlyaschNormalConsistency(models.Model):
     compressive_strength7_name = fields.Char("Name",default="Compressive Strength Fly Ash")
 
 
-    temp_compressive_strength = fields.Char("Temp °c" ,required=True)
-    humidity_compressive_strength = fields.Char("Humidity %" ,required=True)
+    is_compressive_strength = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_opc_compressive_strength(self):
+        for record in self:
+
+            record.is_compressive_strength = True
+
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.compressive_strength_child_lines = lines
+                record.is_compressive_strength = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.compressive_strength_child_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'OPC Form',
+                'res_model': 'mechanical.flyasch.normalconsistency',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
+
+    is_compressive_strength1 = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
+
+    
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_opc_compressive_strength1(self):
+        for record in self:
+
+            record.is_compressive_strength1 = True
+
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.compressive_cement_child_lines = lines
+                record.is_compressive_strength1 = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.compressive_cement_child_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'OPC Form',
+                'res_model': 'mechanical.flyasch.normalconsistency',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
+
+
+
+    temp_compressive_strength = fields.Char("Temp °c" )
+    humidity_compressive_strength = fields.Char("Humidity %" )
 
     compressive_strength_child_lines = fields.One2many('flyash.compressive.strength.line','parent_id',string="Compressive Strength Test")\
     
@@ -759,8 +1046,7 @@ class FlyaschNormalConsistency(models.Model):
     def action_calculate_avg_strength(self):
         for rec in self:
 
-            rec.calc_mode = True
-            rec.submit_mode = False
+          
 
             lines = rec.compressive_strength_child_lines.sorted(key=lambda l: l.serial_no) 
             group_size = 3
@@ -778,17 +1064,7 @@ class FlyaschNormalConsistency(models.Model):
                     line.avg_compressive_strength = 0.0
          
 
-             # Jar Button Visible ahe (True), tar Submit Mode 'False' ch theva.
-            if line.compressive_strength_visible:
-                line.submit_mode = False
-
-            elif line.lime_visible:
-                line.submit_mode = False
-            
-            # Jar Button Invisible ahe (False), tar automatic 'True' kara.
-            else:
-                line.submit_mode = True
-
+        
 
 
             
@@ -998,9 +1274,53 @@ class FlyaschNormalConsistency(models.Model):
     lime_visible = fields.Boolean("Determination of Lime Reactivity of Flyash",compute="_compute_visible")
     lime_name = fields.Char("Name",default="Determination of Lime Reactivity of Flyash")
 
+    is_lime = fields.Boolean(
+        string="Lab Fine Selected",
+        
+    )
 
-    temp_lime = fields.Char("Temp °c" ,required=True)
-    humidity_lime = fields.Char("Humidity %" ,required=True)
+    
+    show_sieve = fields.Boolean(default=False)
+
+    def action_generate_opc_lime(self):
+        for record in self:
+
+            record.is_lime = True
+
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.lime_child_lines = lines
+                record.is_lime = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.lime_child_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'OPC Form',
+                'res_model': 'mechanical.flyasch.normalconsistency',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
+
+
+
+
+    temp_lime = fields.Char("Temp °c" )
+    humidity_lime = fields.Char("Humidity %" )
 
     lime_child_lines = fields.One2many('flyash.lime.line','parent_id',string="Lime Reactivity of Flyash")	
 
@@ -1102,8 +1422,28 @@ class FlyaschNormalConsistency(models.Model):
     drying_shrinkage_name = fields.Char("Name",default="Drying shrinkage Test")
 
 
-    temp_drying_shrinkage = fields.Char("Temp °c" ,required=True)
-    humidity_drying_shrinkage = fields.Char("Humidity %" ,required=True)
+    selected_lab_drying_shrinkage1 = fields.Many2one(
+        'fly.ash.lab.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_fly_ash_ids)]"
+    )
+
+    is_lab_drying_shrinkage = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_drying_shrinkage1')
+    def _onchange_selected_lab_drying_shrinkage1(self):
+        for rec in self:
+            if rec.selected_lab_drying_shrinkage1:
+                rec.is_lab_drying_shrinkage = True
+            else:
+                rec.is_lab_drying_shrinkage = False
+       
+
+
+    temp_drying_shrinkage = fields.Char("Temp °c" )
+    humidity_drying_shrinkage = fields.Char("Humidity %" )
 
     drying_shrinkage_child_lines = fields.One2many('drying.shrinkage.line','parent_id',string="AutoClave Test")
 
@@ -1258,7 +1598,6 @@ class FlyaschNormalConsistency(models.Model):
                     record.compressive_strength_visible = True
 
 
-
                 
                 # lime reactivity
                 if sample.internal_id == '320147vbfd-c97d-4d83-a9f2-2eb112eae116':
@@ -1276,7 +1615,10 @@ class FlyaschNormalConsistency(models.Model):
         # import wdb; wdb.set_trace()
         current_user = self.env.user
         # 🔹 Only results assigned to current technician
-        technician_results = self.eln_ref.parameters_result.filtered(
+        if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            technician_results = self.eln_ref.parameters_result
+        else:
+            technician_results = self.eln_ref.parameters_result.filtered(
                 lambda r: r.technician == current_user
             )
 
@@ -1420,20 +1762,22 @@ class FlyaschNormalConsistency(models.Model):
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
-        current_user = self.env.user
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
+            current_user = self.env.user
 
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
+            # ✅ Discipline group can see all parameters
+            if current_user.has_group('lerm_civil.lerm_discipline_group'):
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # 🔒 Only parameters assigned to current technician
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
 
@@ -2033,6 +2377,16 @@ class FlyashNotes(models.Model):
     parent_id = fields.Many2one('mechanical.flyasch.normalconsistency',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
+
+
+class LabOptionLine(models.Model):
+    _name = 'fly.ash.lab.line'
+    _description = 'Lab Options'
+    _rec_name = 'lab'  # Dropdown मध्ये हे नाव दिसेल
+
+    lab = fields.Char(string="Lab ID")
+    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency', string="Parent")
 
 
 

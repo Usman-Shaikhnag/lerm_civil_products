@@ -166,11 +166,23 @@ class GgbsMechanical(models.Model):
     specific_gravity_name1 = fields.Char("Name",default="Density Test")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
-    selected_lab_ggbs1 = fields.Many2one(
+    selected_lab_specific_gravity1 = fields.Many2one(
         'ggbs.lab.line',
         string="Select Lab ID",
         domain="[('id', 'in', lab_ggbs_ids)]"
     )
+
+    is_lab_specific_gravity = fields.Boolean(
+        string="Lab Fine Selected",
+    )
+
+    @api.onchange('selected_lab_specific_gravity1')
+    def _onchange_selected_lab_specific_gravity1(self):
+        for rec in self:
+            if rec.selected_lab_specific_gravity1:
+                rec.is_lab_specific_gravity = True
+            else:
+                rec.is_lab_specific_gravity = False
 
     temp_specific = fields.Char("Temp.°C" )
     humidity_specific= fields.Char("Humidity %")
@@ -665,18 +677,18 @@ class GgbsMechanical(models.Model):
             # rec.submit_mode = True
 
 
-    #         is_lab_Fineness = fields.Boolean(
-    #       string="Lab Fine Selected",
-        
-    #       )
+    is_lab_Fineness = fields.Boolean(
+        string="Lab Fine Selected",
+    
+        )
 
-    # @api.onchange('selected_lab_ggbs2')
-    # def _onchange_selected_lab_ggbs2(self):
-    #     for rec in self:
-    #         if rec.selected_lab_ggbs2:
-    #             rec.is_lab_Fineness = True
-    #         else:
-    #            rec.is_lab_Fineness = False
+    @api.onchange('selected_lab_ggbs2')
+    def _onchange_selected_lab_ggbs2(self):
+        for rec in self:
+            if rec.selected_lab_ggbs2:
+                rec.is_lab_Fineness = True
+            else:
+               rec.is_lab_Fineness = False
 
 
     apparatus_constant_first = fields.Float(string="Apparatus Constant (K) ", digits=(12, 4))
@@ -786,7 +798,10 @@ class GgbsMechanical(models.Model):
         # import wdb; wdb.set_trace()
         current_user = self.env.user
         # 🔹 Only results assigned to current technician
-        technician_results = self.eln_ref.parameters_result.filtered(
+        if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            technician_results = self.eln_ref.parameters_result
+        else:
+            technician_results = self.eln_ref.parameters_result.filtered(
                 lambda r: r.technician == current_user
             )
 
@@ -852,20 +867,22 @@ class GgbsMechanical(models.Model):
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
-        current_user = self.env.user
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
+            current_user = self.env.user
 
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
+            # ✅ Discipline group can see all parameters
+            if current_user.has_group('lerm_civil.lerm_discipline_group'):
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # 🔒 Only parameters assigned to current technician
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
 

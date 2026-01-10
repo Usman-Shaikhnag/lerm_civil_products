@@ -395,6 +395,7 @@ class FineAggregate(models.Model):
                     else:
                         record.material_finer75_conformity = 'fail'
 
+
     material_finer75_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL')], string="NABL", compute="_compute_material_finer75_nabl", store=True)
@@ -1461,7 +1462,10 @@ class FineAggregate(models.Model):
 
         current_user = self.env.user
         # 🔹 Only results assigned to current technician
-        technician_results = self.eln_ref.parameters_result.filtered(
+        if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            technician_results = self.eln_ref.parameters_result
+        else:
+            technician_results = self.eln_ref.parameters_result.filtered(
                 lambda r: r.technician == current_user
             )
 
@@ -1470,10 +1474,12 @@ class FineAggregate(models.Model):
 
             # Sieve analysis
             if internal_id == "318d72a1-7188-4086-b132-62b50e63f5d1":
+                result.result_char = round(self.compacted_density, 2)
                 result.calculated = True
 
             # Specific gravity
             elif internal_id == "45875ght-7188-4086-b132-62b50e63f1245gt":
+                result.result_char = round(self.avg_specific_gravity, 2)
                 result.calculated = True
 
             # Water absorption
@@ -1494,6 +1500,7 @@ class FineAggregate(models.Model):
 
             # Finer than 75 micron
             elif internal_id == "988f5bf6-c865-453c-9cd6-993a5a59ad95":
+                result.result_char = round(self.avg_specific_gravity, 2)
                 result.calculated = True
 
             # Compacted density
@@ -1507,15 +1514,26 @@ class FineAggregate(models.Model):
 
             # Voids – compacted density
             elif internal_id == "a699d9fd-57f5-4044-97ea-2bea87bf9c44":
+                result.result_char = round(self.compacted_density, 2)
                 result.calculated = True
 
             # Voids – loose density
             elif internal_id == "8a944a9b-4d7d-44a3-a82c-6d8bacc07846":
+                result.result_char = round(self.loose_density, 2)
                 result.calculated = True
 
             # Soundness
             elif internal_id == "a0e7aaf3-68ff-4e75-830d-91ae04c98f5796":
+                result.result_char = round(self.total_percent_retained, 2)
                 result.calculated = True
+
+
+
+             # Soundness
+            # elif internal_id == "ff9f86ce-1f7a-4e3f-83b4-284a413745df":
+            #     result.result_char = round(self.quantitative_soundness_lines, 2)
+            #     result.calculated = True
+
 
 
         return {
@@ -1544,20 +1562,22 @@ class FineAggregate(models.Model):
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
-        current_user = self.env.user
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
+            current_user = self.env.user
 
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
+            # ✅ Discipline group can see all parameters
+            if current_user.has_group('lerm_civil.lerm_discipline_group'):
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # 🔒 Only parameters assigned to current technician
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
 

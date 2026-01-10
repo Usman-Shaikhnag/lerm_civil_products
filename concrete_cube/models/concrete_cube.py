@@ -143,22 +143,22 @@ class MechanicalConcreteCube(models.Model):
     testing_date_14days = fields.Date(string="Date of Testing",compute="_compute_testing_date_14days")
     status_14days = fields.Boolean("Done")
 
-    room_temperature14 = fields.Integer(string="Room Temperature (°C)" ,required=True)
-    relative_humidity14 = fields.Integer(string="Relative Humidity (%)" ,required=True)
+    room_temperature14 = fields.Char(string="Room Temperature (°C)" ,required=True)
+    relative_humidity14 = fields.Char(string="Relative Humidity (%)" ,required=True)
 
 
-    is_lab_casting_14 = fields.Boolean(
-        string="Lab Fine Selected",
+    # is_lab_casting_14 = fields.Boolean(
+    #     string="Lab Fine Selected",
         
-    )
+    # )
 
-    @api.onchange('selected_lab_cube1')
-    def _onchange_selected_lab_cube1(self):
-        for rec in self:
-            if rec.selected_lab_cube1:
-                rec.is_lab_casting_14 = True
-            else:
-                rec.is_lab_casting_14 = False
+    # @api.onchange('selected_lab_cube1')
+    # def _onchange_selected_lab_cube1(self):
+    #     for rec in self:
+    #         if rec.selected_lab_cube1:
+    #             rec.is_lab_casting_14 = True
+    #         else:
+    #             rec.is_lab_casting_14 = False
 
 
 
@@ -279,22 +279,22 @@ class MechanicalConcreteCube(models.Model):
     testing_date_28days = fields.Date(string="Date of Testing",compute="_compute_testing_date_28days")
     status_28days = fields.Boolean("Done")
 
-    room_temperature28 = fields.Integer(string="Room Temperature (°C)" ,required=True)
-    relative_humidity28 = fields.Integer(string="Relative Humidity (%)" ,required=True)
+    room_temperature28 = fields.Char(string="Room Temperature (°C)" ,required=True)
+    relative_humidity28 = fields.Char(string="Relative Humidity (%)" ,required=True)
 
 
-    is_lab_casting_28 = fields.Boolean(
-        string="Lab Fine Selected",
+    # is_lab_casting_28 = fields.Boolean(
+    #     string="Lab Fine Selected",
         
-    )
+    # )
 
-    @api.onchange('selected_lab_cube1')
-    def _onchange_selected_lab_cube1(self):
-        for rec in self:
-            if rec.selected_lab_cube1:
-                rec.is_lab_casting_28 = True
-            else:
-                rec.is_lab_casting_28 = False
+    # @api.onchange('selected_lab_cube1')
+    # def _onchange_selected_lab_cube1(self):
+    #     for rec in self:
+    #         if rec.selected_lab_cube1:
+    #             rec.is_lab_casting_28 = True
+    #         else:
+    #             rec.is_lab_casting_28 = False
 
 
                 
@@ -483,8 +483,6 @@ class MechanicalConcreteCube(models.Model):
     def action_calculate_avg_strength(self):
         for rec in self:
 
-            rec.calc_mode = True
-            rec.submit_mode = False
         
 
             lines = rec.child_lines.sorted(key=lambda l: l.sr_no)
@@ -515,7 +513,7 @@ class MechanicalConcreteCube(models.Model):
             
             # Jar Button Invisible ahe (False), tar automatic 'True' kara.
                 # else:
-                rec.submit_mode = True
+              
                 
 
     average_strength = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength", digits=(12,2))
@@ -820,7 +818,10 @@ class MechanicalConcreteCube(models.Model):
         # import wdb; wdb.set_trace()
         current_user = self.env.user
         # 🔹 Only results assigned to current technician
-        technician_results = self.eln_ref.parameters_result.filtered(
+        if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            technician_results = self.eln_ref.parameters_result
+        else:
+            technician_results = self.eln_ref.parameters_result.filtered(
                 lambda r: r.technician == current_user
             )
 
@@ -859,20 +860,22 @@ class MechanicalConcreteCube(models.Model):
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
-        current_user = self.env.user
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
+            current_user = self.env.user
 
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
+            # ✅ Discipline group can see all parameters
+            if current_user.has_group('lerm_civil.lerm_discipline_group'):
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # 🔒 Only parameters assigned to current technician
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
 
