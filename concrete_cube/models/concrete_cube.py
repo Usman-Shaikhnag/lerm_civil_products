@@ -39,6 +39,21 @@ class MechanicalConcreteCube(models.Model):
             else:
                 rec.lab_id = False
 
+
+    days_casting1 = fields.Char(
+        string='Days of Casting',
+        compute="_compute_days_casting",
+        store=True,
+    )
+
+    @api.depends('eln_ref')
+    def _compute_days_casting(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.days_casting1 = rec.eln_ref.days_casting
+            else:
+                rec.days_casting1 = False
+
     lab_cube_ids = fields.One2many(
         'cube.lab.line', 
         'parent_id', 
@@ -90,7 +105,21 @@ class MechanicalConcreteCube(models.Model):
 
     casting_date_7days = fields.Date(string="Date of Casting")
     testing_date_7days = fields.Date(string="Date of Testing",compute="_compute_testing_date_7days")
-    status_7days = fields.Boolean("Done")
+    status_7days = fields.Boolean("Done",store=True)
+
+    # show_7days = fields.Boolean(compute="_compute_visible_days")
+    # show_14days = fields.Boolean(compute="_compute_visible_days")
+    # show_28days = fields.Boolean(compute="_compute_visible_days")
+
+    # @api.depends('days_casting')
+    # def _compute_visible_days(self):
+    #     for rec in self:
+    #         days = int(rec.days_casting or 0)
+
+    #         rec.show_7days = days >= 7
+    #         rec.show_14days = days >= 14
+    #         rec.show_28days = days >= 28
+
 
 
     selected_lab_cube1 = fields.Many2one(
@@ -141,7 +170,7 @@ class MechanicalConcreteCube(models.Model):
 
     casting_date_14days = fields.Date(string="Date of Casting")
     testing_date_14days = fields.Date(string="Date of Testing",compute="_compute_testing_date_14days")
-    status_14days = fields.Boolean("Done")
+    status_14days = fields.Boolean("Done",store=True)
 
     room_temperature14 = fields.Char(string="Room Temperature (°C)" ,required=True)
     relative_humidity14 = fields.Char(string="Relative Humidity (%)" ,required=True)
@@ -277,7 +306,7 @@ class MechanicalConcreteCube(models.Model):
 
     casting_date_28days = fields.Date(string="Date of Casting")
     testing_date_28days = fields.Date(string="Date of Testing",compute="_compute_testing_date_28days")
-    status_28days = fields.Boolean("Done")
+    status_28days = fields.Boolean("Done",store=True)
 
     room_temperature28 = fields.Char(string="Room Temperature (°C)" ,required=True)
     relative_humidity28 = fields.Char(string="Relative Humidity (%)" ,required=True)
