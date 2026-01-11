@@ -1598,7 +1598,6 @@ class FlyaschNormalConsistency(models.Model):
                     record.compressive_strength_visible = True
 
 
-
                 
                 # lime reactivity
                 if sample.internal_id == '320147vbfd-c97d-4d83-a9f2-2eb112eae116':
@@ -1616,7 +1615,10 @@ class FlyaschNormalConsistency(models.Model):
         # import wdb; wdb.set_trace()
         current_user = self.env.user
         # 🔹 Only results assigned to current technician
-        technician_results = self.eln_ref.parameters_result.filtered(
+        if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            technician_results = self.eln_ref.parameters_result
+        else:
+            technician_results = self.eln_ref.parameters_result.filtered(
                 lambda r: r.technician == current_user
             )
 
@@ -1760,20 +1762,22 @@ class FlyaschNormalConsistency(models.Model):
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
-        current_user = self.env.user
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
+            current_user = self.env.user
 
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
+            # ✅ Discipline group can see all parameters
+            if current_user.has_group('lerm_civil.lerm_discipline_group'):
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # 🔒 Only parameters assigned to current technician
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
 

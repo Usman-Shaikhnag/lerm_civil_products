@@ -62,6 +62,7 @@ from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 
 
 
+
 class Soil(models.Model):
     _name = "mechanical.soil1"
     _inherit = "lerm.eln"
@@ -174,14 +175,9 @@ class Soil(models.Model):
     sieve_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible")
 
-    # @api.model
-    # def default_get(self, fields_list):
-    #     res = super().default_get(fields_list)
-    #     if self.env.context.get('force_sieve_visible'):
-    #         res['sieve_visible'] = True
-    #     return res
 
- 
+
+
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line1','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
 
     boulder = fields.Float(string="% Boulders ",compute="_compute_boulder")
@@ -599,6 +595,7 @@ class Soil(models.Model):
         buffer.seek(0)
 
         return base64.b64encode(buffer.read())
+    
 
 
 
@@ -1198,7 +1195,7 @@ class Soil(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')]).parameter_table
             # for material in materials:
-            #     if material.grade.id == record.grade.id:
+            # if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
@@ -5061,9 +5058,19 @@ class Soil(models.Model):
 
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            technician_results = self.eln_ref.parameters_result
+        else:
+            technician_results = self.eln_ref.parameters_result.filtered(
+                lambda r: r.technician == current_user
+            )
+
+        for result in technician_results:
             if result.parameter.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
                 result.result_char = round(self.liquid_limit,2)
+                result.calculated = True
                 if self.liquid_limit_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -5071,6 +5078,7 @@ class Soil(models.Model):
                 continue
             if result.parameter.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
                 result.result_char = round(self.plastic_limit,2)
+                result.calculated = True
                 if self.plastic_limit_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -5078,6 +5086,7 @@ class Soil(models.Model):
                 continue
             if result.parameter.internal_id == '1045789654-2ff0-4b81-aca1-0e07dab7cd87':
                 result.result_char = round(self.plasticity_index,2)
+                result.calculated = True
                 if self.plasticity_index_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -5085,6 +5094,7 @@ class Soil(models.Model):
                 continue
             if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
                 result.result_char = round(self.max_dry_density,2)
+                result.calculated = True
                 if self.heavy_table_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -5092,6 +5102,7 @@ class Soil(models.Model):
                 continue
             if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-142578bgtyu':
                 result.result_char = round(self.omc1,2)
+                result.calculated = True
                 if self.omc_table_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -5099,6 +5110,7 @@ class Soil(models.Model):
                 continue
             if result.parameter.internal_id == 'ght4125-ca64-44dd-b0ae-228aacf04998':
                 result.result_char = round(self.fsi,2)
+                result.calculated = True
                 if self.fsi_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -5106,6 +5118,7 @@ class Soil(models.Model):
                 continue
             if result.parameter.internal_id == '5487gt21-ca64-44dd-b0ae-228aacf04965':
                 result.result_char = round(self.permeability,2)
+                result.calculated = True
                 if self.permeability_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -5113,6 +5126,7 @@ class Soil(models.Model):
                 continue
             if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-145ght27854l':
                 result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
                 if self.area_triaxial_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -5146,15 +5160,26 @@ class Soil(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            current_user = self.env.user
+
+            # ✅ Discipline group can see all parameters
+            if current_user.has_group('lerm_civil.lerm_discipline_group'):
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # 🔒 Only parameters assigned to current technician
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 
@@ -8547,7 +8572,20 @@ class SoilLightHeavyCompactionLine(models.Model):
     _name = "soil.light.heavy.compaction.line"
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
-    serial_no = fields.Integer(string="Trial No",readonly=True, copy=False, default=1)
+    serial_no = fields.Integer(string="Trial No",readonly=True,compute="_compute_serial_no")
+
+    @api.depends('parent_id.soil_light_heavy_lines')
+    def _compute_serial_no(self):
+     for record in self:
+        parent = record.parent_id
+        if not parent:
+            continue
+
+        # IMPORTANT: DO NOT SORT BY ID
+        lines = parent.soil_light_heavy_lines
+
+        for idx, line in enumerate(lines, start=1):
+            line.serial_no = idx
 
     wet_soil_cylinder = fields.Float(string="Wet mass of soil + cylinder gm" , digits=(8,0) )
 
@@ -8624,22 +8662,22 @@ class SoilLightHeavyCompactionLine(models.Model):
 
     
 
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
+    # @api.model
+    # def create(self, vals):
+    #     # Set the serial_no based on the existing records for the same parent
+    #     if vals.get('parent_id'):
+    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+    #         if existing_records:
+    #             max_serial_no = max(existing_records.mapped('serial_no'))
+    #             vals['serial_no'] = max_serial_no + 1
 
-        return super(SoilLightHeavyCompactionLine, self).create(vals)
+    #     return super(SoilLightHeavyCompactionLine, self).create(vals)
 
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
+    # def _reorder_serial_numbers(self):
+    #     # Reorder the serial numbers based on the positions of the records in child_lines
+    #     records = self.sorted('id')
+    #     for index, record in enumerate(records):
+    #         record.serial_no = index + 1
 
 class UcsSoilLine(models.Model):
     _name = "ucs.soil.line"
