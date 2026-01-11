@@ -128,15 +128,15 @@
                         <!-- Environmental Conditions -->
 
                        
-                    <div >
+                    <div  >
                     <group style="white-space:nowrap;" >
                         <h1>
                             <field name="casting_7_name" readonly="1" nolabel="1"/>
-                           <!-- <field name="show_7days" invisible="1"/> -->
+                           <field name="show_7days" invisible="1"/>
                         </h1>
                     </group>
                      <group >
-                        <field name="status_7days"/>
+                        <field name="status_7days" invisible=" show_7days == False "/>
                         
                       
                     </group>
@@ -291,11 +291,11 @@
 
                
 
-                <div >
+                <div invisible="not show_14days " >
                     <group style="white-space:nowrap;" >
                         <h1>
                             <field name="casting_14_name" readonly="1" nolabel="1"/>
-                             <!-- <field name="show_14days" invisible="1"/> -->
+                             <field name="show_14days" invisible="1"/>
                         </h1>
                     </group>
                      <group >
@@ -430,11 +430,11 @@
 
 
 
-                    <div >
+                    <div  invisible="not show_28days ">
                     <group style="white-space:nowrap;" >
                         <h1>
                             <field name="casting_28_name" readonly="1" nolabel="1"/>
-                             <!-- <field name="show_28days" invisible="1"/> -->
+                             <field name="show_28days" invisible="1"/>
                         </h1>
                     </group>
                      <group >

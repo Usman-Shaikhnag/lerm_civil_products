@@ -107,18 +107,25 @@ class MechanicalConcreteCube(models.Model):
     testing_date_7days = fields.Date(string="Date of Testing",compute="_compute_testing_date_7days")
     status_7days = fields.Boolean("Done",store=True)
 
-    # show_7days = fields.Boolean(compute="_compute_visible_days")
-    # show_14days = fields.Boolean(compute="_compute_visible_days")
-    # show_28days = fields.Boolean(compute="_compute_visible_days")
+    show_7days = fields.Boolean(compute="_compute_visible_days")
+    show_14days = fields.Boolean(compute="_compute_visible_days")
+    show_28days = fields.Boolean(compute="_compute_visible_days")
 
-    # @api.depends('days_casting')
-    # def _compute_visible_days(self):
-    #     for rec in self:
-    #         days = int(rec.days_casting or 0)
+    @api.depends('days_casting')
+    def _compute_visible_days(self):
+        for rec in self:
+            days = int(rec.days_casting or 0)
 
-    #         rec.show_7days = days >= 7
-    #         rec.show_14days = days >= 14
-    #         rec.show_28days = days >= 28
+            # Create mode madhe (not saved yet) → always show
+            if not rec.id:
+                rec.show_7days = True
+                rec.show_14days = True
+                rec.show_28days = True
+            else:
+                rec.show_7days = days >= 7
+                rec.show_14days = days >= 14
+                rec.show_28days = days >= 28
+
 
 
 
@@ -216,17 +223,15 @@ class MechanicalConcreteCube(models.Model):
                 strengths = [l.compressive_strength14 for l in group if l.compressive_strength14 > 0]
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
 
-                # Set average for first line in each group
-                # if group:
-                #     group[0].average_strength14 = avg
-                # Reset average for other lines in group
-                # for j in range(1, len(group)):
-                #     group[j].average_strength14 = 0.0
+                if group:
+                    group[0].average_strength14 = avg
+                for j in range(1, len(group)):
+                    group[j].average_strength14 = 0.0
 
                
 
 
-                # rec.submit_mode = True
+              
 
     average_strength14 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength14", digits=(12,2))
 
@@ -352,14 +357,11 @@ class MechanicalConcreteCube(models.Model):
                 strengths = [l.compressive_strength28 for l in group if l.compressive_strength28 > 0]
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
 
-                # Set average for first line in each group
-                # if group:
-                #     group[0].average_strength28 = avg
-                # Reset average for other lines in group
-                # for j in range(1, len(group)):
-                #     group[j].average_strength28 = 0.0
+                if group:
+                    group[0].average_strength28 = avg
+                for j in range(1, len(group)):
+                    group[j].average_strength28 = 0.0
 
-                # rec.submit_mode = True
 
     average_strength28 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength28", digits=(12,2))
 
@@ -523,25 +525,12 @@ class MechanicalConcreteCube(models.Model):
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
                 
 
-                # Set average for first line in each group
-                # if group:
-                #     group[0].avg_compressive_strength = avg
-                # Reset average for other lines in group
-                # for j in range(1, len(group)):
-                #     group[j].avg_compressive_strength = 0.0
+                if group:
+                    group[0].avg_compressive_strength = avg
+                for j in range(1, len(group)):
+                    group[j].avg_compressive_strength = 0.0
 
 
-                   # Jar Button Visible ahe (True), tar Submit Mode 'False' ch theva.
-                # if rec. cube_visible_14:
-                #  rec.submit_mode = False
-
-
-                # elif rec. cube_visible_28:
-                #  rec.submit_mode = False
-            
-            
-            # Jar Button Invisible ahe (False), tar automatic 'True' kara.
-                # else:
               
                 
 
