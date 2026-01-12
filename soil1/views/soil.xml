@@ -1068,7 +1068,7 @@
                     </div>
 
                 
-
+                <div invisible="gsa_visible == False">
                 <field name="show_sieve" invisible="1"/>
                 <field name="gsa_child_lines" class="custom_table_borders">
                     <tree  string="GSA Lines" decoration-info="lab_no">
@@ -1323,6 +1323,8 @@
                         
                         </field>
 
+                </div>
+
                
 
 
@@ -1356,7 +1358,7 @@
                                    options="{'size': [900, 600]}"/> <field name="gsa_graph_filename" invisible="1"/>
                       </div>
 
-
+          <div invisible = "gsa_visible == False">
             <field name="gsa_particle_child_lines" class="custom_table_borders">
                 <tree editable="bottom">
                     <field name="bh_id"/>
@@ -1376,6 +1378,8 @@
             string="Calculate " 
             type="object" 
             class="oe_highlight"/>
+
+        </div>
 
                       
 
@@ -3007,6 +3011,8 @@
                         <h1 class="text-center">
                             <field name="direct_shear_name" readonly="1" nolabel="1"/>
                             <field name="direct_shear_visible" invisible="1"/>
+                           <field name="show_corrected_area" invisible="1"/>
+                            <field name="show_non_corrected_area" invisible="1"/>
                         </h1>
                     </div>
 
@@ -3165,9 +3171,13 @@
                                     <td><label for="area_type">Area Type</label></td>
                                     <td ><field name="area_type" /></td>
                                 </tr>
-                                 <tr>
+                                 <tr invisible = "show_non_corrected_area == False">
                                     <td><label for="non_corrected_area_shear">Non Corrected Area (cm2)</label></td>
                                     <td ><field name="non_corrected_area_shear" /></td>
+                                </tr>
+                                <tr invisible = "show_corrected_area == False">
+                                    <td><label for="corrected_area_shear">Non Corrected Area (cm2)</label></td>
+                                    <td ><field name="corrected_area_shear" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3197,15 +3207,22 @@
                         </field>
                     </div>
 
-                    <div invisible = "direct_shear_visible == False">
+                    <!-- <div invisible = "direct_shear_visible == False">
                                     <button string="Calculate" type="object" name="action_compute_shear" class="oe_highlight">
                                         <i class="fa fa-calculator"/> Calculate 
                                     </button>
-                                </div>  
+                                </div>   -->
                                 <group/>
+                      <div invisible = "direct_shear_visible == False">
+                    <button name="action_generate_shear_graph"
+                        string="Generate Shear Graph"
+                        type="object"
+                        class="btn-primary"/>
+                     </div>  
+
 
                     <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
-                        <field name="graph_image_shearc1" widget="image"  readonly="1"/>
+                        <field name="shear_graph_image" widget="image"  readonly="1"/>
                     </div>
                     <group/>
 

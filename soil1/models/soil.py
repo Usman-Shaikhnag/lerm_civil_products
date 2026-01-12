@@ -4522,99 +4522,149 @@ class Soil(models.Model):
 
     non_corrected_area_shear = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0))
 
-    def action_compute_shear(self):
-     for rec in self:
-        # 1) Compute horizontal readings for each line
-        for line in rec.direct_shear_ids:
-            if line.serial_no <= 1:
-                horiz = 0.0
-            else:
-                horiz = 25.0 * (line.serial_no - 1)
-            line.horizontal_read = horiz
+    corrected_area_shear = fields.Float(string="Corrected Area (cm2)" , digits=(8,0))
+
+    show_corrected_area = fields.Boolean(compute="_compute_area_visibility", store=False)
+    show_non_corrected_area = fields.Boolean(compute="_compute_area_visibility", store=False)
+
+    @api.depends('area_type')
+    def _compute_area_visibility(self):
+        for rec in self:
+            rec.show_corrected_area = rec.area_type == 'corrected'
+            rec.show_non_corrected_area = rec.area_type == 'non_corrected'
 
 
-    graph_image_shearc1 = fields.Binary("Direct shear Curve Graph", compute="_compute_graph_image_shearc1", store=True)
+    # def action_compute_shear(self):
+    #  for rec in self:
+    #     # 1) Compute horizontal readings for each line
+    #     for line in rec.direct_shear_ids:
+    #         if line.serial_no <= 1:
+    #             horiz = 0.0
+    #         else:
+    #             horiz = 25.0 * (line.serial_no - 1)
+    #         line.horizontal_read = horiz
 
-    @api.depends('direct_shear_ids.shear_stress', 'direct_shear_ids.horizontal_dispalacement')
-    def _compute_graph_image_shearc1(self):
-     for record in self:
-        if record.direct_shear_ids:
-            record.graph_image_shearc1 = record._generate_shear_c1_graph()
-        else:
-            record.graph_image_shearc1 = False
 
-    def _generate_shear_c1_graph(self):
-      """Generate EXACT graph matching image: thick green line, scatter, sharp peak, grid"""
-      self.ensure_one()
+    # graph_image_shearc1 = fields.Binary("Direct shear Curve Graph", compute="_compute_graph_image_shearc1", store=True)
+
+    # @api.depends('direct_shear_ids.shear_stress', 'direct_shear_ids.horizontal_dispalacement')
+    # def _compute_graph_image_shearc1(self):
+    #  for record in self:
+    #     if record.direct_shear_ids:
+    #         record.graph_image_shearc1 = record._generate_shear_c1_graph()
+    #     else:
+    #         record.graph_image_shearc1 = False
+
+    # def _generate_shear_c1_graph(self):
+    #   """Generate EXACT graph matching image: thick green line, scatter, sharp peak, grid"""
+    #   self.ensure_one()
     
-      # 1) Filter valid data (matches image data points)
-      lines = self.direct_shear_ids.filtered(
-        lambda l: l.shear_stress >= 0 and l.horizontal_dispalacement >= 0
-      )
-      if len(lines) < 4:  # Need peak + tail
-          return False
+    #   # 1) Filter valid data (matches image data points)
+    #   lines = self.direct_shear_ids.filtered(
+    #     lambda l: l.shear_stress >= 0 and l.horizontal_dispalacement >= 0
+    #   )
+    #   if len(lines) < 4:  # Need peak + tail
+    #       return False
     
-      strain_raw = np.array([l.horizontal_dispalacement for l in lines], dtype=float)
-      stress_raw = np.array([l.shear_stress for l in lines], dtype=float)
+    #   strain_raw = np.array([l.horizontal_dispalacement for l in lines], dtype=float)
+    #   stress_raw = np.array([l.shear_stress for l in lines], dtype=float)
     
-      # 2) Include origin
-      strain = np.concatenate([[0.0], strain_raw])
-      stress = np.concatenate([[0.0], stress_raw])
+    #   # 2) Include origin
+    #   strain = np.concatenate([[0.0], strain_raw])
+    #   stress = np.concatenate([[0.0], stress_raw])
     
-      # 3) Sort + find sharp peak (image shows abrupt drop at ~2.5%)
-      order = np.argsort(strain)
-      strain = strain[order]
-      stress = stress[order]
+    #   # 3) Sort + find sharp peak (image shows abrupt drop at ~2.5%)
+    #   order = np.argsort(strain)
+    #   strain = strain[order]
+    #   stress = stress[order]
     
-      peak_idx = np.argmax(stress)  # Sharp peak like image
-      strain_peak = strain[:peak_idx+1]
-      stress_peak = stress[:peak_idx+1]
+    #   peak_idx = np.argmax(stress)  # Sharp peak like image
+    #   strain_peak = strain[:peak_idx+1]
+    #   stress_peak = stress[:peak_idx+1]
     
-      # 4) Scale strain to ~7% max (image scale)
-      if strain_peak[-1] > 0:
-        scale_factor = 7.0 / strain_peak[-1]
-        strain_scaled = strain_peak * scale_factor
-      else:
-        strain_scaled = strain_peak
+    #   # 4) Scale strain to ~7% max (image scale)
+    #   if strain_peak[-1] > 0:
+    #     scale_factor = 7.0 / strain_peak[-1]
+    #     strain_scaled = strain_peak * scale_factor
+    #   else:
+    #     strain_scaled = strain_peak
     
-      # 5) Spline smoothing (sharp peak preserved)
-      x_unique, idx = np.unique(strain_scaled, return_index=True)
-      y_unique = stress_peak[idx]
-      if len(x_unique) < 3:
-          return False
+    #   # 5) Spline smoothing (sharp peak preserved)
+    #   x_unique, idx = np.unique(strain_scaled, return_index=True)
+    #   y_unique = stress_peak[idx]
+    #   if len(x_unique) < 3:
+    #       return False
     
-      cs = CubicSpline(x_unique, y_unique, bc_type=((1, 0.0), (1, 0.0)))  # Flat peak
-      x_smooth = np.linspace(0, max(8.0, x_unique.max()), 500)
-      y_smooth = cs(x_smooth)
+    #   cs = CubicSpline(x_unique, y_unique, bc_type=((1, 0.0), (1, 0.0)))  # Flat peak
+    #   x_smooth = np.linspace(0, max(8.0, x_unique.max()), 500)
+    #   y_smooth = cs(x_smooth)
     
-      # 6) EXACT plot matching image
-      fig, ax = plt.subplots(figsize=(8, 4.5), dpi=120, facecolor='white')
+    #   # 6) EXACT plot matching image
+    #   fig, ax = plt.subplots(figsize=(8, 4.5), dpi=120, facecolor='white')
     
-      # Thick green line + points (image style)
-      ax.plot(x_smooth, y_smooth, color='#2E8B57', linewidth=3.5, zorder=2)  # Forest green
-      ax.scatter(strain_scaled, stress_peak, color='#228B22', s=35, zorder=3, 
-               edgecolors='white', linewidth=0.8)
+    #   # Thick green line + points (image style)
+    #   ax.plot(x_smooth, y_smooth, color='#2E8B57', linewidth=3.5, zorder=2)  # Forest green
+    #   ax.scatter(strain_scaled, stress_peak, color='#228B22', s=35, zorder=3, 
+    #            edgecolors='white', linewidth=0.8)
     
-      # Axes matching image
-      ax.set_xlim(0, 8.0)
-      ax.set_xticks([0,1,2,3,4,5,6,7,8])
-      ax.set_xlabel('Strain (%)', fontsize=10, fontweight='bold', color='black')
+    #   # Axes matching image
+    #   ax.set_xlim(0, 8.0)
+    #   ax.set_xticks([0,1,2,3,4,5,6,7,8])
+    #   ax.set_xlabel('Strain (%)', fontsize=10, fontweight='bold', color='black')
     
-      ax.set_ylim(0, 0.30)
-      ax.set_yticks([0, 0.050, 0.100, 0.150, 0.200, 0.250, 0.300])
-      ax.set_ylabel('Shear stress (kg/sq.cm)', fontsize=10, fontweight='bold', color='black')
+    #   ax.set_ylim(0, 0.30)
+    #   ax.set_yticks([0, 0.050, 0.100, 0.150, 0.200, 0.250, 0.300])
+    #   ax.set_ylabel('Shear stress (kg/sq.cm)', fontsize=10, fontweight='bold', color='black')
       
-      ax.set_title('Direct shear Curve Graph', fontsize=12, fontweight='bold', pad=15)
-      ax.grid(True, alpha=0.4, linewidth=0.8)
+    #   ax.set_title('Direct shear Curve Graph', fontsize=12, fontweight='bold', pad=15)
+    #   ax.grid(True, alpha=0.4, linewidth=0.8)
     
-      # Tight layout matching image margins
-      fig.tight_layout(pad=1.2)
-      buf = BytesIO()
-      fig.savefig(buf, format='png', dpi=120, bbox_inches='tight', facecolor='white', 
-                edgecolor='none')
-      plt.close(fig)
-      buf.seek(0)
-      return base64.b64encode(buf.getvalue())
+    #   # Tight layout matching image margins
+    #   fig.tight_layout(pad=1.2)
+    #   buf = BytesIO()
+    #   fig.savefig(buf, format='png', dpi=120, bbox_inches='tight', facecolor='white', 
+    #             edgecolor='none')
+    #   plt.close(fig)
+    #   buf.seek(0)
+    #   return base64.b64encode(buf.getvalue())
+    shear_graph_image = fields.Binary("Shear Stress Graph")
+
+    def action_generate_shear_graph(self):
+        for rec in self:
+            strain_vals = []
+            shear_vals = []
+
+            for line in rec.direct_shear_ids:
+                if line.horizontal_dispalacement and line.shear_stress:
+                    strain_vals.append(line.horizontal_dispalacement)
+                    shear_vals.append(line.shear_stress)
+
+            if not strain_vals:
+                return
+
+            # Sort by strain
+            data = sorted(zip(strain_vals, shear_vals))
+            strain_vals, shear_vals = zip(*data)
+
+            fig, ax = plt.subplots(figsize=(8, 4), dpi=150)
+
+            # Line + Small Points
+            ax.plot(strain_vals, shear_vals, marker='o', markersize=2)
+
+            ax.set_xlabel("Strain")
+            ax.set_ylabel("Shear Stress")
+            ax.grid(True)
+
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png', bbox_inches='tight')
+            buffer.seek(0)
+            image_base64 = base64.b64encode(buffer.read())
+            buffer.close()
+            plt.close(fig)
+
+            rec.shear_graph_image = image_base64
+
+
     
 
 
@@ -8687,7 +8737,7 @@ class UcsSoilLine(models.Model):
 
     horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0) , compute="_compute_dial_reading" , store=True)
 
-    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,3) , compute="_compute_all" , store=True)
+    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,3), store=True)
 
     prove_ring_read = fields.Float(string="Proving ring reading" , digits=(8,1), store=True)
 
@@ -8783,85 +8833,122 @@ class DirectShearTestLine(models.Model):
 
     serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
 
-    horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0) , compute="_compute_all" , store=True)
+    horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0)  , store=True)
 
-    horizontal_dispalacement = fields.Float(string="Horizantal  Displacement (mm)" , digits=(8,2) , compute="_compute_all" , store=True)
+    horizontal_dispalacement = fields.Float(string="Horizantal  Displacement (mm)" , digits=(8,2) ,compute="_compute_horizontal_displacement" , store=True)
 
-    horizontal_dispalacement_inv = fields.Float(string="Horizantal  Displacement inv (mm)" , digits=(8,2) , compute="_compute_all" , store=True)
+    horizontal_dispalacement_inv = fields.Float(string="Horizantal  Displacement inv (mm)" , digits=(8,2)  , store=True)
 
-    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,2) , compute="_compute_all" , store=True)
+    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,2),compute="_compute_corrected_area"  , store=True)
 
-    non_corrected_area = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0) , compute="_compute_all" , store=True)
+    non_corrected_area = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0)  , store=True)
 
-    selected_area = fields.Float(string="Area Type", compute="_compute_all" , store=True)
+    selected_area = fields.Float(string="Area Type" , store=True)
 
     prove_ring_read = fields.Float(string="Proving ring reading" , digits=(8,0))
 
-    horizontal_shear = fields.Float(string="Horizantal Shear force (kg)" , digits=(8,3), compute="_compute_all" , store=True)
+    horizontal_shear = fields.Float(string="Horizantal Shear force (kg)" , digits=(8,3),compute="_compute_horizontal_shear" , store=True)
 
-    horizontal_shear_temp = fields.Float(string="Horizantal Shear force with temp Correction (kg)" , digits=(8,3), compute="_compute_all" , store=True)
+    horizontal_shear_temp = fields.Float(string="Horizantal Shear force with temp Correction (kg)" , digits=(8,3),compute="_compute_horizontal_shear_temp" , store=True)
 
-    shear_stress = fields.Float(string="Shear stress (kg/sq.cm)" , digits=(8,3), compute="_compute_all" , store=True)
+    shear_stress = fields.Float(string="Shear stress (kg/sq.cm)" , digits=(8,3),compute="_compute_shear_stress" , store=True)
 
 
-    @api.depends('serial_no', 'prove_ring_read','parent_id.shear_area','parent_id.shear_force_percent_change' , 'parent_id.non_corrected_area_shear')
-    def _compute_all(self):
-        """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
-        for rec in self:
-            # 1) Horizontal dial (0,25,50,...)
-            if rec.serial_no <= 1:
-                horiz = 0.0
-            else:
-                horiz = 25.0 * (rec.serial_no - 1)
-            rec.horizontal_read = horiz
+    # @api.depends('serial_no', 'prove_ring_read','parent_id.shear_area','parent_id.shear_force_percent_change' , 'parent_id.non_corrected_area_shear')
+    # def _compute_all(self):
+    #     """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
+    #     for rec in self:
+    #         # 1) Horizontal dial (0,25,50,...)
+    #         if rec.serial_no <= 1:
+    #             horiz = 0.0
+    #         else:
+    #             horiz = 25.0 * (rec.serial_no - 1)
+    #         rec.horizontal_read = horiz
 
-            # 2) horizontal_dispalacement = horiz * B$23
-            horizontal_dispalacement = horiz * 0.01
-            rec.horizontal_dispalacement = horizontal_dispalacement
+    #         # 2) horizontal_dispalacement = horiz * B$23
+    #         horizontal_dispalacement = horiz * 0.01
+    #         rec.horizontal_dispalacement = horizontal_dispalacement
 
-            # 2) horizontal_dispalacement inv
-            horizontal_dispalacement_inv = horizontal_dispalacement / 10
-            rec.horizontal_dispalacement_inv = horizontal_dispalacement_inv
+    #         # 2) horizontal_dispalacement inv
+    #         horizontal_dispalacement_inv = horizontal_dispalacement / 10
+    #         rec.horizontal_dispalacement_inv = horizontal_dispalacement_inv
 
-            # 3) Corrected Area 
-            if rec.serial_no == 1:
-             area = rec.parent_id.shear_area
-             rec.corrected_area = area * (1 - (horizontal_dispalacement/6))
+    #         # 3) Corrected Area 
+    #         if rec.serial_no == 1:
+    #          area = rec.parent_id.shear_area
+    #          rec.corrected_area = area * (1 - (horizontal_dispalacement/6))
         
-            # ROW 2+ : F2/(1+E3) → previous_corrected / (1 + current_inv)
-            elif rec.serial_no > 1:
-              prev_line = self.search([
-                ('parent_id', '=', rec.parent_id.id),
-                ('serial_no', '=', rec.serial_no - 1) ], limit=1)
-              if prev_line.corrected_area:
-                rec.corrected_area = prev_line.corrected_area * (1 - (horizontal_dispalacement_inv/6))
+    #         # ROW 2+ : F2/(1+E3) → previous_corrected / (1 + current_inv)
+    #         elif rec.serial_no > 1:
+    #           prev_line = self.search([
+    #             ('parent_id', '=', rec.parent_id.id),
+    #             ('serial_no', '=', rec.serial_no - 1) ], limit=1)
+    #           if prev_line.corrected_area:
+    #             rec.corrected_area = prev_line.corrected_area * (1 - (horizontal_dispalacement_inv/6))
 
-             # 4) Non Corrected Area 
-            non_corrected = rec.parent_id.non_corrected_area_shear
-            rec.non_corrected_area = non_corrected
+    #          # 4) Non Corrected Area 
+    #         non_corrected = rec.parent_id.non_corrected_area_shear
+    #         rec.non_corrected_area = non_corrected
 
-            if rec.parent_id.area_type == 'corrected':
-              rec.selected_area = rec.corrected_area
+    #         if rec.parent_id.area_type == 'corrected':
+    #           rec.selected_area = rec.corrected_area
+    #         else:
+    #           rec.selected_area = non_corrected 
+
+
+    #         # 5) HORIZONTAL SHEAR FORCE (kg) 
+    #         if rec.prove_ring_read:
+    #            rec.horizontal_shear = ((rec.prove_ring_read * 0.8555) + 9.6658) / 9.81
+    #         else:
+    #             rec.horizontal_shear = 0.0
+
+    #         # 6) HORIZONTAL SHEAR FORCE WITH TEMP CORRECTION (kg)
+    #         shear_force_parent_change = rec.parent_id.shear_force_percent_change or 0.0
+    #         if rec.horizontal_shear:
+    #            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * shear_force_parent_change)
+    #         else:
+    #            rec.horizontal_shear_temp = 0.0
+
+    #         # 7) SHEAR STRESS (kg/cm²) = temp_force / corrected_area
+    #         if rec.horizontal_shear_temp and rec.corrected_area:
+    #           rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area  # Final column ✓
+
+    @api.depends('horizontal_read')
+    def _compute_horizontal_displacement(self):
+        for record in self:
+            record.horizontal_dispalacement = (record.horizontal_read or 0.0) * 0.01
+
+    @api.depends('horizontal_dispalacement', 'parent_id.corrected_area_shear')
+    def _compute_corrected_area(self):
+        for rec in self:
+            if rec.parent_id and rec.parent_id.corrected_area_shear:
+                rec.corrected_area = rec.parent_id.corrected_area_shear * (
+                    1 - ((rec.horizontal_dispalacement or 0.0) / 10) / 6
+                )
             else:
-              rec.selected_area = non_corrected 
+                rec.corrected_area = 0.0
 
+    @api.depends('prove_ring_read')
+    def _compute_horizontal_shear(self):
+        for rec in self:
+            rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
 
-            # 5) HORIZONTAL SHEAR FORCE (kg) 
-            if rec.prove_ring_read:
-               rec.horizontal_shear = ((rec.prove_ring_read * 0.8555) + 9.6658) / 9.81
+    @api.depends('horizontal_shear', 'parent_id.shear_force_percent_change')
+    def _compute_horizontal_shear_temp(self):
+        for rec in self:
+            percent = rec.parent_id.shear_force_percent_change or 0.0
+            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+
+    @api.depends('horizontal_shear_temp', 'corrected_area')
+    def _compute_shear_stress(self):
+        for rec in self:
+            if rec.corrected_area:
+                rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
             else:
-                rec.horizontal_shear = 0.0
+                rec.shear_stress = 0.0
 
-            # 6) HORIZONTAL SHEAR FORCE WITH TEMP CORRECTION (kg)
-            shear_force_parent_change = rec.parent_id.shear_force_percent_change or 0.0
-            if rec.horizontal_shear:
-               rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * shear_force_parent_change)
-            else:
-               rec.horizontal_shear_temp = 0.0
 
-            # 7) SHEAR STRESS (kg/cm²) = temp_force / corrected_area
-            if rec.horizontal_shear_temp and rec.corrected_area:
-              rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area  # Final column ✓
+
 
            
         

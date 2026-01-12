@@ -179,8 +179,8 @@ class MechanicalConcreteCube(models.Model):
     testing_date_14days = fields.Date(string="Date of Testing",compute="_compute_testing_date_14days")
     status_14days = fields.Boolean("Done",store=True)
 
-    room_temperature14 = fields.Char(string="Room Temperature (°C)" ,required=True)
-    relative_humidity14 = fields.Char(string="Relative Humidity (%)" ,required=True)
+    room_temperature14 = fields.Char(string="Room Temperature (°C)" )
+    relative_humidity14 = fields.Char(string="Relative Humidity (%)" )
 
 
     # is_lab_casting_14 = fields.Boolean(
@@ -313,8 +313,8 @@ class MechanicalConcreteCube(models.Model):
     testing_date_28days = fields.Date(string="Date of Testing",compute="_compute_testing_date_28days")
     status_28days = fields.Boolean("Done",store=True)
 
-    room_temperature28 = fields.Char(string="Room Temperature (°C)" ,required=True)
-    relative_humidity28 = fields.Char(string="Relative Humidity (%)" ,required=True)
+    room_temperature28 = fields.Char(string="Room Temperature (°C)" )
+    relative_humidity28 = fields.Char(string="Relative Humidity (%)" )
 
 
     # is_lab_casting_28 = fields.Boolean(
