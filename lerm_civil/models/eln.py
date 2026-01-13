@@ -406,6 +406,7 @@ class ELN(models.Model):
             if self.start_date < self.srf_date:
                 raise ValidationError("Start Date cannot be less than SRF Date")
 
+        # import wdb;wdb.set_trace()
         for result in self.parameters_result:
             if not result.calculated:
                 raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
