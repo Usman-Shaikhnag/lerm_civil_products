@@ -135,13 +135,10 @@
                             </table>
                     </div>
 
-                   <div t-if="data.status_7days and (data.average_strength_nabl == 'pass' and nabl or (data.average_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                   <div t-if="data.show_7days">
                 
                        <div style="text-align: center;" >
-                                
-
-                                    <span t-field="data.casting_7_name"/>
-                                
+                       <span t-field="data.casting_7_name"/>        
                 
                     </div>
 
@@ -183,7 +180,7 @@
                      <t t-set="line_count" t-value="0"/>
 
 
-                    <tr  t-if="data.status_7days and (data.average_strength_nabl == 'pass' and nabl or (data.average_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)" t-foreach="data.child_lines" t-as="r" style="text-align: center;">
+                    <tr  t-foreach="data.child_lines" t-as="r" style="text-align: center;">
                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['sr_no']"/></td>
                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['id_mark']"/></td>
                     <td style="border: 1px solid black; padding: 6px;"><span t-esc="r['dt_of_casting']"/></td>
@@ -221,6 +218,7 @@
 
 
 
+
 <!-- <tr>
     <td colspan="11"
         style="text-align:right; 
@@ -232,26 +230,18 @@
 
 
 
-<t t-if="data.child_lines14day">
-    <tr>
-        <td colspan="11"
-            style="text-align:right; padding-right:160px;">
-            14 days
-        </td>
-    </tr>
-
-    <tbody>
-        <t t-set="line_count" t-value="0"/>
-        <tr t-foreach="data.child_lines14day" t-as="r" style="text-align: center;">
-            <!-- your existing 14‑day columns -->
-        </tr>
-    </tbody>
-</t>
+                 
+            
 
 
+      
 
-
-
+            <t t-if="data.status_14days">
+                <tr>
+                    <td colspan="11" style="text-align:right; padding-right:160px;">
+                        14 Days
+                    </td>
+                </tr>
 
                 <tbody>
                      <t t-set="line_count" t-value="0"/>
@@ -290,37 +280,64 @@
 
                 </tbody>
 
+                  </t>
+
+              <t t-else="data.status_14days">
+            <tr>
+                <td colspan="15" style="text-align:center; font-weight:bold; padding:10px;">
+                    14 Days Awaited
+                </td>
+            </tr>
+        </t>
 
 
-
-<!-- <tr>
-    <td colspan="11"
-        style="text-align:right; 
-               padding-right: 160px;">
-        28 days
-    </td>
-</tr> -->
-
-
-<t t-if="data.child_lines14day">
-    <tr>
-        <td colspan="11"
-            style="text-align:right; padding-right:160px;">
-            28 days
-        </td>
-    </tr>
-
-    <tbody>
-        <t t-set="line_count" t-value="0"/>
-        <tr t-foreach="data.child_lines14day" t-as="r" style="text-align: center;">
-            <!-- your existing 28‑day columns -->
-        </tr>
-    </tbody>
-</t>
+                
+           
+            
 
 
 
 
+                        <!-- <t t-if="data.status_28days">
+                            <tr>
+                                <td colspan="11" style="text-align:right; padding-right:160px;">
+                                    28 Days
+                                </td>
+                            </tr>
+
+                            <tbody>
+                                <t t-set="line_count" t-value="0"/>
+                                <tr t-foreach="data.child_lines28day" t-as="r" style="text-align: center;">
+                                </tr>
+                            </tbody>
+                        </t>
+
+                        <t t-else="data.status_28days">
+                            <tr>
+                                <td colspan="15" style="text-align:center; font-weight:bold; padding:10px;">
+                                    28 Days Awaited
+                                </td>
+                            </tr>
+                        </t> -->
+
+
+
+
+
+
+               
+
+
+
+
+
+                <t t-if="data.status_28days">
+
+                <tr>
+                    <td colspan="11" style="text-align:right; padding-right:160px;">
+                        28 Days
+                    </td>
+                </tr>
 
                     <tbody> 
                      <t t-set="line_count" t-value="0"/>
@@ -357,6 +374,16 @@
 
 
                 </tbody>
+
+                </t>
+
+            <t t-elif="data.show_28days">
+                <tr>
+                    <td colspan="15" style="text-align:center; font-weight:bold; padding:10px;">
+                        28 Days Awaited
+                    </td>
+                </tr>
+            </t>
             </table>            
             </div>
 			
@@ -493,4 +520,6 @@
             </t>
         </t>
     </template>
+
+
 </odoo>

@@ -39,6 +39,21 @@ class MechanicalConcreteCube(models.Model):
             else:
                 rec.lab_id = False
 
+
+    days_casting1 = fields.Char(
+        string='Days of Casting',
+        compute="_compute_days_casting",
+        store=True,
+    )
+
+    @api.depends('eln_ref')
+    def _compute_days_casting(self):
+        for rec in self:
+            if rec.eln_ref:
+                rec.days_casting1 = rec.eln_ref.days_casting
+            else:
+                rec.days_casting1 = False
+
     lab_cube_ids = fields.One2many(
         'cube.lab.line', 
         'parent_id', 
@@ -90,7 +105,28 @@ class MechanicalConcreteCube(models.Model):
 
     casting_date_7days = fields.Date(string="Date of Casting")
     testing_date_7days = fields.Date(string="Date of Testing",compute="_compute_testing_date_7days")
-    status_7days = fields.Boolean("Done")
+    status_7days = fields.Boolean("Done",store=True)
+
+    show_7days = fields.Boolean(compute="_compute_visible_days")
+    show_14days = fields.Boolean(compute="_compute_visible_days")
+    show_28days = fields.Boolean(compute="_compute_visible_days")
+
+    @api.depends('days_casting')
+    def _compute_visible_days(self):
+        for rec in self:
+            days = int(rec.days_casting or 0)
+
+            # Create mode madhe (not saved yet) → always show
+            if not rec.id:
+                rec.show_7days = True
+                rec.show_14days = True
+                rec.show_28days = True
+            else:
+                rec.show_7days = days >= 7
+                rec.show_14days = days >= 14
+                rec.show_28days = days >= 28
+
+
 
 
     selected_lab_cube1 = fields.Many2one(
@@ -141,10 +177,10 @@ class MechanicalConcreteCube(models.Model):
 
     casting_date_14days = fields.Date(string="Date of Casting")
     testing_date_14days = fields.Date(string="Date of Testing",compute="_compute_testing_date_14days")
-    status_14days = fields.Boolean("Done")
+    status_14days = fields.Boolean("Done",store=True)
 
-    room_temperature14 = fields.Char(string="Room Temperature (°C)" ,required=True)
-    relative_humidity14 = fields.Char(string="Relative Humidity (%)" ,required=True)
+    room_temperature14 = fields.Char(string="Room Temperature (°C)" )
+    relative_humidity14 = fields.Char(string="Relative Humidity (%)" )
 
 
     # is_lab_casting_14 = fields.Boolean(
@@ -187,17 +223,15 @@ class MechanicalConcreteCube(models.Model):
                 strengths = [l.compressive_strength14 for l in group if l.compressive_strength14 > 0]
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
 
-                # Set average for first line in each group
-                # if group:
-                #     group[0].average_strength14 = avg
-                # Reset average for other lines in group
-                # for j in range(1, len(group)):
-                #     group[j].average_strength14 = 0.0
+                if group:
+                    group[0].average_strength14 = avg
+                for j in range(1, len(group)):
+                    group[j].average_strength14 = 0.0
 
                
 
 
-                # rec.submit_mode = True
+              
 
     average_strength14 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength14", digits=(12,2))
 
@@ -277,10 +311,10 @@ class MechanicalConcreteCube(models.Model):
 
     casting_date_28days = fields.Date(string="Date of Casting")
     testing_date_28days = fields.Date(string="Date of Testing",compute="_compute_testing_date_28days")
-    status_28days = fields.Boolean("Done")
+    status_28days = fields.Boolean("Done",store=True)
 
-    room_temperature28 = fields.Char(string="Room Temperature (°C)" ,required=True)
-    relative_humidity28 = fields.Char(string="Relative Humidity (%)" ,required=True)
+    room_temperature28 = fields.Char(string="Room Temperature (°C)" )
+    relative_humidity28 = fields.Char(string="Relative Humidity (%)" )
 
 
     # is_lab_casting_28 = fields.Boolean(
@@ -323,14 +357,11 @@ class MechanicalConcreteCube(models.Model):
                 strengths = [l.compressive_strength28 for l in group if l.compressive_strength28 > 0]
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
 
-                # Set average for first line in each group
-                # if group:
-                #     group[0].average_strength28 = avg
-                # Reset average for other lines in group
-                # for j in range(1, len(group)):
-                #     group[j].average_strength28 = 0.0
+                if group:
+                    group[0].average_strength28 = avg
+                for j in range(1, len(group)):
+                    group[j].average_strength28 = 0.0
 
-                # rec.submit_mode = True
 
     average_strength28 = fields.Float(string="Average Compressive Strength in N/mm2", compute="_compute_average_strength28", digits=(12,2))
 
@@ -494,25 +525,12 @@ class MechanicalConcreteCube(models.Model):
                 avg = sum(strengths) / len(strengths) if strengths else 0.0
                 
 
-                # Set average for first line in each group
-                # if group:
-                #     group[0].avg_compressive_strength = avg
-                # Reset average for other lines in group
-                # for j in range(1, len(group)):
-                #     group[j].avg_compressive_strength = 0.0
+                if group:
+                    group[0].avg_compressive_strength = avg
+                for j in range(1, len(group)):
+                    group[j].avg_compressive_strength = 0.0
 
 
-                   # Jar Button Visible ahe (True), tar Submit Mode 'False' ch theva.
-                # if rec. cube_visible_14:
-                #  rec.submit_mode = False
-
-
-                # elif rec. cube_visible_28:
-                #  rec.submit_mode = False
-            
-            
-            # Jar Button Invisible ahe (False), tar automatic 'True' kara.
-                # else:
               
                 
 
@@ -818,7 +836,10 @@ class MechanicalConcreteCube(models.Model):
         # import wdb; wdb.set_trace()
         current_user = self.env.user
         # 🔹 Only results assigned to current technician
-        technician_results = self.eln_ref.parameters_result.filtered(
+        if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            technician_results = self.eln_ref.parameters_result
+        else:
+            technician_results = self.eln_ref.parameters_result.filtered(
                 lambda r: r.technician == current_user
             )
 
@@ -857,20 +878,22 @@ class MechanicalConcreteCube(models.Model):
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
-        current_user = self.env.user
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
+            current_user = self.env.user
 
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
+            # ✅ Discipline group can see all parameters
+            if current_user.has_group('lerm_civil.lerm_discipline_group'):
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # 🔒 Only parameters assigned to current technician
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
 

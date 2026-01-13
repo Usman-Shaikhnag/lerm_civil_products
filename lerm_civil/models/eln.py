@@ -136,10 +136,17 @@ class ELN(models.Model):
 
     lab_id = fields.Char(
         string="Lab ID",
-        related='sample_id.lab_id',  # हे sample_id मधील lab_id कॉपी करेल
-        store=True,                  # डेटाबेसमध्ये स्टोअर करण्यासाठी
+        related='sample_id.lab_id',  
+        store=True,               
         readonly=True,
         tracking=True
+    )
+
+    days_casting = fields.Selection(
+        related='sample_id.days_casting',
+        string='Days of Casting',
+        store=True,
+        readonly=True
     )
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")

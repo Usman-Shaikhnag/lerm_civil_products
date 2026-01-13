@@ -424,6 +424,8 @@ class MechanicalBricksBurntClay(models.Model):
                 rec.is_lab_dimension = False
 
 
+
+
     @api.depends('length1','length2','length3','width1','width2','width3','height1','height2','height3')
     def _compute_average(self):
         for record in self:
@@ -707,7 +709,10 @@ class MechanicalBricksBurntClay(models.Model):
         # import wdb; wdb.set_trace()
         current_user = self.env.user
             # 🔹 Only results assigned to current technician
-        technician_results = self.eln_ref.parameters_result.filtered(
+        if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            technician_results = self.eln_ref.parameters_result
+        else:
+            technician_results = self.eln_ref.parameters_result.filtered(
                 lambda r: r.technician == current_user
             )
 
@@ -766,7 +771,7 @@ class MechanicalBricksBurntClay(models.Model):
 
              #  Efforescence
             if result.parameter.internal_id == '3e9d3877-e657-4409-8e7c-12c066f3cf26':
-                result.result_char = (self.visual_observation_1).upper()
+                result.result_char = (self.visual_observation_1)
                 result.calculated = True
                 # if self.avg_compressive_strength_nabl == 'pass':
                 #     result.nabl_status = 'nabl'
@@ -799,20 +804,22 @@ class MechanicalBricksBurntClay(models.Model):
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
-        current_user = self.env.user
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
+            current_user = self.env.user
 
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
+            # ✅ Discipline group can see all parameters
+            if current_user.has_group('lerm_civil.lerm_discipline_group'):
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # 🔒 Only parameters assigned to current technician
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
 
