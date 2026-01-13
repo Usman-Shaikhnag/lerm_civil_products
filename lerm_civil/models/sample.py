@@ -179,6 +179,20 @@ class LermSampleForm(models.Model):
     display_report_portal = fields.Boolean("Display on Portal")
     customer_portal_sample = fields.Many2one('customer.sample.line',string="Customer Portal Sample", readonly=True)
 
+    def unlink(self):
+        for rec in self:
+            if rec.srf_id:
+                tech_name = rec.technicians.name if rec.technicians else "Not Assigned"
+
+                rec.srf_id.message_post(
+                    body=f"""
+                    Sample Deleted - 
+                    KES No: {rec.kes_no} - 
+                    Technician: {tech_name}
+                    """
+                )
+        return super(LermSampleForm, self).unlink()
+
     @api.depends('quantity_received', 'quantity_consumed','quantity_discarded')
     def compute_quantity_balance(self):
         for rec in self:
