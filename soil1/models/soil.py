@@ -3519,7 +3519,7 @@ class Soil(models.Model):
 
     permeability_ids = fields.One2many("soil.permeability.test.line", "parent_id", string="DETERMINE PERMEABILITY OF SOIL - BY FALLING HEAD")
 
-    avg_permeability = fields.Float("Average Permeability Avg KT :", digits=(16, 9), store=True)
+    avg_permeability = fields.Float("Average Permeability Avg KT :", digits=(16, 9), store=True,readonly=True)
 
     avg_permeability_27 = fields.Float("Average Permeability K27 :",compute="_compute_avg_permeability", digits=(16, 9), store=True)
 
@@ -3855,64 +3855,198 @@ class Soil(models.Model):
         else:
             record.graph_image_light_heavy = False
 
+    # def generate_compaction_curve(self):
+    #  self.ensure_one()
+    
+    #  lines = self.soil_light_heavy_lines.filtered(lambda l: l.moisture_content and l.dry_density)
+    #  if len(lines) < 2:
+    #     return False
+    
+    #  x_vals = np.array(lines.mapped('moisture_content'), dtype=float)
+    #  y_vals = np.array(lines.mapped('dry_density'), dtype=float)
+    
+    #  max_idx = np.argmax(y_vals)
+    #  max_density = y_vals[max_idx]
+    #  omc = x_vals[max_idx]
+     
+    #  from scipy.interpolate import CubicSpline
+    #  cs = CubicSpline(x_vals, y_vals, bc_type='natural')
+    #  x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
+    #  y_smooth = cs(x_smooth)
+    
+    #  import matplotlib
+    #  matplotlib.use('Agg')
+    #  import matplotlib.pyplot as plt
+    
+    #  fig, ax = plt.subplots(figsize=(10, 5), dpi=110)
+    
+    #  # Test data curve
+    #  ax.plot(x_smooth, y_smooth, color='green', linewidth=2, label='Test Data')
+    #  ax.scatter(x_vals, y_vals, color='green', s=80, zorder=5, label='Test Points')
+    
+    #  # Maximum density line
+    #  ax.axhline(y=max_density, color='blue', linestyle='-', linewidth=2.5, label=f'Max Dry Density: {max_density:.2f}')
+    #  ax.axvline(x=omc, color='red', linestyle='--', alpha=0.7, linewidth=2, label=f'OMC: {omc:.1f}%')
+    
+    #  # Data point labels
+    #  for x, y in zip(x_vals, y_vals):
+    #     ax.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+    #                xytext=(0, 10), ha='center', fontsize=9, fontweight='bold')
+    
+    #  ax.set_xlim(0, 40)
+    
+    #  # FIXED Y-AXIS: Custom ticks matching your screenshot [file:40]
+    #  ax.set_ylim(0, 2.0)
+    #  ax.set_yticks([0.0, 0.25, 0.50, 0.75, 1.00, 1.20, 1.40, 1.60 , 1.80,  2.00])
+    #  ax.set_yticklabels(['0.00', '0.25', '0.50', '0.75', '1.00', '1.20', '1.40', '1.60' , '1.80', ' 2.00'])
+    
+    #  ax.set_xlabel('Moisture Content (%)', fontsize=12, fontweight='bold')
+    #  ax.set_ylabel('Dry Density (g/cm³)', fontsize=12, fontweight='bold')
+    #  ax.set_title('Moisture Density Test Results\n', fontsize=14, fontweight='bold', pad=20)
+    
+    #  ax.grid(True, alpha=0.3)
+    #  ax.legend(loc='upper left', fontsize=8, framealpha=0.95, bbox_to_anchor=(0.02, 0.98))
+    
+    #  buf = BytesIO()
+    #  fig.tight_layout()
+    #  fig.savefig(buf, format='png', dpi=100, bbox_inches='tight',  facecolor='white')
+    #  plt.close(fig)
+    #  buf.seek(0)
+    #  return base64.b64encode(buf.read())
+
+
     def generate_compaction_curve(self):
      self.ensure_one()
-    
-     lines = self.soil_light_heavy_lines.filtered(lambda l: l.moisture_content and l.dry_density)
-     if len(lines) < 2:
+
+     lines = self.soil_light_heavy_lines.filtered(
+        lambda l: l.moisture_content and l.dry_density
+    )
+     if len(lines) < 3:
         return False
-    
-     x_vals = np.array(lines.mapped('moisture_content'), dtype=float)
-     y_vals = np.array(lines.mapped('dry_density'), dtype=float)
-    
+
+    # Sort & remove duplicates
+     points = sorted(
+        {(float(l.moisture_content), float(l.dry_density)) for l in lines},
+        key=lambda p: p[0]
+     )
+     if len(points) < 3:
+        return False
+
+     x_vals = np.array([p[0] for p in points])
+     y_vals = np.array([p[1] for p in points])
+
+     # Maximum Dry Density & OMC
      max_idx = np.argmax(y_vals)
      max_density = y_vals[max_idx]
      omc = x_vals[max_idx]
-     
-     from scipy.interpolate import CubicSpline
-     cs = CubicSpline(x_vals, y_vals, bc_type='natural')
+
+    #  from scipy.interpolate import CubicSpline
+    #  cs = CubicSpline(x_vals, y_vals, bc_type='natural')
+    #  x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
+    #  y_smooth = cs(x_smooth)
+
+    # ---- Quadratic Polynomial Fit (EXACT Excel behavior) ----
+     coeffs = np.polyfit(x_vals, y_vals, 2)
+     poly = np.poly1d(coeffs)
+
      x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
-     y_smooth = cs(x_smooth)
-    
+     y_smooth = poly(x_smooth)
+
+# ---- TRUE Maximum from Polynomial ----
+     a, b, c = coeffs
+     omc = -b / (2 * a)
+     max_density = poly(omc)
+
+
      import matplotlib
      matplotlib.use('Agg')
      import matplotlib.pyplot as plt
-    
+     from io import BytesIO
+     import base64
+
      fig, ax = plt.subplots(figsize=(10, 5), dpi=110)
-    
-     # Test data curve
-     ax.plot(x_smooth, y_smooth, color='green', linewidth=2, label='Test Data')
-     ax.scatter(x_vals, y_vals, color='green', s=80, zorder=5, label='Test Points')
-    
-     # Maximum density line
-     ax.axhline(y=max_density, color='blue', linestyle='-', linewidth=2.5, label=f'Max Dry Density: {max_density:.2f}')
-     ax.axvline(x=omc, color='red', linestyle='--', alpha=0.7, linewidth=2, label=f'OMC: {omc:.1f}%')
-    
-     # Data point labels
-     for x, y in zip(x_vals, y_vals):
-        ax.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
-                   xytext=(0, 10), ha='center', fontsize=9, fontweight='bold')
-    
-     ax.set_xlim(0, 40)
-    
-     # FIXED Y-AXIS: Custom ticks matching your screenshot [file:40]
-     ax.set_ylim(0, 2.0)
-     ax.set_yticks([0.0, 0.25, 0.50, 0.75, 1.00, 1.20, 1.40, 1.60 , 1.80,  2.00])
-     ax.set_yticklabels(['0.00', '0.25', '0.50', '0.75', '1.00', '1.20', '1.40', '1.60' , '1.80', ' 2.00'])
-    
-     ax.set_xlabel('Moisture Content (%)', fontsize=12, fontweight='bold')
-     ax.set_ylabel('Dry Density (g/cm³)', fontsize=12, fontweight='bold')
-     ax.set_title('Moisture Density Test Results\n', fontsize=14, fontweight='bold', pad=20)
-    
-     ax.grid(True, alpha=0.3)
-     ax.legend(loc='upper left', fontsize=8, framealpha=0.95, bbox_to_anchor=(0.02, 0.98))
-    
+
+    # ---- Smooth Curve ----
+     ax.plot(
+        x_smooth, y_smooth,
+        color='#0b2c5d', linewidth=2
+     )
+
+    # ---- Square Data Points ----
+     ax.scatter(
+        x_vals, y_vals,
+        marker='s', s=60,
+        facecolor='#4f81bd',
+        edgecolor='#1f4e79',
+        zorder=5
+    )
+
+    # ---- Yellow Max Density Line ----
+     ax.axhline(
+        y=max_density,
+        color='#f1c232',
+        linewidth=2
+    )
+
+    # ---- Green OMC Line ----
+     ax.axvline(
+        x=omc,
+        color='#00a651',
+        linewidth=2
+    )
+
+    # ---- Red Peak Marker ----
+     ax.scatter(
+        [omc], [max_density],
+        marker='^',
+        s=130,
+        color='red',
+        zorder=6
+    )
+
+    # ---- Axis Limits & Ticks (EXACT LIKE IMAGE) ----
+     ax.set_xlim(5, 40)
+     ax.set_ylim(0.8, 1.7)
+
+     ax.set_xticks([5, 10, 15, 20, 25, 30, 35, 40])
+     ax.set_yticks([0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7])
+
+    # ---- Labels ----
+     ax.set_xlabel('Moisture Content (%)', fontsize=11, fontweight='bold')
+     ax.set_ylabel('Dry Density (gm/cc)', fontsize=11, fontweight='bold')
+
+    # ---- Title ----
+     ax.set_title(
+        'Moisture Density Test Results',
+        fontsize=13,
+        fontweight='bold',
+        pad=15
+    )
+
+    # ---- No Grid (as per image) ----
+     ax.grid(False)
+
+    # ---- Thick Black Border ----
+     for spine in ax.spines.values():
+        spine.set_linewidth(2)
+        spine.set_color('black')
+
+    # ---- Export ----
      buf = BytesIO()
      fig.tight_layout()
-     fig.savefig(buf, format='png', dpi=100, bbox_inches='tight',  facecolor='white')
+     fig.savefig(
+        buf,
+        format='png',
+        dpi=110,
+        bbox_inches='tight',
+        facecolor='white'
+    )
      plt.close(fig)
      buf.seek(0)
+
      return base64.b64encode(buf.read())
+
+
     
 
 
