@@ -160,215 +160,7 @@
                     </div>
 
 
-<<<<<<< HEAD
-
-
-
-                     <!-- Heavy Compaction MDD -->
-                    <div invisible = "heavy_visible == False">
-                        <h1 class="text-center">
-                            <field name="heavy_name" readonly="1" nolabel="1"/>
-                            <field name="heavy_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    
-                   
-                 
-                    <div invisible = "heavy_visible == False">
-                        <field name="heavy_table">
-                            <tree editable="bottom" class="custom_table_borders">
-                                <field name="serial_no"/>
-                                <field name="amount_soil"/>
-                                <field name="amount_water"/>
-                                <field name="empty_wt_mould"/>
-                                <field name="wt_soil"/>
-                                <field name="wt_of_wet"/>
-                                <field name="volume_mould"/>
-                                <field name="bulk_density"/>
-                                <field name="con_no"/>
-                                <field name="empty_wt"/>
-                                <field name="wet_con_ovenwet"/>
-                                <field name="wet_con_ovendry"/>
-                                <field name="water_content"/>
-                                <field name="dry_density"/>
-                            </tree>
-                        </field>
-                    </div>
-
-
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not heavy_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="max_dry_density">Max Dry Density </label></td>
-                                <td><field name="max_dry_density"/><span> g/cc</span></td>
-                                <td><label for="omc">Optimum Moisture Content </label></td>
-                                <td><field name="omc"/><span> %</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div invisible = "heavy_visible == False" class="custom_table_borders text-center">
-                      <field name="graph_image_density" widget="image" readonly="1"/>
-                    </div>
-                  
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not heavy_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="heavy_table_conformity"></label></td>
-                                <td><field  name="heavy_table_conformity"
-                                            decoration-success="heavy_table_conformity == 'pass'" 
-                                            decoration-danger="heavy_table_conformity == 'fail'" 
-                                            readonly="1" /></td>
-                            </tr>
-                            <tr>
-                                <td><label for="heavy_table_nabl"></label></td>
-                                <td><field name="heavy_table_nabl"
-                                            decoration-success="heavy_table_nabl == 'pass'" 
-                                            decoration-danger="heavy_table_nabl == 'fail'" 
-                                            readonly="1" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                      <!-- Light Compaction OMC -->
-                    <div invisible = "omc_visible == False">
-                        <h1 class="text-center">
-                            <field name="omc_name" readonly="1" nolabel="1"/>
-                            <field name="omc_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    
-                   
-                 
-                    <div invisible = "omc_visible == False">
-                        <field name="omc_table" style="width:100%">
-                                <tree editable="bottom" class="custom_table_borders">
-                                    <field name="serial_no"/>
-                                    <field name="amount_soil1"/>
-                                    <field name="amount_water1"/>
-                                    <field name="empty_wt_mould1"/>
-                                    <field name="wt_soil1"/>
-                                    <field name="wt_of_wet1"/>
-                                    <field name="volume_mould1"/>
-                                    <field name="bulk_density1"/>
-                                    <field name="con_no1"/>
-                                    <field name="empty_wt1"/>
-                                    <field name="wet_con_ovenwet1"/>
-                                    <field name="wet_con_ovendry1"/>
-                                    <field name="water_content1"/>
-                                    <field name="dry_density1"/>
-                                </tree>
-                        </field>
-                    </div>
-
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not omc_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="max_dry_density1">Max Dry Density </label></td>
-                                <td><field name="max_dry_density1"/><span> g/cc</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not omc_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="omc1">Optimum Moisture Content </label></td>
-                                <td><field name="omc1"/><span> %</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-
-
-                    <div invisible="omc_visible == False" class="custom_table_borders text-center">
-                        <field name="graph_image_density1" widget="image" readonly="1"/>
-                    </div>
-                  
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not omc_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="omc_table_conformity"></label></td>
-                                <td><field  name="omc_table_conformity"
-                                            decoration-success="omc_table_conformity == 'pass'" 
-                                            decoration-danger="omc_table_conformity == 'fail'" 
-                                            readonly="1" /></td>
-                            </tr>
-                            <tr>
-                                <td><label for="omc_table_nabl"></label></td>
-                                <td><field name="omc_table_nabl"
-                                            decoration-success="omc_table_nabl == 'pass'" 
-                                            decoration-danger="omc_table_nabl == 'fail'" 
-                                            readonly="1" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- TRIAXIAL SHEAR TEST (By LVDT Reading ) -->
-                    <div invisible = "triaxial_visible == False">
-                        <h1 class="text-center">
-                            <field name="triaxial_name" readonly="1" nolabel="1"/>
-                            <field name="triaxial_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not triaxial_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="observations"></label></td>
-                                <td><field name="observations"/></td>
-                            </tr>
-                            <tr>
-                                <td><label for="diameter_triaxial"></label></td>
-                                <td><field name="diameter_triaxial"/></td>
-                            </tr>
-                            <tr>
-                                <td><label for="length_triaxial"></label></td>
-                                <td><field name="length_triaxial"/></td>
-                            </tr>
-                            <tr>
-                                <td><label for="area_triaxial"></label></td>
-                                <td><field name="area_triaxial"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <div invisible = "triaxial_visible == False">
-                        <field name="triaxial_table" style="width:100%">
-                            <tree editable="bottom" class="custom_table_borders">
-                                <field name="serial_no"/>
-                                <field name="lvdt_triaxial"/>
-                                <field name="load_triaxial31"/>
-                                <field name="load_triaxial32"/>
-                                <field name="al_l"/>
-                                <field name="ac"/>
-                                <field name="deviatore_triaxial31"/>
-                                <field name="deviatore_triaxial32"/>
-                            </tree>
-                        </field>
-                    </div>
-
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not triaxial_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="area_triaxial_conformity"></label></td>
-                                <td><field  name="area_triaxial_conformity"
-                                            decoration-success="area_triaxial_conformity == 'pass'" 
-                                            decoration-danger="area_triaxial_conformity == 'fail'" 
-                                            readonly="1" /></td>
-                            </tr>
-                            <tr>
-                                <td><label for="area_triaxial_nabl"></label></td>
-                                <td><field name="area_triaxial_nabl"
-                                            decoration-success="area_triaxial_nabl == 'pass'" 
-                                            decoration-danger="area_triaxial_nabl == 'fail'" 
-                                            readonly="1" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-=======
                      
->>>>>>> dc49e4ea5a1fc818d3c0a69ae570e3a302f86bab
 
                     <!-- CALCULATIONS OF COHESION AND ANGLE OF INTERNAL FRICTION-->
                     <div invisible = "internal_fraction_visible == False">
@@ -878,13 +670,6 @@
                     </div>
 
 
-<<<<<<< HEAD
-
-
-
-                    
-=======
->>>>>>> dc49e4ea5a1fc818d3c0a69ae570e3a302f86bab
                
 
                   <!-- Unconsolidated Undrained Triaxial Test (Angle of Friction) -->
@@ -994,14 +779,17 @@
 
 
 
-<<<<<<< HEAD
 
 
 
 
 
-=======
->>>>>>> dc49e4ea5a1fc818d3c0a69ae570e3a302f86bab
+
+
+
+
+
+
 
  <!-- NMC – Moisture Content -->
                <div invisible="moisture_visible == False">
@@ -1030,8 +818,8 @@
                     <div invisible = "moisture_visible == False">
                         <field name="bulk_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name="date" width="60px"/>
-                                <field name='lab_id' width="50px" />
+                                <field name="date" width="90px"/>
+                                <!-- <field name='lab_id' width="50px" /> -->
                                 <field name='wt_uds_soil' width="100px" />
                                 <field name='wt_empty_uds' width="100px"/>
                                 <field name="wt_soil" width="100px"/>
@@ -1063,7 +851,7 @@
 
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name= 'date' width="60px"/>
-                                <field name='lab_id'  width="50px"/>
+                                <!-- <field name='lab_id'  width="50px"/> -->
                                 <field name='wet_soil_container' width="100px" />
                                 <field name='dry_soil_container' width="100px"/>
                                 <field name= 'container_weight' width="110px"/>
@@ -1428,9 +1216,9 @@
                 <field name="gravity_line_ids">
                     <tree editable="bottom" class="custom_table_borders">
 
-                        <field name="serial_no" string="Sr.No" width="30px"/>
-                        <field name="date" string="DATE TEST" width="40px"/>
-                        <field name="lab_id" string="Lab No."  width="50px"/>
+                        <field name="serial_no" string="Sr.No" width="60px"/>
+                        <field name="date" string="DATE TEST" width="0px"/>
+                        <!-- <field name="lab_id" string="Lab No."  width="50px"/> -->
 
                         <field name="room_temp" string="Room Temperature" width="110px"/>
                         <field name="bottle_no" string="Bottle No."  width="80px"/>
@@ -1481,7 +1269,7 @@
                 <field name="freeswell_line_ids">
                     <tree editable="bottom" class="custom_table_borders">
                         <field name="serial_no" string="Sr.No" width="35px"/>
-                        <field name="lab_id" string="Lab No." width="100px"/>
+                        <!-- <field name="lab_id" string="Lab No." width="100px"/> -->
                         <field name="vd" string="Vd" width="80px"/>
                         <field name="vk" string="Vk" width="80px"/>
                         <field name="free_swell" string="Free swell(%)" width="110px" readonly="1"/>
@@ -1520,7 +1308,7 @@
     <field name="ll_line_ids" nolabel="1">
         <tree editable="bottom" class="custom_table_borders">
            
-            <field name="test_no" string="Sr.No" width="50px"/>
+            <field name="serial_no" string="Sr.No" width="50px"/>
             <field name="blows" string="No. of Blows" width="100px"/>
             <field name="container_no" string="Container No." width="100px"/>
             <field name="m1" string="M1 (gm)" width="90px"/>
@@ -1555,7 +1343,7 @@
    
         <tree editable="bottom" class="custom_table_borders">
           
-            <field name="test_no" string="Sr.No" width="50px"/>
+            <field name="serial_no" string="Sr.No" width="50px"/>
 
             <field name="container_no" string="Container No." width="100px"/>
 
@@ -1594,7 +1382,7 @@
         <tree editable="bottom" class="custom_table_borders">
            
 
-            <field name="test_no" string="Sr.No" width="35px"/>
+            <field name="serial_no" string="Sr.No" width="35px"/>
             <field name="container_no" string="Container No." width="100px"/>
             <field name="m1" string="M1 (gm)" width="80px"/>
             <field name="v1" string="V1 (cm3)" width="80px"/>

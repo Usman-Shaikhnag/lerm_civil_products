@@ -204,6 +204,12 @@
 							</tbody>
 					  </table>
 
+
+
+
+
+
+
 					  <h6 style="padding: 2px; font-weight: bold;">Condition of specimen</h6>
 					 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
 					   <thead>
@@ -287,12 +293,635 @@
 
 					
 
-					
-						
-						
-					
-						
 
+
+
+
+
+                   	<!-- Bulk Density -->
+
+         <div t-if="data.moisture_visible"  style="margin-top: 30px; font-family: Arial, sans-serif;">
+                        <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+                            Bulk Density
+                            
+                            <span>
+                                    <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table" t-as="parameter">
+                                        <t t-if="parameter.grade.id == eln.grade_id.id">
+                                            <span t-field="parameter.specification"/>
+                                        </t>
+                                    </t>
+                            </span>
+                        </div>
+                        <table>
+                            <tr cols="12">
+                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                date
+                                </td>
+                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                Wt of empty UDS (gm)
+                                </td>
+                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                Wt of UDS+Soil (gm)
+                                </td>
+                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 Wt of soil (gm)
+                                </td>
+                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                Ht of sample (cm)
+                                </td>
+                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 Dia of UDS (cm)
+                                </td>
+                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 Volume of soil sample (cm³)
+                                </td>
+                                 <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 Bulk density (gm/cm³)
+                                </td>
+
+
+                            </tr>
+
+                             <t t-set="k" t-value="0"/>
+                            <tr t-foreach="data.bulk_line_ids" t-as="r"> 
+                                <!-- <td colspan="2">
+                                    <div>
+                                        <span t-esc="k + 1" />
+                                        <t t-set="k" t-value="k+1"/>
+                                    </div>
+                                </td> -->
+                                 <td colspan="2">
+                                    <span t-esc="r['date']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['wt_empty_uds']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['wt_uds_soil']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['wt_soil']" />
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['height']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['diameter']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['volume']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['bulk_density']" />
+                                </td>
+                            </tr>
+                        </table>
+                        </div>
+
+
+
+
+
+
+
+
+         	<!-- NMC-->
+
+   <div t-if="data.moisture_visible" style="margin-top: 30px; font-family: Arial, sans-serif;" >
+                        <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+                           NMC
+                         
+                            <span>
+                                    <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table" t-as="parameter">
+                                        <t t-if="parameter.grade.id == eln.grade_id.id">
+                                            <span t-field="parameter.specification"/>
+                                        </t>
+                                    </t>
+                            </span>
+                        </div>
+                        <table>
+                            <tr cols="12">
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                date
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 Weight of wet soil + container (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 Weight of oven dry soil + container (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Weight of container (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 Moisture content %
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 Avg NMC %
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                True/False
+                                </td>
+                                 
+
+
+                            </tr>
+
+                            <t t-set="k" t-value="0"/>
+                            <tr t-foreach="data.moisture_ids" t-as="r">
+                               
+                                <td colspan="2">
+                                    <span t-esc="r['date']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['wet_soil_container']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['dry_soil_container']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['container_weight']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['moisture_content']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['avg_nmc']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['is_ok']" />
+                                </td>
+                                
+                            </tr>
+                        </table>
+                        </div>
+
+
+
+
+
+
+<!-- ( SPECIFIC GRAVITY ) -->
+
+
+  <div t-if="data.specific_gravity_visible" style="margin-top: 30px; font-family: Arial, sans-serif;" >
+                        <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+                             SPECIFIC GRAVITY
+                            
+                            <span>
+                                    <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')]).parameter_table" t-as="parameter">
+                                        <t t-if="parameter.grade.id == eln.grade_id.id">
+                                            <span t-field="parameter.specification"/>
+                                        </t>
+                                    </t>
+                            </span>
+                        </div>
+                        <table>
+                            <tr cols="12">
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                date
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Room Temperature
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Bottle No
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Empty Wt. of Bottle
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Bottle + dry soil
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                 Bottle + Dry soil + Water
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                 Bottle + Water (Tap)
+                                </td>
+                                 <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                  Specific Gravity (G)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 Density of water at room temp (gm/cc)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Corrected Specific Gravity (G')
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Average corrected Specific Gravity
+                                </td>
+                           
+
+                            </tr>
+
+                             <t t-set="k" t-value="0"/>
+                            <tr t-foreach="data.gravity_line_ids" t-as="r"> 
+                                <!-- <td colspan="2">
+                                    <div>
+                                        <span t-esc="k + 1" />
+                                        <t t-set="k" t-value="k+1"/>
+                                    </div>
+                                </td> -->
+                                 <td colspan="2">
+                                    <span t-esc="r['date']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['room_temp']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['bottle_no']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['wt_empty_bottle']" />
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['wt_bottle_dry_soil']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['wt_bottle_dry_soil_water']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['wt_bottle_water']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['specific_gravity']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['density_water']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['corr_specific_gravity']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['avg_corr_specific_gravity']" />
+                                </td>
+                            </tr>
+                        </table>
+                        </div>
+
+
+
+
+
+				<!--  Atterbergs Limits (Free Swell)  -->		
+
+              <div t-if="data.freeswell_visible" style="margin-top: 30px; font-family: Arial, sans-serif;" >
+                        <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+                            Atterbergs Limits (Free Swell)
+                            
+                            <span>
+                                    <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3825ec57-11f8-4249-9fa8-d99f64ffd396')]).parameter_table" t-as="parameter">
+                                        <t t-if="parameter.grade.id == eln.grade_id.id">
+                                            <span t-field="parameter.specification"/>
+                                        </t>
+                                    </t>
+                            </span>
+                        </div>
+                        <table>
+                            <tr cols="12">
+                                <!-- <td colspan="2"> date
+                                </td> -->
+                               <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                               Sr.No
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Vd
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Vk
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 Free swell(%)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">  
+                                 TRUE/FALSE
+                                </td>
+                            </tr>
+
+
+
+                             <t t-set="k" t-value="0"/>
+                            <tr t-foreach="data.freeswell_line_ids" t-as="r"> 
+                             
+                                 <!-- <td colspan="2">
+                                    <span t-esc="r['date']"/>
+                                </td> -->
+                                <td colspan="2">
+                                    <span t-esc="r['serial_no']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['vd']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['vk']" />
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['free_swell']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['is_ok']" />
+                                </td>
+                                 
+                            </tr>
+                        </table>
+                        </div>
+
+
+
+
+
+
+
+  <!--  Atterbergs Limits ( Liquid Limits )  -->	
+
+
+              <div t-if="data.ll_visible"  style="margin-top: 30px; font-family: Arial, sans-serif;">
+                        <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+                            Liquid Limits
+                            
+                            <span>
+                                    <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3825ec57-11f8-4249-9fa8-d99f64ffd396')]).parameter_table" t-as="parameter">
+                                        <t t-if="parameter.grade.id == eln.grade_id.id">
+                                            <span t-field="parameter.specification"/>
+                                        </t>
+                                    </t>
+                            </span>
+                        </div>
+                        <table>
+                            <tr cols="12">
+                               
+                               <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                               Sr.No
+                                </td>
+                                 <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                  No. of Blows
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Container No
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 M1 (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 M2 (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 M3 (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                M3-M2
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 M2-M1
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                 Water Content %
+                                </td>
+                            
+                        </tr>
+
+
+
+                             <t t-set="k" t-value="0"/>
+                            <tr t-foreach="data.ll_line_ids" t-as="r"> 
+                               
+                                 
+                                <td colspan="2">
+                                    <span t-esc="r['serial_no']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['blows']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['container_no']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['m1']" />
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['m2']" />
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['m3']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['m3_m2']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['m2_m1']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['water_content']" />
+                                </td>
+                                 
+                            </tr>
+                        </table>
+                        </div>
+	
+
+
+
+
+
+<!--  Atterbergs Limits ( Plastic Limits )  -->	
+
+
+   <div t-if="data.pl_visible" style="margin-top: 30px; font-family: Arial, sans-serif;" >
+                        <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+                             Plastic Limits 
+                            
+                            <span>
+                                    <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3825ec57-11f8-4249-9fa8-d99f64ffd396')]).parameter_table" t-as="parameter">
+                                        <t t-if="parameter.grade.id == eln.grade_id.id">
+                                            <span t-field="parameter.specification"/>
+                                        </t>
+                                    </t>
+                            </span>
+                        </div>
+                        <table>
+                            <tr cols="12">
+                    
+                               <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                               Sr.No
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Container No
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">  
+                                M1 (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                M2 (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 M3 (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 M3-M2
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 M2-M1
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Water Content %
+                                </td>
+                                
+                        </tr>
+
+
+
+                             <t t-set="k" t-value="0"/>
+                            <tr t-foreach="data.pl_line_ids" t-as="r"> 
+                                <td colspan="2">
+                                    <span t-esc="r['serial_no']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['container_no']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['m3']" />
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['m2']" />
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['m1']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['m3_m2']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['m2_m1']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['water_content']" />
+                                </td>
+                                
+                            </tr>
+                        </table>
+                        </div> 
+
+
+
+
+
+
+<!--  Atterbergs Limits ( Shrinkage Limits )  -->	
+
+
+  <div t-if="data.sl_visible"  style="margin-top: 30px; font-family: Arial, sans-serif;">
+                        <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+                             Shrinkage Limits
+                            
+                            <span>
+                                    <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3825ec57-11f8-4249-9fa8-d99f64ffd396')]).parameter_table" t-as="parameter">
+                                        <t t-if="parameter.grade.id == eln.grade_id.id">
+                                            <span t-field="parameter.specification"/>
+                                        </t>
+                                    </t>
+                            </span>
+                        </div>
+                        <table>
+                            <tr cols="12">
+                    
+                               <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                               Sr.No
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 Container No
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
+                                 M1 (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                V1 (cm3)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                M2 (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                M3 (gm)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                V2 (cm3)
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                M3-M2
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                M2-M1
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                V1-V2
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Water Content %
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                Shrinkage Ratio
+                                </td>
+                                <td colspan="2"  style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;"> 
+                                SL %
+                                </td>
+                               
+                                
+                        </tr>
+
+
+
+                             <t t-set="k" t-value="0"/>
+                            <tr t-foreach="data.sl_line_ids" t-as="r"> 
+                                <td colspan="2">
+                                    <span t-esc="r['serial_no']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['container_no']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['m1']" />
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['v1']" />
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['m2']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['m3']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['v2']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['m3_m2']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['m2_m1']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['v1_v2']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['water_content']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['shrinkage_ratio']" />
+                                </td>
+                                 <td colspan="2">
+                                    <span t-esc="r['shrinkage_limit']" />
+                                </td>
+                                 
+                                
+                            </tr>
+                        </table>
+                        </div> 
+ 
+
+
+
+
+ 
 					
 				<!-- footer -->
                      <div class="signatureContainer girdgird">

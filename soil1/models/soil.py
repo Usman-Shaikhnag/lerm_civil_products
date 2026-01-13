@@ -595,7 +595,10 @@ class Soil(models.Model):
         buffer.seek(0)
 
         return base64.b64encode(buffer.read())
-<<<<<<< HEAD
+    
+
+
+
     
 
 
@@ -608,13 +611,6 @@ class Soil(models.Model):
 
 
 
-
-
-
-
-
-=======
->>>>>>> dc49e4ea5a1fc818d3c0a69ae570e3a302f86bab
 
 
 
@@ -5302,7 +5298,7 @@ class LIQUIDLIMITLINE(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
-    container_no1 = fields.Char(string="Container No.")
+    container_no = fields.Char(string="Container No.")
     blwo_no1 = fields.Float(string="No. of Blows")
     wt_of_con_wet = fields.Float(string="Wt. of Container + Wet Soil")
     wt_of_con_dry = fields.Float(string="Wt. of Container + dry Soil")   
@@ -6062,7 +6058,7 @@ class SoilBulkDensity(models.Model):
 class SoilMoisture(models.Model):
     _name = 'soil.moisture'
   
-    parent_id = fields.Many2one(   'mechanical.soil1',  string="Parent Id", ondelete='cascade', )
+    parent_id = fields.Many2one('mechanical.soil1',  string="Parent Id", ondelete='cascade', )
 
     serial_no = fields.Integer(string='Sr.No')
 
@@ -8469,7 +8465,7 @@ class LabAtterbergPlLine(models.Model):
     _name = 'lab.atterberg.pl.line'
     parent_id = fields.Many2one('mechanical.soil1', string="Parent")
    
-    test_no = fields.Integer('Test No.')
+    serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
     container_no = fields.Char('Container No.')
     m1 = fields.Float('M1 (gm)', digits=(10,3))
     m2 = fields.Float('M2 (gm)', digits=(10,3))
@@ -8495,7 +8491,7 @@ class LabAtterbergLlLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1', string="Parent")
     
    
-    test_no = fields.Integer('Test No.')
+    serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
     blows = fields.Integer('No. of Blows')
     container_no = fields.Char('Container No.')
     m1 = fields.Float('M1 (gm)', digits=(10,3))
@@ -8524,7 +8520,7 @@ class LabAtterbergSlLine(models.Model):
     
 
    
-    test_no = fields.Integer('Test No.')
+    serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
     container_no = fields.Char('Container No.')
     m1 = fields.Float('M1 (gm)', digits=(10,3))
     v1 = fields.Float('V1 (cm3)', digits=(10,3))
