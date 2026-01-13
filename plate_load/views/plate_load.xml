@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_plate_load" model="ir.ui.view">
+        <field name="name">mechanical.plate.test1.form</field>
+        <field name="model">mechanical.plate.test1</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                   <group >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                         <field name="grade" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                      <field name="sample_parameters" class="custom_table_borders" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+
+
+                     
+       
+
+                
+
+                       <group  invisible = "plate_load_visible == False"  style="white-space:nowrap; " class="text-center mb-2">
+                        <h1>
+                            <field name="plate_load_name" readonly="1" nolabel="1"/>
+                            <field name="plate_load_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                   <div class="d-flex gap-2" invisible = "plate_load_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="client_name"></label></td>
+                                    <td style="width:50%;"><field name="client_name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="site_add"></label></td>
+                                    <td style="width:50%;"><field name="site_add"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="months"></label></td>
+                                    <td style="width:50%;"><field name="months"/></td>
+                                </tr>
+                                 <tr>
+                                    <td style="width:50%;"><label for="bearing_plate"></label></td>
+                                    <td style="width:50%;"><field name="bearing_plate"/></td>
+                                </tr>
+                                 <tr>
+                                    <td style="width:50%;"><label for="jack_capacity"></label></td>
+                                    <td style="width:50%;"><field name="jack_capacity"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="reaction_load"></label></td>
+                                    <td style="width:50%;"><field name="reaction_load"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="bearing_dead"></label></td>
+                                    <td style="width:50%;"><field name="bearing_dead"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="no_cycle1"></label></td>
+                                    <td style="width:50%;"><field name="no_cycle1"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width:50%;"><label for="factor_safty"></label></td>
+                                    <td style="width:50%;"><field name="factor_safty"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width:50%;"><label for="allowable_net"></label></td>
+                                    <td style="width:50%;"><field name="allowable_net"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                    <div class="d-flex gap-2" invisible = "plate_load_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="design_load"></label></td>
+                                    <td style="width:50%;"><field name="design_load"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="factore"></label></td>
+                                    <td style="width:50%;"><field name="factore"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="ultimate"></label></td>
+                                    <td style="width:50%;"><field name="ultimate"/></td>
+                                </tr>
+                                 <tr>
+                                    <td style="width:50%;"><label for="lenght_plate"></label></td>
+                                    <td style="width:50%;"><field name="lenght_plate"/></td>
+                                </tr>
+                                 <tr>
+                                    <td style="width:50%;"><label for="width_plate"></label></td>
+                                    <td style="width:50%;"><field name="width_plate"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="area_plate"></label></td>
+                                    <td style="width:50%;"><field name="area_plate"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="ram_area"></label></td>
+                                    <td style="width:50%;"><field name="ram_area"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="load_intergity"></label></td>
+                                    <td style="width:50%;"><field name="load_intergity"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width:50%;"><label for="pressure"></label></td>
+                                    <td style="width:50%;"><field name="pressure"/></td>
+                                </tr>
+
+                              
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible = "plate_load_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="pressure_1"></label></td>
+                                    <td style="width:50%;"><field name="pressure_1"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="no_cycle"></label></td>
+                                    <td style="width:50%;"><field name="no_cycle"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%;"><label for="pressure_2"></label></td>
+                                    <td style="width:50%;"><field name="pressure_2"/></td>
+                                </tr>
+                             
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                  <tr>
+                                    <td style="width:50%;"><label for="pressure_3"></label></td>
+                                    <td style="width:50%;"><field name="pressure_3"/></td>
+                                </tr>
+                                 <tr>
+                                    <td style="width:50%;"><label for="total_pressure"></label></td>
+                                    <td style="width:50%;"><field name="total_pressure"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+
+                   
+               <h2 style="text-align: center;">Loading</h2>
+                        <field name="child_lines_plate_load" class="custom_table_borders" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='applied_pressure'/>
+                                <field name='load_plate'/>
+                                <field name='pressure_plate'/>
+                                <field name='time'/>
+                                <field name='d1'/>
+                                <field name='d2'/>
+                                <field name='d3'/>
+                                <field name='d4'/>
+                                <field name='avg_sett'/>
+                                <field name='cumulative_sett1'/>
+
+                                
+                            </tree>
+
+                            </field> 
+                           
+
+                         <div>
+                            <button name="action_calculate_cumulative_settlement"
+                                    string="Calculate Cumulative Settlement"
+                                    type="object"
+                                    class="btn btn-primary"/>
+                        </div>
+                         <!-- <group>
+                          <button name="calculate_cumulative_sett1"
+                                type="object"
+                                string="Calculate Cumulative Settlement"
+                                class="btn-primary"/>
+                         </group>
+                            -->
+                       
+
+                 <h2 style="text-align: center;">Unloading</h2>
+                         
+                   <div invisible = "plate_load_visible == False">
+                        <field name="child_lines_plate_unload" class="custom_table_borders" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='applied_pressure1'/>
+                                <field name='load_plate1'/>
+                                <field name='pressure_plate1'/>
+                                <field name='time1'/>
+                                <field name='d11'/>
+                                <field name='d22'/>
+                                <field name='d33'/>
+                                <field name='d44'/>
+                                <field name='avg_sett1'/>
+                                <field name='cumulative_sett11'/>
+
+                                
+                            </tree>
+                           
+                         </field> 
+                </div>
+             <div>
+                <button name="action_calculate_unload_settlement_and_cumulative"
+                    type="object"
+                    string="Calculate Unload Cumulative"
+                    class="btn btn-primary"/>
+
+            </div>     
+            
+
+
+                   <h2 style="text-align: center;">Settlement data And Safe bearing capacity</h2>
+                         
+                   <div invisible = "plate_load_visible == False">
+                        <field name="child_lines_loadand_cumilitive" class="custom_table_borders"  nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='pressure_plate2'/>
+                                <field name='cumulative_sett2'/>
+                              
+                            </tree>
+                           
+                         </field> 
+                </div>
+                         
+                       
+                       
+                 <div class="d-flex gap-2" invisible="plate_load_visible == False">
+
+    <!-- Summary Heading (CENTER) -->
+
+    <div class="w-50 ms-auto">
+    <h2 class="text-center mb-2">Summary of test</h2>
+
+    <!-- Summary Table (RIGHT) -->
+    <table class="table table-sm o_form_table table-bordered custom_table_borders w-100">
+        <tbody>
+            <tr>
+                <td style="width:50%;"><label for="bearing_capacity"/></td>
+                <td style="width:50%;"><field name="bearing_capacity"/></td>
+            </tr>
+            <tr>
+                <td><label for="factore_safty"/></td>
+                <td><field name="factore_safty"/></td>
+            </tr>
+            <tr>
+                <td><label for="ultimate_bearing"/></td>
+                <td><field name="ultimate_bearing"/></td>
+            </tr>
+            <tr>
+                <td><label for="maximum_load"/></td>
+                <td><field name="maximum_load"/></td>
+            </tr>
+            <tr>
+                <td><label for="allowable"/></td>
+                <td><field name="allowable"/></td>
+            </tr>
+            <tr>
+                <td><label for="total_settlement"/></td>
+                <td><field name="total_settlement"/></td>
+            </tr>
+        </tbody>
+    </table>
+
+    </div>
+
+    <!-- Allowable Heading (CENTER) -->
+    <div class="w-50 ms-auto">
+
+    <h2 class="text-center mb-2">Allowable Bearing Capacity</h2>
+
+    <table class="table table-sm o_form_table table-bordered custom_table_borders w-100">
+        <tbody>
+            <tr>
+                <td><label for="size_footing"/></td>
+                <td><field name="size_footing"/></td>
+            </tr>
+            <tr>
+                <td><label for="size_plate"/></td>
+                <td><field name="size_plate"/></td>
+            </tr>
+            <tr>
+                <td><label for="settlement_test"/></td>
+                <td><field name="settlement_test"/></td>
+            </tr>
+            <tr>
+                <td><label for="settlement_below"/></td>
+                <td><field name="settlement_below"/></td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+
+</div>
+
+
+
+                        
+              
+
+                      <div invisible = "plate_load_visible == False" style="white-space:nowrap;">
+                          <field name="observation"   />
+                        
+                           
+                     </div>
+                 
+                  
+            
+                         
+                   <div invisible = "plate_load_visible == False">
+                       <h2 >Load Settlement Curve</h2>
+                        <field name="child_lines_loadand_cumilitive1" class="custom_table_borders"  nolabel="1" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='pressure_plate3'/>
+                                <field name='settlement3'/>
+                              
+                            </tree>
+                           
+                         </field> 
+                </div>
+                      
+
+                  <div invisible = "plate_load_visible == False">
+                      <field name="chart_pressure_line" widget="image" readonly="1"/>
+                    </div>
+
+                    <div >
+                          <field name="plate_report_upload" widget="many2many_binary" />
+                          <!-- uptill -->
+                      </div>
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+                     
+
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
