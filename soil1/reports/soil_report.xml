@@ -115,6 +115,8 @@
 						</table>
 
 						</div>
+          <t t-set="grav_vals" t-value="[g.avg_corr_specific_gravity for g in (data.gravity_line_ids or []) if g.avg_corr_specific_gravity]"/>
+           <t t-set="g_index" t-value="0"/>
 
           <table width="100%" style="font-size: 8px; border-collapse: collapse;" border="1">
             <thead>
@@ -168,13 +170,16 @@
 					<td></td>
 
 					<!-- Specific Gravity / FSI / NMC -->
-					 <td>
-						
-						<t t-if="data.gravity_line_ids">
-							<t t-esc="data.gravity_line_ids[0].avg_corr_specific_gravity"/>
+					<td>
+						<t t-set="gi" t-value="g_index if g_index is not None else 0"/>
+
+						<t t-if="grav_vals and gi &lt; len(grav_vals)">
+							<t t-esc="grav_vals[gi]"/>
+							<t t-set="g_index" t-value="gi + 1"/>
 						</t>
-					
-                </td>
+						<t t-else="">--</t>
+					</td>
+
 					<td></td>
 					<td></td>
 
