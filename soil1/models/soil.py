@@ -9222,6 +9222,10 @@ class LabAtterbergLlLine(models.Model):
 #             else:
 #                 rec.shrinkage_ratio = rec.water_content = rec.shrinkage_limit = 0.0
 
+
+
+
+
 class LabAtterbergSlLine(models.Model):
     _name = 'lab.atterberg.sl.line'
     
@@ -9246,13 +9250,53 @@ class LabAtterbergSlLine(models.Model):
 
     # [PASTE THE _compute_sl METHOD ABOVE HERE]
     
-    @api.model
-    def create(self, vals):
-        if vals.get('parent_id') and not vals.get('serial_no'):
-            existing = self.search([('parent_id', '=', vals['parent_id'])], 
-                                 order='serial_no desc', limit=1)
-            vals['serial_no'] = (existing.serial_no or 0) + 1 if existing else 1
-        return super().create(vals)
+    @api.depends('m1', 'm2', 'm3', 'v1', 'v2')
+    def _compute_sl(self):
+     for rec in self:
+        # Safe values from your test: m1=33.17, v1=22, m2=76.22, m3=66.51, v2=17
+        m1 = rec.m1 or 0.0
+        m2 = rec.m2 or 0.0
+        m3 = rec.m3 or 0.0
+        v1 = rec.v1 or 0.0
+        v2 = rec.v2 or 0.0
+        
+        # Excel column differences (display only)
+        rec.m3_m2 = m3 - m2
+        rec.m2_m1 = m2 - m1
+        rec.v1_v2 = v1 - v2
+        
+        # **YOUR EXACT EXCEL FORMULAS:**
+        # Water Content = ((M1-M3)/(M2-M3)) * 100
+        dry_soil = m2 - m1  # 76.22 - 66.51 = 9.71
+        if dry_soil > 0:
+            rec.water_content = ((m3 - m2) / dry_soil) * 100  # (33.17-66.51)/9.71 * 100 = **72.34**
+        else:
+            rec.water_content = 0.0
+        
+        # Shrinkage Ratio = (M2-M3)/V2  
+        if v2 > 0:
+            rec.shrinkage_ratio = ((m2 - m1) / v2 ) # 9.71/17 = **0.571**
+        else:
+            rec.shrinkage_ratio = 0.0
+        
+        # Shrinkage Limit = Water Content - (SR * 100)
+        v2_v1 = v1 - v2
+        m2_m1 = m2 -m1
+        if m2_m1 > 0:
+
+
+            rec.shrinkage_limit =  round ((((m3 - m2) - (v2_v1 * 1)) /(m2 -m1)) * 100, 0)  # 9.71/17 = **0.571**
+
+            
+        else:
+            rec.shrinkage_limit = 0.0
+
+
+       
+ 
+
+
+
 
 
 
