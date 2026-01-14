@@ -1395,7 +1395,18 @@
                 </h1>
             </div>
 
-            <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
+               <div invisible = "specific_gravity_visible == False">
+                  <field name= 'sp_lines_generated' invisible="1" />
+                  <button name="action_generate_sp_lines"
+                   
+                    type="object"
+                    string="Generate Lab Lines"
+                    class="oe_highlight"
+                    invisible="sp_lines_generated == True"/>
+
+                </div>
+
+            <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
                         <tbody>
                             <tr>
                                 <td><label for="selected_lab_id12"></label></td>
@@ -1404,7 +1415,7 @@
                            
                             
                         </tbody>
-                    </table>
+                    </table> -->
 
             
 
@@ -1415,7 +1426,7 @@
 
                         <field name="serial_no" string="Sr.No" width="30px"/>
                         <field name="date" string="DATE TEST" width="40px"/>
-                        <field name="lab_id" string="Lab No."  width="50px"/>
+                        <field name="lab_no" string="Lab No."  width="50px"/>
 
                         <field name="room_temp" string="Room Temperature" width="110px"/>
                         <field name="bottle_no" string="Bottle No."  width="80px"/>
@@ -1432,6 +1443,14 @@
 
                     </tree>
                 </field>
+            </div>
+
+
+            <div invisible="specific_gravity_visible == False">
+                <button name="action_compute_avg_corr_gravity"
+                    string="Calculate Avg Corrected Gravity"
+                    type="object"
+                    class="btn-primary"/>
             </div>
 
 

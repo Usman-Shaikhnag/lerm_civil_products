@@ -629,14 +629,71 @@ class Soil(models.Model):
     specific_gravity_name = fields.Char(string="Name",default=" SPECIFIC GRAVITY", )
     specific_gravity_visible = fields.Boolean( string="Specific Gravity Visible",default=True )
 
-    selected_lab_id12 = fields.Many2one(
-        'lab.option.line',
-        string="Select Lab ID",
-        domain="[('id', 'in', lab_option_ids)]"
-    )
+    # selected_lab_id12 = fields.Many2one(
+    #     'lab.option.line',
+    #     string="Select Lab ID",
+    #     domain="[('id', 'in', lab_option_ids)]"
+    # )
+
+    show_sieve = fields.Boolean(default=False)
+
+    sp_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+    def action_generate_sp_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+
+                for i in range(start, end + 1):
+                    lab_no = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_no': lab_no}))   # 1st
+                    lines.append((0, 0, {'lab_no': False}))    # 2nd blank
+
+                record.gravity_line_ids = lines
+                record.sp_lines_generated = True
+
+            if record.gravity_line_ids:
+                record.show_sieve = True
+
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
+
 
 
     gravity_line_ids = fields.One2many( "specific.gravity", "parent_id",string="Specific Gravity Lines",)
+
+    def action_compute_avg_corr_gravity(self):
+        for rec in self:
+            lines = rec.gravity_line_ids.sorted('id')
+
+            # सगळे avg clear कर
+            for line in lines:
+                line.avg_corr_specific_gravity = 0.0
+
+            i = 0
+            while i < len(lines):
+                group = lines[i:i+2]  # 2 lines चा group
+                values = [l.corr_specific_gravity for l in group if l.corr_specific_gravity]
+
+                if values:
+                    avg = sum(values) / len(values)
+                    group[0].avg_corr_specific_gravity = avg  # first line वर
+
+                i += 2
+
+
 
 
 
@@ -5182,6 +5239,42 @@ class Soil(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3825ec57-11f8-4249-9fa8-d99f64ffd396':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
             
             
 
@@ -6893,7 +6986,7 @@ class SpecificGravity(models.Model):
 
   
     date = fields.Date(string="DATE TEST")
-    lab_id = fields.Char(string="Lab No.")
+    lab_no = fields.Char(string="Lab No.")
     room_temp = fields.Float(string="Room Temperature (°C)")
     bottle_no = fields.Char(string="Bottle No.")
 
@@ -6904,13 +6997,12 @@ class SpecificGravity(models.Model):
 
     specific_gravity = fields.Float( string="Specific Gravity (G)", compute="_compute_specific_gravity", store=True, readonly=True,)
     density_water = fields.Float( string="Density of water at room temp (gm/cc)", compute="_compute_density_water", store=True,  readonly=True, )
-    corr_specific_gravity = fields.Float(string="Corrected Specific Gravity (G')",compute="_compute_corr_specific_gravity", store=True, readonly=True,
+    corr_specific_gravity = fields.Float(string="Corrected Specific Gravity (G')",compute="_compute_corr_specific_gravity", store=True, readonly=True,digits=(12,3)
  )
     avg_corr_specific_gravity = fields.Float(
         string="Average corrected Specific Gravity",
-        compute="_compute_avg_corr_specific_gravity",
         store=True,
-        readonly=True,
+        readonly=True,digits=(12,3)
     )
 
    
@@ -6947,21 +7039,7 @@ class SpecificGravity(models.Model):
             )
 
   
-    @api.depends("parent_id", "date", "lab_id", "corr_specific_gravity")
-    def _compute_avg_corr_specific_gravity(self):
-        for rec in self:
-            if not rec.parent_id:
-                rec.avg_corr_specific_gravity = 0.0
-                continue
-            siblings = self.search([
-                ("parent_id", "=", rec.parent_id.id),
-                ("date", "=", rec.date),
-                ("lab_id", "=", rec.lab_id),
-            ])
-            vals = [l.corr_specific_gravity for l in siblings if l.corr_specific_gravity]
-            rec.avg_corr_specific_gravity = sum(vals) / len(vals) if vals else 0.0
-
- 
+    
 
     @api.model
     def create(self, vals):
