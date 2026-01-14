@@ -3874,6 +3874,197 @@
 
 
 
+
+
+<!-- TRIAXIAL SHEAR TEST (By LVDT Reading ) -->	
+
+
+ <!-- <div t-if="triaxial_test_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+   
+    <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+        TRIAXIAL SHEAR TEST
+    </div>
+
+   
+    <table style="border-collapse: collapse; width: 100%;">
+        
+        <tr>
+            <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6; text-align: center;">
+                Initial Mass of Mould+Wet Soil(g)
+            </td>
+            <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6; text-align: center;">
+                Mass of Mould+Wet Soil(g)
+            </td>
+            <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6; text-align: center;">
+                Mass of Mould+Dry Soil(g)
+            </td>
+            <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6; text-align: center;">
+                0.5 kg/cm²
+            </td>
+            <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6; text-align: center;">
+                1.0 kg/cm²
+            </td>
+            <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6; text-align: center;">
+                1.5 kg/cm²
+            </td>
+            <td rowspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6; text-align: center; vertical-align: middle;">
+                Average
+            </td>
+        </tr>
+        
+       
+        <tr>
+            <td colspan="3"></td>
+            <td colspan="3"></td>
+            <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #F0F0F0; text-align: center;">
+                Moisture Content %
+            </td>
+            <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #F0F0F0; text-align: center;">
+                Bulk Density
+            </td>
+            <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #F0F0F0; text-align: center;">
+                Dry Density
+            </td>
+            <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #F0F0F0; text-align: center;">
+                Moisture Content %
+            </td>
+            <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #F0F0F0; text-align: center;">
+                Bulk Density
+            </td>
+            <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #F0F0F0; text-align: center;">
+                Dry Density
+            </td>
+            <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #F0F0F0; text-align: center;">
+                Moisture Content %
+            </td>
+            <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #F0F0F0; text-align: center;">
+                Bulk Density
+            </td>
+            <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #F0F0F0; text-align: center;">
+                Dry Density
+            </td>
+        </tr>
+
+     
+        <tr>
+            <td colspan="2" style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.mass_before_05" t-options="{'widget': 'float', 'precision': 3}"/>
+            </td>
+            <td colspan="2" style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.mass_after_05" t-options="{'widget': 'float', 'precision': 3}"/>
+            </td>
+            <td colspan="2" style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.mass_dry_05" t-options="{'widget': 'float', 'precision': 3}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.moisture_05" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.bulk_density_05" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.dry_density_05" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.moisture_10" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.bulk_density_10" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.dry_density_10" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.moisture_15" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.bulk_density_15" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.dry_density_15" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                
+            </td>
+        </tr>
+
+        
+        <tr>
+            <td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center; background-color: #F9F9F9;">
+                Void Ratio &amp; Saturation
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.void_ratio_05" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.saturation_05" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td colspan="2"></td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.void_ratio_10" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.saturation_10" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td colspan="2"></td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.void_ratio_15" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td style="border: 1px solid black; padding: 6px; text-align: center;">
+                <span t-field="record.saturation_15" t-options="{'widget': 'float', 'precision': 2}"/>
+            </td>
+            <td rowspan="2" style="border: 1px solid black; padding: 6px;"></td>
+        </tr>
+    </table>
+
+   
+    <div style="margin-top: 20px;">
+        <table style="border-collapse: collapse; width: 100%;">
+            <tr>
+                <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6;">
+                    Diameter (mm)
+                </td>
+                <td style="border: 1px solid black; padding: 6px;">
+                    <span t-field="record.dia_triaxial" t-options="{'widget': 'float', 'precision': 1}"/>
+                </td>
+                <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6;">
+                    Area (cm²)
+                </td>
+                <td style="border: 1px solid black; padding: 6px;">
+                    <span t-field="record.area1_triaxial" t-options="{'widget': 'float', 'precision': 2}"/>
+                </td>
+                <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6;">
+                    Soil Volume (cm³)
+                </td>
+                <td style="border: 1px solid black; padding: 6px;">
+                    <span t-field="record.soil_volume" t-options="{'widget': 'float', 'precision': 2}"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6;">
+                    Height (mm)
+                </td>
+                <td style="border: 1px solid black; padding: 6px;">
+                    <span t-field="record.height_triaxial" t-options="{'widget': 'float', 'precision': 1}"/>
+                </td>
+                <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6;">
+                    Specific Gravity
+                </td>
+                <td style="border: 1px solid black; padding: 6px;">
+                    <span t-field="record.specific_gravity" t-options="{'widget': 'float', 'precision': 3}"/>
+                </td>
+                <td style="border: 1px solid black; padding: 6px; font-weight: bold; background-color: #E6E6E6;">
+                    Temp (°C)
+                </td>
+                <td style="border: 1px solid black; padding: 6px;">
+                    <span t-field="record.temp_triaxial" t-options="{'widget': 'float', 'precision': 0}"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div> -->
+
+
  
 					
 				<!-- footer -->

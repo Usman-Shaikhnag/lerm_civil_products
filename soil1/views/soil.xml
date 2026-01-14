@@ -799,7 +799,7 @@
                </h1>
                    </div>
 
-                   <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not moisture_visible">
+                   <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not moisture_visible">
                         <tbody>
                             <tr>
                                 <td><label for="selected_lab_id11"></label></td>
@@ -808,7 +808,7 @@
                            
                             
                         </tbody>
-                    </table>
+                    </table> -->
 
 
 
@@ -819,7 +819,7 @@
                         <field name="bulk_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="date" width="90px"/>
-                                <!-- <field name='lab_id' width="50px" /> -->
+                                <field name='lab_id' width="60px" />
                                 <field name='wt_uds_soil' width="100px" />
                                 <field name='wt_empty_uds' width="100px"/>
                                 <field name="wt_soil" width="100px"/>
@@ -850,18 +850,28 @@
                         <field name="moisture_ids">
 
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name= 'date' width="60px"/>
-                                <!-- <field name='lab_id'  width="50px"/> -->
+                                <field name= 'date' width="80px"/>
+                                <field name='lab_id'  width="50px"/>
                                 <field name='wet_soil_container' width="100px" />
                                 <field name='dry_soil_container' width="100px"/>
                                 <field name= 'container_weight' width="110px"/>
                                 <field name='moisture_content' width="110px"/>
                                 <field name='avg_nmc' width="100px"/>
-                                <field name='is_ok' width="100px"/>
+                                <!-- <field name='is_ok' width="100px"/> -->
                               
                             </tree>
                         </field>
                     </div>
+                 
+
+                 
+             <div invisible="moisture_visible == False">
+                <button name="action_moisture_content_NMC"
+                    string="Calculate Avg Nmc"
+                    type="object"
+                    class="btn-primary"/>
+            </div>
+
 
                     
 
@@ -1203,7 +1213,18 @@
                 </h1>
             </div>
 
-            <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
+               <div invisible = "specific_gravity_visible == False">
+                  <field name= 'sp_lines_generated' invisible="1" />
+                  <button name="action_generate_sp_lines"
+                   
+                    type="object"
+                    string="Generate Lab Lines"
+                    class="oe_highlight"
+                    invisible="sp_lines_generated == True"/>
+
+                </div>
+
+            <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
                         <tbody>
                             <tr>
                                 <td><label for="selected_lab_id12"></label></td>
@@ -1212,7 +1233,7 @@
                            
                             
                         </tbody>
-                    </table>
+                    </table> -->
 
             
 
@@ -1221,11 +1242,11 @@
                 <field name="gravity_line_ids">
                     <tree editable="bottom" class="custom_table_borders">
 
-                        <field name="serial_no" string="Sr.No" width="60px"/>
-                        <field name="date" string="DATE TEST" width="0px"/>
-                        <!-- <field name="lab_id" string="Lab No."  width="50px"/> -->
+                        <field name="serial_no" string="Sr.No" width="30px"/>
+                        <field name="date" string="DATE TEST" width="40px"/>
+                        <field name="lab_no" string="Lab No."  width="50px"/>
 
-                        <field name="room_temp" string="Room Temperature" width="110px"/>
+                        <field name="room_temp" string="Room Temperature" width="100px"/>
                         <field name="bottle_no" string="Bottle No."  width="80px"/>
 
                         <field name="wt_empty_bottle" string="Empty Wt. of Bottle" width="100px"/>
@@ -1240,6 +1261,14 @@
 
                     </tree>
                 </field>
+            </div>
+
+
+            <div invisible="specific_gravity_visible == False">
+                <button name="action_compute_avg_corr_gravity"
+                    string="Calculate Avg Corrected Gravity"
+                    type="object"
+                    class="btn-primary"/>
             </div>
 
 
@@ -1304,7 +1333,7 @@
 
 
 
-<div invisible="ll_visible == False">
+<div invisible="ll_visible == False or freeswell_visible == False" >
 
 <h1 class="text-center">
         <field name="Atterbergs_name_ll" readonly="1" nolabel="1"/>
@@ -1339,7 +1368,7 @@
 
 
 
-<div invisible="pl_visible == False">
+<div invisible="pl_visible == False or freeswell_visible == False">
 
 <h1 class="text-center">
         <field name="Atterbergs_name_pl" readonly="1" nolabel="1"/>
@@ -1377,7 +1406,7 @@
 
 
 
-<div invisible="sl_visible == False">
+<div invisible="sl_visible == False or freeswell_visible == False">
 
 <h1 class="text-center">
         <field name="Atterbergs_name_sl" readonly="1" nolabel="1"/>
