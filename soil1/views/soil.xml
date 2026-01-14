@@ -877,6 +877,7 @@
 
 
 
+                 <!-- gsa -->
                  <div invisible="gsa_visible == False">
                         <h1 class="text-center">
                             <field name="gsa_name" readonly="1" nolabel="1"/>
@@ -1298,7 +1299,7 @@
                     </table>
 
 
-            <div invisible="freeswell_visible == False">
+            <div invisible="freeswell_visible == False  ">
                 <field name="freeswell_line_ids">
                     <tree editable="bottom" class="custom_table_borders">
                         <field name="serial_no" string="Sr.No" width="35px"/>
@@ -2972,11 +2973,11 @@
                                     <td ><field name="shear_room_temp" class="blue-input"/></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="shear_temp_correction">Std Calibration Temp</label></td>
+                                    <td><label for="shear_temp_correction">Temperature correction fro each deg C rise/fall (+/-)</label></td>
                                     <td ><field name="shear_temp_correction" class="blue-input"/></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="shear_std_temp">Rise/Fall in Temperature (°C)" </label></td>
+                                    <td><label for="shear_std_temp">Std Temp During calibr'n </label></td>
                                     <td ><field name="shear_std_temp" class="blue-input"/></td>
                                 </tr>
                                 
