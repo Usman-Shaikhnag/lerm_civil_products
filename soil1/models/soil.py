@@ -35,7 +35,7 @@ from odoo.exceptions import UserError
 # जर त्या नसतील तर कोड एरर न देता साधी लाईन वापरेल.
 try:
     import numpy as np
-    from scipy.interpolate import make_interp_spline
+    from scipy.interpolate import make_interp_eline
     HAS_SCIPY = True
 except ImportError:
     HAS_SCIPY = False
@@ -595,32 +595,11 @@ class Soil(models.Model):
         buffer.seek(0)
 
         return base64.b64encode(buffer.read())
-<<<<<<< HEAD
-    
-
-
-
-=======
->>>>>>> d69a74612e6cd33b393e32ad42414afff7ce1903
     
 
 
 
 
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> d69a74612e6cd33b393e32ad42414afff7ce1903
 #  1st table  Bulk Density
 
     moisture_name = fields.Char( string="Name",default=" Bulk Density" )
@@ -644,6 +623,29 @@ class Soil(models.Model):
 
     NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
+        
+
+    def action_moisture_content(self):
+          for rec in self:
+            lines = rec.moisture_ids.sorted('id')
+
+           
+            for line in lines:
+                line.avg_nmc = 0.0
+
+            i = 0
+            while i < len(lines):
+                group = lines[i:i+2] 
+                values = [l.moisture_content for l in group if l.moisture_content]
+
+                if values:
+                    avg = sum(values) / len(values)
+                    group[0].avg_nmc = avg  
+
+                i += 2
+
+
+
 
 
     # specific gravity
@@ -702,7 +704,7 @@ class Soil(models.Model):
     ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
     sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id')
 
-    liquid_avg = fields.Float( string='Liquid Limit Avg' , digits=(10,0) ,compute='_compute_liquid_avg',store=True,)
+    liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(10,0) ,compute='_compute_liquid_avg',store=True,)
     
 
     @api.depends('ll_line_ids.water_content')
@@ -735,7 +737,7 @@ class Soil(models.Model):
 
 
      
-    shrinkage_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_shrinkage_avg")
+    shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0),compute="_compute_shrinkage_avg")
 
 
     @api.depends('sl_line_ids.water_content')
@@ -6190,7 +6192,8 @@ class SoilMoisture(models.Model):
             values = [t.moisture_content for t in trials]
             rec.avg_nmc = sum(values) / len(values) if values else 0.0
 
- 
+
+
 
     @api.depends('moisture_content', 'avg_nmc')
     def _compute_is_ok(self):
@@ -6217,6 +6220,12 @@ class SoilMoisture(models.Model):
             records = self.search([('parent_id', '=', parent.id)], order='id')
             for index, record in enumerate(records, start=1):
                 record.serial_no = index
+
+
+    
+
+
+
 
 
     
@@ -8598,42 +8607,79 @@ class LabAtterbergLlLine(models.Model):
 
 
 
-class LabAtterbergSlLine(models.Model):
-    _name = 'lab.atterberg.sl.line'
-    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+# class LabAtterbergSlLine(models.Model):
+#     _name = 'lab.atterberg.sl.line'
+#     parent_id = fields.Many2one('mechanical.soil1', string="Parent")
     
 
    
-    serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
-    container_no = fields.Char('Container No.')
-    m1 = fields.Float('M1 (gm)', digits=(10,3))
-    v1 = fields.Float('V1 (cm3)', digits=(10,3))
-    m2 = fields.Float('M2 (gm)', digits=(10,3))
-    m3 = fields.Float('M3 (gm)', digits=(10,3))
-    v2 = fields.Float('V2 (cm3)', digits=(10,3))
+#     serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
+#     container_no = fields.Char('Container No.')
+#     m1 = fields.Float('M1 (gm)', digits=(10,3))
+#     v1 = fields.Float('V1 (cm3)', digits=(10,3))
+#     m2 = fields.Float('M2 (gm)', digits=(10,3))
+#     m3 = fields.Float('M3 (gm)', digits=(10,3))
+#     v2 = fields.Float('V2 (cm3)', digits=(10,3))
     
    
-    m3_m2 = fields.Float('M3-M2', digits=(10,3), compute='_compute_sl', store=True)
-    m2_m1 = fields.Float('M2-M1', digits=(10,3), compute='_compute_sl', store=True)
-    v1_v2 = fields.Float('V1-V2', digits=(10,3), compute='_compute_sl', store=True)
+#     m3_m2 = fields.Float('M3-M2', digits=(10,3), compute='_compute_sl', store=True)
+#     m2_m1 = fields.Float('M2-M1', digits=(10,3), compute='_compute_sl', store=True)
+#     v1_v2 = fields.Float('V1-V2', digits=(10,3), compute='_compute_sl', store=True)
+#     water_content = fields.Float('Water Content %', digits=(10,2), compute='_compute_sl', store=True)
+#     shrinkage_ratio = fields.Float('Shrinkage Ratio', digits=(10,3), compute='_compute_sl', store=True)
+#     shrinkage_limit = fields.Float('SL %', digits=(10,2), compute='_compute_sl', store=True)
+
+#     @api.depends('m1', 'm2', 'm3', 'v1', 'v2')
+#     def _compute_sl(self):
+#         gamma_w = 1.0  
+#         for rec in self:
+#             rec.m3_m2 = rec.m3 - rec.m2 if rec.m3 and rec.m2 else 0.0
+#             rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
+#             rec.v1_v2 = rec.v1 - rec.v2 if rec.v1 and rec.v2 else 0.0
+            
+#             if rec.m3_m2 and rec.v2:
+#                 rec.shrinkage_ratio = rec.m3_m2 / (rec.v2 * gamma_w)
+#                 rec.water_content = ((rec.m1 - rec.m2) / rec.m3_m2) * 100
+#                 rec.shrinkage_limit = rec.water_content - (rec.shrinkage_ratio * 100)
+#             else:
+#                 rec.shrinkage_ratio = rec.water_content = rec.shrinkage_limit = 0.0
+
+class LabAtterbergSlLine(models.Model):
+    _name = 'lab.atterberg.sl.line'
+    
+    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+    serial_no = fields.Integer(string="Sr. No", readonly=True, default=1)
+    
+
+
+    container_no = fields.Char('Container No.')
+    m1 = fields.Float('M1 (gm)')
+    v1 = fields.Float('V1 (cm3)')
+    m2 = fields.Float('M2 (gm)')
+    m3 = fields.Float('M3 (gm)')
+    v2 = fields.Float('V2 (cm3)')
+    
+    m3_m2 = fields.Float('M3-M2', compute='_compute_sl', store=True)
+    m2_m1 = fields.Float('M2-M1', compute='_compute_sl', store=True)
+    v1_v2 = fields.Float('V1-V2', compute='_compute_sl', store=True)
     water_content = fields.Float('Water Content %', digits=(10,2), compute='_compute_sl', store=True)
     shrinkage_ratio = fields.Float('Shrinkage Ratio', digits=(10,3), compute='_compute_sl', store=True)
     shrinkage_limit = fields.Float('SL %', digits=(10,2), compute='_compute_sl', store=True)
 
-    @api.depends('m1', 'm2', 'm3', 'v1', 'v2')
-    def _compute_sl(self):
-        gamma_w = 1.0  
-        for rec in self:
-            rec.m3_m2 = rec.m3 - rec.m2 if rec.m3 and rec.m2 else 0.0
-            rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
-            rec.v1_v2 = rec.v1 - rec.v2 if rec.v1 and rec.v2 else 0.0
-            
-            if rec.m3_m2 and rec.v2:
-                rec.shrinkage_ratio = rec.m3_m2 / (rec.v2 * gamma_w)
-                rec.water_content = ((rec.m1 - rec.m2) / rec.m3_m2) * 100
-                rec.shrinkage_limit = rec.water_content - (rec.shrinkage_ratio * 100)
-            else:
-                rec.shrinkage_ratio = rec.water_content = rec.shrinkage_limit = 0.0
+    # [PASTE THE _compute_sl METHOD ABOVE HERE]
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('parent_id') and not vals.get('serial_no'):
+            existing = self.search([('parent_id', '=', vals['parent_id'])], 
+                                 order='serial_no desc', limit=1)
+            vals['serial_no'] = (existing.serial_no or 0) + 1 if existing else 1
+        return super().create(vals)
+
+
+
+
+
 
 
 
