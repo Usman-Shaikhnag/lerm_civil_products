@@ -185,6 +185,7 @@ class TemperatureMonitoringController(http.Controller):
             "project_name": form.project_name,
             "columns_data": form.columns_data,
             "rows_data": form.rows_data,
+            "sections_data": form.sections_data,
             "graph1": bool(form.graph1),  # True if present
             "graph2": bool(form.graph2),
         }
