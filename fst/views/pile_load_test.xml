@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_pile_load_test_parent_report_form" model="ir.ui.view">
+        <field name="name">pile.load.test.parent.report.form</field>
+        <field name="model">pile.load.test.parent</field>
+        <field name="arch" type="xml">
+
+            <form string="Initial Vertical Pile Load Test Report">
+                <header>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
+                </header>
+                <sheet>
+
+                    <!-- ================= COVER ================= -->
+                    <div style="text-align:center; margin-top:30px; margin-bottom:40px;">
+                        <h1 style="font-size:26px; letter-spacing:1px;">
+                            <field name="name"/>
+                        </h1>
+                        <h2 style="margin-top:15px;">
+                            INITIAL VERTICAL PILE LOAD TEST
+                        </h2>
+                    </div>
+
+                    <group col="2" style="margin-bottom:30px;">
+                        <field name="report_no"/>
+                        <field name="ulr"/>
+                        <field name="rec_date"/>
+                        <field name="test_standard"/>
+                        <field name="site_location" colspan="2"/>
+                    </group>
+
+                    <!-- ================= CONTENTS ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            CONTENTS
+                        </h3>
+                    </div>
+
+                    <field name="content_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence"/>
+                            <field name="description"/>
+                            <field name="page_no"/>
+                        </tree>
+                    </field>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000; padding-bottom:4px;">
+                            INTRODUCTION
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #bdbdbd; padding:12px; margin-bottom:25px; background-color:#fafafa;">
+                        <field name="introduction"
+                            widget="text"
+                            nolabel="1"
+                            placeholder="Enter introduction here..."/>
+                    </div>
+
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000; padding-bottom:4px;">
+                            OBJECTIVE
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #bdbdbd; padding:12px; margin-bottom:25px; background-color:#fafafa;">
+                        <field name="objective"
+                            widget="text"
+                            nolabel="1"
+                            placeholder="Enter objective here..."/>
+                    </div>
+
+
+                    <!-- ================= TEST PROCEDURE ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000; padding-bottom:4px;">
+                            TEST PROCEDURE
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #bdbdbd; padding:12px; margin-bottom:25px; background-color:#fafafa;">
+                        <field name="test_procedure"
+                            widget="text"
+                            nolabel="1"
+                            placeholder="Enter test procedure here..."/>
+                    </div>
+
+                                        <!-- ================= TABLE 1 : BASIC DATA ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 1 : BASIC DATA
+                        </h3>
+                    </div>
+
+                    <field name="basic_data_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sr_no"/>
+                            <field name="parameter"/>
+                            <field name="value"/>
+                        </tree>
+                    </field>
+
+
+                    <!-- ================= ANALYSIS ================= -->
+                    <!-- <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000; padding-bottom:4px;">
+                            ANALYSIS &amp; INTERPRETATION
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #bdbdbd; padding:12px; margin-bottom:25px; background-color:#fafafa;">
+                        <field name="interpretation"
+                            widget="text"
+                            nolabel="1"
+                            placeholder="Enter interpretation here..."/>
+                    </div> -->
+
+
+                    <!-- ================= TABLE 2A ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 2A : DIAL GAUGE READING CORRESPONDING TO LOADING
+                        </h3>
+                    </div>
+
+                    <field name="loading_reading_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="date"/>
+                            <field name="time_hours"/>
+                            <field name="load_tonne"/>
+                            <field name="dial_a"/>
+                            <field name="dial_b"/>
+                            <field name="dial_c"/>
+                            <field name="dial_d"/>
+                            <field name="mean_mm" readonly="1"/>
+                        </tree>
+                    </field>
+
+                    <!-- ================= TABLE 2B ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 2B : DIAL GAUGE READING CORRESPONDING TO UNLOADING
+                        </h3>
+                    </div>
+
+                    <field name="unloading_reading_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="date"/>
+                            <field name="time_hours"/>
+                            <field name="load_tonne"/>
+                            <field name="dial_a"/>
+                            <field name="dial_b"/>
+                            <field name="dial_c"/>
+                            <field name="dial_d"/>
+                            <field name="mean_mm" readonly="1"/>
+                        </tree>
+                    </field>
+
+                    <button name="action_generate_graph"
+                            type="object"
+                            string="Generate Graph"
+                            class="btn-primary"/>
+
+                    <!-- ================= GRAPH ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            LOAD SETTLEMENT GRAPH
+                        </h3>
+                    </div>
+
+                    <field name="graph_image" widget="image"/>
+
+                    <!-- ================= ANALYSIS OF TEST RESULTS ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="font-weight:bold;">
+                            2.06 : ANALYSIS OF TEST RESULTS
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #000; padding:12px; margin-bottom:15px;">
+                        <field name="analysis_text"
+                            widget="text"
+                            nolabel="1"/>
+                    </div>
+
+                    <!-- ================= SETTLEMENT SUMMARY ================= -->
+                    <div style="margin-top:15px; margin-bottom:25px;">
+                        <div style="font-weight:bold; margin-bottom:5px;">
+                            Gross Settlement = <field name="gross_settlement" readonly="1"/> mm
+                        </div>
+                        <div style="font-weight:bold; margin-bottom:5px;">
+                            Net Settlement = <field name="net_settlement" readonly="1"/> mm
+                        </div>
+                        <div style="font-weight:bold;">
+                            Rebound = <field name="rebound" readonly="1"/> mm
+                        </div>
+                    </div>
+
+                    <!-- ================= SITE PHOTOGRAPHS ================= -->
+                    <div style="margin-top:40px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            SITE PHOTOGRAPHS
+                        </h3>
+                    </div>
+
+                    <field name="site_image_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence" width="60"/>
+                            <field name="image" widget="image" class="oe_avatar"/>
+                            <field name="caption"/>
+                        </tree>
+                    </field>
+
+
+                    <!-- <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            CONCLUSION
+                        </h3>
+                    </div>
+
+                    <group col="2" style="margin-bottom:15px;">
+                        <field name="max_settlement" readonly="1"/>
+                        <field name="allowable_capacity"/>
+                    </group>
+
+                    <div style="border:1px solid #bdbdbd; padding:12px; margin-bottom:25px;">
+                        <field name="conclusion"
+                            widget="text"
+                            nolabel="1"
+                            placeholder="Enter conclusion here..."/>
+                    </div>
+
+                    <div style="margin-top:40px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            AUTHORIZATION
+                        </h3>
+                    </div>
+
+                    <group col="2">
+                        <field name="signatory_name"/>
+                        <field name="signatory_designation"/>
+                    </group> -->
+
+
+
+                </sheet>
+            </form>
+
+        </field>
+    </record>
+
+    <record id="view_pile_load_test_image_form" model="ir.ui.view">
+        <field name="name">pile.load.test.image.form</field>
+        <field name="model">pile.load.test.image</field>
+        <field name="arch" type="xml">
+            <form string="Site Photograph">
+                <sheet>
+                    <group col="1">
+                        <field name="sequence"/>
+                        <field name="image" widget="image"/>
+                        <field name="caption"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -103,4 +103,17 @@
         <field name="binding_model_id" ref="model_soil_borehole_parent"/>
     </record>
 
+    <record id="vertical_pile_load_report_py3o" model="ir.actions.report">
+        <field name="name">Vertical Pile Load Report</field>
+        <field name="model">pile.load.test.parent</field>
+        <field name="report_name">fst.vertical_pile_load</field>
+        <field name="report_type">py3o</field>
+        <field name="py3o_filetype">docx</field>
+        <field name="module">fst</field>
+        <field name="py3o_template_fallback">reports/vertical_pile_load.odt</field>
+        <field name="print_report_name">'Vertical Pile Load Report'</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_pile_load_test_parent"/>
+    </record>
+
 </odoo>
