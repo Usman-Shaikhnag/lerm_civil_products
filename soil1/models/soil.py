@@ -600,10 +600,12 @@ class Soil(models.Model):
 
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> f4698db7a188ca19a615b8331ff1657535c9f9cf
+
+
+
+
+
 #  1st table  Bulk Density
 
     moisture_name = fields.Char( string="Name",default=" Bulk Density" )
@@ -627,9 +629,10 @@ class Soil(models.Model):
 
     NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
+    nmc_visible = fields.Boolean(string="NMC Visible",compute="_compute_visible")
         
 
-    def action_moisture_content(self):
+    def action_moisture_content_NMC(self):
           for rec in self:
             lines = rec.moisture_ids.sorted('id')
 
@@ -705,18 +708,18 @@ class Soil(models.Model):
         for rec in self:
             lines = rec.gravity_line_ids.sorted('id')
 
-            # सगळे avg clear कर
+           
             for line in lines:
                 line.avg_corr_specific_gravity = 0.0
 
             i = 0
             while i < len(lines):
-                group = lines[i:i+2]  # 2 lines चा group
+                group = lines[i:i+2] 
                 values = [l.corr_specific_gravity for l in group if l.corr_specific_gravity]
 
                 if values:
                     avg = sum(values) / len(values)
-                    group[0].avg_corr_specific_gravity = avg  # first line वर
+                    group[0].avg_corr_specific_gravity = avg  
 
                 i += 2
 
@@ -5574,6 +5577,7 @@ class Soil(models.Model):
             record.freeswell_visible = False
 
             record.soil_light_heavy_visible = False
+            record.nmc_visible = False
            
 
 
