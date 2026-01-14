@@ -73,25 +73,20 @@ class PileLoadTestParent(models.Model):
 
     # Settlement Summary
     gross_settlement = fields.Float(
-        "Gross Settlement (mm)",
-        compute="_compute_settlement_summary",
-        store=True,
-        readonly=True
+        compute="_compute_settlement_values",
+        store=True
     )
 
     net_settlement = fields.Float(
-        "Net Settlement (mm)",
-        compute="_compute_settlement_summary",
-        store=True,
-        readonly=True
+        compute="_compute_settlement_values",
+        store=True
     )
 
     rebound = fields.Float(
-        "Rebound (mm)",
-        compute="_compute_settlement_summary",
-        store=True,
-        readonly=True
+        compute="_compute_settlement_values",
+        store=True
     )
+
 
     max_settlement = fields.Float(
         "Maximum Settlement",
@@ -112,25 +107,39 @@ class PileLoadTestParent(models.Model):
             rec.max_settlement = max(values) if values else 0.0
 
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
-    def _compute_settlement_summary(self):
+    def _compute_settlement_values(self):
         for rec in self:
-            if not rec.loading_reading_ids:
-                rec.gross_settlement = 0.0
-                rec.net_settlement = 0.0
-                rec.rebound = 0.0
-                continue
 
-            gross = max(rec.loading_reading_ids.mapped('mean_mm'))
-            net = 0.0
-            rebound = 0.0
+            # ---------------- LOADING ----------------
+            # Take FINAL mean at each load (last reading per load)
+            loading_map = {}
+            for r in rec.loading_reading_ids.sorted('id'):
+                loading_map[r.load_tonne] = r.mean_mm
 
-            if rec.unloading_reading_ids:
-                net = max(rec.unloading_reading_ids.mapped('mean_mm'))
-                rebound = gross - net
+            if loading_map:
+                gross = max(loading_map.values())
+            else:
+                gross = 0.0
+
+            # ---------------- UNLOADING ----------------
+            # Settlement at ZERO load after unloading
+            unloading_zero = rec.unloading_reading_ids.filtered(
+                lambda r: r.load_tonne == 0
+            )
+
+            if unloading_zero:
+                final_settlement = unloading_zero[-1].mean_mm
+            else:
+                final_settlement = 0.0
+
+            rebound = gross - final_settlement
 
             rec.gross_settlement = round(gross, 2)
-            rec.net_settlement = round(net, 2)
+            rec.net_settlement = round(final_settlement, 2)
             rec.rebound = round(rebound, 2)
+
+
+
 
     def action_generate_graph(self):
         """Generate Load–Settlement graph exactly like PDF"""
@@ -240,7 +249,7 @@ class PileLoadTestParent(models.Model):
                 line._compute_mean()
 
             # 3️⃣ Force recompute of parent computed fields
-            rec._compute_settlement_summary()
+            rec._compute_settlement_values()
             rec._compute_max_settlement()
 
 
