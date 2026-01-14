@@ -3030,6 +3030,8 @@
                         class="btn-primary"/>
                      </div>  
 
+                     
+
 
                     <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
                         <field name="shear_graph_image" widget="image"  readonly="1"/>
@@ -3149,6 +3151,44 @@
                             </tbody>
                         </table>
 
+                        <div invisible = "direct_shear_visible == False">
+                    
+                        <field name="direct_shear_ids_2">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='horizontal_read'/>
+                                <field name='horizontal_dispalacement'/>
+                                <!-- <field name='horizontal_dispalacement_inv' invisible= "1"/> -->
+
+                               <field name="corrected_area" column_invisible="parent.area_type != 'corrected'"/>
+
+                               <field name="non_corrected_area" column_invisible="parent.area_type != 'non_corrected'"/> 
+                               <!-- <field name="selected_area" readonly="1" string="Selected Area"/> -->
+                                <field name='prove_ring_read'/>
+                                <field name='horizontal_shear'/>
+                                <field name='horizontal_shear_temp'/>
+                                <field name='shear_stress'/>
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                                <group/>
+                      <div invisible = "direct_shear_visible == False">
+                    <button name="action_generate_shear_graph_2"
+                        string="Generate Shear Graph"
+                        type="object"
+                        class="btn-primary"/>
+                     </div>  
+
+                     
+
+
+                    <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
+                        <field name="shear_graph_image_2" widget="image"  readonly="1"/>
+                    </div>
+                    <group/>
+
 
 
                         <!-- input 3 -->
@@ -3259,6 +3299,99 @@
                                 </tr>
                             </tbody>
                         </table>
+
+                        <div invisible = "direct_shear_visible == False">
+                    
+                        <field name="direct_shear_ids_3">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='horizontal_read'/>
+                                <field name='horizontal_dispalacement'/>
+                                <!-- <field name='horizontal_dispalacement_inv' invisible= "1"/> -->
+
+                               <field name="corrected_area" column_invisible="parent.area_type != 'corrected'"/>
+
+                               <field name="non_corrected_area" column_invisible="parent.area_type != 'non_corrected'"/> 
+                               <!-- <field name="selected_area" readonly="1" string="Selected Area"/> -->
+                                <field name='prove_ring_read'/>
+                                <field name='horizontal_shear'/>
+                                <field name='horizontal_shear_temp'/>
+                                <field name='shear_stress'/>
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                    <!-- <div invisible = "direct_shear_visible == False">
+                                    <button string="Calculate" type="object" name="action_compute_shear" class="oe_highlight">
+                                        <i class="fa fa-calculator"/> Calculate 
+                                    </button>
+                                </div>   -->
+                                <group/>
+                      <div invisible = "direct_shear_visible == False">
+                    <button name="action_generate_shear_graph_3"
+                        string="Generate Shear Graph"
+                        type="object"
+                        class="btn-primary"/>
+                     </div>  
+
+                     
+
+
+                    <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
+                        <field name="shear_graph_image_3" widget="image"  readonly="1"/>
+                    </div>
+                    <group/>
+
+                  
+
+                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><span>Sr No</span></td>
+                                    <td><span>Shear stress kg/cm2</span></td>
+                                    <td><span>Normal stress kg/cm2</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span>1</span></td>
+                                    <td><field name="shear_stress_shear" /></td>
+                                    <td><field name="normal_stress" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>2</span></td>
+                                    <td><field name="shear_stress_shear_2" /></td>
+                                    <td><field name="normal_stress_2" readonly="1"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><span>3</span></td>
+                                    <td><field name="shear_stress_shear_3" /></td>
+                                    <td><field name="normal_stress_3" readonly="1"/></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+
+
+                        <div invisible = "direct_shear_visible == False">
+                    <button name="action_plot_shear_vs_normal"
+                        string="Generate Shear Graph"
+                        type="object"
+                        class="btn-primary"/>
+                     </div>   -->
+
+                     
+
+
+                    <!-- <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
+                        <field name="shear_vs_normal_graph" widget="image"  readonly="1"/>
+                    </div>
+                    <group/> -->
+
+                    
+
+
 
 
 
