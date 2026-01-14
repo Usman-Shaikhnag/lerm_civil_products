@@ -15,7 +15,7 @@ This module contains all the common features of Sales Management and eCommerce.
                'security/ir.model.access.csv',
                'views/soil.xml',
                'reports/soil_ssl_datasheet.xml',
-               'reports/soil_ssl_report.xml'
+               'reports/soil_report.xml'
     ],
 
   

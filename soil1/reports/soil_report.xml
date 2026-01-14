@@ -1,0 +1,218 @@
+<odoo>
+  <template id="soil_report1">
+     <t t-call="web.html_container">
+       		 <t t-call="lerm_civil.genstru_layout_header_footer_lerm_eln">
+
+          <div class="container_eln" style="padding-top:0px;">
+					<div class="" t-foreach="eln" t-as="o">
+						
+					
+						  <table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
+							<tr>
+								<!-- <td ><strong>Mechanical Testing</strong>: </td>
+								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td> -->
+								<!-- <td colspan="3"><strong>Report No</strong>: </td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
+								<td colspan="3" ><strong>URL NO</strong>: </td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td> -->
+							</tr>
+
+							<tr>
+								<td colspan="3"><strong>Project Name</strong>: </td>
+								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+
+								<!-- <td><strong>Date of Report</strong>: </td>
+									
+								<td >
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								</td> -->
+							</tr>
+						
+							
+						
+							<tr>
+							<td colspan="3" style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
+							<td colspan="3" style="padding-left: 10px;width:25%;">
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+								<!-- <td><strong>Date Sample Received</strong>: </td> -->
+								<!-- <td >
+								<span t-field="o.sample_id.sample_received_date"/>
+								</td > -->
+								
+
+								<td colspan="3"><strong>Date Sample Received</strong>:</td>
+								<td colspan="3">
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								
+								<td colspan="3" ><strong>Mechanical Testing</strong>: </td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.group_id"/></td>
+
+								<td colspan="3"><strong>Date of Report</strong>: </td>
+									
+								<td colspan="3">
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								</td>
+							
+							</tr>
+
+							<tr>
+								
+								
+								
+								<td colspan="3"><strong>Location</strong>: </td>
+								<td colspan="3">
+								Permanent facility
+							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
+								</td>
+								
+								
+
+								<td colspan="3"><strong>Starting Date</strong>: </td>
+								<td colspan="3">
+							        <span t-field="o.start_date" style="margin-right:10px;"/>
+								</td>
+							
+							</tr>
+							
+							<tr>
+
+								<td colspan="3"><strong>Type of Sample &amp; Condition</strong>: </td>
+								<td colspan="3"><span t-field="o.material.name"/></td>
+
+							<td colspan="3"><strong>Completion Date</strong>: </td>
+								<td colspan="3">
+								<span t-field="o.end_date" />
+								</td>
+						</tr>
+
+						<!-- <tr>
+
+								<td colspan="3"><strong>Source of Sample </strong>: </td>
+								<td colspan="3" style="padding-left: 10px;">
+								  <span t-field="o.source_sample"/>
+								
+								</td>
+
+							<td colspan="3"><strong>No. of Sample</strong>: </td>
+								<td colspan="3">
+									<span t-field="o.quantity" />
+								</td>
+						</tr> -->
+
+						
+
+							
+						</table>
+
+						</div>
+
+          <table width="100%" style="font-size: 8px; border-collapse: collapse;" border="1">
+            <thead>
+              <tr>
+			  <th rowspan="2">Lab ID</th>
+                <th rowspan="2">Location</th>
+                <th rowspan="2">Sample Type</th>
+                <th rowspan="2">Depth (m)</th>
+                <th colspan="4">GSA+</th>
+                <th colspan="3">Atterberg Limits</th>
+                <th rowspan="2">IS Class</th>
+                <th colspan="3">Specific Gravity / FSI / NMC</th>
+                <th colspan="3">Bulk Density / Proctor</th>
+                <th rowspan="2">UCS</th>
+                <th colspan="2">Direct Shear</th>
+                <th colspan="2">Triaxial Test (UU)</th>
+                <th colspan="2">Consolidation</th>
+                <th rowspan="2">CBR</th>
+                <th rowspan="2">Swelling</th>
+                <th rowspan="2">k</th>
+              </tr>
+              <tr>
+                <th>G</th><th>S</th><th>M</th><th>C</th>
+                <th>LL</th><th>PL</th><th>SL</th>
+                <th>Gs</th><th>FSI</th><th>NMC</th>
+                <th>γb</th><th>MDD</th><th>OMC</th>
+                <th>C</th><th>ϕ</th>
+                <th>C</th><th>ϕ</th>
+                <th>Pc</th><th>Cc</th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="data.gsa_child_lines" t-as="line">
+                <tr>
+                  <td><t t-esc="line.lab_no"/></td>
+                  <td><t t-esc="line.bh_id"/></td>
+				  <td><t t-esc="line.sample_details"/></td>
+				  <td><t t-esc="line.sample_depth"/></td>
+
+
+				  <td><t t-esc="line.gravel"/></td>
+                  <td><t t-esc="line.silt"/></td>
+				  <td><t t-esc="line.sand"/></td>
+				  <td><t t-esc="line.silt_clay"/></td>
+                  <!-- Atterberg Limits -->
+					<td></td>
+					<td></td>
+					<td></td>
+
+					<!-- IS Class -->
+					<td></td>
+
+					<!-- Specific Gravity / FSI / NMC -->
+					 <td>
+						
+						<t t-if="data.gravity_line_ids">
+							<t t-esc="data.gravity_line_ids[0].avg_corr_specific_gravity"/>
+						</t>
+					
+                </td>
+					<td></td>
+					<td></td>
+
+					<!-- Bulk Density / Proctor -->
+					<td></td>
+					<td></td>
+					<td></td>
+
+					<!-- UCS -->
+					<td></td>
+
+					<!-- Direct Shear -->
+					<td></td>
+					<td></td>
+
+					<!-- Triaxial -->
+					<td></td>
+					<td></td>
+
+					<!-- Consolidation -->
+					<td></td>
+					<td></td>
+
+					<!-- CBR -->
+					<td></td>
+
+					<!-- Swelling -->
+					<td></td>
+
+					<!-- k -->
+					<td></td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+
+          </div>
+      </t>
+    </t>
+  </template>
+</odoo>
