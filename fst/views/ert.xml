@@ -240,6 +240,12 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="action_lateral_pile_load_test_parent" model="ir.actions.act_window">
+            <field name="name">Lateral Pile Load Tests</field>
+            <field name="res_model">lateral.pile.load.test.parent</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
 
         <menuitem id="fst_root"
             name="FST"
@@ -283,10 +289,19 @@
                                 </div>
 
                                 <div style="flex: 1; min-width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center;">
-                                    <h3 style="margin-bottom: 20px;">Pile Load Test</h3>
+                                    <h3 style="margin-bottom: 20px;">Vertical Pile Load Test</h3>
                                     <a type="action"
                                     name="%(action_pile_load_test_parent)d"
                                     class="btn btn-warning btn-lg">
+                                        Records
+                                    </a>
+                                </div>
+
+                                <div style="flex: 1; min-width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center;">
+                                    <h3 style="margin-bottom: 20px;">Lateral Pile Load Test</h3>
+                                    <a type="action"
+                                    name="%(action_lateral_pile_load_test_parent)d"
+                                    class="btn btn-info btn-lg">
                                         Records
                                     </a>
                                 </div>
