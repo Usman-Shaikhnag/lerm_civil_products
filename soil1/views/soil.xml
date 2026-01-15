@@ -810,6 +810,17 @@
                         </tbody>
                     </table> -->
 
+                    <div invisible = "moisture_visible == False">
+                  <field name= 'bulk_lines_generated' invisible="1" />
+                  <button name="action_generate_bulck_lines"
+                   
+                    type="object"
+                    string="Generate Lab Lines"
+                    class="oe_highlight"
+                    invisible="bulk_lines_generated == True"/>
+
+                </div>
+
 
 
 
@@ -843,6 +854,17 @@
                    NMC
                </h1>
                    </div>
+
+                    <div invisible = "moisture_visible == False">
+                  <field name= 'nmc_lines_generated' invisible="1" />
+                  <button name="action_generate_nmc_lines"
+                   
+                    type="object"
+                    string="Generate Lab Lines"
+                    class="oe_highlight"
+                    invisible="nmc_lines_generated == True"/>
+
+                </div>
 
 
 
