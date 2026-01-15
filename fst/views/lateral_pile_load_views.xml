@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ================= MAIN FORM ================= -->
+    <record id="view_lateral_pile_load_test_parent_form" model="ir.ui.view">
+        <field name="name">lateral.pile.load.test.parent.form</field>
+        <field name="model">lateral.pile.load.test.parent</field>
+        <field name="arch" type="xml">
+
+            <form string="Initial Lateral Pile Load Test Report">
+                <header>
+                    <button name="print_report"
+                            string="Print Report"
+                            type="object"
+                            class="btn-primary"/>
+                </header>
+
+                <sheet>
+
+                    <!-- ================= COVER ================= -->
+                    <div style="text-align:center; margin-top:30px; margin-bottom:40px;">
+                        <h1 style="font-size:26px;">
+                            <field name="name"/>
+                        </h1>
+                        <h2>INITIAL LATERAL PILE LOAD TEST</h2>
+                    </div>
+
+                    <group col="2" style="margin-bottom:30px;">
+                        <field name="report_no"/>
+                        <field name="ulr"/>
+                        <field name="rec_date"/>
+                        <field name="test_standard"/>
+                        <field name="site_location" colspan="2"/>
+                    </group>
+
+                    <!-- ================= CONTENTS ================= -->
+                    <div>
+                        <h3 style="border-bottom:2px solid #000;">CONTENTS</h3>
+                    </div>
+
+                    <field name="content_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence"/>
+                            <field name="description"/>
+                            <field name="page_no"/>
+                        </tree>
+                    </field>
+
+                    <!-- ================= INTRODUCTION ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">INTRODUCTION</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="introduction" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================= OBJECTIVE ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">OBJECTIVE</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="objective" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================= TEST EQUIPMENT ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">TEST EQUIPMENT</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="test_equipment" widget="text" nolabel="1"
+                               placeholder="Pressure gauge, Dial gauge, Hydraulic jack, Oil pump, etc."/>
+                    </div>
+
+                    <!-- ================= TEST PROCEDURE ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">TEST PROCEDURE</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="test_procedure" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================= TABLE 1 : BASIC DATA ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 1 : BASIC DATA
+                        </h3>
+                    </div>
+
+                    <field name="basic_data_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sr_no"/>
+                            <field name="parameter"/>
+                            <field name="value"/>
+                        </tree>
+                    </field>
+
+                    <!-- ================= TABLE 2A ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 2A : DIAL GAUGE READING CORRESPONDING TO LOADING
+                        </h3>
+                    </div>
+
+                    <field name="loading_reading_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="date"/>
+                            <field name="time_hours"/>
+                            <field name="load_tonne"/>
+                            <field name="dial_a"/>
+                            <field name="dial_b"/>
+                            <field name="mean_mm" readonly="1"/>
+                        </tree>
+                    </field>
+
+                    <!-- ================= TABLE 2B ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 2B : DIAL GAUGE READING CORRESPONDING TO UNLOADING
+                        </h3>
+                    </div>
+
+                    <field name="unloading_reading_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="date"/>
+                            <field name="time_hours"/>
+                            <field name="load_tonne"/>
+                            <field name="dial_a"/>
+                            <field name="dial_b"/>
+                            <field name="mean_mm" readonly="1"/>
+                        </tree>
+                    </field>
+
+                    <!-- ================= GRAPH ================= -->
+                    <button name="action_generate_graph"
+                            type="object"
+                            string="Generate Graph"
+                            class="btn-primary"/>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            LOAD DISPLACEMENT GRAPH
+                        </h3>
+                    </div>
+
+                    <field name="graph_image" widget="image"/>
+
+                    <!-- ================= INTERPRETATION ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">INTERPRETATION</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="interpretation" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================= ANALYSIS ================= -->
+                    <div style="margin-top:35px;">
+                        <h3>ANALYSIS OF TEST RESULTS</h3>
+                    </div>
+
+                    <div style="border:1px solid #000; padding:12px;">
+                        <field name="analysis_text" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================= DISPLACEMENT SUMMARY ================= -->
+                    <div style="margin-top:15px; font-weight:bold;">
+                        Gross Displacement =
+                        <field name="gross_displacement" readonly="1"/> mm<br/>
+                        Net Displacement =
+                        <field name="net_displacement" readonly="1"/> mm<br/>
+                        Rebound =
+                        <field name="rebound" readonly="1"/> mm
+                    </div>
+
+                    <!-- ================= SITE PHOTOGRAPHS ================= -->
+                    <div style="margin-top:40px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            SITE PHOTOGRAPHS
+                        </h3>
+                    </div>
+
+                    <field name="site_image_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence" width="60"/>
+                            <field name="image" widget="image" class="oe_avatar"/>
+                            <field name="caption"/>
+                        </tree>
+                    </field>
+
+                </sheet>
+            </form>
+
+        </field>
+    </record>
+
+</odoo>
