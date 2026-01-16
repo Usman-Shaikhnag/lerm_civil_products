@@ -620,6 +620,42 @@ class Soil(models.Model):
 
     bulk_line_ids = fields.One2many('soil.bulk.density','parent_id', string="Bulk Density Lines")
 
+    show_sieve = fields.Boolean(default=False)
+
+    bulk_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+
+    def action_generate_bulck_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.bulk_line_ids = lines
+                record.bulk_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.bulk_line_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
+
 
 
 
@@ -630,6 +666,42 @@ class Soil(models.Model):
     NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
     nmc_visible = fields.Boolean(string="NMC Visible",compute="_compute_visible")
+
+
+    show_sieve = fields.Boolean(default=False)
+
+    nmc_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+    def action_generate_nmc_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))   # 1st
+                    lines.append((0, 0, {'lab_id': False}))    # 2nd blank
+
+                record.moisture_ids = lines
+                record.nmc_lines_generated = True
+
+            if record.moisture_ids:
+                record.show_sieve = True
+
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
         
 
     def action_moisture_content_NMC(self):
@@ -5791,6 +5863,24 @@ class Soil(models.Model):
                 continue
 
             if result.parameter.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
                 # result.result_char = round(self.area_triaxial,2)
                 result.calculated = True
                 # if self.area_triaxial_nabl == 'pass':
