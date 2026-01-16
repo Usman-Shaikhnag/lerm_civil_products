@@ -620,6 +620,42 @@ class Soil(models.Model):
 
     bulk_line_ids = fields.One2many('soil.bulk.density','parent_id', string="Bulk Density Lines")
 
+    show_sieve = fields.Boolean(default=False)
+
+    bulk_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+
+    def action_generate_bulck_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.bulk_line_ids = lines
+                record.bulk_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.bulk_line_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
+
 
 
 
@@ -630,6 +666,42 @@ class Soil(models.Model):
     NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
     nmc_visible = fields.Boolean(string="NMC Visible",compute="_compute_visible")
+
+
+    show_sieve = fields.Boolean(default=False)
+
+    nmc_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+    def action_generate_nmc_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))   # 1st
+                    lines.append((0, 0, {'lab_id': False}))    # 2nd blank
+
+                record.moisture_ids = lines
+                record.nmc_lines_generated = True
+
+            if record.moisture_ids:
+                record.show_sieve = True
+
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
         
 
     def action_moisture_content_NMC(self):
@@ -5798,6 +5870,24 @@ class Soil(models.Model):
                 # else:
                 #     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
             
             
 
@@ -9222,6 +9312,10 @@ class LabAtterbergLlLine(models.Model):
 #             else:
 #                 rec.shrinkage_ratio = rec.water_content = rec.shrinkage_limit = 0.0
 
+
+
+
+
 class LabAtterbergSlLine(models.Model):
     _name = 'lab.atterberg.sl.line'
     
@@ -9246,13 +9340,53 @@ class LabAtterbergSlLine(models.Model):
 
     # [PASTE THE _compute_sl METHOD ABOVE HERE]
     
-    @api.model
-    def create(self, vals):
-        if vals.get('parent_id') and not vals.get('serial_no'):
-            existing = self.search([('parent_id', '=', vals['parent_id'])], 
-                                 order='serial_no desc', limit=1)
-            vals['serial_no'] = (existing.serial_no or 0) + 1 if existing else 1
-        return super().create(vals)
+    @api.depends('m1', 'm2', 'm3', 'v1', 'v2')
+    def _compute_sl(self):
+     for rec in self:
+        # Safe values from your test: m1=33.17, v1=22, m2=76.22, m3=66.51, v2=17
+        m1 = rec.m1 or 0.0
+        m2 = rec.m2 or 0.0
+        m3 = rec.m3 or 0.0
+        v1 = rec.v1 or 0.0
+        v2 = rec.v2 or 0.0
+        
+        # Excel column differences (display only)
+        rec.m3_m2 = m3 - m2
+        rec.m2_m1 = m2 - m1
+        rec.v1_v2 = v1 - v2
+        
+        # **YOUR EXACT EXCEL FORMULAS:**
+        # Water Content = ((M1-M3)/(M2-M3)) * 100
+        dry_soil = m2 - m1  # 76.22 - 66.51 = 9.71
+        if dry_soil > 0:
+            rec.water_content = ((m3 - m2) / dry_soil) * 100  # (33.17-66.51)/9.71 * 100 = **72.34**
+        else:
+            rec.water_content = 0.0
+        
+        # Shrinkage Ratio = (M2-M3)/V2  
+        if v2 > 0:
+            rec.shrinkage_ratio = ((m2 - m1) / v2 ) # 9.71/17 = **0.571**
+        else:
+            rec.shrinkage_ratio = 0.0
+        
+        # Shrinkage Limit = Water Content - (SR * 100)
+        v2_v1 = v1 - v2
+        m2_m1 = m2 -m1
+        if m2_m1 > 0:
+
+
+            rec.shrinkage_limit =  round ((((m3 - m2) - (v2_v1 * 1)) /(m2 -m1)) * 100, 0)  # 9.71/17 = **0.571**
+
+            
+        else:
+            rec.shrinkage_limit = 0.0
+
+
+       
+ 
+
+
+
 
 
 

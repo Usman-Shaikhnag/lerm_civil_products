@@ -115,6 +115,16 @@
 						</table>
 
 						</div>
+          <t t-set="grav_vals" t-value="[g.avg_corr_specific_gravity for g in (data.gravity_line_ids or []) if g.avg_corr_specific_gravity]"/>
+           <t t-set="g_index" t-value="0"/>
+		   <t t-set="name_vals" t-value="[o.name for o in (data.lab_option_ids or []) if o.name]"/>
+			<t t-set="n_index" t-value="0"/>
+
+			<t t-set="name_density" t-value="[o.bulk_density for o in (data.bulk_line_ids or []) if o.bulk_density]"/>
+			<t t-set="n_density" t-value="0"/>
+
+				<t t-set="name_avg_nmc" t-value="[o.avg_nmc for o in (data.moisture_ids or []) if o.avg_nmc]"/>
+			<t t-set="n_avg_nmc" t-value="0"/>
 
           <table width="100%" style="font-size: 8px; border-collapse: collapse;" border="1">
             <thead>
@@ -126,7 +136,11 @@
                 <th colspan="4">GSA+</th>
                 <th colspan="3">Atterberg Limits</th>
                 <th rowspan="2">IS Class</th>
-                <th colspan="3">Specific Gravity / FSI / NMC</th>
+				 <th rowspan="2">Specific Gravity</th>
+				 <th rowspan="2">FSI</th>
+				 <th rowspan="2">Bulk Density</th>
+				  <th rowspan="2">NMC</th>
+                <th colspan="3"> FSI / NMC</th>
                 <th colspan="3">Bulk Density / Proctor</th>
                 <th rowspan="2">UCS</th>
                 <th colspan="2">Direct Shear</th>
@@ -149,7 +163,17 @@
             <tbody>
               <t t-foreach="data.gsa_child_lines" t-as="line">
                 <tr>
-                  <td><t t-esc="line.lab_no"/></td>
+                  <!-- <td><t t-esc="line.lab_no"/></td> -->
+				 <td style="min-width: 100px; width: 100px;">
+						<t t-set="ni" t-value="n_index if n_index is not None else 0"/>
+
+						<t t-if="name_vals and ni &lt; len(name_vals)">
+							<t t-esc="name_vals[ni]"/>
+							<t t-set="n_index" t-value="ni + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+
                   <td><t t-esc="line.bh_id"/></td>
 				  <td><t t-esc="line.sample_details"/></td>
 				  <td><t t-esc="line.sample_depth"/></td>
@@ -168,14 +192,43 @@
 					<td></td>
 
 					<!-- Specific Gravity / FSI / NMC -->
-					 <td>
-						
-						<t t-if="data.gravity_line_ids">
-							<t t-esc="data.gravity_line_ids[0].avg_corr_specific_gravity"/>
+					<td>
+						<t t-set="gi" t-value="g_index if g_index is not None else 0"/>
+
+						<t t-if="grav_vals and gi &lt; len(grav_vals)">
+							<t t-esc="grav_vals[gi]"/>
+							<t t-set="g_index" t-value="gi + 1"/>
 						</t>
-					
-                </td>
+						<t t-else="">--</t>
+					</td>
 					<td></td>
+
+					<td style="min-width: 100px; width: 100px;">
+						<t t-set="di" t-value="n_density if n_density is not None else 0"/>
+
+						<t t-if="name_density and di &lt; len(name_density)">
+							<t t-esc="'%.2f' % name_density[di]"/>
+							<t t-set="n_density" t-value="di + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+
+					<td style="min-width: 100px; width: 100px;">
+						<t t-set="di" t-value="n_avg_nmc if n_avg_nmc is not None else 0"/>
+
+						<t t-if="name_avg_nmc and di &lt; len(name_avg_nmc)">
+							<t t-esc="'%.2f' % name_avg_nmc[di]"/>
+							<t t-set="n_avg_nmc" t-value="di + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+
+
+					<td></td>
+
+					<td></td>
+
+
 					<td></td>
 
 					<!-- Bulk Density / Proctor -->
