@@ -126,6 +126,7 @@ class ELN(models.Model):
     tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature")
     
     quantity = fields.Integer(string="Quantity",default=1)
+    sample_qty = fields.Integer(string="Sample Quantity")
     source_sample = fields.Char(string="Source of Sample",compute="_compute_source_sample",store=True)
     # lab_id = fields.Char(
     #     string="Lab ID",

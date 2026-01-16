@@ -6,6 +6,7 @@ class SampleRegister(models.Model):
 
     sample = fields.Many2one('lerm.srf.sample',string="Sample")
     quantity = fields.Integer(string="Quantity")
+    sample_qty = fields.Integer(string="Sample Quantity")
     lab_id = fields.Char( string="Lab ID",readonly=True,tracking=True,store=True )
     source_sample = fields.Char(string="Source of Sample")
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  

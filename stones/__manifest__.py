@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+
+{
+    'name': 'Stones',
+    'version': '1.2',
+    'category': 'Lerm Civil',
+    'summary': 'Sales internal machinery',
+    'description': """
+This module contains all the common features of Stones.
+    """,
+    'depends': ['base','sale','lerm_civil'],
+    'data': [
+                 'security/ir.model.access.csv',
+                 'views/stones.xml',
+                 'report/stone_datasheet.xml',
+                 'report/stone_report.xml'
+    ],
+   
+   
+    'installable': True,
+    'auto_install': False,
+   
+}
+
+
+
+
+
+
+
+

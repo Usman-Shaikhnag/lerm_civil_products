@@ -111,7 +111,6 @@ class SrfForm(models.Model):
     _rec_name = 'srf_id'
 
 
-
     srf_id = fields.Char(string="SRF ID",tracking=True)
     kes_number = fields.Char(string="UID",tracking=True)
     # job_no = fields.Char(string="Job NO.")
@@ -171,12 +170,103 @@ class SrfForm(models.Model):
     
     attachment_path = fields.Char("Attachment")
     customer_portal_request = fields.Many2one('customer.sample.line',string="Customer Portal Request", readonly=True)
-    lab_id = fields.Char(
-        string="Lab ID",
-        readonly=True,
-        tracking=True
-    )
+    # lab_id = fields.Char(
+    #     string="Lab ID",
+    #     readonly=True,
+    #     tracking=True,
+     
+    # )
 
+    lab_id1 = fields.Char(string="Lab ID", compute="_compute_lab_id", store=True)
+
+               # internal tracker
+    quantity = fields.Integer(string="Quantity",compute="_compute_quantity",store=True)
+
+    sample_qty = fields.Integer(string="Sample Quantity",compute="_compute_sample_qty",store=True)
+
+    sample_qty_boolean = fields.Boolean(string="Sample Qty Boolean", compute="_compute_sample_qty_boolean", store=True)
+
+    @api.depends('sample_qty')
+    def _compute_sample_qty_boolean(self):
+        for rec in self:
+            rec.sample_qty_boolean = True if rec.sample_qty > 1 else False
+
+
+    @api.depends('samples.lab_id')
+    def _compute_lab_id(self):
+        for rec in self:
+            rec.lab_id1 = rec.samples[0].lab_id if rec.samples else False
+
+    @api.depends('samples.quantity')
+    def _compute_quantity(self):
+        for rec in self:
+            rec.quantity = rec.samples[0].quantity if rec.samples else False
+
+    @api.depends('samples.sample_qty')
+    def _compute_sample_qty(self):
+        for rec in self:
+            rec.sample_qty = rec.samples[0].sample_qty if rec.samples else False
+
+   
+
+    def action_generate_sample_lab_groups(self):
+        # 1. Sequence nusar lines gha
+        lines = self.samples.sorted(key=lambda r: r.id)
+        
+        if not lines:
+            return
+
+        # 2. Pahilya line varun logic suru kara
+        first_line = lines[0]
+        if not first_line.lab_id:
+            return
+
+        try:
+            # --- Parsing Logic ---
+            parts = first_line.lab_id.split(' - ')
+            start_str = parts[0].strip() # Ex: R-26-001
+            
+            # Prefix ani Number vegla kara
+            prefix = start_str.rsplit('-', 1)[0] + '-'  # Ex: 'R-26-'
+            num_part = start_str.rsplit('-', 1)[1]      # Ex: '001' (String format madhe)
+            
+            # IMP: Input madhe kiti digits ahet te moza (padding sathi)
+            padding_length = len(num_part) # '001' chi length 3 ahe
+            
+            current_counter = int(num_part) # Calculation sathi integer banva (1)
+            
+            # --- Loop Start ---
+            for line in lines:
+                if line.quantity <= 0:
+                    continue
+
+                # 3. End Number calculate kara
+                batch_end = current_counter + int(line.quantity) - 1
+                
+                # 4. Number la parat Zero-Padding lau (IMP STEP)
+                # str().zfill() waprun length match kara
+                start_padded = str(current_counter).zfill(padding_length)
+                end_padded = str(batch_end).zfill(padding_length)
+                
+                # 5. New Lab ID banva (e.g. R-26-001 - R-26-003)
+                new_range = f"{prefix}{start_padded} - {prefix}{end_padded}"
+                
+                # 6. Set kara
+                line.lab_id = new_range
+                
+                # 7. Next loop sathi update
+                current_counter = batch_end + 1
+
+        except Exception as e:
+            first_line.lab_id = f"Error: {e}"
+
+    
+
+
+   
+
+   
+    
     
     def download_attachment(self):
         host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
@@ -321,6 +411,7 @@ class SrfForm(models.Model):
         return record
 
     
+    
         
         
     @api.model
@@ -385,6 +476,8 @@ class SrfForm(models.Model):
         count = self.env['lerm.srf.sample'].search_count([('srf_id', '=', self.id)])
         self.sample_count = count
 
+   
+
 
 
 
@@ -396,6 +489,9 @@ class SrfForm(models.Model):
         count = self.env['lerm.srf.sample'].search_count([('srf_id.srf_date','=',self.srf_date),('kes_no','!=','New'),('status','=','2-confirmed')]) 
 
         for record in self.sample_range_table:
+
+            
+
             sam_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample')]).number_next_actual
             kes_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample.kes')]).number_next_actual
            
@@ -495,7 +591,8 @@ class SrfForm(models.Model):
                     })
 
                 self.env.cr.commit()
-        
+
+ 
     
         first_sample_range = self.sample_range_table[0].kes_range
         last_sample_range = self.sample_range_table[-1].kes_range  
@@ -879,7 +976,7 @@ class CreateSampleWizard(models.TransientModel):
         compute="_compute_lab_id"
        
     )
-
+    
     lab_ids_raw = fields.Char()
 
 
@@ -904,13 +1001,49 @@ class CreateSampleWizard(models.TransientModel):
     # --------------------
     # COMPUTE (🔥 CONSUME SEQUENCE HERE)
     # --------------------
-    @api.depends('material_id', 'quantity')
+    # @api.depends('material_id', 'quantity')
+    # def _compute_lab_id(self):
+    #     for rec in self:
+    #         rec.lab_id = False
+    #         rec.lab_ids_raw = False
+
+    #         if not rec.material_id or rec.quantity <= 0:
+    #             continue
+
+    #         # prevent double consume
+    #         if rec.lab_ids_raw:
+    #             continue
+
+    #         seq_code = rec._get_lab_sequence_code(rec.material_id)
+    #         if not seq_code:
+    #             continue
+
+    #         ids = []
+    #         for i in range(rec.quantity):
+    #             lab = rec.env['ir.sequence'].next_by_code(seq_code)
+    #             if not lab:
+    #                 break
+    #             ids.append(lab)
+
+    #         if not ids:
+    #             continue
+
+    #         # ✅ store consumed IDs
+    #         rec.lab_ids_raw = ','.join(ids)
+
+    #         # preview
+    #         if len(ids) == 1:
+    #             rec.lab_id = ids[0]
+    #         else:
+    #             rec.lab_id = f"{ids[0]} - {ids[-1]}"
+
+    @api.depends('material_id', 'quantity', 'sample_qty')
     def _compute_lab_id(self):
         for rec in self:
             rec.lab_id = False
             rec.lab_ids_raw = False
 
-            if not rec.material_id or rec.quantity <= 0:
+            if not rec.material_id or rec.quantity <= 0 or rec.sample_qty <= 0:
                 continue
 
             # prevent double consume
@@ -921,8 +1054,10 @@ class CreateSampleWizard(models.TransientModel):
             if not seq_code:
                 continue
 
+            total = rec.quantity * rec.sample_qty   # 🔥 MULTIPLY HERE
+
             ids = []
-            for i in range(rec.quantity):
+            for i in range(total):
                 lab = rec.env['ir.sequence'].next_by_code(seq_code)
                 if not lab:
                     break
@@ -931,7 +1066,7 @@ class CreateSampleWizard(models.TransientModel):
             if not ids:
                 continue
 
-            # ✅ store consumed IDs
+            # store consumed IDs
             rec.lab_ids_raw = ','.join(ids)
 
             # preview
@@ -941,6 +1076,12 @@ class CreateSampleWizard(models.TransientModel):
                 rec.lab_id = f"{ids[0]} - {ids[-1]}"
 
 
+    
+
+
+    
+
+   
     def action_create_sample(self):
         self.ensure_one()
 
@@ -959,9 +1100,32 @@ class CreateSampleWizard(models.TransientModel):
 
         return {'type': 'ir.actions.act_window_close'}
 
+    
+
+
 
     
 
+
+
+    
+    
+
+
+
+    
+
+
+    
+
+    
+
+   
+
+
+
+
+    
 
 
 
@@ -1276,6 +1440,7 @@ class CreateSampleWizard(models.TransientModel):
 
     def add_sample(self,data=False):
 
+
         
         # import wdb; wdb.set_trace()
         if data:
@@ -1484,6 +1649,7 @@ class CreateSampleWizard(models.TransientModel):
                         'lab_location':lab_location,
                         'location_name':location_name,
                         'quantity':self.quantity,
+                        'sample_qty':self.sample_qty,
                         'lab_id':self.lab_id,
                         'uom_id':self.uom_id.id,
                         'quantity_received':self.quantity_received,
@@ -1494,6 +1660,7 @@ class CreateSampleWizard(models.TransientModel):
                     self.env['lerm.sample.register'].sudo().create({
                         'sample':sample.id,
                         'quantity':self.quantity,
+                        'sample_qty':self.sample_qty,
                         'lab_id':self.lab_id,
                         'uom_id':self.uom_id.id,
                         'quantity_received':self.quantity_received,
@@ -1957,6 +2124,7 @@ class CreateSampleWizard(models.TransientModel):
                         'department_id': sample.department_id,
                         'casting_date': sample.casting_date,
                         'quantity': sample.quantity,
+                        'sample_qty':sample.sample_qty,
                         'uom_id': sample.uom_id.id if sample.uom_id else False,
                         'quantity_received': sample.quantity_received,
                         'quantity_consumed': sample.quantity_consumed,
@@ -2019,3 +2187,7 @@ class SampleAllotLine(models.TransientModel):
         if self.parameter_id and hasattr(self.parameter_id, 'allowed_technicians'):
             return {'domain': {'technician': [('id', 'in', self.parameter_id.allowed_technicians.ids)]}}
         return {}
+
+
+
+
