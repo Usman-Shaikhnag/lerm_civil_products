@@ -159,7 +159,7 @@
                                 <field name='area'/>
                                 <field name='load' class="blue-input" decoration-info="load != 0"/>
                                 <!-- <field name='correction_factor'/> -->
-                                <field name='compressive_strength'/>
+                                <field name='compressive_strength' />
                                 
                             </tree>
                         </field>
@@ -168,9 +168,9 @@
                     <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="not compressive_strength_visible" style="white-space:nowrap;">
                         <tbody>
                         <tr>
-                                <td><label class="fw-bold" for="avg_compressive_strength">Average Compressive Strength</label></td>
+                                <td><label class="fw-bold" for="avg_compressive_strength">Average Compressive Strength N/mm²</label></td>
                                 <td>
-                                    <field name="avg_compressive_strength"/>
+                                    <field name="avg_compressive_strength"/> <span><field name="compressive_strength_unit" readonly="1" nolabel="1"/></span>
                                 </td>
                             </tr>
                             <tr>
@@ -280,9 +280,9 @@
                     <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="not water_absorption_visible" style="white-space:nowrap;">
                         <tbody>
                         <tr>
-                                <td><label class="fw-bold" for="avg_water_absorption">Average Water Absorption</label></td>
+                                <td><label class="fw-bold" for="avg_water_absorption">Average Water Absorption %</label></td>
                                 <td>
-                                    <field name="avg_water_absorption"/>
+                                    <field name="avg_water_absorption"/> <span><field name="water_absorption_unit" readonly="1" nolabel="1"/></span>
                                 </td>
                             </tr>
                             <tr>
@@ -377,7 +377,7 @@
                        <tbody>
                          <tr class="text-center" >
                            <td >Sr No</td>
-                           <td >Observations</td>
+                           <td >Dimensions (mm)</td>
                            <td ><span> 1</span></td>
                            <td ><span> 2</span></td>
                            <td ><span> 3</span></td>
