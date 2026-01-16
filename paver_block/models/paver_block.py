@@ -183,9 +183,9 @@ class PaverBlock(models.Model):
 
     dimension_child_lines = fields.One2many('paver.dimension.line','parent_id',string="Dimension Test")
 
-    average_length = fields.Float(string="Average Length ",compute="_compute_average")
-    average_width = fields.Float(string="Average Width ",compute="_compute_average")
-    average_thickness = fields.Float(string="Average Thickness ",compute="_compute_average")
+    average_length = fields.Float(string="Average Length (mm)",compute="_compute_average")
+    average_width = fields.Float(string="Average Width (mm)",compute="_compute_average")
+    average_thickness = fields.Float(string="Average Thickness (mm)",compute="_compute_average")
 
     @api.depends('dimension_child_lines.avg_length','dimension_child_lines.avg_width','dimension_child_lines.avg_thickness')
     def _compute_average(self):
@@ -397,7 +397,7 @@ class PaverBlock(models.Model):
 
     water_absorption_child_lines = fields.One2many('paver.water.absorption.line','parent_id',string="Water Absorption Test")
 
-    avg_water_absorption = fields.Float(string="Average Water Absorption ",compute="_compute_avg_water_absorption")
+    avg_water_absorption = fields.Float(string="Average Water Absorption (%)",compute="_compute_avg_water_absorption")
 
 
     @api.depends('water_absorption_child_lines.water_absorption')
@@ -501,7 +501,7 @@ class PaverBlock(models.Model):
     block_type = fields.Selection(
         [('plain', 'Plain'), ('arrised', 'Arrised')],
         string="Block Type",
-        required=True
+        # required=True
     )
     plain_factor = fields.Float("Plain Correction Factor")
     arrised_factor = fields.Float("Arrised Correction Factor")
@@ -531,7 +531,7 @@ class PaverBlock(models.Model):
 
 
     
-    avg_compressive_strength = fields.Float(string="Average Compressive Strength ",compute="_compute_avg_compressive_strength")
+    avg_compressive_strength = fields.Float(string="Average Compressive Strength (N/mm²)",compute="_compute_avg_compressive_strength")
 
     @api.depends('compressive_strength_child_lines.compressive_strength')
     def _compute_avg_compressive_strength(self):
@@ -806,19 +806,19 @@ class PaverDimensionLine(models.Model):
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sample = fields.Char(string="Sample Identification")
-    length1= fields.Float(string="Length 1")
-    length2= fields.Float(string="Length 2")
-    avg_length = fields.Float(string="Average Length ",compute="_compute_avg")
-    width1= fields.Float(string="Width 1")
-    width2= fields.Float(string="Width 2")
-    width3= fields.Float(string="Width 3")
-    avg_width = fields.Float(string="Average Width ",compute="_compute_avg")
+    length1= fields.Float(string="Length 1 (mm)")
+    length2= fields.Float(string="Length 2 (mm)")
+    avg_length = fields.Float(string="Average Length (mm)",compute="_compute_avg")
+    width1= fields.Float(string="Width 1 (mm)")
+    width2= fields.Float(string="Width 2 (mm)")
+    width3= fields.Float(string="Width 3 (mm)")
+    avg_width = fields.Float(string="Average Width (mm)",compute="_compute_avg")
 
-    thickness1= fields.Float(string="Thickness 1")
-    thickness2= fields.Float(string="Thickness 2")
-    thickness3= fields.Float(string="Thickness 3")
-    thickness4= fields.Float(string="Thickness 4")
-    avg_thickness = fields.Float(string="Average Thickness ",compute="_compute_avg")
+    thickness1= fields.Float(string="Thickness 1 (mm)")
+    thickness2= fields.Float(string="Thickness 2 (mm)")
+    thickness3= fields.Float(string="Thickness 3 (mm)")
+    thickness4= fields.Float(string="Thickness 4 (mm)")
+    avg_thickness = fields.Float(string="Average Thickness (mm)",compute="_compute_avg")
     
     @api.depends('length1','length2','width1','width2','width3','thickness1','thickness2','thickness3','thickness4')
     def _compute_avg(self):
@@ -855,7 +855,7 @@ class PaverWaterObsorptionLine(models.Model):
     sat_weight= fields.Float(string="Saturated Weight")
     sat_dry_weight = fields.Float(string="Saturated Weight-Dry Weight ",compute="_compute_sat_dry_weight")
     
-    water_absorption = fields.Float(string="Saturated Weight-Dry Weight/Dry Weight*100	",compute="_compute_water_absorption")
+    water_absorption = fields.Float(string="Saturated Weight-Dry Weight/Dry Weight*100	(%)",compute="_compute_water_absorption")
     
     @api.depends('sat_weight','dry_weight')
     def _compute_sat_dry_weight(self):
@@ -898,15 +898,15 @@ class PaverCompressiveLine(models.Model):
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sample1 = fields.Char(string="Sample Identification")
-    length = fields.Float(string="Length")
-    width = fields.Float(string="Width")
-    thickness = fields.Float(string="Thickness")
+    length = fields.Float(string="Length (mm)")
+    width = fields.Float(string="Width (mm)")
+    thickness = fields.Float(string="Thickness (mm)")
     area = fields.Float(string="Area (mm2)",compute="_compute_area",store=True)
     load = fields.Float(string=" Load at Failure (kN)")
     correction_factor = fields.Float(string="Correction Factor",store=True)
     
     
-    compressive_strength = fields.Float(string="Compressive Strength  N/mm2",compute="_compute_compressive_strength",store=True)
+    compressive_strength = fields.Float(string="Compressive Strength  N/mm²",compute="_compute_compressive_strength",store=True)
     block_type = fields.Selection(related="parent_id.block_type", string="Block Type")  # gets parent's choice
 
     @api.depends('length','width')

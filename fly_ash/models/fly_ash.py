@@ -295,9 +295,9 @@ class FlyaschNormalConsistency(models.Model):
 
     intial_time_lines = fields.One2many('setting.time.line','parent_id',string="Initial Time")
 
-    initial_time_set = fields.Float('Average Initial Setting Time',compute="_compute_initial_time_set")
+    initial_time_set = fields.Float('Average Initial Setting Time (min)',compute="_compute_initial_time_set")
 
-    final_time_set = fields.Float('Average Final Setting Time',compute="_compute_final_time_set")
+    final_time_set = fields.Float('Average Final Setting Time (min)',compute="_compute_final_time_set")
 
 
     @api.depends('intial_time_lines.initial_setting')
@@ -444,7 +444,7 @@ class FlyaschNormalConsistency(models.Model):
 
     sound_auto_child_lines = fields.One2many('soundness.autoclave.line','parent_id',string="AutoClave Test")
 
-    avg_autoclave_expansion = fields.Float('Average Expansion %',compute="_compute_avg_autoclave_expansion")
+    avg_autoclave_expansion = fields.Float('Average Expansion (%)',compute="_compute_avg_autoclave_expansion")
 
 
     @api.depends('sound_auto_child_lines.autoclave_expansion')
@@ -1346,7 +1346,7 @@ class FlyaschNormalConsistency(models.Model):
                 if line not in [lines[i] for i in range(0, len(lines), group_size)]:
                     line.avg_compressive_strength = 0.0	
 
-    avg_10_days = fields.Float(string="Avg Strength (10 Days)", compute="_compute_avg_10_days", store=True)
+    avg_10_days = fields.Float(string="Avg Strength (10 Days) (MPa) ", compute="_compute_avg_10_days", store=True)
 
     @api.depends('lime_child_lines.days', 'lime_child_lines.avg_compressive_strength')
     def _compute_avg_10_days(self):
@@ -1447,7 +1447,7 @@ class FlyaschNormalConsistency(models.Model):
 
     drying_shrinkage_child_lines = fields.One2many('drying.shrinkage.line','parent_id',string="AutoClave Test")
 
-    avg_dry_autoclave_expansion = fields.Float('Average Expansion %',compute="_compute_avg_dry_autoclave_expansion")
+    avg_dry_autoclave_expansion = fields.Float('Average Expansion (%)',compute="_compute_avg_dry_autoclave_expansion")
 
 
     @api.depends('drying_shrinkage_child_lines.dry_autoclave_expansion')
@@ -1946,15 +1946,15 @@ class SoundnessAutoclaveLine(models.Model):
     parent_id = fields.Many2one('mechanical.flyasch.normalconsistency',string="Parent Id")
 
     sr_no = fields.Integer(string="Mould No.", readonly=True, copy=False, default=1)
-    initial_reference_read = fields.Float("Reference Bar Reading (R1)")
-    initial_read = fields.Float("Initial Reading (Ri)")
-    initial_read_a = fields.Float("A (Ri – R1)",compute="_compute_initial_read_a",store=True)
+    initial_reference_read = fields.Float("Reference Bar Reading (R1) (mm)")
+    initial_read = fields.Float("Initial Reading (Ri) (mm)")
+    initial_read_a = fields.Float("A (Ri – R1) (mm)",compute="_compute_initial_read_a",store=True)
 
-    final_reference_read = fields.Float("Reference Bar Reading (R2)")
-    final_read = fields.Float("Final Reading (Rf)")
-    final_read_b = fields.Float("B (Rf – R2)",compute="_compute_final_read_b",store=True)
+    final_reference_read = fields.Float("Reference Bar Reading (R2) (mm)")
+    final_read = fields.Float("Final Reading (Rf) (mm)")
+    final_read_b = fields.Float("B (Rf – R2) (mm)",compute="_compute_final_read_b",store=True)
 
-    autoclave_expansion = fields.Float(string="Autoclave Expansion (B-A)/250 x 100 %",compute="_compute_autoclave_expansion",store=True)
+    autoclave_expansion = fields.Float(string="Autoclave Expansion (B-A)/250 x 100 (%)",compute="_compute_autoclave_expansion",store=True)
 
     @api.depends('initial_read','initial_reference_read')
     def _compute_initial_read_a(self):
@@ -2034,15 +2034,15 @@ class DryingShrinkageLine(models.Model):
     parent_id = fields.Many2one('mechanical.flyasch.normalconsistency',string="Parent Id")
 
     sr_no = fields.Integer(string="Mould No.", readonly=True, copy=False, default=1)
-    initial_reference_read = fields.Float("Reference Bar Reading (R1)")
-    initial_read = fields.Float("Initial Reading (Ri)")
-    initial_read_a = fields.Float("A (Ri – R1)",compute="_compute_initial_read_a",store=True)
+    initial_reference_read = fields.Float("Reference Bar Reading (R1) (mm)")
+    initial_read = fields.Float("Initial Reading (Ri) (mm)")
+    initial_read_a = fields.Float("A (Ri – R1) (mm)",compute="_compute_initial_read_a",store=True)
 
-    final_reference_read = fields.Float("Reference Bar Reading (R2)")
-    final_read = fields.Float("Final Reading (Rf)")
-    final_read_b = fields.Float("B (Rf – R2)",compute="_compute_final_read_b",store=True)
+    final_reference_read = fields.Float("Reference Bar Reading (R2) (mm)")
+    final_read = fields.Float("Final Reading (Rf) (mm)")
+    final_read_b = fields.Float("B (Rf – R2) (mm)",compute="_compute_final_read_b",store=True)
 
-    dry_autoclave_expansion = fields.Float(string="Autoclave Expansion (B-A)/250 x 100 %",compute="_compute_dry_autoclave_expansion",store=True)
+    dry_autoclave_expansion = fields.Float(string="Autoclave Expansion (B-A)/250 x 100 (%)",compute="_compute_dry_autoclave_expansion",store=True)
 
     @api.depends('initial_read','initial_reference_read')
     def _compute_initial_read_a(self):
@@ -2102,18 +2102,18 @@ class FlyashCompressiveStrengthLine(models.Model):
     testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
     cube_im = fields.Char("Cube I/M")
 
-    length1 = fields.Float("Length")
+    length1 = fields.Float("Length (mm)")
     
-    width1 = fields.Float("Width")
+    width1 = fields.Float("Width (mm)")
 
-    height1 = fields.Float("Height")
+    height1 = fields.Float("Height (mm)")
    
 
    
 
     load_failure = fields.Float("Load at Failure (P) kN",digits=(12,3))
-    compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength",store=True,digits=(12,1))
-    avg_compressive_strength = fields.Float("Avg. Strength MPa",digits=(12,1))
+    compressive_strength = fields.Float("Compressive Strength  (MPa)",compute="_compute_compressive_strength",store=True,digits=(12,1))
+    avg_compressive_strength = fields.Float("Avg. Strength (MPa)",digits=(12,1))
 
     @api.depends('load_failure', 'length1', 'width1')
     def _compute_compressive_strength(self):
@@ -2202,18 +2202,18 @@ class FlyashCompressiveCementLine(models.Model):
     testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
     cube_im = fields.Char("Cube I/M")
 
-    length1 = fields.Float("Length (L)")
+    length1 = fields.Float("Length (mm)")
     
-    width1 = fields.Float("Width")
+    width1 = fields.Float("Width (mm)")
 
-    height1 = fields.Float("Height")
+    height1 = fields.Float("Height (mm)")
    
 
    
 
     load_failure = fields.Float("Load at Failure (P) kN",digits=(12,3))
-    compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength",store=True,digits=(12,1))
-    avg_compressive_strength = fields.Float("Avg. Strength MPa",digits=(12,1))
+    compressive_strength = fields.Float("Compressive Strength  (MPa)",compute="_compute_compressive_strength",store=True,digits=(12,1))
+    avg_compressive_strength = fields.Float("Avg. Strength (MPa)",digits=(12,1))
 
     @api.depends('load_failure', 'length1', 'width1')
     def _compute_compressive_strength(self):
@@ -2297,18 +2297,18 @@ class FlyashLimeLine(models.Model):
     testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
     cube_im = fields.Char("Cube I/M")
 
-    length1 = fields.Float("Length (L)")
+    length1 = fields.Float("Length (mm)")
     
-    width1 = fields.Float("Width")
+    width1 = fields.Float("Width (mm)")
 
-    height1 = fields.Float("Height")
+    height1 = fields.Float("Height (mm)")
    
 
    
 
     load_failure = fields.Float("Load at Failure (P) kN",digits=(12,3))
-    compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength",store=True,digits=(12,1))
-    avg_compressive_strength = fields.Float("Avg. Strength MPa",digits=(12,1))
+    compressive_strength = fields.Float("Compressive Strength  (MPa)",compute="_compute_compressive_strength",store=True,digits=(12,1))
+    avg_compressive_strength = fields.Float("Avg. Strength (MPa)",digits=(12,1))
 
     @api.depends('load_failure', 'length1', 'width1')
     def _compute_compressive_strength(self):

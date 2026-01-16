@@ -1651,7 +1651,7 @@ class CoarseAggregateMechanical(models.Model):
 
     rate_of_evaporation_table = fields.One2many('mechanical.rate.of.evaporation.line','parent_id',string="Rate of Evaporation")
 
-    avg_rate_evaporation = fields.Float('Average Rate Of Evaporation',compute="_compute_avg_rate_evaporation")
+    avg_rate_evaporation = fields.Float('Average Rate Of Evaporation (gm/h)',compute="_compute_avg_rate_evaporation")
 
 
     @api.depends('rate_of_evaporation_table.rate_evaporation')

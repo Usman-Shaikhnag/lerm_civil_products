@@ -187,11 +187,11 @@ class GgbsMechanical(models.Model):
     temp_specific = fields.Char("Temp.°C" )
     humidity_specific= fields.Char("Humidity %")
 
-    temp_water1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
-    temp_water2 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0C")
+    temp_water1 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0°C")
+    temp_water2 = fields.Float("Temperature of Water Bath  when Flask kept in bath – 0°C")
 
-    temp_water_after1 = fields.Float("Temperature of Water Bath  after One Hour when Flask kept in bath – 0C ")
-    temp_water_after2 = fields.Float("Temperature of Water Bath  after One Hour when Flask kept in bath – 0C )")
+    temp_water_after1 = fields.Float("Temperature of Water Bath  after One Hour when Flask kept in bath – 0°C ")
+    temp_water_after2 = fields.Float("Temperature of Water Bath  after One Hour when Flask kept in bath – 0°C )")
 
     initial_kerosene1 = fields.Float("Initial Level of Kerosene after one hour kept in Water Bath(A) – ml")
     initial_kerosene2 = fields.Float("Initial Level of Kerosene after one hour kept in Water Bath(A) – ml")
@@ -199,11 +199,11 @@ class GgbsMechanical(models.Model):
     mass1 = fields.Float("Mass of GGBS Sample Added in Flask (M) – gms")
     mass2 = fields.Float("Mass of GGBS Sample Added in Flask (M) – gms")
 
-    temp_water_flask1 = fields.Float("Temperature of water bath  when Flask kept in bath after Adding GGBS – 0C")
-    temp_water_flask2 = fields.Float("Temperature of water bath  when Flask kept in bath after Adding GGBS – 0C")
+    temp_water_flask1 = fields.Float("Temperature of water bath  when Flask kept in bath after Adding GGBS – 0°C")
+    temp_water_flask2 = fields.Float("Temperature of water bath  when Flask kept in bath after Adding GGBS – 0°C")
 
-    temp_water_one1 = fields.Float("Temperature of water bath  after one hour when Flask kept in bath after Adding GGBS – 0C")
-    temp_water_one2 = fields.Float("Temperature of water bath  after one hour when Flask kept in bath after Adding GGBS – 0C")
+    temp_water_one1 = fields.Float("Temperature of water bath  after one hour when Flask kept in bath after Adding GGBS – 0°C")
+    temp_water_one2 = fields.Float("Temperature of water bath  after one hour when Flask kept in bath after Adding GGBS – 0°C")
 
 
     final_kerosene1 = fields.Float("Final Level of Kerosene after one hour kept in water bath(B) – ml")
@@ -918,10 +918,10 @@ class GgbsCementMotorLine(models.Model):
     testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
     cube_im = fields.Integer("Cube I/M")
 
-    length1 = fields.Float("Length (L)")
-    length2 = fields.Float("Length (L)")
+    length1 = fields.Float("Length (L) (mm)")
+    length2 = fields.Float("Length (L) (mm)")
 
-    avg_length = fields.Float("Avg. Length (L)",compute="_compute_avg_length")
+    avg_length = fields.Float("Avg. Length (L) (mm)",compute="_compute_avg_length")
 
     @api.depends('length1', 'length2')
     def _compute_avg_length(self):
@@ -931,10 +931,10 @@ class GgbsCementMotorLine(models.Model):
             else:
                 record.avg_length = 0.0
 
-    width1 = fields.Float("Width")
-    width2 = fields.Float("Width")
+    width1 = fields.Float("Width (mm)")
+    width2 = fields.Float("Width (mm)")
 
-    avg_width = fields.Float("Avg. Width",compute="_compute_avg_width")
+    avg_width = fields.Float("Avg. Width (mm)",compute="_compute_avg_width")
 
     @api.depends('width1', 'width2')
     def _compute_avg_width(self):
@@ -944,11 +944,11 @@ class GgbsCementMotorLine(models.Model):
             else:
                 record.avg_width = 0.0
 
-    height = fields.Float("Height (H)")
+    height = fields.Float("Height (H) (mm)")
 
     load_failure = fields.Float("Load at Failure (P) kN")
-    compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength")
-    avg_compressive_strength = fields.Float("Avg. Strength Mpa")
+    compressive_strength = fields.Float("Compressive Strength  (MPa)",compute="_compute_compressive_strength")
+    avg_compressive_strength = fields.Float("Avg. Strength (MPa)")
 
 
     @api.depends('load_failure', 'avg_length', 'avg_width')
@@ -1036,10 +1036,10 @@ class GgbsCementLine(models.Model):
     testing_details = fields.Date("Testing Details Date",compute="_compute_dt_of_testing")
     cube_im = fields.Integer("Cube I/M")
 
-    length1 = fields.Float("Length (L)")
-    length2 = fields.Float("Length (L)")
+    length1 = fields.Float("Length (L) (mm)")
+    length2 = fields.Float("Length (L) (mm)")
 
-    avg_length = fields.Float("Avg. Length (L)",compute="_compute_avg_length")
+    avg_length = fields.Float("Avg. Length (L) (mm)",compute="_compute_avg_length")
 
    
 
@@ -1051,10 +1051,10 @@ class GgbsCementLine(models.Model):
             else:
                 record.avg_length = 0.0
 
-    width1 = fields.Float("Width")
-    width2 = fields.Float("Width")
+    width1 = fields.Float("Width (mm)")
+    width2 = fields.Float("Width (mm)")
 
-    avg_width = fields.Float("Avg. Width",compute="_compute_avg_width")
+    avg_width = fields.Float("Avg. Width (mm)",compute="_compute_avg_width")
 
     @api.depends('width1', 'width2')
     def _compute_avg_width(self):
@@ -1067,8 +1067,8 @@ class GgbsCementLine(models.Model):
     height = fields.Float("Height (H)")
 
     load_failure = fields.Float("Load at Failure (P) kN")
-    compressive_strength = fields.Float("Compressive Strength  MPa",compute="_compute_compressive_strength")
-    avg_compressive_strength = fields.Float("Avg. Strength Mpa")
+    compressive_strength = fields.Float("Compressive Strength  (MPa)",compute="_compute_compressive_strength")
+    avg_compressive_strength = fields.Float("Avg. Strength (MPa)")
 
 
     @api.depends('load_failure', 'avg_length', 'avg_width')
