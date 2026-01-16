@@ -632,12 +632,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <!-- <tr>
                                 <td><label class="fw-bold" for="temp_3_days"></label></td>
                                 <td>
                                     <field name="temp_3_days" nolabel="1" class="blue-input" invisible="not compressive_visible" required = "calc_mode == False or compressive_generated == True "/>
                                 </td>
-                            </tr>
+                            </tr> -->
 
                             <tr>
                                 <td><label class="fw-bold" for="humidity_3_days"></label></td>
@@ -907,6 +907,7 @@
 
 
 
+
                      <div invisible = "soundness_le_method_visible == False" >
                         <h1 class="text-center">
                             <field name="soundness_le_method_name" readonly="1" nolabel="1"/>
@@ -922,7 +923,7 @@
                             string="Compressive Lab Lines"
                             class="oe_highlight"
                             invisible="soundness_le_method_generated == True"/>
-
+                            
                         </div>
 
                     <div class="d-flex gap-2" invisible="not soundness_le_method_visible">

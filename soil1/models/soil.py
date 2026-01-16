@@ -9185,42 +9185,7 @@ class LabAtterbergLlLine(models.Model):
 
 
 
-# class LabAtterbergSlLine(models.Model):
-#     _name = 'lab.atterberg.sl.line'
-#     parent_id = fields.Many2one('mechanical.soil1', string="Parent")
-    
 
-   
-#     serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
-#     container_no = fields.Char('Container No.')
-#     m1 = fields.Float('M1 (gm)', digits=(10,3))
-#     v1 = fields.Float('V1 (cm3)', digits=(10,3))
-#     m2 = fields.Float('M2 (gm)', digits=(10,3))
-#     m3 = fields.Float('M3 (gm)', digits=(10,3))
-#     v2 = fields.Float('V2 (cm3)', digits=(10,3))
-    
-   
-#     m3_m2 = fields.Float('M3-M2', digits=(10,3), compute='_compute_sl', store=True)
-#     m2_m1 = fields.Float('M2-M1', digits=(10,3), compute='_compute_sl', store=True)
-#     v1_v2 = fields.Float('V1-V2', digits=(10,3), compute='_compute_sl', store=True)
-#     water_content = fields.Float('Water Content %', digits=(10,2), compute='_compute_sl', store=True)
-#     shrinkage_ratio = fields.Float('Shrinkage Ratio', digits=(10,3), compute='_compute_sl', store=True)
-#     shrinkage_limit = fields.Float('SL %', digits=(10,2), compute='_compute_sl', store=True)
-
-#     @api.depends('m1', 'm2', 'm3', 'v1', 'v2')
-#     def _compute_sl(self):
-#         gamma_w = 1.0  
-#         for rec in self:
-#             rec.m3_m2 = rec.m3 - rec.m2 if rec.m3 and rec.m2 else 0.0
-#             rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
-#             rec.v1_v2 = rec.v1 - rec.v2 if rec.v1 and rec.v2 else 0.0
-            
-#             if rec.m3_m2 and rec.v2:
-#                 rec.shrinkage_ratio = rec.m3_m2 / (rec.v2 * gamma_w)
-#                 rec.water_content = ((rec.m1 - rec.m2) / rec.m3_m2) * 100
-#                 rec.shrinkage_limit = rec.water_content - (rec.shrinkage_ratio * 100)
-#             else:
-#                 rec.shrinkage_ratio = rec.water_content = rec.shrinkage_limit = 0.0
 
 
 

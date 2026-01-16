@@ -34,7 +34,6 @@ class MechanicalRock(models.Model):
     
 
    
-    
 
     @api.depends('eln_ref')
     def _compute_lab_id(self):

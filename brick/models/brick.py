@@ -77,7 +77,7 @@ class MechanicalBricks(models.Model):
     compressive_strength_child_lines = fields.One2many('mechanical.bricks.compressive.line','parent_id',string="Compressive Strength Test" )
 
     
-    avg_compressive_strength = fields.Float(string="Average Compressive Strength ",compute="_compute_avg_compressive_strength")
+    avg_compressive_strength = fields.Float(string="Average Compressive Strength % ",compute="_compute_avg_compressive_strength")
 
     @api.depends('compressive_strength_child_lines.compressive_strength')
     def _compute_avg_compressive_strength(self):
@@ -158,7 +158,7 @@ class MechanicalBricks(models.Model):
 
     water_absorption_child_lines = fields.One2many('mechanical.bricks.water.absorption.line','parent_id',string="Water Absorption Test")
 
-    avg_water_absorption = fields.Float(string="Average Water Absorption ",compute="_compute_avg_water_absorption")
+    avg_water_absorption = fields.Float(string="Average Water Absorption % ",compute="_compute_avg_water_absorption")
 
 
     @api.depends('water_absorption_child_lines.water_absorption')
@@ -485,8 +485,6 @@ class MechanicalBricks(models.Model):
 
 
 
-   
-
 
 
    ### Compute Visible
@@ -633,9 +631,9 @@ class BrickCompressiveLine(models.Model):
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sample1 = fields.Char(string="Sample Identification")
-    length = fields.Float(string="Length")
-    width = fields.Float(string="Width")
-    thickness = fields.Float(string="Thickness")
+    length = fields.Float(string="Length(mm)")
+    width = fields.Float(string="Width(mm)")
+    thickness = fields.Float(string="Thickness(mm)")
     area = fields.Float(string="Area (mm2)",compute="_compute_area",store=True)
     load = fields.Float(string=" Load at Failure (kN)")
     compressive_strength = fields.Float(string="Compressive Strength  N/mm2",compute="_compute_compressive_strength",store=True)
