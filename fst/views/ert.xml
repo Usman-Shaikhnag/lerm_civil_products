@@ -246,6 +246,11 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="action_pullout_pile_load_test_parent" model="ir.actions.act_window">
+            <field name="name">Pull-Out Pile Load Tests</field>
+            <field name="res_model">pullout.pile.load.test.parent</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
         <menuitem id="fst_root"
             name="FST"
@@ -267,10 +272,10 @@
                 <kanban class="o_kanban_dashboard" create="false" delete="false">
                     <templates>
                         <t t-name="kanban-box">
-                            <div style="display: flex; gap: 20px; padding: 20px; flex-wrap: wrap;">
+                            <div style="display: grid;grid-template-columns: repeat(5, minmax(350px, 1fr));gap: 15px;">
                                 <!-- ERTs Card -->
-                                <div style="flex: 1; min-width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center;">
-                                    <h3 style="margin-bottom: 20px;">ERTs</h3>
+                                <div class="card-box">
+                                    <h3 class="title">ERTs</h3>
                                     <a type="action"
                                     name="%(action_lerm_ert_parent)d"
                                     class="btn btn-primary btn-lg">
@@ -279,8 +284,8 @@
                                 </div>
 
                                 <!-- Soil Card -->
-                                <div style="flex: 1; min-width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center;">
-                                    <h3 style="margin-bottom: 20px;">Soil</h3>
+                                <div class="card-box">
+                                    <h3 class="title">Soil</h3>
                                     <a type="action"
                                     name="%(action_soil_borehole)d"
                                     class="btn btn-success btn-lg">
@@ -288,8 +293,8 @@
                                     </a>
                                 </div>
 
-                                <div style="flex: 1; min-width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center;">
-                                    <h3 style="margin-bottom: 20px;">Vertical Pile Load Test</h3>
+                                <div class="card-box">
+                                    <h3 class="title">Vertical Pile Load Test</h3>
                                     <a type="action"
                                     name="%(action_pile_load_test_parent)d"
                                     class="btn btn-warning btn-lg">
@@ -297,8 +302,8 @@
                                     </a>
                                 </div>
 
-                                <div style="flex: 1; min-width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center;">
-                                    <h3 style="margin-bottom: 20px;">Lateral Pile Load Test</h3>
+                                <div class="card-box">
+                                    <h3 class="title">Lateral Pile Load Test</h3>
                                     <a type="action"
                                     name="%(action_lateral_pile_load_test_parent)d"
                                     class="btn btn-info btn-lg">
@@ -306,9 +311,18 @@
                                     </a>
                                 </div>
 
+                                <div class="card-box">
+                                    <h3 class="title">Initial Pull-Out Pile Load Test</h3>
+                                    <a type="action"
+                                    name="%(action_pullout_pile_load_test_parent)d"
+                                    class="btn btn-danger btn-lg">
+                                        Records
+                                    </a>
+                                </div>
+
                                 <!-- Temperature Monitoring Card -->
-                                <div style="flex: 1; min-width: 250px; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center;">
-                                    <h3 style="margin-bottom: 20px;">Temperature Monitoring</h3>
+                                <div class="card-box">
+                                    <h3 class="title">Temperature Monitoring</h3>
                                     <a type="action"
                                     name="%(action_temp_monitoring)d"
                                     class="btn btn-primary btn-lg">
