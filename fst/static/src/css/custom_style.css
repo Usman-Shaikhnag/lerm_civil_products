@@ -1,10 +1,79 @@
-
 .o_form_view .custom_table_borders tbody tr > td {
-    border: 2px solid black !important;
+  border: 2px solid black !important;
 }
 .o_form_view .custom_table_borders thead th {
-    border: 2px solid black !important;
-    background-color: #f1f1f1;
-    font-weight: bold;
+  border: 2px solid black !important;
+  background-color: #f1f1f1;
+  font-weight: bold;
 }
 
+.card-box {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  margin:10px 0px;
+  text-align: center;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.title {
+  margin-bottom: 16px;
+  font-size: 16px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* 🔥 Remove kanban record visual box completely */
+.o_kanban_dashboard .o_kanban_record {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  pointer-events: auto;
+}
+
+/* Remove focus / hover outline */
+.o_kanban_dashboard .o_kanban_record:focus,
+.o_kanban_dashboard .o_kanban_record:hover {
+  outline: none !important;
+  box-shadow: none !important;
+}
+/* ensure full width rendering */
+.o_kanban_dashboard {
+  width: 100%;
+}
+
+.o_kanban_dashboard .o_kanban_record {
+  width: 100% !important;
+  max-width: 100% !important;
+} /* 2️⃣ Remove kanban column constraints */
+.o_kanban_dashboard .o_kanban_record > div {
+  width: 100%;
+} /* 3️⃣ Your dashboard layout (the sketch layout) */
+.fst-dashboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+} /* 4️⃣ Tile design (rectangular rounded boxes) */
+.fst-dashboard-container > div {
+  width: 260px; /* tile width */
+  min-height: 140px; /* tile height */
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  background: #fff;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.o_kanban_renderer {
+    min-height: 100vh;
+}
