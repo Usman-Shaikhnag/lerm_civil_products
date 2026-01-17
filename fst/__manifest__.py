@@ -17,6 +17,7 @@
                  'views/borehole.xml',
                  'views/pile_load_test.xml',
                  'views/lateral_pile_load_views.xml',
+                 'views/initial_pullout_pile_load_views.xml',
                  'views/temp_monitoring.xml',
                  'data/sequence.xml',
                  'reports/soil_resistivity_report_docx.xml',
