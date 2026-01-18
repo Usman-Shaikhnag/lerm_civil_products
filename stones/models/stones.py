@@ -70,8 +70,8 @@ class Stones(models.Model):
 
      
     lab_id1 = fields.Char(string="Lab ID No. ")
-    room_temp1 = fields.Float(string="Temperature during test", digits=(12,2) ,required=True)
-    relative_humidity1= fields.Float(string="Relative humidity during test ", digits=(12,2) ,required=True)
+    room_temp1 = fields.Float(string="Temperature during test", digits=(12,2) )
+    relative_humidity1= fields.Float(string="Relative humidity during test ", digits=(12,2) )
     depth = fields.Char(string="Depth")
     stone_type1 = fields.Char(string="Type of Stone")
 
@@ -154,8 +154,8 @@ class Stones(models.Model):
     scratch_hardness_visible = fields.Boolean("Surface Quality",compute="_compute_visible") 
 
 
-    temp_scratch_hardness = fields.Char(string="Temp.°C" ,required=True)
-    humidity_scratch_hardness= fields.Char(string="Humidity %" ,required=True)
+    temp_scratch_hardness = fields.Char(string="Temp.°C" )
+    humidity_scratch_hardness= fields.Char(string="Humidity %" )
 
 
 
@@ -212,8 +212,8 @@ class Stones(models.Model):
 
 
 
-    temp_compressive_dry = fields.Char(string="Temp.°C" ,required=True)
-    humidity_compressive_dry= fields.Char(string="Humidity %" ,required=True)
+    temp_compressive_dry = fields.Char(string="Temp.°C" )
+    humidity_compressive_dry= fields.Char(string="Humidity %" )
 
 
 
@@ -297,8 +297,8 @@ class Stones(models.Model):
     show_sieve = fields.Boolean(default=False)
 
       
-    temp_compressive_satuarted = fields.Char(string="Temp.°C" ,required=True)
-    humidity_compressive_satuarted= fields.Char(string="Humidity %" ,required=True)
+    temp_compressive_satuarted = fields.Char(string="Temp.°C" )
+    humidity_compressive_satuarted= fields.Char(string="Humidity %" )
     
 
 
@@ -378,8 +378,8 @@ class Stones(models.Model):
     true_porosity_visible = fields.Boolean(" Porosity,Water Absorption,App. Specific gravity,True Specific gravity",compute="_compute_visible")
 
 
-    temp_porosity = fields.Char(string="Temp.°C" ,required=True)
-    humidity_porosity= fields.Char(string="Humidity %" ,required=True)
+    temp_porosity = fields.Char(string="Temp.°C" )
+    humidity_porosity= fields.Char(string="Humidity %" )
 
 
 

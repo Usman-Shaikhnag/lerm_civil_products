@@ -593,7 +593,7 @@
                         </tbody>
                     </table> -->
 
-                    <!-- <div invisible = "moisture_visible == False">
+                    <div invisible = "moisture_visible == False">
                   <field name= 'bulk_lines_generated' invisible="1" />
                   <button name="action_generate_bulck_lines"
                    
@@ -602,7 +602,7 @@
                     class="oe_highlight"
                     invisible="bulk_lines_generated == True"/>
 
-                </div> -->
+                </div>
 
 
 
@@ -1103,6 +1103,17 @@
                         </tbody>
                     </table> -->
 
+                <div invisible = "freeswell_visible == False">
+                  <field name= 'freeswell_lines_generated' invisible="1" />
+                  <button name="action_generate_freeswell_lines"
+                   
+                    type="object"
+                    string="Generate Lab Lines"
+                    class="oe_highlight"
+                    invisible="freeswell_lines_generated == True"/>
+
+                </div>
+
 
             <div invisible="freeswell_visible == False  ">
                 <field name="freeswell_line_ids">
@@ -1137,40 +1148,67 @@
 </div>
 
 
+        <div invisible="ll_visible == False or freeswell_visible == False">
 
-<div invisible="ll_visible == False or freeswell_visible == False" >
+            <h1 class="text-center">
+                <field name="Atterbergs_name_ll" readonly="1" nolabel="1"/>
+                <field name="ll_visible" invisible="1"/>
+                <field name="ll_lines_generated" invisible="1"/>
+                 <field name="freeswell_visible" invisible="1"/>
+            </h1> 
 
-<h1 class="text-center">
-        <field name="Atterbergs_name_ll" readonly="1" nolabel="1"/>
-</h1>
+             <div invisible = "ll_visible == False">
+                  <field name= 'll_lines_generated' invisible="1" />
+                  <button name="action_generate_ll_lines"
+                   
+                    type="object"
+                    string="Generate Lab Lines"
+                    class="oe_highlight"
+                    invisible="ll_lines_generated == True"/>
 
-    <field name="ll_line_ids" nolabel="1">
-        <tree editable="bottom" class="custom_table_borders">
-           
-            <field name="serial_no" string="Sr.No" width="50px"/>
-            <field name="blows" string="No. of Blows" width="100px"/>
-            <field name="container_no" string="Container No." width="100px"/>
-             <field name="m3" string="M3 (gm)" width="90px"/>
-              <field name="m2" string="M2 (gm)" width="90px"/>
-            <field name="m1" string="M1 (gm)" width="90px"/>
-            <!-- <field name="m2" string="M2 (gm)" width="90px"/> -->
-            <!-- <field name="m3" string="M3 (gm)" width="90px"/> -->
-            <field name="m3_m2" string="M3-M2" width="90px"/>
-            <field name="m2_m1" string="M2-M1" width="90px"/>
-            <field name="water_content" string="Water Content %" width="110px" />
-        </tree>
-    </field>
-</div>
+                </div>
 
-<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not ll_visible">
-                            <tbody>
-                                <tr>
-                                    <td><label for="liquid_avg">LIQUID LIMIT</label></td>
-                                    <td><field name="liquid_avg" class="blue-input"  /></td>
-                                </tr>
-                                
-                            </tbody>
-</table>
+            <field name="ll_child_lines" class="custom_table_borders">
+                <tree string="Liquid Limit Lines" decoration-info="lab_id">
+                    <field name="serial_no"/>
+                    <field name="lab_id"/>
+                </tree>
+
+                <form>
+                <sheet>
+
+                    <field name="ll_line_ids" nolabel="1">
+                        <tree class="custom_table_borders">
+                     
+                            <field name="serial_no" string="Sr.No" width="50px"/>
+                            <field name="blows" string="No. of Blows" width="100px"/>
+                            <field name="container_no" string="Container No." width="100px"/>
+                            <field name="m3" string="M3 (gm)" width="90px"/>
+                            <field name="m2" string="M2 (gm)" width="90px"/>
+                            <field name="m1" string="M1 (gm)" width="90px"/>
+                            <field name="m3_m2" string="M3-M2" width="90px"/>
+                            <field name="m2_m1" string="M2-M1" width="90px"/>
+                            <field name="water_content" string="Water Content %" width="110px"/>
+                        </tree>
+                    </field>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <tbody>
+                            <tr>
+                                <td><label for="liquid_avg">LIQUID LIMIT</label></td>
+                                <td><field name="liquid_avg" class="blue-input"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </sheet>
+            </form>
+
+            </field>
+
+            
+        </div>
+
 
 
 
@@ -3286,6 +3324,41 @@
             <field name="view_id" ref="view_soil_prefill_data_form"/>
             <field name="target">new</field>
         </record>
+
+        <record id="lab_atterberg_ll_line_form" model="ir.ui.view">
+                <field name="name">lab.atterberg.ll.line.form</field>
+                <field name="model">lab.atterberg.ll.line</field>
+                <field name="arch" type="xml">
+                <form>
+                    <sheet>
+
+                        <group >
+                            <group >
+                                <field name="serial_no"/>
+                                <field name="blows"/>
+                                <field name="container_no"/>
+                            </group >
+
+                            
+                        <group >
+                            <field name="m1"/>
+                            <field name="m2"/>
+                            <field name="m3"/>
+                        </group >
+
+                            <group >
+                            <field name="m2_m1"/>
+                            <field name="m3_m2"/>
+                            <field name="water_content"/>
+                            </group >
+                        </group>
+
+                    </sheet>
+                </form>
+
+                </field>
+            </record>
+
 
     </data>
 </odoo>

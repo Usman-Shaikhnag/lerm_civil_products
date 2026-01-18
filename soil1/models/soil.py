@@ -811,11 +811,84 @@ class Soil(models.Model):
     freeswell_name = fields.Char(string="Name", default="Atterbergs Limits (Free Swell)")
     freeswell_visible = fields.Boolean(string="Free Swell Visible", default=True)
     freeswell_line_ids = fields.One2many('soil.free.swell', 'parent_id', string="Free Swell Lines")
+
+    show_sieve = fields.Boolean(default=False)
+
+    freeswell_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+   
+
+
+    def action_generate_freeswell_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.freeswell_line_ids = lines
+                record.freeswell_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.freeswell_line_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
     
     # ATTERBERG LIMITS
     Atterbergs_name = fields.Char(string="Name", default="Atterbergs Limits (LL, PL, SL)")
 
     Atterbergs_name_ll = fields.Char(string="Name", default="Liquid Limits")
+
+    ll_child_lines = fields.One2many('ll.line','parent_id')
+
+    show_sieve = fields.Boolean(default=False)
+
+    ll_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+    def action_generate_ll_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.ll_child_lines = lines
+                record.ll_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.ll_child_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
 
     Atterbergs_name_pl = fields.Char(string="Name", default="Plastic Limits")
     
@@ -837,22 +910,24 @@ class Soil(models.Model):
     
   
     pl_line_ids = fields.One2many('lab.atterberg.pl.line', 'parent_id')
-    ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
+    
     sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id')
 
-    liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(10,0) ,compute='_compute_liquid_avg',store=True,)
+    ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
+
+    # liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(10,0) ,compute='_compute_liquid_avg',store=True,)
     
 
-    @api.depends('ll_line_ids.water_content')
-    def _compute_liquid_avg(self):
-        for line in self:
-            if line.ll_line_ids:
-                vals = line.ll_line_ids.mapped("water_content")
-                line.liquid_avg = sum(vals) / len(vals)
+    # @api.depends('ll_line_ids.water_content')
+    # def _compute_liquid_avg(self):
+    #     for line in self:
+    #         if line.ll_line_ids:
+    #             vals = line.ll_line_ids.mapped("water_content")
+    #             line.liquid_avg = sum(vals) / len(vals)
                 
 
-            else:
-                line.liquid_avg = 0.0
+    #         else:
+    #             line.liquid_avg = 0.0
                 
 
 
@@ -9249,7 +9324,7 @@ class LabAtterbergPlLine(models.Model):
 # LIQUID LIMIT LINE (LL Sheet)  
 class LabAtterbergLlLine(models.Model):
     _name = 'lab.atterberg.ll.line'
-    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+    parent_id = fields.Many2one('ll.line', string="Parent")
     
    
     serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
@@ -9884,6 +9959,51 @@ class DirectShearTestThreeLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(DirectShearTestThreeLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class LLLine(models.Model):
+    _name = "ll.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    lab_id=  fields.Char(string="Lab ID" )
+
+
+    ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
+
+    liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(10,0) ,compute='_compute_liquid_avg',store=True,)
+    
+
+    @api.depends('ll_line_ids.water_content')
+    def _compute_liquid_avg(self):
+        for line in self:
+            if line.ll_line_ids:
+                vals = line.ll_line_ids.mapped("water_content")
+                line.liquid_avg = sum(vals) / len(vals)
+                
+
+            else:
+                line.liquid_avg = 0.0
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(LLLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
