@@ -115,58 +115,7 @@
 						<b>Test Method : </b> IS 1888 : 1982
 						
 					</div>
-					<div class="signatureContainer girdgird" style="margin-top:50px;page-break-inside: avoid;">
-							<div>
-								<div>
-									<b>
-										Checked By
-									</b>
-								</div>
-								<div style="height:30px">
-
-								</div>
-								<!-- <div>
-									<b>
-										<span t-esc="eln.sample_id.check_by.name"/>
-									</b>
-								</div> -->
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.check_by.job_title"/>)
-									</b>
-								</div>
-							</div>
-							<div>
-								<div>
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div>
-							<div>
-								<div>
-									<b>
-										Approved By 
-									</b>
-									
-								</div>
-								<div style="height:30px">
-
-								</div>
-								<!-- <div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div> -->
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.approved_by.job_title"/>) 
-									</b>
-								</div>
-								
-							</div>
-						</div>
+					
 
 
                 <div class="page" style="page-break-before: always;margin-top:20px">
@@ -237,26 +186,21 @@
 				<div class="page" style="page-break-before: always;margin-top:20px">
 				<div>
 						  <b>1. INTRODUCTION :  <br></br></b>
-						  <P>The <b><span t-field="data.client_name"/></b> has proposed to conduct Plate Load Test at “ <b><span t-field="data.site_add"/></b>” on the proposed site as per their contractual requirements. The test was performed as per requirements of IS 1888: 1982. Knack Engineering Services Pvt. Ltd.  was commissioned for the execution. Test was conducted in month of <b><span t-field="data.months"/></b></P>
+						  <P><b><span t-field="data.client_name"/></b>  <b><span t-field="data.site_add"/></b><b><span t-field="data.introdution"/></b> <b><span t-field="data.months"/></b></P>
 				</div>
 				<div>
 						  <b>2. OBJECTIVE:  <br></br></b>
-						  	<ul>
-									<li>
-										The Plate Load Test was conducted as per IS 1888: 1982, and evaluate safe bearing capacity.
-									</li>
-									<li>
-									Imposition of the test load as per the design requirement.
-									</li>
-								<li>
-									he settlement of plate after the application of load was measured.
-								</li>
-								</ul>
+						  	 <ul>
+								<t t-foreach="(data.objective or '').split('\n')" t-as="line">
+									<li><t t-esc="line"/></li>
+								</t>
+
+							</ul>
 				</div>
 
 				<div>
 						  <b>3. APPARATUS:  <br></br></b>
-						  	<ul>
+						  	<!-- <ul>
 									<li>
 										Calibrated Dial Gauges of least count 0.01 mm.
 									</li>
@@ -280,12 +224,18 @@
 
 								</li>
 									
-								</ul>
+								</ul> -->
+								 <ul>
+								
+								<t t-foreach="(data.apparatus or '').split('\n')" t-as="line">
+									<li><t t-esc="line"/></li>
+								</t>
+							</ul>
 				</div>
 
 				<div>
 						  <b>4. SETUP &amp; TEST PROCEDURE:  <br></br></b>
-						  	<ul>
+						  	<!-- <ul>
 									<li>
 										Excavator is used for applying the load on the square plate of <b><span t-field="data.bearing_plate"/></b>
 									</li>
@@ -325,7 +275,13 @@
 							After completion of loading up to final, load was released from maximum to zero &amp; all readings were recorded in similar pattern to record the rebound.
 								</li>
 									
-								</ul>
+								</ul> -->
+								 <ul>
+							
+								<t t-foreach="(data.test_procedure or '').split('\n')" t-as="line">
+									<li><t t-esc="line"/></li>
+								</t>
+							</ul>
 				</div>
 
 
@@ -457,6 +413,64 @@
 							 
                             
 						</table>
+
+						<div class="signatureContainer girdgird" style="margin-top:50px;page-break-inside: avoid;">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height:30px">
+
+								</div>
+								<!-- <div>
+									<b>
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div> -->
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+							<div>
+								<div>
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height:30px">
+
+								</div>
+								<!-- <div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div> -->
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>) 
+									</b>
+								</div>
+								
+							</div>
+						</div>
+
+						<div style="text-align:center;margin-top:25px">
+							......End of Report......
+						</div>
+
 
 
 			      </div>
@@ -605,10 +619,7 @@
 						
 						
 					    <!-- </div> -->
-						<div style="text-align:center;margin-top:25px">
-							......End of Report......
-						</div>
-
+						
 					</div>
 
 					
