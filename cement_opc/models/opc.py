@@ -458,6 +458,7 @@ class CementNormalConsistency(models.Model):
    
 
 
+
      ### setting Time,Final Setting Time	
 
 
@@ -510,8 +511,8 @@ class CementNormalConsistency(models.Model):
     initial_setting_time_name = fields.Char("Name",default="Setting Time")
 
   
-    temp_time = fields.Char("Initial Time Temp.°C" ,required=True)
-    humidity_time= fields.Char("Initial Time Humidity %" ,required=True)
+    temp_time = fields.Char("Initial Time Temp.°C" )
+    humidity_time= fields.Char("Initial Time Humidity %" )
     avg_initial_time = fields.Float("Average Intial Time",compute="_compute_avg_initial_time",store=True,digits=(12,4))
 
     @api.depends('intial_time_lines.initial')
@@ -524,8 +525,8 @@ class CementNormalConsistency(models.Model):
             else:
                 rec.avg_initial_time = 0
 
-    temp_time_final = fields.Char("Final Time Temp.°C" ,required=True)
-    humidity_time_final = fields.Char("Final Time Humidity %" ,required=True)
+    temp_time_final = fields.Char("Final Time Temp.°C" )
+    humidity_time_final = fields.Char("Final Time Humidity %" )
 
     avg_final_time = fields.Float("Average Final Time",compute="_compute_avg_final_time",store=True,digits=(12,4))
 
@@ -666,8 +667,8 @@ class CementNormalConsistency(models.Model):
             else:
                 rec.is_fineness = False
 
-    temp_fineness = fields.Char("Temp.°C" ,required=True)
-    humidity_fineness= fields.Char("Humidity %" ,required=True)
+    temp_fineness = fields.Char("Temp.°C" )
+    humidity_fineness= fields.Char("Humidity %" )
 
     density_cement = fields.Float(string="Density of Cement (g/cc)", digits=(12, 3))
     
@@ -824,10 +825,10 @@ class CementNormalConsistency(models.Model):
 
             rec.compressive_generated = True
 
-    avg_3_days = fields.Float(string="Avg Strength (3 Days)", compute="_compute_avg_strengths", store=True)
+    avg_3_days = fields.Float(string="Avg Strength (3 Days) N/mm²", compute="_compute_avg_strengths", store=True)
 
-    temp_3_days = fields.Char("Temp.°C" ,required=True)
-    humidity_3_days= fields.Char("Humidity %" ,required=True)
+    # temp_3_days = fields.Char("Temp.°C" )
+    humidity_3_days= fields.Char("Humidity %" )
 
 
     avg_3_days_conformity = fields.Selection([
@@ -885,10 +886,10 @@ class CementNormalConsistency(models.Model):
             else:
                 record.avg_3_days_nabl = 'fail'
 
-    avg_7_days = fields.Float(string="Avg Strength (7 Days)", compute="_compute_avg_strengths", store=True)
+    avg_7_days = fields.Float(string="Avg Strength (7 Days) N/mm²", compute="_compute_avg_strengths", store=True)
 
-    temp_7_days = fields.Char("Temp.°C" ,required=True)
-    humidity_7_days= fields.Char("Humidity %" ,required=True)
+    temp_7_days = fields.Char("Temp.°C" )
+    humidity_7_days= fields.Char("Humidity %" )
 
     avg_7_days_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -946,10 +947,10 @@ class CementNormalConsistency(models.Model):
                 record.avg_7_days_nabl = 'fail'
 
 
-    avg_28_days = fields.Float(string="Avg Strength (28 Days)", compute="_compute_avg_strengths", store=True)
+    avg_28_days = fields.Float(string="Avg Strength (28 Days) N/mm²", compute="_compute_avg_strengths", store=True)
 
-    temp_28_days = fields.Char("Temp.°C" ,required=True)
-    humidity_28_days= fields.Char("Humidity %" ,required=True)
+    temp_28_days = fields.Char("Temp.°C" )
+    humidity_28_days= fields.Char("Humidity %" )
 
     avg_28_days_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -1041,12 +1042,11 @@ class CementNormalConsistency(models.Model):
             else:
                 rec.is_soundness_autoclave = False
 
-    temp_soundness_autoclave = fields.Char("Temp.°C" ,required=True)
-    humidity_soundness_autoclave= fields.Char("Humidity %" ,required=True)
+    temp_soundness_autoclave = fields.Char("Temp.°C" )
+    humidity_soundness_autoclave= fields.Char("Humidity %" )
 
     opc_autoclave_ids = fields.One2many("mechanical.opc.autoclave.line", "parent_id", string="Test Readings")
-
-    avg_expantion = fields.Float("Average Expansion %",compute="_compute_avg_expansion",store=True,digits=(12,4))
+    avg_expantion = fields.Float("Average Expansion % (mm)",compute="_compute_avg_expansion",store=True,digits=(12,4))
 
     @api.depends('opc_autoclave_ids.autoclave')
     def _compute_avg_expansion(self):
@@ -1057,6 +1057,7 @@ class CementNormalConsistency(models.Model):
                 rec.avg_expantion = total / count if count else 0
             else:
                 rec.avg_expantion = 0
+
 
 
 
@@ -1156,8 +1157,8 @@ class CementNormalConsistency(models.Model):
                 'target': 'current',
             }
 
-    temp_soundness_le_method = fields.Char("Temp.°C",required=True)
-    humidity_soundness_le_method= fields.Char("Humidity %",required=True)
+    temp_soundness_le_method = fields.Char("Temp.°C")
+    humidity_soundness_le_method= fields.Char("Humidity %")
 
     opc_le_method_ids = fields.One2many("mechanical.opc.lemethod.line", "parent_id", string="Test Readings")
 
