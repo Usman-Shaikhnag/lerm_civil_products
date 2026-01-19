@@ -5731,6 +5731,7 @@ class Soil(models.Model):
 
                 if sample.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
                     record.moisture_visible = True
+                    
                 if sample.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
                     record.gsa_visible = True
 
@@ -5835,6 +5836,9 @@ class Soil(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
+
+
+
             if result.parameter.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
                 # result.result_char = round(self.area_triaxial,2)
                 result.calculated = True
@@ -5881,6 +5885,159 @@ class Soil(models.Model):
                 continue
 
             if result.parameter.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-142578bgtyu':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-145ght27854l':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '14578nhy87-20fb-4843-aa0e-145ght27854l':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '15247gtr-2065-4532-814a-3a4c1e884305':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'ght4125-ca64-44dd-b0ae-228aacf04998':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '5487gt21-ca64-44dd-b0ae-228aacf04965':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '5487gt21-ca64-44dd-b0ae-278954ggh114':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 't4y57888hhhllly1-ca64-44dd-b0ae-1234567rt':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+            
+            if result.parameter.internal_id == 'yt25ec57-11f8-4249-9fa8-788889999rtt':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'c800e59a-b847-4049-9e2b-673fcd1fcde5':
                 # result.result_char = round(self.area_triaxial,2)
                 result.calculated = True
                 # if self.area_triaxial_nabl == 'pass':
