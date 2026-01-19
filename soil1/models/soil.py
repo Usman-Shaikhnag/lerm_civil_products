@@ -660,6 +660,7 @@ class Soil(models.Model):
 
 
 
+
    #  Calculation-NMC, 
 
 
