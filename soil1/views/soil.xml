@@ -3218,30 +3218,85 @@
                     </div>
                     <group/>
 
+
+
+
                   
 
-                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                        <!-- # Shear Stress Vs Normal Stress	 -->
+
+                        <div invisible = "direct_shear_visible == False">
+                           <h4 style="color:red;">Shear Stress Vs Normal Stress</h4>
+                        </div>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
                             <tbody>
                                 <tr>
-                                    <td><span>Sr No</span></td>
-                                    <td><span>Shear stress kg/cm2</span></td>
-                                    <td><span>Normal stress kg/cm2</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>Sr No</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>Shear stress kg/cm2</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>Normal stress kg/cm2</span></td>
                                 </tr>
                                 <tr>
-                                    <td><span>1</span></td>
-                                    <td><field name="shear_stress_shear" /></td>
-                                    <td><field name="normal_stress" readonly="1"/></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>1</span></td>
+                                    <td style="text-align:center;"><field name="shear_test_final1" /></td>
+                                    <td style="text-align:center;"><field name="normal_stress" readonly="1"/></td>
                                 </tr>
                                 <tr>
-                                    <td><span>2</span></td>
-                                    <td><field name="shear_stress_shear_2" /></td>
-                                    <td><field name="normal_stress_2" readonly="1"/></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>2</span></td>
+                                    <td style="text-align:center;"><field name="shear_test_final2" /></td>
+                                    <td style="text-align:center;"><field name="normal_stress_2" readonly="1"/></td>
                                 </tr>
 
                                 <tr>
-                                    <td><span>3</span></td>
-                                    <td><field name="shear_stress_shear_3" /></td>
-                                    <td><field name="normal_stress_3" readonly="1"/></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>3</span></td>
+                                    <td style="text-align:center;"><field name="shear_test_final3" /></td>
+                                    <td style="text-align:center;"><field name="normal_stress_3" readonly="1"/></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>MASS OF SOIL</span></td>
+                                    <td style="text-align:center;"><field name="mass_of_soil_finals1" /></td>
+                                    <td style="text-align:center;"><field name="mass_of_soil_finals" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>DRY WT SOIL</span></td>
+                                    <td style="text-align:center;"><field name="dry_wt_soil_final1" /></td>
+                                    <td style="text-align:center;"><field name="dry_wt_soil_final" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>NMC</span></td>
+                                    <td style="text-align:center;"><field name="initial_mc_final1" /></td>
+                                    <td style="text-align:center;"><field name="initial_mc_final" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>DRY DENSITY</span></td>
+                                    <td style="text-align:center;"><field name="dry_density_final1" /></td>
+                                    <td style="text-align:center;"><field name="dry_density_final" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>BULK DENSITY</span></td>
+                                    <td style="text-align:center;"><field name="bulk_density_final1" /></td>
+                                    <td style="text-align:center;"><field name="bulk_density_final" readonly="1"/></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>phi</span></td>
+                                    <td style="text-align:center;"><field name="phi" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>cohesion</span></td>
+                                    <td style="text-align:center;"><field name="cohesion" /></td>
                                 </tr>
                                 
                                 
@@ -3250,19 +3305,19 @@
 
 
                         <div invisible = "direct_shear_visible == False">
-                    <button name="action_plot_shear_vs_normal"
+                    <button name="action_generate_shear_graph_4"
                         string="Generate Shear Graph"
                         type="object"
                         class="btn-primary"/>
-                     </div>   -->
+                     </div>  
 
                      
 
 
-                    <!-- <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
-                        <field name="shear_vs_normal_graph" widget="image"  readonly="1"/>
+                    <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
+                        <field name="shear_graph_image_4" widget="image"  readonly="1"/>
                     </div>
-                    <group/> -->
+                    <group/>
 
                     
 

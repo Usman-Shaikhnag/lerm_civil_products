@@ -5541,136 +5541,328 @@ class Soil(models.Model):
         plt.close(fig)
 
 
-    # normal graph
-    # direct_shear_ids_3 = fields.One2many("direct.shear.test.four.line", "parent_id", string="Test Readings")
+    # Shear Stress Vs Normal Stress			
+    shear_test_final1 = fields.Float( string='Shear stress kg/cm2 ' , digits=(10,3) ,compute='_compute_shear_test_final1',store=True,)
+
+    @api.depends('direct_shear_ids.shear_stress')
+    def _compute_shear_test_final1(self):
+        for rec in self:
+            shear_values = rec.direct_shear_ids.mapped('shear_stress')
+            rec.shear_test_final1 = max(shear_values) if shear_values else 0.0
+
+    shear_test_final2 = fields.Float( string='Shear stress kg/cm2 ' , digits=(10,3) ,compute='_compute_shear_test_final2',store=True,)
+
+    @api.depends('direct_shear_ids_2.shear_stress')
+    def _compute_shear_test_final2(self):
+        for rec in self:
+            shear_values = rec.direct_shear_ids_2.mapped('shear_stress')
+            rec.shear_test_final2 = max(shear_values) if shear_values else 0.0
+
+    shear_test_final3 = fields.Float( string='Shear stress kg/cm2 ' , digits=(10,3) ,compute='_compute_shear_test_final3',store=True,)
+
+    @api.depends('direct_shear_ids_3.shear_stress')
+    def _compute_shear_test_final3(self):
+        for rec in self:
+            shear_values = rec.direct_shear_ids_3.mapped('shear_stress')
+            rec.shear_test_final3 = max(shear_values) if shear_values else 0.0
+
+
+    mass_of_soil_finals1 = fields.Float( string='Shear stress kg/cm2 ' , digits=(10,3) ,compute='_compute_mass_of_soil_finals',store=True,)
+
+    mass_of_soil_finals = fields.Float( string='Shear stress kg/cm2 ' , digits=(10,2) ,compute='_compute_mass_of_soil_finals',store=True,)
+
+    @api.depends('initial_mass_soil', 'initial_mass_soil_2','initial_mass_soil_3')
+    def _compute_mass_of_soil_finals(self):
+        for line in self:
+            mass_of_soil_finals1 = 0.0
+            if line.initial_mass_soil and line.initial_mass_soil_2 and line.initial_mass_soil_3:
+               mass_of_soil_finals1 = line.initial_mass_soil + line.initial_mass_soil_2 + line.initial_mass_soil_3
+               line.mass_of_soil_finals1 = mass_of_soil_finals1
+               line.mass_of_soil_finals = mass_of_soil_finals1 / 3
+
+            else:
+              line.mass_of_soil_finals = 0.0
+
+    dry_wt_soil_final1 = fields.Float( string='DRY WT SOIL ' , digits=(10,3) ,compute='_compute_dry_wt_soil_final',store=True,)
+
+    dry_wt_soil_final = fields.Float( string='DRY WT SOIL ' , digits=(10,2) ,compute='_compute_dry_wt_soil_final',store=True,)
+
+    @api.depends('mass_dry_soil', 'mass_dry_soil_2','mass_dry_soil_3')
+    def _compute_dry_wt_soil_final(self):
+        for line in self:
+            dry_wt_soil_final1 = 0.0
+            if line.mass_dry_soil and line.mass_dry_soil_2 and line.mass_dry_soil_3:
+               dry_wt_soil_final1 = line.mass_dry_soil + line.mass_dry_soil_2 + line.mass_dry_soil_3
+               line.dry_wt_soil_final1 = dry_wt_soil_final1
+               line.dry_wt_soil_final = dry_wt_soil_final1 / 3
+
+            else:
+              line.dry_wt_soil_final = 0.0
+
+    dry_wt_soil_final1 = fields.Float( string='DRY WT SOIL ' , digits=(10,3) ,compute='_compute_dry_wt_soil_final',store=True,)
+
+    dry_wt_soil_final = fields.Float( string='DRY WT SOIL ' , digits=(10,2) ,compute='_compute_dry_wt_soil_final',store=True,)
+
+    @api.depends('mass_dry_soil', 'mass_dry_soil_2','mass_dry_soil_3')
+    def _compute_dry_wt_soil_final(self):
+        for line in self:
+            dry_wt_soil_final1 = 0.0
+            if line.mass_dry_soil and line.mass_dry_soil_2 and line.mass_dry_soil_3:
+               dry_wt_soil_final1 = line.mass_dry_soil + line.mass_dry_soil_2 + line.mass_dry_soil_3
+               line.dry_wt_soil_final1 = dry_wt_soil_final1
+               line.dry_wt_soil_final = dry_wt_soil_final1 / 3
+
+            else:
+              line.dry_wt_soil_final = 0.0
+
+    initial_mc_final1 = fields.Float( string='NMC ' , digits=(16,8) ,compute='_compute_initial_mc_final',store=True,)
+
+    initial_mc_final = fields.Float( string='NMC ' , digits=(10,2) ,compute='_compute_initial_mc_final',store=True,)
+
+    @api.depends('initial_moisture_content', 'initial_moisture_content_2','initial_moisture_content_3')
+    def _compute_initial_mc_final(self):
+        for line in self:
+            initial_mc_final1 = 0.0
+            if line.initial_moisture_content and line.initial_moisture_content_2 and line.initial_moisture_content_3:
+               initial_mc_final1 = line.initial_moisture_content + line.initial_moisture_content_2 + line.initial_moisture_content_3
+               line.initial_mc_final1 = initial_mc_final1
+               line.initial_mc_final = initial_mc_final1 / 3
+
+            else:
+              line.initial_mc_final = 0.0
+
+    dry_density_final1 = fields.Float( string='DRY DENSITY ' , digits=(16,2) ,compute='_compute_dry_density_final',store=True,)
+
+    dry_density_final = fields.Float( string='DRY DENSITY ' , digits=(10,2) ,compute='_compute_dry_density_final',store=True,)
+
+    @api.depends('dry_density_soil_shear', 'dry_density_soil_shear_2','dry_density_soil_shear_3')
+    def _compute_dry_density_final(self):
+        for line in self:
+            dry_density_final1 = 0.0
+            if line.dry_density_soil_shear and line.dry_density_soil_shear_2 and line.dry_density_soil_shear_3:
+               dry_density_final1 = line.dry_density_soil_shear + line.dry_density_soil_shear_2 + line.dry_density_soil_shear_3
+               line.dry_density_final1 = dry_density_final1
+               line.dry_density_final = dry_density_final1 / 3
+
+            else:
+              line.dry_density_final = 0.0
+
+ 
+
+    bulk_density_final1 = fields.Float( string='BULK DENSITY ' , digits=(10,2) ,compute='_compute_bulk_density_finals',store=True,)
+
+    bulk_density_final = fields.Float( string='BULK DENSITY ' , digits=(10,2) ,compute='_compute_bulk_density_finals',store=True,)
+
+    @api.depends('density_soil_shear', 'density_soil_shear_2', 'density_soil_shear_3')
+    def _compute_bulk_density_finals(self):
+     for line in self:
+        # ✅ ALWAYS reset
+        line.bulk_density_final1 = 0.0
+        line.bulk_density_final = 0.0
+
+        values = [
+            line.density_soil_shear,
+            line.density_soil_shear_2,
+            line.density_soil_shear_3,
+        ]
+
+        values = [v for v in values if v not in (None, False)]
+
+        if values:
+            total = sum(values)
+            line.bulk_density_final1 = total
+            line.bulk_density_final = total / len(values)
 
     
 
-    # shear_stress_shear = fields.Float(string="Shear stress kg/cm2" , digits=(8,3) ,compute="_compute_shear_stress_shear" , store=True)
+    phi = fields.Float(string='Phi (°)',digits=(10, 3),compute='_compute_phi_cohesion1',store=True)
+
+    cohesion = fields.Float(string='Cohesion (kg/cm2)', digits=(10, 3),compute='_compute_phi_cohesion1',store=True)
 
     
 
-    # @api.depends('direct_shear_ids.shear_stress')
-    # def _compute_shear_stress_shear(self):
-    #  for rec in self:
-    #     values = rec.direct_shear_ids.mapped('shear_stress')
-    #     rec.shear_stress_shear = max(values) if values else 0.0
+    @api.depends(
+    'shear_test_final1', 'shear_test_final2', 'shear_test_final3',
+    'normal_stress', 'normal_stress_2', 'normal_stress_3'
+)
+    def _compute_phi_cohesion(self):
+     for rec in self:
+        # 🔴 Always reset stored fields
+        rec.phi = 0.0
+        rec.cohesion = 0.0
 
-    # shear_stress_shear_2 = fields.Float(string="Shear stress kg/cm2" , digits=(8,3) ,compute="_compute_shear_stress_shear_2" , store=True)
+        # X = Normal stress, Y = Shear stress
+        x = [
+            round(rec.normal_stress or 0.0, 3),
+            round(rec.normal_stress_2 or 0.0, 3),
+            round(rec.normal_stress_3 or 0.0, 3),
+        ]
+        y = [
+            round(rec.shear_test_final1 or 0.0, 3),
+            round(rec.shear_test_final2 or 0.0, 3),
+            round(rec.shear_test_final3 or 0.0, 3),
+        ]
+
+        # Keep only valid pairs
+        pairs = [(xi, yi) for xi, yi in zip(x, y) if xi and yi]
+        if len(pairs) < 2:
+            continue
+
+        xs = [p[0] for p in pairs]
+        ys = [p[1] for p in pairs]
+
+        n = len(xs)
+        sum_x = sum(xs)
+        sum_y = sum(ys)
+        sum_xy = sum(x * y for x, y in zip(xs, ys))
+        sum_x2 = sum(x * x for x in xs)
+
+        denominator = (n * sum_x2 - sum_x ** 2)
+        if denominator == 0:
+            continue
+
+        # Excel SLOPE
+        slope = (n * sum_xy - sum_x * sum_y) / denominator
+
+        # Phi = DEGREES(ATAN(slope))
+        rec.phi = round(math.degrees(math.atan(slope)), 3)
+
+        # Cohesion = INTERCEPT
+        rec.cohesion = round((sum_y - slope * sum_x) / n, 3)
+
+
+     
+
+    shear_graph_image_4 = fields.Binary("Shear Stress Graph")
+
+
+
+    def action_generate_shear_graph_4(self):
+     for rec in self:
+
+        rec.shear_graph_image_4 = False
+
+        # ===== DATA =====
+        x_vals = [
+            rec.normal_stress,
+            rec.normal_stress_2,
+            rec.normal_stress_3,
+        ]
+        y_vals = [
+            rec.shear_test_final1,
+            rec.shear_test_final2,
+            rec.shear_test_final3,
+        ]
+
+        pairs = [(x, y) for x, y in zip(x_vals, y_vals) if x and y]
+        if len(pairs) < 2:
+            continue
+
+        pairs.sort(key=lambda p: p[0])
+        x, y = zip(*pairs)
+
+        # ===== LINEAR REGRESSION =====
+        n = len(x)
+        sum_x = sum(x)
+        sum_y = sum(y)
+        sum_xy = sum(xi * yi for xi, yi in zip(x, y))
+        sum_x2 = sum(xi * xi for xi in x)
+
+        slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x ** 2)
+        intercept = (sum_y - slope * sum_x) / n
+
+        y_fit = [slope * xi + intercept for xi in x]
+
+        # ===== R² =====
+        y_mean = sum_y / n
+        ss_tot = sum((yi - y_mean) ** 2 for yi in y)
+        ss_res = sum((yi - yfi) ** 2 for yi, yfi in zip(y, y_fit))
+        r_squared = 1 - (ss_res / ss_tot)
+
+        # ===== TRENDLINE RANGE =====
+        x_min = min(x)
+        x_max = max(x)
+        x_line = [x_min, x_max]
+        y_line = [slope * xi + intercept for xi in x_line]
+
+        # ===== PLOT =====
+        fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+        # Excel blue data line + markers
+        ax.plot(
+            x, y,
+            color='#4472C4',
+            marker='o',
+            markersize=6,
+            linewidth=2.5
+        )
+
+        # Black trendline
+        ax.plot(
+            x_line, y_line,
+            color='black',
+            linewidth=1.6
+        )
+
+        # Labels
+        ax.set_xlabel("Normal stress, kg/sq.cm", fontsize=11)
+        ax.set_ylabel("Shear Stress, kg/sq.cm", fontsize=11)
+        ax.set_title("Shear Stress Vs Normal Stress", fontsize=13)
+        # ===== EXCEL-LIKE X AXIS =====
+        ax.set_xlim(0, 1.6)                      # Axis starts at 0
+        ax.set_xticks(np.arange(0, 1.61, 0.2))
+
+        # Axis limits (Excel-like)
+        # ax.set_xlim(x_min, x_max)
+        ax.set_ylim(0, max(y) * 1.15)
+
+        # Vertical gridlines only
+        ax.xaxis.grid(True, color='#BFBFBF', linewidth=0.8)
+        ax.yaxis.grid(False)
+
+        # Excel-like border
+        for spine in ax.spines.values():
+            spine.set_color('#7F7F7F')
+            spine.set_linewidth(1)
+
+        ax.tick_params(labelsize=10)
+
+        # Equation text (positioned like Excel)
+        eq_text = f"y = {slope:.4f}x + {intercept:.4f}\nR² = {r_squared:.4f}"
+        ax.text(
+            x_min + (x_max - x_min) * 0.35,
+            max(y) * 0.78,
+            eq_text,
+            fontsize=10
+        )
+
+        # ===== SAVE IMAGE =====
+        buffer = BytesIO()
+        fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+        buffer.seek(0)
+
+        rec.shear_graph_image_4 = base64.b64encode(buffer.read())
+
+        buffer.close()
+        plt.close(fig)
+
+
+
+
+
+
+
+
+            
+
+
+
+
 
     
 
-    # @api.depends('direct_shear_ids_2.shear_stress')
-    # def _compute_shear_stress_shear_2(self):
-    #  for rec in self:
-    #     values = rec.direct_shear_ids_2.mapped('shear_stress')
-    #     rec.shear_stress_shear_2 = max(values) if values else 0.0
-
-    # shear_stress_shear_3 = fields.Float(string="Shear stress kg/cm2" , digits=(8,3) ,compute="_compute_shear_stress_shear_3" , store=True)
-
-    
-
-    # @api.depends('direct_shear_ids_3.shear_stress')
-    # def _compute_shear_stress_shear_3(self):
-    #  for rec in self:
-    #     values = rec.direct_shear_ids_3.mapped('shear_stress')
-    #     rec.shear_stress_shear_3 = max(values) if values else 0.0
 
 
-    # shear_vs_normal_graph = fields.Binary("Shear Stress Graph")
-
-    # def action_plot_shear_vs_normal(self):
-    #  for rec in self:
-
-    #     # X → Normal stress
-    #     x = [
-    #         rec.normal_stress,
-    #         rec.normal_stress_2,
-    #         rec.normal_stress_3,
-    #     ]
-
-    #     # Y → Max shear stress
-    #     y = [
-    #         rec.shear_stress_shear,
-    #         rec.shear_stress_shear_2,
-    #         rec.shear_stress_shear_3,
-    #     ]
-
-    #     # Remove empty / zero values
-    #     data = [(xn, yn) for xn, yn in zip(x, y) if xn and yn]
-
-    #     if len(data) < 2:
-    #         rec.shear_vs_normal_graph = False
-    #         return
-
-    #     x, y = zip(*data)
-    #     x = np.array(x)
-    #     y = np.array(y)
-
-    #     # Linear regression (Mohr–Coulomb)
-    #     m, c = np.polyfit(x, y, 1)
-
-    #     # R²
-    #     y_fit = m * x + c
-    #     ss_res = np.sum((y - y_fit) ** 2)
-    #     ss_tot = np.sum((y - np.mean(y)) ** 2)
-    #     r2 = 1 - (ss_res / ss_tot)
-
-    #     # Axis limits
-    #     x_max = math.ceil(max(x) * 10) / 10
-    #     y_max = math.ceil(max(y) * 10) / 10
-
-    #     # Create figure
-    #     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
-
-    #     # Data plot
-    #     ax.plot(
-    #         x, y,
-    #         color='#4472C4',
-    #         linewidth=2.2,
-    #         marker='D',
-    #         markersize=5,
-    #         markerfacecolor='#4472C4',
-    #         markeredgewidth=0
-    #     )
-
-    #     # Trendline
-    #     x_line = np.linspace(min(x), max(x), 100)
-    #     y_line = m * x_line + c
-    #     ax.plot(x_line, y_line, color='black', linewidth=1.5)
-
-    #     # Labels
-    #     ax.set_xlabel("Normal stress, kg/sq.cm", fontsize=11)
-    #     ax.set_ylabel("Shear stress, kg/sq.cm", fontsize=11)
-
-    #     # Limits
-    #     ax.set_xlim(0, x_max)
-    #     ax.set_ylim(0, y_max)
-
-    #     # Grid
-    #     ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.6)
-    #     ax.xaxis.grid(False)
-
-    #     # Equation text
-    #     eq_text = f"y = {m:.4f}x + {c:.4f}\nR² = {r2:.4f}"
-    #     ax.text(0.55 * x_max, 0.80 * y_max, eq_text, fontsize=9)
-
-    #     # Border style
-    #     for spine in ax.spines.values():
-    #         spine.set_color('#808080')
-    #         spine.set_linewidth(0.8)
-
-    #     ax.tick_params(labelsize=9)
-
-    #     # Save image
-    #     buffer = BytesIO()
-    #     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
-    #     buffer.seek(0)
-
-    #     rec.shear_vs_normal_graph = base64.b64encode(buffer.read())
-
-    #     buffer.close()
-    #     plt.close(fig)
 
 
 
