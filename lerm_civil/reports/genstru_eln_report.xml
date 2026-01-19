@@ -7,15 +7,19 @@
             <table style="width:100%;border-collapse:collapse;font-family:'Arial';font-size:11px;">
                 <tr style="height:100px;">
                     <!-- LEFT: Logo -->
-                    <td style="width:20%;vertical-align:middle;text-align:left;">
+                    <!-- <td style="width:20%;vertical-align:middle;text-align:left;">
                         <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'" style="height:40px;"/>
-                        <!-- <div style="font-size:9px;">Consultants Pvt. Ltd.</div> -->
+                    </td> -->
+                    <td style="width:20%; vertical-align:middle; text-align:center;">
+                        <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'" 
+                            style="height:40px; display:block; margin:auto;"/>
                     </td>
+
 
                     <!-- CENTER: Title -->
                     <td style="width:55%;text-align:center;vertical-align:middle;" class="" t-foreach="eln" t-as="o">
                         <div style="font-weight:bold;text-transform:uppercase;font-size:12px;">
-                            TEST REPORT - <span t-field="o.material.name"/> SAMPLES - <span t-esc="eln.material.test_format_no"/>
+                            TEST REPORT - <span t-field="o.material.name"/> <br></br> <span t-esc="eln.material.test_format_no"/>
 							
                         </div>
                         <div style="margin-top:4px; border-top:1px solid #000; width:100%;"></div>
