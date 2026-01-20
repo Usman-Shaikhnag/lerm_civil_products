@@ -891,8 +891,80 @@ class Soil(models.Model):
             }
 
     Atterbergs_name_pl = fields.Char(string="Name", default="Plastic Limits")
+
+    pl_child_lines = fields.One2many('pl.line','parent_id')
+
+    show_sieve = fields.Boolean(default=False)
+
+    pl_lines_generated = fields.Boolean(string="Lab ID Show",default=False)
+
+    def action_generate_pl_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.pl_child_lines = lines
+                record.pl_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.pl_child_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
     
     Atterbergs_name_sl = fields.Char(string="Name", default="Shrinkage Limits")
+
+    sl_child_lines = fields.One2many('sl.line','parent_id')
+
+    show_sieve = fields.Boolean(default=False)
+
+    sl_lines_generated = fields.Boolean(string="Lab ID Show",default=False)
+
+    def action_generate_sl_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.sl_child_lines = lines
+                record.sl_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.sl_child_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
 
 
     Atterbergs_visible = fields.Boolean('Show Atterberg', default=True)
@@ -909,9 +981,9 @@ class Soil(models.Model):
     plasticity_index = fields.Float('PI', digits=(10,2))
     
   
-    pl_line_ids = fields.One2many('lab.atterberg.pl.line', 'parent_id')
+    pl_line_ids = fields.One2many('lab.atterberg.pl.line', 'parent_id_ll',ondelete='cascade')
     
-    sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id')
+    sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id_sl',ondelete='cascade')
 
     ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
 
@@ -931,36 +1003,36 @@ class Soil(models.Model):
                 
 
 
-    plastic_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_plastic_avg")
+    # plastic_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_plastic_avg")
 
 
-    @api.depends('pl_line_ids.water_content')
-    def _compute_plastic_avg(self):
-        for line in self:
-            if line.pl_line_ids:
-                vals = line.pl_line_ids.mapped("water_content")
-                line.plastic_avg = sum(vals) / len(vals)
+    # @api.depends('pl_line_ids.water_content')
+    # def _compute_plastic_avg(self):
+    #     for line in self:
+    #         if line.pl_line_ids:
+    #             vals = line.pl_line_ids.mapped("water_content")
+    #             line.plastic_avg = sum(vals) / len(vals)
                 
 
-            else:
-                line.plastic_avg = 0.0
+    #         else:
+    #             line.plastic_avg = 0.0
 
 
 
      
-    shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0),compute="_compute_shrinkage_avg")
+    # shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0),compute="_compute_shrinkage_avg")
 
 
-    @api.depends('sl_line_ids.water_content')
-    def _compute_shrinkage_avg(self):
-        for line in self:
-            if line.sl_line_ids:
-                vals = line.sl_line_ids.mapped("water_content")
-                line.shrinkage_avg = sum(vals) / len(vals)
+    # @api.depends('sl_line_ids.water_content')
+    # def _compute_shrinkage_avg(self):
+    #     for line in self:
+    #         if line.sl_line_ids:
+    #             vals = line.sl_line_ids.mapped("water_content")
+    #             line.shrinkage_avg = sum(vals) / len(vals)
                 
 
-            else:
-                line.shrinkage_avg = 0.0
+    #         else:
+    #             line.shrinkage_avg = 0.0
 
            
 
@@ -7370,8 +7442,8 @@ class SoilGSALINE(models.Model):
     wt_of_samp1 = fields.Float(string="Weight of total sample (gm)")
 
     soil_classification = fields.Selection([
-        ('poorly_graded', 'Poorly_Graded'),
-        ('well_graded', 'Well_Graded'),
+        ('poorly_graded', 'Poorly Graded'),
+        ('well_graded', 'Well Graded'),
         ('well_graded_gravel', 'Well-Graded Gravel'),
         ('poorly_graded_gravel', 'Poorly-Graded-Gravel'),
         ('silty_gravel', 'Silty-Gravel'),
@@ -9648,7 +9720,7 @@ class LabOptionLine(models.Model):
 # PLASTIC LIMIT LINE (PL Sheet)
 class LabAtterbergPlLine(models.Model):
     _name = 'lab.atterberg.pl.line'
-    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+    parent_id_ll = fields.Many2one('pl.line', string="Parent",ondelete='cascade')
    
     serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
     container_no = fields.Char('Container No.')
@@ -9708,7 +9780,7 @@ class LabAtterbergLlLine(models.Model):
 class LabAtterbergSlLine(models.Model):
     _name = 'lab.atterberg.sl.line'
     
-    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+    parent_id_sl = fields.Many2one('sl.line', string="Parent",ondelete='cascade')
     serial_no = fields.Integer(string="Sr. No", readonly=True, default=1)
     
 
@@ -10353,6 +10425,97 @@ class LLLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(LLLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class PLLine(models.Model):
+    _name = "pl.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    lab_id=  fields.Char(string="Lab ID" )
+
+
+    pl_line_ids = fields.One2many('lab.atterberg.pl.line', 'parent_id_ll',ondelete='cascade')
+
+    plastic_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_plastic_avg")
+
+
+    @api.depends('pl_line_ids.water_content')
+    def _compute_plastic_avg(self):
+        for line in self:
+            if line.pl_line_ids:
+                vals = line.pl_line_ids.mapped("water_content")
+                line.plastic_avg = sum(vals) / len(vals)
+                
+
+            else:
+                line.plastic_avg = 0.0
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(PLLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class SLLine(models.Model):
+    _name = "sl.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    lab_id=  fields.Char(string="Lab ID" )
+
+
+    sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id_sl',ondelete='cascade')
+
+    shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0),compute="_compute_shrinkage_avg")
+
+
+    @api.depends('sl_line_ids.water_content')
+    def _compute_shrinkage_avg(self):
+        for line in self:
+            if line.sl_line_ids:
+                vals = line.sl_line_ids.mapped("water_content")
+                line.shrinkage_avg = sum(vals) / len(vals)
+                
+
+            else:
+                line.shrinkage_avg = 0.0
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SLLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
