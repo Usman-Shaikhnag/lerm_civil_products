@@ -106,6 +106,8 @@ class MechanicalRock(models.Model):
     rock_child_lines = fields.One2many('mechanical.rock.line','parent_id',string="Parameter")
     usc_visible = fields.Boolean("USC Visible",compute="_compute_visible")
 
+    
+
     point_load_constant = fields.Float(string="Point Load  Constant")
     compressive_strength_constant = fields.Float(string="Compressive Strength  Constant")
     compressive_strength_constant_hd = fields.Float(string="Compressive Strength HD  Constant",digits=(12,4))
@@ -142,6 +144,25 @@ class MechanicalRock(models.Model):
                 'view_mode': 'form',
                 'target': 'current',
             }
+
+    avg_dia_visible = fields.Boolean("Average Diameter / Distance between Platens (D )",compute="_compute_visible")
+    avg_height_visible = fields.Boolean("Average Height (H) / Width (W)",compute="_compute_visible")
+    hd_visible = fields.Boolean("H/D",compute="_compute_visible")
+    bulk_density_visible = fields.Boolean("Bulk Density",compute="_compute_visible")
+    sat_density_visible = fields.Boolean("Sat Density",compute="_compute_visible")
+    dry_density_visible = fields.Boolean("Dry Density",compute="_compute_visible")
+    water_absorption_visible = fields.Boolean("Water Absorption",compute="_compute_visible")
+    porosity_visible = fields.Boolean("Porosity",compute="_compute_visible")
+    moisture_content_visible = fields.Boolean("Moisture content",compute="_compute_visible")
+    compressive_strength_visible = fields.Boolean("Compressive Strength ",compute="_compute_visible")
+    compressive_strength_visible1 = fields.Boolean("Compressive Strength ",compute="_compute_visible")
+    point_load_visible = fields.Boolean("Point load",compute="_compute_visible")
+    point_load_visible1 = fields.Boolean("Point load",compute="_compute_visible")
+    modulus_visible = fields.Boolean("Modulus of Elasticity Test*",compute="_compute_visible")
+    stress_rate_visible = fields.Boolean("Stress rate",compute="_compute_visible")
+    mode_of_failure_visible = fields.Boolean("Mode of failure / Orientation of sample",compute="_compute_visible")
+    sp_gravity_visible = fields.Boolean("Sp. Gravity",compute="_compute_visible")
+    duration_of_test_visible = fields.Boolean("Duration of test",compute="_compute_visible")
     
 
 
@@ -152,6 +173,24 @@ class MechanicalRock(models.Model):
         
         for record in self:
             record.usc_visible = False
+            record.avg_dia_visible = False
+            record.avg_height_visible = False
+            record.hd_visible = False
+            record.bulk_density_visible = False
+            record.sat_density_visible = False
+            record.dry_density_visible = False
+            record.water_absorption_visible = False
+            record.porosity_visible = False
+            record.moisture_content_visible = False
+            record.compressive_strength_visible = False
+            record.compressive_strength_visible1 = False
+            record.point_load_visible = False
+            record.point_load_visible1 = False
+            record.modulus_visible = False
+            record.duration_of_test_visible = False
+            record.stress_rate_visible = False
+            record.mode_of_failure_visible = False
+            record.sp_gravity_visible = False
 
 
           
@@ -161,6 +200,46 @@ class MechanicalRock(models.Model):
 
                 if sample.internal_id == "a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d":
                     record.usc_visible = True
+                if sample.internal_id == "a1f9c5d0-0bc7-41a6-a2bb-0fe9214587uytf":
+                    record.avg_dia_visible = True
+                if sample.internal_id == "a1f9c5d0-0bc7-41a6-a2bb-0fe921147852gh":
+                    record.avg_height_visible = True
+                if sample.internal_id == "201478ght-0bc7-41a6-a2bb-0fe9211478521gt":
+                    record.hd_visible = True
+                if sample.internal_id == "210478bbb-0bc7-41a6-a2bb-0fe9211478521r4":
+                    record.bulk_density_visible = True
+                if sample.internal_id == "20123rtyng-0bc7-41a6-a2bb-0fe921147814524":
+                    record.sat_density_visible = True
+                if sample.internal_id == "4578uuuytt-0bc7-41a6-a2bb-0fe9211478tyu556":
+                    record.dry_density_visible = True
+                if sample.internal_id == "2147852trr-0bc7-41a6-a2bb-0fe92114rterrgghy":
+                    record.water_absorption_visible = True
+                if sample.internal_id == "55544ttyyyr-0bc7-41a6-a2bb-0fe92114rterertty":
+                    record.porosity_visible = True
+                if sample.internal_id == "7778rrrtttgg-0bc7-41a6-a2bb-0fe92114rr445ttj":
+                    record.moisture_content_visible = True
+                if sample.internal_id == "88rrty222vv33-0bc7-41a6-a2bb-0fe92114rr445t":
+                    record.compressive_strength_visible = True
+
+                if sample.internal_id == "5578gghty214-0bc7-41a6-a2bb-0fe92114rr445t":
+                    record.compressive_strength_visible1 = True
+
+                if sample.internal_id == "785587rttgg11-0bc7-41a6-a2bb-0fe92114rr445t":
+                    record.point_load_visible = True
+
+                if sample.internal_id == "87522869rtyhn-0bc7-41a6-a2bb-0fe92114rr445t":
+                    record.point_load_visible1 = True
+
+                if sample.internal_id == "8855fgrtuumm-0bc7-41a6-a2bb-0fe92114rr445t":
+                    record.modulus_visible = True
+                if sample.internal_id == "9995522tyynn1-0bc7-41a6-a2bb-0fe92114rr4457":
+                    record.duration_of_test_visible = True
+                if sample.internal_id == "3332gghytt1144-0bc7-41a6-a2bb-0fe92114rr478t":
+                    record.stress_rate_visible = True
+                if sample.internal_id == "22277gght1100t-0bc7-41a6-a2bb-0fe92114rr478y":
+                    record.mode_of_failure_visible = True
+                if sample.internal_id == "8866ggtrhh2277j-0bc7-41a6-a2bb-0fe92114rr4yre":
+                    record.sp_gravity_visible = True
 
               
                
@@ -185,6 +264,45 @@ class MechanicalRock(models.Model):
         for result in technician_results:
                    
             if result.parameter.internal_id == 'a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d':
+                result.calculated = True
+
+            if result.parameter.internal_id == 'a1f9c5d0-0bc7-41a6-a2bb-0fe9214587uytf':
+                result.calculated = True
+            
+            if result.parameter.internal_id == 'a1f9c5d0-0bc7-41a6-a2bb-0fe921147852gh':
+                result.calculated = True
+            if result.parameter.internal_id == '201478ght-0bc7-41a6-a2bb-0fe9211478521gt':
+                result.calculated = True
+
+            if result.parameter.internal_id == '210478bbb-0bc7-41a6-a2bb-0fe9211478521r4':
+                result.calculated = True
+            if result.parameter.internal_id == '20123rtyng-0bc7-41a6-a2bb-0fe921147814524':
+                result.calculated = True
+            if result.parameter.internal_id == '4578uuuytt-0bc7-41a6-a2bb-0fe9211478tyu556':
+                result.calculated = True
+            if result.parameter.internal_id == '2147852trr-0bc7-41a6-a2bb-0fe92114rterrgghy':
+                result.calculated = True
+            if result.parameter.internal_id == '55544ttyyyr-0bc7-41a6-a2bb-0fe92114rterertty':
+                result.calculated = True
+            if result.parameter.internal_id == '7778rrrtttgg-0bc7-41a6-a2bb-0fe92114rr445ttj':
+                result.calculated = True
+            if result.parameter.internal_id == '88rrty222vv33-0bc7-41a6-a2bb-0fe92114rr445t':
+                result.calculated = True
+            if result.parameter.internal_id == '785587rttgg11-0bc7-41a6-a2bb-0fe92114rr445t':
+                result.calculated = True
+            if result.parameter.internal_id == '8855fgrtuumm-0bc7-41a6-a2bb-0fe92114rr445t':
+                result.calculated = True
+            if result.parameter.internal_id == '9995522tyynn1-0bc7-41a6-a2bb-0fe92114rr4457':
+                result.calculated = True
+            if result.parameter.internal_id == '3332gghytt1144-0bc7-41a6-a2bb-0fe92114rr478t':
+                result.calculated = True
+            if result.parameter.internal_id == '22277gght1100t-0bc7-41a6-a2bb-0fe92114rr478y':
+                result.calculated = True
+            if result.parameter.internal_id == '8866ggtrhh2277j-0bc7-41a6-a2bb-0fe92114rr4yre':
+                result.calculated = True
+            if result.parameter.internal_id == '5578gghty214-0bc7-41a6-a2bb-0fe92114rr445t':
+                result.calculated = True
+            if result.parameter.internal_id == '87522869rtyhn-0bc7-41a6-a2bb-0fe92114rr445t':
                 result.calculated = True
 
         return {

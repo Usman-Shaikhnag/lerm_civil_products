@@ -153,68 +153,11 @@
 
        
 
-        <record id="hod_discipline_record" model="ir.rule">
+        <!-- <record id="hod_discipline_record" model="ir.rule">
             <field name="name">HOD can see only their Discipline</field>
             <field ref="model_lerm_srf_sample" name="model_id"/>
-            <!-- <field name="domain_force">[('discipline_id.hod.id','=',user.id)]</field> -->
             <field name="domain_force">[('department_id','=',user.department_id.name)]</field>
             <field name="groups" eval="[(4, ref('kes_hod_access_group'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-            <field name="active" eval="True"/>
-        </record>
-
-        <!-- <record id="technician_eln_record" model="ir.rule">
-            <field name="name">Technician can only see their eln</field>
-            <field ref="model_lerm_eln" name="model_id"/>
-            <field name="domain_force">[('technician.id','=',user.id)]</field>
-            <field name="groups" eval="[(4, ref('kes_technician_access_group'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-            <field name="active" eval="True"/>
-        </record>
-
-   
-
-
-        <record id="technician_eln_record_mechanical" model="ir.rule">
-            <field name="name">Technician can only see their eln</field>
-            <field ref="model_lerm_eln" name="model_id"/>
-            <field name="domain_force">[('technician.id','=',user.id)]</field>
-            <field name="groups" eval="[(4, ref('kes_mechanical'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-            <field name="active" eval="True"/>
-        </record>
-       
-
-        
-
-      
-
-        <record id="technician_eln_record_chemical" model="ir.rule">
-            <field name="name">Technician can only see their eln</field>
-            <field ref="model_lerm_eln" name="model_id"/>
-            <field name="domain_force">[('technician.id','=',user.id)]</field>
-            <field name="groups" eval="[(4, ref('kes_chemical'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-            <field name="active" eval="True"/>
-        </record>
-
-        <record id="technician_eln_record_ndt" model="ir.rule">
-            <field name="name">Technician can only see their eln</field>
-            <field ref="model_lerm_eln" name="model_id"/>
-            <field name="domain_force">[('technician.id','=',user.id)]</field>
-            <field name="groups" eval="[(4, ref('kes_ndt'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="False"/>
@@ -225,57 +168,6 @@
         <record model="res.groups" id="kes_admin_access_group">
             <field name="name">Lerm Admin</field>
             <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-
-        <record id="admin_discipline_record" model="ir.rule">
-            <field name="name">Admin can see all Discipline</field>
-            <field ref="model_lerm_srf_sample" name="model_id"/>
-            <field name="domain_force">[]</field>
-            <field name="groups" eval="[(4, ref('kes_admin_access_group'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-            <field name="active" eval="True"/>
-        </record>
-
-        <record id="verified_by_discipline_record" model="ir.rule">
-            <field name="name">Verified can see all Discipline</field>
-            <field ref="model_lerm_srf_sample" name="model_id"/>
-            <!-- <field name="domain_force">[]</field> -->
-           <field name="domain_force">[('department_id','=',user.department_id.name)]</field>
-            <field name="groups" eval="[(4, ref('kes_verified_by'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-            <field name="active" eval="True"/>
-        </record>
-
-        <record id="admin_eln_record" model="ir.rule">
-            <field name="name">Admin can see all ELN</field>
-            <field ref="model_lerm_eln" name="model_id"/>
-            <field name="domain_force">[]</field>
-            <field name="groups" eval="[(4, ref('kes_admin_access_group'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-            <field name="active" eval="True"/>
-        </record>
-
-
-        <record id="hod_eln_record" model="ir.rule">
-            <field name="name">HOD can see their discipline ELN</field>
-            <field ref="model_lerm_eln" name="model_id"/>
-            <!-- <field name="domain_force">[]</field> -->
-            <field name="domain_force">[('discipline.hod.id','=',user.id)]</field>
-            <field name="groups" eval="[(4, ref('kes_hod_access_group'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-            <field name="active" eval="True"/>
         </record>
 
         <record id="eln_technician_rule" model="ir.rule">
@@ -314,7 +206,20 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-
+        <record id="sample_technician_rule" model="ir.rule">
+            <field name="name">Technician - Samples of Assigned Parameters</field>
+            <field name="model_id" ref="model_lerm_srf_sample"/>
+            <field name="domain_force">
+                [
+                    ('eln_id.parameters_result.technician', '=', user.id)
+                ]
+            </field>
+            <field name="groups" eval="[(4, ref('kes_technician_access_group'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
         
         <record id="eln_parameter_admin_rule" model="ir.rule">
             <field name="name">Verification/Approval - All Parameters</field>
