@@ -35,7 +35,7 @@ from odoo.exceptions import UserError
 # जर त्या नसतील तर कोड एरर न देता साधी लाईन वापरेल.
 try:
     import numpy as np
-    from scipy.interpolate import make_interp_spline
+    from scipy.interpolate import make_interp_eline
     HAS_SCIPY = True
 except ImportError:
     HAS_SCIPY = False
@@ -600,6 +600,12 @@ class Soil(models.Model):
 
 
 
+
+
+
+
+
+
 #  1st table  Bulk Density
 
     moisture_name = fields.Char( string="Name",default=" Bulk Density" )
@@ -614,6 +620,42 @@ class Soil(models.Model):
 
     bulk_line_ids = fields.One2many('soil.bulk.density','parent_id', string="Bulk Density Lines")
 
+    show_sieve = fields.Boolean(default=False)
+
+    bulk_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+
+    def action_generate_bulck_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.bulk_line_ids = lines
+                record.bulk_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.bulk_line_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
+
 
 
 
@@ -623,20 +665,137 @@ class Soil(models.Model):
 
     NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
+    nmc_visible = fields.Boolean(string="NMC Visible",compute="_compute_visible")
+
+
+    show_sieve = fields.Boolean(default=False)
+
+    nmc_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+    def action_generate_nmc_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))   # 1st
+                    lines.append((0, 0, {'lab_id': False}))    # 2nd blank
+
+                record.moisture_ids = lines
+                record.nmc_lines_generated = True
+
+            if record.moisture_ids:
+                record.show_sieve = True
+
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
+        
+
+    def action_moisture_content_NMC(self):
+          for rec in self:
+            lines = rec.moisture_ids.sorted('id')
+
+           
+            for line in lines:
+                line.avg_nmc = 0.0
+
+            i = 0
+            while i < len(lines):
+                group = lines[i:i+2] 
+                values = [l.moisture_content for l in group if l.moisture_content]
+
+                if values:
+                    avg = sum(values) / len(values)
+                    group[0].avg_nmc = avg  
+
+                i += 2
+
+
+
 
 
     # specific gravity
     specific_gravity_name = fields.Char(string="Name",default=" SPECIFIC GRAVITY", )
     specific_gravity_visible = fields.Boolean( string="Specific Gravity Visible",default=True )
 
-    selected_lab_id12 = fields.Many2one(
-        'lab.option.line',
-        string="Select Lab ID",
-        domain="[('id', 'in', lab_option_ids)]"
-    )
+    # selected_lab_id12 = fields.Many2one(
+    #     'lab.option.line',
+    #     string="Select Lab ID",
+    #     domain="[('id', 'in', lab_option_ids)]"
+    # )
+
+    show_sieve = fields.Boolean(default=False)
+
+    sp_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+    def action_generate_sp_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+
+                for i in range(start, end + 1):
+                    lab_no = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_no': lab_no}))   # 1st
+                    lines.append((0, 0, {'lab_no': False}))    # 2nd blank
+
+                record.gravity_line_ids = lines
+                record.sp_lines_generated = True
+
+            if record.gravity_line_ids:
+                record.show_sieve = True
+
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
+
 
 
     gravity_line_ids = fields.One2many( "specific.gravity", "parent_id",string="Specific Gravity Lines",)
+
+    def action_compute_avg_corr_gravity(self):
+        for rec in self:
+            lines = rec.gravity_line_ids.sorted('id')
+
+           
+            for line in lines:
+                line.avg_corr_specific_gravity = 0.0
+
+            i = 0
+            while i < len(lines):
+                group = lines[i:i+2] 
+                values = [l.corr_specific_gravity for l in group if l.corr_specific_gravity]
+
+                if values:
+                    avg = sum(values) / len(values)
+                    group[0].avg_corr_specific_gravity = avg  
+
+                i += 2
+
+
 
 
 
@@ -652,11 +811,84 @@ class Soil(models.Model):
     freeswell_name = fields.Char(string="Name", default="Atterbergs Limits (Free Swell)")
     freeswell_visible = fields.Boolean(string="Free Swell Visible", default=True)
     freeswell_line_ids = fields.One2many('soil.free.swell', 'parent_id', string="Free Swell Lines")
+
+    show_sieve = fields.Boolean(default=False)
+
+    freeswell_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+   
+
+
+    def action_generate_freeswell_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.freeswell_line_ids = lines
+                record.freeswell_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.freeswell_line_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
     
     # ATTERBERG LIMITS
     Atterbergs_name = fields.Char(string="Name", default="Atterbergs Limits (LL, PL, SL)")
 
     Atterbergs_name_ll = fields.Char(string="Name", default="Liquid Limits")
+
+    ll_child_lines = fields.One2many('ll.line','parent_id')
+
+    show_sieve = fields.Boolean(default=False)
+
+    ll_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+
+    def action_generate_ll_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.ll_child_lines = lines
+                record.ll_lines_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.ll_child_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Soil Form',
+                'res_model': 'mechanical.soil1',
+                'res_id': record.id,  # ✅ Use record.id instead of self.id
+                'view_mode': 'form',
+                'target': 'current',
+            }
 
     Atterbergs_name_pl = fields.Char(string="Name", default="Plastic Limits")
     
@@ -678,22 +910,24 @@ class Soil(models.Model):
     
   
     pl_line_ids = fields.One2many('lab.atterberg.pl.line', 'parent_id')
-    ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
+    
     sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id')
 
-    liquid_avg = fields.Float( string='Liquid Limit Avg' , digits=(10,0) ,compute='_compute_liquid_avg',store=True,)
+    ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
+
+    # liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(10,0) ,compute='_compute_liquid_avg',store=True,)
     
 
-    @api.depends('ll_line_ids.water_content')
-    def _compute_liquid_avg(self):
-        for line in self:
-            if line.ll_line_ids:
-                vals = line.ll_line_ids.mapped("water_content")
-                line.liquid_avg = sum(vals) / len(vals)
+    # @api.depends('ll_line_ids.water_content')
+    # def _compute_liquid_avg(self):
+    #     for line in self:
+    #         if line.ll_line_ids:
+    #             vals = line.ll_line_ids.mapped("water_content")
+    #             line.liquid_avg = sum(vals) / len(vals)
                 
 
-            else:
-                line.liquid_avg = 0.0
+    #         else:
+    #             line.liquid_avg = 0.0
                 
 
 
@@ -714,7 +948,7 @@ class Soil(models.Model):
 
 
      
-    shrinkage_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_shrinkage_avg")
+    shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0),compute="_compute_shrinkage_avg")
 
 
     @api.depends('sl_line_ids.water_content')
@@ -3516,7 +3750,7 @@ class Soil(models.Model):
 
     permeability_ids = fields.One2many("soil.permeability.test.line", "parent_id", string="DETERMINE PERMEABILITY OF SOIL - BY FALLING HEAD")
 
-    avg_permeability = fields.Float("Average Permeability Avg KT :", digits=(16, 9), store=True)
+    avg_permeability = fields.Float("Average Permeability Avg KT :", digits=(16, 9), store=True,readonly=True)
 
     avg_permeability_27 = fields.Float("Average Permeability K27 :",compute="_compute_avg_permeability", digits=(16, 9), store=True)
 
@@ -3852,64 +4086,198 @@ class Soil(models.Model):
         else:
             record.graph_image_light_heavy = False
 
+    # def generate_compaction_curve(self):
+    #  self.ensure_one()
+    
+    #  lines = self.soil_light_heavy_lines.filtered(lambda l: l.moisture_content and l.dry_density)
+    #  if len(lines) < 2:
+    #     return False
+    
+    #  x_vals = np.array(lines.mapped('moisture_content'), dtype=float)
+    #  y_vals = np.array(lines.mapped('dry_density'), dtype=float)
+    
+    #  max_idx = np.argmax(y_vals)
+    #  max_density = y_vals[max_idx]
+    #  omc = x_vals[max_idx]
+     
+    #  from scipy.interpolate import CubicSpline
+    #  cs = CubicSpline(x_vals, y_vals, bc_type='natural')
+    #  x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
+    #  y_smooth = cs(x_smooth)
+    
+    #  import matplotlib
+    #  matplotlib.use('Agg')
+    #  import matplotlib.pyplot as plt
+    
+    #  fig, ax = plt.subplots(figsize=(10, 5), dpi=110)
+    
+    #  # Test data curve
+    #  ax.plot(x_smooth, y_smooth, color='green', linewidth=2, label='Test Data')
+    #  ax.scatter(x_vals, y_vals, color='green', s=80, zorder=5, label='Test Points')
+    
+    #  # Maximum density line
+    #  ax.axhline(y=max_density, color='blue', linestyle='-', linewidth=2.5, label=f'Max Dry Density: {max_density:.2f}')
+    #  ax.axvline(x=omc, color='red', linestyle='--', alpha=0.7, linewidth=2, label=f'OMC: {omc:.1f}%')
+    
+    #  # Data point labels
+    #  for x, y in zip(x_vals, y_vals):
+    #     ax.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+    #                xytext=(0, 10), ha='center', fontsize=9, fontweight='bold')
+    
+    #  ax.set_xlim(0, 40)
+    
+    #  # FIXED Y-AXIS: Custom ticks matching your screenshot [file:40]
+    #  ax.set_ylim(0, 2.0)
+    #  ax.set_yticks([0.0, 0.25, 0.50, 0.75, 1.00, 1.20, 1.40, 1.60 , 1.80,  2.00])
+    #  ax.set_yticklabels(['0.00', '0.25', '0.50', '0.75', '1.00', '1.20', '1.40', '1.60' , '1.80', ' 2.00'])
+    
+    #  ax.set_xlabel('Moisture Content (%)', fontsize=12, fontweight='bold')
+    #  ax.set_ylabel('Dry Density (g/cm³)', fontsize=12, fontweight='bold')
+    #  ax.set_title('Moisture Density Test Results\n', fontsize=14, fontweight='bold', pad=20)
+    
+    #  ax.grid(True, alpha=0.3)
+    #  ax.legend(loc='upper left', fontsize=8, framealpha=0.95, bbox_to_anchor=(0.02, 0.98))
+    
+    #  buf = BytesIO()
+    #  fig.tight_layout()
+    #  fig.savefig(buf, format='png', dpi=100, bbox_inches='tight',  facecolor='white')
+    #  plt.close(fig)
+    #  buf.seek(0)
+    #  return base64.b64encode(buf.read())
+
+
     def generate_compaction_curve(self):
      self.ensure_one()
-    
-     lines = self.soil_light_heavy_lines.filtered(lambda l: l.moisture_content and l.dry_density)
-     if len(lines) < 2:
+
+     lines = self.soil_light_heavy_lines.filtered(
+        lambda l: l.moisture_content and l.dry_density
+    )
+     if len(lines) < 3:
         return False
-    
-     x_vals = np.array(lines.mapped('moisture_content'), dtype=float)
-     y_vals = np.array(lines.mapped('dry_density'), dtype=float)
-    
+
+    # Sort & remove duplicates
+     points = sorted(
+        {(float(l.moisture_content), float(l.dry_density)) for l in lines},
+        key=lambda p: p[0]
+     )
+     if len(points) < 3:
+        return False
+
+     x_vals = np.array([p[0] for p in points])
+     y_vals = np.array([p[1] for p in points])
+
+     # Maximum Dry Density & OMC
      max_idx = np.argmax(y_vals)
      max_density = y_vals[max_idx]
      omc = x_vals[max_idx]
-     
-     from scipy.interpolate import CubicSpline
-     cs = CubicSpline(x_vals, y_vals, bc_type='natural')
+
+    #  from scipy.interpolate import CubicSpline
+    #  cs = CubicSpline(x_vals, y_vals, bc_type='natural')
+    #  x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
+    #  y_smooth = cs(x_smooth)
+
+    # ---- Quadratic Polynomial Fit (EXACT Excel behavior) ----
+     coeffs = np.polyfit(x_vals, y_vals, 2)
+     poly = np.poly1d(coeffs)
+
      x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
-     y_smooth = cs(x_smooth)
-    
+     y_smooth = poly(x_smooth)
+
+# ---- TRUE Maximum from Polynomial ----
+     a, b, c = coeffs
+     omc = -b / (2 * a)
+     max_density = poly(omc)
+
+
      import matplotlib
      matplotlib.use('Agg')
      import matplotlib.pyplot as plt
-    
+     from io import BytesIO
+     import base64
+
      fig, ax = plt.subplots(figsize=(10, 5), dpi=110)
-    
-     # Test data curve
-     ax.plot(x_smooth, y_smooth, color='green', linewidth=2, label='Test Data')
-     ax.scatter(x_vals, y_vals, color='green', s=80, zorder=5, label='Test Points')
-    
-     # Maximum density line
-     ax.axhline(y=max_density, color='blue', linestyle='-', linewidth=2.5, label=f'Max Dry Density: {max_density:.2f}')
-     ax.axvline(x=omc, color='red', linestyle='--', alpha=0.7, linewidth=2, label=f'OMC: {omc:.1f}%')
-    
-     # Data point labels
-     for x, y in zip(x_vals, y_vals):
-        ax.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
-                   xytext=(0, 10), ha='center', fontsize=9, fontweight='bold')
-    
-     ax.set_xlim(0, 40)
-    
-     # FIXED Y-AXIS: Custom ticks matching your screenshot [file:40]
-     ax.set_ylim(0, 2.0)
-     ax.set_yticks([0.0, 0.25, 0.50, 0.75, 1.00, 1.20, 1.40, 1.60 , 1.80,  2.00])
-     ax.set_yticklabels(['0.00', '0.25', '0.50', '0.75', '1.00', '1.20', '1.40', '1.60' , '1.80', ' 2.00'])
-    
-     ax.set_xlabel('Moisture Content (%)', fontsize=12, fontweight='bold')
-     ax.set_ylabel('Dry Density (g/cm³)', fontsize=12, fontweight='bold')
-     ax.set_title('Moisture Density Test Results\n', fontsize=14, fontweight='bold', pad=20)
-    
-     ax.grid(True, alpha=0.3)
-     ax.legend(loc='upper left', fontsize=8, framealpha=0.95, bbox_to_anchor=(0.02, 0.98))
-    
+
+    # ---- Smooth Curve ----
+     ax.plot(
+        x_smooth, y_smooth,
+        color='#0b2c5d', linewidth=2
+     )
+
+    # ---- Square Data Points ----
+     ax.scatter(
+        x_vals, y_vals,
+        marker='s', s=60,
+        facecolor='#4f81bd',
+        edgecolor='#1f4e79',
+        zorder=5
+    )
+
+    # ---- Yellow Max Density Line ----
+     ax.axhline(
+        y=max_density,
+        color='#f1c232',
+        linewidth=2
+    )
+
+    # ---- Green OMC Line ----
+     ax.axvline(
+        x=omc,
+        color='#00a651',
+        linewidth=2
+    )
+
+    # ---- Red Peak Marker ----
+     ax.scatter(
+        [omc], [max_density],
+        marker='^',
+        s=130,
+        color='red',
+        zorder=6
+    )
+
+    # ---- Axis Limits & Ticks (EXACT LIKE IMAGE) ----
+     ax.set_xlim(5, 40)
+     ax.set_ylim(0.8, 1.7)
+
+     ax.set_xticks([5, 10, 15, 20, 25, 30, 35, 40])
+     ax.set_yticks([0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7])
+
+    # ---- Labels ----
+     ax.set_xlabel('Moisture Content (%)', fontsize=11, fontweight='bold')
+     ax.set_ylabel('Dry Density (gm/cc)', fontsize=11, fontweight='bold')
+
+    # ---- Title ----
+     ax.set_title(
+        'Moisture Density Test Results',
+        fontsize=13,
+        fontweight='bold',
+        pad=15
+    )
+
+    # ---- No Grid (as per image) ----
+     ax.grid(False)
+
+    # ---- Thick Black Border ----
+     for spine in ax.spines.values():
+        spine.set_linewidth(2)
+        spine.set_color('black')
+
+    # ---- Export ----
      buf = BytesIO()
      fig.tight_layout()
-     fig.savefig(buf, format='png', dpi=100, bbox_inches='tight',  facecolor='white')
+     fig.savefig(
+        buf,
+        format='png',
+        dpi=110,
+        bbox_inches='tight',
+        facecolor='white'
+    )
      plt.close(fig)
      buf.seek(0)
+
      return base64.b64encode(buf.read())
+
+
     
 
 
@@ -4522,99 +4890,60 @@ class Soil(models.Model):
 
     non_corrected_area_shear = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0))
 
-    def action_compute_shear(self):
-     for rec in self:
-        # 1) Compute horizontal readings for each line
-        for line in rec.direct_shear_ids:
-            if line.serial_no <= 1:
-                horiz = 0.0
-            else:
-                horiz = 25.0 * (line.serial_no - 1)
-            line.horizontal_read = horiz
+    corrected_area_shear = fields.Float(string="Corrected Area (cm2)" , digits=(8,0))
+
+    show_corrected_area = fields.Boolean(compute="_compute_area_visibility", store=False)
+    show_non_corrected_area = fields.Boolean(compute="_compute_area_visibility", store=False)
+
+    @api.depends('area_type')
+    def _compute_area_visibility(self):
+        for rec in self:
+            rec.show_corrected_area = rec.area_type == 'corrected'
+            rec.show_non_corrected_area = rec.area_type == 'non_corrected'
+
+    
 
 
-    graph_image_shearc1 = fields.Binary("Direct shear Curve Graph", compute="_compute_graph_image_shearc1", store=True)
+  
+    
+    shear_graph_image = fields.Binary("Shear Stress Graph")
 
-    @api.depends('direct_shear_ids.shear_stress', 'direct_shear_ids.horizontal_dispalacement')
-    def _compute_graph_image_shearc1(self):
-     for record in self:
-        if record.direct_shear_ids:
-            record.graph_image_shearc1 = record._generate_shear_c1_graph()
-        else:
-            record.graph_image_shearc1 = False
+    def action_generate_shear_graph(self):
+        for rec in self:
+            strain_vals = []
+            shear_vals = []
 
-    def _generate_shear_c1_graph(self):
-      """Generate EXACT graph matching image: thick green line, scatter, sharp peak, grid"""
-      self.ensure_one()
-    
-      # 1) Filter valid data (matches image data points)
-      lines = self.direct_shear_ids.filtered(
-        lambda l: l.shear_stress >= 0 and l.horizontal_dispalacement >= 0
-      )
-      if len(lines) < 4:  # Need peak + tail
-          return False
-    
-      strain_raw = np.array([l.horizontal_dispalacement for l in lines], dtype=float)
-      stress_raw = np.array([l.shear_stress for l in lines], dtype=float)
-    
-      # 2) Include origin
-      strain = np.concatenate([[0.0], strain_raw])
-      stress = np.concatenate([[0.0], stress_raw])
-    
-      # 3) Sort + find sharp peak (image shows abrupt drop at ~2.5%)
-      order = np.argsort(strain)
-      strain = strain[order]
-      stress = stress[order]
-    
-      peak_idx = np.argmax(stress)  # Sharp peak like image
-      strain_peak = strain[:peak_idx+1]
-      stress_peak = stress[:peak_idx+1]
-    
-      # 4) Scale strain to ~7% max (image scale)
-      if strain_peak[-1] > 0:
-        scale_factor = 7.0 / strain_peak[-1]
-        strain_scaled = strain_peak * scale_factor
-      else:
-        strain_scaled = strain_peak
-    
-      # 5) Spline smoothing (sharp peak preserved)
-      x_unique, idx = np.unique(strain_scaled, return_index=True)
-      y_unique = stress_peak[idx]
-      if len(x_unique) < 3:
-          return False
-    
-      cs = CubicSpline(x_unique, y_unique, bc_type=((1, 0.0), (1, 0.0)))  # Flat peak
-      x_smooth = np.linspace(0, max(8.0, x_unique.max()), 500)
-      y_smooth = cs(x_smooth)
-    
-      # 6) EXACT plot matching image
-      fig, ax = plt.subplots(figsize=(8, 4.5), dpi=120, facecolor='white')
-    
-      # Thick green line + points (image style)
-      ax.plot(x_smooth, y_smooth, color='#2E8B57', linewidth=3.5, zorder=2)  # Forest green
-      ax.scatter(strain_scaled, stress_peak, color='#228B22', s=35, zorder=3, 
-               edgecolors='white', linewidth=0.8)
-    
-      # Axes matching image
-      ax.set_xlim(0, 8.0)
-      ax.set_xticks([0,1,2,3,4,5,6,7,8])
-      ax.set_xlabel('Strain (%)', fontsize=10, fontweight='bold', color='black')
-    
-      ax.set_ylim(0, 0.30)
-      ax.set_yticks([0, 0.050, 0.100, 0.150, 0.200, 0.250, 0.300])
-      ax.set_ylabel('Shear stress (kg/sq.cm)', fontsize=10, fontweight='bold', color='black')
-      
-      ax.set_title('Direct shear Curve Graph', fontsize=12, fontweight='bold', pad=15)
-      ax.grid(True, alpha=0.4, linewidth=0.8)
-    
-      # Tight layout matching image margins
-      fig.tight_layout(pad=1.2)
-      buf = BytesIO()
-      fig.savefig(buf, format='png', dpi=120, bbox_inches='tight', facecolor='white', 
-                edgecolor='none')
-      plt.close(fig)
-      buf.seek(0)
-      return base64.b64encode(buf.getvalue())
+            for line in rec.direct_shear_ids:
+                if line.horizontal_dispalacement and line.shear_stress:
+                    strain_vals.append(line.horizontal_dispalacement)
+                    shear_vals.append(line.shear_stress)
+
+            if not strain_vals:
+                return
+
+            # Sort by strain
+            data = sorted(zip(strain_vals, shear_vals))
+            strain_vals, shear_vals = zip(*data)
+
+            fig, ax = plt.subplots(figsize=(8, 4), dpi=150)
+
+            # Line + Small Points
+            ax.plot(strain_vals, shear_vals, marker='o', markersize=2)
+
+            ax.set_xlabel("Strain")
+            ax.set_ylabel("Shear Stress")
+            ax.grid(True)
+
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png', bbox_inches='tight')
+            buffer.seek(0)
+            image_base64 = base64.b64encode(buffer.read())
+            buffer.close()
+            plt.close(fig)
+
+            rec.shear_graph_image = image_base64
+
+
     
 
 
@@ -4762,6 +5091,173 @@ class Soil(models.Model):
     normal_stress_2 = fields.Float(string="Normal stress: kg/cm2", digits=(12,1))
 
 
+    direct_shear_ids_2 = fields.One2many("direct.shear.test.two.line", "parent_id", string="Test Readings",default=lambda self: self.default_shear_reading_2())		
+
+    @api.model
+    def default_shear_reading_2(self):
+        default_lines = [
+            (0, 0, {'horizontal_read':'0','horizontal_dispalacement' : '0' ,'horizontal_shear': '0.000','horizontal_shear_temp':'0' ,'shear_stress': '0.000',}),
+            (0, 0, {'horizontal_read':'25',}),
+            (0, 0, {'horizontal_read':'50',}),
+            (0, 0, {'horizontal_read':'75',}),
+            (0, 0, {'horizontal_read':'100',}),
+            (0, 0, {'horizontal_read':'125',}),
+            (0, 0, {'horizontal_read':'150',}),
+            (0, 0, {'horizontal_read':'175',}),
+            (0, 0, {'horizontal_read':'200',}),
+            (0, 0, {'horizontal_read':'225',}),
+            (0, 0, {'horizontal_read':'250',}),
+            (0, 0, {'horizontal_read':'275',}),
+            (0, 0, {'horizontal_read':'300',}),
+            (0, 0, {'horizontal_read':'325',}),
+            (0, 0, {'horizontal_read':'350',}),
+            (0, 0, {'horizontal_read':'375',}),
+            (0, 0, {'horizontal_read':'400',}),
+            (0, 0, {'horizontal_read':'425',}),
+            (0, 0, {'horizontal_read':'450',}),
+            (0, 0, {'horizontal_read':'475',}),
+            (0, 0, {'horizontal_read':'500',}),
+            (0, 0, {'horizontal_read':'525',}),
+            (0, 0, {'horizontal_read':'550',}),
+            (0, 0, {'horizontal_read':'575',}),
+            (0, 0, {'horizontal_read':'600',}),
+            (0, 0, {'horizontal_read':'625',}),
+            (0, 0, {'horizontal_read':'650',}),
+            (0, 0, {'horizontal_read':'675',}),
+            (0, 0, {'horizontal_read':'700',}),
+            (0, 0, {'horizontal_read':'725',}),
+            (0, 0, {'horizontal_read':'750',}),
+            (0, 0, {'horizontal_read':'775',}),
+            (0, 0, {'horizontal_read':'800',}),
+            (0, 0, {'horizontal_read':'825',}),
+            (0, 0, {'horizontal_read':'850',}),
+            (0, 0, {'horizontal_read':'875',}),
+            (0, 0, {'horizontal_read':'900',}),
+            (0, 0, {'horizontal_read':'925',}),
+            (0, 0, {'horizontal_read':'950',}),
+            (0, 0, {'horizontal_read':'975',}),
+            (0, 0, {'horizontal_read':'1000',}),
+            (0, 0, {'horizontal_read':'1025',}),
+            (0, 0, {'horizontal_read':'1050',}),
+            (0, 0, {'horizontal_read':'1075',}),
+            (0, 0, {'horizontal_read':'1100',}),
+
+            
+        ]
+        return default_lines
+    
+
+    shear_graph_image_2 = fields.Binary("Shear Stress Graph")
+
+    # def action_generate_shear_graph_2(self):
+    #     for rec in self:
+    #         strain_vals = []
+    #         shear_vals = []
+
+    #         for line in rec.direct_shear_ids_2:
+    #             if line.horizontal_dispalacement and line.shear_stress:
+    #                 strain_vals.append(line.horizontal_dispalacement)
+    #                 shear_vals.append(line.shear_stress)
+
+    #         if not strain_vals:
+    #             return
+
+    #         # Sort by strain
+    #         data = sorted(zip(strain_vals, shear_vals))
+    #         strain_vals, shear_vals = zip(*data)
+
+    #         fig, ax = plt.subplots(figsize=(8, 4), dpi=150)
+
+    #         # Line + Small Points
+    #         ax.plot(strain_vals, shear_vals, marker='o', markersize=2)
+
+    #         ax.set_xlabel("Strain")
+    #         ax.set_ylabel("Shear Stress")
+    #         ax.grid(True)
+
+    #         buffer = BytesIO()
+    #         plt.savefig(buffer, format='png', bbox_inches='tight')
+    #         buffer.seek(0)
+    #         image_base64 = base64.b64encode(buffer.read())
+    #         buffer.close()
+    #         plt.close(fig)
+
+    #         rec.shear_graph_image_2 = image_base64
+
+    import base64
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from io import BytesIO
+
+    def action_generate_shear_graph_2(self):
+     for rec in self:
+        data = []
+
+        # 🔴 FORCE ORIGIN POINT (0,0)
+        data.append((0.0, 0.0))
+
+        for line in rec.direct_shear_ids_2:
+            if line.horizontal_dispalacement is not None and line.shear_stress is not None:
+                data.append((line.horizontal_dispalacement, line.shear_stress))
+
+        if len(data) <= 1:
+            rec.shear_graph_image_2 = False
+            continue
+
+        # SORT BY STRAIN
+        data.sort(key=lambda x: x[0])
+
+        # CUT AT PEAK SHEAR STRESS (NO POST-FAILURE)
+        shear_vals_all = [y for _, y in data]
+        peak_index = shear_vals_all.index(max(shear_vals_all))
+        data = data[:peak_index + 1]
+
+        strain_vals, shear_vals = zip(*data)
+
+        # FIGURE SIZE LIKE EXCEL
+        fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+        # EXCEL BLUE SMOOTH LINE
+        ax.plot(
+            strain_vals,
+            shear_vals,
+            color='#4472C4',
+            linewidth=2.2
+        )
+
+        # LABELS (EXACT)
+        ax.set_xlabel("Strain", fontsize=11)
+        ax.set_ylabel("Shear stress, τ", fontsize=11)
+
+        # AXIS LIMITS (MATCH IMAGE)
+        ax.set_xlim(0, 6)
+        ax.set_ylim(0, 0.30)
+
+        # HORIZONTAL GRID ONLY
+        ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.6)
+        ax.xaxis.grid(False)
+
+        # EXCEL-LIKE BORDER
+        for spine in ax.spines.values():
+            spine.set_color('#808080')
+            spine.set_linewidth(0.8)
+
+        ax.tick_params(labelsize=9)
+
+        buffer = BytesIO()
+        fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+        buffer.seek(0)
+
+        rec.shear_graph_image_2 = base64.b64encode(buffer.read())
+
+        buffer.close()
+        plt.close(fig)
+
+
+
+
+
     # input 3
 
     shear_box_dimension_3 = fields.Float(string="Shear Box Inside Dimension:", digits=(12,0))
@@ -4905,6 +5401,286 @@ class Soil(models.Model):
     
     normal_stress_3 = fields.Float(string="Normal stress: kg/cm2", digits=(12,1))
 
+    direct_shear_ids_3 = fields.One2many("direct.shear.test.three.line", "parent_id", string="Test Readings",default=lambda self: self.default_shear_reading_3())		
+
+    @api.model
+    def default_shear_reading_3(self):
+        default_lines = [
+            (0, 0, {'horizontal_read':'0','horizontal_dispalacement' : '0' ,'horizontal_shear': '0.000','horizontal_shear_temp':'0' ,'shear_stress': '0.000',}),
+            (0, 0, {'horizontal_read':'25',}),
+            (0, 0, {'horizontal_read':'50',}),
+            (0, 0, {'horizontal_read':'75',}),
+            (0, 0, {'horizontal_read':'100',}),
+            (0, 0, {'horizontal_read':'125',}),
+            (0, 0, {'horizontal_read':'150',}),
+            (0, 0, {'horizontal_read':'175',}),
+            (0, 0, {'horizontal_read':'200',}),
+            (0, 0, {'horizontal_read':'225',}),
+            (0, 0, {'horizontal_read':'250',}),
+            (0, 0, {'horizontal_read':'275',}),
+            (0, 0, {'horizontal_read':'300',}),
+            (0, 0, {'horizontal_read':'325',}),
+            (0, 0, {'horizontal_read':'350',}),
+            (0, 0, {'horizontal_read':'375',}),
+            (0, 0, {'horizontal_read':'400',}),
+            (0, 0, {'horizontal_read':'425',}),
+            (0, 0, {'horizontal_read':'450',}),
+            (0, 0, {'horizontal_read':'475',}),
+            (0, 0, {'horizontal_read':'500',}),
+            (0, 0, {'horizontal_read':'525',}),
+            (0, 0, {'horizontal_read':'550',}),
+            (0, 0, {'horizontal_read':'575',}),
+            (0, 0, {'horizontal_read':'600',}),
+            (0, 0, {'horizontal_read':'625',}),
+            (0, 0, {'horizontal_read':'650',}),
+            (0, 0, {'horizontal_read':'675',}),
+            (0, 0, {'horizontal_read':'700',}),
+            (0, 0, {'horizontal_read':'725',}),
+            (0, 0, {'horizontal_read':'750',}),
+            (0, 0, {'horizontal_read':'775',}),
+            (0, 0, {'horizontal_read':'800',}),
+            (0, 0, {'horizontal_read':'825',}),
+            (0, 0, {'horizontal_read':'850',}),
+            (0, 0, {'horizontal_read':'875',}),
+            (0, 0, {'horizontal_read':'900',}),
+            (0, 0, {'horizontal_read':'925',}),
+            (0, 0, {'horizontal_read':'950',}),
+            (0, 0, {'horizontal_read':'975',}),
+            (0, 0, {'horizontal_read':'1000',}),
+            (0, 0, {'horizontal_read':'1025',}),
+            (0, 0, {'horizontal_read':'1050',}),
+            (0, 0, {'horizontal_read':'1075',}),
+            (0, 0, {'horizontal_read':'1100',}),
+
+            
+        ]
+        return default_lines
+    
+
+    shear_graph_image_3 = fields.Binary("Shear Stress Graph")
+
+    import base64
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from io import BytesIO
+    import math
+
+    def action_generate_shear_graph_3(self):
+     for rec in self:
+        data = []
+
+        # 1️⃣ FORCE ORIGIN
+        data.append((0.0, 0.0))
+
+        # 2️⃣ COLLECT DATA
+        for line in rec.direct_shear_ids_3:
+            if line.horizontal_dispalacement is not None and line.shear_stress is not None:
+                data.append((line.horizontal_dispalacement, line.shear_stress))
+
+        if len(data) <= 1:
+            rec.shear_graph_image_3 = False
+            continue
+
+        # 3️⃣ SORT BY STRAIN
+        data.sort(key=lambda x: x[0])
+
+        # 4️⃣ CUT AT PEAK SHEAR STRESS
+        shear_vals_all = [y for _, y in data]
+        peak_index = shear_vals_all.index(max(shear_vals_all))
+        data = data[:peak_index + 1]
+
+        strain_vals, shear_vals = zip(*data)
+
+        # 5️⃣ AXIS LIMITS (MATCH EXCEL IMAGE)
+        x_max = 7
+        y_max = 0.40
+
+        # 6️⃣ CREATE FIGURE
+        fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+        # 7️⃣ PLOT — LINE WITH DIAMOND MARKERS (🔥 KEY CHANGE 🔥)
+        ax.plot(
+            strain_vals,
+            shear_vals,
+            color='#4472C4',        # Excel blue
+            linewidth=2.2,
+            marker='D',             # Diamond marker
+            markersize=4,
+            markerfacecolor='#4472C4',
+            markeredgewidth=0
+        )
+
+        # 8️⃣ LABELS (EXACT)
+        ax.set_xlabel("Strain", fontsize=11)
+        ax.set_ylabel("Shear stress, τ", fontsize=11)
+
+        # 9️⃣ AXIS LIMITS
+        ax.set_xlim(0, x_max)
+        ax.set_ylim(0, y_max)
+
+        # 🔟 GRID — HORIZONTAL ONLY
+        ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.6)
+        ax.xaxis.grid(False)
+
+        # 1️⃣1️⃣ BORDER (EXCEL STYLE)
+        for spine in ax.spines.values():
+            spine.set_color('#808080')
+            spine.set_linewidth(0.8)
+
+        ax.tick_params(labelsize=9)
+
+        # SAVE IMAGE
+        buffer = BytesIO()
+        fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+        buffer.seek(0)
+
+        rec.shear_graph_image_3 = base64.b64encode(buffer.read())
+
+        buffer.close()
+        plt.close(fig)
+
+
+    # normal graph
+    # direct_shear_ids_3 = fields.One2many("direct.shear.test.four.line", "parent_id", string="Test Readings")
+
+    
+
+    # shear_stress_shear = fields.Float(string="Shear stress kg/cm2" , digits=(8,3) ,compute="_compute_shear_stress_shear" , store=True)
+
+    
+
+    # @api.depends('direct_shear_ids.shear_stress')
+    # def _compute_shear_stress_shear(self):
+    #  for rec in self:
+    #     values = rec.direct_shear_ids.mapped('shear_stress')
+    #     rec.shear_stress_shear = max(values) if values else 0.0
+
+    # shear_stress_shear_2 = fields.Float(string="Shear stress kg/cm2" , digits=(8,3) ,compute="_compute_shear_stress_shear_2" , store=True)
+
+    
+
+    # @api.depends('direct_shear_ids_2.shear_stress')
+    # def _compute_shear_stress_shear_2(self):
+    #  for rec in self:
+    #     values = rec.direct_shear_ids_2.mapped('shear_stress')
+    #     rec.shear_stress_shear_2 = max(values) if values else 0.0
+
+    # shear_stress_shear_3 = fields.Float(string="Shear stress kg/cm2" , digits=(8,3) ,compute="_compute_shear_stress_shear_3" , store=True)
+
+    
+
+    # @api.depends('direct_shear_ids_3.shear_stress')
+    # def _compute_shear_stress_shear_3(self):
+    #  for rec in self:
+    #     values = rec.direct_shear_ids_3.mapped('shear_stress')
+    #     rec.shear_stress_shear_3 = max(values) if values else 0.0
+
+
+    # shear_vs_normal_graph = fields.Binary("Shear Stress Graph")
+
+    # def action_plot_shear_vs_normal(self):
+    #  for rec in self:
+
+    #     # X → Normal stress
+    #     x = [
+    #         rec.normal_stress,
+    #         rec.normal_stress_2,
+    #         rec.normal_stress_3,
+    #     ]
+
+    #     # Y → Max shear stress
+    #     y = [
+    #         rec.shear_stress_shear,
+    #         rec.shear_stress_shear_2,
+    #         rec.shear_stress_shear_3,
+    #     ]
+
+    #     # Remove empty / zero values
+    #     data = [(xn, yn) for xn, yn in zip(x, y) if xn and yn]
+
+    #     if len(data) < 2:
+    #         rec.shear_vs_normal_graph = False
+    #         return
+
+    #     x, y = zip(*data)
+    #     x = np.array(x)
+    #     y = np.array(y)
+
+    #     # Linear regression (Mohr–Coulomb)
+    #     m, c = np.polyfit(x, y, 1)
+
+    #     # R²
+    #     y_fit = m * x + c
+    #     ss_res = np.sum((y - y_fit) ** 2)
+    #     ss_tot = np.sum((y - np.mean(y)) ** 2)
+    #     r2 = 1 - (ss_res / ss_tot)
+
+    #     # Axis limits
+    #     x_max = math.ceil(max(x) * 10) / 10
+    #     y_max = math.ceil(max(y) * 10) / 10
+
+    #     # Create figure
+    #     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+    #     # Data plot
+    #     ax.plot(
+    #         x, y,
+    #         color='#4472C4',
+    #         linewidth=2.2,
+    #         marker='D',
+    #         markersize=5,
+    #         markerfacecolor='#4472C4',
+    #         markeredgewidth=0
+    #     )
+
+    #     # Trendline
+    #     x_line = np.linspace(min(x), max(x), 100)
+    #     y_line = m * x_line + c
+    #     ax.plot(x_line, y_line, color='black', linewidth=1.5)
+
+    #     # Labels
+    #     ax.set_xlabel("Normal stress, kg/sq.cm", fontsize=11)
+    #     ax.set_ylabel("Shear stress, kg/sq.cm", fontsize=11)
+
+    #     # Limits
+    #     ax.set_xlim(0, x_max)
+    #     ax.set_ylim(0, y_max)
+
+    #     # Grid
+    #     ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.6)
+    #     ax.xaxis.grid(False)
+
+    #     # Equation text
+    #     eq_text = f"y = {m:.4f}x + {c:.4f}\nR² = {r2:.4f}"
+    #     ax.text(0.55 * x_max, 0.80 * y_max, eq_text, fontsize=9)
+
+    #     # Border style
+    #     for spine in ax.spines.values():
+    #         spine.set_color('#808080')
+    #         spine.set_linewidth(0.8)
+
+    #     ax.tick_params(labelsize=9)
+
+    #     # Save image
+    #     buffer = BytesIO()
+    #     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+    #     buffer.seek(0)
+
+    #     rec.shear_vs_normal_graph = base64.b64encode(buffer.read())
+
+    #     buffer.close()
+    #     plt.close(fig)
+
+
+
+
+
+
+
+
+
+
 
 
    
@@ -4948,6 +5724,7 @@ class Soil(models.Model):
             record.freeswell_visible = False
 
             record.soil_light_heavy_visible = False
+            record.nmc_visible = False
            
 
 
@@ -5029,6 +5806,7 @@ class Soil(models.Model):
 
                 if sample.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
                     record.moisture_visible = True
+                    
                 if sample.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
                     record.gsa_visible = True
 
@@ -5131,6 +5909,216 @@ class Soil(models.Model):
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
+                continue
+
+
+
+
+            if result.parameter.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3825ec57-11f8-4249-9fa8-d99f64ffd396':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-142578bgtyu':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-145ght27854l':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '14578nhy87-20fb-4843-aa0e-145ght27854l':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '15247gtr-2065-4532-814a-3a4c1e884305':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'ght4125-ca64-44dd-b0ae-228aacf04998':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '5487gt21-ca64-44dd-b0ae-228aacf04965':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '5487gt21-ca64-44dd-b0ae-278954ggh114':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 't4y57888hhhllly1-ca64-44dd-b0ae-1234567rt':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+            
+            if result.parameter.internal_id == 'yt25ec57-11f8-4249-9fa8-788889999rtt':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'c800e59a-b847-4049-9e2b-673fcd1fcde5':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
                 continue
             
             
@@ -5311,7 +6299,7 @@ class LIQUIDLIMITLINE(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
-    container_no1 = fields.Char(string="Container No.")
+    container_no = fields.Char(string="Container No.")
     blwo_no1 = fields.Float(string="No. of Blows")
     wt_of_con_wet = fields.Float(string="Wt. of Container + Wet Soil")
     wt_of_con_dry = fields.Float(string="Wt. of Container + dry Soil")   
@@ -6071,7 +7059,7 @@ class SoilBulkDensity(models.Model):
 class SoilMoisture(models.Model):
     _name = 'soil.moisture'
   
-    parent_id = fields.Many2one(   'mechanical.soil1',  string="Parent Id", ondelete='cascade', )
+    parent_id = fields.Many2one('mechanical.soil1',  string="Parent Id", ondelete='cascade', )
 
     serial_no = fields.Integer(string='Sr.No')
 
@@ -6119,7 +7107,8 @@ class SoilMoisture(models.Model):
             values = [t.moisture_content for t in trials]
             rec.avg_nmc = sum(values) / len(values) if values else 0.0
 
- 
+
+
 
     @api.depends('moisture_content', 'avg_nmc')
     def _compute_is_ok(self):
@@ -6146,6 +7135,12 @@ class SoilMoisture(models.Model):
             records = self.search([('parent_id', '=', parent.id)], order='id')
             for index, record in enumerate(records, start=1):
                 record.serial_no = index
+
+
+    
+
+
+
 
 
     
@@ -6843,7 +7838,7 @@ class SpecificGravity(models.Model):
 
   
     date = fields.Date(string="DATE TEST")
-    lab_id = fields.Char(string="Lab No.")
+    lab_no = fields.Char(string="Lab No.")
     room_temp = fields.Float(string="Room Temperature (°C)")
     bottle_no = fields.Char(string="Bottle No.")
 
@@ -6854,13 +7849,12 @@ class SpecificGravity(models.Model):
 
     specific_gravity = fields.Float( string="Specific Gravity (G)", compute="_compute_specific_gravity", store=True, readonly=True,)
     density_water = fields.Float( string="Density of water at room temp (gm/cc)", compute="_compute_density_water", store=True,  readonly=True, )
-    corr_specific_gravity = fields.Float(string="Corrected Specific Gravity (G')",compute="_compute_corr_specific_gravity", store=True, readonly=True,
+    corr_specific_gravity = fields.Float(string="Corrected Specific Gravity (G')",compute="_compute_corr_specific_gravity", store=True, readonly=True,digits=(12,3)
  )
     avg_corr_specific_gravity = fields.Float(
         string="Average corrected Specific Gravity",
-        compute="_compute_avg_corr_specific_gravity",
         store=True,
-        readonly=True,
+        readonly=True,digits=(12,3)
     )
 
    
@@ -6897,21 +7891,7 @@ class SpecificGravity(models.Model):
             )
 
   
-    @api.depends("parent_id", "date", "lab_id", "corr_specific_gravity")
-    def _compute_avg_corr_specific_gravity(self):
-        for rec in self:
-            if not rec.parent_id:
-                rec.avg_corr_specific_gravity = 0.0
-                continue
-            siblings = self.search([
-                ("parent_id", "=", rec.parent_id.id),
-                ("date", "=", rec.date),
-                ("lab_id", "=", rec.lab_id),
-            ])
-            vals = [l.corr_specific_gravity for l in siblings if l.corr_specific_gravity]
-            rec.avg_corr_specific_gravity = sum(vals) / len(vals) if vals else 0.0
-
- 
+    
 
     @api.model
     def create(self, vals):
@@ -8478,7 +9458,7 @@ class LabAtterbergPlLine(models.Model):
     _name = 'lab.atterberg.pl.line'
     parent_id = fields.Many2one('mechanical.soil1', string="Parent")
    
-    test_no = fields.Integer('Test No.')
+    serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
     container_no = fields.Char('Container No.')
     m1 = fields.Float('M1 (gm)', digits=(10,3))
     m2 = fields.Float('M2 (gm)', digits=(10,3))
@@ -8501,10 +9481,10 @@ class LabAtterbergPlLine(models.Model):
 # LIQUID LIMIT LINE (LL Sheet)  
 class LabAtterbergLlLine(models.Model):
     _name = 'lab.atterberg.ll.line'
-    parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+    parent_id = fields.Many2one('ll.line', string="Parent")
     
    
-    test_no = fields.Integer('Test No.')
+    serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
     blows = fields.Integer('No. of Blows')
     container_no = fields.Char('Container No.')
     m1 = fields.Float('M1 (gm)', digits=(10,3))
@@ -8527,42 +9507,88 @@ class LabAtterbergLlLine(models.Model):
 
 
 
+
+
+
+
+
+
 class LabAtterbergSlLine(models.Model):
     _name = 'lab.atterberg.sl.line'
+    
     parent_id = fields.Many2one('mechanical.soil1', string="Parent")
+    serial_no = fields.Integer(string="Sr. No", readonly=True, default=1)
     
 
-   
-    test_no = fields.Integer('Test No.')
+
     container_no = fields.Char('Container No.')
-    m1 = fields.Float('M1 (gm)', digits=(10,3))
-    v1 = fields.Float('V1 (cm3)', digits=(10,3))
-    m2 = fields.Float('M2 (gm)', digits=(10,3))
-    m3 = fields.Float('M3 (gm)', digits=(10,3))
-    v2 = fields.Float('V2 (cm3)', digits=(10,3))
+    m1 = fields.Float('M1 (gm)')
+    v1 = fields.Float('V1 (cm3)')
+    m2 = fields.Float('M2 (gm)')
+    m3 = fields.Float('M3 (gm)')
+    v2 = fields.Float('V2 (cm3)')
     
-   
-    m3_m2 = fields.Float('M3-M2', digits=(10,3), compute='_compute_sl', store=True)
-    m2_m1 = fields.Float('M2-M1', digits=(10,3), compute='_compute_sl', store=True)
-    v1_v2 = fields.Float('V1-V2', digits=(10,3), compute='_compute_sl', store=True)
+    m3_m2 = fields.Float('M3-M2', compute='_compute_sl', store=True)
+    m2_m1 = fields.Float('M2-M1', compute='_compute_sl', store=True)
+    v1_v2 = fields.Float('V1-V2', compute='_compute_sl', store=True)
     water_content = fields.Float('Water Content %', digits=(10,2), compute='_compute_sl', store=True)
     shrinkage_ratio = fields.Float('Shrinkage Ratio', digits=(10,3), compute='_compute_sl', store=True)
     shrinkage_limit = fields.Float('SL %', digits=(10,2), compute='_compute_sl', store=True)
 
+    # [PASTE THE _compute_sl METHOD ABOVE HERE]
+    
     @api.depends('m1', 'm2', 'm3', 'v1', 'v2')
     def _compute_sl(self):
-        gamma_w = 1.0  
-        for rec in self:
-            rec.m3_m2 = rec.m3 - rec.m2 if rec.m3 and rec.m2 else 0.0
-            rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
-            rec.v1_v2 = rec.v1 - rec.v2 if rec.v1 and rec.v2 else 0.0
+     for rec in self:
+        # Safe values from your test: m1=33.17, v1=22, m2=76.22, m3=66.51, v2=17
+        m1 = rec.m1 or 0.0
+        m2 = rec.m2 or 0.0
+        m3 = rec.m3 or 0.0
+        v1 = rec.v1 or 0.0
+        v2 = rec.v2 or 0.0
+        
+        # Excel column differences (display only)
+        rec.m3_m2 = m3 - m2
+        rec.m2_m1 = m2 - m1
+        rec.v1_v2 = v1 - v2
+        
+        # **YOUR EXACT EXCEL FORMULAS:**
+        # Water Content = ((M1-M3)/(M2-M3)) * 100
+        dry_soil = m2 - m1  # 76.22 - 66.51 = 9.71
+        if dry_soil > 0:
+            rec.water_content = ((m3 - m2) / dry_soil) * 100  # (33.17-66.51)/9.71 * 100 = **72.34**
+        else:
+            rec.water_content = 0.0
+        
+        # Shrinkage Ratio = (M2-M3)/V2  
+        if v2 > 0:
+            rec.shrinkage_ratio = ((m2 - m1) / v2 ) # 9.71/17 = **0.571**
+        else:
+            rec.shrinkage_ratio = 0.0
+        
+        # Shrinkage Limit = Water Content - (SR * 100)
+        v2_v1 = v1 - v2
+        m2_m1 = m2 -m1
+        if m2_m1 > 0:
+
+
+            rec.shrinkage_limit =  round ((((m3 - m2) - (v2_v1 * 1)) /(m2 -m1)) * 100, 0)  # 9.71/17 = **0.571**
+
             
-            if rec.m3_m2 and rec.v2:
-                rec.shrinkage_ratio = rec.m3_m2 / (rec.v2 * gamma_w)
-                rec.water_content = ((rec.m1 - rec.m2) / rec.m3_m2) * 100
-                rec.shrinkage_limit = rec.water_content - (rec.shrinkage_ratio * 100)
-            else:
-                rec.shrinkage_ratio = rec.water_content = rec.shrinkage_limit = 0.0
+        else:
+            rec.shrinkage_limit = 0.0
+
+
+       
+ 
+
+
+
+
+
+
+
+
 
 
 
@@ -8687,7 +9713,7 @@ class UcsSoilLine(models.Model):
 
     horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0) , compute="_compute_dial_reading" , store=True)
 
-    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,3) , compute="_compute_all" , store=True)
+    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,3), store=True)
 
     prove_ring_read = fields.Float(string="Proving ring reading" , digits=(8,1), store=True)
 
@@ -8783,85 +9809,122 @@ class DirectShearTestLine(models.Model):
 
     serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
 
-    horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0) , compute="_compute_all" , store=True)
+    horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0)  , store=True)
 
-    horizontal_dispalacement = fields.Float(string="Horizantal  Displacement (mm)" , digits=(8,2) , compute="_compute_all" , store=True)
+    horizontal_dispalacement = fields.Float(string="Horizantal  Displacement (mm)" , digits=(8,2) ,compute="_compute_horizontal_displacement" , store=True)
 
-    horizontal_dispalacement_inv = fields.Float(string="Horizantal  Displacement inv (mm)" , digits=(8,2) , compute="_compute_all" , store=True)
+    horizontal_dispalacement_inv = fields.Float(string="Horizantal  Displacement inv (mm)" , digits=(8,2)  , store=True)
 
-    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,2) , compute="_compute_all" , store=True)
+    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,2),compute="_compute_corrected_area"  , store=True)
 
-    non_corrected_area = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0) , compute="_compute_all" , store=True)
+    non_corrected_area = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0)  , store=True)
 
-    selected_area = fields.Float(string="Area Type", compute="_compute_all" , store=True)
+    selected_area = fields.Float(string="Area Type" , store=True)
 
     prove_ring_read = fields.Float(string="Proving ring reading" , digits=(8,0))
 
-    horizontal_shear = fields.Float(string="Horizantal Shear force (kg)" , digits=(8,3), compute="_compute_all" , store=True)
+    horizontal_shear = fields.Float(string="Horizantal Shear force (kg)" , digits=(8,3),compute="_compute_horizontal_shear" , store=True)
 
-    horizontal_shear_temp = fields.Float(string="Horizantal Shear force with temp Correction (kg)" , digits=(8,3), compute="_compute_all" , store=True)
+    horizontal_shear_temp = fields.Float(string="Horizantal Shear force with temp Correction (kg)" , digits=(8,3),compute="_compute_horizontal_shear_temp" , store=True)
 
-    shear_stress = fields.Float(string="Shear stress (kg/sq.cm)" , digits=(8,3), compute="_compute_all" , store=True)
+    shear_stress = fields.Float(string="Shear stress (kg/sq.cm)" , digits=(8,3),compute="_compute_shear_stress" , store=True)
 
 
-    @api.depends('serial_no', 'prove_ring_read','parent_id.shear_area','parent_id.shear_force_percent_change' , 'parent_id.non_corrected_area_shear')
-    def _compute_all(self):
-        """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
-        for rec in self:
-            # 1) Horizontal dial (0,25,50,...)
-            if rec.serial_no <= 1:
-                horiz = 0.0
-            else:
-                horiz = 25.0 * (rec.serial_no - 1)
-            rec.horizontal_read = horiz
+    # @api.depends('serial_no', 'prove_ring_read','parent_id.shear_area','parent_id.shear_force_percent_change' , 'parent_id.non_corrected_area_shear')
+    # def _compute_all(self):
+    #     """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
+    #     for rec in self:
+    #         # 1) Horizontal dial (0,25,50,...)
+    #         if rec.serial_no <= 1:
+    #             horiz = 0.0
+    #         else:
+    #             horiz = 25.0 * (rec.serial_no - 1)
+    #         rec.horizontal_read = horiz
 
-            # 2) horizontal_dispalacement = horiz * B$23
-            horizontal_dispalacement = horiz * 0.01
-            rec.horizontal_dispalacement = horizontal_dispalacement
+    #         # 2) horizontal_dispalacement = horiz * B$23
+    #         horizontal_dispalacement = horiz * 0.01
+    #         rec.horizontal_dispalacement = horizontal_dispalacement
 
-            # 2) horizontal_dispalacement inv
-            horizontal_dispalacement_inv = horizontal_dispalacement / 10
-            rec.horizontal_dispalacement_inv = horizontal_dispalacement_inv
+    #         # 2) horizontal_dispalacement inv
+    #         horizontal_dispalacement_inv = horizontal_dispalacement / 10
+    #         rec.horizontal_dispalacement_inv = horizontal_dispalacement_inv
 
-            # 3) Corrected Area 
-            if rec.serial_no == 1:
-             area = rec.parent_id.shear_area
-             rec.corrected_area = area * (1 - (horizontal_dispalacement/6))
+    #         # 3) Corrected Area 
+    #         if rec.serial_no == 1:
+    #          area = rec.parent_id.shear_area
+    #          rec.corrected_area = area * (1 - (horizontal_dispalacement/6))
         
-            # ROW 2+ : F2/(1+E3) → previous_corrected / (1 + current_inv)
-            elif rec.serial_no > 1:
-              prev_line = self.search([
-                ('parent_id', '=', rec.parent_id.id),
-                ('serial_no', '=', rec.serial_no - 1) ], limit=1)
-              if prev_line.corrected_area:
-                rec.corrected_area = prev_line.corrected_area * (1 - (horizontal_dispalacement_inv/6))
+    #         # ROW 2+ : F2/(1+E3) → previous_corrected / (1 + current_inv)
+    #         elif rec.serial_no > 1:
+    #           prev_line = self.search([
+    #             ('parent_id', '=', rec.parent_id.id),
+    #             ('serial_no', '=', rec.serial_no - 1) ], limit=1)
+    #           if prev_line.corrected_area:
+    #             rec.corrected_area = prev_line.corrected_area * (1 - (horizontal_dispalacement_inv/6))
 
-             # 4) Non Corrected Area 
-            non_corrected = rec.parent_id.non_corrected_area_shear
-            rec.non_corrected_area = non_corrected
+    #          # 4) Non Corrected Area 
+    #         non_corrected = rec.parent_id.non_corrected_area_shear
+    #         rec.non_corrected_area = non_corrected
 
-            if rec.parent_id.area_type == 'corrected':
-              rec.selected_area = rec.corrected_area
+    #         if rec.parent_id.area_type == 'corrected':
+    #           rec.selected_area = rec.corrected_area
+    #         else:
+    #           rec.selected_area = non_corrected 
+
+
+    #         # 5) HORIZONTAL SHEAR FORCE (kg) 
+    #         if rec.prove_ring_read:
+    #            rec.horizontal_shear = ((rec.prove_ring_read * 0.8555) + 9.6658) / 9.81
+    #         else:
+    #             rec.horizontal_shear = 0.0
+
+    #         # 6) HORIZONTAL SHEAR FORCE WITH TEMP CORRECTION (kg)
+    #         shear_force_parent_change = rec.parent_id.shear_force_percent_change or 0.0
+    #         if rec.horizontal_shear:
+    #            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * shear_force_parent_change)
+    #         else:
+    #            rec.horizontal_shear_temp = 0.0
+
+    #         # 7) SHEAR STRESS (kg/cm²) = temp_force / corrected_area
+    #         if rec.horizontal_shear_temp and rec.corrected_area:
+    #           rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area  # Final column ✓
+
+    @api.depends('horizontal_read')
+    def _compute_horizontal_displacement(self):
+        for record in self:
+            record.horizontal_dispalacement = (record.horizontal_read or 0.0) * 0.01
+
+    @api.depends('horizontal_dispalacement', 'parent_id.corrected_area_shear')
+    def _compute_corrected_area(self):
+        for rec in self:
+            if rec.parent_id and rec.parent_id.corrected_area_shear:
+                rec.corrected_area = rec.parent_id.corrected_area_shear * (
+                    1 - ((rec.horizontal_dispalacement or 0.0) / 10) / 6
+                )
             else:
-              rec.selected_area = non_corrected 
+                rec.corrected_area = 0.0
 
+    @api.depends('prove_ring_read')
+    def _compute_horizontal_shear(self):
+        for rec in self:
+            rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
 
-            # 5) HORIZONTAL SHEAR FORCE (kg) 
-            if rec.prove_ring_read:
-               rec.horizontal_shear = ((rec.prove_ring_read * 0.8555) + 9.6658) / 9.81
+    @api.depends('horizontal_shear', 'parent_id.shear_force_percent_change','corrected_area')
+    def _compute_horizontal_shear_temp(self):
+        for rec in self:
+            percent = rec.parent_id.shear_force_percent_change or 0.0
+            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+
+    @api.depends('horizontal_shear_temp', 'corrected_area')
+    def _compute_shear_stress(self):
+        for rec in self:
+            if rec.corrected_area:
+                rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
             else:
-                rec.horizontal_shear = 0.0
+                rec.shear_stress = 0.0
 
-            # 6) HORIZONTAL SHEAR FORCE WITH TEMP CORRECTION (kg)
-            shear_force_parent_change = rec.parent_id.shear_force_percent_change or 0.0
-            if rec.horizontal_shear:
-               rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * shear_force_parent_change)
-            else:
-               rec.horizontal_shear_temp = 0.0
 
-            # 7) SHEAR STRESS (kg/cm²) = temp_force / corrected_area
-            if rec.horizontal_shear_temp and rec.corrected_area:
-              rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area  # Final column ✓
+
 
            
         
@@ -8885,6 +9948,225 @@ class DirectShearTestLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
+
+class DirectShearTestTwoLine(models.Model):
+    _name = "direct.shear.test.two.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
+
+    horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0)  , store=True)
+
+    horizontal_dispalacement = fields.Float(string="Horizantal  Displacement (mm)" , digits=(8,2) ,compute="_compute_horizontal_displacement" , store=True)
+
+    horizontal_dispalacement_inv = fields.Float(string="Horizantal  Displacement inv (mm)" , digits=(8,2)  , store=True)
+
+    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,2),compute="_compute_corrected_area"  , store=True)
+
+    non_corrected_area = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0)  , store=True)
+
+    selected_area = fields.Float(string="Area Type" , store=True)
+
+    prove_ring_read = fields.Float(string="Proving ring reading" , digits=(8,0))
+
+    horizontal_shear = fields.Float(string="Horizantal Shear force (kg)" , digits=(8,3),compute="_compute_horizontal_shear" , store=True)
+
+    horizontal_shear_temp = fields.Float(string="Horizantal Shear force with temp Correction (kg)" , digits=(8,3),compute="_compute_horizontal_shear_temp" , store=True)
+
+    shear_stress = fields.Float(string="Shear stress (kg/sq.cm)" , digits=(8,3),compute="_compute_shear_stress" , store=True)
+
+
+
+    @api.depends('horizontal_read')
+    def _compute_horizontal_displacement(self):
+        for record in self:
+            record.horizontal_dispalacement = (record.horizontal_read or 0.0) * 0.01
+
+    @api.depends('horizontal_dispalacement', 'parent_id.corrected_area_shear')
+    def _compute_corrected_area(self):
+        for rec in self:
+            if rec.parent_id and rec.parent_id.corrected_area_shear:
+                rec.corrected_area = rec.parent_id.corrected_area_shear * (
+                    1 - ((rec.horizontal_dispalacement or 0.0) / 10) / 6
+                )
+            else:
+                rec.corrected_area = 0.0
+
+    @api.depends('prove_ring_read')
+    def _compute_horizontal_shear(self):
+        for rec in self:
+            rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
+
+    @api.depends('horizontal_shear', 'parent_id.shear_force_percent_change','corrected_area')
+    def _compute_horizontal_shear_temp(self):
+        for rec in self:
+            percent = rec.parent_id.shear_force_percent_change or 0.0
+            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+
+    @api.depends('horizontal_shear_temp', 'corrected_area')
+    def _compute_shear_stress(self):
+        for rec in self:
+            if rec.corrected_area:
+                rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
+            else:
+                rec.shear_stress = 0.0
+
+
+
+
+           
+        
+            
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(DirectShearTestTwoLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+class DirectShearTestThreeLine(models.Model):
+    _name = "direct.shear.test.three.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No",readonly=True, copy=False, default=1)
+
+    horizontal_read = fields.Float(string="Horizantal Dial Reading" , digits=(8,0)  , store=True)
+
+    horizontal_dispalacement = fields.Float(string="Horizantal  Displacement (mm)" , digits=(8,2) ,compute="_compute_horizontal_displacement" , store=True)
+
+    horizontal_dispalacement_inv = fields.Float(string="Horizantal  Displacement inv (mm)" , digits=(8,2)  , store=True)
+
+    corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,2),compute="_compute_corrected_area"  , store=True)
+
+    non_corrected_area = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0)  , store=True)
+
+    selected_area = fields.Float(string="Area Type" , store=True)
+
+    prove_ring_read = fields.Float(string="Proving ring reading" , digits=(8,0))
+
+    horizontal_shear = fields.Float(string="Horizantal Shear force (kg)" , digits=(8,3),compute="_compute_horizontal_shear" , store=True)
+
+    horizontal_shear_temp = fields.Float(string="Horizantal Shear force with temp Correction (kg)" , digits=(8,3),compute="_compute_horizontal_shear_temp" , store=True)
+
+    shear_stress = fields.Float(string="Shear stress (kg/sq.cm)" , digits=(8,3),compute="_compute_shear_stress" , store=True)
+
+
+
+    @api.depends('horizontal_read')
+    def _compute_horizontal_displacement(self):
+        for record in self:
+            record.horizontal_dispalacement = (record.horizontal_read or 0.0) * 0.01
+
+    @api.depends('horizontal_dispalacement', 'parent_id.corrected_area_shear')
+    def _compute_corrected_area(self):
+        for rec in self:
+            if rec.parent_id and rec.parent_id.corrected_area_shear:
+                rec.corrected_area = rec.parent_id.corrected_area_shear * (
+                    1 - ((rec.horizontal_dispalacement or 0.0) / 10) / 6
+                )
+            else:
+                rec.corrected_area = 0.0
+
+    @api.depends('prove_ring_read')
+    def _compute_horizontal_shear(self):
+        for rec in self:
+            rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
+
+    @api.depends('horizontal_shear', 'parent_id.shear_force_percent_change','corrected_area')
+    def _compute_horizontal_shear_temp(self):
+        for rec in self:
+            percent = rec.parent_id.shear_force_percent_change or 0.0
+            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+
+    @api.depends('horizontal_shear_temp', 'corrected_area')
+    def _compute_shear_stress(self):
+        for rec in self:
+            if rec.corrected_area:
+                rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
+            else:
+                rec.shear_stress = 0.0
+
+
+
+
+           
+        
+            
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(DirectShearTestThreeLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class LLLine(models.Model):
+    _name = "ll.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    lab_id=  fields.Char(string="Lab ID" )
+
+
+    ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
+
+    liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(10,0) ,compute='_compute_liquid_avg',store=True,)
+    
+
+    @api.depends('ll_line_ids.water_content')
+    def _compute_liquid_avg(self):
+        for line in self:
+            if line.ll_line_ids:
+                vals = line.ll_line_ids.mapped("water_content")
+                line.liquid_avg = sum(vals) / len(vals)
+                
+
+            else:
+                line.liquid_avg = 0.0
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(LLLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
     
 
 

@@ -1,0 +1,398 @@
+<odoo>
+  <template id="soil_report1">
+     <t t-call="web.html_container">
+       		 <t t-call="lerm_civil.genstru_layout_header_footer_lerm_eln">
+
+          <div class="container_eln" style="padding-top:0px;">
+					<div class="" t-foreach="eln" t-as="o">
+						
+					
+						  <table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
+							<tr>
+								<!-- <td ><strong>Mechanical Testing</strong>: </td>
+								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td> -->
+								<!-- <td colspan="3"><strong>Report No</strong>: </td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
+								<td colspan="3" ><strong>URL NO</strong>: </td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td> -->
+							</tr>
+
+							<tr>
+								<td colspan="3"><strong>Project Name</strong>: </td>
+								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+
+								<!-- <td><strong>Date of Report</strong>: </td>
+									
+								<td >
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								</td> -->
+							</tr>
+						
+							
+						
+							<tr>
+							<td colspan="3" style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
+							<td colspan="3" style="padding-left: 10px;width:25%;">
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+								<!-- <td><strong>Date Sample Received</strong>: </td> -->
+								<!-- <td >
+								<span t-field="o.sample_id.sample_received_date"/>
+								</td > -->
+								
+
+								<td colspan="3"><strong>Date Sample Received</strong>:</td>
+								<td colspan="3">
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								
+								<td colspan="3" ><strong>Mechanical Testing</strong>: </td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.group_id"/></td>
+
+								<td colspan="3"><strong>Date of Report</strong>: </td>
+									
+								<td colspan="3">
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								</td>
+							
+							</tr>
+
+							<tr>
+								
+								
+								
+								<td colspan="3"><strong>Location</strong>: </td>
+								<td colspan="3">
+								Permanent facility
+							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
+								</td>
+								
+								
+
+								<td colspan="3"><strong>Starting Date</strong>: </td>
+								<td colspan="3">
+							        <span t-field="o.start_date" style="margin-right:10px;"/>
+								</td>
+							
+							</tr>
+							
+							<tr>
+
+								<td colspan="3"><strong>Type of Sample &amp; Condition</strong>: </td>
+								<td colspan="3"><span t-field="o.material.name"/></td>
+
+							<td colspan="3"><strong>Completion Date</strong>: </td>
+								<td colspan="3">
+								<span t-field="o.end_date" />
+								</td>
+						</tr>
+
+						<!-- <tr>
+
+								<td colspan="3"><strong>Source of Sample </strong>: </td>
+								<td colspan="3" style="padding-left: 10px;">
+								  <span t-field="o.source_sample"/>
+								
+								</td>
+
+							<td colspan="3"><strong>No. of Sample</strong>: </td>
+								<td colspan="3">
+									<span t-field="o.quantity" />
+								</td>
+						</tr> -->
+
+						
+
+							
+						</table>
+
+						</div>
+          <t t-set="grav_vals" t-value="[g.avg_corr_specific_gravity for g in (data.gravity_line_ids or []) if g.avg_corr_specific_gravity]"/>
+           <t t-set="g_index" t-value="0"/>
+
+		   <t t-set="free_vals" t-value="[g.free_swell for g in (data.freeswell_line_ids or []) if g.free_swell]"/>
+           <t t-set="free_index" t-value="0"/>
+
+		   <t t-set="name_vals" t-value="[o.name for o in (data.lab_option_ids or []) if o.name]"/>
+			<t t-set="n_index" t-value="0"/>
+
+			<t t-set="name_density" t-value="[o.bulk_density for o in (data.bulk_line_ids or []) if o.bulk_density]"/>
+			<t t-set="n_density" t-value="0"/>
+
+				<t t-set="name_avg_nmc" t-value="[o.avg_nmc for o in (data.moisture_ids or []) if o.avg_nmc]"/>
+			<t t-set="n_avg_nmc" t-value="0"/>
+
+			<t t-set="ll_vals" t-value="[o.liquid_avg for o in (data.ll_child_lines or []) if o.liquid_avg]"/>
+			<t t-set="ll_index" t-value="0"/>
+
+			<t t-set="bh_vals" t-value="[g.bh_id for g in (data.gsa_child_lines or []) if g.bh_id]"/>
+			<t t-set="bh_index" t-value="0"/>
+
+			<t t-set="sample_vals" t-value="[g.sample_details for g in (data.gsa_child_lines or []) if g.sample_details]"/>
+			<t t-set="sample_index" t-value="0"/>
+
+			<t t-set="depth_vals" t-value="[g.sample_depth for g in (data.gsa_child_lines or []) if g.sample_depth]"/>
+			<t t-set="depth_index" t-value="0"/>
+
+			<t t-set="gravel_vals" t-value="[g.gravel for g in (data.gsa_child_lines or []) if g.gravel]"/>
+			<t t-set="gravel_index" t-value="0"/>
+
+			<t t-set="silt_vals" t-value="[g.silt for g in (data.gsa_child_lines or []) if g.silt]"/>
+			<t t-set="silt_index" t-value="0"/>
+
+			<t t-set="sand_vals" t-value="[g.sand for g in (data.gsa_child_lines or []) if g.sand]"/>
+			<t t-set="sand_index" t-value="0"/>
+
+			<t t-set="silt_clay_vals" t-value="[g.silt_clay for g in (data.gsa_child_lines or []) if g.silt_clay]"/>
+			<t t-set="silt_clay_index" t-value="0"/>
+
+			<t t-set="row_count"
+				t-value="max(len(name_vals or []),
+								len(bh_vals or []),
+								len(sample_vals or []),
+								len(depth_vals or []),
+								len(gravel_vals or []),
+								len(silt_vals or []),
+								len(sand_vals or []),
+								len(silt_clay_vals or []),
+								len(ll_vals or []),
+								len(grav_vals or []),
+								len(free_vals or []),
+								len(name_density or []),
+								len(name_avg_nmc or []))"/>
+
+
+
+
+          <table width="100%" style="font-size: 8px; border-collapse: collapse;" border="1">
+            <thead>
+              <tr>
+			  <th rowspan="2">Lab ID</th>
+                <th rowspan="2">Location</th>
+                <th rowspan="2">Sample Type</th>
+                <th rowspan="2">Depth (m)</th>
+                <th colspan="4">GSA+</th>
+                <th colspan="3">Atterberg Limits</th>
+                <th rowspan="2">IS Class</th>
+				 <th rowspan="2">Specific Gravity</th>
+				 <th rowspan="2">FSI</th>
+				 <th rowspan="2">Bulk Density</th>
+				  <th rowspan="2">NMC</th>
+                <!-- <th colspan="3"> FSI / NMC</th> -->
+                <th colspan="3"> Proctor</th>
+                <th rowspan="2">UCS</th>
+                <th colspan="2">Direct Shear</th>
+                <th colspan="2">Triaxial Test (UU)</th>
+                <th colspan="2">Consolidation</th>
+                <th rowspan="2">CBR</th>
+                <th rowspan="2">Swelling</th>
+                <th rowspan="2">k</th>
+              </tr>
+              <tr>
+                <th>G</th><th>S</th><th>M</th><th>C</th>
+                <th>LL</th><th>PL</th><th>SL</th>
+                <!-- <th>Gs</th><th>FSI</th><th>NMC</th> -->
+                <th>γb</th><th>MDD</th><th>OMC</th>
+                <th>C</th><th>ϕ</th>
+                <th>C</th><th>ϕ</th>
+                <th>Pc</th><th>Cc</th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="range(row_count)" t-as="line">
+                <tr>
+                  <!-- <td><t t-esc="line.lab_no"/></td> -->
+				 <td style="min-width: 100px; width: 100px;">
+						<t t-set="ni" t-value="n_index if n_index is not None else 0"/>
+
+						<t t-if="name_vals and ni &lt; len(name_vals)">
+							<t t-esc="name_vals[ni]"/>
+							<t t-set="n_index" t-value="ni + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+
+                  <!-- <td><t t-esc="line.bh_id"/></td>
+				  <td><t t-esc="line.sample_details"/></td>
+				  <td><t t-esc="line.sample_depth"/></td>
+
+
+				  <td><t t-esc="line.gravel"/></td>
+                  <td><t t-esc="line.silt"/></td>
+				  <td><t t-esc="line.sand"/></td>
+				  <td><t t-esc="line.silt_clay"/></td> -->
+
+				  <td>
+					<t t-set="i" t-value="bh_index"/>
+					<t t-if="bh_vals and i &lt; len(bh_vals)">
+						<t t-esc="bh_vals[i]"/>
+						<t t-set="bh_index" t-value="i + 1"/>
+					</t>
+					<t t-else="">--</t>
+					</td>
+
+					<td>
+					<t t-set="i" t-value="sample_index"/>
+					<t t-if="sample_vals and i &lt; len(sample_vals)">
+						<t t-esc="sample_vals[i]"/>
+						<t t-set="sample_index" t-value="i + 1"/>
+					</t>
+					<t t-else="">--</t>
+					</td>
+
+					<td>
+					<t t-set="i" t-value="depth_index"/>
+					<t t-if="depth_vals and i &lt; len(depth_vals)">
+						<t t-esc="depth_vals[i]"/>
+						<t t-set="depth_index" t-value="i + 1"/>
+					</t>
+					<t t-else="">--</t>
+					</td>
+
+					<td>
+					<t t-set="i" t-value="gravel_index"/>
+					<t t-if="gravel_vals and i &lt; len(gravel_vals)">
+						<t t-esc="gravel_vals[i]"/>
+						<t t-set="gravel_index" t-value="i + 1"/>
+					</t>
+					<t t-else="">--</t>
+					</td>
+
+					<td>
+					<t t-set="i" t-value="silt_index"/>
+					<t t-if="silt_vals and i &lt; len(silt_vals)">
+						<t t-esc="silt_vals[i]"/>
+						<t t-set="silt_index" t-value="i + 1"/>
+					</t>
+					<t t-else="">--</t>
+					</td>
+
+					<td>
+					<t t-set="i" t-value="sand_index"/>
+					<t t-if="sand_vals and i &lt; len(sand_vals)">
+						<t t-esc="sand_vals[i]"/>
+						<t t-set="sand_index" t-value="i + 1"/>
+					</t>
+					<t t-else="">--</t>
+					</td>
+
+					<td>
+					<t t-set="i" t-value="silt_clay_index"/>
+					<t t-if="silt_clay_vals and i &lt; len(silt_clay_vals)">
+						<t t-esc="silt_clay_vals[i]"/>
+						<t t-set="silt_clay_index" t-value="i + 1"/>
+					</t>
+					<t t-else="">--</t>
+					</td>
+
+                  <!-- Atterberg Limits -->
+					<!-- LL -->
+					<td>
+						<t t-set="li" t-value="ll_index if ll_index is not None else 0"/>
+						<t t-if="ll_vals and li &lt; len(ll_vals)">
+							<t t-esc="'%.2f' % ll_vals[li]"/>
+							<t t-set="ll_index" t-value="li + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+					<td></td>
+					<td></td>
+
+					<!-- IS Class -->
+					<td></td>
+
+					<!-- Specific Gravity / FSI / NMC -->
+					<td>
+						<t t-set="gi" t-value="g_index if g_index is not None else 0"/>
+
+						<t t-if="grav_vals and gi &lt; len(grav_vals)">
+							<t t-esc="grav_vals[gi]"/>
+							<t t-set="g_index" t-value="gi + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+					<td>
+						<t t-set="gi" t-value="free_index if free_index is not None else 0"/>
+
+						<t t-if="free_vals and gi &lt; len(free_vals)">
+							<t t-esc="'%.2f' % free_vals[gi]"/>
+							<t t-set="free_index" t-value="gi + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+
+
+					<td style="min-width: 100px; width: 100px;">
+						<t t-set="di" t-value="n_density if n_density is not None else 0"/>
+
+						<t t-if="name_density and di &lt; len(name_density)">
+							<t t-esc="'%.2f' % name_density[di]"/>
+							<t t-set="n_density" t-value="di + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+
+					<td style="min-width: 100px; width: 100px;">
+						<t t-set="di" t-value="n_avg_nmc if n_avg_nmc is not None else 0"/>
+
+						<t t-if="name_avg_nmc and di &lt; len(name_avg_nmc)">
+							<t t-esc="'%.2f' % name_avg_nmc[di]"/>
+							<t t-set="n_avg_nmc" t-value="di + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+
+
+					<!-- <td></td>
+
+					<td></td>
+
+
+					<td></td> -->
+
+					<!-- Bulk Density / Proctor -->
+					<td></td>
+					<td></td>
+					<td></td>
+
+					<!-- UCS -->
+					<td></td>
+
+					<!-- Direct Shear -->
+					<td></td>
+					<td></td>
+
+					<!-- Triaxial -->
+					<td></td>
+					<td></td>
+
+					<!-- Consolidation -->
+					<td></td>
+					<td></td>
+
+					<!-- CBR -->
+					<td></td>
+
+					<!-- Swelling -->
+					<td></td>
+
+					<!-- k -->
+					<td></td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+
+          </div>
+      </t>
+    </t>
+  </template>
+</odoo>

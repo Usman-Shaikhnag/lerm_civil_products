@@ -179,7 +179,7 @@ class MechanicalBricksBurntClay(models.Model):
     compressive_strength_child_lines = fields.One2many('mechanical.bricks.clay.compressive.line','parent_id',string="Compressive Strength Test" )
 
 
-    avg_compressive_strength = fields.Float(string="Average Compressive Strength ",compute="_compute_avg_compressive_strength")
+    avg_compressive_strength = fields.Float(string="Average Compressive Strength (N/mm²) ",compute="_compute_avg_compressive_strength")
 
 
     is_lab_compressive_strength = fields.Boolean(
@@ -277,7 +277,7 @@ class MechanicalBricksBurntClay(models.Model):
 
     water_absorption_child_lines = fields.One2many('mechanical.bricks.clay.water.absorption.line','parent_id',string="Water Absorption Test")
 
-    avg_water_absorption = fields.Float(string="Average Water Absorption ",compute="_compute_avg_water_absorption")
+    avg_water_absorption = fields.Float(string="Average Water Absorption (%)",compute="_compute_avg_water_absorption")
     
     is_lab_water_absorption = fields.Boolean(
         string="Lab Fine Selected",
@@ -840,12 +840,12 @@ class ClayCompressiveLine(models.Model):
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sample1 = fields.Char(string="Sample Identification")
-    length = fields.Float(string="Length")
-    width = fields.Float(string="Width")
-    thickness = fields.Float(string="Thickness")
-    area = fields.Float(string="Area (mm2)",compute="_compute_area",store=True)
+    length = fields.Float(string="Length (mm)")
+    width = fields.Float(string="Width (mm)")
+    thickness = fields.Float(string="Thickness (mm)")
+    area = fields.Float(string="Area (mm²)",compute="_compute_area",store=True)
     load = fields.Float(string=" Load at Failure (kN)")
-    compressive_strength = fields.Float(string="Compressive Strength  N/mm2",compute="_compute_compressive_strength",store=True)
+    compressive_strength = fields.Float(string="Compressive Strength  N/mm²",compute="_compute_compressive_strength",store=True)
     
 
     @api.depends('length','width')
@@ -856,7 +856,7 @@ class ClayCompressiveLine(models.Model):
     @api.depends('load','area')
     def _compute_compressive_strength(self):
         for rec in self:
-            if rec.area != 0:
+            if rec.area!=0:
                 rec.compressive_strength = ((rec.load * 1000) / rec.area )
             else:
                 rec.compressive_strength = 0.0
@@ -896,7 +896,7 @@ class WaterAbsorptionLine(models.Model):
     sat_weight= fields.Float(string="Saturated Weight")
     sat_dry_weight = fields.Float(string="Saturated Weight-Dry Weight ",compute="_compute_sat_dry_weight")
     
-    water_absorption = fields.Float(string="Saturated Weight-Dry Weight/Dry Weight*100	",compute="_compute_water_absorption")
+    water_absorption = fields.Float(string="Saturated Weight-Dry Weight/Dry Weight*100	(%)",compute="_compute_water_absorption")
     
     @api.depends('sat_weight','dry_weight')
     def _compute_sat_dry_weight(self):

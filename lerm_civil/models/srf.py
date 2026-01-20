@@ -111,7 +111,6 @@ class SrfForm(models.Model):
     _rec_name = 'srf_id'
 
 
-
     srf_id = fields.Char(string="SRF ID",tracking=True)
     kes_number = fields.Char(string="UID",tracking=True)
     # job_no = fields.Char(string="Job NO.")
@@ -171,12 +170,103 @@ class SrfForm(models.Model):
     
     attachment_path = fields.Char("Attachment")
     customer_portal_request = fields.Many2one('customer.sample.line',string="Customer Portal Request", readonly=True)
-    lab_id = fields.Char(
-        string="Lab ID",
-        readonly=True,
-        tracking=True
-    )
+    # lab_id = fields.Char(
+    #     string="Lab ID",
+    #     readonly=True,
+    #     tracking=True,
+     
+    # )
 
+    lab_id1 = fields.Char(string="Lab ID", compute="_compute_lab_id", store=True)
+
+               # internal tracker
+    quantity = fields.Integer(string="Quantity",compute="_compute_quantity",store=True)
+
+    sample_qty = fields.Integer(string="Sample Quantity",compute="_compute_sample_qty",store=True)
+
+    sample_qty_boolean = fields.Boolean(string="Sample Qty Boolean", compute="_compute_sample_qty_boolean", store=True)
+
+    @api.depends('sample_qty')
+    def _compute_sample_qty_boolean(self):
+        for rec in self:
+            rec.sample_qty_boolean = True if rec.sample_qty > 1 else False
+
+
+    @api.depends('samples.lab_id')
+    def _compute_lab_id(self):
+        for rec in self:
+            rec.lab_id1 = rec.samples[0].lab_id if rec.samples else False
+
+    @api.depends('samples.quantity')
+    def _compute_quantity(self):
+        for rec in self:
+            rec.quantity = rec.samples[0].quantity if rec.samples else False
+
+    @api.depends('samples.sample_qty')
+    def _compute_sample_qty(self):
+        for rec in self:
+            rec.sample_qty = rec.samples[0].sample_qty if rec.samples else False
+
+   
+
+    def action_generate_sample_lab_groups(self):
+        # 1. Sequence nusar lines gha
+        lines = self.samples.sorted(key=lambda r: r.id)
+        
+        if not lines:
+            return
+
+        # 2. Pahilya line varun logic suru kara
+        first_line = lines[0]
+        if not first_line.lab_id:
+            return
+
+        try:
+            # --- Parsing Logic ---
+            parts = first_line.lab_id.split(' - ')
+            start_str = parts[0].strip() # Ex: R-26-001
+            
+            # Prefix ani Number vegla kara
+            prefix = start_str.rsplit('-', 1)[0] + '-'  # Ex: 'R-26-'
+            num_part = start_str.rsplit('-', 1)[1]      # Ex: '001' (String format madhe)
+            
+            # IMP: Input madhe kiti digits ahet te moza (padding sathi)
+            padding_length = len(num_part) # '001' chi length 3 ahe
+            
+            current_counter = int(num_part) # Calculation sathi integer banva (1)
+            
+            # --- Loop Start ---
+            for line in lines:
+                if line.quantity <= 0:
+                    continue
+
+                # 3. End Number calculate kara
+                batch_end = current_counter + int(line.quantity) - 1
+                
+                # 4. Number la parat Zero-Padding lau (IMP STEP)
+                # str().zfill() waprun length match kara
+                start_padded = str(current_counter).zfill(padding_length)
+                end_padded = str(batch_end).zfill(padding_length)
+                
+                # 5. New Lab ID banva (e.g. R-26-001 - R-26-003)
+                new_range = f"{prefix}{start_padded} - {prefix}{end_padded}"
+                
+                # 6. Set kara
+                line.lab_id = new_range
+                
+                # 7. Next loop sathi update
+                current_counter = batch_end + 1
+
+        except Exception as e:
+            first_line.lab_id = f"Error: {e}"
+
+    
+
+
+   
+
+   
+    
     
     def download_attachment(self):
         host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
@@ -321,6 +411,7 @@ class SrfForm(models.Model):
         return record
 
     
+    
         
         
     @api.model
@@ -385,6 +476,8 @@ class SrfForm(models.Model):
         count = self.env['lerm.srf.sample'].search_count([('srf_id', '=', self.id)])
         self.sample_count = count
 
+   
+
 
 
 
@@ -396,6 +489,9 @@ class SrfForm(models.Model):
         count = self.env['lerm.srf.sample'].search_count([('srf_id.srf_date','=',self.srf_date),('kes_no','!=','New'),('status','=','2-confirmed')]) 
 
         for record in self.sample_range_table:
+
+            
+
             sam_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample')]).number_next_actual
             kes_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample.kes')]).number_next_actual
            
@@ -495,7 +591,8 @@ class SrfForm(models.Model):
                     })
 
                 self.env.cr.commit()
-        
+
+ 
     
         first_sample_range = self.sample_range_table[0].kes_range
         last_sample_range = self.sample_range_table[-1].kes_range  
@@ -879,7 +976,7 @@ class CreateSampleWizard(models.TransientModel):
         compute="_compute_lab_id"
        
     )
-
+    
     lab_ids_raw = fields.Char()
 
 
@@ -904,13 +1001,49 @@ class CreateSampleWizard(models.TransientModel):
     # --------------------
     # COMPUTE (🔥 CONSUME SEQUENCE HERE)
     # --------------------
-    @api.depends('material_id', 'quantity')
+    # @api.depends('material_id', 'quantity')
+    # def _compute_lab_id(self):
+    #     for rec in self:
+    #         rec.lab_id = False
+    #         rec.lab_ids_raw = False
+
+    #         if not rec.material_id or rec.quantity <= 0:
+    #             continue
+
+    #         # prevent double consume
+    #         if rec.lab_ids_raw:
+    #             continue
+
+    #         seq_code = rec._get_lab_sequence_code(rec.material_id)
+    #         if not seq_code:
+    #             continue
+
+    #         ids = []
+    #         for i in range(rec.quantity):
+    #             lab = rec.env['ir.sequence'].next_by_code(seq_code)
+    #             if not lab:
+    #                 break
+    #             ids.append(lab)
+
+    #         if not ids:
+    #             continue
+
+    #         # ✅ store consumed IDs
+    #         rec.lab_ids_raw = ','.join(ids)
+
+    #         # preview
+    #         if len(ids) == 1:
+    #             rec.lab_id = ids[0]
+    #         else:
+    #             rec.lab_id = f"{ids[0]} - {ids[-1]}"
+
+    @api.depends('material_id', 'quantity', 'sample_qty')
     def _compute_lab_id(self):
         for rec in self:
             rec.lab_id = False
             rec.lab_ids_raw = False
 
-            if not rec.material_id or rec.quantity <= 0:
+            if not rec.material_id or rec.quantity <= 0 or rec.sample_qty <= 0:
                 continue
 
             # prevent double consume
@@ -921,8 +1054,10 @@ class CreateSampleWizard(models.TransientModel):
             if not seq_code:
                 continue
 
+            total = rec.quantity * rec.sample_qty   # 🔥 MULTIPLY HERE
+
             ids = []
-            for i in range(rec.quantity):
+            for i in range(total):
                 lab = rec.env['ir.sequence'].next_by_code(seq_code)
                 if not lab:
                     break
@@ -931,7 +1066,7 @@ class CreateSampleWizard(models.TransientModel):
             if not ids:
                 continue
 
-            # ✅ store consumed IDs
+            # store consumed IDs
             rec.lab_ids_raw = ','.join(ids)
 
             # preview
@@ -941,6 +1076,12 @@ class CreateSampleWizard(models.TransientModel):
                 rec.lab_id = f"{ids[0]} - {ids[-1]}"
 
 
+    
+
+
+    
+
+   
     def action_create_sample(self):
         self.ensure_one()
 
@@ -959,9 +1100,32 @@ class CreateSampleWizard(models.TransientModel):
 
         return {'type': 'ir.actions.act_window_close'}
 
+    
+
+
 
     
 
+
+
+    
+    
+
+
+
+    
+
+
+    
+
+    
+
+   
+
+
+
+
+    
 
 
 
@@ -1276,6 +1440,7 @@ class CreateSampleWizard(models.TransientModel):
 
     def add_sample(self,data=False):
 
+
         
         # import wdb; wdb.set_trace()
         if data:
@@ -1484,6 +1649,7 @@ class CreateSampleWizard(models.TransientModel):
                         'lab_location':lab_location,
                         'location_name':location_name,
                         'quantity':self.quantity,
+                        'sample_qty':self.sample_qty,
                         'lab_id':self.lab_id,
                         'uom_id':self.uom_id.id,
                         'quantity_received':self.quantity_received,
@@ -1494,6 +1660,7 @@ class CreateSampleWizard(models.TransientModel):
                     self.env['lerm.sample.register'].sudo().create({
                         'sample':sample.id,
                         'quantity':self.quantity,
+                        'sample_qty':self.sample_qty,
                         'lab_id':self.lab_id,
                         'uom_id':self.uom_id.id,
                         'quantity_received':self.quantity_received,
@@ -1523,6 +1690,15 @@ class CreateSampleWizard(models.TransientModel):
 
         # used in Sample mode (single tech)
         technicians = fields.Many2one("res.users", string="Technician")
+
+        def action_allot_technician(self):
+            active_ids = self.env.context.get('active_ids')
+            samples = self.env['lerm.srf.sample'].browse(active_ids)
+
+            for sample in samples:
+                sample.technicians = self.technicians.id
+
+            return {'type': 'ir.actions.act_window_close'}
 
         # used in Parameter mode (final technician set to be stored in ELN)
         technician_ids = fields.Many2many('res.users',string='Technicians',store=True,)
@@ -1602,11 +1778,205 @@ class CreateSampleWizard(models.TransientModel):
             return {'domain': {'technicians': [('id', 'in', ids)]}}
         
 
-        # @api.one
+        # @api.one  he nhi ahe
+        # def allot_sample(self):
+        #     active_ids = self.env.context.get('active_ids') or []
+        #     is_reallocation = self.env.context.get('is_reallocation', False)  # 🔑 CHECK FLAG
+            
+        #     if not active_ids:
+        #         raise UserError(_("No samples selected."))
+
+        #     Sample = self.env['lerm.srf.sample'].sudo()
+        #     ELN = self.env['lerm.eln'].sudo()
+
+        #     for rec_id in active_ids:
+        #         sample = Sample.browse(rec_id)
+        #         if not sample or sample.state not in ('1-allotment_pending', '7-partially-alloted', '2-alloted'):  # 🔑 ALLOW '2-alloted' FOR REALLOCATION
+        #             if not is_reallocation:  # 🔑 ONLY ENFORCE STATE CHECK IF NOT REALLOCATION
+        #                 continue
+
+        #         # Prepare variables
+        #         parameters_result = []
+        #         eln_tech_ids = []
+
+        #         if self.allocation_type == 'parameter':
+        #             # enforce single-sample mode (recommended)
+        #             if len(active_ids) > 1:
+        #                 raise UserError(_("Parameter allocation supports only one sample at a time. Select a single sample."))
+
+        #             if not self.line_ids:
+        #                 raise UserError(_("No parameters available to assign."))
+
+        #             # Determine new sample state: fully alloted if no unassigned lines else partially alloted
+        #             existing_param_tech = {}
+        #             if sample.eln_id:
+        #                 for pr in sample.eln_id.parameters_result:
+        #                     existing_param_tech[pr.parameter.id] = pr.technician.id if pr.technician else False
+
+        #             # Partition lines into assigned / unassigned
+        #             valid_lines = [line for line in self.line_ids if line.parameter_id]
+
+        #             assigned_lines = [line for line in valid_lines if line.technician]
+        #             unassigned_lines = []
+
+        #             for line in valid_lines:
+        #                 param_id = line.parameter_id.id
+        #                 wizard_tech = line.technician.id if line.technician else False
+        #                 existing_tech = existing_param_tech.get(param_id)
+
+        #                 # unassigned ONLY if neither wizard nor existing ELN has technician
+        #                 if not wizard_tech and not existing_tech:
+        #                     unassigned_lines.append(line)
+
+
+        #             if len(assigned_lines) == 0:
+        #                 # No technician assigned at all → not allowed
+        #                 raise UserError(_("Please assign at least one technician."))
+
+        #             # Build parameter rows from lines (only for this sample)
+        #             params_for_eln = []
+        #             tech_ids_from_lines = set()
+        #             for line in self.line_ids:
+        #                 if line.sample_id and line.sample_id.id != sample.id:
+        #                     continue
+
+        #                 # 🔑 Skip locked check during reallocation
+        #                 if line.is_locked and not is_reallocation:
+        #                     continue 
+                            
+        #                 if not line.parameter_id:
+        #                     continue
+        #                 params_for_eln.append(line.parameter_id)
+        #                 parameters_result.append((0, 0, {
+        #                     'parameter': line.parameter_id.id,
+        #                     'unit': line.parameter_id.unit.id if line.parameter_id.unit else False,
+        #                     'test_method': line.parameter_id.test_method.id if line.parameter_id.test_method else False,
+        #                     'technician': line.technician.id if line.technician else False,
+        #                 }))
+        #                 if line.technician:
+        #                     tech_ids_from_lines.add(line.technician.id)
+
+        #             # Prefer user-edited union (tag field). If not present, use line assignments union.
+        #             eln_tech_ids = self.technician_ids.ids if self.technician_ids else list(tech_ids_from_lines)
+
+        #             # If still empty, fallback to allowed_technicians union from parameter masters
+        #             if not eln_tech_ids:
+        #                 techs = self.env['res.users']
+        #                 for param in sample.parameters:
+        #                     if hasattr(param, 'allowed_technicians'):
+        #                         techs |= param.allowed_technicians
+        #                 eln_tech_ids = techs.ids
+
+        #             if not eln_tech_ids:
+        #                 raise UserError(_("No technicians available/selected for Parameter mode."))
+
+
+        #             new_state = '2-alloted' if len(unassigned_lines) == 0 else '7-partially-alloted'
+
+        #         else:
+        #             # Sample mode: single technician applies to all parameters
+        #             parameters_result = []
+        #             for parameter in sample.parameters:
+        #                 parameters_result.append((0, 0, {
+        #                     'parameter': parameter.id,
+        #                     'unit': parameter.unit.id if parameter.unit else False,
+        #                     'test_method': parameter.test_method.id if parameter.test_method else False,
+        #                     'technician': self.technicians.id
+        #                 }))
+
+        #             if not self.technicians:
+        #                 raise UserError(_("Please choose a technician for Sample mode."))
+        #             eln_tech_ids = [self.technicians.id]
+        #             new_state = '2-alloted'
+
+        #         # If an ELN already exists for this sample, update it instead of creating a new one
+        #         if sample.eln_id:
+        #             eln = ELN.browse(sample.eln_id.id)
+        #             if not eln:
+        #                 # defensive: if eln_id set but record missing, create a new one
+        #                 eln = None
+        #         else:
+        #             eln = None
+
+        #         # If ELN exists: update technicians (union) and add any missing parameter lines
+        #         if eln:
+        #             # union existing technicians with new ones
+        #             existing_tech_ids = eln.technician_ids.ids or []
+        #             combined_tech_ids = list(set(existing_tech_ids) | set(eln_tech_ids))
+
+        #             # update technician_ids
+        #             eln.write({'technician_ids': [(6, 0, combined_tech_ids)]})
+
+        #             # add missing parameter_result lines (avoid duplicates)
+        #             existing_results = {
+        #                 pr.parameter.id: pr
+        #                 for pr in eln.parameters_result
+        #             }
+
+        #             for pr in parameters_result:
+        #                 vals = pr[2]
+        #                 param_id = vals.get('parameter')
+        #                 technician_id = vals.get('technician')
+
+        #                 if param_id in existing_results:
+        #                     # 🔑 UPDATE existing line - ALWAYS UPDATE DURING REALLOCATION
+        #                     existing_pr = existing_results[param_id]
+
+        #                     if is_reallocation:
+        #                         # During reallocation, always update the technician
+        #                         existing_pr.write({
+        #                             'technician': technician_id if technician_id else False
+        #                         })
+        #                     elif technician_id and not existing_pr.technician:
+        #                         # During initial allotment, only update if no existing technician
+        #                         existing_pr.write({
+        #                             'technician': technician_id
+        #                         })
+        #                 else:
+        #                     # CREATE new line
+        #                     eln.write({'parameters_result': [(0, 0, vals)]})
+        #         else:
+        #             # Create a new ELN
+        #             eln_vals = {
+        #                 'srf_id': sample.srf_id.id if sample.srf_id else False,
+        #                 'srf_date': sample.srf_id.srf_date if sample.srf_id else False,
+        #                 'kes_no': sample.kes_no,
+        #                 'discipline': sample.discipline_id.id if sample.discipline_id else False,
+        #                 'lab_no_value': sample.lab_no_value,
+        #                 'group': sample.group_id.id if sample.group_id else False,
+        #                 'material': sample.material_id.id if sample.material_id else False,
+        #                 'witness_name': sample.witness,
+        #                 'sample_id': sample.id,
+        #                 'parameters_result': parameters_result,
+        #                 'technician_ids': [(6, 0, eln_tech_ids)],
+        #                 'conformity': sample.conformity,
+        #                 'has_witness': sample.has_witness,
+        #                 'size_id': sample.size_id.id if sample.size_id else False,
+        #                 'grade_id': sample.grade_id.id if sample.grade_id else False,
+        #                 'department_id': sample.department_id,
+        #                 'casting_date': sample.casting_date,
+        #                 'quantity': sample.quantity,
+        #                 'uom_id': sample.uom_id.id if sample.uom_id else False,
+        #                 'quantity_received': sample.quantity_received,
+        #                 'quantity_consumed': sample.quantity_consumed,
+        #                 'quantity_balance': sample.quantity_balance,
+        #             }
+        #             eln = ELN.create(eln_vals)
+
+        #         # Update sample state and link eln if not already linked
+        #         # if new_state == '2-alloted':
+        #         #     eln.write({'state': '2-confirm'})
+        #         # else:
+        #         #     eln.write({'state': '1-draft'})
+        #         sample_vals = {'state': new_state, 'eln_id': eln.id}
+        #         sample.write(sample_vals)
+
+        #     return {'type': 'ir.actions.act_window_close'}
+
         def allot_sample(self):
             active_ids = self.env.context.get('active_ids') or []
-            is_reallocation = self.env.context.get('is_reallocation', False)  # 🔑 CHECK FLAG
-            
+            is_reallocation = self.env.context.get('is_reallocation', False)
+
             if not active_ids:
                 raise UserError(_("No samples selected."))
 
@@ -1615,31 +1985,26 @@ class CreateSampleWizard(models.TransientModel):
 
             for rec_id in active_ids:
                 sample = Sample.browse(rec_id)
-                if not sample or sample.state not in ('1-allotment_pending', '7-partially-alloted', '2-alloted'):  # 🔑 ALLOW '2-alloted' FOR REALLOCATION
-                    if not is_reallocation:  # 🔑 ONLY ENFORCE STATE CHECK IF NOT REALLOCATION
+                if not sample or sample.state not in ('1-allotment_pending', '7-partially-alloted', '2-alloted'):
+                    if not is_reallocation:
                         continue
 
-                # Prepare variables
                 parameters_result = []
                 eln_tech_ids = []
 
                 if self.allocation_type == 'parameter':
-                    # enforce single-sample mode (recommended)
                     if len(active_ids) > 1:
-                        raise UserError(_("Parameter allocation supports only one sample at a time. Select a single sample."))
+                        raise UserError(_("Parameter allocation supports only one sample at a time."))
 
                     if not self.line_ids:
                         raise UserError(_("No parameters available to assign."))
 
-                    # Determine new sample state: fully alloted if no unassigned lines else partially alloted
                     existing_param_tech = {}
                     if sample.eln_id:
                         for pr in sample.eln_id.parameters_result:
                             existing_param_tech[pr.parameter.id] = pr.technician.id if pr.technician else False
 
-                    # Partition lines into assigned / unassigned
                     valid_lines = [line for line in self.line_ids if line.parameter_id]
-
                     assigned_lines = [line for line in valid_lines if line.technician]
                     unassigned_lines = []
 
@@ -1648,28 +2013,25 @@ class CreateSampleWizard(models.TransientModel):
                         wizard_tech = line.technician.id if line.technician else False
                         existing_tech = existing_param_tech.get(param_id)
 
-                        # unassigned ONLY if neither wizard nor existing ELN has technician
                         if not wizard_tech and not existing_tech:
                             unassigned_lines.append(line)
 
-
                     if len(assigned_lines) == 0:
-                        # No technician assigned at all → not allowed
                         raise UserError(_("Please assign at least one technician."))
 
-                    # Build parameter rows from lines (only for this sample)
                     params_for_eln = []
                     tech_ids_from_lines = set()
+
                     for line in self.line_ids:
                         if line.sample_id and line.sample_id.id != sample.id:
                             continue
 
-                        # 🔑 Skip locked check during reallocation
                         if line.is_locked and not is_reallocation:
-                            continue 
-                            
+                            continue
+
                         if not line.parameter_id:
                             continue
+
                         params_for_eln.append(line.parameter_id)
                         parameters_result.append((0, 0, {
                             'parameter': line.parameter_id.id,
@@ -1680,10 +2042,8 @@ class CreateSampleWizard(models.TransientModel):
                         if line.technician:
                             tech_ids_from_lines.add(line.technician.id)
 
-                    # Prefer user-edited union (tag field). If not present, use line assignments union.
                     eln_tech_ids = self.technician_ids.ids if self.technician_ids else list(tech_ids_from_lines)
 
-                    # If still empty, fallback to allowed_technicians union from parameter masters
                     if not eln_tech_ids:
                         techs = self.env['res.users']
                         for param in sample.parameters:
@@ -1694,11 +2054,13 @@ class CreateSampleWizard(models.TransientModel):
                     if not eln_tech_ids:
                         raise UserError(_("No technicians available/selected for Parameter mode."))
 
-
                     new_state = '2-alloted' if len(unassigned_lines) == 0 else '7-partially-alloted'
 
                 else:
-                    # Sample mode: single technician applies to all parameters
+                    # ✅ SAMPLE MODE
+                    if not self.technicians:
+                        raise UserError(_("Please choose a technician for Sample mode."))
+
                     parameters_result = []
                     for parameter in sample.parameters:
                         parameters_result.append((0, 0, {
@@ -1708,34 +2070,25 @@ class CreateSampleWizard(models.TransientModel):
                             'technician': self.technicians.id
                         }))
 
-                    if not self.technicians:
-                        raise UserError(_("Please choose a technician for Sample mode."))
+                    # 🔥 IMPORTANT LINE (Sample level technician assign)
+                    sample.technicians = self.technicians.id
+
                     eln_tech_ids = [self.technicians.id]
                     new_state = '2-alloted'
 
-                # If an ELN already exists for this sample, update it instead of creating a new one
                 if sample.eln_id:
                     eln = ELN.browse(sample.eln_id.id)
                     if not eln:
-                        # defensive: if eln_id set but record missing, create a new one
                         eln = None
                 else:
                     eln = None
 
-                # If ELN exists: update technicians (union) and add any missing parameter lines
                 if eln:
-                    # union existing technicians with new ones
                     existing_tech_ids = eln.technician_ids.ids or []
                     combined_tech_ids = list(set(existing_tech_ids) | set(eln_tech_ids))
-
-                    # update technician_ids
                     eln.write({'technician_ids': [(6, 0, combined_tech_ids)]})
 
-                    # add missing parameter_result lines (avoid duplicates)
-                    existing_results = {
-                        pr.parameter.id: pr
-                        for pr in eln.parameters_result
-                    }
+                    existing_results = {pr.parameter.id: pr for pr in eln.parameters_result}
 
                     for pr in parameters_result:
                         vals = pr[2]
@@ -1743,24 +2096,15 @@ class CreateSampleWizard(models.TransientModel):
                         technician_id = vals.get('technician')
 
                         if param_id in existing_results:
-                            # 🔑 UPDATE existing line - ALWAYS UPDATE DURING REALLOCATION
                             existing_pr = existing_results[param_id]
 
                             if is_reallocation:
-                                # During reallocation, always update the technician
-                                existing_pr.write({
-                                    'technician': technician_id if technician_id else False
-                                })
+                                existing_pr.write({'technician': technician_id if technician_id else False})
                             elif technician_id and not existing_pr.technician:
-                                # During initial allotment, only update if no existing technician
-                                existing_pr.write({
-                                    'technician': technician_id
-                                })
+                                existing_pr.write({'technician': technician_id})
                         else:
-                            # CREATE new line
                             eln.write({'parameters_result': [(0, 0, vals)]})
                 else:
-                    # Create a new ELN
                     eln_vals = {
                         'srf_id': sample.srf_id.id if sample.srf_id else False,
                         'srf_date': sample.srf_id.srf_date if sample.srf_id else False,
@@ -1780,6 +2124,7 @@ class CreateSampleWizard(models.TransientModel):
                         'department_id': sample.department_id,
                         'casting_date': sample.casting_date,
                         'quantity': sample.quantity,
+                        'sample_qty':sample.sample_qty,
                         'uom_id': sample.uom_id.id if sample.uom_id else False,
                         'quantity_received': sample.quantity_received,
                         'quantity_consumed': sample.quantity_consumed,
@@ -1787,15 +2132,14 @@ class CreateSampleWizard(models.TransientModel):
                     }
                     eln = ELN.create(eln_vals)
 
-                # Update sample state and link eln if not already linked
-                # if new_state == '2-alloted':
-                #     eln.write({'state': '2-confirm'})
-                # else:
-                #     eln.write({'state': '1-draft'})
                 sample_vals = {'state': new_state, 'eln_id': eln.id}
                 sample.write(sample_vals)
 
             return {'type': 'ir.actions.act_window_close'}
+
+
+            # ADD NEW
+
 
 
         def close_allotment_wizard(self):
@@ -1843,3 +2187,7 @@ class SampleAllotLine(models.TransientModel):
         if self.parameter_id and hasattr(self.parameter_id, 'allowed_technicians'):
             return {'domain': {'technician': [('id', 'in', self.parameter_id.allowed_technicians.ids)]}}
         return {}
+
+
+
+

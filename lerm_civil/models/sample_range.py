@@ -16,8 +16,11 @@ class SampleRangeLine(models.Model):
     #         lab_no = record.group_id.discipline.lab_no
     #         record.lab_no = lab_no
 
+    
 
     srf_id = fields.Many2one('lerm.civil.srf' , string="SRF ID" )
+    
+
     sample_range = fields.Char(string="Sample Range." ,required=True,readonly=True, default=lambda self: 'New')
     sample_qty = fields.Integer(string="Sample Quantity")
     casting = fields.Boolean(string="Casting")

@@ -15,9 +15,15 @@ class LermSampleForm(models.Model):
     _description = "Sample"
     _rec_name = 'kes_no'
 
+
+    
+
+
+
     client_reference1 = fields.Char(string="Client Reference",compute="_compute_client_reference", store=True)
     srf_id = fields.Many2one('lerm.civil.srf',ondelete="cascade", string="SRF ID" ,tracking=True)
     sample_range_id = fields.Many2one('sample.range.line',string="Sample Range")
+
     eln_id = fields.Many2one('lerm.eln',string="ELN",ondelete="set null")
     sample_no = fields.Char(string="Sample ID." ,required=True,readonly=True, default=lambda self: 'New')
     casting = fields.Boolean(string="Casting")
@@ -163,8 +169,85 @@ class LermSampleForm(models.Model):
     tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature Datasheet")
     checked_by_signature_datasheet = fields.Boolean(string="Checked By Signature Datasheet")
 
-    quantity = fields.Integer(string="Quantity")
-    lab_id = fields.Char( string="Lab ID" )
+    quantity = fields.Integer(string="Quantity")  # group size
+    lab_id = fields.Char(string="Lab ID")         # format: S-26-175 - S-26-178
+
+    last_generated = fields.Integer(default=0)   
+    lab_ids_raw = fields.Text(string="Grouped Lab IDs")  
+
+
+    
+
+    # def action_generate_lab_groups(self):
+    #     for rec in self:
+    #         if not rec.lab_id or rec.quantity <= 0:
+    #             continue
+
+    #         try:
+    #             # 1. सध्याच्या lab_id मधून रेंज बाहेर काढा
+    #             parts = rec.lab_id.split(' - ')
+    #             if len(parts) != 2:
+    #                 continue
+
+    #             start_str, end_str = parts
+                
+    #             # Prefix आणि Numbers वेगळे करा
+    #             prefix = start_str.rsplit('-', 1)[0] + '-'
+                
+    #             # सध्याचा End Number शोधा (उदा. पहिल्यांदा 810 असेल, दुसऱ्यांदा 803 असेल)
+    #             current_range_end = int(end_str.rsplit('-', 1)[1])
+                
+    #             # 2. Start Point ठरवा
+    #             # जर last_generated असेल, तर त्याच्या पुढे (उदा. 803 + 1 = 804)
+    #             # जर नसेल (First Click), तर सुरुवातीचा नंबर घ्या (उदा. 801)
+    #             if rec.last_generated:
+    #                 start_num = rec.last_generated + 1
+    #             else:
+    #                 start_num = int(start_str.rsplit('-', 1)[1])
+
+    #             # 3. Batch End ठरवा (फक्त Quantity नुसार)
+    #             # (येथे आपण Original End Limit चेक करू शकत नाही, कारण ती डिलीट झाली आहे)
+    #             batch_end = start_num + int(rec.quantity) - 1
+
+    #             # 4. New Batch तयार करा
+    #             new_lab_id = f"{prefix}{start_num} - {prefix}{batch_end}"
+                
+    #             # 5. Fields Update करा
+    #             rec.lab_id = new_lab_id
+    #             rec.last_generated = batch_end
+
+    #             # 6. History (lab_ids_raw) मध्ये ॲड करा
+    #             if rec.lab_ids_raw:
+    #                 rec.lab_ids_raw += '\n' + new_lab_id
+    #             else:
+    #                 rec.lab_ids_raw = new_lab_id
+
+    #         except Exception as e:
+    #             rec.lab_id = f"Error: {e}"
+
+
+
+
+
+
+   
+
+
+
+
+   
+    
+    
+
+    
+
+   
+
+
+
+   
+   
+    
 
 
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
@@ -178,6 +261,20 @@ class LermSampleForm(models.Model):
 
     display_report_portal = fields.Boolean("Display on Portal")
     customer_portal_sample = fields.Many2one('customer.sample.line',string="Customer Portal Sample", readonly=True)
+
+    def unlink(self):
+        for rec in self:
+            if rec.srf_id:
+                tech_name = rec.technicians.name if rec.technicians else "Not Assigned"
+
+                rec.srf_id.message_post(
+                    body=f"""
+                    Sample Deleted - 
+                    KES No: {rec.kes_no} - 
+                    Technician: {tech_name}
+                    """
+                )
+        return super(LermSampleForm, self).unlink()
 
     @api.depends('quantity_received', 'quantity_consumed','quantity_discarded')
     def compute_quantity_balance(self):
@@ -733,3 +830,6 @@ class SampleParametersResult(models.Model):
 
 
 # 
+
+
+

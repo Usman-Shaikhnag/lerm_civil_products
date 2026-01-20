@@ -326,6 +326,8 @@ class PPCCementNormalConsistency(models.Model):
 
 
   
+
+  
         ## Consistency of cement
 
     consistency_cement_name = fields.Char("Name",default="Consistency of cement")
@@ -615,6 +617,7 @@ class PPCCementNormalConsistency(models.Model):
                         break
                     else:
                         record.avg_final_time_confirmity = 'fail'
+
     
     @api.depends('avg_final_time','eln_ref','grade')
     def _compute_avg_final_time_nabl(self):
@@ -824,8 +827,8 @@ class PPCCementNormalConsistency(models.Model):
 
     avg_3_days = fields.Float(string="Avg Strength (3 Days)", compute="_compute_avg_strengths", store=True)
 
-    temp_3_days = fields.Char("Temp.°C" ,required=True)
-    humidity_3_days= fields.Char("Humidity %" ,required=True)
+    temp_3_days = fields.Char("Temp.°C" )
+    humidity_3_days= fields.Char("Humidity %" )
 
 
     avg_3_days_conformity = fields.Selection([
@@ -888,8 +891,8 @@ class PPCCementNormalConsistency(models.Model):
 
     avg_7_days = fields.Float(string="Avg Strength (7 Days)", compute="_compute_avg_strengths", store=True)
 
-    temp_7_days = fields.Char("Temp.°C",required=True )
-    humidity_7_days= fields.Char("Humidity %" ,required=True)
+    temp_7_days = fields.Char("Temp.°C")
+    humidity_7_days= fields.Char("Humidity %")
 
     avg_7_days_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -950,8 +953,8 @@ class PPCCementNormalConsistency(models.Model):
 
     avg_28_days = fields.Float(string="Avg Strength (28 Days)", compute="_compute_avg_strengths", store=True)
 
-    temp_28_days = fields.Char("Temp.°C" ,required=True)
-    humidity_28_days= fields.Char("Humidity %" ,required=True)
+    temp_28_days = fields.Char("Temp.°C")
+    humidity_28_days= fields.Char("Humidity %")
 
     avg_28_days_conformity = fields.Selection([
         ('pass', 'Pass'),
