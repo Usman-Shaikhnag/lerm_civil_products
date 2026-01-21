@@ -133,6 +133,12 @@
 			<t t-set="ll_vals" t-value="[o.liquid_avg for o in (data.ll_child_lines or []) if o.liquid_avg]"/>
 			<t t-set="ll_index" t-value="0"/>
 
+			<t t-set="pl_vals" t-value="[o.plastic_avg for o in (data.pl_child_lines or []) if o.plastic_avg]"/>
+			<t t-set="pl_index" t-value="0"/>
+			
+			<t t-set="sl_vals" t-value="[o.shrinkage_avg for o in (data.sl_child_lines or []) if o.shrinkage_avg]"/>
+			<t t-set="sl_index" t-value="0"/>
+
 			<t t-set="bh_vals" t-value="[g.bh_id for g in (data.gsa_child_lines or []) if g.bh_id]"/>
 			<t t-set="bh_index" t-value="0"/>
 
@@ -164,6 +170,8 @@
 								len(sand_vals or []),
 								len(silt_clay_vals or []),
 								len(ll_vals or []),
+								len(pl_vals or []),
+								len(sl_vals or []),
 								len(grav_vals or []),
 								len(free_vals or []),
 								len(name_density or []),
@@ -303,8 +311,24 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
-					<td></td>
-					<td></td>
+
+					<td>
+						<t t-set="li" t-value="pl_index if pl_index is not None else 0"/>
+						<t t-if="pl_vals and li &lt; len(pl_vals)">
+							<t t-esc="'%.2f' % pl_vals[li]"/>
+							<t t-set="pl_index" t-value="li + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+
+					<td>
+						<t t-set="li" t-value="sl_index if sl_index is not None else 0"/>
+						<t t-if="sl_vals and li &lt; len(sl_vals)">
+							<t t-esc="'%.2f' % sl_vals[li]"/>
+							<t t-set="sl_index" t-value="li + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
 
 					<!-- IS Class -->
 					<td></td>
@@ -390,6 +414,297 @@
               </t>
             </tbody>
           </table>
+
+		  <div style="margin-top:50px" class="noteContainer">
+						<table >
+							<tr>
+							
+								<td style="padding: 5px; font-style: italic; font-size: 14px; line-height: 13px;">
+									<b>Remarks:</b><br/><br/>
+									    1. + Refer to Annexure-I for environmental and test conditions<br/><br/>
+									    2. Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
+										G-Gravel, S-Sand, M-Silt, C-Clay, LL-Liquid Limit, PL-Plastic Limit, SL-Shrinkage Limit, NP-Non Plastic, NMC-Natural Moisture Content, UCS- Unconfined Compressive Strength,CBR- California Bearing Ratio Test<br/><br/>
+										UU-Unconsolidated Undrained, C-Cohesion, ɸ-Angle of Internal Friction, Pc-Preconsolidation Pressure, Cc-Compression Index, NP-Non-Plastic, MDD- Maximum dry density, OMC- Optimum moisture content, k = coefficient of permeability<br/><br/>
+
+									<b>Notes:-</b><br/><br/>
+								    	a. The information marked with an # received from customer<br/><br/>
+							        	b. ^ indicates insufficient quantity of processed sample to perform specific test<br/><br/>
+							        	c. If direct shear test indicates * it represents Consolidated Undrained (CU) test, if ** then it represents Consolidated Drained (CD) test, else it is Unconsolidated Undrained (UU) test<br/><br/>
+							        	d. If direct shear test indicates ### it represents Consolidated Undrained (CU) test with corrected area, if ## then it represents Consolidated Drained (CD) test with corrected area, # it represents Unconsolidated Undrained (UU) test with corrected area <br/><br/>
+										e. If CBR value indicate *, it represents Unsoaked CBR else it is soaked CBR<br/><br/>
+										f. If Proctor results indicate * it represents Heavy compaction, else it is Light compaction test <br/><br/>
+										g. If Permeability results indicate *, it represents Constant Head Test, else it is Falling Head test <br/><br/>
+										h. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
+										i. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
+										j. This document shall not be reproduced in part or full without the approval of Genstru<br/><br/>
+
+										<!-- <t t-if="data.notes_id">
+										<t t-foreach="data.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+										</t> -->
+									<!-- </t> -->
+								</td>
+							</tr>
+							</table  >
+						</div>
+
+						<div class="signatureContainer girdgird">
+							<table style="width:100%; border:1px solid black; border-collapse:collapse; font-family:Arial; font-size:12px; text-align:center;">
+						    <tr style="height:100px;">
+							
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+							<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								 <b>
+										<span t-esc="eln.technician.name"/>
+									</b><br/>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b><br/>
+								<span style="font-size:12px;">Prepared By</span>
+							</td>
+
+							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+								<b style="font-size:13px;">Stamp</b>
+							</td>
+
+							<td style="width:33.33%; vertical-align:bottom; padding-bottom:5px;text-align:center;">
+							<div style="height: 40px;">
+											<t t-if="eln.sample_id.approveby_signature_required">
+												<div t-if="eln.sample_id.approved_by.employee_id.signature">
+													<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+												</div>
+												
+											</t>
+										</div>
+								<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b><br/>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b><br/>
+								<span style="font-size:12px;">Reviewed &amp; Issued By</span>
+							</td>
+						</tr>
+
+					</table>
+						
+				
+					</div>
+
+					<div style="margin-top:100px; page-break-before: always;">
+
+					 <table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
+							<tr>
+							
+							</tr>
+
+							<tr>
+								<td colspan="3"><strong>Project Name</strong>: </td>
+								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+
+							
+							</tr>
+						
+							
+						
+							<tr>
+							<td colspan="3" style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
+							<td colspan="3" style="padding-left: 10px;width:25%;">
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							
+								
+
+								<td colspan="3"><strong>Date Sample Received</strong>:</td>
+								<td colspan="3">
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+							<tr>
+								
+								<td colspan="3" ><strong>Mechanical Testing</strong>: </td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.group_id"/></td>
+
+								<td colspan="3"><strong>Date of Report</strong>: </td>
+									
+								<td colspan="3">
+								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								</td>
+							
+							</tr>
+
+							<tr>
+								
+								
+								
+								<td colspan="3"><strong>Location</strong>: </td>
+								<td colspan="3">
+								Permanent facility
+							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
+								</td>
+								
+								
+
+								<td colspan="3"><strong>Starting Date</strong>: </td>
+								<td colspan="3">
+							        <span t-field="o.start_date" style="margin-right:10px;"/>
+								</td>
+							
+							</tr>
+							
+							<tr>
+
+								<td colspan="3"><strong>Type of Sample &amp; Condition</strong>: </td>
+								<td colspan="3"><span t-field="o.material.name"/></td>
+
+							<td colspan="3"><strong>Completion Date</strong>: </td>
+								<td colspan="3">
+								<span t-field="o.end_date" />
+								</td>
+						</tr>
+
+					
+
+						
+
+							
+						</table>
+
+					<table border="1" width="100%" style="border-collapse: collapse;">
+
+						<thead>
+							<thead>
+								<tr>
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sr. No.</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Symbol</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">BH ID</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sample Depth (m)</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sample Details</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Weight of total sample (gm)</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Water Content (%)</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Room temp. (deg)</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Relative humidity (%)</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Specific gravity</th>
+									
+									<th colspan="4" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Result of Fraction Passing</th>
+									
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">IS Classification of Soil</th>
+								</tr>
+
+								<tr>
+									<th style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Gravel (%)</th>
+									<th style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sand (%)</th>
+									<th style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Silt (%)</th>
+									<th style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Clay (%)</th>
+								</tr>
+							</thead>
+						</thead>
+
+						<tbody>
+
+						<t t-foreach="data.gsa_child_lines" t-as="line">
+								<tr>
+									<td><t t-esc="line.sr_no"/></td>
+									<td><t t-esc="line.symbol"/></td>
+									<td><t t-esc="line.bh_id"/></td>
+									<td><t t-esc="line.sample_depth"/></td>
+		                            <td><t t-esc="line.sample_details"/></td>
+									<td><t t-esc="line.wt_of_samp1"/></td>
+									<td><t t-esc="line.water_content"/></td>
+									<td><t t-esc="line.temp"/></td>
+									<td><t t-esc="line.humidity"/></td>
+									<td><t t-esc="line.specific_gravity"/></td>
+									
+									<td colspan="1"><t t-esc="line.gravel"/></td>
+									<td colspan="1"><t t-esc="line.sand"/></td>
+									<td colspan="1"><t t-esc="line.silt"/></td>
+									<td colspan="1"><t t-esc="line.silt_clay"/></td>
+									<td>
+										<t t-esc="dict(line._fields['soil_classification'].selection).get(line.soil_classification)"/>
+									</td>
+									
+								</tr>
+							</t>
+
+						
+						
+						</tbody>
+
+					</table>
+
+					
+
+						<t t-if="data.gsa_graph_image">
+                        <div style="text-align:center; margin-top:20px; width: 100%;">
+                            <img t-att-src="'data:image/png;base64,%s' % data.gsa_graph_image.decode('utf-8')"
+                                 style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+                        </div>
+                    </t>
+
+					<table border="1" width="100%" style="border-collapse: collapse; text-align: center; font-size: 10px;">
+						<thead>
+							<tr>
+								<th style="padding: 5px; background-color: #f2f2f2;">BH ID</th>
+								<th style="padding: 5px; background-color: #f2f2f2;">Sample Depth (m)</th>
+								
+								<th style="padding: 5px; background-color: #f2f2f2;">D<sub>10</sub></th>
+								<th style="padding: 5px; background-color: #f2f2f2;">D<sub>30</sub></th>
+								<th style="padding: 5px; background-color: #f2f2f2;">D<sub>60</sub></th>
+								<th style="padding: 5px; background-color: #f2f2f2;">C<sub>u</sub></th>
+								<th style="padding: 5px; background-color: #f2f2f2;">C<sub>c</sub></th>
+								
+								<th style="padding: 5px; background-color: #f2f2f2;">Meniscus correction, Cm</th>
+								<th style="padding: 5px; background-color: #f2f2f2;">Dispersing agent correction, x</th>
+								<th style="padding: 5px; background-color: #f2f2f2;">Temperature Correction, Mt</th>
+							</tr>
+						</thead>
+						<tbody>
+							<t t-foreach="data.gsa_particle_child_lines" t-as="line">
+								<tr>
+									<td style="padding: 5px;"><span t-field="line.bh_id"/></td>
+									<td style="padding: 5px;"><span t-field="line.sample_depth"/></td>
+
+									<td style="padding: 5px;">
+										<span t-field="line.d_10"/> </td>
+									<td style="padding: 5px;">
+										<span t-field="line.d_30"/> </td>
+									<td style="padding: 5px;">
+										<span t-field="line.d_60"/> </td>
+									<td style="padding: 5px;">
+										<span t-field="line.c_u"/> </td>
+									<td style="padding: 5px;">
+										<span t-field="line.c_c"/> </td>
+
+									<td style="padding: 5px;">
+										<span t-field="line.meniscus_corre"/> </td>
+									<td style="padding: 5px;">
+										<span t-field="line.dispersion"/> </td>
+									<td style="padding: 5px;">
+										<span t-field="line.temp_corre"/> </td>
+								</tr>
+							</t>
+						</tbody>
+					</table>
+
+
+
+				</div>
+
+
+
 
           </div>
       </t>

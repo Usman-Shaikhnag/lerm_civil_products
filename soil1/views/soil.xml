@@ -40,7 +40,7 @@
 
                     <button name="action_generate_options" 
                             type="object" 
-                            string="Generate Lab ID" 
+                            string="Show Lab ID" 
                             class="oe_highlight"/>
 
                     
@@ -598,7 +598,7 @@
                   <button name="action_generate_bulck_lines"
                    
                     type="object"
-                    string="Generate Lab Lines"
+                    string="Show Lab ID" 
                     class="oe_highlight"
                     invisible="bulk_lines_generated == True"/>
 
@@ -643,7 +643,7 @@
                   <button name="action_generate_nmc_lines"
                    
                     type="object"
-                    string="Generate Lab Lines"
+                    string="Show Lab ID"
                     class="oe_highlight"
                     invisible="nmc_lines_generated == True"/>
 
@@ -957,7 +957,7 @@
                   <button name="action_generate_gsa_lines"
                    
                     type="object"
-                    string="Generate Lab Lines"
+                    string="Show Lab ID"
                     class="oe_highlight"
                     invisible="gsa_lines_generated == True"/>
 
@@ -1023,7 +1023,7 @@
                   <button name="action_generate_sp_lines"
                    
                     type="object"
-                    string="Generate Lab Lines"
+                    string="Show Lab ID"
                     class="oe_highlight"
                     invisible="sp_lines_generated == True"/>
 
@@ -1108,7 +1108,7 @@
                   <button name="action_generate_freeswell_lines"
                    
                     type="object"
-                    string="Generate Lab Lines"
+                    string="Show Lab ID"
                     class="oe_highlight"
                     invisible="freeswell_lines_generated == True"/>
 
@@ -1162,7 +1162,7 @@
                   <button name="action_generate_ll_lines"
                    
                     type="object"
-                    string="Generate Lab Lines"
+                    string="Show Lab ID"
                     class="oe_highlight"
                     invisible="ll_lines_generated == True"/>
 
@@ -1178,7 +1178,7 @@
                 <sheet>
 
                     <field name="ll_line_ids" nolabel="1">
-                        <tree class="custom_table_borders">
+                        <tree editable="bottom" class="custom_table_borders">
                      
                             <field name="serial_no" string="Sr.No" width="50px"/>
                             <field name="blows" string="No. of Blows" width="100px"/>
@@ -1210,48 +1210,151 @@
         </div>
 
 
+        <div invisible="pl_visible == False or freeswell_visible == False">
 
+            <h1 class="text-center">
+                <field name="Atterbergs_name_pl" readonly="1" nolabel="1"/>
+                <field name="pl_visible" invisible="1"/>
+                <field name="pl_lines_generated" invisible="1"/>
+                 <field name="freeswell_visible" invisible="1"/>
+            </h1> 
 
+             <div invisible = "pl_visible == False">
+                  <field name= 'pl_lines_generated' invisible="1" />
+                  <button name="action_generate_pl_lines"
+                   
+                    type="object"
+                    string="Show Lab ID"
+                    class="oe_highlight"
+                    invisible="pl_lines_generated == True"/>
 
-<div invisible="pl_visible == False or freeswell_visible == False">
+                </div>
 
-<h1 class="text-center">
-        <field name="Atterbergs_name_pl" readonly="1" nolabel="1"/>
-</h1>
-    <field name="pl_line_ids" nolabel="1">
+            <field name="pl_child_lines" class="custom_table_borders">
+                <tree string="Plastic Limit Lines" decoration-info="lab_id">
+                    <field name="serial_no"/>
+                    <field name="lab_id"/>
+                </tree>
+
+                <form>
+                <sheet>
+
+                    <field name="pl_line_ids" nolabel="1">
    
-        <tree editable="bottom" class="custom_table_borders">
-          
-            <field name="serial_no" string="Sr.No" width="50px"/>
+                    <tree editable="bottom" class="custom_table_borders">
+                    
+                        <field name="serial_no" string="Sr.No" width="50px"/>
 
-            <field name="container_no" string="Container No." width="100px"/>
+                        <field name="container_no" string="Container No." width="100px"/>
 
-            <field name="m3" string="M3 (gm)" width="90px"/>
-            <field name="m2" string="M2 (gm)" width="90px"/>
-            <field name="m1" string="M1 (gm)" width="90px"/>
-            <field name="m3_m2" string="M3-M2" width="90px"/>
-            <field name="m2_m1" string="M2-M1" width="90px"/>
-            <field name="water_content" string="Water Content %" width="110px"/>
-           
-        </tree>
-    </field>
-</div>
+                        <field name="m3" string="M3 (gm)" width="90px"/>
+                        <field name="m2" string="M2 (gm)" width="90px"/>
+                        <field name="m1" string="M1 (gm)" width="90px"/>
+                        <field name="m3_m2" string="M3-M2" width="90px"/>
+                        <field name="m2_m1" string="M2-M1" width="90px"/>
+                        <field name="water_content" string="Water Content %" width="110px"/>
+                    
+                    </tree>
+                </field>
 
-
-
-<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not pl_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
-                                    <td><label for="plastic_avg">LIQUID LIMIT</label></td>
+                                    <td><label for="plastic_avg">Plastic Limit</label></td>
                                     <td><field name="plastic_avg" class="blue-input"  /></td>
                                 </tr>
                                 
                             </tbody>
-</table>
+                    </table>
+
+                </sheet>
+            </form>
+
+            </field>
+
+            
+        </div>
+
+
+        <div invisible="sl_visible == False or freeswell_visible == False">
+
+            <h1 class="text-center">
+                <field name="Atterbergs_name_sl" readonly="1" nolabel="1"/>
+                <field name="sl_visible" invisible="1"/>
+                <field name="sl_lines_generated" invisible="1"/>
+                 <field name="freeswell_visible" invisible="1"/>
+            </h1> 
+
+             <div invisible = "sl_visible == False">
+                  <field name= 'sl_lines_generated' invisible="1" />
+                  <button name="action_generate_sl_lines"
+                   
+                    type="object"
+                    string="Show Lab ID"
+                    class="oe_highlight"
+                    invisible="sl_lines_generated == True"/>
+
+                </div>
+
+            <field name="sl_child_lines" class="custom_table_borders">
+                <tree string="Shrinkage Limit" decoration-info="lab_id">
+                    <field name="serial_no"/>
+                    <field name="lab_id"/>
+                </tree>
+
+                <form>
+                <sheet>
+
+                     <field name="sl_line_ids" nolabel="1">
+                        <tree editable="bottom" class="custom_table_borders">
+                        
+
+                            <field name="serial_no" string="Sr.No" width="35px"/>
+                            <field name="container_no" string="Container No." width="100px"/>
+                            <field name="m1" string="M1 (gm)" width="80px"/>
+                            <field name="v1" string="V1 (cm3)" width="80px"/>
+
+                            <field name="m3" string="M3 (gm)" width="80px"/>
+                            <field name="m2" string="M2 (gm)" width="80px"/>
+                            <field name="m3_m2" string="M3-M2" width="85px"/>
+                            <field name="m2_m1" string="M2-M1" width="85px"/>
+                            <field name="v2" string="V2 (cm3)" width="80px"/>
+                            <field name="v1_v2" string="V1-V2" width="85px"/>
+                            <field name="water_content" string="Water Content %" width="100px"/>
+                            <field name="shrinkage_ratio" string="Shrinkage Ratio" width="110px"/>
+                            <field name="shrinkage_limit" string="SL %" width="80px"/>
+                        </tree>
+                    </field>
+
+
+                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                    <tbody>
+                        <tr>
+                            <td><label for="shrinkage_avg"> SHRINKAGE LIMIT</label></td>
+                            <td><field name="shrinkage_avg" class="blue-input"  /></td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+
+
+                </sheet>
+            </form>
+
+            </field>
+
+            
+        </div>
 
 
 
-<div invisible="sl_visible == False or freeswell_visible == False">
+
+
+
+
+
+
+<!-- <div invisible="sl_visible == False or freeswell_visible == False">
 
 <h1 class="text-center">
         <field name="Atterbergs_name_sl" readonly="1" nolabel="1"/>
@@ -1288,7 +1391,7 @@
                                 </tr>
                                 
                             </tbody>
-</table>
+</table> -->
 
 
 
@@ -1297,7 +1400,7 @@
 
 
 
-<div invisible = "ll_visible == False" class="custom_table_borders text-center">
+                  <div invisible = "ll_visible == False" class="custom_table_borders text-center">
                         <field name="casagrande_graph" widget="image" readonly="1"/>
                     </div>
 
@@ -3380,7 +3483,7 @@
             <field name="target">new</field>
         </record>
 
-        <record id="lab_atterberg_ll_line_form" model="ir.ui.view">
+        <!-- <record id="lab_atterberg_ll_line_form" model="ir.ui.view">
                 <field name="name">lab.atterberg.ll.line.form</field>
                 <field name="model">lab.atterberg.ll.line</field>
                 <field name="arch" type="xml">
@@ -3413,6 +3516,40 @@
 
                 </field>
             </record>
+
+
+             <record id="lab_atterberg_pl_line_form" model="ir.ui.view">
+                <field name="name">lab.atterberg.pl.line.form</field>
+                <field name="model">lab.atterberg.pl.line</field>
+                <field name="arch" type="xml">
+                <form>
+                    <sheet>
+
+                        <group >
+                            <group >
+                                <field name="serial_no"/>
+                                <field name="container_no"/>
+                            </group >
+
+                            
+                        <group >
+                            <field name="m1"/>
+                            <field name="m2"/>
+                            <field name="m3"/>
+                        </group >
+
+                            <group >
+                            <field name="m2_m1"/>
+                            <field name="m3_m2"/>
+                            <field name="water_content"/>
+                            </group >
+                        </group>
+
+                    </sheet>
+                </form>
+
+                </field>
+            </record> -->
 
 
     </data>
