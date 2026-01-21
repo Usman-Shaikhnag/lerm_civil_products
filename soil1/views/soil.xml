@@ -981,6 +981,7 @@
                                    options="{'size': [900, 600]}"/> <field name="gsa_graph_filename" invisible="1"/>
                       </div>
 
+
           <div invisible = "gsa_visible == False">
             <field name="gsa_particle_child_lines" class="custom_table_borders">
                 <tree editable="bottom">
@@ -1092,16 +1093,7 @@
                 </h1>
             </div>
 
-            <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not freeswell_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="selected_lab_id6"></label></td>
-                                <td><field name="selected_lab_id6"/> </td>
-                            </tr>
-                          
-                            
-                        </tbody>
-                    </table> -->
+    
 
                 <div invisible = "freeswell_visible == False">
                   <field name= 'freeswell_lines_generated' invisible="1" />
@@ -1137,117 +1129,7 @@
 
 
 <!-- ATTERBERG LIMITS - YOUR EXACT MODEL STRUCTURE -->
-<div invisible="freeswell_visible == False">
-    <h1 class="text-center">
-        <field name="Atterbergs_name" readonly="1" nolabel="1"/>
-        <field name="freeswell_visible" invisible="1"/>
-         <field name="pl_visible" invisible="1"/>
-          <field name="ll_visible" invisible="1"/>
-           <field name="sl_visible" invisible="1"/>
-    </h1>
-</div>
 
-
-        <div invisible="ll_visible == False or freeswell_visible == False">
-
-            <h1 class="text-center">
-                <field name="Atterbergs_name_ll" readonly="1" nolabel="1"/>
-                <field name="ll_visible" invisible="1"/>
-                <field name="ll_lines_generated" invisible="1"/>
-                 <field name="freeswell_visible" invisible="1"/>
-            </h1> 
-
-             <div invisible = "ll_visible == False">
-                  <field name= 'll_lines_generated' invisible="1" />
-                  <button name="action_generate_ll_lines"
-                   
-                    type="object"
-                    string="Generate Lab Lines"
-                    class="oe_highlight"
-                    invisible="ll_lines_generated == True"/>
-
-                </div>
-
-            <field name="ll_child_lines" class="custom_table_borders">
-                <tree string="Liquid Limit Lines" decoration-info="lab_id">
-                    <field name="serial_no"/>
-                    <field name="lab_id"/>
-                </tree>
-
-                <form>
-                <sheet>
-
-                    <field name="ll_line_ids" nolabel="1">
-                        <tree class="custom_table_borders">
-                     
-                            <field name="serial_no" string="Sr.No" width="50px"/>
-                            <field name="blows" string="No. of Blows" width="100px"/>
-                            <field name="container_no" string="Container No." width="100px"/>
-                            <field name="m3" string="M3 (gm)" width="90px"/>
-                            <field name="m2" string="M2 (gm)" width="90px"/>
-                            <field name="m1" string="M1 (gm)" width="90px"/>
-                            <field name="m3_m2" string="M3-M2" width="90px"/>
-                            <field name="m2_m1" string="M2-M1" width="90px"/>
-                            <field name="water_content" string="Water Content %" width="110px"/>
-                        </tree>
-                    </field>
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                        <tbody>
-                            <tr>
-                                <td><label for="liquid_avg">LIQUID LIMIT</label></td>
-                                <td><field name="liquid_avg" class="blue-input"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </sheet>
-            </form>
-
-            </field>
-
-            
-        </div>
-
-
-
-
-
-<div invisible="pl_visible == False or freeswell_visible == False">
-
-<h1 class="text-center">
-        <field name="Atterbergs_name_pl" readonly="1" nolabel="1"/>
-</h1>
-    <field name="pl_line_ids" nolabel="1">
-   
-        <tree editable="bottom" class="custom_table_borders">
-          
-            <field name="serial_no" string="Sr.No" width="50px"/>
-
-            <field name="container_no" string="Container No." width="100px"/>
-
-            <field name="m3" string="M3 (gm)" width="90px"/>
-            <field name="m2" string="M2 (gm)" width="90px"/>
-            <field name="m1" string="M1 (gm)" width="90px"/>
-            <field name="m3_m2" string="M3-M2" width="90px"/>
-            <field name="m2_m1" string="M2-M1" width="90px"/>
-            <field name="water_content" string="Water Content %" width="110px"/>
-           
-        </tree>
-    </field>
-</div>
-
-
-
-<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not pl_visible">
-                            <tbody>
-                                <tr>
-                                    <td><label for="plastic_avg">LIQUID LIMIT</label></td>
-                                    <td><field name="plastic_avg" class="blue-input"  /></td>
-                                </tr>
-                                
-                            </tbody>
-</table>
 
 
 
@@ -3218,69 +3100,6 @@
                     </div>
                     <group/>
 
-                  
-
-                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
-                            <tbody>
-                                <tr>
-                                    <td><span>Sr No</span></td>
-                                    <td><span>Shear stress kg/cm2</span></td>
-                                    <td><span>Normal stress kg/cm2</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span>1</span></td>
-                                    <td><field name="shear_stress_shear" /></td>
-                                    <td><field name="normal_stress" readonly="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><span>2</span></td>
-                                    <td><field name="shear_stress_shear_2" /></td>
-                                    <td><field name="normal_stress_2" readonly="1"/></td>
-                                </tr>
-
-                                <tr>
-                                    <td><span>3</span></td>
-                                    <td><field name="shear_stress_shear_3" /></td>
-                                    <td><field name="normal_stress_3" readonly="1"/></td>
-                                </tr>
-                                
-                                
-                            </tbody>
-                        </table>
-
-
-                        <div invisible = "direct_shear_visible == False">
-                    <button name="action_plot_shear_vs_normal"
-                        string="Generate Shear Graph"
-                        type="object"
-                        class="btn-primary"/>
-                     </div>   -->
-
-                     
-
-
-                    <!-- <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
-                        <field name="shear_vs_normal_graph" widget="image"  readonly="1"/>
-                    </div>
-                    <group/> -->
-
-                    
-
-
-
-
-
-
-
-                 
-
-            
-
-
-                
-
-
-                    
                     <div style="margin-top: 10px;">
                     <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                     </div>
@@ -3291,10 +3110,6 @@
 
 
        
-
-
-
-     
 
 
 

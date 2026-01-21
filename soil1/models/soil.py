@@ -625,6 +625,7 @@ class Soil(models.Model):
     bulk_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
 
 
+
     def action_generate_bulck_lines(self):
         for record in self:
             if record.lab_id and ' - ' in record.lab_id:
@@ -916,20 +917,6 @@ class Soil(models.Model):
 
     ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
 
-    # liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(10,0) ,compute='_compute_liquid_avg',store=True,)
-    
-
-    # @api.depends('ll_line_ids.water_content')
-    # def _compute_liquid_avg(self):
-    #     for line in self:
-    #         if line.ll_line_ids:
-    #             vals = line.ll_line_ids.mapped("water_content")
-    #             line.liquid_avg = sum(vals) / len(vals)
-                
-
-    #         else:
-    #             line.liquid_avg = 0.0
-                
 
 
     plastic_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_plastic_avg")
@@ -10172,6 +10159,8 @@ class LLLine(models.Model):
 
 
 
+
+    
 
 
 
