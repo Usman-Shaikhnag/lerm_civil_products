@@ -48,6 +48,14 @@ class PlateLoad(models.Model):
     factor_safty = fields.Char(string="factor of safety")
     allowable_net = fields.Char(string="The net allowable safe bearing capacity")
 
+    introdution = fields.Text(string="Introdution")
+
+    objective = fields.Text(string="Objective")
+
+    apparatus = fields.Text(string="Apparatus")
+
+    test_procedure = fields.Text(string="Setup & Test Procedure")
+
 
   
    
@@ -195,33 +203,17 @@ class PlateLoad(models.Model):
     
     def action_calculate_unload_settlement_and_cumulative(self):
         for rec in self:
-            unload_lines = rec.child_lines_plate_unload.sorted('sr_no')
+            running_total = 0.0
 
-            if not unload_lines:
-                continue
+            # Start with last loading cumulative
+            if rec.child_lines_plate_load:
+                last_line = rec.child_lines_plate_load.sorted('sr_no')[-1]
+                running_total = last_line.cumulative_sett1 or 0.0
 
-            # ----------------------------
-            # Step 1: Reset cumulative only
-            # ----------------------------
-            unload_lines.write({
-                'cumulative_sett11': 0.0,
-            })
-
-            # ----------------------------
-            # Step 2: Get first & last avg_sett1
-            # ----------------------------
-            first_avg = unload_lines[0].avg_sett1 or 0.0
-            last_avg = unload_lines[-1].avg_sett1 or 0.0
-
-            # ----------------------------
-            # Step 3: Difference
-            # ----------------------------
-            diff = last_avg - first_avg
-
-            # ----------------------------
-            # Step 4: Show ONLY on first line
-            # ----------------------------
-            unload_lines[0].cumulative_sett11 = diff
+            # Now unloading lines
+            for line in rec.child_lines_plate_unload.sorted('sr_no'):
+                running_total = running_total + (line.avg_sett1 or 0.0)
+                line.cumulative_sett11 = running_total
 
 
     

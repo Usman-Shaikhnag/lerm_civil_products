@@ -8,9 +8,10 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                   <group >
+                      <group  invisible = "plate_load_visible == False"  style="white-space:nowrap; " class="text-center mb-2">
                         <h1>
-                            <field name="name" readonly="1" nolabel="1"/>
+                            <field name="plate_load_name" readonly="1" nolabel="1"/>
+                            <field name="plate_load_visible" invisible="1"/>
                         </h1>
                     </group>
                     <group>
@@ -33,12 +34,7 @@
 
                 
 
-                       <group  invisible = "plate_load_visible == False"  style="white-space:nowrap; " class="text-center mb-2">
-                        <h1>
-                            <field name="plate_load_name" readonly="1" nolabel="1"/>
-                            <field name="plate_load_visible" invisible="1"/>
-                        </h1>
-                    </group>
+                   
 
                    <div class="d-flex gap-2" invisible = "plate_load_visible == False">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
@@ -181,6 +177,24 @@
                             </tbody>
                         </table>
                     </div>
+                    <div invisible = "plate_load_visible == False" class="custom_table_borders">
+                     <group  style="width:100%;">
+                          <field name="introdution"  />
+                        
+                     </group>
+                     <group  style="width:100%;">
+                          <field name="objective"  />
+                        
+                     </group>
+                     <group  style="width:100%;">
+                          <field name="apparatus"  />
+                        
+                     </group>
+                     <group style="width:100%;" >
+                          <field name="test_procedure"  />
+                        
+                     </group>
+                     </div>
 
                    
                <h2 style="text-align: center;">Loading</h2>
