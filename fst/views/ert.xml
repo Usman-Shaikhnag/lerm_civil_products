@@ -251,6 +251,12 @@
             <field name="res_model">pullout.pile.load.test.parent</field>
             <field name="view_mode">tree,form</field>
         </record>
+        
+        <record id="action_routine_pullout_pile_load_test_parent" model="ir.actions.act_window">
+            <field name="name">Routine Pull-Out Pile Load Tests</field>
+            <field name="res_model">routine.pullout.pile.load.test.parent</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
         <menuitem id="fst_root"
             name="FST"
@@ -278,17 +284,18 @@
                                     <h3 class="title">ERTs</h3>
                                     <a type="action"
                                     name="%(action_lerm_ert_parent)d"
-                                    class="btn btn-primary btn-lg">
+                                    class="btn btn-lg"
+                                    style="background:#6f42c1; color:#fff;">
                                         Create ERT
                                     </a>
                                 </div>
 
-                                <!-- Soil Card -->
                                 <div class="card-box">
                                     <h3 class="title">Soil</h3>
                                     <a type="action"
                                     name="%(action_soil_borehole)d"
-                                    class="btn btn-success btn-lg">
+                                    class="btn btn-lg"
+                                    style="background:#198754; color:#fff;">
                                         Borehole
                                     </a>
                                 </div>
@@ -297,7 +304,8 @@
                                     <h3 class="title">Vertical Pile Load Test</h3>
                                     <a type="action"
                                     name="%(action_pile_load_test_parent)d"
-                                    class="btn btn-warning btn-lg">
+                                    class="btn btn-lg"
+                                    style="background:#fd7e14; color:#fff;">
                                         Records
                                     </a>
                                 </div>
@@ -306,7 +314,8 @@
                                     <h3 class="title">Lateral Pile Load Test</h3>
                                     <a type="action"
                                     name="%(action_lateral_pile_load_test_parent)d"
-                                    class="btn btn-info btn-lg">
+                                    class="btn btn-lg"
+                                    style="background:#0dcaf0; color:#000;">
                                         Records
                                     </a>
                                 </div>
@@ -315,20 +324,32 @@
                                     <h3 class="title">Initial Pull-Out Pile Load Test</h3>
                                     <a type="action"
                                     name="%(action_pullout_pile_load_test_parent)d"
-                                    class="btn btn-danger btn-lg">
+                                    class="btn btn-lg"
+                                    style="background:#dc3545; color:#fff;">
                                         Records
                                     </a>
                                 </div>
 
-                                <!-- Temperature Monitoring Card -->
+                                <div class="card-box">
+                                    <h3 class="title">Routine Pull-Out Pile Load Test</h3>
+                                    <a type="action"
+                                    name="%(action_routine_pullout_pile_load_test_parent)d"
+                                    class="btn btn-lg"
+                                    style="background:#20c997; color:#fff;">
+                                        Records
+                                    </a>
+                                </div>
+
                                 <div class="card-box">
                                     <h3 class="title">Temperature Monitoring</h3>
                                     <a type="action"
                                     name="%(action_temp_monitoring)d"
-                                    class="btn btn-primary btn-lg">
+                                    class="btn btn-lg"
+                                    style="background:#0d6efd; color:#fff;">
                                         Records
                                     </a>
                                 </div>
+
                             </div>
                         </t>
                     </templates>
