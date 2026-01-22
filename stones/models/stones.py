@@ -217,6 +217,36 @@ class Stones(models.Model):
 
 
 
+
+
+
+
+    # selected_lab_stone2 = fields.Many2one(
+    #     'stone.lab.line',
+    #     string="Select Lab ID",
+    #     domain="[('id', 'in', lab_stone_ids)]"
+    # )
+
+    
+    # compressive_dry = fields.Boolean(
+    #     string="Compacted Density Selected",
+        
+    # )
+
+    # @api.onchange('selected_lab_stone2')
+    # def _onchange_selected_lab_stone2(self):
+    #     for rec in self:
+    #         if rec.selected_lab_stone2:
+    #             rec.compressive_dry = True
+    #         else:
+    #             rec.compressive_dry= False
+
+
+
+
+
+
+
    
 
     def action_generate_compressive_dry_lines(self):

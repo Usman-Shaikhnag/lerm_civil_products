@@ -26,6 +26,28 @@
                     </group>
 
 
+
+
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
                     
 
                     <div class="custom_table_borders" style="margin-top: 15px;">
@@ -203,7 +225,7 @@
                         </tbody>
                     </table>
 
-                    <style>
+                      <style>
                             .soil-table table {
                                 width: 100%;
                                 border-collapse: collapse;
@@ -223,6 +245,8 @@
                             }
                         </style>
 
+
+
                          <div class="soil-table" invisible="soil_visible == False">
 
                         <!-- WATER CONTENT SECTION -->
@@ -230,27 +254,27 @@
 
                         <table>
                             <tr class="header">
-                                <th>Water Content</th>
-                                <th>Can No</th>
-                                <th>wt of Can + wet soil</th>
-                                <th>wt of Can + dry soil</th>
-                                <th>wt of water</th>
-                                <th>wt of can</th>
-                                <th>Wt of dry soil</th>
-                                <th>Moisture content %</th>
-                                <th>Avg MC %</th>
+                                <td>Water Content</td>
+                                <td>Can No</td>
+                                <td>wt of Can + wet soil</td>
+                                <td>wt of Can + dry soil</td>
+                                <td>wt of water</td>
+                                <td>wt of can</td>
+                                <td>Wt of dry soil</td>
+                                <td>Moisture content %</td>
+                                <td>Avg MC %</td>
                             </tr>
 
                             <!-- BEFORE SOAKING -->
                             <tr>
-                                <td class="header">Before soaking</td>
-                                <td class="red"><field name="before_can_no"/></td>
-                                <td class="red"><field name="before_can_wet_soil"/></td>
-                                <td class="red"><field name="before_can_dry_soil"/></td>
-                                <td><field name="before_wt_water"/></td>
-                                <td class="red"><field name="before_wt_can"/></td>
-                                <td><field name="before_wt_dry_soil"/></td>
-                                <td><field name="before_mc"/></td>
+                                <td class ="header">Before soaking</td>
+                                <td class =""><field name="before_can_no"   colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td class =""><field name="before_can_wet_soil"   colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td class =""><field name="before_can_dry_soil"   colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td class =""><field name="before_wt_water" /></td>
+                                <td class =""><field name="before_wt_can" colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td class =""><field name="before_wt_dry_soil"/></td>
+                                <td class =""><field name="before_mc"/></td>
                                
                                <td style="background:#eee;"><field name="before_avg_mc"/></td>
                             </tr>
@@ -258,11 +282,11 @@
                             <!-- TOP -->
                             <tr>
                                 <td class="header">Top</td>
-                                <td class="red"> <field name="top_can_no"/></td>
-                                <td class="red"><field name="top_can_wet_soil"/></td>
-                                <td class="red"><field name="top_can_dry_soil"/></td>
-                                <td><field name="top_wt_water"/></td>
-                                <td class="red"><field name="top_wt_can"/></td>
+                                <td > <field name="top_can_no" colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td ><field name="top_can_wet_soil" colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td ><field name="top_can_dry_soil"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td ><field name="top_wt_water" /></td>
+                                <td ><field name="top_wt_can"  colspan="1"  nolabel="1" class="blue-input"/></td>
                                 <td><field name="top_wt_dry_soil"/></td>
                                 <td><field name="top_mc"/></td>
                                 <td rowspan="3" style="background:#eee;">
@@ -273,11 +297,11 @@
                             <!-- CENTRE -->
                             <tr>
                                 <td class="header">Centre</td>
-                                <td class="red"><field name="centre_can_no"/></td>
-                                <td class="red"><field name="centre_can_wet_soil"/></td>
-                                <td class="red"><field name="centre_can_dry_soil"/></td>
-                                <td><field name="centre_wt_water"/></td>
-                                <td class="red"><field name="centre_wt_can"/></td>
+                                <td ><field name="centre_can_no" colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td ><field name="centre_can_wet_soil" colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td ><field name="centre_can_dry_soil"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td><field name="centre_wt_water" /></td>
+                                <td ><field name="centre_wt_can"  colspan="1"  nolabel="1" class="blue-input"/></td>
                                 <td><field name="centre_wt_dry_soil"/></td>
                                 <td><field name="centre_mc"/></td>
                             </tr>
@@ -285,11 +309,11 @@
                             <!-- BOTTOM -->
                             <tr>
                                 <td class="header">Bottom</td>
-                                <td class="red"><field name="bottom_can_no"/></td>
-                                <td class="red"><field name="bottom_can_wet_soil"/></td>
-                                <td class="red"><field name="bottom_can_dry_soil"/></td>
-                                <td><field name="bottom_wt_water"/></td>
-                                <td class="red"><field name="bottom_wt_can"/></td>
+                                <td ><field name="bottom_can_no" colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td ><field name="bottom_can_wet_soil" colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td ><field name="bottom_can_dry_soil"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td ><field name="bottom_wt_water"/></td>
+                                <td ><field name="bottom_wt_can"  colspan="1"  nolabel="1" class="blue-input"/></td>
                                 <td><field name="bottom_wt_dry_soil"/></td>
                                 <td><field name="bottom_mc"/></td>
                             </tr>
@@ -312,10 +336,10 @@
                             <!-- BEFORE -->
                             <tr>
                                 <td class="header">Before soaking</td>
-                                <td class="red"><field name="before_mould_soil"/></td>
-                                <td class="red"><field name="before_mould"/></td>
-                                <td><field name="before_soil"/></td>
-                                <td ><field name="volume_specimen1"/></td>
+                                <td ><field name="before_mould_soil"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td ><field name="before_mould"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td ><field name="before_soil"/></td>
+                                <td ><field name="volume_specimen1"  colspan="1"  nolabel="1" class="blue-input"/></td>
                                 
                                 <td><field name="before_bulk_density"/></td>
                                 <td><field name="before_dry_density"/></td>
@@ -324,10 +348,10 @@
                             <!-- AFTER -->
                             <tr>
                                 <td class="header">After soaking</td>
-                                <td class="red"><field name="after_mould_soil"/></td>
-                                <td class="red"><field name="after_mould"/></td>
+                                <td ><field name="after_mould_soil"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                                <td ><field name="after_mould"  colspan="1"  nolabel="1" class="blue-input"/></td>
                                 <td><field name="after_soil"/></td>
-                                <td ><field name="volume_specimen2"/></td>
+                                <td ><field name="volume_specimen2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                                 <td><field name="after_bulk_density"/></td>
                                 <td><field name="after_dry_density"/></td>
                             </tr>
@@ -340,7 +364,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="room_temp">% rise/fall  in force value</label></td>
-                                    <td><field name="room_temp" /></td>
+                                    <td><field name="room_temp"   colspan="1"  nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -350,7 +374,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="temp_correction">% rise/fall  in force value</label></td>
-                                    <td><field name="temp_correction" /></td>
+                                    <td><field name="temp_correction"   colspan="1"  nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -365,7 +389,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="std_temp">% rise/fall  in force value</label></td>
-                                    <td><field name="std_temp" /></td>
+                                    <td><field name="std_temp"   colspan="1"  nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -574,7 +598,7 @@
 
 
 
- <!-- NMC – Moisture Content -->
+ <!--  BULK DENITY NMC – Moisture Content -->
                <div invisible="moisture_visible == False">
                   <h1 class="text-center">
                     <field name="moisture_name" readonly="1" nolabel="1"/>
@@ -582,16 +606,7 @@
                </h1>
                    </div>
 
-                   <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not moisture_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="selected_lab_id11"></label></td>
-                                <td><field name="selected_lab_id11"/> </td>
-                            </tr>
-                           
-                            
-                        </tbody>
-                    </table> -->
+               
 
                     <div invisible = "moisture_visible == False">
                   <field name= 'bulk_lines_generated' invisible="1" />
@@ -609,22 +624,28 @@
 
 
 
+
                     <div invisible = "moisture_visible == False">
                         <field name="bulk_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name="date" width="90px"/>
+                                <field name="date" width="90px" />
                                 <field name='lab_id' width="60px" />
-                                <field name='wt_uds_soil' width="100px" />
-                                <field name='wt_empty_uds' width="100px"/>
+                                <field name='wt_uds_soil' width="100px"  />
+                                <field name='wt_empty_uds' width="100px" />
                                 <field name="wt_soil" width="100px"/>
-                                <field name='height' width="100px"/>
-                                <field name='diameter' width="100px"/>
+                                <field name='height' width="100px" />
+                                <field name='diameter' width="100px" />
                                 <field name='volume' width="100px"/>
                                  <field name='bulk_density' width="100px"/>
                               
                             </tree>
                         </field>
-                    </div>
+                    </div> 
+
+
+
+
+
 
 
 
@@ -655,14 +676,14 @@
                         <field name="moisture_ids">
 
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name= 'date' width="80px"/>
+                                <field name= 'date' width="80px" />
                                 <field name='lab_id'  width="50px"/>
-                                <field name='wet_soil_container' width="100px" />
-                                <field name='dry_soil_container' width="100px"/>
-                                <field name= 'container_weight' width="110px"/>
+                                <field name='wet_soil_container' width="100px"  />
+                                <field name='dry_soil_container' width="100px" />
+                                <field name= 'container_weight' width="110px" />
                                 <field name='moisture_content' width="110px"/>
                                 <field name='avg_nmc' width="100px"/>
-                                <!-- <field name='is_ok' width="100px"/> -->
+                               
                               
                             </tree>
                         </field>
@@ -770,7 +791,7 @@
                     invisible="gsa_lines_generated == True"/>
 
                 </div>
-                  <div>
+                  <div style="margin-top: 10px;">
                 <button name="action_fetch_review_details"
                     type="object"
                     string="Fetch Review Details"
@@ -1749,15 +1770,15 @@
                         <tbody>
                             <tr>
                                 <td><label for="swelling_specific_gravity">Specific Gravity, G</label></td>
-                                <td><field name="swelling_specific_gravity"/> </td>
+                                <td><field name="swelling_specific_gravity"  colspan="1"  nolabel="1" class="blue-input"/> </td>
                             </tr>
                             <tr>
                                 <td><label for="swelling_diameter">Diameter, D</label></td>
-                                <td><field name="swelling_diameter"/> (cm)</td>
+                                <td><field name="swelling_diameter" colspan="1"  nolabel="1" class="blue-input"/> (cm)</td>
                             </tr>
                             <tr>
                                 <td><label for="swelling_height">Height, H</label></td>
-                                <td><field name="swelling_height"/> (cm)</td>
+                                <td><field name="swelling_height" colspan="1"  nolabel="1" class="blue-input"/> (cm)</td>
                             </tr>
                             <tr>
                                 <td><label for="swelling_area">Area, A</label></td>
@@ -1775,19 +1796,19 @@
                         <tbody>
                             <tr>
                                 <td><label for="wt_of_ring">Weight Of Ring, w1</label></td>
-                                <td><field name="wt_of_ring"/> (gm)</td>
+                                <td><field name="wt_of_ring" colspan="1"  nolabel="1" class="blue-input"/> (gm)</td>
                             </tr>
                             <tr>
                                 <td><label for="wt_wet_specimen_bf">Weight Of Wet Specimen + Ring, w2</label></td>
-                                <td><field name="wt_wet_specimen_bf"/> (gm) (Before Test)</td>
+                                <td><field name="wt_wet_specimen_bf" colspan="1"  nolabel="1" class="blue-input"/> (gm) (Before Test)</td>
                             </tr>
                             <tr>
                                 <td><label for="wt_wet_specimen_af">Weight Of Wet Specimen + Ring, w5</label></td>
-                                <td><field name="wt_wet_specimen_af"/> (gm) (After Test)</td>
+                                <td><field name="wt_wet_specimen_af" colspan="1"  nolabel="1" class="blue-input"/> (gm) (After Test)</td>
                             </tr>
                             <tr>
                                 <td><label for="wt_dry_specimen_af">Weight Of Dry Specimen + Ring, w3</label></td>
-                                <td><field name="wt_dry_specimen_af"/> (gm) (After Test)</td>
+                                <td><field name="wt_dry_specimen_af" colspan="1"  nolabel="1" class="blue-input"/> (gm) (After Test)</td>
                             </tr>
                             <tr>
                                 <td><label for="wt_dry_soil_swell">Weight Of Dry Specimen + Ring, w4</label></td>
@@ -1843,7 +1864,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="initial_read">Initial Reading</label></td>
-                                    <td ><field name="initial_read" class="blue-input"/></td>
+                                    <td ><field name="initial_read" colspan="1"  nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -1853,7 +1874,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="set_load_read">Setting load Reading</label></td>
-                                    <td><field name="set_load_read" class="blue-input" /></td>
+                                    <td><field name="set_load_read" colspan="1"  nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -2086,20 +2107,20 @@
                             </tr>
                             <tr>
                                 <td><span>Density of Water at 27°C</span></td>
-                                <td><field name="W1_soil"/> </td>
-                                <td><field name="W2_soil"/> </td>
+                                <td><field name="W1_soil"  colspan="1"  nolabel="1" class="blue-input"/> </td>
+                                <td><field name="W2_soil"  colspan="1"  nolabel="1" class="blue-input"/> </td>
                                 <td><field name="W3_soil"/> </td>
-                                <td><field name="volume_soil"/> </td>
+                                <td><field name="volume_soil"  colspan="1"  nolabel="1" class="blue-input"/> </td>
                                 <td><field name="density_soils"/> </td>
                                 <td class="text-center" rowspan = "2" style="padding-top:25px;"><field name="specific_gravity_per"/> </td>
 
                             </tr>
                             <tr>
                                 <td><span>Density of Water at 28°C</span></td>
-                                <td><field name="W1_soil_28"/> </td>
-                                <td><field name="W2_soil_28"/> </td>
+                                <td><field name="W1_soil_28"  colspan="1"  nolabel="1" class="blue-input"/> </td>
+                                <td><field name="W2_soil_28"  colspan="1"  nolabel="1" class="blue-input"/> </td>
                                 <td><field name="W3_soil_28"/> </td>
-                                <td><field name="volume_soil_28"/> </td>
+                                <td><field name="volume_soil_28"  colspan="1"  nolabel="1" class="blue-input"/> </td>
                                 <td><field name="density_soils_28"/> </td>
                                 
                             </tr>

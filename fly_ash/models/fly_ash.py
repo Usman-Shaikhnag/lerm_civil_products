@@ -185,6 +185,7 @@ class FlyaschNormalConsistency(models.Model):
                 rec.is_lab_normal_consistency = False
 
 
+
     temp_percent_consistency = fields.Char("Temp °c" )
     humidity_percent_consistency = fields.Char("Humidity %" )
 
