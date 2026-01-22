@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="view_pullout_pile_load_test_parent_tree" model="ir.ui.view">
-        <field name="name">pullout.pile.load.test.parent.tree</field>
-        <field name="model">pullout.pile.load.test.parent</field>
+    <record id="view_lateral_pile_load_test_parent_tree" model="ir.ui.view">
+        <field name="name">lateral.pile.load.test.parent.tree</field>
+        <field name="model">lateral.pile.load.test.parent</field>
         <field name="arch" type="xml">
-            <tree string="Pullout Pile Load Test Reports">
+            <tree string="Lateral Pile Load Test Reports">
 
                 <field name="name"/>
                 <button
@@ -14,7 +14,7 @@
                     icon="fa-copy"
                     class="btn-secondary"
                 />
-
+                
                 <button 
                     name="action_delete_line" 
                     string="Delete" 
@@ -23,6 +23,7 @@
                     class="btn-danger" 
                     confirm="Are you sure you want to delete this line?"
                 />
+
             </tree>
         </field>
     </record>
