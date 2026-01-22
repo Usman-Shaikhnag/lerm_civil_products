@@ -258,6 +258,61 @@ class LateralPileLoadTestParent(models.Model):
         return report.report_action(self, config={'report_name': filename})
 
 
+    def action_duplicate_parent(self):
+        """Duplicate Pile Load Test with all linked records cleanly"""
+        for record in self:
+
+            # 1️⃣ Create clean new parent (prevent auto O2M copy)
+            new_parent = record.with_context(skip_auto_copy=True).copy({
+                'name': f"{record.name} Copy",
+                'loading_reading_ids': False,
+                'unloading_reading_ids': False,
+                'content_ids': False,
+                'basic_data_ids': False,
+                'site_image_ids': False,
+                'graph_image': False,  # graph must be regenerated
+            })
+
+            # 2️⃣ Duplicate Loading Readings
+            for line in record.loading_reading_ids:
+                line.copy({
+                    'parent_id': new_parent.id,
+                })
+
+            # 3️⃣ Duplicate Unloading Readings
+            for line in record.unloading_reading_ids:
+                line.copy({
+                    'parent_id': new_parent.id,
+                })
+
+            # 4️⃣ Duplicate Report Contents
+            for line in record.content_ids:
+                line.copy({
+                    'parent_id': new_parent.id,
+                })
+
+            # 5️⃣ Duplicate Basic Data
+            for line in record.basic_data_ids:
+                line.copy({
+                    'parent_id': new_parent.id,
+                })
+
+            # 6️⃣ Duplicate Site Images
+            for line in record.site_image_ids:
+                line.copy({
+                    'parent_id': new_parent.id,
+                })
+
+            # 7️⃣ Recompute computed fields safely
+            new_parent.action_recompute_all()
+
+        return True
+
+    def action_delete_line(self):
+        for rec in self:
+            
+            rec.unlink()
+
 # ================= LOADING =================
 class LateralPileLoadReadingLoading(models.Model):
     _name = "lateral.pile.load.reading.loading"
