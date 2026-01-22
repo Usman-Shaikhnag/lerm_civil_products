@@ -678,6 +678,76 @@
             </div>
 
 
+               <!-- Specific Gravity title -->
+
+
+            <div invisible="specific_gravity_visible == False">
+                <h1 class="text-center">
+                    <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                    <field name="specific_gravity_visible" invisible="1"/>
+                </h1>
+            </div>
+
+               <div invisible = "specific_gravity_visible == False">
+                  <field name= 'sp_lines_generated' invisible="1" />
+                  <button name="action_generate_sp_lines"
+                   
+                    type="object"
+                    string="Show Lab ID"
+                    class="oe_highlight"
+                    invisible="sp_lines_generated == True"/>
+
+                </div>
+
+            <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="selected_lab_id12"></label></td>
+                                <td><field name="selected_lab_id12"/> </td>
+                            </tr>
+                           
+                            
+                        </tbody>
+                    </table> -->
+
+            
+
+
+            <div invisible="specific_gravity_visible == False">
+                <field name="gravity_line_ids">
+                    <tree editable="bottom" class="custom_table_borders">
+
+                        <field name="serial_no" string="Sr.No" width="30px"/>
+                        <field name="date" string="DATE TEST" width="40px"/>
+                        <field name="lab_no" string="Lab No."  width="50px"/>
+
+                        <field name="room_temp" string="Room Temperature" width="100px"/>
+                        <field name="bottle_no" string="Bottle No."  width="80px"/>
+
+                        <field name="wt_empty_bottle" string="Empty Wt. of Bottle" width="100px"/>
+                        <field name="wt_bottle_dry_soil" string="Bottle + dry soil" width="100px"/>
+                        <field name="wt_bottle_dry_soil_water" string="Bottle + Dry soil + Water" width="100px"/>
+                        <field name="wt_bottle_water" string="Bottle + Water (Tap)" width="100px"/>
+
+                        <field name="specific_gravity" string="Specific Gravity (G)" width="100px" readonly="1"/>
+                        <field name="density_water" string="Density of water at room temp (gm/cc)" width="100px" readonly="1"/>
+                        <field name="corr_specific_gravity" string="Corrected Specific Gravity (G')" width="100px" readonly="1"/>
+                        <field name="avg_corr_specific_gravity" string="Average corrected Specific Gravity" width="100px" readonly="1"/>
+
+                    </tree>
+                </field>
+            </div>
+
+
+            <div invisible="specific_gravity_visible == False">
+                <button name="action_compute_avg_corr_gravity"
+                    string="Calculate Avg Corrected Gravity"
+                    type="object"
+                    class="btn-primary"/>
+            </div>
+
+
+
                     
 
 
@@ -690,10 +760,26 @@
                         </h1>
                     </div>
 
-                
+                   <div invisible = "gsa_visible == False">
+                  <field name= 'gsa_lines_generated' invisible="1" />
+                  <button name="action_generate_gsa_lines"
+                   
+                    type="object"
+                    string="Show Lab ID"
+                    class="oe_highlight"
+                    invisible="gsa_lines_generated == True"/>
+
+                </div>
+                  <div>
+                <button name="action_fetch_review_details"
+                    type="object"
+                    string="Fetch Review Details"
+                    class="btn-primary"/>
+                  </div>
+
                 <div invisible="gsa_visible == False">
                 <field name="show_sieve" invisible="1"/>
-                <field name="gsa_child_lines" class="custom_table_borders">
+                <field name="gsa_child_lines" class="custom_table_borders" nolabel="1">
                     <tree  string="GSA Lines" decoration-info="lab_no">
                         <field name="symbol" widget="html" />
                         <field name="bh_id"/>
@@ -713,8 +799,13 @@
                             <field name="soil_classification"/>
                     </tree>
 
-                    <form>
+                    <form string="">
                             <sheet>
+                            <style>
+                                    .modal-header .modal-title {
+                                        display: none !important;
+                                    }
+                                </style>
                                 <div class="d-flex gap-2">
                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
@@ -952,16 +1043,7 @@
 
 
 
-                 <div invisible = "gsa_visible == False">
-                  <field name= 'gsa_lines_generated' invisible="1" />
-                  <button name="action_generate_gsa_lines"
-                   
-                    type="object"
-                    string="Show Lab ID"
-                    class="oe_highlight"
-                    invisible="gsa_lines_generated == True"/>
-
-                </div>
+              
                 <div style="margin-top: 10px;" invisible = "gsa_visible == False">
                 <button name="action_generate_gsa_graph" 
                             string="Generate GSA Graph" 
@@ -970,6 +1052,8 @@
                             icon="fa-area-chart"
                             help="Sieve Analysis डेटावर आधारित ग्राफ तयार करण्यासाठी क्लिक करा."/>
                  </div>
+
+
 
 
                  <div style="text-align: center; width: 100%;" invisible = "gsa_visible == False">
@@ -1009,74 +1093,7 @@
 
 
 
-            <!-- Specific Gravity title -->
-
-
-            <div invisible="specific_gravity_visible == False">
-                <h1 class="text-center">
-                    <field name="specific_gravity_name" readonly="1" nolabel="1"/>
-                    <field name="specific_gravity_visible" invisible="1"/>
-                </h1>
-            </div>
-
-               <div invisible = "specific_gravity_visible == False">
-                  <field name= 'sp_lines_generated' invisible="1" />
-                  <button name="action_generate_sp_lines"
-                   
-                    type="object"
-                    string="Show Lab ID"
-                    class="oe_highlight"
-                    invisible="sp_lines_generated == True"/>
-
-                </div>
-
-            <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="selected_lab_id12"></label></td>
-                                <td><field name="selected_lab_id12"/> </td>
-                            </tr>
-                           
-                            
-                        </tbody>
-                    </table> -->
-
-            
-
-
-            <div invisible="specific_gravity_visible == False">
-                <field name="gravity_line_ids">
-                    <tree editable="bottom" class="custom_table_borders">
-
-                        <field name="serial_no" string="Sr.No" width="30px"/>
-                        <field name="date" string="DATE TEST" width="40px"/>
-                        <field name="lab_no" string="Lab No."  width="50px"/>
-
-                        <field name="room_temp" string="Room Temperature" width="100px"/>
-                        <field name="bottle_no" string="Bottle No."  width="80px"/>
-
-                        <field name="wt_empty_bottle" string="Empty Wt. of Bottle" width="100px"/>
-                        <field name="wt_bottle_dry_soil" string="Bottle + dry soil" width="100px"/>
-                        <field name="wt_bottle_dry_soil_water" string="Bottle + Dry soil + Water" width="100px"/>
-                        <field name="wt_bottle_water" string="Bottle + Water (Tap)" width="100px"/>
-
-                        <field name="specific_gravity" string="Specific Gravity (G)" width="100px" readonly="1"/>
-                        <field name="density_water" string="Density of water at room temp (gm/cc)" width="100px" readonly="1"/>
-                        <field name="corr_specific_gravity" string="Corrected Specific Gravity (G')" width="100px" readonly="1"/>
-                        <field name="avg_corr_specific_gravity" string="Average corrected Specific Gravity" width="100px" readonly="1"/>
-
-                    </tree>
-                </field>
-            </div>
-
-
-            <div invisible="specific_gravity_visible == False">
-                <button name="action_compute_avg_corr_gravity"
-                    string="Calculate Avg Corrected Gravity"
-                    type="object"
-                    class="btn-primary"/>
-            </div>
-
+         
 
 
 
@@ -1153,19 +1170,24 @@
 
                 </div>
 
-            <field name="ll_child_lines" class="custom_table_borders">
+            <field name="ll_child_lines" class="custom_table_borders" nolabel="1">
                 <tree string="Liquid Limit Lines" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
                 </tree>
 
-                <form>
+                <form string="">
                 <sheet>
+                <style>
+                    .modal-header .modal-title {
+                        display: none !important;
+                    }
+                </style>
 
                     <field name="ll_line_ids" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders">
                      
-                            <field name="serial_no" string="Sr.No" width="50px"/>
+                            <field name="serial_no" string="Test No." width="50px"/>
                             <field name="blows" string="No. of Blows" width="100px"/>
                             <field name="container_no" string="Container No." width="100px"/>
                             <field name="m3" string="M3 (gm)" width="90px"/>
@@ -1185,6 +1207,14 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <div style="margin-bottom: 10px;">
+                    <button name="action_reset_sequence" 
+                            string="Reset Test No." 
+                            type="object" 
+                            class="btn-secondary" 
+                            icon="fa-sort-numeric-asc"/>
+                </div>
 
                 </sheet>
             </form>
@@ -1215,20 +1245,25 @@
 
                 </div>
 
-            <field name="pl_child_lines" class="custom_table_borders">
+            <field name="pl_child_lines" class="custom_table_borders" nolabel="1">
                 <tree string="Plastic Limit Lines" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
                 </tree>
 
-                <form>
+                <form string="">
                 <sheet>
+                <style>
+                    .modal-header .modal-title {
+                        display: none !important;
+                    }
+                </style>
 
                     <field name="pl_line_ids" nolabel="1">
    
                     <tree editable="bottom" class="custom_table_borders">
                     
-                        <field name="serial_no" string="Sr.No" width="50px"/>
+                        <field name="serial_no" string="Test No." width="50px"/>
 
                         <field name="container_no" string="Container No." width="100px"/>
 
@@ -1251,6 +1286,14 @@
                                 
                             </tbody>
                     </table>
+
+                     <div style="margin-bottom: 10px;">
+                    <button name="action_reset_sequencepl" 
+                            string="Reset Test No." 
+                            type="object" 
+                            class="btn-secondary" 
+                            icon="fa-sort-numeric-asc"/>
+                </div>
 
                 </sheet>
             </form>
@@ -1281,20 +1324,24 @@
 
                 </div>
 
-            <field name="sl_child_lines" class="custom_table_borders">
+            <field name="sl_child_lines" class="custom_table_borders" nolabel="1">
                 <tree string="Shrinkage Limit" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
                 </tree>
 
-                <form>
+                <form string="">
                 <sheet>
-
+                <style>
+                    .modal-header .modal-title {
+                        display: none !important;
+                    }
+                </style>
                      <field name="sl_line_ids" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders">
                         
 
-                            <field name="serial_no" string="Sr.No" width="35px"/>
+                            <field name="serial_no" string="Test No." width="35px"/>
                             <field name="container_no" string="Container No." width="100px"/>
                             <field name="m1" string="M1 (gm)" width="80px"/>
                             <field name="v1" string="V1 (cm3)" width="80px"/>
@@ -1321,6 +1368,17 @@
                         
                     </tbody>
                 </table>
+
+                     <div style="margin-bottom: 10px;">
+                    <button name="action_reset_sequencesl" 
+                            string="Reset Test No." 
+                            type="object" 
+                            class="btn-secondary" 
+                            icon="fa-sort-numeric-asc"/>
+
+                  
+                </div>
+                                        
                 </sheet>
             </form>
             </field>    

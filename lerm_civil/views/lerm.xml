@@ -328,6 +328,7 @@
     <menuitem id="lerm_product_item_param_master"
         parent="lerm_menu"
         name="Product Master"
+        groups="lerm_access_product_master"
         action="lerm_product_action"
         sequence="11" />
     
@@ -366,6 +367,13 @@
         name="Lab Operations"
         parent="lerm_root"
         sequence="10" />
+        
+    <menuitem id="srf_form" 
+        name="SRF" 
+        parent="lerm_transaction_data" 
+        groups="lerm_civil.lerm_access_create_srf,lerm_civil.lerm_access_confirm_srf,lerm_civil.lerm_access_update_srf,lerm_civil.kes_srf_backdate_creation_group,lerm_civil.lerm_access_delete_srf"
+        action="srf_form_id" 
+        sequence="10"/>
 
 
     <menuitem id="lerm_sample"

@@ -76,6 +76,7 @@ class Soil(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+    sample_id = fields.Many2one('lerm.srf.sample',string="Sample")
 
     lab_id = fields.Char(
             string="Lab ID",
@@ -626,6 +627,8 @@ class Soil(models.Model):
 
 
 
+
+
     def action_generate_bulck_lines(self):
         for record in self:
             if record.lab_id and ' - ' in record.lab_id:
@@ -646,15 +649,6 @@ class Soil(models.Model):
             if record.bulk_line_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Soil Form',
-                'res_model': 'mechanical.soil1',
-                'res_id': record.id,  # ✅ Use record.id instead of self.id
-                'view_mode': 'form',
-                'target': 'current',
-            }
 
 
 
@@ -695,14 +689,14 @@ class Soil(models.Model):
             if record.moisture_ids:
                 record.show_sieve = True
 
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Soil Form',
-                'res_model': 'mechanical.soil1',
-                'res_id': record.id,
-                'view_mode': 'form',
-                'target': 'current',
-            }
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
 
         
 
@@ -764,14 +758,14 @@ class Soil(models.Model):
             if record.gravity_line_ids:
                 record.show_sieve = True
 
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Soil Form',
-                'res_model': 'mechanical.soil1',
-                'res_id': record.id,
-                'view_mode': 'form',
-                'target': 'current',
-            }
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
 
 
 
@@ -842,14 +836,14 @@ class Soil(models.Model):
                 record.show_sieve = True
 
             # 🔹 Reload the current record in form view
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Soil Form',
-                'res_model': 'mechanical.soil1',
-                'res_id': record.id,  # ✅ Use record.id instead of self.id
-                'view_mode': 'form',
-                'target': 'current',
-            }
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
     
     # ATTERBERG LIMITS
     Atterbergs_name = fields.Char(string="Name", default="Atterbergs Limits (LL, PL, SL)")
@@ -883,14 +877,14 @@ class Soil(models.Model):
                 record.show_sieve = True
 
             # 🔹 Reload the current record in form view
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Soil Form',
-                'res_model': 'mechanical.soil1',
-                'res_id': record.id,  # ✅ Use record.id instead of self.id
-                'view_mode': 'form',
-                'target': 'current',
-            }
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
 
     Atterbergs_name_pl = fields.Char(string="Name", default="Plastic Limits")
 
@@ -921,14 +915,14 @@ class Soil(models.Model):
                 record.show_sieve = True
 
             # 🔹 Reload the current record in form view
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Soil Form',
-                'res_model': 'mechanical.soil1',
-                'res_id': record.id,  # ✅ Use record.id instead of self.id
-                'view_mode': 'form',
-                'target': 'current',
-            }
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
     
     Atterbergs_name_sl = fields.Char(string="Name", default="Shrinkage Limits")
 
@@ -959,14 +953,14 @@ class Soil(models.Model):
                 record.show_sieve = True
 
             # 🔹 Reload the current record in form view
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Soil Form',
-                'res_model': 'mechanical.soil1',
-                'res_id': record.id,  # ✅ Use record.id instead of self.id
-                'view_mode': 'form',
-                'target': 'current',
-            }
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
 
 
     Atterbergs_visible = fields.Boolean('Show Atterberg', default=True)
@@ -2430,6 +2424,70 @@ class Soil(models.Model):
     gsa_name = fields.Char("Name",default="Grain Size Analysis (GSA)")
 
     gsa_child_lines = fields.One2many('mechanical.gsa.line','parent_id')
+
+    # --- Button Action Logic ---
+    # def action_fetch_review_details(self):
+    #     # Loop through all child lines
+    #     for line in self.gsa_child_lines:
+    #         if line.lab_no:
+    #             # Search in Sample Request Review Lines
+    #             source_line = self.env['sample.request.review.lines'].search([
+    #                 ('lab_id', '=', line.lab_no)
+    #             ], limit=1)
+
+    #             if source_line:
+    #                 # Update line values
+    #                 line.bh_id = source_line.source
+    #                 line.sample_depth = source_line.depth
+    #                 line.sample_details = source_line.sample_details
+    #                 line.wt_of_samp = source_line.weight
+
+    def action_fetch_review_details(self):
+        # Loop through all child lines (GSA Lines)
+        for line in self.gsa_child_lines:
+            if line.lab_no:
+                # ---------------------------------------------------------
+                # 1. Fetch from Sample Request Review (Existing Logic)
+                # ---------------------------------------------------------
+                # Ithe 'lab_id' barobar aahe karan 'sample.request.review.lines' madhe 'lab_id' field aahe.
+                source_line = self.env['sample.request.review.lines'].search([
+                    ('lab_id', '=', line.lab_no)
+                ], limit=1)
+
+                if source_line:
+                    line.bh_id = source_line.source
+                    line.sample_depth = source_line.depth
+                    line.sample_details = source_line.sample_details
+                    line.wt_of_samp = source_line.weight
+
+                # ---------------------------------------------------------
+                # 2. 🔥 FIXED LOGIC: Fetch Specific Gravity 🔥
+                # ---------------------------------------------------------
+                # Error ithe hota. 'lab_id' chya jagi 'lab_no' vapara.
+                sg_record = self.env['specific.gravity'].search([
+                    ('lab_no', '=', line.lab_no)  # <--- FIXED HERE
+                ], limit=1)
+
+                if sg_record:
+                    fetched_sg = sg_record.avg_corr_specific_gravity
+                    
+                    # A. Update Parent Field (GSA Line)
+                    line.specific_gravity = fetched_sg
+
+                    # B. Update Child Lines (Hydrometer Analysis)
+                    # Check if lines exist
+                    if line.hydrometer_analysis_lines_gsa:
+                        for hydro_line in line.hydrometer_analysis_lines_gsa:
+                            hydro_line.specific_gravity = fetched_sg
+                            
+                    print(f"Updated SG for Lab {line.lab_no}: {fetched_sg}")
+                else:
+                    print(f"SG Not Found for {line.lab_no}")
+
+    
+    
+
+
     gsa_visible = fields.Boolean("Grain Size Analysis (GSA) Visible",compute="_compute_visible")
 
     show_sieve = fields.Boolean(default=False)
@@ -2554,14 +2612,14 @@ class Soil(models.Model):
                 record.show_sieve = True
 
             # 🔹 Reload the current record in form view
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Soil Form',
-                'res_model': 'mechanical.soil1',
-                'res_id': record.id,  # ✅ Use record.id instead of self.id
-                'view_mode': 'form',
-                'target': 'current',
-            }
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
 
     
 
@@ -2673,14 +2731,14 @@ class Soil(models.Model):
             record.gsa_graph_image = base64.b64encode(buffer.read())
             buffer.close()
 
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Soil Form',
-            'res_model': 'mechanical.soil1',
-            'res_id': record.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
+        # return {
+        #     'type': 'ir.actions.act_window',
+        #     'name': 'Soil Form',
+        #     'res_model': 'mechanical.soil1',
+        #     'res_id': record.id,
+        #     'view_mode': 'form',
+        #     'target': 'current',
+        # }
 
     
 
@@ -7429,6 +7487,17 @@ class SoilGSALINE(models.Model):
 
     wt_of_samp1 = fields.Float(string="Weight of total sample (gm)")
 
+    sample_id = fields.Many2one(
+        related='parent_id.sample_id',
+        store=True,
+        readonly=True
+    )
+
+
+
+
+    
+
     soil_classification = fields.Selection([
         ('poorly_graded', 'Poorly Graded'),
         ('well_graded', 'Well Graded'),
@@ -8099,8 +8168,8 @@ class SpecificGravity(models.Model):
     wt_bottle_dry_soil_water = fields.Float(string="Bottle + Dry soil + Water (W3)")
     wt_bottle_water = fields.Float(string="Bottle + Water (Tap) (W4)")
 
-    specific_gravity = fields.Float( string="Specific Gravity (G)", compute="_compute_specific_gravity", store=True, readonly=True,)
-    density_water = fields.Float( string="Density of water at room temp (gm/cc)", compute="_compute_density_water", store=True,  readonly=True, )
+    specific_gravity = fields.Float( string="Specific Gravity (G)", compute="_compute_specific_gravity", store=True, readonly=True,digits=(12,3))
+    density_water = fields.Float( string="Density of water at room temp (gm/cc)", compute="_compute_density_water", store=True,  readonly=True, digits=(12,5))
     corr_specific_gravity = fields.Float(string="Corrected Specific Gravity (G')",compute="_compute_corr_specific_gravity", store=True, readonly=True,digits=(12,3)
  )
     avg_corr_specific_gravity = fields.Float(
@@ -9728,6 +9797,23 @@ class LabAtterbergPlLine(models.Model):
             rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
             rec.water_content = (rec.m3_m2 / rec.m2_m1 * 100) if rec.m2_m1 else 0.0
 
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(LabAtterbergPlLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
 
 
 # LIQUID LIMIT LINE (LL Sheet)  
@@ -9754,6 +9840,23 @@ class LabAtterbergLlLine(models.Model):
             rec.m3_m2 = rec.m3 - rec.m2 if rec.m3 and rec.m2 else 0.0
             rec.m2_m1 = rec.m2 - rec.m1 if rec.m2 and rec.m1 else 0.0
             rec.water_content = (rec.m3_m2 / rec.m2_m1 * 100) if rec.m2_m1 else 0.0
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(LabAtterbergLlLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 
@@ -9829,6 +9932,23 @@ class LabAtterbergSlLine(models.Model):
             
         else:
             rec.shrinkage_limit = 0.0
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(LabAtterbergSlLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
        
@@ -10401,6 +10521,19 @@ class LLLine(models.Model):
             else:
                 line.liquid_avg = 0.0
 
+    def action_reset_sequence(self):
+        """
+        Button click kelyavar Serial No. 1 pasun parat set karel.
+        """
+        for rec in self:
+            # Lines la ID nusar sort karun loop firva
+            # sorted(key=lambda r: r.id) mule junya lines var aani navin khali rahtil
+            lines = rec.ll_line_ids.sorted(key=lambda r: r.id)
+            
+            for index, line in enumerate(lines):
+                # index 0 pasun start hoto, mhanun +1 kela (1, 2, 3...)
+                line.serial_no = index + 1
+
     
 
     @api.model
@@ -10434,6 +10567,19 @@ class PLLine(models.Model):
     pl_line_ids = fields.One2many('lab.atterberg.pl.line', 'parent_id_ll',ondelete='cascade')
 
     plastic_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_plastic_avg")
+
+    def action_reset_sequencepl(self):
+        """
+        Button click kelyavar Serial No. 1 pasun parat set karel.
+        """
+        for rec in self:
+            # Lines la ID nusar sort karun loop firva
+            # sorted(key=lambda r: r.id) mule junya lines var aani navin khali rahtil
+            lines = rec.pl_line_ids.sorted(key=lambda r: r.id)
+            
+            for index, line in enumerate(lines):
+                # index 0 pasun start hoto, mhanun +1 kela (1, 2, 3...)
+                line.serial_no = index + 1
 
 
     @api.depends('pl_line_ids.water_content')
@@ -10478,7 +10624,20 @@ class SLLine(models.Model):
 
     sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id_sl',ondelete='cascade')
 
-    shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0),compute="_compute_shrinkage_avg")
+    shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0))
+
+    def action_reset_sequencesl(self):
+        """
+        Button click kelyavar Serial No. 1 pasun parat set karel.
+        """
+        for rec in self:
+            # Lines la ID nusar sort karun loop firva
+            # sorted(key=lambda r: r.id) mule junya lines var aani navin khali rahtil
+            lines = rec.sl_line_ids.sorted(key=lambda r: r.id)
+            
+            for index, line in enumerate(lines):
+                # index 0 pasun start hoto, mhanun +1 kela (1, 2, 3...)
+                line.serial_no = index + 1
 
 
     @api.depends('sl_line_ids.water_content')
@@ -10491,6 +10650,8 @@ class SLLine(models.Model):
 
             else:
                 line.shrinkage_avg = 0.0
+
+    
 
     
 

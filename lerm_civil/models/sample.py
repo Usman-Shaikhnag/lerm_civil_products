@@ -176,6 +176,24 @@ class LermSampleForm(models.Model):
     lab_ids_raw = fields.Text(string="Grouped Lab IDs")  
 
 
+    def _get_lab_sequence_code(self, product):
+        mapping = {
+            'Burnt Clay Bricks': 'lerm.eln.bric',
+            'Aggregate - Coarse': 'lerm.eln.coag',
+            'CEMENT MECHANICAL OPC': 'lerm.eln.cemt',
+            'CEMENT MECHANICAL PPC': 'lerm.eln.cemt',
+            'Fine Aggregate': 'lerm.eln.fiag',
+            'Fly Ash': 'lerm.eln.flas',
+            'GGBS': 'lerm.eln.ggbs',
+            'PAVER BLOCK': 'lerm.eln.pvlb',
+            'ROCK': 'lerm.eln.rock',
+            'Soil': 'lerm.eln.soil',
+            'Stone': 'lerm.eln.ns',
+            'Fly Ash Bricks': 'lerm.eln.fab',
+            'Concrete Cubes Compressive Strength': 'lerm.eln.conc',
+        }
+        return mapping.get(product.name) if product else False 
+
     
 
     # def action_generate_lab_groups(self):
@@ -378,6 +396,7 @@ class LermSampleForm(models.Model):
                 # 'default_pricelist':self.pricelist.id,
                 'default_main_name':self.main_name,
                 'default_price':self.price,
+                'default_quantity_received':self.quantity_received
                 }
             }
 
@@ -703,6 +722,30 @@ class LermSampleForm(models.Model):
             }
 
 
+    def open_request_review(self):
+        self.ensure_one()
+
+        review = self.env['sample.request.review'].search([
+            ('sample_id', '=', self.id)
+        ], limit=1)
+
+        if not review:
+            review = self.env['sample.request.review'].create({
+                'sample_id': self.id
+            })
+
+        action = self.env.ref('lerm_civil.sample_request_review_form')
+
+        return {
+            'name': 'Review Request',
+            'type': 'ir.actions.act_window',
+            'res_model': 'sample.request.review',
+            'view_mode': 'form',
+            'view_id': action.id,
+            'res_id': review.id,
+            'target': 'new',
+    }
+
     # @api.model
     # def create(self, vals):
     #     if vals.get('sample_no', 'New') == 'New' and vals.get('kes_no', 'New') == 'New':
@@ -833,3 +876,90 @@ class SampleParametersResult(models.Model):
 
 
 
+class SampleParametersResult(models.Model):
+    _name = 'sample.parameters.result'
+    _rec_name = 'parameter'
+    sample_id = fields.Many2one('lerm.srf.sample',string="Sample ID")
+    parameter = fields.Many2one('lerm.parameter.master',string="Parameter")
+    unit = fields.Many2one('uom.uom',string="Unit")
+    test_method = fields.Many2one('lerm_civil.test_method',string="Test Method")
+    specification = fields.Text(string="Specification")
+    verified = fields.Boolean("Verified")
+    result = fields.Float(string="Result",digits=(12, 5))
+
+
+# 
+
+
+
+class SampleRequestReview(models.Model):
+    _name = 'sample.request.review'
+    _description = 'Sample Request Review'
+
+    sample_id = fields.Many2one(
+        'lerm.srf.sample',
+        string='Sample',
+        required=True,
+        index=True,
+        ondelete='cascade'
+    )
+
+    review_line_ids = fields.One2many(
+        'sample.request.review.lines',
+        'parent_id',
+        string="Review Lines"
+    )
+
+    receipt_date = fields.Date("Date of Receipt")
+    lot_detail = fields.Integer("Lot Detail")
+    disturbes_samples = fields.Integer("No of disturbed samples")
+    undisturbes_samples = fields.Integer("No of undisturbed samples")
+    equipment_availability = fields.Boolean("Equipment Availability")
+    equipment_availability_remark = fields.Text("Equipment Availability Remarks")
+    resource_availability = fields.Boolean("resource Availability")
+    resource_availability_remark = fields.Text("Resource Availability Remarks")
+    test_performed = fields.Boolean("Whether all tests are performed")
+    test_performed_remark = fields.Text("Test Performed Remarks")
+
+    _sql_constraints = [
+        ('unique_sample_review', 'unique(sample_id)',
+         'Only one review is allowed per sample.')
+    ]
+
+
+    def write(self, vals):
+        res = super().write(vals)
+
+        for review in self:
+            total_weight = sum(
+                review.review_line_ids.mapped('weight')
+            )
+
+            if review.sample_id:
+                review.sample_id.sudo().write({
+                    'quantity_received':total_weight
+                })
+
+        return res
+
+class SampleRequestReviewLine(models.Model):
+    _name = 'sample.request.review.lines'
+
+    parent_id = fields.Many2one('sample.request.review')
+
+    sample_id = fields.Many2one(
+        related='parent_id.sample_id',
+        store=True,
+        readonly=True
+    )
+
+    lab_id = fields.Char("Lab Id")
+    weight = fields.Float("Weight")
+    uom = fields.Many2one('uom.uom',string="Unit")
+    source = fields.Char("Source/Location/Id")
+    depth = fields.Char('Depth(m)')
+    sample_details = fields.Char("Sample Details")
+    packing = fields.Boolean("Packing")
+    quantity = fields.Boolean("Quantity")
+    approved = fields.Boolean("Approved")
+    remarks = fields.Text("Remarks")

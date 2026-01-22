@@ -11,6 +11,19 @@
     <field name="arch" type="xml">
       
       <!-- Inline Fields in Options -->
+
+      <xpath expr="//div[@class='oe_button_box']" position="inside">
+            <button name="lab_id_count_button"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-align-justify">
+                <field name="lab_review_count"
+                       string="Lab Ids"
+                       widget="statinfo"/>
+            </button>
+      </xpath>
+
+
       <xpath expr="//div[@name='options']" position="inside">
         <span class="d-inline-block">
           <field name="is_sample"/>
@@ -165,23 +178,7 @@
         </page>
 
 
-         <page string="Lab ID"
-              invisible="lab_boolean == False">
-          <field name="lab_table">
-            <tree editable="bottom">
          
-                 <field name="product_id"/>
-                
-                <field name="eln_id" readonly="1" column_invisible="1"/>
-                <field name="srf_lab" column_invisible="1"/>
-                <field name="date_lab"/>
-                <field name="report_no"/>
-                <field name="url_no"/>
-                <field name="lab_Ids"/>
-
-            </tree>
-          </field>
-        </page>
 
         
 

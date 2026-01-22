@@ -26,10 +26,10 @@
 
                  
                   <button name="action_generate_sample_lab_groups"
-                        string="Lab Id Generate"
+                        string="Generate Lab Id "
                         type="object"
                         class="btn-primary"
-                        invisible="sample_qty_boolean == False"/>
+                        invisible="is_generated == True"/>
 
                     <button name="confirm_srf" class="oe_highlight" type="object" string="Confirm"
                         groups="lerm_civil.lerm_access_confirm_srf"
@@ -49,6 +49,7 @@
                 </header>
 
                 <sheet>
+                <field name="is_generated" invisible="1"/>
                     
                     <div class="oe_button_box" name="button_box"
                         invisible='state != "2-confirm"' >
@@ -129,7 +130,7 @@
                             
 
                            
-                         
+                            <button name="open_request_review" string="Request Review" type="object" class="btn btn-primary mr-2"/>
                             <button name="edit_sample" groups="lerm_civil.lerm_access_update_srf" string="Edit" type="object" class="btn-primary"/>
                             <button name="reallocate_sample" string="Reallocate" type="object" groups="lerm_civil.lerm_job_allocation" class="btn-primary"/>
                         </tree>
@@ -333,6 +334,69 @@
         <field name="view_mode">form</field>
         <field name="view_id" ref="lerm_civil.srf_sample_wizard_form"/>
         <field name="target">new</field>
+    </record>
+
+    <record id="sample_request_review_form" model="ir.ui.view">
+        <field name="name">sample.request.review</field>
+        <field name="model">sample.request.review</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <!-- <field name='sample_id'/> -->
+                <group>
+                    <group>
+                        <field name="receipt_date"/>
+                        <field name="disturbes_samples"/>
+                        <field name="equipment_availability"/>
+                        <field name="resource_availability"/>
+                        <field name="test_performed"/>
+
+                    </group>
+                    <group>
+                        <field name="lot_detail"/>
+                        <field name="undisturbes_samples"/>
+                        <field name="equipment_availability_remark"/>
+                        <field name="resource_availability_remark"/>
+                        <field name="test_performed_remark"/>
+
+                    </group>
+                </group>
+                <field name="review_line_ids" create="false" delete="false">
+                    <tree create="false" editable="bottom" delete="false">
+                        <field name="lab_id" readonly="1"/>
+                        <field name="weight"/>
+                        <field name="uom"/>
+                        <field name="source"/>
+                        <field name="depth"/>
+                        <field name="sample_details"/>
+                        <field name="packing"/>
+                        <field name="quantity"/>
+                        <field name="approved"/>
+                        <field name="remarks"/>
+
+                    </tree>
+                </field>
+                
+                
+            </form>
+        </field>
+    </record>
+
+    <record id="sample_request_review_tree" model="ir.ui.view">
+        <field name="name">sample.request.review.tree</field>
+        <field name="model">sample.request.review</field>
+        <field name="arch" type="xml">
+            <tree create="false" delete="false">
+                <field name="sample_id"/>
+                <field name="receipt_date"/>
+                <field name="lot_detail"/>
+                <field name="disturbes_samples"/>
+                <field name="undisturbes_samples"/>
+                <field name="equipment_availability"/>
+                <field name="resource_availability"/>
+                <field name="test_performed"/>
+
+            </tree>
+        </field>
     </record>
 
 
