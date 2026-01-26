@@ -60,6 +60,7 @@
 					 <h6 style="padding: 2px; font-weight: bold;">Water Content</h6>
 					 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
 					   <thead>
+					   
 					    <tr>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
 								Water Content
@@ -91,116 +92,125 @@
 						 </tr>
 						</thead>
 						<tbody>
+						<t t-foreach="data.cbr_ids" t-as="line">
 						 <tr>
+						 
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
 								Before soaking
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_can_no"/>
+								<span t-field="line.before_can_no"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_can_wet_soil"/>
+								<span t-field="line.before_can_wet_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_can_dry_soil"/>
+								<span t-field="line.before_can_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_wt_water"/>
+								<span t-field="line.before_wt_water"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_wt_can"/>
+								<span t-field="line.before_wt_can"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_wt_dry_soil"/>
+								<span t-field="line.before_wt_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_mc"/>
+								<span t-field="line.before_mc"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_avg_mc"/>
+								<span t-field="line.before_avg_mc"/>
 							</td>
 						</tr>
+						</t>
+						 <t t-foreach="data.cbr_ids" t-as="line">
 						<tr>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
 								Top
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.top_can_no"/>
+								<span t-field="line.top_can_no"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.top_can_wet_soil"/>
+								<span t-field="line.top_can_wet_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.top_can_dry_soil"/>
+								<span t-field="line.top_can_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.top_wt_water"/>
+								<span t-field="line.top_wt_water"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.top_wt_can"/>
+								<span t-field="line.top_wt_can"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.top_wt_dry_soil"/>
+								<span t-field="line.top_wt_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.top_mc"/>
+								<span t-field="line.top_mc"/>
 							</td>
 							<td colspan="6" rowspan="3" style="border: 1px solid black; padding: 38px 6px;text-align: center;">
-								<span t-field="data.avg_mc"/>
+								<span t-field="line.avg_mc"/>
 							</td>
 						</tr>
+						</t>
+						 <t t-foreach="data.cbr_ids" t-as="line">
 						<tr>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
 								Centre
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.centre_can_no"/>
+								<span t-field="line.centre_can_no"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.centre_can_wet_soil"/>
+								<span t-field="line.centre_can_wet_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.centre_can_dry_soil"/>
+								<span t-field="line.centre_can_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.centre_wt_water"/>
+								<span t-field="line.centre_wt_water"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.centre_wt_can"/>
+								<span t-field="line.centre_wt_can"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.centre_wt_dry_soil"/>
+								<span t-field="line.centre_wt_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.centre_mc"/>
+								<span t-field="line.centre_mc"/>
 							</td>
 						</tr>
+						</t>
+						 <t t-foreach="data.cbr_ids" t-as="line">
 						<tr>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
 								Bottom
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.bottom_can_no"/>
+								<span t-field="line.bottom_can_no"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.bottom_can_wet_soil"/>
+								<span t-field="line.bottom_can_wet_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.bottom_can_dry_soil"/>
+								<span t-field="line.bottom_can_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.bottom_wt_water"/>
+								<span t-field="line.bottom_wt_water"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.bottom_wt_can"/>
+								<span t-field="line.bottom_wt_can"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.bottom_wt_dry_soil"/>
+								<span t-field="line.bottom_wt_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.bottom_mc"/>
+								<span t-field="line.bottom_mc"/>
 							</td>
 						</tr>
+						</t>
 							</tbody>
 					  </table>
 
@@ -238,27 +248,29 @@
 						</tr>
 						</thead>
 						<tbody>
+						<t t-foreach="data.cbr_ids" t-as="line">
 						 <tr>
+						 
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
 								Before soaking
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_mould_soil"/>
+								<span t-field="line.before_mould_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_mould"/>
+								<span t-field="line.before_mould"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_soil"/>
+								<span t-field="line.before_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.volume_specimen1"/>
+								<span t-field="line.volume_specimen1"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_bulk_density"/>
+								<span t-field="line.before_bulk_density"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.before_dry_density"/>
+								<span t-field="line.before_dry_density"/>
 							</td>
 						</tr>
 						<tr>
@@ -266,70 +278,81 @@
 								After soaking
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.after_mould_soil"/>
+								<span t-field="line.after_mould_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.after_mould"/>
+								<span t-field="line.after_mould"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.after_soil"/>
+								<span t-field="line.after_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.volume_specimen2"/>
+								<span t-field="line.volume_specimen2"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.after_bulk_density"/>
+								<span t-field="line.after_bulk_density"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.after_dry_density"/>
+								<span t-field="line.after_dry_density"/>
 							</td>
 						 </tr>
+						 </t>
 						</tbody>
 					  </table>
 
 					  <div style="padding:16px 0px">
 
 					  <table style="border-collapse: collapse; font-size: 14px; width: 60%;">
+					    <t t-foreach="data.cbr_ids" t-as="line">
 						<tr>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
 								Room Temp.°C
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.room_temp"/>
+								<span t-field="line.room_temp"/>
 							</td>
 						</tr>
+						</t>
+						 <t t-foreach="data.cbr_ids" t-as="line">
 						<tr>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
 								% rise/fall  in force value
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.temp_correction"/>
+								<span t-field="line.temp_correction"/>
 							</td>
 						</tr>
+						</t>
+						 <t t-foreach="data.cbr_ids" t-as="line">
 						<tr>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
 								Std Temp During calibr'n
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.std_temp"/>
+								<span t-field="line.std_temp"/>
 							</td>
 						</tr>
+						</t>
+						 <t t-foreach="data.cbr_ids" t-as="line">
 						<tr>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
 								rise/Fall in temperature (Deg)
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.rise_temp"/>
+								<span t-field="line.rise_temp"/>
 							</td>
 						</tr>
+						</t>
+						 <t t-foreach="data.cbr_ids" t-as="line">
 						<tr>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
 								% rise/fall in force value
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="data.rise_force"/>
+								<span t-field="line.rise_force"/>
 							</td>
 						</tr>
+						</t>
 					</table>
 					</div>
 

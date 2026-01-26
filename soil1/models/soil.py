@@ -1656,348 +1656,42 @@ class Soil(models.Model):
         string="Select Lab ID",
         domain="[('id', 'in', lab_option_ids)]"
     )
+
+    cbr_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+    cbr_ids = fields.One2many('cbr.line', 'parent_id',ondelete='cascade')
+
+    def action_generate_cbr_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.cbr_ids = lines
+                record.cbr_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.cbr_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
+
    
-    soil_table = fields.One2many('mechanical.cbr.line1','parent_id',string="CBR",default=lambda self: self._default_cbr_child_lines())
-
-    cbr_2_5_mm = fields.Float(string="CBR At Penetration Of 2.5 mm",compute="_compute_cbr_values",store=True) 
-    cbr_5_mm = fields.Float(string="CBR At Penetration Of 5 mm",compute="_compute_cbr_values",store=True)
-
-    # --- SEPARATE COMPUTE FUNCTION ---
-    @api.depends('soil_table', 'soil_table.penetration', 'soil_table.avg_load')
-    def _compute_cbr_values(self):
-        for record in self:
-            # Default values (jar data nasel tar 0.0)
-            val_2_5 = 0.0
-            val_5_0 = 0.0
-            
-            # Data sort kara (Penetration nusar)
-            lines = record.soil_table.sorted(key=lambda l: l.penetration)
-            x_values = [line.penetration for line in lines]
-            y_values = [line.avg_load for line in lines]
-
-            # Logic: Jar data asel ani values 2.5/5.0 chya range madhe astil
-            if len(x_values) > 1:
-                target_x = [2.5, 5.0]
-                
-                # Interpolation (Exact Load kadhnyasathi)
-                target_y = np.interp(target_x, x_values, y_values)
-                
-                load_at_2_5 = target_y[0]
-                load_at_5_0 = target_y[1]
-
-                # --- MAIN CALCULATION FORMULA ---
-                # Formula: (Load * 100) / Standard Load
-                val_2_5 = (load_at_2_5 * 100) / 13.781
-                val_5_0 = (load_at_5_0 * 100) / 20.55
-
-            # Field la value assign kara
-            record.cbr_2_5_mm = val_2_5
-            record.cbr_5_mm = val_5_0
-
-    # --- NEW FIELDS FOR GRAPH ---
-    cbr_graph = fields.Binary(string="CBR Graph") 
-    cbr_graph_name = fields.Char(default="cbr_graph.png")
-
-
-
-    def action_generate_cbr_graph(self):
-        for record in self:
-            if not record.soil_table:
-                continue
-
-            # 1. Data Prepare kara
-            lines = record.soil_table.sorted(key=lambda l: l.penetration)
-            
-            x_values = [line.penetration for line in lines]
-            y_values = [line.avg_load for line in lines]
-
-            if not x_values or not y_values:
-                continue
-
-            # 2. Plot Setup
-            plt.figure(figsize=(10, 6))
-            ax = plt.gca()
-
-            # 3. Main Curve Plot kara (Black line with dots)
-            # 'ko-' mhanje Black color, Circle marker, Solid line
-            plt.plot(x_values, y_values, 'ko-', linewidth=1.5, markersize=6, label='CBR Curve')
-
-            # 4. 2.5mm ani 5.0mm sathi Logic (Lines ani Labels)
-            target_x = [2.5, 5.0]
-            
-            if len(x_values) > 1:
-                # Interpolation karun exact Y value kadha
-                target_y = np.interp(target_x, x_values, y_values)
-
-                for tx, ty in zip(target_x, target_y):
-                    if tx <= max(x_values):
-                        # Blue Vertical Line (Ubhi line)
-                        plt.plot([tx, tx], [0, ty], color='blue', linewidth=1)
-                        
-                        # Blue Horizontal Line (Advi line)
-                        plt.plot([0, tx], [ty, ty], color='blue', linewidth=1)
-                        
-                        # Intersection var Blue Dot (Point)
-                        plt.plot(tx, ty, 'bo', markersize=5)  # 'bo' mhanje Blue Circle
-
-                        # Label (Text Value)
-                        # Point chya javal value lihun yeil (Ex: 4.65 kN)
-                        label_text = f"{ty:.2f}"
-                        plt.text(tx - 0.5, ty + 0.2, label_text, color='blue', fontsize=10, fontweight='bold')
-
-            # 5. Graph Formatting (Styling)
-            plt.xlabel('Penetration in mm', fontweight='bold', fontsize=12)
-            plt.ylabel('Average Load in kN', fontweight='bold', fontsize=12)
-            
-            # X-Axis 0 te 14 range
-            plt.xlim(0, 14)
-            plt.ylim(bottom=0)
-            
-            # X-Axis var sagale numbers (0, 1, 2...14) disnyasathi
-            plt.xticks(np.arange(0, 15, 1))
-            
-            # Grid (Optional - jar havi asel tar uncomment kara)
-            # plt.grid(True, linestyle='--', alpha=0.5)
-
-            # 6. Graph Save kara
-            buf = io.BytesIO()
-            plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
-            plt.close()
-            
-            record.cbr_graph = base64.b64encode(buf.getvalue())
-
     
-
-    @api.model
-    def _default_cbr_child_lines(self):
-        default_lines = [
-            (0, 0, {'penetration': '0.0'}),
-            (0, 0, {'penetration': '0.50 '}),
-            (0, 0, {'penetration': '1.00'}),
-            (0, 0, {'penetration': '1.50'}),
-            (0, 0, {'penetration': '2.00'}),
-            (0, 0, {'penetration': '2.50'}),
-            (0, 0, {'penetration': ' 4.00'}),
-            (0, 0, {'penetration': '5.00'}),
-            (0, 0, {'penetration': '7.50'}),
-            (0, 0, {'penetration': '10.00'}),
-            (0, 0, {'penetration': '12.50'}),
-           
-        ]
-        return default_lines
-
-    room_temp = fields.Float(string="Room Temp.°C" )
-    temp_correction= fields.Float(string="Temperature correction ",digits=(12,3) )
-    std_temp = fields.Float(string="Std Temp During calibr'n")
-    rise_temp = fields.Float(
-        string="Rise/Fall in temperature (Deg)",
-        compute="_compute_rise_values",
-        store=True
-    )
-    rise_force = fields.Float(
-        string="% rise/fall in force value",
-        compute="_compute_rise_values",
-        store=True,digits=(12,3)
-    )
-
-    @api.depends('room_temp', 'std_temp', 'temp_correction')
-    def _compute_rise_values(self):
-        for rec in self:
-            if rec.room_temp and rec.std_temp:
-                rec.rise_temp = rec.room_temp - rec.std_temp
-            else:
-                rec.rise_temp = 0.0
-
-            if rec.temp_correction:
-                rec.rise_force = rec.temp_correction * rec.rise_temp
-            else:
-                rec.rise_force = 0.0
-
-# WATER CONTENT (Before Soaking)
-    before_can_no = fields.Integer(string="Can No")
-    before_can_wet_soil = fields.Float(string="Wt of Can + Wet Soil",digits=(12,3))
-    before_can_dry_soil = fields.Float(string="Wt of Can + Dry Soil",digits=(12,3))
-
-    before_wt_water = fields.Float(
-        string="Wt of Water",
-        compute="_compute_before_values",
-        store=True,
-    )
-
-    before_wt_can = fields.Float(string="Wt of Can",digits=(12,3))
-    before_wt_dry_soil = fields.Float(string="Wt of Dry Soil",compute="_compute_before_values",store=True,digits=(12,3))
-    before_mc = fields.Float(string="Moisture Content %",compute="_compute_before_values",store=True,digits=(12,6))
-    before_avg_mc = fields.Float(string="Avg MC %",compute="_compute_before_values",store=True,digits=(12,5))
-
-    @api.depends('before_can_wet_soil', 'before_can_dry_soil', 'before_wt_can')
-    def _compute_before_values(self):
-        for rec in self:
-
-            # (1) Wt of Water
-            rec.before_wt_water = (rec.before_can_wet_soil or 0) - (rec.before_can_dry_soil or 0)
-
-            # (2) Wt of Dry Soil
-            rec.before_wt_dry_soil = (rec.before_can_dry_soil or 0) - (rec.before_wt_can or 0)
-
-            # (3) Moisture Content %
-            if rec.before_wt_dry_soil:
-                rec.before_mc = (rec.before_wt_water / rec.before_wt_dry_soil) * 100
-            else:
-                rec.before_mc = 0
-
-            # (4) Avg MC % = MC %
-            rec.before_avg_mc = rec.before_mc
-
-
-    # -----------------------------
-    # WATER CONTENT (After Test)
-    # TOP
-    # -----------------------------
-    top_can_no = fields.Integer()
-    top_can_wet_soil = fields.Float(digits=(12,3))
-    top_can_dry_soil = fields.Float(digits=(12,3))
-    top_wt_water = fields.Float(
-        string="Wt of Water (Top)",
-        compute="_compute_water_values",
-        store=True,
-        digits=(12, 3),
-    )
-    top_wt_can = fields.Float(digits=(12,3))
-    top_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil1", store=True,digits=(12,3))
-    top_mc = fields.Float(compute="_compute_mc", store=True, digits=(12, 6))
-
-    # -----------------------------
-    # CENTRE
-    # -----------------------------
-    centre_can_no = fields.Integer()
-    centre_can_wet_soil = fields.Float(digits=(12,3))
-    centre_can_dry_soil = fields.Float(digits=(12,3))
-    centre_wt_water = fields.Float(
-        string="Wt of Water (Centre)",
-        compute="_compute_water_values",
-        store=True,
-        digits=(12, 1),
-    )
-    centre_wt_can = fields.Float(digits=(12,3))
-    centre_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil1", store=True,digits=(12,3))
-    centre_mc = fields.Float(compute="_compute_mc", store=True, digits=(12, 6))
-
-    # -----------------------------
-    # BOTTOM
-    # -----------------------------
-    bottom_can_no = fields.Integer()
-    bottom_can_wet_soil = fields.Float(digits=(12,3))
-    bottom_can_dry_soil = fields.Float(digits=(12,3))
-    bottom_wt_water = fields.Float(
-        string="Wt of Water (Bottom)",
-        compute="_compute_water_values",
-        store=True,
-        digits=(12, 3),
-    )
-    bottom_wt_can = fields.Float(digits=(12,3))
-    bottom_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil1", store=True,digits=(12,3))
-    bottom_mc = fields.Float(compute="_compute_mc", store=True, digits=(12, 6))
-
-
-    avg_mc = fields.Float(string="Avg MC %",compute="_compute_mc", store=True, digits=(12, 5))
-
-    @api.depends(
-        'top_can_wet_soil', 'top_can_dry_soil',
-        'centre_can_wet_soil', 'centre_can_dry_soil',
-        'bottom_can_wet_soil', 'bottom_can_dry_soil',
-    )
-    def _compute_water_values(self):
-        for rec in self:
-            rec.top_wt_water = (rec.top_can_wet_soil or 0) - (rec.top_can_dry_soil or 0)
-            rec.centre_wt_water = (rec.centre_can_wet_soil or 0) - (rec.centre_can_dry_soil or 0)
-            rec.bottom_wt_water = (rec.bottom_can_wet_soil or 0) - (rec.bottom_can_dry_soil or 0)
-
-    @api.depends('top_can_dry_soil', 'top_wt_can',
-             'centre_can_dry_soil', 'centre_wt_can',
-             'bottom_can_dry_soil', 'bottom_wt_can')
-    def _compute_wt_dry_soil1(self):
-        for rec in self:
-            rec.top_wt_dry_soil = (rec.top_can_dry_soil or 0) - (rec.top_wt_can or 0)
-            rec.centre_wt_dry_soil = (rec.centre_can_dry_soil or 0) - (rec.centre_wt_can or 0)
-            rec.bottom_wt_dry_soil = (rec.bottom_can_dry_soil or 0) - (rec.bottom_wt_can or 0)
-
-    @api.depends(
-    'top_wt_water', 'top_wt_dry_soil',
-    'centre_wt_water', 'centre_wt_dry_soil',
-    'bottom_wt_water', 'bottom_wt_dry_soil'
-    )
-    def _compute_mc(self):
-        for rec in self:
-
-            # ----- TOP -----
-            if rec.top_wt_dry_soil:
-                rec.top_mc = (rec.top_wt_water / rec.top_wt_dry_soil) * 100
-            else:
-                rec.top_mc = 0.0
-
-            # ----- CENTRE -----
-            if rec.centre_wt_dry_soil:
-                rec.centre_mc = (rec.centre_wt_water / rec.centre_wt_dry_soil) * 100
-            else:
-                rec.centre_mc = 0.0
-
-            # ----- BOTTOM -----
-            if rec.bottom_wt_dry_soil:
-                rec.bottom_mc = (rec.bottom_wt_water / rec.bottom_wt_dry_soil) * 100
-            else:
-                rec.bottom_mc = 0.0
-
-            # ----- AVERAGE -----
-            total = rec.top_mc + rec.centre_mc + rec.bottom_mc
-            rec.avg_mc = total / 3 if total else 0.0
-
-    # -----------------------------
-    # CONDITION OF SPECIMEN
-    # -----------------------------
-    before_mould_soil = fields.Float()
-    before_mould = fields.Float()
-    before_soil = fields.Float(compute="_compute_soil_weights", store=True)
-    before_bulk_density = fields.Float(compute="_compute_density",store=True, digits=(12,6))
-    before_dry_density = fields.Float(compute="_compute_density",store=True, digits=(12,6))
-
-    after_mould_soil = fields.Float()
-    after_mould = fields.Float()
-    after_soil = fields.Float(compute="_compute_soil_weights", store=True)
-    after_bulk_density = fields.Float(compute="_compute_density",store=True, digits=(12,6))
-    after_dry_density = fields.Float(compute="_compute_density",store=True, digits=(12,6))
-
-
-    @api.depends('before_mould', 'before_mould_soil', 'after_mould', 'after_mould_soil')
-    def _compute_soil_weights(self):
-        for rec in self:
-            rec.before_soil = (rec.before_mould_soil or 0) - (rec.before_mould or 0)
-            rec.after_soil  = (rec.after_mould_soil or 0)  - (rec.after_mould or 0)
-
-    volume_specimen1 = fields.Float()
-    volume_specimen2 = fields.Float()
-
-    @api.depends('before_soil', 'after_soil', 'volume_specimen1', 'volume_specimen2',
-             'before_avg_mc', 'avg_mc')
-    def _compute_density(self):
-        for rec in self:
-
-            # Before Bulk Density
-            if rec.volume_specimen1:
-                rec.before_bulk_density = rec.before_soil / rec.volume_specimen1
-            else:
-                rec.before_bulk_density = 0.0
-
-            # After Bulk Density
-            if rec.volume_specimen2:
-                rec.after_bulk_density = rec.after_soil / rec.volume_specimen2
-            else:
-                rec.after_bulk_density = 0.0
-
-            # Before Dry Density
-            rec.before_dry_density = rec.before_bulk_density / (1 + (rec.before_avg_mc or 0) * 0.01)
-
-            # After Dry Density
-            rec.after_dry_density = rec.after_bulk_density / (1 + (rec.avg_mc or 0) * 0.01)
 
 
 
@@ -3940,7 +3634,7 @@ class INTERNALFRACTIONLINE(models.Model):
 
 class SoilCBRLine(models.Model):
     _name = "mechanical.cbr.line1"
-    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
+    parent_id_cbr = fields.Many2one('cbr.line',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
@@ -3963,10 +3657,10 @@ class SoilCBRLine(models.Model):
         for rec in self:
             rec.applied_force = (0.0133 * rec.no_division) + 0.0404 if rec.no_division else 0.0404
 
-    @api.depends('applied_force', 'parent_id.rise_force')
+    @api.depends('applied_force', 'parent_id_cbr.rise_force')
     def _compute_avg_load(self):
         for rec in self:
-            rise_force = rec.parent_id.rise_force or 0.0
+            rise_force = rec.parent_id_cbr.rise_force or 0.0
             rec.avg_load = rec.applied_force + (rec.applied_force * rise_force)
 
    
@@ -3974,8 +3668,8 @@ class SoilCBRLine(models.Model):
     @api.model
     def create(self, vals):
         # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+        if vals.get('parent_id_cbr'):
+            existing_records = self.search([('parent_id_cbr', '=', vals['parent_id_cbr'])])
             if existing_records:
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
@@ -10974,6 +10668,375 @@ class ConsolidationLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class CbrLine(models.Model):
+    _name = "cbr.line"
+    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    lab_id=  fields.Char(string="Lab ID" )
+
+    soil_table = fields.One2many('mechanical.cbr.line1','parent_id_cbr',string="CBR",default=lambda self: self._default_cbr_child_lines())
+
+    cbr_2_5_mm = fields.Float(string="CBR At Penetration Of 2.5 mm",compute="_compute_cbr_values",store=True) 
+    cbr_5_mm = fields.Float(string="CBR At Penetration Of 5 mm",compute="_compute_cbr_values",store=True)
+
+    # --- SEPARATE COMPUTE FUNCTION ---
+    @api.depends('soil_table', 'soil_table.penetration', 'soil_table.avg_load')
+    def _compute_cbr_values(self):
+        for record in self:
+            # Default values (jar data nasel tar 0.0)
+            val_2_5 = 0.0
+            val_5_0 = 0.0
+            
+            # Data sort kara (Penetration nusar)
+            lines = record.soil_table.sorted(key=lambda l: l.penetration)
+            x_values = [line.penetration for line in lines]
+            y_values = [line.avg_load for line in lines]
+
+            # Logic: Jar data asel ani values 2.5/5.0 chya range madhe astil
+            if len(x_values) > 1:
+                target_x = [2.5, 5.0]
+                
+                # Interpolation (Exact Load kadhnyasathi)
+                target_y = np.interp(target_x, x_values, y_values)
+                
+                load_at_2_5 = target_y[0]
+                load_at_5_0 = target_y[1]
+
+                # --- MAIN CALCULATION FORMULA ---
+                # Formula: (Load * 100) / Standard Load
+                val_2_5 = (load_at_2_5 * 100) / 13.781
+                val_5_0 = (load_at_5_0 * 100) / 20.55
+
+            # Field la value assign kara
+            record.cbr_2_5_mm = val_2_5
+            record.cbr_5_mm = val_5_0
+
+    # --- NEW FIELDS FOR GRAPH ---
+    cbr_graph = fields.Binary(string="CBR Graph") 
+    cbr_graph_name = fields.Char(default="cbr_graph.png")
+
+
+
+    def action_generate_cbr_graph(self):
+        for record in self:
+            if not record.soil_table:
+                continue
+
+            # 1. Data Prepare kara
+            lines = record.soil_table.sorted(key=lambda l: l.penetration)
+            
+            x_values = [line.penetration for line in lines]
+            y_values = [line.avg_load for line in lines]
+
+            if not x_values or not y_values:
+                continue
+
+            # 2. Plot Setup
+            plt.figure(figsize=(10, 6))
+            ax = plt.gca()
+
+            # 3. Main Curve Plot kara (Black line with dots)
+            # 'ko-' mhanje Black color, Circle marker, Solid line
+            plt.plot(x_values, y_values, 'ko-', linewidth=1.5, markersize=6, label='CBR Curve')
+
+            # 4. 2.5mm ani 5.0mm sathi Logic (Lines ani Labels)
+            target_x = [2.5, 5.0]
+            
+            if len(x_values) > 1:
+                # Interpolation karun exact Y value kadha
+                target_y = np.interp(target_x, x_values, y_values)
+
+                for tx, ty in zip(target_x, target_y):
+                    if tx <= max(x_values):
+                        # Blue Vertical Line (Ubhi line)
+                        plt.plot([tx, tx], [0, ty], color='blue', linewidth=1)
+                        
+                        # Blue Horizontal Line (Advi line)
+                        plt.plot([0, tx], [ty, ty], color='blue', linewidth=1)
+                        
+                        # Intersection var Blue Dot (Point)
+                        plt.plot(tx, ty, 'bo', markersize=5)  # 'bo' mhanje Blue Circle
+
+                        # Label (Text Value)
+                        # Point chya javal value lihun yeil (Ex: 4.65 kN)
+                        label_text = f"{ty:.2f}"
+                        plt.text(tx - 0.5, ty + 0.2, label_text, color='blue', fontsize=10, fontweight='bold')
+
+            # 5. Graph Formatting (Styling)
+            plt.xlabel('Penetration in mm', fontweight='bold', fontsize=12)
+            plt.ylabel('Average Load in kN', fontweight='bold', fontsize=12)
+            
+            # X-Axis 0 te 14 range
+            plt.xlim(0, 14)
+            plt.ylim(bottom=0)
+            
+            # X-Axis var sagale numbers (0, 1, 2...14) disnyasathi
+            plt.xticks(np.arange(0, 15, 1))
+            
+            # Grid (Optional - jar havi asel tar uncomment kara)
+            # plt.grid(True, linestyle='--', alpha=0.5)
+
+            # 6. Graph Save kara
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
+            plt.close()
+            
+            record.cbr_graph = base64.b64encode(buf.getvalue())
+
+    
+
+    @api.model
+    def _default_cbr_child_lines(self):
+        default_lines = [
+            (0, 0, {'penetration': '0.0'}),
+            (0, 0, {'penetration': '0.50 '}),
+            (0, 0, {'penetration': '1.00'}),
+            (0, 0, {'penetration': '1.50'}),
+            (0, 0, {'penetration': '2.00'}),
+            (0, 0, {'penetration': '2.50'}),
+            (0, 0, {'penetration': ' 4.00'}),
+            (0, 0, {'penetration': '5.00'}),
+            (0, 0, {'penetration': '7.50'}),
+            (0, 0, {'penetration': '10.00'}),
+            (0, 0, {'penetration': '12.50'}),
+           
+        ]
+        return default_lines
+
+    room_temp = fields.Float(string="Room Temp.°C" )
+    temp_correction= fields.Float(string="Temperature correction ",digits=(12,3) )
+    std_temp = fields.Float(string="Std Temp During calibr'n")
+    rise_temp = fields.Float(
+        string="Rise/Fall in temperature (Deg)",
+        compute="_compute_rise_values",
+        store=True
+    )
+    rise_force = fields.Float(
+        string="% rise/fall in force value",
+        compute="_compute_rise_values",
+        store=True,digits=(12,3)
+    )
+
+    @api.depends('room_temp', 'std_temp', 'temp_correction')
+    def _compute_rise_values(self):
+        for rec in self:
+            if rec.room_temp and rec.std_temp:
+                rec.rise_temp = rec.room_temp - rec.std_temp
+            else:
+                rec.rise_temp = 0.0
+
+            if rec.temp_correction:
+                rec.rise_force = rec.temp_correction * rec.rise_temp
+            else:
+                rec.rise_force = 0.0
+
+# WATER CONTENT (Before Soaking)
+    before_can_no = fields.Integer(string="Can No")
+    before_can_wet_soil = fields.Float(string="Wt of Can + Wet Soil",digits=(12,3))
+    before_can_dry_soil = fields.Float(string="Wt of Can + Dry Soil",digits=(12,3))
+
+    before_wt_water = fields.Float(
+        string="Wt of Water",
+        compute="_compute_before_values",
+        store=True,
+    )
+
+    before_wt_can = fields.Float(string="Wt of Can",digits=(12,3))
+    before_wt_dry_soil = fields.Float(string="Wt of Dry Soil",compute="_compute_before_values",store=True,digits=(12,3))
+    before_mc = fields.Float(string="Moisture Content %",compute="_compute_before_values",store=True,digits=(12,6))
+    before_avg_mc = fields.Float(string="Avg MC %",compute="_compute_before_values",store=True,digits=(12,5))
+
+    @api.depends('before_can_wet_soil', 'before_can_dry_soil', 'before_wt_can')
+    def _compute_before_values(self):
+        for rec in self:
+
+            # (1) Wt of Water
+            rec.before_wt_water = (rec.before_can_wet_soil or 0) - (rec.before_can_dry_soil or 0)
+
+            # (2) Wt of Dry Soil
+            rec.before_wt_dry_soil = (rec.before_can_dry_soil or 0) - (rec.before_wt_can or 0)
+
+            # (3) Moisture Content %
+            if rec.before_wt_dry_soil:
+                rec.before_mc = (rec.before_wt_water / rec.before_wt_dry_soil) * 100
+            else:
+                rec.before_mc = 0
+
+            # (4) Avg MC % = MC %
+            rec.before_avg_mc = rec.before_mc
+
+
+    # -----------------------------
+    # WATER CONTENT (After Test)
+    # TOP
+    # -----------------------------
+    top_can_no = fields.Integer()
+    top_can_wet_soil = fields.Float(digits=(12,3))
+    top_can_dry_soil = fields.Float(digits=(12,3))
+    top_wt_water = fields.Float(
+        string="Wt of Water (Top)",
+        compute="_compute_water_values",
+        store=True,
+        digits=(12, 3),
+    )
+    top_wt_can = fields.Float(digits=(12,3))
+    top_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil1", store=True,digits=(12,3))
+    top_mc = fields.Float(compute="_compute_mc", store=True, digits=(12, 6))
+
+    # -----------------------------
+    # CENTRE
+    # -----------------------------
+    centre_can_no = fields.Integer()
+    centre_can_wet_soil = fields.Float(digits=(12,3))
+    centre_can_dry_soil = fields.Float(digits=(12,3))
+    centre_wt_water = fields.Float(
+        string="Wt of Water (Centre)",
+        compute="_compute_water_values",
+        store=True,
+        digits=(12, 1),
+    )
+    centre_wt_can = fields.Float(digits=(12,3))
+    centre_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil1", store=True,digits=(12,3))
+    centre_mc = fields.Float(compute="_compute_mc", store=True, digits=(12, 6))
+
+    # -----------------------------
+    # BOTTOM
+    # -----------------------------
+    bottom_can_no = fields.Integer()
+    bottom_can_wet_soil = fields.Float(digits=(12,3))
+    bottom_can_dry_soil = fields.Float(digits=(12,3))
+    bottom_wt_water = fields.Float(
+        string="Wt of Water (Bottom)",
+        compute="_compute_water_values",
+        store=True,
+        digits=(12, 3),
+    )
+    bottom_wt_can = fields.Float(digits=(12,3))
+    bottom_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil1", store=True,digits=(12,3))
+    bottom_mc = fields.Float(compute="_compute_mc", store=True, digits=(12, 6))
+
+
+    avg_mc = fields.Float(string="Avg MC %",compute="_compute_mc", store=True, digits=(12, 5))
+
+    @api.depends(
+        'top_can_wet_soil', 'top_can_dry_soil',
+        'centre_can_wet_soil', 'centre_can_dry_soil',
+        'bottom_can_wet_soil', 'bottom_can_dry_soil',
+    )
+    def _compute_water_values(self):
+        for rec in self:
+            rec.top_wt_water = (rec.top_can_wet_soil or 0) - (rec.top_can_dry_soil or 0)
+            rec.centre_wt_water = (rec.centre_can_wet_soil or 0) - (rec.centre_can_dry_soil or 0)
+            rec.bottom_wt_water = (rec.bottom_can_wet_soil or 0) - (rec.bottom_can_dry_soil or 0)
+
+    @api.depends('top_can_dry_soil', 'top_wt_can',
+             'centre_can_dry_soil', 'centre_wt_can',
+             'bottom_can_dry_soil', 'bottom_wt_can')
+    def _compute_wt_dry_soil1(self):
+        for rec in self:
+            rec.top_wt_dry_soil = (rec.top_can_dry_soil or 0) - (rec.top_wt_can or 0)
+            rec.centre_wt_dry_soil = (rec.centre_can_dry_soil or 0) - (rec.centre_wt_can or 0)
+            rec.bottom_wt_dry_soil = (rec.bottom_can_dry_soil or 0) - (rec.bottom_wt_can or 0)
+
+    @api.depends(
+    'top_wt_water', 'top_wt_dry_soil',
+    'centre_wt_water', 'centre_wt_dry_soil',
+    'bottom_wt_water', 'bottom_wt_dry_soil'
+    )
+    def _compute_mc(self):
+        for rec in self:
+
+            # ----- TOP -----
+            if rec.top_wt_dry_soil:
+                rec.top_mc = (rec.top_wt_water / rec.top_wt_dry_soil) * 100
+            else:
+                rec.top_mc = 0.0
+
+            # ----- CENTRE -----
+            if rec.centre_wt_dry_soil:
+                rec.centre_mc = (rec.centre_wt_water / rec.centre_wt_dry_soil) * 100
+            else:
+                rec.centre_mc = 0.0
+
+            # ----- BOTTOM -----
+            if rec.bottom_wt_dry_soil:
+                rec.bottom_mc = (rec.bottom_wt_water / rec.bottom_wt_dry_soil) * 100
+            else:
+                rec.bottom_mc = 0.0
+
+            # ----- AVERAGE -----
+            total = rec.top_mc + rec.centre_mc + rec.bottom_mc
+            rec.avg_mc = total / 3 if total else 0.0
+
+    # -----------------------------
+    # CONDITION OF SPECIMEN
+    # -----------------------------
+    before_mould_soil = fields.Float()
+    before_mould = fields.Float()
+    before_soil = fields.Float(compute="_compute_soil_weights", store=True)
+    before_bulk_density = fields.Float(compute="_compute_density",store=True, digits=(12,6))
+    before_dry_density = fields.Float(compute="_compute_density",store=True, digits=(12,6))
+
+    after_mould_soil = fields.Float()
+    after_mould = fields.Float()
+    after_soil = fields.Float(compute="_compute_soil_weights", store=True)
+    after_bulk_density = fields.Float(compute="_compute_density",store=True, digits=(12,6))
+    after_dry_density = fields.Float(compute="_compute_density",store=True, digits=(12,6))
+
+
+    @api.depends('before_mould', 'before_mould_soil', 'after_mould', 'after_mould_soil')
+    def _compute_soil_weights(self):
+        for rec in self:
+            rec.before_soil = (rec.before_mould_soil or 0) - (rec.before_mould or 0)
+            rec.after_soil  = (rec.after_mould_soil or 0)  - (rec.after_mould or 0)
+
+    volume_specimen1 = fields.Float()
+    volume_specimen2 = fields.Float()
+
+    @api.depends('before_soil', 'after_soil', 'volume_specimen1', 'volume_specimen2',
+             'before_avg_mc', 'avg_mc')
+    def _compute_density(self):
+        for rec in self:
+
+            # Before Bulk Density
+            if rec.volume_specimen1:
+                rec.before_bulk_density = rec.before_soil / rec.volume_specimen1
+            else:
+                rec.before_bulk_density = 0.0
+
+            # After Bulk Density
+            if rec.volume_specimen2:
+                rec.after_bulk_density = rec.after_soil / rec.volume_specimen2
+            else:
+                rec.after_bulk_density = 0.0
+
+            # Before Dry Density
+            rec.before_dry_density = rec.before_bulk_density / (1 + (rec.before_avg_mc or 0) * 0.01)
+
+            # After Dry Density
+            rec.after_dry_density = rec.after_bulk_density / (1 + (rec.avg_mc or 0) * 0.01)
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(CbrLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
 
 
 

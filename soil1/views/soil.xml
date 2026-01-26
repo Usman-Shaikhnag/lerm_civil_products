@@ -215,7 +215,77 @@
                         </h1>
                     </div>
 
-                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
+                     <div invisible = "soil_visible == False">
+                        <field name= 'cbr_generated' invisible="1" />
+                        <button name="action_generate_cbr_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="cbr_generated == True"/>
+
+                        </div>
+
+                         <field name="cbr_ids" class="custom_table_borders" nolabel="1" invisible = "soil_visible == False">
+                            <tree string="CBR" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                            </tree>
+
+                         <form string="">
+                            <sheet>
+                            <style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
+
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
+
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
+
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
+
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
+
+                                 .soil-table table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                font-size: 13px;
+                                }
+                                .soil-table th, .soil-table td {
+                                    border: 1px solid #444;
+                                    padding: 4px 6px;
+                                    text-align: center;
+                                }
+                                .header {
+                                    background: #f2f2f2;
+                                    font-weight: bold;
+                                }
+                                .red {
+                                    color: red !important;
+                                }
+                            </style>
+
+                      <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
                         <tbody>
                             <tr>
                                 <td><label for="selected_lab_id"></label></td>
@@ -223,9 +293,9 @@
                             </tr>
                             
                         </tbody>
-                    </table>
+                    </table> -->
 
-                      <style>
+                      <!-- <style>
                             .soil-table table {
                                 width: 100%;
                                 border-collapse: collapse;
@@ -243,11 +313,11 @@
                             .red {
                                 color: red !important;
                             }
-                        </style>
+                        </style> -->
 
 
 
-                         <div class="soil-table" invisible="soil_visible == False">
+                         <div class="soil-table" >
 
                         <!-- WATER CONTENT SECTION -->
                         <h4>Water Content</h4>
@@ -359,7 +429,7 @@
 
                     </div>
 
-                     <div class="d-flex gap-2"  invisible="not soil_visible" style="margin-top: 10px;">
+                     <div class="d-flex gap-2"   style="margin-top: 10px;">
                         <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -384,7 +454,7 @@
                     </div>
 
 
-                    <div class="d-flex gap-2"  invisible="not soil_visible">
+                    <div class="d-flex gap-2"  >
                         <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -408,7 +478,7 @@
                        
                     </div>
 
-                     <div class="d-flex gap-2"  invisible="not soil_visible">
+                     <div class="d-flex gap-2">
                         <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -422,7 +492,7 @@
                        
                     </div>
                     
-                    <div invisible = "soil_visible == False">
+                    <div >
                         <field name="soil_table" class="custom_table_borders">
                             <tree editable="bottom" >
                                 <field name="serial_no"/>
@@ -434,21 +504,21 @@
                             </tree>
                         </field>                      
                     </div>
-                 <div invisible = "soil_visible == False" >
+                 <div  >
                     <button name="action_generate_cbr_graph" 
                         string="Generate Graph" 
                         type="object" 
                         class="oe_highlight"/>
                 </div>
 
-                    <div invisible = "soil_visible == False" class="text-center">
+                    <div  class="text-center">
                       <field name="cbr_graph" widget="image" readonly="1"/>
                     </div>
 
 
                    
 
-                    <div class="d-flex gap-2"  invisible="not soil_visible">
+                    <div class="d-flex gap-2"  >
                         <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -470,6 +540,11 @@
                         </table>
 
                     </div>
+
+                       </sheet>
+                        </form>
+
+                        </field>
 
                    
                  
@@ -2374,185 +2449,6 @@
                         </field>
 
                         
-
-
-                
-                    <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not permeability_falling_visible">
-                            <tbody>
-                                <tr>
-                                    <td><label for="selected_lab_id3"></label></td>
-                                    <td ><field name="selected_lab_id3" class="blue-input"/></td>
-                                </tr>
-                              
-                                
-                            </tbody>
-                        </table>
-
-                    <div class="d-flex gap-2" invisible="not permeability_falling_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="dia_standpipe">Dia of Stand Pipe, d (cm)</label></td>
-                                    <td ><field name="dia_standpipe" class="blue-input"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="dia_soil_sample">Dia of Soil Sample, D (cm)</label></td>
-                                    <td ><field name="dia_soil_sample" class="blue-input"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="length_soil">Length of Soil Sample, L (cm)</label></td>
-                                    <td ><field name="length_soil" class="blue-input"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="distance">Distance between 0 of scale to the middle of the bottom opening, cm</label></td>
-                                    <td ><field name="distance" class="blue-input"/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="bt_wt_soil_mould">Weight of wet soil + mould specimen before test, Wt, gm:</label></td>
-                                    <td><field name="bt_wt_soil_mould" class="blue-input" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="at_wt_soil">Weight of wet soil specimen after test, Wt, gm:</label></td>
-                                    <td><field name="at_wt_soil" class="blue-input" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="wt_empty_mould">Empty weight of mould (gm)</label></td>
-                                    <td><field name="wt_empty_mould" class="blue-input" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="wt_dry_soil">Dry weight of soil</label></td>
-                                    <td><field name="wt_dry_soil" class="blue-input" /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="d-flex gap-2" invisible="not permeability_falling_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="area_pipe">Area of Pipe (sq.cm)</label></td>
-                                    <td ><field name="area_pipe" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="area_soil_samp">Area of Soil Sample (sq.cm)</label></td>
-                                    <td ><field name="area_soil_samp"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="vol_per_mould">Volume of permeabiliy mould (cc)</label></td>
-                                    <td ><field name="vol_per_mould" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="bulk_wt_soil">Bulk wt of soil (gm)</label></td>
-                                    <td ><field name="bulk_wt_soil" /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="moisture_con_bt">Moisture Content (before Test), %</label></td>
-                                    <td><field name="moisture_con_bt" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="moisture_con_at">Moisture Content (After Test), %</label></td>
-                                    <td><field name="moisture_con_at"  /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="bulk_density">Bulk density (gm/cc)</label></td>
-                                    <td><field name="bulk_density" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="dry_density">Dry density (gm/cc)</label></td>
-                                    <td><field name="dry_density"  /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not permeability_falling_visible">
-                        <tbody>
-                             <tr>
-                                <td><span></span></td>
-                                <td><label for="W1_soil">W1</label></td>
-                                <td><label for="W2_soil">W2</label></td>
-                                <td><label for="W3_soil">W3 = (W2-W1)</label></td>
-                                <td><label for="volume_soil">Volume (V)</label></td>
-                                <td><label for="density_soils">Density (γ) g/cc</label></td>
-                                <td><label for="specific_gravity_per">Specific Gravity</label></td>
-                                
-                            </tr>
-                            <tr>
-                                <td><span>Density of Water at 27°C</span></td>
-                                <td><field name="W1_soil"  colspan="1"  nolabel="1" class="blue-input"/> </td>
-                                <td><field name="W2_soil"  colspan="1"  nolabel="1" class="blue-input"/> </td>
-                                <td><field name="W3_soil"/> </td>
-                                <td><field name="volume_soil"  colspan="1"  nolabel="1" class="blue-input"/> </td>
-                                <td><field name="density_soils"/> </td>
-                                <td class="text-center" rowspan = "2" style="padding-top:25px;"><field name="specific_gravity_per"/> </td>
-
-                            </tr>
-                            <tr>
-                                <td><span>Density of Water at 28°C</span></td>
-                                <td><field name="W1_soil_28"  colspan="1"  nolabel="1" class="blue-input"/> </td>
-                                <td><field name="W2_soil_28"  colspan="1"  nolabel="1" class="blue-input"/> </td>
-                                <td><field name="W3_soil_28"/> </td>
-                                <td><field name="volume_soil_28"  colspan="1"  nolabel="1" class="blue-input"/> </td>
-                                <td><field name="density_soils_28"/> </td>
-                                
-                            </tr>
-                            
-                            
-                        </tbody>
-                    </table>
-
-                    <div invisible = "permeability_falling_visible == False">
-                    
-                        <field name="permeability_ids">
-                            <tree editable="bottom" class="custom_table_borders">
-                                <field name='serial_no'/>
-                                <field name='initial_head'/>
-                                <field name='final_head'/>
-                                <field name='initial_head1'/>
-                                <field name='final_head2'/>
-                                <field name='time'/>
-                                <field name='permeability'/>
-                              
-                            </tree>
-                        </field>
-                    </div>
-
-                    <div class="d-flex gap-2" invisible="not permeability_falling_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="avg_permeability">Average Permeability Avg KT :</label></td>
-                                    <td ><field name="avg_permeability" readonly="1"/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="avg_permeability_27">Average Permeability K27 :</label></td>
-                                    <td><field name="avg_permeability_27"  /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                    </div> -->
 
 
                     <!-- DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST -->

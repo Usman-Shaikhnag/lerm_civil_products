@@ -792,6 +792,7 @@
 
 
 				 <div style="margin-top:100px; page-break-before: always;">
+				 <t t-foreach="data.swelling_pressure_ids" t-as="line">
 				 <!-- HEADER -->
 						<table class="table table-bordered">
 							<tr>
@@ -926,7 +927,9 @@
 						</table>
 
 						<!-- SWELLING PRESSURE TABLE -->
+						<t t-foreach="data.swelling_pressure_ids" t-as="line">
 						<h5 class="mt-3">Swelling Pressure Observation</h5>
+						
 						<table class="table table-bordered">
 							<thead>
 								<tr>
@@ -936,20 +939,17 @@
 								</tr>
 							</thead>
 							<tbody>
-								<t t-foreach="data.swelling_pressure_ids" t-as="p">
-									<t t-foreach="p.swelling_table_ids" t-as="g">
+									<t t-foreach="line.swelling_table_ids" t-as="g">
 										<tr>
-											<td><span t-field="g.serial_no"/></td>
-											<td><span t-field="g.cylces"/></td>
 											<td><span t-field="g.applied_pressure"/></td>
 											<td><span t-field="g.final_read"/></td>
 											<td><span t-field="g.delta_h"/></td>
 										</tr>
 									</t>
-								</t>
 
 							</tbody>
 						</table>
+						</t>
 
 						<!-- GRAPH -->
 					
@@ -969,6 +969,8 @@
 								<span t-field="line.swelling_pressure"/> kg/cm²
 							</div>
 						</t>
+
+					</t>
 
 					</div>
 
