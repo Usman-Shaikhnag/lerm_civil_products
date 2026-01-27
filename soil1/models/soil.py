@@ -5846,6 +5846,8 @@ class Soil(models.Model):
         buffer.close()
         plt.close(fig)
 
+        
+
 
 
 
