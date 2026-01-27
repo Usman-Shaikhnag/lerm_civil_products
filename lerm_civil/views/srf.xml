@@ -28,7 +28,10 @@
                   <button name="action_generate_sample_lab_groups"
                         string="Lab Id Generate"
                         type="object"
-                        class="btn-primary"/>
+
+                        class="btn-primary"
+                        invisible="is_generated == True"/>
+
 
                     <button name="confirm_srf" class="oe_highlight" type="object" string="Confirm"
                         groups="lerm_civil.lerm_access_confirm_srf"
