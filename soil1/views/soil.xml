@@ -753,9 +753,9 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name= 'date' width="80px" />
                                 <field name='lab_id'  width="50px"/>
-                                <field name='wet_soil_container' width="100px"  />
-                                <field name='dry_soil_container' width="100px" />
-                                <field name= 'container_weight' width="110px" />
+                                <field name='wet_soil_container' width="100px"  class="blue-input" decoration-info="wet_soil_container!=0"/>
+                                <field name='dry_soil_container' width="100px" class="blue-input" decoration-info="dry_soil_container!=0"/>
+                                <field name= 'container_weight' width="110px" class="blue-input" decoration-info="container_weight!=0"/>
                                 <field name='moisture_content' width="110px"/>
                                 <field name='avg_nmc' width="100px"/>
                                
@@ -1225,8 +1225,8 @@
                     <tree editable="bottom" class="custom_table_borders">
                         <field name="serial_no" string="Sr.No" width="35px"/>
                         <field name="lab_id" string="Lab No." width="100px"/>
-                        <field name="vd" string="Vd" width="80px"/>
-                        <field name="vk" string="Vk" width="80px"/>
+                        <field name="vd" string="Vd" width="80px" class="blue-input" decoration-info="vd!=0"/>
+                        <field name="vk" string="Vk" width="80px" class="blue-input" decoration-info="vk!=0"/>
                         <field name="free_swell" string="Free swell(%)" width="110px" readonly="1"/>
                         <field name="is_ok" string="TRUE/FALSE" width="90px" readonly="1"/>
                     </tree>
@@ -1283,16 +1283,12 @@
                     <field name="ll_line_ids" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders">
                      
-    
-    
                             <field name="serial_no" string="Test No." width="50px"/>
                             <field name="blows" string="No. of Blows" width="100px"/>
                             <field name="container_no" string="Container No." width="100px"/>
                             <field name="m3" string="M3 (gm)" width="90px"/>
                             <field name="m2" string="M2 (gm)" width="90px"/>
-  
-  
-                           <field name="m1" string="M1 (gm)" width="90px"/>
+                            <field name="m1" string="M1 (gm)" width="90px"/>
                             <field name="m3_m2" string="M3-M2" width="90px"/>
                             <field name="m2_m1" string="M2-M1" width="90px"/>
                             <field name="water_content" string="Water Content %" width="110px"/>
@@ -1478,11 +1474,11 @@
                             <field name="m1" string="M1 (gm)" width="80px"/>
                             <field name="v1" string="V1 (cm3)" width="80px"/>
 
-                            <field name="m3" string="M3 (gm)" width="80px"/>
-                            <field name="m2" string="M2 (gm)" width="80px"/>
+                            <field name="m3" string="M3 (gm)" width="80px" class="blue-input" decoration-info="m3!=0"/>
+                            <field name="m2" string="M2 (gm)" width="80px" class="blue-input" decoration-info="m2!=0"/>
                             <field name="m3_m2" string="M3-M2" width="85px"/>
                             <field name="m2_m1" string="M2-M1" width="85px"/>
-                            <field name="v2" string="V2 (cm3)" width="80px"/>
+                            <field name="v2" string="V2 (cm3)" width="80px" class="blue-input" decoration-info="v2!=0"/>
                             <field name="v1_v2" string="V1-V2" width="85px"/>
                             <field name="water_content" string="Water Content %" width="100px"/>
                             <field name="shrinkage_ratio" string="Shrinkage Ratio" width="110px"/>
@@ -2111,12 +2107,12 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='time_m'/>
                                 <field name='sqrt_time'  />
-                                <field name='load_0_05_0_1'/>
-                                <field name='load_0_1_0_2'/>
-                                <field name='load_0_2_0_5'/>
-                                <field name='load_0_5_1_0'/>
-                                <field name='load_1_0_2_0'/>
-                                <field name='load_2_0_4_0'/>
+                                <field name='load_0_05_0_1' class="blue-input" decoration-info="load_0_05_0_1!=0"/>
+                                <field name='load_0_1_0_2' class="blue-input" decoration-info="load_0_1_0_2!=0"/>
+                                <field name='load_0_2_0_5' class="blue-input" decoration-info="load_0_2_0_5!=0"/>
+                                <field name='load_0_5_1_0' class="blue-input" decoration-info="load_0_5_1_0!=0"/>
+                                <field name='load_1_0_2_0' class="blue-input" decoration-info="load_1_0_2_0!=0"/>
+                                <field name='load_2_0_4_0' class="blue-input" decoration-info="load_2_0_4_0!=0"/>
                                 <field name='load_4_0_8_0'/>
                               
                             </tree>
@@ -2176,7 +2172,7 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
                                 <field name='applied_pressure'/>
-                                <field name='final_read'/>
+                                <field name='final_read' class="blue-input" decoration-info="final_read!=0"/>
                                 <field name='delta_h'/>
                               
                             </tree>
@@ -2414,11 +2410,11 @@
                         <field name="permeability_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='initial_head'/>
-                                <field name='final_head'/>
+                                <field name='initial_head' class="blue-input" decoration-info="initial_head!=0"/>
+                                <field name='final_head' class="blue-input" decoration-info="final_head!=0"/>
                                 <field name='initial_head1'/>
                                 <field name='final_head2'/>
-                                <field name='time'/>
+                                <field name='time' class="blue-input" decoration-info="time!=0"/>
                                 <field name='permeability'/>
                               
                             </tree>
@@ -2969,7 +2965,6 @@
 
                         </div>
 
-
                          <field name="ucs_ids" class="custom_table_borders" nolabel="1" invisible = "ucs_visible == False">
                             <tree string="UCS" decoration-info="lab_id">
                                 <field name="serial_no"/>
@@ -3182,9 +3177,9 @@
                                 <field name='serial_no'/>
                                 <field name='horizontal_read'/>
                                 <field name='corrected_area'/>
-                                <field name='prove_ring_read'/>
+                                <field name='prove_ring_read' class="blue-input" decoration-info="prove_ring_read!=0"/>
                                 <field name='shear_stress'/>
-                                <field name='axial_deformation'/>
+                                <field name='axial_deformation' class="blue-input" decoration-info="axial_deformation!=0"/>
                                 <field name='axial_strain'/>
                               
                             </tree>

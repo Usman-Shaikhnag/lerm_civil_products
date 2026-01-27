@@ -281,12 +281,11 @@ class SrfForm(models.Model):
                     'sample_id': line.id,
                     'review_line_ids': review_lines_vals
                 })
-<<<<<<< HEAD
-=======
+
 
             self.is_generated = True
->>>>>>> 3a52865025f96d1fd8caa0adf8e384c14f38a027
                 
+
 
         except Exception as e:
             first_line.lab_id = f"Error: {e}"
