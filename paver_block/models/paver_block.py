@@ -52,43 +52,34 @@ class PaverBlock(models.Model):
      # --- Button Function ---
     def action_generate_options_paver(self):
         for record in self:
-            # Step 1: Check if lab_id exists and has hyphen
+         
             if record.lab_id and '-' in record.lab_id:
                 try:
-                    # Step 2: Clear old lines first
-                    lines_command = [(5, 0, 0)]
                     
-                    # Step 3: String Parsing
+                    lines_command = [(5, 0, 0)]
                     parts = record.lab_id.split(' - ')
                     
                     if len(parts) >= 2:
-                        start_part = parts[0].strip() # Example: "S-25-001"
-                        end_part = parts[-1].strip()  # Example: "S-25-006"
-
+                        start_part = parts[0].strip() 
+                        end_part = parts[-1].strip()  
                         prefix = start_part.rsplit('-', 1)[0]
+                        start_num_str = start_part.split('-')[-1]
+                        end_num_str = end_part.split('-')[-1]     
                         
-                        # --- CHANGE START ---
-                        # Number cha string part vegla kara length check karnya sathi
-                        start_num_str = start_part.split('-')[-1] # "001" milnar
-                        end_num_str = end_part.split('-')[-1]     # "006" milnar
                         
-                        # Length calculate kara (Example: "001" chi length 3 ahe)
                         padding_length = len(start_num_str)
+                        start_num = int(start_num_str) 
+                        end_num = int(end_num_str)    
+                      
 
-                        start_num = int(start_num_str) # Integer madhe convert: 1
-                        end_num = int(end_num_str)     # Integer madhe convert: 6
-                        # --- CHANGE END ---
-
-                        # Step 4: Loop ani Create Lines
+        
                         for num in range(start_num, end_num + 1):
-                            # zfill use karun zero add kara
-                            # Jar num=1 ahe ani padding_length=3 ahe, tar "001" banel
+                           
                             formatted_num = str(num).zfill(padding_length)
-                            
                             val = f"{prefix}-{formatted_num}"
                             lines_command.append((0, 0, {'lab': val}))
 
-                        # Step 5: Assign to One2many field
+                       
                         record.lab_paver_ids = lines_command
                         
                 except Exception as e:
@@ -137,6 +128,7 @@ class PaverBlock(models.Model):
                 'exclude_sample_id': self.eln_ref.sample_id.id,
                 },
         }
+    
 
     @api.depends('eln_ref')
     def _compute_size_id(self):
@@ -731,6 +723,7 @@ class PaverBlock(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
             
+
 
         return {
                 'view_mode': 'form',

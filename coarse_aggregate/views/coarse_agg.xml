@@ -18,6 +18,7 @@
                        <field name="grade"/>
                     </group>
 
+
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
@@ -58,7 +59,7 @@
 
                       <button name="action_generate_options_coarse" 
                             type="object" 
-                            string="Generate Lab ID" 
+                            string="Show Lab ID" 
                             class="oe_highlight"/>
 
                     <field name="lab_coarse_ids" invisible="1">
@@ -66,6 +67,8 @@
                             <field name="lab"/>
                         </tree>
                     </field>
+
+
 
                     <!-- Sieve Alanysis  -->
                     <div invisible="sieve_visible == False">
@@ -141,7 +144,7 @@
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
                         <tbody>
                             <tr>
-                                <td><label for="standard_type">Test Method</label></td>
+                                <td><label for="standard_type">Test specification</label></td>
                                 <td>
                                     <field name="standard_type" style="background-color:#d8ecff;"/>
                                 </td>

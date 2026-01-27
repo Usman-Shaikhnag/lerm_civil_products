@@ -759,6 +759,7 @@ class MechanicalBricksBurntClay(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
+
             # Compressive Strength
             if result.parameter.internal_id == '97928829-9b1f-4091-aa7f-4b76f98eb47f':
                 result.result_char = round(self.avg_compressive_strength,2)

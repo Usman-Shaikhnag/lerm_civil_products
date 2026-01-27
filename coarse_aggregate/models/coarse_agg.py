@@ -225,8 +225,8 @@ class CoarseAggregateMechanical(models.Model):
 
     # Crushing Value 
 
-    temp_crushing_value = fields.Char(string="Temp.°C",required=True)
-    humidity_crushing_value= fields.Char(string="Humidity %" ,required=True)
+    temp_crushing_value = fields.Char(string="Temp.°C")
+    humidity_crushing_value= fields.Char(string="Humidity %" )
 
     crushing_value_name = fields.Char("Name",default="Crushing Value")
     crushing_visible = fields.Boolean("Crushing Visible",compute="_compute_visible")
@@ -368,8 +368,8 @@ class CoarseAggregateMechanical(models.Model):
 
 
     # Specific Gravity 
-    temp_specific_water = fields.Char(string="Temp.°C" ,required=True )
-    humidity_specific_water= fields.Char(string="Humidity %" ,required=True)
+    temp_specific_water = fields.Char(string="Temp.°C"  )
+    humidity_specific_water= fields.Char(string="Humidity %" )
 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
@@ -620,8 +620,8 @@ class CoarseAggregateMechanical(models.Model):
 
     # Impact Value 
 
-    temp_impact_value = fields.Char(string="Temp.°C" ,required=True)
-    humidity_impact_value= fields.Char(string="Humidity %" ,required=True)
+    temp_impact_value = fields.Char(string="Temp.°C" )
+    humidity_impact_value= fields.Char(string="Humidity %" )
 
     impact_value_name = fields.Char("Name",default=" Impact Value")
     impact_visible = fields.Boolean("Impact Visible",compute="_compute_visible")
@@ -791,8 +791,8 @@ class CoarseAggregateMechanical(models.Model):
    
     # !0% Fine Value
 
-    temp_fine_value = fields.Char(string="Temp.°C" ,required=True)
-    humidity_fine_value= fields.Char(string="Humidity %" ,required=True) 
+    temp_fine_value = fields.Char(string="Temp.°C" )
+    humidity_fine_value= fields.Char(string="Humidity %" ) 
 
     name_10fine = fields.Char(default="10% Fine Value")
     fine10_visible = fields.Boolean("10% Fine Visible",compute="_compute_visible")
@@ -1277,15 +1277,13 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
-    
-
 
 
 
     # Compacted  Or Rodded Density
 
-    temp_density = fields.Char(string="Temp.°C" ,required=True)
-    humidity_density= fields.Char(string="Humidity %" ,required=True)
+    temp_density = fields.Char(string="Temp.°C" )
+    humidity_density= fields.Char(string="Humidity %" )
 
 
     compacted_density_name = fields.Char("Name",default="Compacted Density ")
@@ -1623,8 +1621,8 @@ class CoarseAggregateMechanical(models.Model):
 
   # Rate of Evaporation
 
-    temp_evaporation = fields.Char(string="Temp.°C" ,required=True)
-    humidity_evaporation= fields.Char(string="Humidity %" ,required=True)
+    temp_evaporation = fields.Char(string="Temp.°C" )
+    humidity_evaporation= fields.Char(string="Humidity %" )
 
     rate_of_evaporation_name = fields.Char(default="Rate of Evaporation")
 
@@ -1726,8 +1724,8 @@ class CoarseAggregateMechanical(models.Model):
 
     # Abrasion Value
 
-    temp_abrasion_value = fields.Char(string="Temp.°C" ,required=True)
-    humidity_abrasion_value= fields.Char(string="Humidity %" ,required=True)
+    temp_abrasion_value = fields.Char(string="Temp.°C" )
+    humidity_abrasion_value= fields.Char(string="Humidity %" )
 
 
     abrasion_value_name = fields.Char("Name",default="Abrasion Value By Los Angeles+")
@@ -1896,8 +1894,8 @@ class CoarseAggregateMechanical(models.Model):
 
 
     # Sieve Analysis 
-    temp_sieve_analysis = fields.Char(string="Temp.°C" ,required=True)
-    humidity_sieve_analysis= fields.Char(string="Humidity %" ,required=True)
+    temp_sieve_analysis = fields.Char(string="Temp.°C" )
+    humidity_sieve_analysis= fields.Char(string="Humidity %" )
     
     weight_of_sample = fields.Float(string="Weight of Sample in gms")
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
@@ -2289,8 +2287,8 @@ class CoarseAggregateMechanical(models.Model):
 
      #  Soundness Test 
 
-    temp_soudness = fields.Char(string="Temp.°C" ,required=True)
-    humidity_soudness= fields.Char(string="Humidity %",required=True)
+    temp_soudness = fields.Char(string="Temp.°C" )
+    humidity_soudness= fields.Char(string="Humidity %")
 
     soudness_name = fields.Char("Name",default="Soundness Test ")
     soudness_visible = fields.Boolean("Soundness Test",compute="_compute_visible")

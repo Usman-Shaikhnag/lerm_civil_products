@@ -15,7 +15,7 @@
                             type="object"
                             name="open_sample_allotment_wizard"
                             string="Allotment"
-                            groups="lerm_civil.kes_job_allocation,lerm_civil.kes_hod_access_group,lerm_civil.kes_verified_by,lerm_civil.kes_quality_manager"
+                            groups="lerm_civil.lerm_job_allocation"
                             invisible="state not in ('1-allotment_pending','7-partially-alloted')"/>
 
                         <button type="object" name="print_datasheet" string="Print Datasheet"/>
@@ -32,19 +32,16 @@
                             string="Print Non-NABL Report"
                             invisible="state not in ('4-in_report')"/>
 
-                        <button type="object" class="oe_highlight" name="approve_sample" string="Approve"
-                            groups="lerm_civil.kes_checked_by,lerm_civil.kes_hod_access_group"
+                        <button type="object" groups="lerm_civil.lerm_sample_verification" class="oe_highlight" name="approve_sample" string="Approve"
                             invisible="state not in ('3-pending_verification')"/>
 
-                        <button type="object" class="oe_highlight" name="approve_pending_sample" string="Approve"
-                            groups="lerm_civil.kes_hod_access_group"
+                        <button type="object" groups="lerm_civil.lerm_sample_approval" class="oe_highlight" name="approve_pending_sample" string="Approve"
                             invisible="state not in ('5-pending_approval')"/>
 
-                        <button type="object" name="reject_sample" string="Reject"
+                        <button type="object" groups="lerm_civil.lerm_sample_verification" name="reject_sample" string="Reject"
                             invisible="state not in ('3-pending_verification', '5-pending_approval')"/>
 
-                        <button type="object" name="reallocate_sample" string="Reallocate"
-                            groups="lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_verified_by"
+                        <button type="object" groups="lerm_civil.lerm_job_allocation" name="reallocate_sample" string="Reallocate"
                             invisible="state in ('1-allotment_pending')"/>
 
                         <button type="object" name="cancel_sample" string="Cancel Sample"
@@ -95,6 +92,9 @@
                                 <field name="invoice_number" readonly="1"/>
                                 <field name='tested_by_signature_datasheet'/>
                                 <field name='checked_by_signature_datasheet'/>
+                                <field name="datasheet_path" readonly="1" invisible="1" />
+                                <field name="datasheet_path" readonly="1"  invisible="1"/>
+                                
                                 <!-- <field name="file_upload" widget="many2many_binary" />
                                 <field name="report_upload" widget="many2many_binary" /> -->
                                 <!-- <field name="datasheet_path" readonly="1" />
@@ -384,6 +384,7 @@
             </form>
         </field>
     </record>
+
 
 
     <record id="srf_sample_allotment_wizard_action" model="ir.actions.act_window">

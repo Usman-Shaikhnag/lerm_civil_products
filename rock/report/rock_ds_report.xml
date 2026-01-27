@@ -668,42 +668,153 @@
                                 <td colspan="3" style="text-align: center;"><b>Room temperature</b></td>
 								 <td colspan="3" style="text-align: center;"><b>Relative Humidity</b></td>
                                 <td colspan="3" style="text-align: center;"><b>Water temperature</b></td>
-                                <td colspan="3" style="text-align: center;"><b>Average Diameter</b></td>
-								<td colspan="3" style="text-align: center;"><b>Average Height</b></td>
-								<td colspan="3" style="text-align: center;"><b>H/D</b></td>
-								<td colspan="3" style="text-align: center;"><b>Bulk Density</b></td>
-								<td colspan="3" style="text-align: center;"><b>Sat Density</b></td>
-								<td colspan="3" style="text-align: center;"><b>Dry Density</b></td>
-								<td colspan="3" style="text-align: center;"><b>Water Absorption</b></td>
-								<td colspan="3" style="text-align: center;"><b>Porosity</b></td>
-								<td colspan="3" style="text-align: center;"><b>Moisture content</b></td>
+								<t t-if="data.avg_dia_visible">
+                                <td colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9214587uytf')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
+								<t t-if="data.avg_height_visible">
+								<td colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe921147852gh')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
+								<t t-if="data.hd_visible">
+								<td colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','201478ght-0bc7-41a6-a2bb-0fe9211478521gt')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
+								<t t-if="data.bulk_density_visible">
+								<td colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210478bbb-0bc7-41a6-a2bb-0fe9211478521r4')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
+								<t t-if="data.sat_density_visible">
+								<td colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','20123rtyng-0bc7-41a6-a2bb-0fe921147814524')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
+								<t t-if="data.dry_density_visible">
+								<td colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','4578uuuytt-0bc7-41a6-a2bb-0fe9211478tyu556')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
+								<t t-if="data.water_absorption_visible">
+								<td colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2147852trr-0bc7-41a6-a2bb-0fe92114rterrgghy')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
+								<t t-if="data.porosity_visible">
+								<td colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','55544ttyyyr-0bc7-41a6-a2bb-0fe92114rterertty')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
+								<t t-if="data.moisture_content_visible">
+								<td colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','7778rrrtttgg-0bc7-41a6-a2bb-0fe92114rr445ttj')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
 
-							   <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/>
-								<td t-if="show_compress"  colspan="3" style="text-align: center;"><b>Compressive Strength  </b></td>
+							   <!-- <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_compress"  colspan="3" style="text-align: center;"><b>Compressive Strength  </b></td> -->
+								<t t-if="data.compressive_strength_visible">
+								<td   colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','88rrty222vv33-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
 						
 							
-							<t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/>
-								<td t-if="show_compress1" colspan="3" style="text-align: center;"><b>Compressive Strength </b></td>
+							<!-- <t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_compress1" colspan="3" style="text-align: center;"><b>Compressive Strength </b></td> -->
+								<t t-if="data.compressive_strength_visible1">
+								<td colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','5578gghty214-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
 						
-							<t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/>
-								<td t-if="show_point_load" colspan="3" style="text-align: center;"><b>Point load</b></td>
+							<!-- <t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_point_load" colspan="3" style="text-align: center;"><b>Point load</b></td> -->
+								<t t-if="data.point_load_visible">
+								<td  colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','785587rttgg11-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
 
-							 <t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/>
-								<td t-if="show_point_load_strength"  colspan="3" style="text-align: center;"><b>Point load strength index Is/Il (50)</b></td>
+							 <!-- <t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_point_load_strength"  colspan="3" style="text-align: center;"><b>Point load strength index Is/Il (50)</b></td> -->
+								<t t-if="data.point_load_visible1">
+								<td   colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','87522869rtyhn-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
                               
 
-							   <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/>
-								<td t-if="show_duration_of_test" colspan="3" style="text-align: center;"><b>Duration of test</b></td>
+							   <!-- <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_duration_of_test" colspan="3" style="text-align: center;"><b>Duration of test</b></td> -->
+								<t t-if="data.duration_of_test_visible">
+								<td  colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9995522tyynn1-0bc7-41a6-a2bb-0fe92114rr4457')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
 
-								<t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/>
-								<td t-if="show_stress_rate" colspan="3" style="text-align: center;"><b>Stress rate</b></td>
+								<!-- <t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_stress_rate" colspan="3" style="text-align: center;"><b>Stress rate</b></td> -->
+								<t t-if="data.stress_rate_visible">
+								<td  colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3332gghytt1144-0bc7-41a6-a2bb-0fe92114rr478t')]).parameter_name"/>
+								</span>
+								
+								</td>
+								</t>
 
 								
-								<t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/>
-								<td t-if="show_mode_of_failure" colspan="3" style="text-align: center;"><b>Mode of failure</b></td>
+								<!-- <t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_mode_of_failure" colspan="3" style="text-align: center;"><b>Mode of failure</b></td> -->
+								<t t-if="data.mode_of_failure_visible">
+								<td  colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22277gght1100t-0bc7-41a6-a2bb-0fe92114rr478y')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
 
-								<t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/>
-								<td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>Sp. Gravity</b></td>
+								<!-- <t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>Sp. Gravity</b></td> -->
+								<t t-if="data.sp_gravity_visible">
+								<td  colspan="3" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','8866ggtrhh2277j-0bc7-41a6-a2bb-0fe92114rr4yre')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
 								<!-- <td colspan="3" style="text-align: center;"><b>Load (UCS)</b></td> -->
 								
                             </tr>
@@ -718,69 +829,370 @@
 							<td colspan="3" style="text-align: center;"><b>°deg</b></td>
 							<td colspan="3" style="text-align: center;"><b>%</b></td>
 							<td colspan="3" style="text-align: center;"><b>°deg</b></td>
-							<td colspan="3" style="text-align: center;"><b>mm</b></td>
-							<td colspan="3" style="text-align: center;"><b>mm</b></td>
-							<td colspan="3" style="text-align: center;"><b>--</b></td>
-							<td colspan="3" style="text-align: center;"><b>g/cc</b></td>
-							<td colspan="3" style="text-align: center;"><b>g/cc</b></td>
-							<td colspan="3" style="text-align: center;"><b>g/cc</b></td>
-							<td colspan="3" style="text-align: center;"><b>%</b></td>
-							<td colspan="3" style="text-align: center;"><b>%</b></td>
-							<td colspan="3" style="text-align: center;"><b>%</b></td>
+							<t t-if="data.avg_dia_visible">
+							<td colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9214587uytf')]).unit.name"/>
+								</span>
+							</td>
+							</t>
+							<t t-if="data.avg_height_visible">
+							<td colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe921147852gh')]).unit.name"/>
+								</span>
+							</td>
+							</t>
+							<t t-if="data.hd_visible">
+							<td colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','201478ght-0bc7-41a6-a2bb-0fe9211478521gt')]).unit.name"/>
+								</span>
+							</td>
+							</t>
+							<t t-if="data.bulk_density_visible">
+							<td colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210478bbb-0bc7-41a6-a2bb-0fe9211478521r4')]).unit.name"/>
+								</span>
+							</td>
+							</t>
+							<t t-if="data.sat_density_visible">
+							<td colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','20123rtyng-0bc7-41a6-a2bb-0fe921147814524')]).unit.name"/>
+								</span>
+							</td>
+							</t>
+							<t t-if="data.dry_density_visible">
+							<td colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','4578uuuytt-0bc7-41a6-a2bb-0fe9211478tyu556')]).unit.name"/>
+								</span>
+							</td>
+							</t>
+							<t t-if="data.water_absorption_visible">
+							<td colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2147852trr-0bc7-41a6-a2bb-0fe92114rterrgghy')]).unit.name"/>
+								</span>
+							</td>
+							</t>
+							<t t-if="data.porosity_visible">
+							<td colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','55544ttyyyr-0bc7-41a6-a2bb-0fe92114rterertty')]).unit.name"/>
+								</span>
+							</td>
+							</t>
+							<t t-if="data.moisture_content_visible">
+							<td colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','7778rrrtttgg-0bc7-41a6-a2bb-0fe92114rr445ttj')]).unit.name"/>
+								</span>
+							</td>
+							</t>
 
-						 <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/>
-							<td t-if="show_compress" colspan="3" style="text-align: center;"><b>MPa</b></td>
+						 <!-- <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/> -->
+							<!-- <td t-if="show_compress" colspan="3" style="text-align: center;"><b>MPa</b></td> -->
+							<t t-if="data.compressive_strength_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','88rrty222vv33-0bc7-41a6-a2bb-0fe92114rr445t')]).unit.name"/>
+								</span>
+							</td>
+							</t>
 							
-							<t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/>
-							<td t-if="show_compress1" colspan="3" style="text-align: center;"><b>MPa</b></td>
+							<!-- <t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/> -->
+							<!-- <td t-if="show_compress1" colspan="3" style="text-align: center;"><b>MPa</b></td> -->
+							<t t-if="data.compressive_strength_visible1">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','5578gghty214-0bc7-41a6-a2bb-0fe92114rr445t')]).unit.name"/>
+								</span>
+							</td>
+							</t>
 
-						<t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/>
-							<td t-if="show_point_load" colspan="3" style="text-align: center;"><b>kN</b></td>
+						<!-- <t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/> -->
+							<!-- <td t-if="show_point_load" colspan="3" style="text-align: center;"><b>kN</b></td> -->
+							<t t-if="data.point_load_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','785587rttgg11-0bc7-41a6-a2bb-0fe92114rr445t')]).unit.name"/>
+								</span>
+							</td>
+							</t>
 
-						<t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/>
-							<td t-if="show_point_load_strength" colspan="3" style="text-align: center;"><b>MPa</b></td>
+						<!-- <t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/> -->
+							<!-- <td t-if="show_point_load_strength" colspan="3" style="text-align: center;"><b>MPa</b></td> -->
+							<t t-if="data.point_load_visible1">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','87522869rtyhn-0bc7-41a6-a2bb-0fe92114rr445t')]).unit.name"/>
+								</span>
+							</td>
+							</t>
 
-                           <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/>
-							<td t-if="show_duration_of_test" colspan="3" style="text-align: center;"><b>Sec</b></td>
 
-							<t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/>
-							<td t-if="show_stress_rate" colspan="3" style="text-align: center;"><b>MPa/s</b></td>
+                           <!-- <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/> -->
+							<!-- <td t-if="show_duration_of_test" colspan="3" style="text-align: center;"><b>Sec</b></td> -->
+							<t t-if="data.duration_of_test_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9995522tyynn1-0bc7-41a6-a2bb-0fe92114rr4457')]).unit.name"/>
+								</span>
+							</td>
+							</t>
 
-							<t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/>
-							<td t-if="show_mode_of_failure" colspan="3" style="text-align: center;"><b>-</b></td>
+							<!-- <t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/> -->
+							<t t-if="data.stress_rate_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3332gghytt1144-0bc7-41a6-a2bb-0fe92114rr478t')]).unit.name"/>
+								</span>
+							</td>
+							</t>
+							<!-- <td t-if="show_stress_rate" colspan="3" style="text-align: center;"><b>MPa/s</b></td> -->
 
-                          <t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/>
-							<td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>-</b></td>
+
+							<!-- <t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/> -->
+							<!-- <td t-if="show_mode_of_failure" colspan="3" style="text-align: center;"><b>-</b></td> -->
+							<t t-if="data.mode_of_failure_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22277gght1100t-0bc7-41a6-a2bb-0fe92114rr478y')]).unit.name"/>
+								</span>
+							</td>
+							</t>
+
+                          <!-- <t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/> -->
+							<!-- <td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>-</b></td> -->
+							<t t-if="data.sp_gravity_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','8866ggtrhh2277j-0bc7-41a6-a2bb-0fe92114rr4yre')]).unit.name"/>
+								</span>
+							</td>
+							</t>
 						</tr>
 
 						<tr style="background-color:#f9f9f9;">
 								
-								<td colspan="33" style="text-align: center; "><b>Test Method/Reference</b></td>
-								<td colspan="18" style="text-align: center; "><b>IS 13030</b></td>
+								<td colspan="24" style="text-align: center; "><b>Test Method/Reference</b></td>
+								<t t-if="data.avg_dia_visible">
+								<td colspan="3" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9214587uytf')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</td>
+								</t>
 								<!-- <td colspan="3" style="text-align: center; "></td> -->
-								 <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/>
-								<td t-if="show_compress" colspan="3" style="text-align: center; "><b>IS 9143</b></td>
+								<!-- <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_compress" colspan="3" style="text-align: center; "><b>IS 9143</b></td> -->
+								<!-- <td  colspan="3" style="text-align: center; "><b>IS 9143</b></td> -->
 
-								 <t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/>
-								<td t-if="show_compress1" colspan="3" style="text-align: center; "><b>IS 9143</b></td>
+								 <!-- <t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_compress1" colspan="3" style="text-align: center; "><b>IS 9143</b></td> -->
+								<t t-if="data.avg_height_visible">
+								<td  colspan="3" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe921147852gh')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								
+								</td>
+								</t>
 
-                                 <t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/>
-								<td t-if="show_point_load" colspan="3" style="text-align: center; "><b>IS 8764</b></td>
+                                 <!-- <t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_point_load" colspan="3" style="text-align: center; "><b>IS 8764</b></td> -->
+								<t t-if="data.hd_visible">
+								<td  colspan="3" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','201478ght-0bc7-41a6-a2bb-0fe9211478521gt')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</td>
+								</t>
 
-								<t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/>
-								<td t-if="show_point_load" colspan="3" style="text-align: center; "><b>IS 8764</b></td>
+								<!-- <t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_point_load" colspan="3" style="text-align: center; "><b>IS 8764</b></td> -->
+								<t t-if="data.bulk_density_visible">
+								<td  colspan="3" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210478bbb-0bc7-41a6-a2bb-0fe9211478521r4')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</td>
+								</t>
 
-                              <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/>
-								<td t-if="show_duration_of_test" colspan="3" style="text-align: center; ">--</td>
+                              <!-- <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_duration_of_test" colspan="3" style="text-align: center; "></td> -->
+								<t t-if="data.sat_density_visible">
+								<td  colspan="3" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','20123rtyng-0bc7-41a6-a2bb-0fe921147814524')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</td>
+								</t>
 
-								<t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/>
-								<td t-if="show_stress_rate" colspan="3" style="text-align: center; ">--</td>
+								<!-- <t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/> -->
+								<!-- <td t-if="show_stress_rate" colspan="3" style="text-align: center; "></td> -->
+								<t t-if="data.dry_density_visible">
+								<td  colspan="3" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','4578uuuytt-0bc7-41a6-a2bb-0fe9211478tyu556')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</td>
+								</t>
 
-								<t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/>
-								<td t-if="show_mode_of_failure" colspan="3" style="text-align: center; ">--</td>
+								<!-- <t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/> -->
+							<!-- <td t-if="show_mode_of_failure" colspan="3" style="text-align: center; "></td> -->
+							<t t-if="data.water_absorption_visible">
+								<td  colspan="3" style="text-align: center; ">
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2147852trr-0bc7-41a6-a2bb-0fe92114rterrgghy')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+								</td>
+							</t>
 
-							<t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/>
-							<td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>-</b></td> 
+							<!-- <t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/> -->
+							<!-- <td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>-</b></td>  -->
+							<t t-if="data.porosity_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55544ttyyyr-0bc7-41a6-a2bb-0fe92114rterertty')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+							</td> 
+							</t>
+							<t t-if="data.moisture_content_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','7778rrrtttgg-0bc7-41a6-a2bb-0fe92114rr445ttj')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+							</td> 
+							</t>
+							<t t-if="data.compressive_strength_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','88rrty222vv33-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+							</td> 
+							</t>
+							<t t-if="data.compressive_strength_visible1">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5578gghty214-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+							</td> 
+							</t>
+							<t t-if="data.point_load_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','785587rttgg11-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+							</td> 
+							</t>
+							<t t-if="data.point_load_visible1">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','87522869rtyhn-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+							</td> 
+							</t>
+							<t t-if="data.duration_of_test_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9995522tyynn1-0bc7-41a6-a2bb-0fe92114rr4457')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+							</td> 
+							</t>
+							<t t-if="data.stress_rate_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3332gghytt1144-0bc7-41a6-a2bb-0fe92114rr478t')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+							</td> 
+							</t>
+							<t t-if="data.mode_of_failure_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','22277gght1100t-0bc7-41a6-a2bb-0fe92114rr478y')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+							</td> 
+							</t>
+							<t t-if="data.sp_gravity_visible">
+							<td  colspan="3" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','8866ggtrhh2277j-0bc7-41a6-a2bb-0fe92114rr4yre')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+							</td> 
+							</t>
+
 							</tr>
                             <t t-set="f" t-value="0"/>
                             <tr t-foreach="data.rock_child_lines" t-as="r">
@@ -813,72 +1225,112 @@
 									<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['water_temperature']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>   
-								
+								<t t-if="data.avg_dia_visible">
 								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['avg_dia']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
+								</t>
+								<t t-if="data.avg_height_visible">
 								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['avg_height']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
+                                </td>   
+								</t>  
+								<t t-if="data.hd_visible">
 								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['hd']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
+                                </td> 
+								</t>    
+								<t t-if="data.bulk_density_visible">
 								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['bulk_density']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
-							
+								</t>
+							   <t t-if="data.sat_density_visible">
 								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['sat_density']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
+                                </td>   
+								</t>  
+								<t t-if="data.dry_density_visible">
 								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['dry_density']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
+								</t>
+								<t t-if="data.water_absorption_visible">
 								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
+								</t>
+								<t t-if="data.porosity_visible">
 								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['porosity']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
+                                </td> 
+								</t>    
+								<t t-if="data.moisture_content_visible">
 								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['moisture_content']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
+                                </td>    
+								</t> 
 								
 								
-								<td t-if="show_compress" colspan="3" style="text-align: center;">
+								<!-- <td t-if="show_compress" colspan="3" style="text-align: center;"> -->
+								<t t-if="data.compressive_strength_visible">
+								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['comp_rock']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
+								</t>
 								
 							
 							
-								<td t-if="show_compress1" colspan="3" style="text-align: center;">
+								<!-- <td t-if="show_compress1" colspan="3" style="text-align: center;"> -->
+								<t t-if="data.compressive_strength_visible1">
+								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['comp_rock1']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
+								</t>
 								
-								<td t-if="show_point_load" colspan="3" style="text-align: center;">
+								<!-- <td t-if="show_point_load" colspan="3" style="text-align: center;"> -->
+								<t t-if="data.point_load_visible">
+								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['point_load']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
+								</t>
 
-								<td t-if="show_point_load_strength" colspan="3" style="text-align: center;">
+								<!-- <td t-if="show_point_load_strength" colspan="3" style="text-align: center;"> -->
+								<t t-if="data.point_load_visible1">
+								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['point_load_strength']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
+								</t>
 
-								<td t-if="show_duration_of_test" colspan="3" style="text-align: center;">
+								<!-- <td t-if="show_duration_of_test" colspan="3" style="text-align: center;"> -->
+								<t t-if="data.duration_of_test_visible">
+								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['duration_of_test']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>     
+								</t>
 
 
-								<td t-if="show_stress_rate" colspan="3" style="text-align: center;">
+								<!-- <td t-if="show_stress_rate" colspan="3" style="text-align: center;"> -->
+								<t t-if="data.stress_rate_visible">
+								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['stress_rate']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>   
+								</t>
 
-								<td t-if="show_mode_of_failure" colspan="3" style="text-align: center;">
+								<!-- <td t-if="show_mode_of_failure" colspan="3" style="text-align: center;"> -->
+								<t t-if="data.mode_of_failure_visible">
+								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['mode_of_failure']" />
                                 </td>  
+								</t>
 
 
-								<td t-if="show_sp_gravity"  colspan="3" style="text-align: center;">
+								<!-- <td t-if="show_sp_gravity"  colspan="3" style="text-align: center;"> -->
+								<t t-if="data.sp_gravity_visible">
+								<td colspan="3" style="text-align: center;">
                                     <span t-esc="r['sp_gravity']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>   
+								</t>
 								<!-- <td colspan="3" style="text-align: center;">
                                     <span t-esc="r['load_ucs']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>      -->

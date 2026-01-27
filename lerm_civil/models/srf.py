@@ -207,55 +207,83 @@ class SrfForm(models.Model):
         for rec in self:
             rec.sample_qty = rec.samples[0].sample_qty if rec.samples else False
 
+    is_generated = fields.Boolean(string="Is Generated", default=False, copy=False)
+
    
 
     def action_generate_sample_lab_groups(self):
-        # 1. Sequence nusar lines gha
+        # import wdb;wdb.set_trace()
         lines = self.samples.sorted(key=lambda r: r.id)
         
         if not lines:
             return
 
-        # 2. Pahilya line varun logic suru kara
         first_line = lines[0]
-        if not first_line.lab_id:
+        if not first_line:
             return
 
         try:
-            # --- Parsing Logic ---
-            parts = first_line.lab_id.split(' - ')
-            start_str = parts[0].strip() # Ex: R-26-001
-            
-            # Prefix ani Number vegla kara
-            prefix = start_str.rsplit('-', 1)[0] + '-'  # Ex: 'R-26-'
-            num_part = start_str.rsplit('-', 1)[1]      # Ex: '001' (String format madhe)
-            
-            # IMP: Input madhe kiti digits ahet te moza (padding sathi)
-            padding_length = len(num_part) # '001' chi length 3 ahe
-            
-            current_counter = int(num_part) # Calculation sathi integer banva (1)
-            
-            # --- Loop Start ---
             for line in lines:
                 if line.quantity <= 0:
                     continue
+                line.lab_id = False
+                line.lab_ids_raw = False
+                
 
-                # 3. End Number calculate kara
-                batch_end = current_counter + int(line.quantity) - 1
+
+                if not line.material_id or line.quantity <= 0 or line.sample_qty <= 0:
+                    continue
+
+                # prevent double consume
+                if line.lab_ids_raw:
+                    continue
+
+                seq_code = line._get_lab_sequence_code(line.material_id)
+                if not seq_code:
+                    continue
+
+                total = line.quantity * line.sample_qty   # 🔥 MULTIPLY HERE
+
+                ids = []
+                for i in range(total):
+                    lab = line.env['ir.sequence'].next_by_code(seq_code)
+                    if not lab:
+                        break
+                    ids.append(lab)
+
+                if not ids:
+                    continue
+
+                # store consumed IDs
+                line.lab_ids_raw = ','.join(ids)
+
+                # preview
+                if len(ids) == 1:
+                    line.lab_id = ids[0]
+                else:
+                    line.lab_id = f"{ids[0]} - {ids[-1]}"
                 
-                # 4. Number la parat Zero-Padding lau (IMP STEP)
-                # str().zfill() waprun length match kara
-                start_padded = str(current_counter).zfill(padding_length)
-                end_padded = str(batch_end).zfill(padding_length)
+                review_lines_vals = []
+
+                for lab in ids:
+                    review_lines_vals.append((0, 0, {
+                        'lab_id': lab,
+                    }))
+                # import wdb;wdb.set_trace()
+
+                existing_review = self.env['sample.request.review'].sudo().search([
+                    ('sample_id', '=', line.id)
+                ])
+                if existing_review:
+                    existing_review.unlink()
+
+                wizard = self.env['sample.request.review'].sudo().create({
+                    'sample_id': line.id,
+                    'review_line_ids': review_lines_vals
+                })
+
+            self.is_generated = True
                 
-                # 5. New Lab ID banva (e.g. R-26-001 - R-26-003)
-                new_range = f"{prefix}{start_padded} - {prefix}{end_padded}"
-                
-                # 6. Set kara
-                line.lab_id = new_range
-                
-                # 7. Next loop sathi update
-                current_counter = batch_end + 1
 
         except Exception as e:
             first_line.lab_id = f"Error: {e}"
@@ -961,7 +989,7 @@ class CreateSampleWizard(models.TransientModel):
                 rec.available_parameter_ids = [(5, 0, 0)]  # clear
 
 
-    quantity = fields.Integer(string="Quantity")
+    quantity = fields.Integer(string="Quantity", default="1")
     # sample_quantity = fields.Integer(string="Sample Quantity")
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")
@@ -972,8 +1000,7 @@ class CreateSampleWizard(models.TransientModel):
         string="Lab ID",
         readonly=True,
         tracking=True,
-        store=True,
-        compute="_compute_lab_id"
+        store=True
        
     )
     

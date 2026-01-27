@@ -43,7 +43,34 @@ class Material(models.Model):
 
     lab_boolean = fields.Boolean(string="Lab ID")
 
-    lab_table = fields.One2many("lab.name", "product_id", string="Test Readings")
+    # lab_table = fields.One2many("lab.name", "product_id", string="Test Readings")
+
+    lab_review_count = fields.Integer(
+        string='Lab IDs',
+        compute='_compute_lab_review_count'
+    )
+
+    def _compute_lab_review_count(self):
+        Review = self.env['sample.request.review']
+        for product in self:
+            product.lab_review_count = Review.search_count([
+                ('sample_id.material_id', '=', product.id)
+            ])
+    
+    def lab_id_count_button(self):
+        self.ensure_one()
+
+        return {
+            'name': 'Lab IDs',
+            'type': 'ir.actions.act_window',
+            'res_model': 'sample.request.review',
+            'view_mode': 'tree,form',
+            'domain': [
+                ('sample_id.material_id', '=', self.id)
+            ],
+            'target': 'current',
+        }
+
 
     
     

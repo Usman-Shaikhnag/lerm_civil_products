@@ -46,19 +46,6 @@ class ELN(models.Model):
     witness_path = fields.Char(string="Witness")
     attachment_path = fields.Char(string="Attachment")
 
-    @api.model
-    def get_eln_ids_for_material_name(self, name):
-        if not name:
-            return []
-        # search product by display_name
-        product = self.env['product.template'].search([('display_name','=',name)], limit=1)
-        if product:
-            # search ELNs with that product
-            elns = self.search([('material','=',product.id)])
-            return elns.mapped('eln_id')
-        return []
-
-
    
 
     
@@ -740,7 +727,7 @@ class ParameteResultCalculationWizard(models.TransientModel):
     def _compute_result_editable(self):
         state = self.eln_state
         current_user_groups = self.env.user.groups_id.ids
-        hod_group_id = self.env.ref('lerm_civil.kes_hod_access_group').id
+        hod_group_id = self.env.ref('lerm_civil.lerm_access_update_sample').id
 
         if state != '1-draft' and hod_group_id not in current_user_groups:
             self.result_editable = False
