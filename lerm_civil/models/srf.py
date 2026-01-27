@@ -163,7 +163,7 @@ class SrfForm(models.Model):
     ], string='Days of casting', default='3')
     
 
-    
+    is_generated = fields.Boolean(string="Is Generated", default=False, copy=False)
     date_casting = fields.Date(string="Date of Casting")
     date_editable = fields.Boolean(string="SRF Date editable",default=False,compute="_compute_date_editable")
     active = fields.Boolean(string="Active",default=True)
@@ -206,8 +206,6 @@ class SrfForm(models.Model):
     def _compute_sample_qty(self):
         for rec in self:
             rec.sample_qty = rec.samples[0].sample_qty if rec.samples else False
-
-    is_generated = fields.Boolean(string="Is Generated", default=False, copy=False)
 
    
 
@@ -282,8 +280,10 @@ class SrfForm(models.Model):
                     'review_line_ids': review_lines_vals
                 })
 
+
             self.is_generated = True
                 
+
 
         except Exception as e:
             first_line.lab_id = f"Error: {e}"
