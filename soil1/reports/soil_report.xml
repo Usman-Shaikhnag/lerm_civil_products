@@ -973,6 +973,277 @@
 					</t>
 
 					</div>
+					
+                <t t-foreach="data.cbr_ids" t-as="cbr">
+                 <div style="margin-top:100px; page-break-before: always;">
+				 
+					
+
+						<table style="width:100%; border-collapse:collapse; font-size:13px;">
+
+							<!-- 🔹 HEADER -->
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+									LAB ID :
+									<span t-esc="cbr.lab_id"/>
+								</td>
+
+								
+							</tr>
+
+							<tr>
+								<td colspan="3" style="border:1px solid black; padding:4px;">
+									<b>Test Method/Reference Code :</b> IS 2720-Part XVI-1987
+								</td>
+								<td colspan="3" style="border:1px solid black; padding:4px;">
+									<b>Annexure- II to ULR</b>
+									<span style="background-color:yellow; padding:2px 6px;">
+										<!-- <t t-esc="data.ulr_no"/> -->
+									</span>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Project Name :</b>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Name &amp; Address of Customer :</b>
+									<!-- <t t-esc="data.customer_name"/> -->
+									<!-- <td colspan="3" style="padding-left: 10px;width:25%;"> -->
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+								<!-- </td> -->
+								</td>
+							</tr>
+
+							
+
+							<tr>
+								<td  style="border:1px solid black; padding:4px;">
+								<b>Location/BH ID :</b>
+									
+								</td>
+								<td  style="border:1px solid black; padding:4px; text-align:center;">
+								<t t-esc="cbr.bh_id"/>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Proving ring capacity (kN)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+									<!-- <t t-esc="data.proving_ring_capacity"/> -->
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Test No.</b>
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+									<!-- <t t-esc="line.serial_no"/> -->
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Date Sample Received</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Start date of testing</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<span t-field="o.start_date" />
+								
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>End date of testing</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<span t-field="o.end_date" style="margin-right:10px;"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="2" style="border:1px solid black; padding:4px;">
+									<b>Room Temperature (°C)</b>
+								</td>
+								<td  colspan="2"  style="border:1px solid black; padding:4px; text-align:center;">
+									<t t-esc="cbr.room_temp"/>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									<b>Relative humidity (%)</b>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px; text-align:center;">
+									<t t-esc="cbr.humidity"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td  style="border:1px solid black; padding:4px;">
+									<b>Condition of specimen at test :</b>
+								</td>
+								<td  style="border:1px solid black; padding:4px;">
+									
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Sample Type</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									Type of compaction
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Soil fraction above 20mm replaced, (Kg)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+								   Period of soaking(days)
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Surcharge weight (kg)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+								</td>
+							
+							</tr>
+
+							<tr>
+								<td  style="border:1px solid black; padding:4px;">
+									<b>Initial height of specimen, h (mm)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+								     <t t-esc="cbr.initial_height"/>
+								</td>
+								<td  style="border:1px solid black; padding:4px;">
+									<b>Initial dial gauge reading, ds (mm)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+								   <t t-esc="cbr.initial_dial_guage"/>
+								</td>
+								<td  style="border:1px solid black; padding:4px;">
+									<b>Final dial gauge reading, df (mm)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+								  <t t-esc="cbr.final_dial_guage"/>
+								</td>
+							</tr>
+
+
+
+							<tr colspan="6">
+								<th colspan="2" style="border:1px solid black; padding:6px;"></th>
+								<th style="border:1px solid black; padding:6px;">Avg. water content</th>
+								<th style="border:1px solid black; padding:6px;">Volume of the specimen (cc)</th>
+								<th style="border:1px solid black; padding:6px;">Bulk density (g/cc)</th>
+								<th style="border:1px solid black; padding:6px;">Dry density (g/cc)</th>
+							</tr>
+
+							<tr colspan="6">
+								<td  colspan="2" style="border:1px solid black; padding:6px;"><b>Before soaking</b></td>
+								<td style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.before_avg_mc" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="border:1px solid black; padding:6px; text-align:center;"><t t-esc="cbr.volume_specimen1"/></td>
+								<td style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.before_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.before_dry_density" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+
+							<tr >
+								<td colspan="2" style="border:1px solid black; padding:6px;"><b>After test</b></td>
+								<td colspan="1" style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.avg_mc" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:6px; text-align:center;"><t t-esc="cbr.volume_specimen2" t-options='{"widget": "float", "precision": 2}'/></td>
+								<td colspan="1" style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.after_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.after_dry_density"  t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+
+							<tr>
+								<th colspan="2" style="border:1px solid black; padding:6px;text-align:center;">Penetration in (mm)</th>
+								<th colspan="2" style="border:1px solid black; padding:6px;text-align:center;">Dial Gauge Reading</th>
+								<th style="border:1px solid black; padding:6px;text-align:center;">Number of Division</th>
+								<th style="border:1px solid black; padding:6px;text-align:center;">Average Load in kN</th>
+							</tr>
+
+							<t t-foreach="cbr.soil_table" t-as="line">
+								<tr>
+									<td colspan="2" style="border:1px solid black; padding:6px; text-align:center;">
+										<t t-esc="line.penetration"/>
+									</td>
+									<td colspan="2" style="border:1px solid black; padding:6px; text-align:center;">
+										<t t-esc="line.proving_reading"/>
+									</td>
+									<td style="border:1px solid black; padding:6px; text-align:center;">
+										<t t-esc="line.no_division"/>
+									</td>
+									<td style="border:1px solid black; padding:6px; text-align:center;">
+										<t t-esc="line.avg_load"/>
+									</td>
+								</tr>
+							</t>
+
+							
+
+							
+
+
+
+						</table>
+
+						<t t-if="cbr.cbr_graph">
+                        <div style="text-align:center; margin-top:10px; width: 80%;">
+                            <img t-att-src="'data:image/png;base64,%s' % cbr.cbr_graph.decode('utf-8')"
+                                 style="width: 80%; height: auto; max-height: 900px; object-fit: contain;"/>
+                        </div>
+						<tr >
+						<td  style="border:1px solid black; padding:6px;"><b>CBR at Penetration of 2.5mm= </b></td>
+						<td  style="border:1px solid black; padding:6px; text-align:center;">
+							<t t-esc="cbr.cbr_2_5_mm" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+						<br></br>
+						<td  style="border:1px solid black; padding:6px;"><b>CBR at Penetration of 5mm= </b></td>
+						<td  style="border:1px solid black; padding:6px; text-align:center;">
+							<t t-esc="cbr.cbr_5_mm" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+							
+							</tr>
+                    </t>
+					
+
+						</div>
+
+						</t>
+					
+
+
+
 
 
 

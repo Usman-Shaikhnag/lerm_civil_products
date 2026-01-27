@@ -285,35 +285,63 @@
                                 }
                             </style>
 
-                      <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="selected_lab_id"></label></td>
-                                <td><field name="selected_lab_id"/></td>
-                            </tr>
-                            
-                        </tbody>
-                    </table> -->
+                      <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="lab_id">Lab ID</label></td>
+                                            <td><field name="lab_id" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="bh_id">BH ID</label></td>
+                                            <td><field name="bh_id" class="blue-input"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
 
-                      <!-- <style>
-                            .soil-table table {
-                                width: 100%;
-                                border-collapse: collapse;
-                                font-size: 13px;
-                            }
-                            .soil-table th, .soil-table td {
-                                border: 1px solid #444;
-                                padding: 4px 6px;
-                                text-align: center;
-                            }
-                            .header {
-                                background: #f2f2f2;
-                                font-weight: bold;
-                            }
-                            .red {
-                                color: red !important;
-                            }
-                        </style> -->
+                            <div class="d-flex gap-3" >
+
+                             <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders" >
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="initial_height"></label></td>
+                                                <td><field name="initial_height" class="blue-input"/></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                     <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="initial_dial_guage"></label></td>
+                                                <td><field name="initial_dial_guage" class="blue-input"/></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+
+                            <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="final_dial_guage"></label></td>
+                                                <td><field name="final_dial_guage" class="blue-input" /></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                    
+                                   
+                            </div>  
+
+                      
 
 
 
@@ -435,6 +463,15 @@
                                 <tr>
                                     <td><label for="room_temp">% rise/fall  in force value</label></td>
                                     <td><field name="room_temp"   colspan="1"  nolabel="1" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity"> Humidity %</label></td>
+                                    <td><field name="humidity"   colspan="1"  nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>

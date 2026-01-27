@@ -10676,7 +10676,57 @@ class CbrLine(models.Model):
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
+    initial_height = fields.Float(string="Initial height of specimen, h (mm)")
+    initial_dial_guage = fields.Float(string="Initial dial gauge reading, ds (mm)")
+    final_dial_guage = fields.Float(string="Final dial gauge reading, df (mm)",compute="_compute_final_dial_guage", store=True)
+
+    @api.depends('soil_table.proving_reading', 'soil_table.serial_no')
+    def _compute_final_dial_guage(self):
+        for rec in self:
+            rec.final_dial_guage = 0.0
+
+            if not rec.soil_table:
+                continue
+
+            # sort by serial_no (safe)
+            last_line = rec.soil_table.sorted(
+                lambda l: l.serial_no or 0
+            )[-1]
+
+            rec.final_dial_guage = last_line.proving_reading or 0.0
+
+
     lab_id=  fields.Char(string="Lab ID" )
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_bh_id",
+        store=True
+    )
+
+    @api.depends('lab_id')
+    def _compute_bh_id(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source
+
+
+
+
+    humidity= fields.Char(string="Humidity %" )
+
 
     soil_table = fields.One2many('mechanical.cbr.line1','parent_id_cbr',string="CBR",default=lambda self: self._default_cbr_child_lines())
 
