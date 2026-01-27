@@ -26,10 +26,9 @@
 
                  
                   <button name="action_generate_sample_lab_groups"
-                        string="Generate Lab Id "
+                        string="Lab Id Generate"
                         type="object"
-                        class="btn-primary"
-                        invisible="is_generated == True"/>
+                        class="btn-primary"/>
 
                     <button name="confirm_srf" class="oe_highlight" type="object" string="Confirm"
                         groups="lerm_civil.lerm_access_confirm_srf"
@@ -49,7 +48,6 @@
                 </header>
 
                 <sheet>
-                <field name="is_generated" invisible="1"/>
                     
                     <div class="oe_button_box" name="button_box"
                         invisible='state != "2-confirm"' >

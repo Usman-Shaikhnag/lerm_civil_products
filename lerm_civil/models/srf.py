@@ -207,8 +207,6 @@ class SrfForm(models.Model):
         for rec in self:
             rec.sample_qty = rec.samples[0].sample_qty if rec.samples else False
 
-    is_generated = fields.Boolean(string="Is Generated", default=False, copy=False)
-
    
 
     def action_generate_sample_lab_groups(self):
@@ -281,8 +279,6 @@ class SrfForm(models.Model):
                     'sample_id': line.id,
                     'review_line_ids': review_lines_vals
                 })
-
-            self.is_generated = True
                 
 
         except Exception as e:

@@ -957,7 +957,7 @@ class SampleRequestReviewLine(models.Model):
     weight = fields.Float("Weight")
     uom = fields.Many2one('uom.uom',string="Unit")
     source = fields.Char("Source/Location/Id")
-    depth = fields.Char('Depth(m)')
+    depth = fields.Float('Depth(m)')
     sample_details = fields.Char("Sample Details")
     packing = fields.Boolean("Packing")
     quantity = fields.Boolean("Quantity")
