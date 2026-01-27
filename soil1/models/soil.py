@@ -985,6 +985,11 @@ class Soil(models.Model):
 
 
 
+    
+
+
+
+
     # plastic_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_plastic_avg")
 
 
@@ -1094,6 +1099,11 @@ class Soil(models.Model):
         except Exception:
             plt.close('all')
             return False
+
+
+
+    liquid_limit_graph = fields.Binary("Liquid Limit Flow Curve")
+
 
     selected_lab_id6 = fields.Many2one(
         'lab.option.line',
@@ -7269,7 +7279,127 @@ class LLLine(models.Model):
     ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
 
     liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(10,0) ,compute='_compute_liquid_avg',store=True,)
+
+    ll_graph = fields.Binary(
+    "Liquid Limit Graph",
+    compute="_compute_ll_graph",
+    store=True
+)
+
+    ll_value = fields.Float(
+    "Liquid Limit (%)",
+    digits=(10, 2),
+    compute="_compute_ll_graph",
+    store=True
+)
     
+    @api.depends('ll_line_ids.blows', 'll_line_ids.water_content')
+    def _compute_ll_graph(self):
+     for rec in self:
+        if rec.ll_line_ids:
+            image, ll = rec._generate_line_chart_liquid()
+            rec.ll_graph = image
+            rec.ll_value = ll
+        else:
+            rec.ll_graph = False
+            rec.ll_value = 0.0
+
+    def _generate_line_chart_liquid(self):
+    
+     # -----------------------------
+     # Collect valid data
+     # -----------------------------
+     data = [
+        (l.blows, l.water_content)
+        for l in self.ll_line_ids
+        if l.blows and l.water_content
+     ]
+
+     if len(data) < 3:
+        return False, 0.0
+
+     data.sort(key=lambda x: x[0])
+
+     blows = np.array([d[0] for d in data], dtype=float)
+     water = np.array([d[1] for d in data], dtype=float)
+
+    # -----------------------------
+    # Regression: w vs log10(N)
+    # -----------------------------
+     log_blows = np.log10(blows)
+     slope, intercept = np.polyfit(log_blows, water, 1)
+
+     # Liquid Limit at 25 blows (IS CODE)
+     ll_value = round(slope * np.log10(25) + intercept, 2)
+
+    # Best fit line
+     x_fit = np.linspace(log_blows.min(), log_blows.max(), 200)
+     y_fit = slope * x_fit + intercept
+
+    # R²
+     y_pred = slope * log_blows + intercept
+     ss_res = np.sum((water - y_pred) ** 2)
+     ss_tot = np.sum((water - np.mean(water)) ** 2)
+     r2 = 1 - ss_res / ss_tot
+
+    # -----------------------------
+    # Plot (Excel-style)
+    # -----------------------------
+     fig, ax = plt.subplots(figsize=(10, 5), dpi=120)
+
+    # Data curve
+     ax.plot(
+        blows,
+        water,
+        color='#4472C4',
+        marker='o',
+        linewidth=2.5
+    )
+
+    # Best-fit straight line
+     ax.plot(
+        10 ** x_fit,
+        y_fit,
+        color='black',
+        linewidth=1.5
+    )
+
+    # Vertical line at 25 blows
+     ax.axvline(25, color='green', linestyle='--', linewidth=1)
+
+     ax.set_xscale('log')
+     ax.set_xlim(10, 100)
+     ax.set_ylim(min(water) - 1, max(water) + 1)
+
+     ax.set_xlabel("No. of Blows", fontsize=11)
+     ax.set_ylabel("Moisture Content (%)", fontsize=11)
+
+    # Grid
+     ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.8)
+     ax.xaxis.grid(False)
+
+     for spine in ax.spines.values():
+        spine.set_color('black')
+        spine.set_linewidth(1)
+
+     eq_text = f"y = {slope:.4f}x + {intercept:.3f}\nR² = {r2:.4f}"
+     ax.text(30, max(water) - 0.4, eq_text, fontsize=10)
+
+    # -----------------------------
+    # Save image
+    # -----------------------------
+     buffer = BytesIO()
+     fig.savefig(buffer, format='png', bbox_inches='tight',  facecolor='white')
+     buffer.seek(0)
+
+     image = base64.b64encode(buffer.read())
+
+     buffer.close()
+     plt.close(fig)
+
+     return image, ll_value
+
+   
 
     @api.depends('ll_line_ids.water_content')
     def _compute_liquid_avg(self):
