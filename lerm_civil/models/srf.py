@@ -163,7 +163,7 @@ class SrfForm(models.Model):
     ], string='Days of casting', default='3')
     
 
-    
+    is_generated = fields.Boolean(string="Is Generated", default=False, copy=False)
     date_casting = fields.Date(string="Date of Casting")
     date_editable = fields.Boolean(string="SRF Date editable",default=False,compute="_compute_date_editable")
     active = fields.Boolean(string="Active",default=True)
