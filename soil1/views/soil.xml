@@ -1420,6 +1420,9 @@
 
                 </div>
 
+
+                
+
             <field name="sl_child_lines" class="custom_table_borders" nolabel="1">
                 <tree string="Shrinkage Limit" decoration-info="lab_id">
                     <field name="serial_no"/>
@@ -1735,12 +1738,12 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='time_m'/>
                                 <field name='sqrt_time'  />
-                                <field name='load_0_05_0_1'/>
-                                <field name='load_0_1_0_2'/>
-                                <field name='load_0_2_0_5'/>
-                                <field name='load_0_5_1_0'/>
-                                <field name='load_1_0_2_0'/>
-                                <field name='load_2_0_4_0'/>
+                                <field name='load_0_05_0_1' class="blue-input" decoration-info="load_0_05_0_1!=0"/>
+                                <field name='load_0_1_0_2' class="blue-input" decoration-info="load_0_1_0_2!=0"/>
+                                <field name='load_0_2_0_5' class="blue-input" decoration-info="load_0_2_0_5!=0"/>
+                                <field name='load_0_5_1_0' class="blue-input" decoration-info="load_0_5_1_0!=0"/>
+                                <field name='load_1_0_2_0' class="blue-input" decoration-info="load_1_0_2_0!=0"/>
+                                <field name='load_2_0_4_0' class="blue-input" decoration-info="load_2_0_4_0!=0"/>
                                 <field name='load_4_0_8_0'/>
                               
                             </tree>
@@ -1753,13 +1756,13 @@
                         <field name="consolidation_unloading_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='time_m'/>
-                                <field name='load_8_0_4_0'/>
-                                <field name='load_4_0_8_0'/>
-                                <field name='load_2_0_4_0'/>
-                                <field name='load_1_0_2_0'/>
-                                <field name='load_0_5_1_0'/>
-                                <field name='load_0_2_0_5'/>
-                                <field name='load_0_1_0_2'/>
+                                <field name='load_8_0_4_0' class="blue-input" decoration-info="load_8_0_4_0!=0"/>
+                                <field name='load_4_0_8_0' class="blue-input" decoration-info="load_4_0_8_0!=0"/>
+                                <field name='load_2_0_4_0' class="blue-input" decoration-info="load_2_0_4_0!=0"/>
+                                <field name='load_1_0_2_0' class="blue-input" decoration-info="load_1_0_2_0!=0"/>
+                                <field name='load_0_5_1_0' class="blue-input" decoration-info="load_0_5_1_0!=0"/>
+                                <field name='load_0_2_0_5' class="blue-input" decoration-info="load_0_2_0_5!=0"/>
+                                <field name='load_0_1_0_2' class="blue-input" decoration-info="load_0_1_0_2!=0"/>
                                 <!-- <field name='load_0_05_0_1'/> -->
                                 <field name='setting_load'/>
                               
@@ -2107,12 +2110,12 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='time_m'/>
                                 <field name='sqrt_time'  />
-                                <field name='load_0_05_0_1' class="blue-input" decoration-info="load_0_05_0_1!=0"/>
-                                <field name='load_0_1_0_2' class="blue-input" decoration-info="load_0_1_0_2!=0"/>
-                                <field name='load_0_2_0_5' class="blue-input" decoration-info="load_0_2_0_5!=0"/>
-                                <field name='load_0_5_1_0' class="blue-input" decoration-info="load_0_5_1_0!=0"/>
-                                <field name='load_1_0_2_0' class="blue-input" decoration-info="load_1_0_2_0!=0"/>
-                                <field name='load_2_0_4_0' class="blue-input" decoration-info="load_2_0_4_0!=0"/>
+                                <field name='load_0_05_0_1' />
+                                <field name='load_0_1_0_2' />
+                                <field name='load_0_2_0_5' />
+                                <field name='load_0_5_1_0' />
+                                <field name='load_1_0_2_0' />
+                                <field name='load_2_0_4_0' />
                                 <field name='load_4_0_8_0'/>
                               
                             </tree>
@@ -2131,7 +2134,7 @@
                                 <field name='load_1_0_2_0'/>
                                 <field name='load_0_5_1_0'/>
                                 <field name='load_0_2_0_5'/>
-                                <field name='load_0_1_0_2'/>
+                                <field name='load_0_1_0_2' />
                                 <!-- <field name='load_0_05_0_1'/> -->
                                 <field name='setting_load'/>
                               
@@ -2909,13 +2912,13 @@
                         <field name="soil_light_heavy_lines">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='wet_soil_cylinder' readonly="serial_no % 2 == 0"/>
+                                <field name='wet_soil_cylinder' readonly="serial_no % 2 == 0" class="blue-input" decoration-info="wet_soil_cylinder != 0"/>
                                 <field name='wet_soil'/>
                                 <field name='bulk_density_light'/>
-                                <field name='can_no'/>
-                                <field name='wet_soil_can'/>
-                                <field name='dry_soil_can'/>
-                                <field name='empty_mass_can'/>
+                                <field name='can_no'  class="blue-input" decoration-info="can_no != 0"/>
+                                <field name='wet_soil_can' class="blue-input" decoration-info="wet_soil_can != 0"/>
+                                <field name='dry_soil_can' class="blue-input" decoration-info="dry_soil_can != 0"/>
+                                <field name='empty_mass_can' class="blue-input" decoration-info="empty_mass_can != 0"/>
                                 <field name='moisture_loss'/>
                                 <field name='dry_wt_soil'/>
                                 <field name='moisture_content'/>
@@ -3498,13 +3501,13 @@
                                 <field name='serial_no'/>
                                 <field name='horizontal_read'/>
                                 <field name='horizontal_dispalacement'/>
-                                <!-- <field name='horizontal_dispalacement_inv' invisible= "1"/> -->
+                               
 
                                <field name="corrected_area" column_invisible="parent.area_type != 'corrected'"/>
 
                                <field name="non_corrected_area" column_invisible="parent.area_type != 'non_corrected'"/> 
-                               <!-- <field name="selected_area" readonly="1" string="Selected Area"/> -->
-                                <field name='prove_ring_read'/>
+                            
+                                <field name='prove_ring_read'  class="blue-input" decoration-info="prove_ring_read != 0"/>
                                 <field name='horizontal_shear'/>
                                 <field name='horizontal_shear_temp'/>
                                 <field name='shear_stress'/>
@@ -3513,11 +3516,7 @@
                         </field>
                     </div>
 
-                    <!-- <div >
-                                    <button string="Calculate" type="object" name="action_compute_shear" class="oe_highlight">
-                                        <i class="fa fa-calculator"/> Calculate 
-                                    </button>
-                                </div>   -->
+                    
                                 <group/>
                       <div >
                     <button name="action_generate_shear_graph"
@@ -3660,7 +3659,7 @@
 
                                <field name="non_corrected_area" column_invisible="parent.area_type != 'non_corrected'"/> 
                                <!-- <field name="selected_area" readonly="1" string="Selected Area"/> -->
-                                <field name='prove_ring_read'/>
+                                <field name='prove_ring_read'  class="blue-input" decoration-info="prove_ring_read != 0"/>
                                 <field name='horizontal_shear'/>
                                 <field name='horizontal_shear_temp'/>
                                 <field name='shear_stress'/>
@@ -3809,7 +3808,7 @@
 
                                <field name="non_corrected_area" column_invisible="parent.area_type != 'non_corrected'"/> 
                                <!-- <field name="selected_area" readonly="1" string="Selected Area"/> -->
-                                <field name='prove_ring_read'/>
+                                <field name='prove_ring_read'   class="blue-input" decoration-info="prove_ring_read != 0"/>
                                 <field name='horizontal_shear'/>
                                 <field name='horizontal_shear_temp'/>
                                 <field name='shear_stress'/>
