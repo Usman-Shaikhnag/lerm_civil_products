@@ -215,7 +215,77 @@
                         </h1>
                     </div>
 
-                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
+                     <div invisible = "soil_visible == False">
+                        <field name= 'cbr_generated' invisible="1" />
+                        <button name="action_generate_cbr_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="cbr_generated == True"/>
+
+                        </div>
+
+                         <field name="cbr_ids" class="custom_table_borders" nolabel="1" invisible = "soil_visible == False">
+                            <tree string="CBR" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                            </tree>
+
+                         <form string="">
+                            <sheet>
+                            <style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
+
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
+
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
+
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
+
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
+
+                                 .soil-table table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                font-size: 13px;
+                                }
+                                .soil-table th, .soil-table td {
+                                    border: 1px solid #444;
+                                    padding: 4px 6px;
+                                    text-align: center;
+                                }
+                                .header {
+                                    background: #f2f2f2;
+                                    font-weight: bold;
+                                }
+                                .red {
+                                    color: red !important;
+                                }
+                            </style>
+
+                      <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
                         <tbody>
                             <tr>
                                 <td><label for="selected_lab_id"></label></td>
@@ -223,9 +293,9 @@
                             </tr>
                             
                         </tbody>
-                    </table>
+                    </table> -->
 
-                      <style>
+                      <!-- <style>
                             .soil-table table {
                                 width: 100%;
                                 border-collapse: collapse;
@@ -243,11 +313,11 @@
                             .red {
                                 color: red !important;
                             }
-                        </style>
+                        </style> -->
 
 
 
-                         <div class="soil-table" invisible="soil_visible == False">
+                         <div class="soil-table" >
 
                         <!-- WATER CONTENT SECTION -->
                         <h4>Water Content</h4>
@@ -359,7 +429,7 @@
 
                     </div>
 
-                     <div class="d-flex gap-2"  invisible="not soil_visible" style="margin-top: 10px;">
+                     <div class="d-flex gap-2"   style="margin-top: 10px;">
                         <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -384,7 +454,7 @@
                     </div>
 
 
-                    <div class="d-flex gap-2"  invisible="not soil_visible">
+                    <div class="d-flex gap-2"  >
                         <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -408,7 +478,7 @@
                        
                     </div>
 
-                     <div class="d-flex gap-2"  invisible="not soil_visible">
+                     <div class="d-flex gap-2">
                         <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -422,7 +492,7 @@
                        
                     </div>
                     
-                    <div invisible = "soil_visible == False">
+                    <div >
                         <field name="soil_table" class="custom_table_borders">
                             <tree editable="bottom" >
                                 <field name="serial_no"/>
@@ -434,21 +504,21 @@
                             </tree>
                         </field>                      
                     </div>
-                 <div invisible = "soil_visible == False" >
+                 <div  >
                     <button name="action_generate_cbr_graph" 
                         string="Generate Graph" 
                         type="object" 
                         class="oe_highlight"/>
                 </div>
 
-                    <div invisible = "soil_visible == False" class="text-center">
+                    <div  class="text-center">
                       <field name="cbr_graph" widget="image" readonly="1"/>
                     </div>
 
 
                    
 
-                    <div class="d-flex gap-2"  invisible="not soil_visible">
+                    <div class="d-flex gap-2"  >
                         <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -470,6 +540,11 @@
                         </table>
 
                     </div>
+
+                       </sheet>
+                        </form>
+
+                        </field>
 
                    
                  
@@ -630,11 +705,11 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="date" width="90px" />
                                 <field name='lab_id' width="60px" />
-                                <field name='wt_uds_soil' width="100px"  />
-                                <field name='wt_empty_uds' width="100px" />
+                                <field name='wt_uds_soil' width="100px"  class="blue-input" decoration-info="wt_uds_soil != 0" />
+                                <field name='wt_empty_uds' width="100px"  class="blue-input" decoration-info="wt_empty_uds != 0"/>
                                 <field name="wt_soil" width="100px"/>
-                                <field name='height' width="100px" />
-                                <field name='diameter' width="100px" />
+                                <field name='height' width="100px" class="blue-input" decoration-info="height != 0" />
+                                <field name='diameter' width="100px" class="blue-input" decoration-info="diameter != 0" />
                                 <field name='volume' width="100px"/>
                                  <field name='bulk_density' width="100px"/>
                               
@@ -699,6 +774,76 @@
             </div>
 
 
+               <!-- Specific Gravity title -->
+
+
+            <div invisible="specific_gravity_visible == False">
+                <h1 class="text-center">
+                    <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                    <field name="specific_gravity_visible" invisible="1"/>
+                </h1>
+            </div>
+
+               <div invisible = "specific_gravity_visible == False">
+                  <field name= 'sp_lines_generated' invisible="1" />
+                  <button name="action_generate_sp_lines"
+                   
+                    type="object"
+                    string="Show Lab ID"
+                    class="oe_highlight"
+                    invisible="sp_lines_generated == True"/>
+
+                </div>
+
+            <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="selected_lab_id12"></label></td>
+                                <td><field name="selected_lab_id12"/> </td>
+                            </tr>
+                           
+                            
+                        </tbody>
+                    </table> -->
+
+            
+
+
+            <div invisible="specific_gravity_visible == False">
+                <field name="gravity_line_ids">
+                    <tree editable="bottom" class="custom_table_borders">
+
+                        <field name="serial_no" string="Sr.No" width="30px"/>
+                        <field name="date" string="DATE TEST" width="40px"/>
+                        <field name="lab_no" string="Lab No."  width="50px"/>
+
+                        <field name="room_temp" string="Room Temperature" width="100px"/>
+                        <field name="bottle_no" string="Bottle No."  width="80px"/>
+
+                        <field name="wt_empty_bottle" string="Empty Wt. of Bottle" width="100px"/>
+                        <field name="wt_bottle_dry_soil" string="Bottle + dry soil" width="100px"/>
+                        <field name="wt_bottle_dry_soil_water" string="Bottle + Dry soil + Water" width="100px"/>
+                        <field name="wt_bottle_water" string="Bottle + Water (Tap)" width="100px"/>
+
+                        <field name="specific_gravity" string="Specific Gravity (G)" width="100px" readonly="1"/>
+                        <field name="density_water" string="Density of water at room temp (gm/cc)" width="100px" readonly="1"/>
+                        <field name="corr_specific_gravity" string="Corrected Specific Gravity (G')" width="100px" readonly="1"/>
+                        <field name="avg_corr_specific_gravity" string="Average corrected Specific Gravity" width="100px" readonly="1"/>
+
+                    </tree>
+                </field>
+            </div>
+
+
+            <div invisible="specific_gravity_visible == False">
+                <button name="action_compute_avg_corr_gravity"
+                    string="Calculate Avg Corrected Gravity"
+                    type="object"
+                    class="btn-primary"/>
+            </div>
+
+
+
                     
 
 
@@ -711,10 +856,26 @@
                         </h1>
                     </div>
 
-                
+                   <div invisible = "gsa_visible == False">
+                  <field name= 'gsa_lines_generated' invisible="1" />
+                  <button name="action_generate_gsa_lines"
+                   
+                    type="object"
+                    string="Show Lab ID"
+                    class="oe_highlight"
+                    invisible="gsa_lines_generated == True"/>
+
+                </div>
+                  <div style="margin-top: 10px;" invisible = "gsa_visible == False">
+                <button name="action_fetch_review_details"
+                    type="object"
+                    string="Fetch Review Details"
+                    class="btn-primary"/>
+                  </div>
+
                 <div invisible="gsa_visible == False">
                 <field name="show_sieve" invisible="1"/>
-                <field name="gsa_child_lines" class="custom_table_borders">
+                <field name="gsa_child_lines" class="custom_table_borders" nolabel="1">
                     <tree  string="GSA Lines" decoration-info="lab_no">
                         <field name="symbol" widget="html" />
                         <field name="bh_id"/>
@@ -734,8 +895,13 @@
                             <field name="soil_classification"/>
                     </tree>
 
-                    <form>
+                    <form string="">
                             <sheet>
+                            <style>
+                                    .modal-header .modal-title {
+                                        display: none !important;
+                                    }
+                                </style>
                                 <div class="d-flex gap-2">
                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
@@ -973,16 +1139,7 @@
 
 
 
-                 <div invisible = "gsa_visible == False">
-                  <field name= 'gsa_lines_generated' invisible="1" />
-                  <button name="action_generate_gsa_lines"
-                   
-                    type="object"
-                    string="Show Lab ID"
-                    class="oe_highlight"
-                    invisible="gsa_lines_generated == True"/>
-
-                </div>
+              
                 <div style="margin-top: 10px;" invisible = "gsa_visible == False">
                 <button name="action_generate_gsa_graph" 
                             string="Generate GSA Graph" 
@@ -991,6 +1148,8 @@
                             icon="fa-area-chart"
                             help="Sieve Analysis डेटावर आधारित ग्राफ तयार करण्यासाठी क्लिक करा."/>
                  </div>
+
+
 
 
                  <div style="text-align: center; width: 100%;" invisible = "gsa_visible == False">
@@ -1030,74 +1189,7 @@
 
 
 
-            <!-- Specific Gravity title -->
-
-
-            <div invisible="specific_gravity_visible == False">
-                <h1 class="text-center">
-                    <field name="specific_gravity_name" readonly="1" nolabel="1"/>
-                    <field name="specific_gravity_visible" invisible="1"/>
-                </h1>
-            </div>
-
-               <div invisible = "specific_gravity_visible == False">
-                  <field name= 'sp_lines_generated' invisible="1" />
-                  <button name="action_generate_sp_lines"
-                   
-                    type="object"
-                    string="Show Lab ID"
-                    class="oe_highlight"
-                    invisible="sp_lines_generated == True"/>
-
-                </div>
-
-            <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="selected_lab_id12"></label></td>
-                                <td><field name="selected_lab_id12"/> </td>
-                            </tr>
-                           
-                            
-                        </tbody>
-                    </table> -->
-
-            
-
-
-            <div invisible="specific_gravity_visible == False">
-                <field name="gravity_line_ids">
-                    <tree editable="bottom" class="custom_table_borders">
-
-                        <field name="serial_no" string="Sr.No" width="30px"/>
-                        <field name="date" string="DATE TEST" width="40px"/>
-                        <field name="lab_no" string="Lab No."  width="50px"/>
-
-                        <field name="room_temp" string="Room Temperature" width="100px"/>
-                        <field name="bottle_no" string="Bottle No."  width="80px"/>
-
-                        <field name="wt_empty_bottle" string="Empty Wt. of Bottle" width="100px"/>
-                        <field name="wt_bottle_dry_soil" string="Bottle + dry soil" width="100px"/>
-                        <field name="wt_bottle_dry_soil_water" string="Bottle + Dry soil + Water" width="100px"/>
-                        <field name="wt_bottle_water" string="Bottle + Water (Tap)" width="100px"/>
-
-                        <field name="specific_gravity" string="Specific Gravity (G)" width="100px" readonly="1"/>
-                        <field name="density_water" string="Density of water at room temp (gm/cc)" width="100px" readonly="1"/>
-                        <field name="corr_specific_gravity" string="Corrected Specific Gravity (G')" width="100px" readonly="1"/>
-                        <field name="avg_corr_specific_gravity" string="Average corrected Specific Gravity" width="100px" readonly="1"/>
-
-                    </tree>
-                </field>
-            </div>
-
-
-            <div invisible="specific_gravity_visible == False">
-                <button name="action_compute_avg_corr_gravity"
-                    string="Calculate Avg Corrected Gravity"
-                    type="object"
-                    class="btn-primary"/>
-            </div>
-
+         
 
 
 
@@ -1174,24 +1266,38 @@
 
                 </div>
 
-            <field name="ll_child_lines" class="custom_table_borders">
+            <field name="ll_child_lines" class="custom_table_borders" nolabel="1">
                 <tree string="Liquid Limit Lines" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
                 </tree>
 
-                <form>
+                <form string="">
                 <sheet>
+                <style>
+                    .modal-header .modal-title {
+                        display: none !important;
+                    }
+                </style>
 
                     <field name="ll_line_ids" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders">
                      
+<<<<<<< HEAD
                             <field name="serial_no" string="Sr.No" width="50px"/>
                             <field name="blows" string="No. of Blows" width="100px" class="blue-input" decoration-info="blows!=0"/>
                             <field name="container_no" string="Container No." width="100px" class="blue-input" decoration-info="container_no!=0"/>
                             <field name="m3" string="M3 (gm)" width="90px" class="blue-input" decoration-info="m3!=0"/>
                             <field name="m2" string="M2 (gm)" width="90px" class="blue-input" decoration-info="m2!=0"/>
                             <field name="m1" string="M1 (gm)" width="90px" class="blue-input" decoration-info="m1!=0"/>
+=======
+                            <field name="serial_no" string="Test No." width="50px"/>
+                            <field name="blows" string="No. of Blows" width="100px"/>
+                            <field name="container_no" string="Container No." width="100px"/>
+                            <field name="m3" string="M3 (gm)" width="90px"/>
+                            <field name="m2" string="M2 (gm)" width="90px"/>
+                            <field name="m1" string="M1 (gm)" width="90px"/>
+>>>>>>> 3a52865025f96d1fd8caa0adf8e384c14f38a027
                             <field name="m3_m2" string="M3-M2" width="90px"/>
                             <field name="m2_m1" string="M2-M1" width="90px"/>
                             <field name="water_content" string="Water Content %" width="110px"/>
@@ -1206,6 +1312,14 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <div style="margin-bottom: 10px;">
+                    <button name="action_reset_sequence" 
+                            string="Reset Test No." 
+                            type="object" 
+                            class="btn-secondary" 
+                            icon="fa-sort-numeric-asc"/>
+                </div>
 
                 </sheet>
             </form>
@@ -1236,24 +1350,39 @@
 
                 </div>
 
-            <field name="pl_child_lines" class="custom_table_borders">
+            <field name="pl_child_lines" class="custom_table_borders" nolabel="1">
                 <tree string="Plastic Limit Lines" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
                 </tree>
 
-                <form>
+                <form string="">
                 <sheet>
+                <style>
+                    .modal-header .modal-title {
+                        display: none !important;
+                    }
+                </style>
 
                     <field name="pl_line_ids" nolabel="1">
    
                     <tree editable="bottom" class="custom_table_borders">
                     
+<<<<<<< HEAD
                         <field name="serial_no" string="Sr.No" width="50px"/>
                         <field name="container_no" string="Container No." width="100px" class="blue-input" decoration-info="container_no!=0"/>
                         <field name="m3" string="M3 (gm)" width="90px" class="blue-input" decoration-info="m3!=0"/>
                         <field name="m2" string="M2 (gm)" width="90px" class="blue-input" decoration-info="m2!=0"/>
                         <field name="m1" string="M1 (gm)" width="90px" class="blue-input" decoration-info="m1!=0"/>
+=======
+                        <field name="serial_no" string="Test No." width="50px"/>
+
+                        <field name="container_no" string="Container No." width="100px"/>
+
+                        <field name="m3" string="M3 (gm)" width="90px"/>
+                        <field name="m2" string="M2 (gm)" width="90px"/>
+                        <field name="m1" string="M1 (gm)" width="90px"/>
+>>>>>>> 3a52865025f96d1fd8caa0adf8e384c14f38a027
                         <field name="m3_m2" string="M3-M2" width="90px"/>
                         <field name="m2_m1" string="M2-M1" width="90px"/>
                         <field name="water_content" string="Water Content %" width="110px"/>
@@ -1270,6 +1399,14 @@
                                 
                             </tbody>
                     </table>
+
+                     <div style="margin-bottom: 10px;">
+                    <button name="action_reset_sequencepl" 
+                            string="Reset Test No." 
+                            type="object" 
+                            class="btn-secondary" 
+                            icon="fa-sort-numeric-asc"/>
+                </div>
 
                 </sheet>
             </form>
@@ -1300,23 +1437,66 @@
 
                 </div>
 
-            <field name="sl_child_lines" class="custom_table_borders">
+            <field name="sl_child_lines" class="custom_table_borders" nolabel="1">
                 <tree string="Shrinkage Limit" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
                 </tree>
 
-                <form>
+                <form string="">
                 <sheet>
+                <!-- <style>
+                    .modal-header .modal-title {
+                        display: none !important;
+                    }
+                </style> -->
+                <style>
+                        /* Modal chi title hide karnya sathi */
+                        .modal-header .modal-title {
+                            display: none !important;
+                        }
 
+                        /* 1. Modal Dialog chi width ani margin full kara */
+                        .modal-dialog {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+
+                        /* 2. Modal Content chi height full kara (Full Screen View) */
+                        .modal-content {
+                            height: 100vh !important; /* Full Viewport Height */
+                            border-radius: 0 !important;
+                        }
+
+                        /* 3. Odoo chi Sheet full width karnya sathi */
+                        .o_form_sheet {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            min-height: 100vh !important;
+                        }
+
+                        /* 4. Table chi width 100% kara */
+                        .custom_table_borders {
+                            width: 100% !important;
+                        }
+                    </style>
                      <field name="sl_line_ids" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders">
                         
 
+<<<<<<< HEAD
                             <field name="serial_no" string="Sr.No" width="35px"/>
                             <field name="container_no" string="Container No." width="100px" class="blue-input" decoration-info="container_no!=0"/>
                             <field name="m1" string="M1 (gm)" width="80px" class="blue-input" decoration-info="m1!=0"/>
                             <field name="v1" string="V1 (cm3)" width="80px" class="blue-input" decoration-info="v1!=0"/>
+=======
+                            <field name="serial_no" string="Test No." width="35px"/>
+                            <field name="container_no" string="Container No." width="100px"/>
+                            <field name="m1" string="M1 (gm)" width="80px"/>
+                            <field name="v1" string="V1 (cm3)" width="80px"/>
+>>>>>>> 3a52865025f96d1fd8caa0adf8e384c14f38a027
 
                             <field name="m3" string="M3 (gm)" width="80px" class="blue-input" decoration-info="m3!=0"/>
                             <field name="m2" string="M2 (gm)" width="80px" class="blue-input" decoration-info="m2!=0"/>
@@ -1340,6 +1520,17 @@
                         
                     </tbody>
                 </table>
+
+                     <div style="margin-bottom: 10px;">
+                    <button name="action_reset_sequencesl" 
+                            string="Reset Test No." 
+                            type="object" 
+                            class="btn-secondary" 
+                            icon="fa-sort-numeric-asc"/>
+
+                  
+                </div>
+                                        
                 </sheet>
             </form>
             </field>    
@@ -1371,7 +1562,59 @@
                         </h1>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not consolidation_visible">
+                     <div invisible = "consolidation_visible == False">
+                        <field name= 'consolidation_generated' invisible="1" />
+                        <button name="action_generate_consolidation_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="consolidation_generated == True"/>
+
+                        </div>
+
+                        <field name="consolidation_lines" class="custom_table_borders" nolabel="1" invisible = "consolidation_visible == False">
+                            <tree string="Consolidation" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                            </tree>
+
+                            <form string="">
+                            <sheet>
+                            <style>
+                        /* Modal chi title hide karnya sathi */
+                        .modal-header .modal-title {
+                            display: none !important;
+                        }
+
+                        /* 1. Modal Dialog chi width ani margin full kara */
+                        .modal-dialog {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+
+                        /* 2. Modal Content chi height full kara (Full Screen View) */
+                        .modal-content {
+                            height: 100vh !important; /* Full Viewport Height */
+                            border-radius: 0 !important;
+                        }
+
+                        /* 3. Odoo chi Sheet full width karnya sathi */
+                        .o_form_sheet {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            min-height: 100vh !important;
+                        }
+
+                        /* 4. Table chi width 100% kara */
+                        .custom_table_borders {
+                            width: 100% !important;
+                        }
+                    </style>
+
+                    <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not consolidation_visible">
                         <tbody>
                             <tr>
                                 <td><label for="selected_lab_id7"></label></td>
@@ -1380,9 +1623,9 @@
                            
                             
                         </tbody>
-                    </table>
+                    </table> -->
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not consolidation_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" >
                         <tbody>
                             <tr>
                                 <td><label for="consolidation_specific_gravity">Specific Gravity, G</label></td>
@@ -1408,7 +1651,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not consolidation_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" >
                         <tbody>
                             <tr>
                                 <td><label for="con_wt_of_ring">Weight Of Ring, w1</label></td>
@@ -1438,7 +1681,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not consolidation_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" >
                         <tbody>
                              <tr>
                                 <td><span></span></td>
@@ -1475,7 +1718,7 @@
                         </tbody>
                     </table>
 
-                    <div class="d-flex gap-2" invisible="not consolidation_visible">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -1498,7 +1741,7 @@
                     </div>
 
                     
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not consolidation_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" >
                             <tbody>
                                 <tr>
                                     <td><label for="evaluate_swell_pressure">Evalute swell pressure ??</label></td>
@@ -1509,7 +1752,7 @@
                         </table>
 
 
-                    <div invisible = "consolidation_visible == False">
+                    <div >
                     <h2> 1st Cycle Loading	
                     </h2>
                         <field name="consolidation_ids">
@@ -1528,7 +1771,7 @@
                         </field>
                     </div>
 
-                    <div invisible = "consolidation_visible == False">
+                    <div >
                     <h2> 1st Cycle UnLoading	
                     </h2>
                         <field name="consolidation_unloading_ids">
@@ -1549,7 +1792,7 @@
                     </div>
 
 
-                    <div invisible = "consolidation_visible == False">
+                    <div >
                     <h2> Cycles	
                     </h2>
                         <field name="consolidation_output_ids">
@@ -1575,7 +1818,7 @@
                     </div>
 
 
-                    <div class="d-flex gap-2" invisible="not consolidation_visible">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -1599,7 +1842,7 @@
                     <group/>
                     
 
-                    <div invisible="not consolidation_visible">
+                    <div >
                         <button name="action_generate_graph" 
                                 string="Generate Graph" 
                                 type="object" 
@@ -1624,7 +1867,7 @@
                                 class="btn-primary"/>
                     </div>
 
-                    <notebook invisible="not consolidation_visible">
+                    <notebook >
 
                       <page string="Load 0.05 – 0.1">
                         <div style="text-align: center;">
@@ -1670,6 +1913,12 @@
 
                  </notebook>
 
+
+                  </sheet>
+                        </form>
+
+                        </field>
+
                 
 
 
@@ -1695,7 +1944,60 @@
                         </h1>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not swelling_pressure_visible">
+                     <div invisible = "swelling_pressure_visible == False">
+                        <field name= 'swelling_pressure_generated' invisible="1" />
+                        <button name="action_generate_swelling_pressure_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="swelling_pressure_generated == True"/>
+
+                        </div>
+
+                        <field name="swelling_pressure_ids" class="custom_table_borders" nolabel="1" invisible = "swelling_pressure_visible == False">
+                            <tree string="Swelling" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                            </tree>
+
+                            <form string="">
+                            <sheet>
+                            <style>
+                        /* Modal chi title hide karnya sathi */
+                        .modal-header .modal-title {
+                            display: none !important;
+                        }
+
+                        /* 1. Modal Dialog chi width ani margin full kara */
+                        .modal-dialog {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+
+                        /* 2. Modal Content chi height full kara (Full Screen View) */
+                        .modal-content {
+                            height: 100vh !important; /* Full Viewport Height */
+                            border-radius: 0 !important;
+                        }
+
+                        /* 3. Odoo chi Sheet full width karnya sathi */
+                        .o_form_sheet {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            min-height: 100vh !important;
+                        }
+
+                        /* 4. Table chi width 100% kara */
+                        .custom_table_borders {
+                            width: 100% !important;
+                        }
+                    </style>
+
+
+                    <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not swelling_pressure_visible">
                         <tbody>
                             <tr>
                                 <td><label for="selected_lab_id5"></label></td>
@@ -1704,9 +2006,9 @@
                           
                             
                         </tbody>
-                    </table>
+                    </table> -->
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not swelling_pressure_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" >
                         <tbody>
                             <tr>
                                 <td><label for="swelling_specific_gravity">Specific Gravity, G</label></td>
@@ -1732,7 +2034,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not swelling_pressure_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" >
                         <tbody>
                             <tr>
                                 <td><label for="wt_of_ring">Weight Of Ring, w1</label></td>
@@ -1762,7 +2064,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not swelling_pressure_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" >
                         <tbody>
                              <tr>
                                 <td><span></span></td>
@@ -1799,7 +2101,7 @@
                         </tbody>
                     </table>
 
-                    <div class="d-flex gap-2" invisible="not swelling_pressure_visible">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -1822,7 +2124,7 @@
                     </div>
 
 
-                    <div invisible = "swelling_pressure_visible == False">
+                    <div >
                     <h2> 1st Cycle Loading	
                     </h2>
                         <field name="swelling_ids">
@@ -1841,7 +2143,7 @@
                         </field>
                     </div>
 
-                    <div invisible = "swelling_pressure_visible == False">
+                    <div >
                     <h2> 1st Cycle UnLoading	
                     </h2>
                         <field name="swelling_unloading_ids">
@@ -1862,7 +2164,7 @@
                     </div>
 
 
-                    <div invisible = "swelling_pressure_visible == False">
+                    <div >
                     <h2> Cycles	
                     </h2>
                         <field name="swelling_output_ids">
@@ -1887,7 +2189,7 @@
                         </field>
                     </div>
 
-                    <div invisible = "swelling_pressure_visible == False">
+                    <div >
                     <h2> Graph	
                     </h2>
                         <field name="swelling_table_ids">
@@ -1901,7 +2203,7 @@
                         </field>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not swelling_pressure_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" >
                         <tbody>
                             <tr>
                                 <td><label for="swelling_pressure">Swelling Pressure (kg/cm2)	</label></td>
@@ -1914,10 +2216,16 @@
 
                     <!-- <field name="graph_image_swell" widget="image" class="oe_avatar"/> -->
 
-                    <div invisible = "swelling_pressure_visible == False" class="custom_table_borders text-center">
+                    <div  class="custom_table_borders text-center">
                         <field name="graph_image_swell" widget="image"  readonly="1"/>
                     </div>
                     <group/>
+
+                      </sheet>
+                        </form>
+
+                        </field>
+
 
 
 
@@ -1930,7 +2238,59 @@
                         </h1>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not permeability_falling_visible">
+                     <div invisible = "permeability_falling_visible == False">
+                        <field name= 'permeability_falling_generated' invisible="1" />
+                        <button name="action_generate_permeability_falling_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="permeability_falling_generated == True"/>
+
+                        </div>
+
+                        <field name="permeability_falling_ids" class="custom_table_borders" nolabel="1" invisible = "permeability_falling_visible == False">
+                            <tree string="permability" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                            </tree>
+
+                            <form string="">
+                            <sheet>
+                            <style>
+                        /* Modal chi title hide karnya sathi */
+                        .modal-header .modal-title {
+                            display: none !important;
+                        }
+
+                        /* 1. Modal Dialog chi width ani margin full kara */
+                        .modal-dialog {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+
+                        /* 2. Modal Content chi height full kara (Full Screen View) */
+                        .modal-content {
+                            height: 100vh !important; /* Full Viewport Height */
+                            border-radius: 0 !important;
+                        }
+
+                        /* 3. Odoo chi Sheet full width karnya sathi */
+                        .o_form_sheet {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            min-height: 100vh !important;
+                        }
+
+                        /* 4. Table chi width 100% kara */
+                        .custom_table_borders {
+                            width: 100% !important;
+                        }
+                    </style>
+
+                                <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not permeability_falling_visible">
                             <tbody>
                                 <tr>
                                     <td><label for="selected_lab_id3"></label></td>
@@ -1939,9 +2299,9 @@
                               
                                 
                             </tbody>
-                        </table>
+                        </table> -->
 
-                    <div class="d-flex gap-2" invisible="not permeability_falling_visible">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -1987,7 +2347,7 @@
                         </table>
                     </div>
 
-                    <div class="d-flex gap-2" invisible="not permeability_falling_visible">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2033,7 +2393,7 @@
                         </table>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not permeability_falling_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" >
                         <tbody>
                              <tr>
                                 <td><span></span></td>
@@ -2069,7 +2429,7 @@
                         </tbody>
                     </table>
 
-                    <div invisible = "permeability_falling_visible == False">
+                    <div >
                     
                         <field name="permeability_ids">
                             <tree editable="bottom" class="custom_table_borders">
@@ -2085,7 +2445,7 @@
                         </field>
                     </div>
 
-                    <div class="d-flex gap-2" invisible="not permeability_falling_visible">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2105,7 +2465,14 @@
                                 
                             </tbody>
                         </table>
-                    </div>
+                        </div>
+
+                         </sheet>
+                        </form>
+
+                        </field>
+
+                        
 
 
                     <!-- DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST -->
@@ -2119,9 +2486,63 @@
                         </h1>
                     </div>
 
+                     <div invisible = "triaxial_test_visible == False">
+                        <field name= 'triaxial_test_generated' invisible="1" />
+                        <button name="action_generate_triaxial_test_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="triaxial_test_generated == True"/>
+
+                        </div>
+
+
+                        <field name="triaxial_test_ids" class="custom_table_borders" nolabel="1" invisible = "triaxial_test_visible == False">
+                            <tree string="Triaxial" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                            </tree>
+
+                            <form string="">
+                            <sheet>
+                            <style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
+
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
+
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
+
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
+
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
+                            </style>
+
+
                     
 
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not triaxial_test_visible">
+                      <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="selected_lab_id1"></label></td>
@@ -2129,9 +2550,9 @@
                                 </tr>
                                 
                             </tbody>
-                        </table>
+                        </table> -->
 
-                     <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                     <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2153,7 +2574,7 @@
                         </table>
                     </div>
 
-                      <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                      <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2175,7 +2596,7 @@
                         </table>
                     </div>
 
-                     <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                     <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2198,7 +2619,7 @@
                     </div>
 
 
-                     <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                     <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2223,7 +2644,7 @@
 
 
 
-                    <div class="oe_structure" invisible="triaxial_test_visible == False">
+                    <div class="oe_structure" >
                         <separator string="Triaxial Shear Test Data"/>
                         
                         <group col="4">
@@ -2328,7 +2749,7 @@
                     </div>
 
 
-                    <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2350,7 +2771,7 @@
                         </table>
                     </div>
 
-                    <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2372,7 +2793,7 @@
                         </table>
                     </div>
 
-                      <div class="d-flex gap-2" invisible="not triaxial_test_visible">
+                      <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2386,7 +2807,7 @@
                     
                     </div>
 
-                    <field name="triaxial_test_line_ids" invisible="triaxial_test_visible == False">
+                    <field name="triaxial_test_line_ids" >
                         <tree editable="bottom" class="custom_table_borders">
                             <field name="horizontal_dial"/>
                             <field name="corrected_area" />
@@ -2406,6 +2827,13 @@
                     </field>
 
 
+                    </sheet>
+                 </form>
+
+            </field>
+
+
+
 
 
                     <!--   DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION	 -->
@@ -2418,7 +2846,59 @@
                         </h1>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_light_heavy_visible">
+                     <div invisible = "soil_light_heavy_visible == False">
+                        <field name= 'soil_light_heavy_generated' invisible="1" />
+                        <button name="action_generate_soil_light_heavy_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="soil_light_heavy_generated == True"/>
+
+                        </div>
+
+                         <field name="soil_light_heavy_ids" class="custom_table_borders" nolabel="1" invisible = "triaxial_test_visible == False">
+                            <tree string="Heavy Compaction" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                            </tree>
+
+                         <form string="">
+                            <sheet>
+                            <style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
+
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
+
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
+
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
+
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
+                            </style>
+
+                    <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_light_heavy_visible">
                         <tbody>
                             <tr>
                                 <td><label for="selected_lab_id8"></label></td>
@@ -2427,10 +2907,10 @@
                            
                             
                         </tbody>
-                    </table>
+                    </table> -->
 
                      
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "soil_light_heavy_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="empty_wt_proctor">Empty weight of Proctor mould in gm. M</label></td>
@@ -2448,7 +2928,7 @@
                             </tbody>
                         </table>
 
-                    <div invisible = "soil_light_heavy_visible == False">
+                    <div >
                     
                         <field name="soil_light_heavy_lines">
                             <tree editable="bottom" class="custom_table_borders">
@@ -2470,16 +2950,21 @@
                         </field>
                     </div>
 
-                    <div invisible = "soil_light_heavy_visible == False">
+                    <div >
                      <button type="object" name="action_calculate_avg_moisture" class="btn btn-primary mb-2">
                         <i class="fa fa-calculator mr-1"/> Calculate Average Moisture Content
                     </button>
                   </div>
 
-                  <div invisible = "soil_light_heavy_visible == False" class="custom_table_borders text-center">
+                  <div  class="custom_table_borders text-center">
                         <field name="graph_image_light_heavy" widget="image"  readonly="1"/>
                     </div>
                     <group/>
+
+                     </sheet>
+                 </form>
+
+            </field>
 
 
 
@@ -2493,7 +2978,59 @@
                         </h1>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not ucs_visible">
+                    <div invisible = "ucs_visible == False">
+                        <field name= 'ucs_generated' invisible="1" />
+                        <button name="action_generate_ucs_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="ucs_generated == True"/>
+
+                        </div>
+
+                         <field name="ucs_ids" class="custom_table_borders" nolabel="1" invisible = "ucs_visible == False">
+                            <tree string="UCS" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                            </tree>
+
+                         <form string="">
+                            <sheet>
+                            <style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
+
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
+
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
+
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
+
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
+                            </style>
+
+                    <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not ucs_visible">
                         <tbody>
                             <tr>
                                 <td><label for="selected_lab_id9"></label></td>
@@ -2502,11 +3039,11 @@
                            
                             
                         </tbody>
-                    </table>
+                    </table> -->
 
 
 
-                    <div class="d-flex gap-2" invisible = "ucs_visible == False">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2534,7 +3071,7 @@
                         </table>
                     </div>
 
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "ucs_visible == False">
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="trail_no_cell">Trial No/Cell Pressure.</label></td>
@@ -2544,7 +3081,7 @@
                         </table>
 
 
-                        <div class="d-flex gap-2" invisible = "ucs_visible == False">
+                        <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2587,7 +3124,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="d-flex gap-2" invisible = "ucs_visible == False">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2615,7 +3152,7 @@
                         </table>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "ucs_visible == False">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="ucs_proving_ring">Proving Ring Capacity</label></td>
@@ -2632,7 +3169,7 @@
                             </tbody>
                         </table>
 
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "ucs_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="ucs_room_temp">Room Temperature</label></td>
@@ -2657,7 +3194,7 @@
                             </tbody>
                         </table>
 
-                        <div invisible = "ucs_visible == False">
+                        <div >
                     
                         <field name="ucs_lines">
                             <tree editable="bottom" class="custom_table_borders">
@@ -2674,7 +3211,7 @@
                     </div>
 
                     
-                    <div invisible = "ucs_visible == False">
+                    <div >
                                     <button string="Calculate" type="object" name="action_compute_ucs" class="oe_highlight">
                                         <i class="fa fa-calculator"/> Calculate 
                                     </button>
@@ -2682,7 +3219,7 @@
                                 <group/>
 
 
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "ucs_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="ucs_max_pr">Max. PR Reading</label></td>
@@ -2700,7 +3237,7 @@
                         </table>  
 
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "ucs_visible == False">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="axial_deform_ucs">Axial Deformation, mm</label></td>
@@ -2725,17 +3262,22 @@
                             </tbody>
                         </table>  
 
-                        <!-- <div invisible = "ucs_visible == False">
+                        <!-- <div >
                                     <button string="Calculate" type="object" name="graph_image_ucs" class="oe_highlight">
                                         <i class="fa fa-calculator"/> Generate Graph 
                                     </button>
                                 </div>  
                                 <group/>    -->
 
-                        <div invisible = "ucs_visible == False" class="custom_table_borders text-center">
+                        <div  class="custom_table_borders text-center">
                         <field name="graph_image_ucs" widget="image"  readonly="1"/>
                     </div>
                     <group/>
+
+                    </sheet>
+                 </form>
+
+            </field>
 
 
                     <!-- DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST -->
@@ -2745,12 +3287,66 @@
                         <h1 class="text-center">
                             <field name="direct_shear_name" readonly="1" nolabel="1"/>
                             <field name="direct_shear_visible" invisible="1"/>
-                           <field name="show_corrected_area" invisible="1"/>
-                            <field name="show_non_corrected_area" invisible="1"/>
+                           <!-- <field name="show_corrected_area" invisible="1"/>
+                            <field name="show_non_corrected_area" invisible="1"/> -->
                         </h1>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                     <div invisible = "direct_shear_visible == False">
+                        <field name= 'direct_shear_generated' invisible="1" />
+                        <button name="action_generate_direct_shear_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="direct_shear_generated == True"/>
+
+                        </div>
+
+                         <field name="direct_shear_line" class="custom_table_borders" nolabel="1" invisible = "direct_shear_visible == False">
+                            <tree string="direct shear  line" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                            </tree>
+
+                         <form string="">
+                         <field name="show_corrected_area" invisible="1"/>
+                            <field name="show_non_corrected_area" invisible="1"/>
+                            <sheet>
+                            <style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
+
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
+
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
+
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
+
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
+                            </style>
+
+                    <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
                         <tbody>
                             <tr>
                                 <td><label for="selected_lab_id10"></label></td>
@@ -2759,9 +3355,9 @@
                            
                             
                         </tbody>
-                    </table>
+                    </table> -->
 
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="drainage_condition">Drainage Condition</label></td>
@@ -2772,7 +3368,7 @@
 
                     
 
-                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2816,7 +3412,7 @@
                         </table>
                     </div>
 
-                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -2860,7 +3456,7 @@
                         </table>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="shear_room_temp">Room Temperature</label></td>
@@ -2886,7 +3482,7 @@
                             </tbody>
                         </table>
 
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="displacement_rate">Displacement rate: mm/min</label></td>
@@ -2899,7 +3495,7 @@
                             </tbody>
                         </table>
 
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="area_type">Area Type</label></td>
@@ -2919,7 +3515,7 @@
 
 
 
-                    <div invisible = "direct_shear_visible == False">
+                    <div >
                     
                         <field name="direct_shear_ids">
                             <tree editable="bottom" class="custom_table_borders">
@@ -2941,13 +3537,13 @@
                         </field>
                     </div>
 
-                    <!-- <div invisible = "direct_shear_visible == False">
+                    <!-- <div >
                                     <button string="Calculate" type="object" name="action_compute_shear" class="oe_highlight">
                                         <i class="fa fa-calculator"/> Calculate 
                                     </button>
                                 </div>   -->
                                 <group/>
-                      <div invisible = "direct_shear_visible == False">
+                      <div >
                     <button name="action_generate_shear_graph"
                         string="Generate Shear Graph"
                         type="object"
@@ -2957,7 +3553,7 @@
                      
 
 
-                    <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
+                    <div  class="custom_table_borders text-center">
                         <field name="shear_graph_image" widget="image"  readonly="1"/>
                     </div>
                     <group/>
@@ -2966,11 +3562,11 @@
 
                     <!-- input 2 -->
 
-                     <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                     <div class="d-flex gap-2" >
                           <h3 class="text-center">Input 2</h3><br/>
                         </div>
 
-                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                    <div class="d-flex gap-2" >
                      
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                         <!-- <h3 class="text-center">Input 2</h3><br/> -->
@@ -3016,7 +3612,7 @@
                         </table>
                     </div>
 
-                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -3062,7 +3658,7 @@
 
                    
 
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="displacement_rate">Displacement rate: mm/min</label></td>
@@ -3075,7 +3671,7 @@
                             </tbody>
                         </table>
 
-                        <div invisible = "direct_shear_visible == False">
+                        <div >
                     
                         <field name="direct_shear_ids_2">
                             <tree editable="bottom" class="custom_table_borders">
@@ -3098,7 +3694,7 @@
                     </div>
 
                                 <group/>
-                      <div invisible = "direct_shear_visible == False">
+                      <div >
                     <button name="action_generate_shear_graph_2"
                         string="Generate Shear Graph"
                         type="object"
@@ -3108,7 +3704,7 @@
                      
 
 
-                    <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
+                    <div  class="custom_table_borders text-center">
                         <field name="shear_graph_image_2" widget="image"  readonly="1"/>
                     </div>
                     <group/>
@@ -3116,11 +3712,11 @@
 
 
                         <!-- input 3 -->
-                        <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                        <div class="d-flex gap-2" >
                           <h3 class="text-center">Input 3</h3><br/>
                         </div>
 
-                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                    <div class="d-flex gap-2" >
                       
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
@@ -3165,7 +3761,7 @@
                         </table>
                     </div>
 
-                    <div class="d-flex gap-2" invisible = "direct_shear_visible == False">
+                    <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -3211,7 +3807,7 @@
 
                    
 
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td><label for="displacement_rate">Displacement rate: mm/min</label></td>
@@ -3224,7 +3820,7 @@
                             </tbody>
                         </table>
 
-                        <div invisible = "direct_shear_visible == False">
+                        <div >
                     
                         <field name="direct_shear_ids_3">
                             <tree editable="bottom" class="custom_table_borders">
@@ -3246,13 +3842,13 @@
                         </field>
                     </div>
 
-                    <!-- <div invisible = "direct_shear_visible == False">
+                    <!-- <div >
                                     <button string="Calculate" type="object" name="action_compute_shear" class="oe_highlight">
                                         <i class="fa fa-calculator"/> Calculate 
                                     </button>
                                 </div>   -->
                                 <group/>
-                      <div invisible = "direct_shear_visible == False">
+                      <div >
                     <button name="action_generate_shear_graph_3"
                         string="Generate Shear Graph"
                         type="object"
@@ -3262,7 +3858,7 @@
                      
 
 
-                    <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
+                    <div  class="custom_table_borders text-center">
                         <field name="shear_graph_image_3" widget="image"  readonly="1"/>
                     </div>
                     <group/>
@@ -3274,10 +3870,10 @@
 
                         <!-- # Shear Stress Vs Normal Stress	 -->
 
-                        <div invisible = "direct_shear_visible == False">
+                        <div >
                            <h4 style="color:red;">Shear Stress Vs Normal Stress</h4>
                         </div>
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td style="text-align:center;font-weight:bold;"><span>Sr No</span></td>
@@ -3305,7 +3901,7 @@
                             </tbody>
                         </table>
 
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td style="text-align:center;font-weight:bold;"><span>MASS OF SOIL</span></td>
@@ -3337,7 +3933,7 @@
                             </tbody>
                         </table>
 
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "direct_shear_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
                                     <td style="text-align:center;font-weight:bold;"><span>phi</span></td>
@@ -3353,7 +3949,7 @@
                         </table>
 
 
-                        <div invisible = "direct_shear_visible == False">
+                        <div >
                     <button name="action_generate_shear_graph_4"
                         string="Generate Shear Graph"
                         type="object"
@@ -3363,10 +3959,15 @@
                      
 
 
-                    <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
+                    <div  class="custom_table_borders text-center">
                         <field name="shear_graph_image_4" widget="image"  readonly="1"/>
                     </div>
                     <group/>
+
+                        </sheet>
+                 </form>
+
+            </field>
 
                   
 
