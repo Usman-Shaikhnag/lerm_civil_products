@@ -28,7 +28,7 @@ class ELN(models.Model):
 
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")
     technician = fields.Many2one('res.users',string="Technicians",tracking=5)
-    technician_ids = fields.Many2many('res.users',string='Technicians',tracking=5,store=True,)
+    technician_ids = fields.Many2many('res.users',string='Technicians',compute='_compute_technicians_from_results',store=True,tracking=5)
     sample_id = fields.Many2one('lerm.srf.sample',string='UID',tracking=True,ondelete="cascade")
     srf_date = fields.Date(string='SRF Date',tracking=True)
     kes_no = fields.Char(string="UID",tracking=True)
@@ -140,6 +140,12 @@ class ELN(models.Model):
     quantity_received = fields.Integer(string="Quantiyty Received")
     quantity_consumed = fields.Integer(string="Quantity Consumed")
     quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
+
+    @api.depends('parameters_result.technician')
+    def _compute_technicians_from_results(self):
+        for rec in self:
+            techs = rec.parameters_result.mapped('technician').filtered(lambda t: t)
+            rec.technician_ids = [(6, 0, techs.ids)]
 
     @api.depends('quantity_received', 'quantity_consumed')
     def compute_quantity_balance(self):
