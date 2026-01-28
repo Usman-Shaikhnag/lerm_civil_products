@@ -2585,8 +2585,6 @@ class Soil(models.Model):
             if record.triaxial_test_ids:
                 record.show_sieve = True
 
-<<<<<<< HEAD
-=======
             # 🔹 Reload the current record in form view
             # return {
             #     'type': 'ir.actions.act_window',
@@ -13659,7 +13657,9 @@ class Soil(models.Model):
             # --- MARKER LIST ---
             # He symbols sequence ne vaparle jatil
             marker_cycle = itertools.cycle(['^', '*', 'D', 'x', 'o', 's', 'v', '+'])
->>>>>>> 50c35045bf6024adbada9f7c8fd207382fde94c0
+
+
+
          
 
 
@@ -13791,8 +13791,7 @@ class Soil(models.Model):
       
         for record in self:
             record.sieve_visible = False
-            # water_content_visible = False
-            # record.liquid_limit_visible = False
+            
             record.plastic_limit_visible = False
             record.heavy_visible = False
             record.omc_visible = False
@@ -13883,11 +13882,7 @@ class Soil(models.Model):
                 if sample.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
                     record.consolidation_visible = True
 
-                # if sample.internal_id == '98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r':
-                #     record.consolidation_pc_visible = True
-
-                # if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
-                #     record.angle_shear_visible = True
+               
 
                 if sample.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
                     record.swelling_pressure_visible = True
@@ -15717,16 +15712,6 @@ class SoilSieveAnalysisLineGSA(models.Model):
                 record.cumulative_retained = 0.0
 
 
-    # --------------------------------------------------
-    # COMPUTE % PASSING
-    # --------------------------------------------------
-    # @api.depends('cumulative_retained')
-    # def _compute_passing_percent(self):
-    #     for record in self:
-    #         record.passing_percent = round(
-    #             100 - (record.cumulative_retained or 0.0),
-    #             3
-    #         )
 
 
 
