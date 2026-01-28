@@ -21,7 +21,8 @@
             <sheet>
                 <group style="width:100%">
                     <field name='eln_id' invisible="1"/>
-                    <field name='technician' readonly="1"/>
+                    <!-- <field name='technician' readonly="1"/> -->
+                    <field name='technician_ids' readonly="1" widget="many2many_tags"/>
                 </group>
                 <group>
                     <group style="width:50%">
@@ -239,7 +240,8 @@
                     <field name='eln_id' optional="show"/>
                     <field name='srf_id' optional="show"/>
                     <!-- <field name='sample_id' optional="show"/> -->
-                    <field name='technician' optional="show"/>
+                    <field name='technician' optional="hide"/>
+                    <field name='technician_ids' optional="show" widget="many2many_tags"/>
                     <field name="activity_ids" widget="list_activity" optional="show"/>
                     <field name='srf_date' optional="show"/>
                     <field name='kes_no' optional="show"/>
