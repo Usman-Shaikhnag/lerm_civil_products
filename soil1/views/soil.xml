@@ -1559,9 +1559,9 @@
         </div>
 
 
-                  <div invisible = "ll_visible == False" class="custom_table_borders text-center">
+                  <!-- <div invisible = "ll_visible == False" class="custom_table_borders text-center">
                         <field name="casagrande_graph" widget="image" readonly="1"/>
-                    </div>
+                    </div> -->
 
 
 
@@ -2859,6 +2859,122 @@
                         </tree>
                     </field>
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  >
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>Serial No</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Cell Pressure (kg/cm²)</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Deviatoric Stress at Failure σd kg/cm2</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Effective Normal Stress at Failure σ1 kg/cm2</span></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>1</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure1" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress1" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress1" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>2</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure2" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress2" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress2" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>3</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure3" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress3" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress3" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+
+                       
+                    
+                     
+
+
+                    <button name="action_generate_mohr_graph" type="object" string="Generate Mohr Graph" class="btn-primary"/>
+
+                    <div  class="custom_table_borders text-center">
+                        <field name="mohr_graph" widget="image"  readonly="1"/>
+                    </div>
+                    <group/>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  >
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>Serial No</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Cell Pressure (kg/cm²)</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Axial load at failure kg/cm2 σd</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Major Princ.stress kg/cm2 σ1</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>p = (σ₁ + σ₃) / 2 (kg/cm²)</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>q = (σ₁ − σ₃) / 2 (kg/cm²)</span></td>
+                                    <td style="text-align: center; font-weight: bold;width:150px;"><span>X-Axis</span></td>
+                                    <td style="text-align: center; font-weight: bold;width:150px;"><span>Y-Axis</span></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>1</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure1" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress1" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress1" /></td>
+                                    <td style="text-align: center;"><field name="p_stress1" /></td>
+                                    <td style="text-align: center;"><field name="q_stress1" /></td>
+                                    <td style="text-align: center;"><field name="x_axis1" /></td>
+                                    <td style="text-align: center;"><field name="q_stress1" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>2</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure2" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress2" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress2" /></td>
+                                    <td style="text-align: center;"><field name="p_stress2" /></td>
+                                    <td style="text-align: center;"><field name="q_stress2" /></td>
+                                    <td style="text-align: center;"><field name="x_axis2" /></td>
+                                    <td style="text-align: center;"><field name="q_stress2" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>3</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure3" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress3" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress3" /></td>
+                                    <td style="text-align: center;"><field name="p_stress3" /></td>
+                                    <td style="text-align: center;"><field name="q_stress3" /></td>
+                                    <td style="text-align: center;"><field name="x_axis3" /></td>
+                                    <td style="text-align: center;"><field name="q_stress3" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  >
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>tan α</span></td>
+                                    <td style="text-align: center;"><field name="tan_alpha" readonly="1"/></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>m</span></td>
+                                    <td style="text-align: center;"><field name="m_intercept" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>φ</span></td>
+                                    <td style="text-align: center;"><field name="phi" readonly="1"/><span>  Degrees</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>C</span></td>
+                                    <td style="text-align: center;"><field name="cohesion" readonly="1"/><span>  kg/cm²</span></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+
 
                     </sheet>
                  </form>
@@ -3290,10 +3406,10 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
                                 <field name='horizontal_read'/>
-                                <field name='corrected_area'/>
+                                <field name='corrected_area' readonly="1"/>
                                 <field name='prove_ring_read' class="blue-input" decoration-info="prove_ring_read!=0"/>
                                 <field name='shear_stress'/>
-                                <field name='axial_deformation' class="blue-input" decoration-info="axial_deformation!=0"/>
+                                <field name='axial_deformation' />
                                 <field name='axial_strain'/>
                               
                             </tree>
