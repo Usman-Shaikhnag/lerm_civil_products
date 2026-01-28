@@ -8411,6 +8411,61 @@ class HeavyCompactionLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_proctor",
+        store=True
+    )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_proctor",
+        store=True
+    )
+
+    # @api.depends('lab_id')
+    # def _compute_bh_id(self):
+    #     ReviewLine = self.env['sample.request.review.lines']
+
+    #     for line in self:
+    #         line.bh_id = False
+
+    #         if not line.lab_id:
+    #             continue
+
+    #         review_line = ReviewLine.search(
+    #             [('lab_id', '=', line.lab_id)],
+    #             order='id desc',
+    #             limit=1
+    #         )
+
+    #         if review_line:
+    #             line.bh_id = review_line.source
+    @api.depends('lab_id')
+    def _compute_proctor(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.depth = review_line.depth         # Depth (m)
+
+
+    room_temp_proctor = fields.Float(string="Room Temp.°C" )
+    humidity_proctor = fields.Float(string="Humidity %" )
+
     
 
     empty_wt_proctor = fields.Float(string="Empty weight of Proctor mould in gm. M" , digits=(8,0))
@@ -9055,6 +9110,43 @@ class DrirectShearLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_direct",
+        store=True
+    )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_direct",
+        store=True
+    )
+
+    
+    @api.depends('lab_id')
+    def _compute_direct(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.depth = review_line.depth         # Depth (m)
+
+
+    
+
 
 
     shear_box_dimension = fields.Float(string="Shear Box Inside Dimension:", digits=(12,0))
@@ -9214,6 +9306,7 @@ class DrirectShearLine(models.Model):
                 record.displacement_rate = 0.25
 
     shear_room_temp = fields.Float(string="Room Temperature", digits=(12,1))
+    direct_humidity = fields.Float(string="Humidity %" )
     shear_std_temp = fields.Float(string="Std Temp During calibr'n")
     shear_temp_correction = fields.Float(string="Temperature correction fro each deg C rise/fall (+/-)", digits=(12,3))
 
@@ -10246,6 +10339,36 @@ class SwellingPressureLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_swelling",
+        store=True
+    )
+
+   
+    @api.depends('lab_id')
+    def _compute_swelling(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.depth = review_line.depth         # Depth (m)
+
+
+    # room_temp_proctor = fields.Float(string="Room Temp.°C" )
+    # humidity_proctor = fields.Float(string="Humidity %" )
+
     swelling_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     swelling_diameter = fields.Float(string="Diameter, D", digits=(8,1))
     swelling_height = fields.Float(string="Height, H", digits=(8,1))
@@ -11199,7 +11322,57 @@ class CbrLine(models.Model):
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
+    initial_height = fields.Float(string="Initial height of specimen, h (mm)")
+    initial_dial_guage = fields.Float(string="Initial dial gauge reading, ds (mm)")
+    final_dial_guage = fields.Float(string="Final dial gauge reading, df (mm)",compute="_compute_final_dial_guage", store=True)
+
+    @api.depends('soil_table.proving_reading', 'soil_table.serial_no')
+    def _compute_final_dial_guage(self):
+        for rec in self:
+            rec.final_dial_guage = 0.0
+
+            if not rec.soil_table:
+                continue
+
+            # sort by serial_no (safe)
+            last_line = rec.soil_table.sorted(
+                lambda l: l.serial_no or 0
+            )[-1]
+
+            rec.final_dial_guage = last_line.proving_reading or 0.0
+
+
     lab_id=  fields.Char(string="Lab ID" )
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_bh_id",
+        store=True
+    )
+
+    @api.depends('lab_id')
+    def _compute_bh_id(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source
+
+
+
+
+    humidity= fields.Char(string="Humidity %" )
+
 
     soil_table = fields.One2many('mechanical.cbr.line1','parent_id_cbr',string="CBR",default=lambda self: self._default_cbr_child_lines())
 
