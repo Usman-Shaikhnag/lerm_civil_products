@@ -8090,6 +8090,61 @@ class HeavyCompactionLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_proctor",
+        store=True
+    )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_proctor",
+        store=True
+    )
+
+    # @api.depends('lab_id')
+    # def _compute_bh_id(self):
+    #     ReviewLine = self.env['sample.request.review.lines']
+
+    #     for line in self:
+    #         line.bh_id = False
+
+    #         if not line.lab_id:
+    #             continue
+
+    #         review_line = ReviewLine.search(
+    #             [('lab_id', '=', line.lab_id)],
+    #             order='id desc',
+    #             limit=1
+    #         )
+
+    #         if review_line:
+    #             line.bh_id = review_line.source
+    @api.depends('lab_id')
+    def _compute_proctor(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.depth = review_line.depth         # Depth (m)
+
+
+    room_temp_proctor = fields.Float(string="Room Temp.°C" )
+    humidity_proctor = fields.Float(string="Humidity %" )
+
     
 
     empty_wt_proctor = fields.Float(string="Empty weight of Proctor mould in gm. M" , digits=(8,0))
@@ -9924,6 +9979,36 @@ class SwellingPressureLine(models.Model):
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
     lab_id=  fields.Char(string="Lab ID" )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_swelling",
+        store=True
+    )
+
+   
+    @api.depends('lab_id')
+    def _compute_swelling(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.depth = review_line.depth         # Depth (m)
+
+
+    # room_temp_proctor = fields.Float(string="Room Temp.°C" )
+    # humidity_proctor = fields.Float(string="Humidity %" )
 
     swelling_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     swelling_diameter = fields.Float(string="Diameter, D", digits=(8,1))
