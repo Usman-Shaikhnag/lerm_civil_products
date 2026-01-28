@@ -1469,6 +1469,305 @@
 						</div>
 
 						</t>
+
+
+
+            <t t-foreach="data.direct_shear_line" t-as="direct">
+                 <div style="margin-top:100px; page-break-before: always;">
+						<!-- 🔹 HEADER -->
+						<table style="width:100%; border-collapse:collapse; font-size:13px;">
+                        <tr>
+								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+								DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST
+								</td>
+
+								
+							</tr>
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+									LAB ID :
+									<span t-esc="direct.lab_id"/>
+								</td>
+
+								
+							</tr>
+
+							<tr>
+								<td colspan="3" style="border:1px solid black; padding:4px;">
+									<b>Test Method/Reference Code :</b> IS 2720-Part XVI-1987
+								</td>
+								<td colspan="3" style="border:1px solid black; padding:4px;">
+									<b>Annexure- II to ULR</b>
+									<span style="background-color:yellow; padding:2px 6px;">
+										<!-- <t t-esc="data.ulr_no"/> -->
+									</span>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Project Name :</b>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Name &amp; Address of Customer :</b>
+									<!-- <t t-esc="data.customer_name"/> -->
+									<!-- <td colspan="3" style="padding-left: 10px;width:25%;"> -->
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+								<!-- </td> -->
+								</td>
+							</tr>
+
+							
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Report No.
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+									<span t-esc="o.material.test_format_no"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Date Sample Received
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Location /BH ID
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="direct.bh_id"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Starting Date
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+										<span t-field="o.start_date" />
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Depth (m)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="direct.depth"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Completion Date
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+										<span t-field="o.end_date" />
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Room Temperature (deg)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="direct.shear_room_temp"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Relative humidity (%)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 	 <t t-esc="direct.direct_humidity"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Type of Test
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Type of Sample 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Proving Ring Capacity kN 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <!-- <t t-esc="proctor.empty_wt_proctor"/> -->
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Load Gauge Constant 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								<!-- <t t-esc="proctor.volumn_proctor"/> -->
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Initial wet wt. of Soil (g)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="direct.initial_mass_soil"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Dimesnions of sample (mm)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								<span t-field="o.sample_id.size_id.size"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Avg. Moisture Content %
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <!-- <t t-esc="direct.initial_mass_soil"/> -->
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Displacement Rate
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								<t t-esc="direct.displacement_rate"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Final wet wt. of soil (g)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="direct.final_mass_soil"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Bulk Density (g/cc)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								<t t-esc="direct.density_soil_shear"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Moisture content at shear zone (%)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="direct.mass_dry_soil"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Dry Density (g/cc)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								<t t-esc="direct.dry_density_soil_shear"/>
+									
+								</td>
+							</tr>
+
+							<!-- Row 6 -->
+							
+
+
+						
+
+
+						</table>
+
+            <!-- 🔹 OBSERVATION TABLE -->
+                <div style="margin-top:20px; text-align:center; ;">
+					<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+						<tbody>
+							<tr>
+								<td style="text-align:center;font-weight:bold;">Sr No</td>
+								<td style="text-align:center;font-weight:bold;">Shear stress kg/cm²</td>
+								<td style="text-align:center;font-weight:bold;">Normal stress kg/cm²</td>
+							</tr>
+
+							<tr>
+								<td style="text-align:center;font-weight:bold;">1</td>
+								<td style="text-align:center;">
+									<t t-esc="direct.shear_test_final1"/>
+								</td>
+								<td style="text-align:center;">
+									<t t-esc="direct.normal_stress"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align:center;font-weight:bold;">2</td>
+								<td style="text-align:center;">
+									<t t-esc="direct.shear_test_final2"/>
+								</td>
+								<td style="text-align:center;">
+									<t t-esc="direct.normal_stress_2"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align:center;font-weight:bold;">3</td>
+								<td style="text-align:center;">
+									<t t-esc="direct.shear_test_final3"/>
+								</td>
+								<td style="text-align:center;">
+									<t t-esc="direct.normal_stress_3"/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+            <!-- 🔹 GRAPH -->
+            <t t-if="direct.shear_graph_image_4">
+					<div style="text-align:center; margin-top:10px; width: 100%;">
+						<img t-att-src="'data:image/png;base64,%s' % direct.shear_graph_image_4.decode('utf-8')"
+							style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+					</div>
+					
+				</t>
+
+            <!-- 🔹 RESULT -->
+            <div style="margin-top:20px; text-align:center; font-weight:bold;">
+				Cohesion (c) = <span t-esc="direct.cohesion"/> kg/cm²
+			</div>
+
+			<div style="margin-top:5px; text-align:center; font-weight:bold;">
+				φ = <span t-esc="direct.phi"/> °
+			</div>
+
+			</div>
+			</t>
+          
 					
 
 

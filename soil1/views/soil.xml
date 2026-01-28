@@ -3435,16 +3435,27 @@
                                 }
                             </style>
 
-                    <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="selected_lab_id10"></label></td>
-                                <td><field name="selected_lab_id10"/> </td>
-                            </tr>
-                           
-                            
-                        </tbody>
-                    </table> -->
+                       <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="lab_id"></label></td>
+                                            <td><field name="lab_id" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="bh_id"></label></td>
+                                            <td><field name="bh_id" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
 
                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
@@ -3550,6 +3561,10 @@
                                 <tr>
                                     <td><label for="shear_room_temp">Room Temperature</label></td>
                                     <td ><field name="shear_room_temp" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="direct_humidity">Humidity %</label></td>
+                                    <td ><field name="direct_humidity" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="shear_temp_correction">Temperature correction fro each deg C rise/fall (+/-)</label></td>

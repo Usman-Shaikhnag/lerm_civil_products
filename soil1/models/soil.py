@@ -8789,6 +8789,43 @@ class DrirectShearLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_direct",
+        store=True
+    )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_direct",
+        store=True
+    )
+
+    
+    @api.depends('lab_id')
+    def _compute_direct(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.depth = review_line.depth         # Depth (m)
+
+
+    
+
 
 
     shear_box_dimension = fields.Float(string="Shear Box Inside Dimension:", digits=(12,0))
@@ -8948,6 +8985,7 @@ class DrirectShearLine(models.Model):
                 record.displacement_rate = 0.25
 
     shear_room_temp = fields.Float(string="Room Temperature", digits=(12,1))
+    direct_humidity = fields.Float(string="Humidity %" )
     shear_std_temp = fields.Float(string="Std Temp During calibr'n")
     shear_temp_correction = fields.Float(string="Temperature correction fro each deg C rise/fall (+/-)", digits=(12,3))
 
