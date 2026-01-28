@@ -662,6 +662,20 @@ class Soil(models.Model):
     NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
     nmc_visible = fields.Boolean(string="NMC Visible",compute="_compute_visible")
+    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+
+
+
+    
+    @api.onchange('eln_ref')
+    def compute_date_of_casting(self):
+        for record in self:
+            if record.eln_ref.sample_id:
+                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).date_casting
+                record.date_of_casting = sample_record
+            else:
+                record.date_of_casting = None
+
 
 
     show_sieve = fields.Boolean(default=False)
@@ -2642,6 +2656,11 @@ class Soil(models.Model):
             #     'target': 'current',
             # }
 
+    
+
+
+
+
 
 
 
@@ -2771,8 +2790,7 @@ class Soil(models.Model):
       
         for record in self:
             record.sieve_visible = False
-            # water_content_visible = False
-            # record.liquid_limit_visible = False
+            
             record.plastic_limit_visible = False
             record.heavy_visible = False
             record.omc_visible = False
@@ -2863,11 +2881,7 @@ class Soil(models.Model):
                 if sample.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
                     record.consolidation_visible = True
 
-                # if sample.internal_id == '98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r':
-                #     record.consolidation_pc_visible = True
-
-                # if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
-                #     record.angle_shear_visible = True
+               
 
                 if sample.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
                     record.swelling_pressure_visible = True
@@ -4146,6 +4160,8 @@ class SoilMoisture(models.Model):
     date = fields.Date(string="Date")
     lab_id = fields.Char(string='Lab ID')
 
+    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+
     wet_soil_container = fields.Float(string='Weight of wet soil + container (gm)' )
     dry_soil_container = fields.Float( string='Weight of oven dry soil + container (gm)' )
     container_weight = fields.Float( string='Weight of container (gm)' )
@@ -4697,16 +4713,6 @@ class SoilSieveAnalysisLineGSA(models.Model):
                 record.cumulative_retained = 0.0
 
 
-    # --------------------------------------------------
-    # COMPUTE % PASSING
-    # --------------------------------------------------
-    # @api.depends('cumulative_retained')
-    # def _compute_passing_percent(self):
-    #     for record in self:
-    #         record.passing_percent = round(
-    #             100 - (record.cumulative_retained or 0.0),
-    #             3
-    #         )
 
 
 
@@ -6921,7 +6927,10 @@ class UcsSoilLine(models.Model):
             # 5) Shear stress = ((PR*5)*1.682+13.644)/(9.81*Ac)
             pr = rec.prove_ring_read or 0.0
             ac = rec.corrected_area or 1.0
-            rec.shear_stress = (((pr * 5.0) * 1.682) + 13.644) / (9.81 * ac)
+            if rec.serial_no == 1 or horiz <= 0:
+                rec.shear_stress = 0
+            else:
+               rec.shear_stress = (((pr * 5.0) * 1.682) + 13.644) / (9.81 * ac)
 
 
 
@@ -7345,7 +7354,7 @@ class LLLine(models.Model):
     # -----------------------------
     # Plot (Excel-style)
     # -----------------------------
-     fig, ax = plt.subplots(figsize=(10, 5), dpi=120)
+     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
 
     # Data curve
      ax.plot(
@@ -7515,7 +7524,21 @@ class SLLine(models.Model):
 
     sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id_sl',ondelete='cascade')
 
-    shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0))
+    shrinkage_avg = fields.Float( string='shrinkage Limit Avg %' , digits=(10,0) ,compute='_compute_shrinkage_avg',store=True,)
+
+
+    @api.depends('sl_line_ids.shrinkage_limit')
+    def _compute_shrinkage_avg(self):
+        for line in self:
+            if line.sl_line_ids:
+                vals = line.sl_line_ids.mapped("shrinkage_limit")
+                line.shrinkage_avg = sum(vals) / len(vals)
+                
+
+            else:
+                line.shrinkage_avg = 0.0
+
+    # shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0))
 
     def action_reset_sequencesl(self):
         """
@@ -7531,16 +7554,16 @@ class SLLine(models.Model):
                 line.serial_no = index + 1
 
 
-    @api.depends('sl_line_ids.water_content')
-    def _compute_shrinkage_avg(self):
-        for line in self:
-            if line.sl_line_ids:
-                vals = line.sl_line_ids.mapped("water_content")
-                line.shrinkage_avg = sum(vals) / len(vals)
+    # @api.depends('sl_line_ids.water_content')
+    # def _compute_shrinkage_avg(self):
+    #     for line in self:
+    #         if line.sl_line_ids:
+    #             vals = line.sl_line_ids.mapped("water_content")
+    #             line.shrinkage_avg = sum(vals) / len(vals)
                 
 
-            else:
-                line.shrinkage_avg = 0.0
+    #         else:
+    #             line.shrinkage_avg = 0.0
 
     
 
@@ -7806,8 +7829,66 @@ class TriaxialShearLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_triaxial",
+        store=True
+    )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_triaxial",
+        store=True
+    )
+
+    # @api.depends('lab_id')
+    # def _compute_bh_id(self):
+    #     ReviewLine = self.env['sample.request.review.lines']
+
+    #     for line in self:
+    #         line.bh_id = False
+
+    #         if not line.lab_id:
+    #             continue
+
+    #         review_line = ReviewLine.search(
+    #             [('lab_id', '=', line.lab_id)],
+    #             order='id desc',
+    #             limit=1
+    #         )
+
+    #         if review_line:
+    #             line.bh_id = review_line.source
+    @api.depends('lab_id')
+    def _compute_triaxial(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.depth = review_line.depth         # Depth (m)
+
+
+    
+
 
     dia_triaxial = fields.Float(string="Diameter (mm)", digits=(8, 1))
+
+    proving_triaxial = fields.Float(string="Proving Ring Capacity", digits=(8, 1))
+    least_count_triaxial = fields.Float(string="Least Count of dial guage", digits=(8, 1))
+    displacement_triaxial = fields.Float(string="Displacement Rate (mm/min)", digits=(8, 1))
     
 
     # Area automatically calculate hoil
@@ -8060,6 +8141,319 @@ class TriaxialShearLine(models.Model):
             # Formula: Correction Factor * Rise/Fall
             # (humidity_triaxial_test * rise_fall_triaxial_test)
             rec.rise_force_triaxial_test = rec.humidity_triaxial_test * diff
+
+    cell_pressure1 = fields.Float(string="Cell Pressure (kg/cm²)",digits=(10, 2),default= 0.5)
+    cell_pressure2 = fields.Float(string="Cell Pressure (kg/cm²)",digits=(10, 2),default= 1)
+    cell_pressure3 = fields.Float(string="Cell Pressure (kg/cm²)",digits=(10, 2),default= 1.5)
+
+
+
+    deviatoric_stress1 = fields.Float(string="Deviatoric Stress at Failure σd kg/cm2",compute="_compute_deviatoric_stress1",  digits=(10, 2), store=True)
+
+    deviatoric_stress2 = fields.Float(string="Deviatoric Stress at Failure σd kg/cm2",compute="_compute_deviatoric_stress2",  digits=(10, 2), store=True)
+
+    deviatoric_stress3 = fields.Float(string="Deviatoric Stress at Failure σd kg/cm2",compute="_compute_deviatoric_stress3",  digits=(10, 2), store=True)
+
+    @api.depends('triaxial_test_line_ids.shear_stress_05')
+    def _compute_deviatoric_stress1(self):
+        for rec in self:
+            shear_values = rec.triaxial_test_line_ids.mapped('shear_stress_05')
+            rec.deviatoric_stress1 = max(shear_values) if shear_values else 0.0
+
+    @api.depends('triaxial_test_line_ids.shear_stress_10')
+    def _compute_deviatoric_stress2(self):
+        for rec in self:
+            shear_values = rec.triaxial_test_line_ids.mapped('shear_stress_10')
+            rec.deviatoric_stress2 = max(shear_values) if shear_values else 0.0
+
+    @api.depends('triaxial_test_line_ids.shear_stress_15')
+    def _compute_deviatoric_stress3(self):
+        for rec in self:
+            shear_values = rec.triaxial_test_line_ids.mapped('shear_stress_15')
+            rec.deviatoric_stress3 = max(shear_values) if shear_values else 0.0
+
+
+    effect_norm_stress1 = fields.Float(string="Effective Normal Stress at Failure σ1 kg/cm2",compute="_effect_norm_stress1",  digits=(10, 2), store=True)
+
+    effect_norm_stress2 = fields.Float(string="Effective Normal Stress at Failure σ1 kg/cm2",compute="_effect_norm_stress2",  digits=(10, 2), store=True)
+
+    effect_norm_stress3 = fields.Float(string="Effective Normal Stress at Failure σ1 kg/cm2",compute="_effect_norm_stress3",  digits=(10, 2), store=True)
+
+    @api.depends('triaxial_test_line_ids.shear_stress_05','cell_pressure1')
+    def _effect_norm_stress1(self):
+     for rec in self:
+        # ---- Deviatoric stress (max shear stress) ----
+        shear_values = [
+            v for v in rec.triaxial_test_line_ids.mapped('shear_stress_05')
+            if v is not None
+        ]
+
+        rec.deviatoric_stress1 = max(shear_values) if shear_values else 0.0
+
+        # ---- σ₁ = σ₃ + σd ----
+        rec.effect_norm_stress1 = rec.cell_pressure1 + rec.deviatoric_stress1
+
+    @api.depends('triaxial_test_line_ids.shear_stress_10','cell_pressure1')
+    def _effect_norm_stress2(self):
+     for rec in self:
+        # ---- Deviatoric stress (max shear stress) ----
+        shear_values = [
+            v for v in rec.triaxial_test_line_ids.mapped('shear_stress_10')
+            if v is not None
+        ]
+
+        rec.deviatoric_stress2 = max(shear_values) if shear_values else 0.0
+
+        # ---- σ₁ = σ₃ + σd ----
+        rec.effect_norm_stress2 = rec.cell_pressure2 + rec.deviatoric_stress2
+
+    @api.depends('triaxial_test_line_ids.shear_stress_15','cell_pressure1')
+    def _effect_norm_stress3(self):
+     for rec in self:
+        # ---- Deviatoric stress (max shear stress) ----
+        shear_values = [
+            v for v in rec.triaxial_test_line_ids.mapped('shear_stress_15')
+            if v is not None
+        ]
+
+        rec.deviatoric_stress3 = max(shear_values) if shear_values else 0.0
+
+        # ---- σ₁ = σ₃ + σd ----
+        rec.effect_norm_stress3 = rec.cell_pressure3 + rec.deviatoric_stress3
+
+
+
+    p_stress1 = fields.Float(string="p = (σ₁ + σ₃) / 2 (kg/cm²)",digits=(10, 2),compute="_compute_p_q_stress1",store=True)
+
+    q_stress1 = fields.Float(string="q = (σ₁ − σ₃) / 2 (kg/cm²)", digits=(10, 2),compute="_compute_p_q_stress1",store=True)
+
+    @api.depends('effect_norm_stress1', 'cell_pressure1')
+    def _compute_p_q_stress1(self):
+     for rec in self:
+        effect_norm_stress1 = rec.effect_norm_stress1 or 0.0
+        cell_pressure1 = rec.cell_pressure1 or 0.0
+
+        # Mean normal stress
+        rec.p_stress1 = round((effect_norm_stress1 + cell_pressure1) / 2, 2)
+
+        # Deviatoric stress parameter
+        rec.q_stress1 = round((effect_norm_stress1 - cell_pressure1) / 2, 2)
+
+    p_stress2 = fields.Float(string="p = (σ₁ + σ₃) / 2 (kg/cm²)",digits=(10, 2),compute="_compute_p_q_stress2",store=True)
+
+    q_stress2 = fields.Float(string="q = (σ₁ − σ₃) / 2 (kg/cm²)", digits=(10, 2),compute="_compute_p_q_stress2",store=True)
+
+    @api.depends('effect_norm_stress2', 'cell_pressure2')
+    def _compute_p_q_stress2(self):
+     for rec in self:
+        effect_norm_stress2 = rec.effect_norm_stress2 or 0.0
+        cell_pressure2 = rec.cell_pressure2 or 0.0
+
+        # Mean normal stress
+        rec.p_stress2 = round((effect_norm_stress2 + cell_pressure2) / 2, 2)
+
+        # Deviatoric stress parameter
+        rec.q_stress2 = round((effect_norm_stress2 - cell_pressure2) / 2, 2)
+
+    p_stress3 = fields.Float(string="p = (σ₁ + σ₃) / 2 (kg/cm²)",digits=(10, 2),compute="_compute_p_q_stress3",store=True)
+
+    q_stress3 = fields.Float(string="q = (σ₁ − σ₃) / 2 (kg/cm²)", digits=(10, 2),compute="_compute_p_q_stress3",store=True)
+
+    @api.depends('effect_norm_stress3', 'cell_pressure3')
+    def _compute_p_q_stress3(self):
+     for rec in self:
+        effect_norm_stress3 = rec.effect_norm_stress3 or 0.0
+        cell_pressure3 = rec.cell_pressure3 or 0.0
+
+        # Mean normal stress
+        rec.p_stress3 = round((effect_norm_stress3 + cell_pressure3) / 2, 2)
+
+        # Deviatoric stress parameter
+        rec.q_stress3 = round((effect_norm_stress3 - cell_pressure3) / 2, 2)
+
+    x_axis1 = fields.Float(string="X-Axis (σ₃ + q)",digits=(10, 3), compute="_compute_p_q_x_y1",store=True)
+
+    @api.depends('cell_pressure1', 'effect_norm_stress1')
+    def _compute_p_q_x_y1(self):
+      for rec in self:
+        effect_norm_stress1 = rec.effect_norm_stress1 or 0.0
+        cell_pressure1 = rec.cell_pressure1 or 0.0
+
+        rec.q_stress1 = round((effect_norm_stress1 - cell_pressure1) / 2, 2)
+        
+        # Excel: X = σ3 + q
+        rec.x_axis1 = round(cell_pressure1 + rec.q_stress1, 3)
+
+
+
+    x_axis2 = fields.Float(string="X-Axis (σ₃ + q)",digits=(10, 3), compute="_compute_p_q_x_y2",store=True)
+
+    @api.depends('cell_pressure2', 'effect_norm_stress2')
+    def _compute_p_q_x_y2(self):
+      for rec in self:
+        effect_norm_stress2 = rec.effect_norm_stress2 or 0.0
+        cell_pressure2 = rec.cell_pressure2 or 0.0
+
+        rec.q_stress2 = round((effect_norm_stress2 - cell_pressure2) / 2, 2)
+        
+        # Excel: X = σ3 + q
+        rec.x_axis2 = round(cell_pressure2 + rec.q_stress2, 3)
+
+    x_axis3 = fields.Float(string="X-Axis (σ₃ + q)",digits=(10, 3), compute="_compute_p_q_x_y3",store=True)
+
+    @api.depends('cell_pressure3', 'effect_norm_stress3')
+    def _compute_p_q_x_y3(self):
+      for rec in self:
+        effect_norm_stress3 = rec.effect_norm_stress3 or 0.0
+        cell_pressure3 = rec.cell_pressure3 or 0.0
+
+        rec.q_stress3 = round((effect_norm_stress3 - cell_pressure3) / 2, 2)
+        
+        # Excel: X = σ3 + q
+        rec.x_axis3 = round(cell_pressure3 + rec.q_stress3, 3)
+
+
+
+    tan_alpha = fields.Float(string="tan α", digits=(10, 3),compute="_compute_pq_parameters", store=True)
+
+    m_intercept = fields.Float(string="m", digits=(10, 3),compute="_compute_pq_parameters", store=True)
+
+    phi = fields.Float(string="φ (Degrees)", digits=(10, 2),compute="_compute_pq_parameters", store=True)
+
+    cohesion = fields.Float(string="C (kg/cm²)", digits=(10, 2),compute="_compute_pq_parameters", store=True)
+
+   
+
+    @api.depends('x_axis1', 'x_axis2', 'x_axis3','q_stress1', 'q_stress2', 'q_stress3')
+    def _compute_pq_parameters(self):
+     for rec in self:
+        # Reset
+        rec.tan_alpha = 0.0
+        rec.m_intercept = 0.0
+        rec.phi = 0.0
+        rec.cohesion = 0.0
+
+        # -----------------------------
+        # Collect valid X–Y points
+        # -----------------------------
+        x_vals = []
+        y_vals = []
+
+        if rec.x_axis1 and rec.q_stress1:
+            x_vals.append(rec.x_axis1)
+            y_vals.append(rec.q_stress1)
+
+        if rec.x_axis2 and rec.q_stress2:
+            x_vals.append(rec.x_axis2)
+            y_vals.append(rec.q_stress2)
+
+        if rec.x_axis3 and rec.q_stress3:
+            x_vals.append(rec.x_axis3)
+            y_vals.append(rec.q_stress3)
+
+        # Need minimum 2 points for regression
+        if len(x_vals) < 2:
+            continue
+
+        x = np.array(x_vals, dtype=float)
+        y = np.array(y_vals, dtype=float)
+
+        # -----------------------------
+        # Linear regression (Excel style)
+        # y = m + x * tanα
+        # -----------------------------
+        slope, intercept = np.polyfit(x, y, 1)
+
+        rec.tan_alpha = round(slope, 3)
+        rec.m_intercept = round(intercept, 3)
+
+        # -----------------------------
+        # φ = asin(tanα) in degrees
+        # -----------------------------
+        if abs(slope) <= 1:
+            phi_rad = math.asin(slope)
+            rec.phi = round(math.degrees(phi_rad), 2)
+        else:
+            rec.phi = 0.0
+
+        # -----------------------------
+        # C = m / cos(φ)
+        # -----------------------------
+        if rec.phi:
+            rec.cohesion = round(
+                intercept / math.cos(math.radians(rec.phi)),
+                2
+            )
+
+
+    mohr_graph = fields.Binary(string="Mohr Circle & Failure Envelope",store=True)
+
+    def action_generate_mohr_graph(self):
+     for rec in self:
+        rec.mohr_graph = False
+
+        stresses = [
+            (rec.cell_pressure1, rec.effect_norm_stress1),
+            (rec.cell_pressure2, rec.effect_norm_stress2),
+            (rec.cell_pressure3, rec.effect_norm_stress3),
+        ]
+
+        stresses = [(s3, s1) for s3, s1 in stresses if s3 and s1]
+        if not stresses:
+            continue
+
+        import math
+        import numpy as np
+        import matplotlib.pyplot as plt
+        from io import BytesIO
+        import base64
+
+        fig, ax = plt.subplots(figsize=(8, 5), dpi=100)
+        max_sigma = 0
+
+        # ---- Mohr circles ----
+        for sigma3, sigma1 in stresses:
+            center = (sigma1 + sigma3) / 2
+            radius = (sigma1 - sigma3) / 2
+
+            theta = np.linspace(0, np.pi, 200)
+            x = center + radius * np.cos(theta)
+            y = radius * np.sin(theta)
+
+            ax.plot(x, y, color='gray', linewidth=1.5)
+            max_sigma = max(max_sigma, sigma1)
+
+        # ---- Failure envelope ----
+        phi_rad = math.radians(rec.phi)
+        sigma = np.linspace(0, max_sigma * 1.2, 200)
+        tau = rec.cohesion + sigma * math.tan(phi_rad)
+
+        ax.plot(sigma, tau, color='black', linewidth=2.5)
+
+        # ---- Formatting ----
+        ax.set_xlabel("Normal Stress (kg/sq.cm)")
+        ax.set_ylabel("Shear Stress (kg/sq.cm)")
+        ax.set_xlim(0, max_sigma * 1.25)
+        ax.set_ylim(0, max(tau) * 1.2)
+        ax.grid(True, color='#BFBFBF', linewidth=0.8)
+
+        # ---- Save ----
+        buffer = BytesIO()
+        fig.savefig(buffer, format='png', bbox_inches='tight')
+        buffer.seek(0)
+        rec.mohr_graph = base64.b64encode(buffer.read())
+
+        buffer.close()
+        plt.close(fig)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10497,6 +10891,39 @@ class ConsolidationLine(models.Model):
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
     lab_id=  fields.Char(string="Lab ID" )
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_consolidation",
+        store=True
+    )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_consolidation",
+        store=True
+    )
+
+    
+    @api.depends('lab_id')
+    def _compute_consolidation(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.depth = review_line.depth         # Depth (m)
 
     consolidation_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     consolidation_diameter = fields.Float(string="Diameter, D", digits=(8,1))

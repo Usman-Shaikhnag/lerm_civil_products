@@ -22,6 +22,7 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="size_id"/>
                          <field name="lab_id" invisible="1" />
+                        <field name="date_of_casting" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
 
@@ -740,8 +741,8 @@
                     <div invisible = "moisture_visible == False">
                         <field name="bulk_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name="date" width="90px" />
-                                <field name='lab_id' width="60px" />
+                                <field name="date" width="90px" class="blue-input" decoration-info="date != 0"/>
+                                <field name='lab_id' width="60px" class="blue-input" decoration-info="lab_id != 0"/>
                                 <field name='wt_uds_soil' width="100px"  class="blue-input" decoration-info="wt_uds_soil != 0" />
                                 <field name='wt_empty_uds' width="100px"  class="blue-input" decoration-info="wt_empty_uds != 0"/>
                                 <field name="wt_soil" width="100px"/>
@@ -788,8 +789,8 @@
                         <field name="moisture_ids">
 
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name= 'date' width="80px" />
-                                <field name='lab_id'  width="50px"/>
+                                <field name= 'date' width="80px" class="blue-input" decoration-info="date!=0"/>
+                                <field name='lab_id'  width="50px" class="blue-input" decoration-info="lab_id!=0"/>
                                 <field name='wet_soil_container' width="100px"  class="blue-input" decoration-info="wet_soil_container!=0"/>
                                 <field name='dry_soil_container' width="100px" class="blue-input" decoration-info="dry_soil_container!=0"/>
                                 <field name= 'container_weight' width="110px" class="blue-input" decoration-info="container_weight!=0"/>
@@ -1066,7 +1067,7 @@
                                         <tbody>
                                             <tr>
                                                 <td><label for="temp">Temp.°C</label></td>
-                                                <td><field name="temp"/></td>
+                                                <td><field name="temp" class="blue-input"/></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1074,7 +1075,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="wt_of_samp1"/></td>
-                                                    <td><field name="wt_of_samp1"/></td>
+                                                    <td><field name="wt_of_samp1" class="blue-input"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1087,7 +1088,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="meniscus_corre"/></td>
-                                                    <td><field name="meniscus_corre"/></td>
+                                                    <td><field name="meniscus_corre" class="blue-input"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1095,7 +1096,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="vescosity_water"/></td>
-                                                    <td><field name="vescosity_water"/></td>
+                                                    <td><field name="vescosity_water" class="blue-input"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1108,7 +1109,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="dispersion"/></td>
-                                                    <td><field name="dispersion"/></td>
+                                                    <td><field name="dispersion" class="blue-input"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1131,7 +1132,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="specific_gravity"/></td>
-                                                    <td><field name="specific_gravity"/></td>
+                                                    <td><field name="specific_gravity" class="blue-input"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1183,7 +1184,7 @@
                             type="object" 
                             class="oe_highlight" 
                             icon="fa-area-chart"
-                            help="Sieve Analysis डेटावर आधारित ग्राफ तयार करण्यासाठी क्लिक करा."/>
+                            help="Sieve Analysis"/>
                  </div>
 
 
@@ -1558,9 +1559,9 @@
         </div>
 
 
-                  <div invisible = "ll_visible == False" class="custom_table_borders text-center">
+                  <!-- <div invisible = "ll_visible == False" class="custom_table_borders text-center">
                         <field name="casagrande_graph" widget="image" readonly="1"/>
-                    </div>
+                    </div> -->
 
 
 
@@ -1645,6 +1646,38 @@
                             
                         </tbody>
                     </table> -->
+                     <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="lab_id"></label></td>
+                                    <td ><field name="lab_id" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="bh_id"></label></td>
+                                    <td><field name="bh_id" class="blue-input" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="depth"></label></td>
+                                    <td><field name="depth" class="blue-input" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                    </div>
 
                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" >
                         <tbody>
@@ -2583,6 +2616,27 @@
                                 
                             </tbody>
                         </table> -->
+                        <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="bh_id"></label></td>
+                                    <td ><field name="bh_id" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="depth"></label></td>
+                                    <td><field name="depth"  class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
 
                      <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -2839,6 +2893,38 @@
                     
                     </div>
 
+                    <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="proving_triaxial"></label></td>
+                                    <td ><field name="proving_triaxial" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="least_count_triaxial"></label></td>
+                                    <td><field name="least_count_triaxial"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="displacement_triaxial"></label></td>
+                                    <td><field name="displacement_triaxial"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
                     <field name="triaxial_test_line_ids" >
                         <tree editable="bottom" class="custom_table_borders">
                             <field name="horizontal_dial"/>
@@ -2857,6 +2943,122 @@
                             <field name="pr_1_5"   />
                         </tree>
                     </field>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  >
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>Serial No</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Cell Pressure (kg/cm²)</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Deviatoric Stress at Failure σd kg/cm2</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Effective Normal Stress at Failure σ1 kg/cm2</span></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>1</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure1" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress1" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress1" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>2</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure2" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress2" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress2" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>3</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure3" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress3" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress3" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+
+                       
+                    
+                     
+
+
+                    <button name="action_generate_mohr_graph" type="object" string="Generate Mohr Graph" class="btn-primary"/>
+
+                    <div  class="custom_table_borders text-center">
+                        <field name="mohr_graph" widget="image"  readonly="1"/>
+                    </div>
+                    <group/>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  >
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>Serial No</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Cell Pressure (kg/cm²)</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Axial load at failure kg/cm2 σd</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>Major Princ.stress kg/cm2 σ1</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>p = (σ₁ + σ₃) / 2 (kg/cm²)</span></td>
+                                    <td style="text-align: center; font-weight: bold;"><span>q = (σ₁ − σ₃) / 2 (kg/cm²)</span></td>
+                                    <td style="text-align: center; font-weight: bold;width:150px;"><span>X-Axis</span></td>
+                                    <td style="text-align: center; font-weight: bold;width:150px;"><span>Y-Axis</span></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>1</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure1" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress1" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress1" /></td>
+                                    <td style="text-align: center;"><field name="p_stress1" /></td>
+                                    <td style="text-align: center;"><field name="q_stress1" /></td>
+                                    <td style="text-align: center;"><field name="x_axis1" /></td>
+                                    <td style="text-align: center;"><field name="q_stress1" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>2</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure2" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress2" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress2" /></td>
+                                    <td style="text-align: center;"><field name="p_stress2" /></td>
+                                    <td style="text-align: center;"><field name="q_stress2" /></td>
+                                    <td style="text-align: center;"><field name="x_axis2" /></td>
+                                    <td style="text-align: center;"><field name="q_stress2" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>3</span></td>
+                                    <td style="text-align: center;"><field name="cell_pressure3" readonly="1"/></td>
+                                    <td style="text-align: center;"><field name="deviatoric_stress3" /></td>
+                                    <td style="text-align: center;"><field name="effect_norm_stress3" /></td>
+                                    <td style="text-align: center;"><field name="p_stress3" /></td>
+                                    <td style="text-align: center;"><field name="q_stress3" /></td>
+                                    <td style="text-align: center;"><field name="x_axis3" /></td>
+                                    <td style="text-align: center;"><field name="q_stress3" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  >
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>tan α</span></td>
+                                    <td style="text-align: center;"><field name="tan_alpha" readonly="1"/></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>m</span></td>
+                                    <td style="text-align: center;"><field name="m_intercept" readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>φ</span></td>
+                                    <td style="text-align: center;"><field name="phi" readonly="1"/><span>  Degrees</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;"><span>C</span></td>
+                                    <td style="text-align: center;"><field name="cohesion" readonly="1"/><span>  kg/cm²</span></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
 
 
                     </sheet>
@@ -3289,10 +3491,10 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
                                 <field name='horizontal_read'/>
-                                <field name='corrected_area'/>
+                                <field name='corrected_area' readonly="1"/>
                                 <field name='prove_ring_read' class="blue-input" decoration-info="prove_ring_read!=0"/>
                                 <field name='shear_stress'/>
-                                <field name='axial_deformation' class="blue-input" decoration-info="axial_deformation!=0"/>
+                                <field name='axial_deformation' />
                                 <field name='axial_strain'/>
                               
                             </tree>
@@ -3440,7 +3642,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="lab_id"></label></td>
-                                            <td><field name="lab_id" /></td>
+                                            <td><field name="lab_id"  class="blue-input"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -3461,7 +3663,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="drainage_condition">Drainage Condition</label></td>
-                                    <td ><field name="drainage_condition" /></td>
+                                    <td ><field name="drainage_condition" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3498,7 +3700,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="wt_empty_cutter">Empty Weight of cutter: </label></td>
-                                    <td ><field name="wt_empty_cutter"/></td>
+                                    <td ><field name="wt_empty_cutter" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="final_wt_soil_cutter">Final wt of soil + cutter at shear zone </label></td>
@@ -3506,7 +3708,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="mass_dry_soil">Mass of dry soil at shear zone (g) </label></td>
-                                    <td ><field name="mass_dry_soil"/></td>
+                                    <td ><field name="mass_dry_soil" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3594,7 +3796,7 @@
                                 </tr>
                                  <tr>
                                     <td><label for="normal_stress">Normal stress: kg/cm2</label></td>
-                                    <td ><field name="normal_stress" /></td>
+                                    <td ><field name="normal_stress" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3603,7 +3805,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="area_type">Area Type</label></td>
-                                    <td ><field name="area_type" /></td>
+                                    <td ><field name="area_type" class="blue-input"/></td>
                                 </tr>
                                  <tr invisible = "show_non_corrected_area == False">
                                     <td><label for="non_corrected_area_shear">Non Corrected Area (cm2)</label></td>
@@ -3698,7 +3900,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="wt_empty_cutter_2">Empty Weight of cutter: </label></td>
-                                    <td ><field name="wt_empty_cutter_2"/></td>
+                                    <td ><field name="wt_empty_cutter_2" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="final_wt_soil_cutter_2">Final wt of soil + cutter at shear zone </label></td>
@@ -3706,7 +3908,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="mass_dry_soil_2">Mass of dry soil at shear zone (g) </label></td>
-                                    <td ><field name="mass_dry_soil_2"/></td>
+                                    <td ><field name="mass_dry_soil_2" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3847,7 +4049,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="wt_empty_cutter_3">Empty Weight of cutter: </label></td>
-                                    <td ><field name="wt_empty_cutter_3"/></td>
+                                    <td ><field name="wt_empty_cutter_3" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="final_wt_soil_cutter_3">Final wt of soil + cutter at shear zone </label></td>
@@ -3855,7 +4057,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="mass_dry_soil_3">Mass of dry soil at shear zone (g) </label></td>
-                                    <td ><field name="mass_dry_soil_3"/></td>
+                                    <td ><field name="mass_dry_soil_3" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
