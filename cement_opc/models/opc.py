@@ -602,6 +602,7 @@ class CementNormalConsistency(models.Model):
     ], string='Final Time NABL', default='fail',compute="_compute_avg_final_time_nabl")
 
 
+
     @api.depends('avg_final_time','eln_ref','grade')
     def _compute_avg_final_time_confirmity(self):
         for record in self:
@@ -658,6 +659,7 @@ class CementNormalConsistency(models.Model):
         string="Lab Fine Selected",
         
     )
+
 
     @api.onchange('selected_fineness')
     def _onchange_selected_fineness(self):
