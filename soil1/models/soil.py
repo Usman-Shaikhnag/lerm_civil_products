@@ -6918,64 +6918,7 @@ class DirectShearTestLine(models.Model):
     shear_stress = fields.Float(string="Shear stress (kg/sq.cm)" , digits=(8,3),compute="_compute_shear_stress" , store=True)
 
 
-    # @api.depends('serial_no', 'prove_ring_read','parent_id.shear_area','parent_id.shear_force_percent_change' , 'parent_id.non_corrected_area_shear')
-    # def _compute_all(self):
-    #     """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
-    #     for rec in self:
-    #         # 1) Horizontal dial (0,25,50,...)
-    #         if rec.serial_no <= 1:
-    #             horiz = 0.0
-    #         else:
-    #             horiz = 25.0 * (rec.serial_no - 1)
-    #         rec.horizontal_read = horiz
-
-    #         # 2) horizontal_dispalacement = horiz * B$23
-    #         horizontal_dispalacement = horiz * 0.01
-    #         rec.horizontal_dispalacement = horizontal_dispalacement
-
-    #         # 2) horizontal_dispalacement inv
-    #         horizontal_dispalacement_inv = horizontal_dispalacement / 10
-    #         rec.horizontal_dispalacement_inv = horizontal_dispalacement_inv
-
-    #         # 3) Corrected Area 
-    #         if rec.serial_no == 1:
-    #          area = rec.parent_id.shear_area
-    #          rec.corrected_area = area * (1 - (horizontal_dispalacement/6))
-        
-    #         # ROW 2+ : F2/(1+E3) → previous_corrected / (1 + current_inv)
-    #         elif rec.serial_no > 1:
-    #           prev_line = self.search([
-    #             ('parent_id', '=', rec.parent_id.id),
-    #             ('serial_no', '=', rec.serial_no - 1) ], limit=1)
-    #           if prev_line.corrected_area:
-    #             rec.corrected_area = prev_line.corrected_area * (1 - (horizontal_dispalacement_inv/6))
-
-    #          # 4) Non Corrected Area 
-    #         non_corrected = rec.parent_id.non_corrected_area_shear
-    #         rec.non_corrected_area = non_corrected
-
-    #         if rec.parent_id.area_type == 'corrected':
-    #           rec.selected_area = rec.corrected_area
-    #         else:
-    #           rec.selected_area = non_corrected 
-
-
-    #         # 5) HORIZONTAL SHEAR FORCE (kg) 
-    #         if rec.prove_ring_read:
-    #            rec.horizontal_shear = ((rec.prove_ring_read * 0.8555) + 9.6658) / 9.81
-    #         else:
-    #             rec.horizontal_shear = 0.0
-
-    #         # 6) HORIZONTAL SHEAR FORCE WITH TEMP CORRECTION (kg)
-    #         shear_force_parent_change = rec.parent_id.shear_force_percent_change or 0.0
-    #         if rec.horizontal_shear:
-    #            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * shear_force_parent_change)
-    #         else:
-    #            rec.horizontal_shear_temp = 0.0
-
-    #         # 7) SHEAR STRESS (kg/cm²) = temp_force / corrected_area
-    #         if rec.horizontal_shear_temp and rec.corrected_area:
-    #           rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area  # Final column ✓
+  
 
     @api.depends('horizontal_read')
     def _compute_horizontal_displacement(self):
