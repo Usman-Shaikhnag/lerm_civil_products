@@ -1105,6 +1105,7 @@ class Soil(models.Model):
     liquid_limit_graph = fields.Binary("Liquid Limit Flow Curve")
 
 
+<<<<<<< HEAD
     selected_lab_id6 = fields.Many2one(
         'lab.option.line',
         string="Select Lab ID",
@@ -12431,6 +12432,8 @@ class Soil(models.Model):
     liquid_limit_graph = fields.Binary("Liquid Limit Flow Curve")
 
 
+=======
+>>>>>>> 1f1d960dc28abf8fa50d38f7fd38d7d1c2ab6ce7
     selected_lab_id6 = fields.Many2one(
         'lab.option.line',
         string="Select Lab ID",
