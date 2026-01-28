@@ -2129,6 +2129,7 @@ class Soil(models.Model):
 
     gsa_child_lines = fields.One2many('mechanical.gsa.line','parent_id')
 
+<<<<<<< HEAD
  
 
     def action_fetch_review_details(self):
@@ -13408,6 +13409,8 @@ class Soil(models.Model):
 
     gsa_child_lines = fields.One2many('mechanical.gsa.line','parent_id')
 
+=======
+>>>>>>> 325af3f73f82c3df602f1213b706a594157bc360
     # --- Button Action Logic ---
     # def action_fetch_review_details(self):
     #     # Loop through all child lines
@@ -13657,10 +13660,275 @@ class Soil(models.Model):
             # --- MARKER LIST ---
             # He symbols sequence ne vaparle jatil
             marker_cycle = itertools.cycle(['^', '*', 'D', 'x', 'o', 's', 'v', '+'])
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 325af3f73f82c3df602f1213b706a594157bc360
          
+            # 6. Plot Data
+            data_plotted = False
+            
+            if record.gsa_child_lines:
+                for sample in record.gsa_child_lines:
+                    data_pairs = []
+
+                    # 1. New Marker Select kara
+                    current_marker = next(marker_cycle)
+
+                    # --- CHANGE HERE: Save Symbol to Odoo Field ---
+                    # Jo marker graph sathi niwdla ahe, to 'symbol' field madhe save kara
+                    sample.symbol = current_marker
+                    # ----------------------------------------------
+
+                    for line in sample.sieve_analysis_child_lines_gsa:
+                        if line.sieve_size and line.passing_percent is not None:
+                            try:
+                                # String clean kara
+                                size_str = str(line.sieve_size).lower().replace('mm', '').strip()
+                                if 'pan' in size_str:
+                                    continue 
+
+                                # 5 digit rounding
+                                size_val = round(float(size_str), 5)
+                                pass_val = line.passing_percent
+
+                                if 0.001 <= size_val <= 100:
+                                    data_pairs.append((size_val, pass_val))
+                            except ValueError:
+                                continue
+                    
+                    # Sort: Smallest -> Largest
+                    data_pairs.sort(key=lambda x: x[0]) 
+
+                    if data_pairs:
+                        sizes = [x[0] for x in data_pairs]
+                        passing = [x[1] for x in data_pairs]
+
+                        # Plotting with the selected marker
+                        ax.plot(sizes, passing, marker=current_marker, markersize=6, linewidth=2, label=sample.lab_no or "Sample")
+                        data_plotted = True
+
+            # Legend
+            if data_plotted:
+                ax.legend(loc='lower right', fontsize=9)
+
+            # 7. Save Image
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png', bbox_inches='tight') 
+            plt.close(fig)
+            buffer.seek(0)
+            
+            record.gsa_graph_image = base64.b64encode(buffer.read())
+            buffer.close()
+
+        # return {
+        #     'type': 'ir.actions.act_window',
+        #     'name': 'Soil Form',
+        #     'res_model': 'mechanical.soil1',
+        #     'res_id': record.id,
+        #     'view_mode': 'form',
+        #     'target': 'current',
+        # }
+
+    
+
+         # DETERMINATION OF CONSOLIDATION PROPERTIES		
+    consolidation_name = fields.Char("Name",default="DETERMINATION OF CONSOLIDATION PROPERTIES")
+    consolidation_visible = fields.Boolean("DETERMINATION OF CONSOLIDATION PROPERTIES",compute="_compute_visible")	
+
+    selected_lab_id7 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+
+    consolidation_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+    consolidation_lines = fields.One2many('consolidation.line', 'parent_id',ondelete='cascade')
+
+    def action_generate_consolidation_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.consolidation_lines = lines
+                record.consolidation_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.consolidation_lines:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
+
+    
+
+
+
+
+     # DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD				
+    
+    swelling_pressure_name = fields.Char("Name",default="DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD")
+    swelling_pressure_visible = fields.Boolean("DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD",compute="_compute_visible")
+
+    selected_lab_id5 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+
+    swelling_pressure_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+    swelling_pressure_ids = fields.One2many('swelling.pressure.line', 'parent_id',ondelete='cascade')
+
+    def action_generate_swelling_pressure_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.swelling_pressure_ids = lines
+                record.swelling_pressure_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.swelling_pressure_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
+
+
+
+
+
+
+
+    #  DETERMINE PERMEABILITY OF SOIL - BY FALLING HEAD			
+
+    permeability_falling_name = fields.Char("Name",default="Permeability Falling Head Test")
+    permeability_falling_visible = fields.Boolean("Permeability Falling Head Test",compute="_compute_visible")
+
+    selected_lab_id3 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+
+    show_sieve = fields.Boolean(default=False)
+
+    permeability_falling_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+    permeability_falling_ids = fields.One2many('perm.head.line', 'parent_id',ondelete='cascade')
+
+    def action_generate_permeability_falling_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.permeability_falling_ids = lines
+                record.permeability_falling_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.permeability_falling_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
+
+    
+
+
+
+
+    triaxial_test_name = fields.Char("Name",default="DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST")
+    triaxial_test_visible = fields.Boolean("DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST",compute="_compute_visible")
+
+
+
+    selected_lab_id1 = fields.Many2one(
+        'lab.option.line',
+        string="Select Lab ID",
+        domain="[('id', 'in', lab_option_ids)]"
+    )
+
+
+    show_sieve = fields.Boolean(default=False)
+
+    triaxial_test_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+    triaxial_test_ids = fields.One2many('triaxial.shear.line', 'parent_id',ondelete='cascade')
+
+    def action_generate_triaxial_test_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.triaxial_test_ids = lines
+                record.triaxial_test_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.triaxial_test_ids:
+                record.show_sieve = True
+
+            # 🔹 Reload the current record in form view
+            # return {
+            #     'type': 'ir.actions.act_window',
+            #     'name': 'Soil Form',
+            #     'res_model': 'mechanical.soil1',
+            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
+            #     'view_mode': 'form',
+            #     'target': 'current',
+            # }
 
 
 
@@ -17978,7 +18246,64 @@ class DirectShearTestLine(models.Model):
     shear_stress = fields.Float(string="Shear stress (kg/sq.cm)" , digits=(8,3),compute="_compute_shear_stress" , store=True)
 
 
-  
+    # @api.depends('serial_no', 'prove_ring_read','parent_id.shear_area','parent_id.shear_force_percent_change' , 'parent_id.non_corrected_area_shear')
+    # def _compute_all(self):
+    #     """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
+    #     for rec in self:
+    #         # 1) Horizontal dial (0,25,50,...)
+    #         if rec.serial_no <= 1:
+    #             horiz = 0.0
+    #         else:
+    #             horiz = 25.0 * (rec.serial_no - 1)
+    #         rec.horizontal_read = horiz
+
+    #         # 2) horizontal_dispalacement = horiz * B$23
+    #         horizontal_dispalacement = horiz * 0.01
+    #         rec.horizontal_dispalacement = horizontal_dispalacement
+
+    #         # 2) horizontal_dispalacement inv
+    #         horizontal_dispalacement_inv = horizontal_dispalacement / 10
+    #         rec.horizontal_dispalacement_inv = horizontal_dispalacement_inv
+
+    #         # 3) Corrected Area 
+    #         if rec.serial_no == 1:
+    #          area = rec.parent_id.shear_area
+    #          rec.corrected_area = area * (1 - (horizontal_dispalacement/6))
+        
+    #         # ROW 2+ : F2/(1+E3) → previous_corrected / (1 + current_inv)
+    #         elif rec.serial_no > 1:
+    #           prev_line = self.search([
+    #             ('parent_id', '=', rec.parent_id.id),
+    #             ('serial_no', '=', rec.serial_no - 1) ], limit=1)
+    #           if prev_line.corrected_area:
+    #             rec.corrected_area = prev_line.corrected_area * (1 - (horizontal_dispalacement_inv/6))
+
+    #          # 4) Non Corrected Area 
+    #         non_corrected = rec.parent_id.non_corrected_area_shear
+    #         rec.non_corrected_area = non_corrected
+
+    #         if rec.parent_id.area_type == 'corrected':
+    #           rec.selected_area = rec.corrected_area
+    #         else:
+    #           rec.selected_area = non_corrected 
+
+
+    #         # 5) HORIZONTAL SHEAR FORCE (kg) 
+    #         if rec.prove_ring_read:
+    #            rec.horizontal_shear = ((rec.prove_ring_read * 0.8555) + 9.6658) / 9.81
+    #         else:
+    #             rec.horizontal_shear = 0.0
+
+    #         # 6) HORIZONTAL SHEAR FORCE WITH TEMP CORRECTION (kg)
+    #         shear_force_parent_change = rec.parent_id.shear_force_percent_change or 0.0
+    #         if rec.horizontal_shear:
+    #            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * shear_force_parent_change)
+    #         else:
+    #            rec.horizontal_shear_temp = 0.0
+
+    #         # 7) SHEAR STRESS (kg/cm²) = temp_force / corrected_area
+    #         if rec.horizontal_shear_temp and rec.corrected_area:
+    #           rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area  # Final column ✓
 
     @api.depends('horizontal_read')
     def _compute_horizontal_displacement(self):
@@ -22371,3 +22696,18 @@ class CbrLine(models.Model):
 
 
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

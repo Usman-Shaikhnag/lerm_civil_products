@@ -740,8 +740,8 @@
                     <div invisible = "moisture_visible == False">
                         <field name="bulk_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name="date" width="90px" class="blue-input" decoration-info="date != 0" />
-                                <field name='lab_id' width="60px"  class="blue-input" decoration-info="lab_id != 0"/>
+                                <field name="date" width="90px" />
+                                <field name='lab_id' width="60px" />
                                 <field name='wt_uds_soil' width="100px"  class="blue-input" decoration-info="wt_uds_soil != 0" />
                                 <field name='wt_empty_uds' width="100px"  class="blue-input" decoration-info="wt_empty_uds != 0"/>
                                 <field name="wt_soil" width="100px"/>
@@ -788,8 +788,8 @@
                         <field name="moisture_ids">
 
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name= 'date' width="80px" class="blue-input" decoration-info="date!=0"/>
-                                <field name='lab_id'  width="50px" class="blue-input" decoration-info="lab_id!=0"/>
+                                <field name= 'date' width="80px" />
+                                <field name='lab_id'  width="50px"/>
                                 <field name='wet_soil_container' width="100px"  class="blue-input" decoration-info="wet_soil_container!=0"/>
                                 <field name='dry_soil_container' width="100px" class="blue-input" decoration-info="dry_soil_container!=0"/>
                                 <field name= 'container_weight' width="110px" class="blue-input" decoration-info="container_weight!=0"/>
@@ -944,7 +944,7 @@
                                         <tbody>
                                             <tr>
                                                 <td><label for="lab_no"/></td>
-                                                <td><field name="lab_no" readonly="1" class="blue-input"/></td>
+                                                <td><field name="lab_no" readonly="1"/></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1066,7 +1066,7 @@
                                         <tbody>
                                             <tr>
                                                 <td><label for="temp">Temp.°C</label></td>
-                                                <td><field name="temp" class="blue-input"/></td>
+                                                <td><field name="temp"/></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1074,7 +1074,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="wt_of_samp1"/></td>
-                                                    <td><field name="wt_of_samp1" class="blue-input"/></td>
+                                                    <td><field name="wt_of_samp1"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1087,7 +1087,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="meniscus_corre"/></td>
-                                                    <td><field name="meniscus_corre" class="blue-input"/></td>
+                                                    <td><field name="meniscus_corre"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1095,7 +1095,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="vescosity_water"/></td>
-                                                    <td><field name="vescosity_water" class="blue-input"/></td>
+                                                    <td><field name="vescosity_water"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1108,7 +1108,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="dispersion"/></td>
-                                                    <td><field name="dispersion" class="blue-input"/></td>
+                                                    <td><field name="dispersion"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1131,7 +1131,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="specific_gravity"/></td>
-                                                    <td><field name="specific_gravity" class="blue-input"/></td>
+                                                    <td><field name="specific_gravity"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1320,7 +1320,7 @@
                     <field name="ll_line_ids" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders">
                      
-                            <field name="serial_no" string="Test No." width="50px" class="blue-input" decoration-info="serial_no != 0"/>
+                            <field name="serial_no" string="Test No." width="50px"/>
                             <field name="blows" string="No. of Blows" width="100px" class="blue-input" decoration-info="blows != 0"/>
                             <field name="container_no" string="Container No." width="100px" class="blue-input" decoration-info="container_no != 0"/>
                             <field name="m3" string="M3 (gm)" width="90px" class="blue-input" decoration-info="m3 != 0"/>
@@ -1401,7 +1401,7 @@
    
                     <tree editable="bottom" class="custom_table_borders">
                     
-                        <field name="serial_no" string="Test No." width="50px" class="blue-input" decoration-info="serial_no != 0"/>
+                        <field name="serial_no" string="Test No." width="50px"/>
 
                         <field name="container_no" string="Container No." width="100px" class="blue-input" decoration-info="container_no != 0"/>
 
@@ -1514,7 +1514,7 @@
                         <tree editable="bottom" class="custom_table_borders">
                         
 
-                            <field name="serial_no" string="Test No." width="35px" class="blue-input" decoration-info="serial_no != 0"/>
+                            <field name="serial_no" string="Test No." width="35px"/>
                             <field name="container_no" string="Container No." width="100px" class="blue-input" decoration-info="container_no != 0"/>
                             <field name="m1" string="M1 (gm)" width="80px" class="blue-input" decoration-info="m1 != 0"/>
                             <field name="v1" string="V1 (cm3)" width="80px" class="blue-input" decoration-info="v1 != 0"/>
@@ -3461,7 +3461,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="drainage_condition">Drainage Condition</label></td>
-                                    <td ><field name="drainage_condition" class="blue-input"/></td>
+                                    <td ><field name="drainage_condition" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3498,7 +3498,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="wt_empty_cutter">Empty Weight of cutter: </label></td>
-                                    <td ><field name="wt_empty_cutter" class="blue-input"/></td>
+                                    <td ><field name="wt_empty_cutter"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="final_wt_soil_cutter">Final wt of soil + cutter at shear zone </label></td>
@@ -3506,7 +3506,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="mass_dry_soil">Mass of dry soil at shear zone (g) </label></td>
-                                    <td ><field name="mass_dry_soil" class="blue-input"/></td>
+                                    <td ><field name="mass_dry_soil"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3594,7 +3594,7 @@
                                 </tr>
                                  <tr>
                                     <td><label for="normal_stress">Normal stress: kg/cm2</label></td>
-                                    <td ><field name="normal_stress" class="blue-input"/></td>
+                                    <td ><field name="normal_stress" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3603,7 +3603,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="area_type">Area Type</label></td>
-                                    <td ><field name="area_type" class="blue-input"/></td>
+                                    <td ><field name="area_type" /></td>
                                 </tr>
                                  <tr invisible = "show_non_corrected_area == False">
                                     <td><label for="non_corrected_area_shear">Non Corrected Area (cm2)</label></td>
@@ -3698,7 +3698,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="wt_empty_cutter_2">Empty Weight of cutter: </label></td>
-                                    <td ><field name="wt_empty_cutter_2" class="blue-input"/></td>
+                                    <td ><field name="wt_empty_cutter_2"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="final_wt_soil_cutter_2">Final wt of soil + cutter at shear zone </label></td>
@@ -3706,7 +3706,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="mass_dry_soil_2">Mass of dry soil at shear zone (g) </label></td>
-                                    <td ><field name="mass_dry_soil_2" class="blue-input"/></td>
+                                    <td ><field name="mass_dry_soil_2"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3766,7 +3766,7 @@
                                 </tr>
                                  <tr>
                                     <td><label for="normal_stress_2">Normal stress: kg/cm2</label></td>
-                                    <td ><field name="normal_stress_2" class="blue-input"/></td>
+                                    <td ><field name="normal_stress_2" /></td>
                                 </tr>
                             </tbody>
                         </table>
