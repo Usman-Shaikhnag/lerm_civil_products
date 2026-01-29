@@ -7829,8 +7829,66 @@ class TriaxialShearLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_triaxial",
+        store=True
+    )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_triaxial",
+        store=True
+    )
+
+    # @api.depends('lab_id')
+    # def _compute_bh_id(self):
+    #     ReviewLine = self.env['sample.request.review.lines']
+
+    #     for line in self:
+    #         line.bh_id = False
+
+    #         if not line.lab_id:
+    #             continue
+
+    #         review_line = ReviewLine.search(
+    #             [('lab_id', '=', line.lab_id)],
+    #             order='id desc',
+    #             limit=1
+    #         )
+
+    #         if review_line:
+    #             line.bh_id = review_line.source
+    @api.depends('lab_id')
+    def _compute_triaxial(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.depth = review_line.depth         # Depth (m)
+
+
+    
+
 
     dia_triaxial = fields.Float(string="Diameter (mm)", digits=(8, 1))
+
+    proving_triaxial = fields.Float(string="Proving Ring Capacity", digits=(8, 1))
+    least_count_triaxial = fields.Float(string="Least Count of dial guage", digits=(8, 1))
+    displacement_triaxial = fields.Float(string="Displacement Rate (mm/min)", digits=(8, 1))
     
 
     # Area automatically calculate hoil
@@ -10833,6 +10891,39 @@ class ConsolidationLine(models.Model):
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
     lab_id=  fields.Char(string="Lab ID" )
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_consolidation",
+        store=True
+    )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_consolidation",
+        store=True
+    )
+
+    
+    @api.depends('lab_id')
+    def _compute_consolidation(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.depth = review_line.depth         # Depth (m)
 
     consolidation_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     consolidation_diameter = fields.Float(string="Diameter, D", digits=(8,1))
