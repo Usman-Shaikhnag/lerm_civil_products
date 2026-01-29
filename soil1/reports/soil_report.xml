@@ -187,6 +187,12 @@
 			<t t-set="proctoromc_vals" t-value="[g.omc for g in (data.soil_light_heavy_ids or []) if g.omc]"/>
 			<t t-set="proctoromc_index" t-value="0"/>
 
+			<t t-set="triaxialc_vals" t-value="[g.cohesion for g in (data.triaxial_test_ids or []) if g.cohesion]"/>
+			<t t-set="triaxialc_index" t-value="0"/>
+
+			<t t-set="triaxialp_vals" t-value="[g.phi for g in (data.triaxial_test_ids or []) if g.phi]"/>
+			<t t-set="triaxialp_index" t-value="0"/>
+
 			<t t-set="row_count"
 				t-value="max(len(name_vals or []),
 								len(bh_vals or []),
@@ -211,6 +217,8 @@
 								len(ucs_vals or []),
 								len(proctormdd_vals or []),
 								len(proctoromc_vals or []),
+								len(triaxialc_vals or []),
+								len(triaxialp_vals or []),
 								len(name_avg_nmc or []))"/>
 
 
@@ -968,8 +976,24 @@
 					</td>
 
 					<!-- Triaxial -->
-					<td></td>
-					<td></td>
+					<td style="min-width: 20px; width: 20px;">
+						<t t-set="di" t-value="triaxialc_index if triaxialc_index is not None else 0"/>
+
+						<t t-if="triaxialc_vals and di &lt; len(triaxialc_vals)">
+							<t t-esc="'%.3f' % triaxialc_vals[di]"/>
+							<t t-set="triaxialc_index" t-value="di + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+					<td style="min-width: 20px; width: 20px;">
+						<t t-set="di" t-value="triaxialp_index if triaxialp_index is not None else 0"/>
+
+						<t t-if="triaxialp_vals and di &lt; len(triaxialp_vals)">
+							<t t-esc="'%.3f' % triaxialp_vals[di]"/>
+							<t t-set="triaxialp_index" t-value="di + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
 
 					<!-- Consolidation -->
 					<td style="min-width: 20px; width: 20px;">
