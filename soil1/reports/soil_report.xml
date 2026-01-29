@@ -181,6 +181,12 @@
 			<t t-set="ucs_vals" t-value="[g.ucs_compressive_stress for g in (data.ucs_ids or []) if g.ucs_compressive_stress]"/>
 			<t t-set="usc_index" t-value="0"/>
 
+			<t t-set="proctormdd_vals" t-value="[g.max_dry_density for g in (data.soil_light_heavy_ids or []) if g.max_dry_density]"/>
+			<t t-set="proctormdd_index" t-value="0"/>
+
+			<t t-set="proctoromc_vals" t-value="[g.omc for g in (data.soil_light_heavy_ids or []) if g.omc]"/>
+			<t t-set="proctoromc_index" t-value="0"/>
+
 			<t t-set="row_count"
 				t-value="max(len(name_vals or []),
 								len(bh_vals or []),
@@ -203,6 +209,8 @@
 								len(diarect_vals or []),
 								len(diarectphi_vals or []),
 								len(ucs_vals or []),
+								len(proctormdd_vals or []),
+								len(proctoromc_vals or []),
 								len(name_avg_nmc or []))"/>
 
 
@@ -906,9 +914,26 @@
 
 					<td></td> -->
 
-					<!-- Bulk Density / Proctor -->
-					<td></td>
-					<td></td>
+					<!--  / Proctor -->
+					<td style="min-width: 20px; width: 20px;">
+						<t t-set="di" t-value="proctormdd_index if proctormdd_index is not None else 0"/>
+
+						<t t-if="proctormdd_vals and di &lt; len(proctormdd_vals)">
+							<t t-esc="'%.3f' % proctormdd_vals[di]"/>
+							<t t-set="proctormdd_index" t-value="di + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
+
+					<td style="min-width: 20px; width: 20px;">
+						<t t-set="di" t-value="proctoromc_index if proctoromc_index is not None else 0"/>
+
+						<t t-if="proctoromc_vals and di &lt; len(proctoromc_vals)">
+							<t t-esc="'%.3f' % proctoromc_vals[di]"/>
+							<t t-set="proctoromc_index" t-value="di + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
 
 					<!-- UCS -->
 					<td style="min-width: 20px; width: 20px;">
@@ -1169,7 +1194,6 @@
 						<thead>
 							<thead>
 								<tr>
-									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sr. No.</th>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Symbol</th>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">BH ID</th>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sample Depth (m)</th>
@@ -1198,7 +1222,6 @@
 
 						<t t-foreach="data.gsa_child_lines" t-as="line">
 								<tr>
-									<td><t t-esc="line.sr_no"/></td>
 									<td><t t-esc="line.symbol"/></td>
 									<td><t t-esc="line.bh_id"/></td>
 									<td><t t-esc="line.sample_depth"/></td>
