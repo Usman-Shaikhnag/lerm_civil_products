@@ -5620,12 +5620,12 @@ class SwellingPressureUnloadingLine(models.Model):
 
     time_m = fields.Float(string="Time (Minutes)")
     load_8_0_4_0 = fields.Float(string="8.0-4.0" ,digits=(8,3))
-    load_4_0_8_0 = fields.Float(string="4.0-8.0" ,digits=(8,3))
-    load_2_0_4_0 = fields.Float(string="2.0-4.0" ,digits=(8,3))
-    load_1_0_2_0 = fields.Float(string="1.0-2.0" ,digits=(8,3))
-    load_0_5_1_0 = fields.Float(string="0.5-1.0" ,digits=(8,3))
-    load_0_2_0_5 = fields.Float(string="0.2-0.5" ,digits=(8,3))
-    load_0_1_0_2 = fields.Float(string="0.1-0.2" ,digits=(8,3))
+    load_4_0_8_0 = fields.Float(string="4.0-2.0" ,digits=(8,3))
+    load_2_0_4_0 = fields.Float(string="2.0-1.0" ,digits=(8,3))
+    load_1_0_2_0 = fields.Float(string="1.0-0.5" ,digits=(8,3))
+    load_0_5_1_0 = fields.Float(string="0.5-0.2" ,digits=(8,3))
+    load_0_2_0_5 = fields.Float(string="0.2-0.1" ,digits=(8,3))
+    load_0_1_0_2 = fields.Float(string="0.1-0.0" ,digits=(8,3))
     # load_0_05_0_1 = fields.Float(string="0.05-0.1",digits=(8,3))
     setting_load = fields.Float(string="Setting Load",digits=(8,3))
 

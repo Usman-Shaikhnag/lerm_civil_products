@@ -742,7 +742,7 @@
                         <field name="bulk_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="date" width="90px" class="blue-input" decoration-info="date != 0"/>
-                                <field name='lab_id' width="60px" class="blue-input" decoration-info="lab_id != 0"/>
+                                <field name='lab_id' width="60px" />
                                 <field name='wt_uds_soil' width="100px"  class="blue-input" decoration-info="wt_uds_soil != 0" />
                                 <field name='wt_empty_uds' width="100px"  class="blue-input" decoration-info="wt_empty_uds != 0"/>
                                 <field name="wt_soil" width="100px"/>
@@ -790,7 +790,7 @@
 
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name= 'date' width="80px" class="blue-input" decoration-info="date!=0"/>
-                                <field name='lab_id'  width="50px" class="blue-input" decoration-info="lab_id!=0"/>
+                                <field name='lab_id'  width="50px" />
                                 <field name='wet_soil_container' width="100px"  class="blue-input" decoration-info="wet_soil_container!=0"/>
                                 <field name='dry_soil_container' width="100px" class="blue-input" decoration-info="dry_soil_container!=0"/>
                                 <field name= 'container_weight' width="110px" class="blue-input" decoration-info="container_weight!=0"/>
@@ -853,7 +853,7 @@
 
                         <field name="serial_no" string="Sr.No" width="30px"/>
                         <field name="date" string="DATE TEST" width="40px" class="blue-input" decoration-info="date != 0"/>
-                        <field name="lab_no" string="Lab No."  width="50px" class="blue-input" decoration-info="lab_no != 0"/>
+                        <field name="lab_no" string="Lab No."  width="50px" />
 
                         <field name="room_temp" string="Room Temperature" width="100px" class="blue-input" decoration-info="room_temp != 0"/>
                         <field name="bottle_no" string="Bottle No."  width="80px" class="blue-input" decoration-info="bottle_no != 0"/>
@@ -1807,7 +1807,7 @@
                                 <field name='load_0_2_0_5' class="blue-input" decoration-info="load_0_2_0_5!=0"/>
                                 <field name='load_0_1_0_2' class="blue-input" decoration-info="load_0_1_0_2!=0"/>
                                 <!-- <field name='load_0_05_0_1'/> -->
-                                <field name='setting_load'/>
+                                <field name='setting_load' class="blue-input" decoration-info="setting_load!=0"/>
                               
                             </tree>
                         </field>
@@ -2164,13 +2164,13 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='time_m'/>
                                 <field name='sqrt_time'  />
-                                <field name='load_0_05_0_1' />
-                                <field name='load_0_1_0_2' />
-                                <field name='load_0_2_0_5' />
-                                <field name='load_0_5_1_0' />
-                                <field name='load_1_0_2_0' />
-                                <field name='load_2_0_4_0' />
-                                <field name='load_4_0_8_0'/>
+                                <field name='load_0_05_0_1' class="blue-input" decoration-info="load_0_05_0_1 != 0"/>
+                                <field name='load_0_1_0_2' class="blue-input" decoration-info="load_0_1_0_2 != 0"/>
+                                <field name='load_0_2_0_5' class="blue-input" decoration-info="load_0_2_0_5 != 0"/>
+                                <field name='load_0_5_1_0' class="blue-input" decoration-info="load_0_5_1_0 != 0"/>
+                                <field name='load_1_0_2_0' class="blue-input" decoration-info="load_1_0_2_0 != 0"/>
+                                <field name='load_2_0_4_0' class="blue-input" decoration-info="load_2_0_4_0 != 0"/>
+                                <field name='load_4_0_8_0' class="blue-input" decoration-info="load_4_0_8_0 != 0"/>
                               
                             </tree>
                         </field>
@@ -2182,15 +2182,15 @@
                         <field name="swelling_unloading_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='time_m'/>
-                                <field name='load_8_0_4_0'/>
-                                <field name='load_4_0_8_0'/>
-                                <field name='load_2_0_4_0'/>
-                                <field name='load_1_0_2_0'/>
-                                <field name='load_0_5_1_0'/>
-                                <field name='load_0_2_0_5'/>
-                                <field name='load_0_1_0_2' />
+                                <field name='load_8_0_4_0' class="blue-input" decoration-info="load_8_0_4_0 != 0"/>
+                                <field name='load_4_0_8_0' class="blue-input" decoration-info="load_4_0_8_0 != 0"/>
+                                <field name='load_2_0_4_0' class="blue-input" decoration-info="load_2_0_4_0 != 0"/>
+                                <field name='load_1_0_2_0' class="blue-input" decoration-info="load_1_0_2_0 != 0"/>
+                                <field name='load_0_5_1_0' class="blue-input" decoration-info="load_0_5_1_0 != 0"/>
+                                <field name='load_0_2_0_5' class="blue-input" decoration-info="load_0_2_0_5 != 0"/>
+                                <field name='load_0_1_0_2' class="blue-input" decoration-info="load_0_1_0_2 != 0"/>
                                 <!-- <field name='load_0_05_0_1'/> -->
-                                <field name='setting_load'/>
+                                <field name='setting_load' class="blue-input" decoration-info="setting_load != 0"/>
                               
                             </tree>
                         </field>
