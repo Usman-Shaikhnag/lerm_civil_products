@@ -1819,7 +1819,7 @@
                                 <field name='load_0_5_1_0' class="blue-input" decoration-info="load_0_5_1_0!=0"/>
                                 <field name='load_1_0_2_0' class="blue-input" decoration-info="load_1_0_2_0!=0"/>
                                 <field name='load_2_0_4_0' class="blue-input" decoration-info="load_2_0_4_0!=0"/>
-                                <field name='load_4_0_8_0'/>
+                                <field name='load_4_0_8_0' class="blue-input" decoration-info="load_4_0_8_0 != 0"/>
                               
                             </tree>
                         </field>
@@ -2245,7 +2245,7 @@
                                 <field name='d_sigma'/>
                                 <field name='av' />
                                 <field name='mv' />
-                                <field name='t90' />
+                                <field name='t90' class="blue-input" decoration-info="t90 != 0"/>
                                 <field name='Hav' />
                                 <field name='cv' />
                                 <field name='cc' />
@@ -2260,8 +2260,8 @@
                         <field name="swelling_table_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='applied_pressure'/>
-                                <field name='final_read' class="blue-input" decoration-info="final_read!=0"/>
+                                <field name='applied_pressure' readonly="1"/>
+                                <field name='final_read' />
                                 <field name='delta_h'/>
                               
                             </tree>
@@ -4143,13 +4143,9 @@
                             </tree>
                         </field>
                     </div>
+                         <group/>
 
-                    <!-- <div >
-                                    <button string="Calculate" type="object" name="action_compute_shear" class="oe_highlight">
-                                        <i class="fa fa-calculator"/> Calculate 
-                                    </button>
-                                </div>   -->
-                                <group/>
+
                       <div >
                     <button name="action_generate_shear_graph_3"
                         string="Generate Shear Graph"
@@ -4271,6 +4267,26 @@
 
             </field>
 
+
+
+
+              <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+                
+
                   
 
 
@@ -4315,73 +4331,7 @@
             <field name="target">new</field>
         </record>
 
-        <!-- <record id="lab_atterberg_ll_line_form" model="ir.ui.view">
-                <field name="name">lab.atterberg.ll.line.form</field>
-                <field name="model">lab.atterberg.ll.line</field>
-                <field name="arch" type="xml">
-                <form>
-                    <sheet>
-
-                        <group >
-                            <group >
-                                <field name="serial_no"/>
-                                <field name="blows"/>
-                                <field name="container_no"/>
-                            </group >
-
-                            
-                        <group >
-                            <field name="m1"/>
-                            <field name="m2"/>
-                            <field name="m3"/>
-                        </group >
-
-                            <group >
-                            <field name="m2_m1"/>
-                            <field name="m3_m2"/>
-                            <field name="water_content"/>
-                            </group >
-                        </group>
-
-                    </sheet>
-                </form>
-
-                </field>
-            </record>
-
-
-             <record id="lab_atterberg_pl_line_form" model="ir.ui.view">
-                <field name="name">lab.atterberg.pl.line.form</field>
-                <field name="model">lab.atterberg.pl.line</field>
-                <field name="arch" type="xml">
-                <form>
-                    <sheet>
-
-                        <group >
-                            <group >
-                                <field name="serial_no"/>
-                                <field name="container_no"/>
-                            </group >
-
-                            
-                        <group >
-                            <field name="m1"/>
-                            <field name="m2"/>
-                            <field name="m3"/>
-                        </group >
-
-                            <group >
-                            <field name="m2_m1"/>
-                            <field name="m3_m2"/>
-                            <field name="water_content"/>
-                            </group >
-                        </group>
-
-                    </sheet>
-                </form>
-
-                </field>
-            </record> -->
+   
 
 
     </data>
