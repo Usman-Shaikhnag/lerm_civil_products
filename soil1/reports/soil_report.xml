@@ -1333,7 +1333,9 @@
 
 
 					 <!-- Cbr -->
-                <t t-foreach="data.cbr_ids" t-as="cbr">
+                <!-- <t t-foreach="data.cbr_ids" t-as="cbr"> -->
+				<t t-foreach="data.cbr_ids.filtered(lambda c: c.is_checked)" t-as="cbr">
+
                  <div style="margin-top:100px; page-break-before: always;">
 				 
 					
@@ -1435,14 +1437,14 @@
 									<b>Start date of testing</b>
 								</td>
 								<td style="border:1px solid black; padding:4px;">
-									<span t-field="o.start_date" />
+									<span t-field="cbr.start_date" />
 								
 								</td>
 								<td style="border:1px solid black; padding:4px;">
 									<b>End date of testing</b>
 								</td>
 								<td style="border:1px solid black; padding:4px;">
-									<span t-field="o.end_date" style="margin-right:10px;"/>
+									<span t-field="cbr.end_date" style="margin-right:10px;"/>
 									
 								</td>
 							</tr>
@@ -1618,7 +1620,8 @@
 
 
                        <!-- Proctor -->
-						<t t-foreach="data.soil_light_heavy_ids" t-as="proctor">
+						<!-- <t t-foreach="data.soil_light_heavy_ids" t-as="proctor"> -->
+						<t t-foreach="data.soil_light_heavy_ids.filtered(lambda c: c.is_checked)" t-as="proctor">
                  <div style="margin-top:100px; page-break-before: always;">
 				 
 					
@@ -1712,7 +1715,7 @@
 									Starting Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.start_date" />
+										<span t-field="proctor.start_date" />
 								</td>
 							</tr>
 
@@ -1727,7 +1730,7 @@
 									Completion Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.end_date" />
+										<span t-field="proctor.end_date" />
 								</td>
 							</tr>
 
@@ -1809,7 +1812,8 @@
 
 
 						<!-- Swelling Pressure Test -->
-                <t t-foreach="data.swelling_pressure_ids" t-as="sweeling">
+                <!-- <t t-foreach="data.swelling_pressure_ids" t-as="sweeling"> -->
+				<t t-foreach="data.swelling_pressure_ids.filtered(lambda c: c.is_checked)" t-as="sweeling">
                  <div style="margin-top:100px; page-break-before: always;">
 				 
 					
@@ -2034,7 +2038,8 @@
 
 
 
-            <t t-foreach="data.direct_shear_line" t-as="direct">
+            <!-- <t t-foreach="data.direct_shear_line" t-as="direct"> -->
+			<t t-foreach="data.direct_shear_line.filtered(lambda c: c.is_checked)" t-as="direct">
                  <div style="margin-top:100px; page-break-before: always;">
 						<!-- 🔹 HEADER -->
 						<table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -2124,7 +2129,7 @@
 									Starting Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.start_date" />
+										<span t-field="direct.start_date" />
 								</td>
 							</tr>
 
@@ -2139,7 +2144,7 @@
 									Completion Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.end_date" />
+										<span t-field="direct.end_date" />
 								</td>
 							</tr>
 
@@ -2339,7 +2344,8 @@
 
 
 
-			<t t-foreach="data.triaxial_test_ids" t-as="triaxial">
+			<!-- <t t-foreach="data.triaxial_test_ids" t-as="triaxial"> -->
+			<t t-foreach="data.triaxial_test_ids.filtered(lambda c: c.is_checked)" t-as="triaxial">
                  <div style="margin-top:100px; page-break-before: always;">
 						<!-- 🔹 HEADER -->
 						<table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -2435,7 +2441,7 @@
 									Starting Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.start_date" />
+										<span t-field="triaxial.start_date" />
 								</td>
 							</tr>
 
@@ -2450,7 +2456,7 @@
 									Completion Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.end_date" />
+										<span t-field="triaxial.end_date" />
 								</td>
 							</tr>
 
@@ -2695,7 +2701,7 @@
 			</div>
 
 			<div style="margin-top:5px; text-align:center; font-weight:bold;">
-				Angle of internal friction  °  : = <span t-esc="direct.phi"/>
+				Angle of internal friction  °  : = <span t-esc="triaxial.phi"/>
 			</div>
 
 			</div>
@@ -2704,7 +2710,8 @@
 
 
 			<!-- Condition -->
-			<t t-foreach="data.consolidation_lines" t-as="consolidation">
+			<!-- <t t-foreach="data.consolidation_lines" t-as="consolidation"> -->
+			<t t-foreach="data.consolidation_lines.filtered(lambda c: c.is_checked)" t-as="consolidation">
                  <div style="margin-top:100px; page-break-before: always;">
 						<!-- 🔹 HEADER -->
 						<table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -2778,7 +2785,7 @@
 									Starting Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.start_date" />
+										<span t-field="consolidation.start_date" />
 								</td>
 							</tr>
 
@@ -2793,7 +2800,7 @@
 									Completion Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.end_date" />
+										<span t-field="consolidation.end_date" />
 								</td>
 							</tr>
 

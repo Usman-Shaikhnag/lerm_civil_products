@@ -230,13 +230,14 @@
 
                         </div>
 
-                         <field name="cbr_ids" class="custom_table_borders" nolabel="1" invisible = "soil_visible == False">
+                         <field name="cbr_ids" class="custom_table_borders" nolabel="1" invisible = "soil_visible == False" >
                             <tree string="CBR" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
-                         <form string="">
+                         <form string="" >
                             <sheet>
                             <style>
                                 /* Modal chi title hide karnya sathi */
@@ -305,6 +306,28 @@
                                         <tr>
                                             <td><label for="bh_id">BH ID</label></td>
                                             <td><field name="bh_id" class="blue-input"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="start_date"></label></td>
+                                            <td><field name="start_date" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="end_date"></label></td>
+                                            <td><field name="end_date"  readonly="1"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -580,9 +603,27 @@
                             </tbody>
                         </table>
 
+
+
                     </div>
+                    
 
                        </sheet>
+                       <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save"/>
+
+
+                              
+
+
+                        </footer>
+                      
                         </form>
 
                         </field>
@@ -1311,15 +1352,66 @@
                 <tree string="Liquid Limit Lines" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
+                    <field name="is_checked"/>
                 </tree>
 
                 <form string="">
                 <sheet>
-                <style>
-                    .modal-header .modal-title {
-                        display: none !important;
-                    }
-                </style>
+                 <style>
+                        /* Modal chi title hide karnya sathi */
+                        .modal-header .modal-title {
+                            display: none !important;
+                        }
+
+                        /* 1. Modal Dialog chi width ani margin full kara */
+                        .modal-dialog {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+
+                        /* 2. Modal Content chi height full kara (Full Screen View) */
+                        .modal-content {
+                            height: 100vh !important; /* Full Viewport Height */
+                            border-radius: 0 !important;
+                        }
+
+                        /* 3. Odoo chi Sheet full width karnya sathi */
+                        .o_form_sheet {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            min-height: 100vh !important;
+                        }
+
+                        /* 4. Table chi width 100% kara */
+                        .custom_table_borders {
+                            width: 100% !important;
+                        }
+                    </style>
+                      <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                     <field name="ll_line_ids" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders">
@@ -1345,13 +1437,7 @@
                         </tbody>
                     </table>
 
-                    <div style="margin-bottom: 10px;">
-                    <button name="action_reset_sequence" 
-                            string="Reset Test No." 
-                            type="object" 
-                            class="btn-secondary" 
-                            icon="fa-sort-numeric-asc"/>
-                </div>
+                    
 
                  <div  class="custom_table_borders text-center">
                         <field name="ll_graph" widget="image"  readonly="1"/>
@@ -1359,7 +1445,18 @@
                     <group/>
 
                 </sheet>
+                   <footer>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn btn-primary"
+                            />
+
+                    <button string="Back" special="save"/>
+
+            </footer>
             </form>
+         
 
             </field>
 
@@ -1391,15 +1488,67 @@
                 <tree string="Plastic Limit Lines" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
+                    <field name="is_checked"/>
                 </tree>
 
                 <form string="">
                 <sheet>
                 <style>
-                    .modal-header .modal-title {
-                        display: none !important;
-                    }
-                </style>
+                        /* Modal chi title hide karnya sathi */
+                        .modal-header .modal-title {
+                            display: none !important;
+                        }
+
+                        /* 1. Modal Dialog chi width ani margin full kara */
+                        .modal-dialog {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+
+                        /* 2. Modal Content chi height full kara (Full Screen View) */
+                        .modal-content {
+                            height: 100vh !important; /* Full Viewport Height */
+                            border-radius: 0 !important;
+                        }
+
+                        /* 3. Odoo chi Sheet full width karnya sathi */
+                        .o_form_sheet {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            min-height: 100vh !important;
+                        }
+
+                        /* 4. Table chi width 100% kara */
+                        .custom_table_borders {
+                            width: 100% !important;
+                        }
+                    </style>
+
+                     <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                     <field name="pl_line_ids" nolabel="1">
    
@@ -1429,15 +1578,19 @@
                             </tbody>
                     </table>
 
-                     <div style="margin-bottom: 10px;">
-                    <button name="action_reset_sequencepl" 
-                            string="Reset Test No." 
-                            type="object" 
-                            class="btn-secondary" 
-                            icon="fa-sort-numeric-asc"/>
-                </div>
+                  
 
                 </sheet>
+                  <footer>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn btn-primary"
+                            />
+
+                    <button string="Back" special="save"/>
+
+                </footer>
             </form>
 
             </field>
@@ -1473,6 +1626,7 @@
                 <tree string="Shrinkage Limit" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
+                    <field name="is_checked"/>
                 </tree>
 
                 <form string="">
@@ -1514,6 +1668,31 @@
                             width: 100% !important;
                         }
                     </style>
+
+                     <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
+
                      <field name="sl_line_ids" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders">
                         
@@ -1546,17 +1725,19 @@
                     </tbody>
                 </table>
 
-                     <div style="margin-bottom: 10px;">
-                    <button name="action_reset_sequencesl" 
-                            string="Reset Test No." 
-                            type="object" 
-                            class="btn-secondary" 
-                            icon="fa-sort-numeric-asc"/>
-
-                  
-                </div>
+                     
                                         
                 </sheet>
+                  <footer>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn btn-primary"
+                            />
+
+                    <button string="Back" special="save"/>
+
+                </footer>
             </form>
             </field>    
         </div>
@@ -1602,6 +1783,7 @@
                             <tree string="Consolidation" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                             <form string="">
@@ -1649,6 +1831,29 @@
                             
                         </tbody>
                     </table> -->
+                    <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
                      <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders">
                             <tbody>
@@ -1972,6 +2177,16 @@
 
 
                   </sheet>
+                   <footer>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn btn-primary"
+                            />
+
+                    <button string="Back" special="save"/>
+
+                </footer>
                         </form>
 
                         </field>
@@ -2016,6 +2231,7 @@
                             <tree string="Swelling" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                             <form string="">
@@ -2052,6 +2268,30 @@
                             width: 100% !important;
                         }
                     </style>
+
+                     <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
 
                        <div class="d-flex gap-2" >
@@ -2290,6 +2530,16 @@
                     <group/>
 
                       </sheet>
+                       <footer>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn btn-primary"
+                            />
+
+                    <button string="Back" special="save"/>
+
+                </footer>
                         </form>
 
                         </field>
@@ -2321,6 +2571,7 @@
                             <tree string="permability" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                 <field name="is_checked"/>
                             </tree>
 
                             <form string="">
@@ -2357,6 +2608,29 @@
                             width: 100% !important;
                         }
                     </style>
+                    <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                                 <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not permeability_falling_visible">
                             <tbody>
@@ -2536,6 +2810,16 @@
                         </div>
 
                          </sheet>
+                           <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save"/>
+
+                        </footer>
                         </form>
 
                         </field>
@@ -2570,6 +2854,7 @@
                             <tree string="Triaxial" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                             <form string="">
@@ -2606,6 +2891,29 @@
                                     width: 100% !important;
                                 }
                             </style>
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
 
                     
@@ -3065,6 +3373,16 @@
 
 
                     </sheet>
+                    <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save"/>
+
+                        </footer>
                  </form>
 
             </field>
@@ -3098,6 +3416,7 @@
                             <tree string="Heavy Compaction" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                          <form string="">
@@ -3134,6 +3453,29 @@
                                     width: 100% !important;
                                 }
                             </style>
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                            <div class="d-flex gap-2" >
                             <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -3256,6 +3598,16 @@
                         </table>
 
                      </sheet>
+                      <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save"/>
+
+                        </footer>
                  </form>
 
             </field>
@@ -3287,6 +3639,7 @@
                             <tree string="UCS" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                          <form string="">
@@ -3323,6 +3676,29 @@
                                     width: 100% !important;
                                 }
                             </style>
+                         <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                     <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not ucs_visible">
                         <tbody>
@@ -3569,6 +3945,16 @@
                     <group/>
 
                     </sheet>
+                    <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save"/>
+
+                        </footer>
                  </form>
 
             </field>
@@ -3601,6 +3987,7 @@
                             <tree string="direct shear  line" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                          <form string="">
@@ -3639,6 +4026,29 @@
                                     width: 100% !important;
                                 }
                             </style>
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                        <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -4266,6 +4676,16 @@
                     <group/>
 
                         </sheet>
+                        <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save"/>
+
+                        </footer>
                  </form>
 
             </field>

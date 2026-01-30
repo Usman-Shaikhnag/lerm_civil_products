@@ -12,6 +12,7 @@ import matplotlib.ticker as ticker
 import io
 import base64
 from math import log10
+from datetime import date
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -3691,6 +3692,8 @@ class SoilCBRLine(models.Model):
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
+    
+
     penetration = fields.Float(string="Penetration in mm")
     proving_reading = fields.Float(string="Dial Guage Reading")
     no_division = fields.Float(string="Number of Division",compute="_compute_no_division", store=True,digits=(12,2))
@@ -6650,8 +6653,8 @@ class LabAtterbergLlLine(models.Model):
     @api.model
     def create(self, vals):
         # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+        if vals.get('parent_id_ll'):
+            existing_records = self.search([('parent_id_ll', '=', vals['parent_id_ll'])])
             if existing_records:
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
@@ -7256,6 +7259,31 @@ class LLLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+    def action_submit(self):
+        self.ensure_one()
+        
+        # 1️⃣ Boolean True + End Date = current date
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),
+        })
+
+        # 2️⃣ Reset serial numbers of child lines (1,2,3...)
+        if self.ll_line_ids:
+            for index, line in enumerate(self.ll_line_ids.sorted(key=lambda r: r.id)):
+                line.serial_no = index + 1
+
+        # 3️⃣ Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
+
 
     ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
 
@@ -7393,20 +7421,7 @@ class LLLine(models.Model):
             else:
                 line.liquid_avg = 0.0
 
-    def action_reset_sequence(self):
-        """
-        Button click kelyavar Serial No. 1 pasun parat set karel.
-        """
-        for rec in self:
-            # Lines la ID nusar sort karun loop firva
-            # sorted(key=lambda r: r.id) mule junya lines var aani navin khali rahtil
-            lines = rec.ll_line_ids.sorted(key=lambda r: r.id)
-            
-            for index, line in enumerate(lines):
-                # index 0 pasun start hoto, mhanun +1 kela (1, 2, 3...)
-                line.serial_no = index + 1
-
-    
+   
 
     @api.model
     def create(self, vals):
@@ -7435,24 +7450,38 @@ class PLLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+    def action_submit(self):
+        self.ensure_one()
+        
+        # 1️⃣ Boolean True + End Date = current date
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),
+        })
+
+        # 2️⃣ Reset serial numbers of child lines (1,2,3...)
+        if self.pl_line_ids:
+            for index, line in enumerate(self.pl_line_ids.sorted(key=lambda r: r.id)):
+                line.serial_no = index + 1
+
+        # 3️⃣ Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
+
+
 
     pl_line_ids = fields.One2many('lab.atterberg.pl.line', 'parent_id_ll',ondelete='cascade')
 
     plastic_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_plastic_avg")
 
-    def action_reset_sequencepl(self):
-        """
-        Button click kelyavar Serial No. 1 pasun parat set karel.
-        """
-        for rec in self:
-            # Lines la ID nusar sort karun loop firva
-            # sorted(key=lambda r: r.id) mule junya lines var aani navin khali rahtil
-            lines = rec.pl_line_ids.sorted(key=lambda r: r.id)
-            
-            for index, line in enumerate(lines):
-                # index 0 pasun start hoto, mhanun +1 kela (1, 2, 3...)
-                line.serial_no = index + 1
-
+   
 
     @api.depends('pl_line_ids.water_content')
     def _compute_plastic_avg(self):
@@ -7493,6 +7522,31 @@ class SLLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+    def action_submit(self):
+        self.ensure_one()
+        
+        # 🔹 Boolean True + End Date = current user date (timezone safe)
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),
+        })
+
+        # 🔹 Reset serial numbers of child lines
+        if self.sl_line_ids:
+            for index, line in enumerate(self.sl_line_ids.sorted(key=lambda r: r.id)):
+                line.serial_no = index + 1
+
+        # 🔹 Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
+
 
     sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id_sl',ondelete='cascade')
 
@@ -7512,19 +7566,7 @@ class SLLine(models.Model):
 
     # shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0))
 
-    def action_reset_sequencesl(self):
-        """
-        Button click kelyavar Serial No. 1 pasun parat set karel.
-        """
-        for rec in self:
-            # Lines la ID nusar sort karun loop firva
-            # sorted(key=lambda r: r.id) mule junya lines var aani navin khali rahtil
-            lines = rec.sl_line_ids.sorted(key=lambda r: r.id)
-            
-            for index, line in enumerate(lines):
-                # index 0 pasun start hoto, mhanun +1 kela (1, 2, 3...)
-                line.serial_no = index + 1
-
+    
 
     # @api.depends('sl_line_ids.water_content')
     # def _compute_shrinkage_avg(self):
@@ -7564,6 +7606,26 @@ class permHeadLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
@@ -7798,6 +7860,26 @@ class TriaxialShearLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
@@ -8453,6 +8535,26 @@ class HeavyCompactionLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
@@ -8778,6 +8880,26 @@ class USCNewLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
@@ -9152,6 +9274,26 @@ class DrirectShearLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
@@ -10381,6 +10523,26 @@ class SwellingPressureLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
@@ -10861,6 +11023,27 @@ class ConsolidationLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
     bh_id = fields.Char(
@@ -11399,6 +11582,46 @@ class CbrLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    # def action_submit_line(self):
+    #     self.ensure_one()
+
+    #     # 1️⃣ Boolean True
+    #     self.write({
+    #         'is_checked': True,
+    #         'end_date': date.today(),  # current date auto fill
+    #     })
+
+    #     # 2️⃣ Parent form वर return / open
+    #     return {
+    #         'type': 'ir.actions.act_window',
+    #         'name': 'Soil Test',
+    #         'res_model': 'mechanical.soil1',
+    #         'view_mode': 'form',
+    #         'res_id': self.parent_id.id if self.parent_id else False,
+    #         'target': 'current',
+    #     }
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'is_checked': True,
+            'end_date': date.today(),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
+
+
 
     initial_height = fields.Float(string="Initial height of specimen, h (mm)")
     initial_dial_guage = fields.Float(string="Initial dial gauge reading, ds (mm)")
