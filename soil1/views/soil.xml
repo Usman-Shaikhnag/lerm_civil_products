@@ -616,7 +616,7 @@
                                     class="btn btn-primary"
                                     />
 
-                            <button string="Back" special="save"/>
+                            <button string="Back" special="save" class="btn btn-success"/>
 
 
                               
@@ -779,7 +779,26 @@
 
 
 
+                 <div class="d-flex gap-2" invisible = "moisture_visible == False">
 
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"/></td>
+                                    <td><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"/></td>
+                                    <td><field name="end_date" readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
 
                     <div invisible = "moisture_visible == False">
@@ -798,6 +817,15 @@
                             </tree>
                         </field>
                     </div> 
+
+                    <div>
+                     <button name="action_submit"
+                                    string="Add End Date"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                    </div>
 
 
 
@@ -828,7 +856,26 @@
                 </div>
 
 
+                  <div class="d-flex gap-2" invisible = "moisture_visible == False">
 
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date_mnc"/></td>
+                                    <td><field name="start_date_mnc" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date_mnc"/></td>
+                                    <td><field name="end_date_mnc" readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
                    <div invisible = "moisture_visible == False">
                         <field name="moisture_ids">
 
@@ -890,7 +937,26 @@
 
             
 
+            <div class="d-flex gap-2" invisible="specific_gravity_visible == False">
 
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date_sg"/></td>
+                                    <td><field name="start_date_sg" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date_sg"/></td>
+                                    <td><field name="end_date_sg" readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
             <div invisible="specific_gravity_visible == False">
                 <field name="gravity_line_ids">
                     <tree editable="bottom" class="custom_table_borders">
@@ -948,23 +1014,23 @@
                     invisible="gsa_lines_generated == True"/>
 
                 </div>
-                  <div style="margin-top: 10px;" invisible = "gsa_visible == False">
+                  <!-- <div style="margin-top: 10px;" invisible = "gsa_visible == False">
                 <button name="action_fetch_review_details"
                     type="object"
                     string="Fetch Review Details"
                     class="btn-primary"/>
-                  </div>
+                  </div> -->
 
                 <div invisible="gsa_visible == False">
                 <field name="show_sieve" invisible="1"/>
                 <field name="gsa_child_lines" class="custom_table_borders" nolabel="1">
                     <tree  string="GSA Lines" decoration-info="lab_no">
                         <field name="symbol" widget="html" />
-                        <field name="bh_id"/>
+                        <!-- <field name="bh_id" invisible="1"/> -->
                         <field name="lab_no" string="Lab ID" width="200"/>
                    
-                        <field name="sample_depth"/>
-                        <field name="sample_details"/>
+                        <!-- <field name="sample_depth" invisible="1"/> -->
+                        <!-- <field name="sample_details" invisible="1"/> -->
                           <field name="water_content"/>
                         <field name="wt_of_samp"/>
                          <field name="temp"/>
@@ -980,10 +1046,37 @@
                     <form string="">
                             <sheet>
                             <style>
-                                    .modal-header .modal-title {
-                                        display: none !important;
-                                    }
-                                </style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
+
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
+
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
+
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
+
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
+                            </style>
                                 <div class="d-flex gap-2">
                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
@@ -1022,7 +1115,7 @@
                                     </table>
                                 </div>
 
-                                <div class="d-flex gap-2">
+                                <!-- <div class="d-flex gap-2">
                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
                                             <tr>
@@ -1039,17 +1132,17 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div>
+                                </div> -->
 
                                 <div class="d-flex gap-2">
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
                                             <tr>
                                                 <td><label for="sample_details"/></td>
                                                 <td><field name="sample_details" class="blue-input"/></td>
                                             </tr>
                                         </tbody>
-                                    </table>
+                                    </table> -->
                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
                                             <tr>
@@ -1058,10 +1151,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div>
-
-                                  <div class="d-flex gap-2">
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
                                             <tr>
                                                 <td><label for="soil_classification"/></td>
@@ -1069,8 +1159,12 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                 
                                 </div>
+
+                                  <!-- <div class="d-flex gap-2">
+                                   
+                                 
+                                </div> -->
 
                               
 
@@ -1452,7 +1546,7 @@
                             class="btn btn-primary"
                             />
 
-                    <button string="Back" special="save"/>
+                    <button string="Back" special="save" class="btn btn-success"/>
 
             </footer>
             </form>
@@ -1588,7 +1682,7 @@
                             class="btn btn-primary"
                             />
 
-                    <button string="Back" special="save"/>
+                    <button string="Back" special="save" class="btn btn-success"/>
 
                 </footer>
             </form>
@@ -1735,7 +1829,7 @@
                             class="btn btn-primary"
                             />
 
-                    <button string="Back" special="save"/>
+                    <button string="Back" special="save" class="btn btn-success"/>
 
                 </footer>
             </form>
@@ -2184,7 +2278,7 @@
                             class="btn btn-primary"
                             />
 
-                    <button string="Back" special="save"/>
+                    <button string="Back" special="save" class="btn btn-success"/>
 
                 </footer>
                         </form>
@@ -2537,7 +2631,7 @@
                             class="btn btn-primary"
                             />
 
-                    <button string="Back" special="save"/>
+                    <button string="Back" special="save" class="btn btn-success"/>
 
                 </footer>
                         </form>
@@ -2817,7 +2911,7 @@
                                     class="btn btn-primary"
                                     />
 
-                            <button string="Back" special="save"/>
+                            <button string="Back" special="save" class="btn btn-success"/>
 
                         </footer>
                         </form>
@@ -3605,7 +3699,7 @@
                                     class="btn btn-primary"
                                     />
 
-                            <button string="Back" special="save"/>
+                            <button string="Back" special="save" class="btn btn-success"/>
 
                         </footer>
                  </form>
@@ -3952,7 +4046,7 @@
                                     class="btn btn-primary"
                                     />
 
-                            <button string="Back" special="save"/>
+                            <button string="Back" special="save" class="btn btn-success"/>
 
                         </footer>
                  </form>
@@ -4683,7 +4777,7 @@
                                     class="btn btn-primary"
                                     />
 
-                            <button string="Back" special="save"/>
+                            <button string="Back" special="save" class="btn btn-success"/>
 
                         </footer>
                  </form>

@@ -655,6 +655,33 @@ class Soil(models.Model):
 
     bulk_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
 
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
+
+    
+    
+
+    @api.constrains('start_date')
+    def _check_start_date(self):
+        for rec in self:
+            if rec.start_date and rec.eln_ref.srf_date:
+                if rec.start_date < rec.eln_ref.srf_date:
+                    raise ValidationError(
+                        "Start Date cannot be earlier than SRF Date."
+                    )
+   
+
 
 
 
@@ -693,6 +720,19 @@ class Soil(models.Model):
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
     nmc_visible = fields.Boolean(string="NMC Visible",compute="_compute_visible")
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+
+    start_date_mnc = fields.Date(string="Start Date")  # manually fill
+    end_date_mnc = fields.Date(string="End Date")      # auto fill on submit
+
+
+    @api.constrains('start_date_mnc')
+    def _check_start_date_mnc(self):
+        for rec in self:
+            if rec.start_date_mnc and rec.eln_ref.srf_date:
+                if rec.start_date_mnc < rec.eln_ref.srf_date:
+                    raise ValidationError(
+                        "Start Date cannot be earlier than SRF Date."
+                    )
 
 
 
@@ -762,6 +802,10 @@ class Soil(models.Model):
                     group[0].avg_nmc = avg  
 
                 i += 2
+            if not rec.end_date_mnc:
+                rec.write({
+                    'end_date_mnc': fields.Date.context_today(rec)
+                })
 
 
 
@@ -770,6 +814,19 @@ class Soil(models.Model):
     # specific gravity
     specific_gravity_name = fields.Char(string="Name",default=" SPECIFIC GRAVITY", )
     specific_gravity_visible = fields.Boolean( string="Specific Gravity Visible",default=True )
+
+    start_date_sg = fields.Date(string="Start Date")  # manually fill
+    end_date_sg = fields.Date(string="End Date")      # auto fill on submit
+
+
+    @api.constrains('start_date_sg')
+    def _check_start_date_sg(self):
+        for rec in self:
+            if rec.start_date_sg and rec.eln_ref.srf_date:
+                if rec.start_date_sg < rec.eln_ref.srf_date:
+                    raise ValidationError(
+                        "Start Date cannot be earlier than SRF Date."
+                    )
 
     # selected_lab_id12 = fields.Many2one(
     #     'lab.option.line',
@@ -834,6 +891,10 @@ class Soil(models.Model):
                     group[0].avg_corr_specific_gravity = avg  
 
                 i += 2
+            if not rec.end_date_sg:
+                rec.write({
+                    'end_date_sg': fields.Date.context_today(rec)
+                })
 
 
 
@@ -4152,6 +4213,7 @@ class SoilBulkDensity(models.Model):
         for rec in self:
             rec.bulk_density = rec.wt_soil / rec.volume if rec.volume else 0.0  
 
+    
    
 
     @api.model
@@ -11615,7 +11677,7 @@ class CbrLine(models.Model):
         # Boolean True save
         self.write({
             'is_checked': True,
-            'end_date': date.today(),  # current date auto fill
+            'end_date': fields.Date.context_today(self),  # current date auto fill
         })
         
         # Close inline editor → Save-like back
