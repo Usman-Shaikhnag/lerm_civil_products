@@ -26,32 +26,32 @@ class Stones(models.Model):
     notes_id = fields.One2many('stone.notes','parent_id',string="Notes")
     
 
+
     @api.model
-    def create(self, vals):
-        record = super(Stones, self).create(vals)
+    def default_get(self, fields):
+        res = super(Stones, self).default_get(fields)
 
-        if not record.notes_id:
-            default_notes = [
-                {'sr_no': 'a', 'notes': 'The information marked with an # received from customer'},
-                {'sr_no': 'b', 'notes': 'The results listed refer only to tested parameter and sample as received'},
-                {'sr_no': 'c', 'notes': 'Samples will be discarded after 15 days unless otherwise specified.'},
-                {'sr_no': 'd', 'notes': 'This document shall not be reproduced without approval.'},
-            ]
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
 
-            for note in default_notes:
-                self.env['coarse.aggregate.notes'].create({
-                    'parent_id': record.id,
-                    'sr_no': note['sr_no'],
-                    'notes': note['notes'],
-                })
-
-        return record
-
-
-    @api.depends('eln_ref')
-    def _compute_size_id(self):
-        if self.eln_ref:
-            self.size_id = self.eln_ref.size_id.id
+        res['notes_id'] = default_notes
+        return res
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()
@@ -70,7 +70,7 @@ class Stones(models.Model):
 
      
     lab_id1 = fields.Char(string="Lab ID No. ")
-    room_temp1 = fields.Float(string="Temperature during test", digits=(12,2) )
+    room_temp1 = fields.Float(string="Temperature during test", digits=(12,2))
     relative_humidity1= fields.Float(string="Relative humidity during test ", digits=(12,2) )
     depth = fields.Char(string="Depth")
     stone_type1 = fields.Char(string="Type of Stone")
@@ -221,25 +221,6 @@ class Stones(models.Model):
 
 
 
-    # selected_lab_stone2 = fields.Many2one(
-    #     'stone.lab.line',
-    #     string="Select Lab ID",
-    #     domain="[('id', 'in', lab_stone_ids)]"
-    # )
-
-    
-    # compressive_dry = fields.Boolean(
-    #     string="Compacted Density Selected",
-        
-    # )
-
-    # @api.onchange('selected_lab_stone2')
-    # def _onchange_selected_lab_stone2(self):
-    #     for rec in self:
-    #         if rec.selected_lab_stone2:
-    #             rec.compressive_dry = True
-    #         else:
-    #             rec.compressive_dry= False
 
 
 

@@ -7,7 +7,10 @@
         <field name="model">mechanical.soil1</field>
         <field name="arch" type="xml">
             <form create="false">
+           
+
                 <sheet>
+                     
                     <h1>
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
@@ -22,6 +25,7 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="size_id"/>
                          <field name="lab_id" invisible="1" />
+                        <field name="date_of_casting" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
 
@@ -226,13 +230,14 @@
 
                         </div>
 
-                         <field name="cbr_ids" class="custom_table_borders" nolabel="1" invisible = "soil_visible == False">
+                         <field name="cbr_ids" class="custom_table_borders" nolabel="1" invisible = "soil_visible == False" >
                             <tree string="CBR" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
-                         <form string="">
+                         <form string="" >
                             <sheet>
                             <style>
                                 /* Modal chi title hide karnya sathi */
@@ -301,6 +306,28 @@
                                         <tr>
                                             <td><label for="bh_id">BH ID</label></td>
                                             <td><field name="bh_id" class="blue-input"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="start_date"></label></td>
+                                            <td><field name="start_date" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="end_date"></label></td>
+                                            <td><field name="end_date"  readonly="1"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -576,9 +603,27 @@
                             </tbody>
                         </table>
 
+
+
                     </div>
+                    
 
                        </sheet>
+                       <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save" class="btn btn-success"/>
+
+
+                              
+
+
+                        </footer>
+                      
                         </form>
 
                         </field>
@@ -734,13 +779,32 @@
 
 
 
+                 <div class="d-flex gap-2" invisible = "moisture_visible == False">
 
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"/></td>
+                                    <td><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"/></td>
+                                    <td><field name="end_date" readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
 
                     <div invisible = "moisture_visible == False">
                         <field name="bulk_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name="date" width="90px" />
+                                <field name="date" width="90px" class="blue-input" decoration-info="date != 0"/>
                                 <field name='lab_id' width="60px" />
                                 <field name='wt_uds_soil' width="100px"  class="blue-input" decoration-info="wt_uds_soil != 0" />
                                 <field name='wt_empty_uds' width="100px"  class="blue-input" decoration-info="wt_empty_uds != 0"/>
@@ -753,6 +817,15 @@
                             </tree>
                         </field>
                     </div> 
+
+                    <div>
+                     <button name="action_submit"
+                                    string="Add End Date"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                    </div>
 
 
 
@@ -783,13 +856,32 @@
                 </div>
 
 
+                  <div class="d-flex gap-2" invisible = "moisture_visible == False">
 
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date_mnc"/></td>
+                                    <td><field name="start_date_mnc" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date_mnc"/></td>
+                                    <td><field name="end_date_mnc" readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
                    <div invisible = "moisture_visible == False">
                         <field name="moisture_ids">
 
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name= 'date' width="80px" />
-                                <field name='lab_id'  width="50px"/>
+                                <field name= 'date' width="80px" class="blue-input" decoration-info="date!=0"/>
+                                <field name='lab_id'  width="50px" />
                                 <field name='wet_soil_container' width="100px"  class="blue-input" decoration-info="wet_soil_container!=0"/>
                                 <field name='dry_soil_container' width="100px" class="blue-input" decoration-info="dry_soil_container!=0"/>
                                 <field name= 'container_weight' width="110px" class="blue-input" decoration-info="container_weight!=0"/>
@@ -845,14 +937,33 @@
 
             
 
+            <div class="d-flex gap-2" invisible="specific_gravity_visible == False">
 
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date_sg"/></td>
+                                    <td><field name="start_date_sg" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date_sg"/></td>
+                                    <td><field name="end_date_sg" readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
             <div invisible="specific_gravity_visible == False">
                 <field name="gravity_line_ids">
                     <tree editable="bottom" class="custom_table_borders">
 
                         <field name="serial_no" string="Sr.No" width="30px"/>
                         <field name="date" string="DATE TEST" width="40px" class="blue-input" decoration-info="date != 0"/>
-                        <field name="lab_no" string="Lab No."  width="50px" class="blue-input" decoration-info="lab_no != 0"/>
+                        <field name="lab_no" string="Lab No."  width="50px" />
 
                         <field name="room_temp" string="Room Temperature" width="100px" class="blue-input" decoration-info="room_temp != 0"/>
                         <field name="bottle_no" string="Bottle No."  width="80px" class="blue-input" decoration-info="bottle_no != 0"/>
@@ -903,23 +1014,23 @@
                     invisible="gsa_lines_generated == True"/>
 
                 </div>
-                  <div style="margin-top: 10px;" invisible = "gsa_visible == False">
+                  <!-- <div style="margin-top: 10px;" invisible = "gsa_visible == False">
                 <button name="action_fetch_review_details"
                     type="object"
                     string="Fetch Review Details"
                     class="btn-primary"/>
-                  </div>
+                  </div> -->
 
                 <div invisible="gsa_visible == False">
                 <field name="show_sieve" invisible="1"/>
                 <field name="gsa_child_lines" class="custom_table_borders" nolabel="1">
                     <tree  string="GSA Lines" decoration-info="lab_no">
                         <field name="symbol" widget="html" />
-                        <field name="bh_id"/>
+                        <!-- <field name="bh_id" invisible="1"/> -->
                         <field name="lab_no" string="Lab ID" width="200"/>
                    
-                        <field name="sample_depth"/>
-                        <field name="sample_details"/>
+                        <!-- <field name="sample_depth" invisible="1"/> -->
+                        <!-- <field name="sample_details" invisible="1"/> -->
                           <field name="water_content"/>
                         <field name="wt_of_samp"/>
                          <field name="temp"/>
@@ -935,10 +1046,37 @@
                     <form string="">
                             <sheet>
                             <style>
-                                    .modal-header .modal-title {
-                                        display: none !important;
-                                    }
-                                </style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
+
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
+
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
+
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
+
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
+                            </style>
                                 <div class="d-flex gap-2">
                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
@@ -977,7 +1115,7 @@
                                     </table>
                                 </div>
 
-                                <div class="d-flex gap-2">
+                                <!-- <div class="d-flex gap-2">
                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
                                             <tr>
@@ -994,17 +1132,17 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div>
+                                </div> -->
 
                                 <div class="d-flex gap-2">
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
                                             <tr>
                                                 <td><label for="sample_details"/></td>
                                                 <td><field name="sample_details" class="blue-input"/></td>
                                             </tr>
                                         </tbody>
-                                    </table>
+                                    </table> -->
                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
                                             <tr>
@@ -1013,10 +1151,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div>
-
-                                  <div class="d-flex gap-2">
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>
                                             <tr>
                                                 <td><label for="soil_classification"/></td>
@@ -1024,8 +1159,12 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                 
                                 </div>
+
+                                  <!-- <div class="d-flex gap-2">
+                                   
+                                 
+                                </div> -->
 
                               
 
@@ -1066,7 +1205,7 @@
                                         <tbody>
                                             <tr>
                                                 <td><label for="temp">Temp.°C</label></td>
-                                                <td><field name="temp"/></td>
+                                                <td><field name="temp" class="blue-input"/></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1074,7 +1213,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="wt_of_samp1"/></td>
-                                                    <td><field name="wt_of_samp1"/></td>
+                                                    <td><field name="wt_of_samp1" class="blue-input"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1087,7 +1226,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="meniscus_corre"/></td>
-                                                    <td><field name="meniscus_corre"/></td>
+                                                    <td><field name="meniscus_corre" class="blue-input"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1095,7 +1234,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="vescosity_water"/></td>
-                                                    <td><field name="vescosity_water"/></td>
+                                                    <td><field name="vescosity_water" class="blue-input"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1108,7 +1247,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="dispersion"/></td>
-                                                    <td><field name="dispersion"/></td>
+                                                    <td><field name="dispersion" class="blue-input"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1131,7 +1270,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><label for="specific_gravity"/></td>
-                                                    <td><field name="specific_gravity"/></td>
+                                                    <td><field name="specific_gravity" class="blue-input"/></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -1183,7 +1322,7 @@
                             type="object" 
                             class="oe_highlight" 
                             icon="fa-area-chart"
-                            help="Sieve Analysis डेटावर आधारित ग्राफ तयार करण्यासाठी क्लिक करा."/>
+                            help="Sieve Analysis"/>
                  </div>
 
 
@@ -1307,15 +1446,66 @@
                 <tree string="Liquid Limit Lines" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
+                    <field name="is_checked"/>
                 </tree>
 
                 <form string="">
                 <sheet>
-                <style>
-                    .modal-header .modal-title {
-                        display: none !important;
-                    }
-                </style>
+                 <style>
+                        /* Modal chi title hide karnya sathi */
+                        .modal-header .modal-title {
+                            display: none !important;
+                        }
+
+                        /* 1. Modal Dialog chi width ani margin full kara */
+                        .modal-dialog {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+
+                        /* 2. Modal Content chi height full kara (Full Screen View) */
+                        .modal-content {
+                            height: 100vh !important; /* Full Viewport Height */
+                            border-radius: 0 !important;
+                        }
+
+                        /* 3. Odoo chi Sheet full width karnya sathi */
+                        .o_form_sheet {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            min-height: 100vh !important;
+                        }
+
+                        /* 4. Table chi width 100% kara */
+                        .custom_table_borders {
+                            width: 100% !important;
+                        }
+                    </style>
+                      <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                     <field name="ll_line_ids" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders">
@@ -1341,13 +1531,7 @@
                         </tbody>
                     </table>
 
-                    <div style="margin-bottom: 10px;">
-                    <button name="action_reset_sequence" 
-                            string="Reset Test No." 
-                            type="object" 
-                            class="btn-secondary" 
-                            icon="fa-sort-numeric-asc"/>
-                </div>
+                    
 
                  <div  class="custom_table_borders text-center">
                         <field name="ll_graph" widget="image"  readonly="1"/>
@@ -1355,7 +1539,18 @@
                     <group/>
 
                 </sheet>
+                   <footer>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn btn-primary"
+                            />
+
+                    <button string="Back" special="save" class="btn btn-success"/>
+
+            </footer>
             </form>
+         
 
             </field>
 
@@ -1387,15 +1582,67 @@
                 <tree string="Plastic Limit Lines" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
+                    <field name="is_checked"/>
                 </tree>
 
                 <form string="">
                 <sheet>
                 <style>
-                    .modal-header .modal-title {
-                        display: none !important;
-                    }
-                </style>
+                        /* Modal chi title hide karnya sathi */
+                        .modal-header .modal-title {
+                            display: none !important;
+                        }
+
+                        /* 1. Modal Dialog chi width ani margin full kara */
+                        .modal-dialog {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+
+                        /* 2. Modal Content chi height full kara (Full Screen View) */
+                        .modal-content {
+                            height: 100vh !important; /* Full Viewport Height */
+                            border-radius: 0 !important;
+                        }
+
+                        /* 3. Odoo chi Sheet full width karnya sathi */
+                        .o_form_sheet {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            min-height: 100vh !important;
+                        }
+
+                        /* 4. Table chi width 100% kara */
+                        .custom_table_borders {
+                            width: 100% !important;
+                        }
+                    </style>
+
+                     <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                     <field name="pl_line_ids" nolabel="1">
    
@@ -1425,15 +1672,19 @@
                             </tbody>
                     </table>
 
-                     <div style="margin-bottom: 10px;">
-                    <button name="action_reset_sequencepl" 
-                            string="Reset Test No." 
-                            type="object" 
-                            class="btn-secondary" 
-                            icon="fa-sort-numeric-asc"/>
-                </div>
+                  
 
                 </sheet>
+                  <footer>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn btn-primary"
+                            />
+
+                    <button string="Back" special="save" class="btn btn-success"/>
+
+                </footer>
             </form>
 
             </field>
@@ -1469,6 +1720,7 @@
                 <tree string="Shrinkage Limit" decoration-info="lab_id">
                     <field name="serial_no"/>
                     <field name="lab_id"/>
+                    <field name="is_checked"/>
                 </tree>
 
                 <form string="">
@@ -1510,6 +1762,31 @@
                             width: 100% !important;
                         }
                     </style>
+
+                     <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
+
                      <field name="sl_line_ids" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders">
                         
@@ -1542,17 +1819,19 @@
                     </tbody>
                 </table>
 
-                     <div style="margin-bottom: 10px;">
-                    <button name="action_reset_sequencesl" 
-                            string="Reset Test No." 
-                            type="object" 
-                            class="btn-secondary" 
-                            icon="fa-sort-numeric-asc"/>
-
-                  
-                </div>
+                     
                                         
                 </sheet>
+                  <footer>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn btn-primary"
+                            />
+
+                    <button string="Back" special="save" class="btn btn-success"/>
+
+                </footer>
             </form>
             </field>    
         </div>
@@ -1598,6 +1877,7 @@
                             <tree string="Consolidation" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                             <form string="">
@@ -1645,6 +1925,61 @@
                             
                         </tbody>
                     </table> -->
+                    <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                     <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="lab_id"></label></td>
+                                    <td ><field name="lab_id" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="bh_id"></label></td>
+                                    <td><field name="bh_id" class="blue-input" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="depth"></label></td>
+                                    <td><field name="depth" class="blue-input" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                    </div>
 
                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" >
                         <tbody>
@@ -1786,7 +2121,7 @@
                                 <field name='load_0_5_1_0' class="blue-input" decoration-info="load_0_5_1_0!=0"/>
                                 <field name='load_1_0_2_0' class="blue-input" decoration-info="load_1_0_2_0!=0"/>
                                 <field name='load_2_0_4_0' class="blue-input" decoration-info="load_2_0_4_0!=0"/>
-                                <field name='load_4_0_8_0'/>
+                                <field name='load_4_0_8_0' class="blue-input" decoration-info="load_4_0_8_0 != 0"/>
                               
                             </tree>
                         </field>
@@ -1806,7 +2141,7 @@
                                 <field name='load_0_2_0_5' class="blue-input" decoration-info="load_0_2_0_5!=0"/>
                                 <field name='load_0_1_0_2' class="blue-input" decoration-info="load_0_1_0_2!=0"/>
                                 <!-- <field name='load_0_05_0_1'/> -->
-                                <field name='setting_load'/>
+                                <field name='setting_load' class="blue-input" decoration-info="setting_load!=0"/>
                               
                             </tree>
                         </field>
@@ -2004,9 +2339,29 @@
 
 
 
+                 <div>
+                  <button name="action_generate_consolidation_graph"
+                        string="Final Graph"
+                        type="object"
+                        class="oe_highlight"
+                        icon="fa-line-chart"/>
+                 </div>
+                   <div style="text-align: center;">
+                         <field name="consolidation_graph" widget="image" readonly="1"/>
+                        </div>
 
 
                   </sheet>
+                   <footer>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn btn-primary"
+                            />
+
+                    <button string="Back" special="save" class="btn btn-success"/>
+
+                </footer>
                         </form>
 
                         </field>
@@ -2051,6 +2406,7 @@
                             <tree string="Swelling" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                             <form string="">
@@ -2087,6 +2443,30 @@
                             width: 100% !important;
                         }
                     </style>
+
+                     <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
 
                        <div class="d-flex gap-2" >
@@ -2234,13 +2614,13 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='time_m'/>
                                 <field name='sqrt_time'  />
-                                <field name='load_0_05_0_1' />
-                                <field name='load_0_1_0_2' />
-                                <field name='load_0_2_0_5' />
-                                <field name='load_0_5_1_0' />
-                                <field name='load_1_0_2_0' />
-                                <field name='load_2_0_4_0' />
-                                <field name='load_4_0_8_0'/>
+                                <field name='load_0_05_0_1' class="blue-input" decoration-info="load_0_05_0_1 != 0"/>
+                                <field name='load_0_1_0_2' class="blue-input" decoration-info="load_0_1_0_2 != 0"/>
+                                <field name='load_0_2_0_5' class="blue-input" decoration-info="load_0_2_0_5 != 0"/>
+                                <field name='load_0_5_1_0' class="blue-input" decoration-info="load_0_5_1_0 != 0"/>
+                                <field name='load_1_0_2_0' class="blue-input" decoration-info="load_1_0_2_0 != 0"/>
+                                <field name='load_2_0_4_0' class="blue-input" decoration-info="load_2_0_4_0 != 0"/>
+                                <field name='load_4_0_8_0' class="blue-input" decoration-info="load_4_0_8_0 != 0"/>
                               
                             </tree>
                         </field>
@@ -2252,15 +2632,15 @@
                         <field name="swelling_unloading_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='time_m'/>
-                                <field name='load_8_0_4_0'/>
-                                <field name='load_4_0_8_0'/>
-                                <field name='load_2_0_4_0'/>
-                                <field name='load_1_0_2_0'/>
-                                <field name='load_0_5_1_0'/>
-                                <field name='load_0_2_0_5'/>
-                                <field name='load_0_1_0_2' />
+                                <field name='load_8_0_4_0' class="blue-input" decoration-info="load_8_0_4_0 != 0"/>
+                                <field name='load_4_0_8_0' class="blue-input" decoration-info="load_4_0_8_0 != 0"/>
+                                <field name='load_2_0_4_0' class="blue-input" decoration-info="load_2_0_4_0 != 0"/>
+                                <field name='load_1_0_2_0' class="blue-input" decoration-info="load_1_0_2_0 != 0"/>
+                                <field name='load_0_5_1_0' class="blue-input" decoration-info="load_0_5_1_0 != 0"/>
+                                <field name='load_0_2_0_5' class="blue-input" decoration-info="load_0_2_0_5 != 0"/>
+                                <field name='load_0_1_0_2' class="blue-input" decoration-info="load_0_1_0_2 != 0"/>
                                 <!-- <field name='load_0_05_0_1'/> -->
-                                <field name='setting_load'/>
+                                <field name='setting_load' class="blue-input" decoration-info="setting_load != 0"/>
                               
                             </tree>
                         </field>
@@ -2283,7 +2663,7 @@
                                 <field name='d_sigma'/>
                                 <field name='av' />
                                 <field name='mv' />
-                                <field name='t90' />
+                                <field name='t90' class="blue-input" decoration-info="t90 != 0"/>
                                 <field name='Hav' />
                                 <field name='cv' />
                                 <field name='cc' />
@@ -2298,8 +2678,8 @@
                         <field name="swelling_table_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='applied_pressure'/>
-                                <field name='final_read' class="blue-input" decoration-info="final_read!=0"/>
+                                <field name='applied_pressure' readonly="1"/>
+                                <field name='final_read' />
                                 <field name='delta_h'/>
                               
                             </tree>
@@ -2325,6 +2705,16 @@
                     <group/>
 
                       </sheet>
+                       <footer>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn btn-primary"
+                            />
+
+                    <button string="Back" special="save" class="btn btn-success"/>
+
+                </footer>
                         </form>
 
                         </field>
@@ -2356,6 +2746,7 @@
                             <tree string="permability" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                 <field name="is_checked"/>
                             </tree>
 
                             <form string="">
@@ -2392,6 +2783,29 @@
                             width: 100% !important;
                         }
                     </style>
+                    <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                                 <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not permeability_falling_visible">
                             <tbody>
@@ -2571,6 +2985,16 @@
                         </div>
 
                          </sheet>
+                           <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save" class="btn btn-success"/>
+
+                        </footer>
                         </form>
 
                         </field>
@@ -2605,6 +3029,7 @@
                             <tree string="Triaxial" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                             <form string="">
@@ -2641,6 +3066,29 @@
                                     width: 100% !important;
                                 }
                             </style>
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
 
                     
@@ -2654,6 +3102,27 @@
                                 
                             </tbody>
                         </table> -->
+                        <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="bh_id"></label></td>
+                                    <td ><field name="bh_id" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="depth"></label></td>
+                                    <td><field name="depth"  class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
 
                      <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -2910,6 +3379,38 @@
                     
                     </div>
 
+                    <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="proving_triaxial"></label></td>
+                                    <td ><field name="proving_triaxial" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="least_count_triaxial"></label></td>
+                                    <td><field name="least_count_triaxial"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="displacement_triaxial"></label></td>
+                                    <td><field name="displacement_triaxial"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
                     <field name="triaxial_test_line_ids" >
                         <tree editable="bottom" class="custom_table_borders">
                             <field name="horizontal_dial"/>
@@ -3047,6 +3548,16 @@
 
 
                     </sheet>
+                    <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save"/>
+
+                        </footer>
                  </form>
 
             </field>
@@ -3080,6 +3591,7 @@
                             <tree string="Heavy Compaction" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                          <form string="">
@@ -3116,6 +3628,29 @@
                                     width: 100% !important;
                                 }
                             </style>
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                            <div class="d-flex gap-2" >
                             <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -3238,6 +3773,16 @@
                         </table>
 
                      </sheet>
+                      <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save" class="btn btn-success"/>
+
+                        </footer>
                  </form>
 
             </field>
@@ -3269,6 +3814,7 @@
                             <tree string="UCS" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                          <form string="">
@@ -3305,6 +3851,29 @@
                                     width: 100% !important;
                                 }
                             </style>
+                         <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                     <!-- <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not ucs_visible">
                         <tbody>
@@ -3551,6 +4120,16 @@
                     <group/>
 
                     </sheet>
+                    <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save" class="btn btn-success"/>
+
+                        </footer>
                  </form>
 
             </field>
@@ -3583,6 +4162,7 @@
                             <tree string="direct shear  line" decoration-info="lab_id">
                                 <field name="serial_no"/>
                                 <field name="lab_id"/>
+                                <field name="is_checked"/>
                             </tree>
 
                          <form string="">
@@ -3621,13 +4201,36 @@
                                     width: 100% !important;
                                 }
                             </style>
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="start_date"></label></td>
+                                    <td ><field name="start_date" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
 
                        <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                     <tbody>
                                         <tr>
                                             <td><label for="lab_id"></label></td>
-                                            <td><field name="lab_id" /></td>
+                                            <td><field name="lab_id"  class="blue-input"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -3648,7 +4251,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="drainage_condition">Drainage Condition</label></td>
-                                    <td ><field name="drainage_condition" /></td>
+                                    <td ><field name="drainage_condition" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3685,7 +4288,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="wt_empty_cutter">Empty Weight of cutter: </label></td>
-                                    <td ><field name="wt_empty_cutter"/></td>
+                                    <td ><field name="wt_empty_cutter" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="final_wt_soil_cutter">Final wt of soil + cutter at shear zone </label></td>
@@ -3693,7 +4296,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="mass_dry_soil">Mass of dry soil at shear zone (g) </label></td>
-                                    <td ><field name="mass_dry_soil"/></td>
+                                    <td ><field name="mass_dry_soil" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3781,7 +4384,7 @@
                                 </tr>
                                  <tr>
                                     <td><label for="normal_stress">Normal stress: kg/cm2</label></td>
-                                    <td ><field name="normal_stress" /></td>
+                                    <td ><field name="normal_stress" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -3790,7 +4393,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="area_type">Area Type</label></td>
-                                    <td ><field name="area_type" /></td>
+                                    <td ><field name="area_type" class="blue-input"/></td>
                                 </tr>
                                  <tr invisible = "show_non_corrected_area == False">
                                     <td><label for="non_corrected_area_shear">Non Corrected Area (cm2)</label></td>
@@ -3885,7 +4488,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="wt_empty_cutter_2">Empty Weight of cutter: </label></td>
-                                    <td ><field name="wt_empty_cutter_2"/></td>
+                                    <td ><field name="wt_empty_cutter_2" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="final_wt_soil_cutter_2">Final wt of soil + cutter at shear zone </label></td>
@@ -3893,7 +4496,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="mass_dry_soil_2">Mass of dry soil at shear zone (g) </label></td>
-                                    <td ><field name="mass_dry_soil_2"/></td>
+                                    <td ><field name="mass_dry_soil_2" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -4034,7 +4637,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="wt_empty_cutter_3">Empty Weight of cutter: </label></td>
-                                    <td ><field name="wt_empty_cutter_3"/></td>
+                                    <td ><field name="wt_empty_cutter_3" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="final_wt_soil_cutter_3">Final wt of soil + cutter at shear zone </label></td>
@@ -4042,7 +4645,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="mass_dry_soil_3">Mass of dry soil at shear zone (g) </label></td>
-                                    <td ><field name="mass_dry_soil_3"/></td>
+                                    <td ><field name="mass_dry_soil_3" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -4128,13 +4731,9 @@
                             </tree>
                         </field>
                     </div>
+                         <group/>
 
-                    <!-- <div >
-                                    <button string="Calculate" type="object" name="action_compute_shear" class="oe_highlight">
-                                        <i class="fa fa-calculator"/> Calculate 
-                                    </button>
-                                </div>   -->
-                                <group/>
+
                       <div >
                     <button name="action_generate_shear_graph_3"
                         string="Generate Shear Graph"
@@ -4252,9 +4851,39 @@
                     <group/>
 
                         </sheet>
+                        <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save" class="btn btn-success"/>
+
+                        </footer>
                  </form>
 
             </field>
+
+
+
+
+              <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+                
 
                   
 
@@ -4300,73 +4929,7 @@
             <field name="target">new</field>
         </record>
 
-        <!-- <record id="lab_atterberg_ll_line_form" model="ir.ui.view">
-                <field name="name">lab.atterberg.ll.line.form</field>
-                <field name="model">lab.atterberg.ll.line</field>
-                <field name="arch" type="xml">
-                <form>
-                    <sheet>
-
-                        <group >
-                            <group >
-                                <field name="serial_no"/>
-                                <field name="blows"/>
-                                <field name="container_no"/>
-                            </group >
-
-                            
-                        <group >
-                            <field name="m1"/>
-                            <field name="m2"/>
-                            <field name="m3"/>
-                        </group >
-
-                            <group >
-                            <field name="m2_m1"/>
-                            <field name="m3_m2"/>
-                            <field name="water_content"/>
-                            </group >
-                        </group>
-
-                    </sheet>
-                </form>
-
-                </field>
-            </record>
-
-
-             <record id="lab_atterberg_pl_line_form" model="ir.ui.view">
-                <field name="name">lab.atterberg.pl.line.form</field>
-                <field name="model">lab.atterberg.pl.line</field>
-                <field name="arch" type="xml">
-                <form>
-                    <sheet>
-
-                        <group >
-                            <group >
-                                <field name="serial_no"/>
-                                <field name="container_no"/>
-                            </group >
-
-                            
-                        <group >
-                            <field name="m1"/>
-                            <field name="m2"/>
-                            <field name="m3"/>
-                        </group >
-
-                            <group >
-                            <field name="m2_m1"/>
-                            <field name="m3_m2"/>
-                            <field name="water_content"/>
-                            </group >
-                        </group>
-
-                    </sheet>
-                </form>
-
-                </field>
-            </record> -->
+   
 
 
     </data>

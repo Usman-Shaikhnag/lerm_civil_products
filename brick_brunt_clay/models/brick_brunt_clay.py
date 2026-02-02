@@ -667,6 +667,7 @@ class MechanicalBricksBurntClay(models.Model):
     is_lab_efforescence = fields.Boolean(
         string="Lab Fine Selected",
         
+        
     )
     
     @api.onchange('selected_lab_brickclay4')
