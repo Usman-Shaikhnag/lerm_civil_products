@@ -17,6 +17,7 @@
 								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td> -->
 							</tr>
 
+
 							<tr>
 								<td colspan="3"><strong>Project Name</strong>: </td>
 								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
@@ -1045,38 +1046,44 @@
             </tbody>
           </table>
 
+
+
+
+
+
+
+
 		  <div style="margin-top:50px" class="noteContainer">
 						<table >
 							<tr>
 							
-								<td style="padding: 5px; font-style: italic; font-size: 14px; line-height: 13px;">
+								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
 									<b>Remarks:</b><br/><br/>
-									    1. + Refer to Annexure-I for environmental and test conditions<br/><br/>
-									    2. Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
-										G-Gravel, S-Sand, M-Silt, C-Clay, LL-Liquid Limit, PL-Plastic Limit, SL-Shrinkage Limit, NP-Non Plastic, NMC-Natural Moisture Content, UCS- Unconfined Compressive Strength,CBR- California Bearing Ratio Test<br/><br/>
-										UU-Unconsolidated Undrained, C-Cohesion, ɸ-Angle of Internal Friction, Pc-Preconsolidation Pressure, Cc-Compression Index, NP-Non-Plastic, MDD- Maximum dry density, OMC- Optimum moisture content, k = coefficient of permeability<br/><br/>
+									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
+									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
 
 									<b>Notes:-</b><br/><br/>
-								    	a. The information marked with an # received from customer<br/><br/>
-							        	b. ^ indicates insufficient quantity of processed sample to perform specific test<br/><br/>
-							        	c. If direct shear test indicates * it represents Consolidated Undrained (CU) test, if ** then it represents Consolidated Drained (CD) test, else it is Unconsolidated Undrained (UU) test<br/><br/>
-							        	d. If direct shear test indicates ### it represents Consolidated Undrained (CU) test with corrected area, if ## then it represents Consolidated Drained (CD) test with corrected area, # it represents Unconsolidated Undrained (UU) test with corrected area <br/><br/>
-										e. If CBR value indicate *, it represents Unsoaked CBR else it is soaked CBR<br/><br/>
-										f. If Proctor results indicate * it represents Heavy compaction, else it is Light compaction test <br/><br/>
-										g. If Permeability results indicate *, it represents Constant Head Test, else it is Falling Head test <br/><br/>
-										h. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
-										i. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
-										j. This document shall not be reproduced in part or full without the approval of Genstru<br/><br/>
+								    	<!-- a. The information marked with an # received from customer<br/><br/>
+							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
+							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
+							        	d. This document shall not be reproduced in part or full without the approval of Genstru. -->
 
-										<!-- <t t-if="data.notes_id">
+										<t t-if="data.notes_id">
 										<t t-foreach="data.notes_id" t-as="n">
 											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
-										</t> -->
-									<!-- </t> -->
+										</t>
+									</t>
 								</td>
 							</tr>
-							</table  >
+							</table>
 						</div>
+
+		 
+
+
+
+
+
 
 					<div class="signatureContainer girdgird">
 							<table style="width:100%; border:1px solid black; border-collapse:collapse; font-family:Arial; font-size:12px; text-align:center;">

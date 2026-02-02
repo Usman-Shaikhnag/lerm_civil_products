@@ -170,6 +170,9 @@ class Soil(models.Model):
             self.size_id = self.eln_ref.size_id.id
 
 
+            
+
+
     
 
     # Sieve Analysis
@@ -602,6 +605,13 @@ class Soil(models.Model):
 
 
 
+    
+    
+
+
+
+
+
 
 
 
@@ -656,12 +666,40 @@ class Soil(models.Model):
 
 
 
+
    #  Calculation-NMC, 
 
 
     NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
     nmc_visible = fields.Boolean(string="NMC Visible",compute="_compute_visible")
+    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+
+    start_date_mnc = fields.Date(string="Start Date")  # manually fill
+    end_date_mnc = fields.Date(string="End Date")      # auto fill on submit
+
+
+    @api.constrains('start_date_mnc')
+    def _check_start_date_mnc(self):
+        for rec in self:
+            if rec.start_date_mnc and rec.eln_ref.srf_date:
+                if rec.start_date_mnc < rec.eln_ref.srf_date:
+                    raise ValidationError(
+                        "Start Date cannot be earlier than SRF Date."
+                    )
+
+
+
+   
+    @api.onchange('eln_ref')
+    def compute_date_of_casting(self):
+        for record in self:
+            if record.eln_ref.sample_id:
+                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).date_casting
+                record.date_of_casting = sample_record
+            else:
+                record.date_of_casting = None
+
 
 
     show_sieve = fields.Boolean(default=False)
@@ -4590,14 +4628,6 @@ class SoilGSALINE(models.Model):
 
 
 
-
-
-
-
-
-    
-
-
   
 
 
@@ -4621,11 +4651,7 @@ class SoilSieveAnalysisLineGSA(models.Model):
     humidity = fields.Float("Humidity %" )
 
 
-   
 
-    
-
-    
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size")
     wt_retained = fields.Float(string="Soil Retained wt",digits=(12,3))
