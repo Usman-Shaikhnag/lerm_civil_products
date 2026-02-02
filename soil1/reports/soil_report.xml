@@ -1221,10 +1221,14 @@
 						</table>
 
 					<table border="1" width="100%" style="border-collapse: collapse;">
+					    <div style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+                             Grain Size Analysis
+						</div>
 
 						<thead>
 							<thead>
-								<tr>
+								<tr> 
+								
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Symbol</th>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">BH ID</th>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sample Depth (m)</th>
@@ -1280,6 +1284,7 @@
 
 					</table>
 
+
 					
 
 						<t t-if="data.gsa_graph_image">
@@ -1288,6 +1293,20 @@
                                  style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
                         </div>
                     </t>
+
+					<table class="table table-bordered" style="width: 100%; border: 1px solid black; margin-top: 20px;">
+						<tr>
+							<td style="width: 50%; border: 1px solid black;">
+								<div><strong>D<sub>10</sub> :</strong>  (Particle size at 10% percentage of finer)</div>
+								<div><strong>D<sub>30</sub> :</strong>  (Particle size at 30% percentage of finer)</div>
+								<div><strong>D<sub>60</sub> :</strong> (Particle size at 60% percentage of finer)</div>
+							</td>
+							<td style="width: 50%; border: 1px solid black;">
+								<div><strong>C<sub>u</sub> :</strong> (D<sub>60</sub> / D<sub>10</sub>) = </div>
+								<div><strong>C<sub>c</sub> :</strong> (D<sub>30</sub><sup>2</sup>) / (D<sub>60</sub> x D<sub>10</sub>) = </div>
+							</td>
+						</tr>
+					</table>
 
 					<table border="1" width="100%" style="border-collapse: collapse; text-align: center; font-size: 10px;">
 						<thead>
@@ -1340,7 +1359,9 @@
 
 
 					 <!-- Cbr -->
-                <t t-foreach="data.cbr_ids" t-as="cbr">
+                <!-- <t t-foreach="data.cbr_ids" t-as="cbr"> -->
+				<t t-foreach="data.cbr_ids.filtered(lambda c: c.is_checked)" t-as="cbr">
+
                  <div style="margin-top:100px; page-break-before: always;">
 				 
 					
@@ -1442,14 +1463,14 @@
 									<b>Start date of testing</b>
 								</td>
 								<td style="border:1px solid black; padding:4px;">
-									<span t-field="o.start_date" />
+									<span t-field="cbr.start_date" />
 								
 								</td>
 								<td style="border:1px solid black; padding:4px;">
 									<b>End date of testing</b>
 								</td>
 								<td style="border:1px solid black; padding:4px;">
-									<span t-field="o.end_date" style="margin-right:10px;"/>
+									<span t-field="cbr.end_date" style="margin-right:10px;"/>
 									
 								</td>
 							</tr>
@@ -1625,7 +1646,8 @@
 
 
                        <!-- Proctor -->
-						<t t-foreach="data.soil_light_heavy_ids" t-as="proctor">
+						<!-- <t t-foreach="data.soil_light_heavy_ids" t-as="proctor"> -->
+						<t t-foreach="data.soil_light_heavy_ids.filtered(lambda c: c.is_checked)" t-as="proctor">
                  <div style="margin-top:100px; page-break-before: always;">
 				 
 					
@@ -1719,7 +1741,7 @@
 									Starting Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.start_date" />
+										<span t-field="proctor.start_date" />
 								</td>
 							</tr>
 
@@ -1734,7 +1756,7 @@
 									Completion Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.end_date" />
+										<span t-field="proctor.end_date" />
 								</td>
 							</tr>
 
@@ -1816,7 +1838,8 @@
 
 
 						<!-- Swelling Pressure Test -->
-                <t t-foreach="data.swelling_pressure_ids" t-as="sweeling">
+                <!-- <t t-foreach="data.swelling_pressure_ids" t-as="sweeling"> -->
+				<t t-foreach="data.swelling_pressure_ids.filtered(lambda c: c.is_checked)" t-as="sweeling">
                  <div style="margin-top:100px; page-break-before: always;">
 				 
 					
@@ -1993,7 +2016,7 @@
 												<td style="border:1px solid black; padding:4px; text-align:center;">
 													<t t-esc="line.applied_pressure"/>
 												</td>
-												<td style="border:1px solid black; padding:4px; text-align:center; background-color:#ffff99;">
+												<td style="border:1px solid black; padding:4px; text-align:center; ">
 													<t t-esc="line.final_read"/>
 												</td>
 												<td style="border:1px solid black; padding:4px; text-align:center;">
@@ -2041,7 +2064,8 @@
 
 
 
-            <t t-foreach="data.direct_shear_line" t-as="direct">
+            <!-- <t t-foreach="data.direct_shear_line" t-as="direct"> -->
+			<t t-foreach="data.direct_shear_line.filtered(lambda c: c.is_checked)" t-as="direct">
                  <div style="margin-top:100px; page-break-before: always;">
 						<!-- 🔹 HEADER -->
 						<table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -2131,7 +2155,7 @@
 									Starting Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.start_date" />
+										<span t-field="direct.start_date" />
 								</td>
 							</tr>
 
@@ -2146,7 +2170,7 @@
 									Completion Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.end_date" />
+										<span t-field="direct.end_date" />
 								</td>
 							</tr>
 
@@ -2346,7 +2370,8 @@
 
 
 
-			<t t-foreach="data.triaxial_test_ids" t-as="triaxial">
+			<!-- <t t-foreach="data.triaxial_test_ids" t-as="triaxial"> -->
+			<t t-foreach="data.triaxial_test_ids.filtered(lambda c: c.is_checked)" t-as="triaxial">
                  <div style="margin-top:100px; page-break-before: always;">
 						<!-- 🔹 HEADER -->
 						<table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -2442,7 +2467,7 @@
 									Starting Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.start_date" />
+										<span t-field="triaxial.start_date" />
 								</td>
 							</tr>
 
@@ -2457,7 +2482,7 @@
 									Completion Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.end_date" />
+										<span t-field="triaxial.end_date" />
 								</td>
 							</tr>
 
@@ -2702,7 +2727,7 @@
 			</div>
 
 			<div style="margin-top:5px; text-align:center; font-weight:bold;">
-				Angle of internal friction  °  : = <span t-esc="direct.phi"/>
+				Angle of internal friction  °  : = <span t-esc="triaxial.phi"/>
 			</div>
 
 			</div>
@@ -2711,7 +2736,8 @@
 
 
 			<!-- Condition -->
-			<t t-foreach="data.consolidation_lines" t-as="consolidation">
+			<!-- <t t-foreach="data.consolidation_lines" t-as="consolidation"> -->
+			<t t-foreach="data.consolidation_lines.filtered(lambda c: c.is_checked)" t-as="consolidation">
                  <div style="margin-top:100px; page-break-before: always;">
 						<!-- 🔹 HEADER -->
 						<table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -2785,7 +2811,7 @@
 									Starting Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.start_date" />
+										<span t-field="consolidation.start_date" />
 								</td>
 							</tr>
 
@@ -2800,7 +2826,7 @@
 									Completion Date
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-										<span t-field="o.end_date" />
+										<span t-field="consolidation.end_date" />
 								</td>
 							</tr>
 
@@ -2944,13 +2970,13 @@
            
 
             <!-- 🔹 GRAPH -->
-            <!-- <t t-if="triaxial.mohr_graph">
+            <t t-if="consolidation.consolidation_graph">
 					<div style="text-align:center; margin-top:10px; width: 100%;">
-						<img t-att-src="'data:image/png;base64,%s' % triaxial.mohr_graph.decode('utf-8')"
+						<img t-att-src="'data:image/png;base64,%s' % consolidation.consolidation_graph.decode('utf-8')"
 							style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
 					</div>
 					
-				</t> -->
+				</t>
 
             <!-- 🔹 RESULT -->
             <div style="margin-top:20px; text-align:center; font-weight:bold;">
