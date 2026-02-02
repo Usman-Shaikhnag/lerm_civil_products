@@ -12,7 +12,6 @@ import matplotlib.ticker as ticker
 import io
 import base64
 from math import log10
-from datetime import date
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -78,35 +77,6 @@ class Soil(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     sample_id = fields.Many2one('lerm.srf.sample',string="Sample")
-
-    notes_id = fields.One2many('soil1.notes','parent_id',string="Notes")
-    
-    @api.model
-    def default_get(self, fields):
-        res = super(Soil, self).default_get(fields)
-
-        default_notes = [
-            (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
-            }),
-            (0, 0, {
-                'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
-            }),
-        ]
-
-        res['notes_id'] = default_notes
-        return res
-
 
     lab_id = fields.Char(
             string="Lab ID",
@@ -655,33 +625,6 @@ class Soil(models.Model):
 
     bulk_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
 
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    def action_submit(self):
-        self.ensure_one()
-        
-        # Boolean True save
-        self.write({
-            'end_date': fields.Date.context_today(self),  # current date auto fill
-        })
-        
-        # Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
-
-    
-    
-
-    @api.constrains('start_date')
-    def _check_start_date(self):
-        for rec in self:
-            if rec.start_date and rec.eln_ref.srf_date:
-                if rec.start_date < rec.eln_ref.srf_date:
-                    raise ValidationError(
-                        "Start Date cannot be earlier than SRF Date."
-                    )
-   
-
 
 
 
@@ -719,33 +662,6 @@ class Soil(models.Model):
     NMC_name = fields.Char( string="Name",default=" NMC" )
     moisture_ids = fields.One2many('soil.moisture','parent_id', string="Moisture Tests")
     nmc_visible = fields.Boolean(string="NMC Visible",compute="_compute_visible")
-    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
-
-    start_date_mnc = fields.Date(string="Start Date")  # manually fill
-    end_date_mnc = fields.Date(string="End Date")      # auto fill on submit
-
-
-    @api.constrains('start_date_mnc')
-    def _check_start_date_mnc(self):
-        for rec in self:
-            if rec.start_date_mnc and rec.eln_ref.srf_date:
-                if rec.start_date_mnc < rec.eln_ref.srf_date:
-                    raise ValidationError(
-                        "Start Date cannot be earlier than SRF Date."
-                    )
-
-
-
-    
-    @api.onchange('eln_ref')
-    def compute_date_of_casting(self):
-        for record in self:
-            if record.eln_ref.sample_id:
-                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).date_casting
-                record.date_of_casting = sample_record
-            else:
-                record.date_of_casting = None
-
 
 
     show_sieve = fields.Boolean(default=False)
@@ -802,10 +718,6 @@ class Soil(models.Model):
                     group[0].avg_nmc = avg  
 
                 i += 2
-            if not rec.end_date_mnc:
-                rec.write({
-                    'end_date_mnc': fields.Date.context_today(rec)
-                })
 
 
 
@@ -814,19 +726,6 @@ class Soil(models.Model):
     # specific gravity
     specific_gravity_name = fields.Char(string="Name",default=" SPECIFIC GRAVITY", )
     specific_gravity_visible = fields.Boolean( string="Specific Gravity Visible",default=True )
-
-    start_date_sg = fields.Date(string="Start Date")  # manually fill
-    end_date_sg = fields.Date(string="End Date")      # auto fill on submit
-
-
-    @api.constrains('start_date_sg')
-    def _check_start_date_sg(self):
-        for rec in self:
-            if rec.start_date_sg and rec.eln_ref.srf_date:
-                if rec.start_date_sg < rec.eln_ref.srf_date:
-                    raise ValidationError(
-                        "Start Date cannot be earlier than SRF Date."
-                    )
 
     # selected_lab_id12 = fields.Many2one(
     #     'lab.option.line',
@@ -891,10 +790,6 @@ class Soil(models.Model):
                     group[0].avg_corr_specific_gravity = avg  
 
                 i += 2
-            if not rec.end_date_sg:
-                rec.write({
-                    'end_date_sg': fields.Date.context_today(rec)
-                })
 
 
 
@@ -2881,7 +2776,8 @@ class Soil(models.Model):
       
         for record in self:
             record.sieve_visible = False
-            
+            # water_content_visible = False
+            # record.liquid_limit_visible = False
             record.plastic_limit_visible = False
             record.heavy_visible = False
             record.omc_visible = False
@@ -2972,7 +2868,11 @@ class Soil(models.Model):
                 if sample.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
                     record.consolidation_visible = True
 
-               
+                # if sample.internal_id == '98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r':
+                #     record.consolidation_pc_visible = True
+
+                # if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
+                #     record.angle_shear_visible = True
 
                 if sample.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
                     record.swelling_pressure_visible = True
@@ -3753,8 +3653,6 @@ class SoilCBRLine(models.Model):
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
-    
-
     penetration = fields.Float(string="Penetration in mm")
     proving_reading = fields.Float(string="Dial Guage Reading")
     no_division = fields.Float(string="Number of Division",compute="_compute_no_division", store=True,digits=(12,2))
@@ -4213,7 +4111,6 @@ class SoilBulkDensity(models.Model):
         for rec in self:
             rec.bulk_density = rec.wt_soil / rec.volume if rec.volume else 0.0  
 
-    
    
 
     @api.model
@@ -4253,8 +4150,6 @@ class SoilMoisture(models.Model):
 
     date = fields.Date(string="Date")
     lab_id = fields.Char(string='Lab ID')
-
-    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
 
     wet_soil_container = fields.Float(string='Weight of wet soil + container (gm)' )
     dry_soil_container = fields.Float( string='Weight of oven dry soil + container (gm)' )
@@ -4807,6 +4702,16 @@ class SoilSieveAnalysisLineGSA(models.Model):
                 record.cumulative_retained = 0.0
 
 
+    # --------------------------------------------------
+    # COMPUTE % PASSING
+    # --------------------------------------------------
+    # @api.depends('cumulative_retained')
+    # def _compute_passing_percent(self):
+    #     for record in self:
+    #         record.passing_percent = round(
+    #             100 - (record.cumulative_retained or 0.0),
+    #             3
+    #         )
 
 
 
@@ -5755,12 +5660,12 @@ class SwellingPressureUnloadingLine(models.Model):
 
     time_m = fields.Float(string="Time (Minutes)")
     load_8_0_4_0 = fields.Float(string="8.0-4.0" ,digits=(8,3))
-    load_4_0_8_0 = fields.Float(string="4.0-2.0" ,digits=(8,3))
-    load_2_0_4_0 = fields.Float(string="2.0-1.0" ,digits=(8,3))
-    load_1_0_2_0 = fields.Float(string="1.0-0.5" ,digits=(8,3))
-    load_0_5_1_0 = fields.Float(string="0.5-0.2" ,digits=(8,3))
-    load_0_2_0_5 = fields.Float(string="0.2-0.1" ,digits=(8,3))
-    load_0_1_0_2 = fields.Float(string="0.1-0.0" ,digits=(8,3))
+    load_4_0_8_0 = fields.Float(string="4.0-8.0" ,digits=(8,3))
+    load_2_0_4_0 = fields.Float(string="2.0-4.0" ,digits=(8,3))
+    load_1_0_2_0 = fields.Float(string="1.0-2.0" ,digits=(8,3))
+    load_0_5_1_0 = fields.Float(string="0.5-1.0" ,digits=(8,3))
+    load_0_2_0_5 = fields.Float(string="0.2-0.5" ,digits=(8,3))
+    load_0_1_0_2 = fields.Float(string="0.1-0.2" ,digits=(8,3))
     # load_0_05_0_1 = fields.Float(string="0.05-0.1",digits=(8,3))
     setting_load = fields.Float(string="Setting Load",digits=(8,3))
 
@@ -6776,8 +6681,8 @@ class LabAtterbergLlLine(models.Model):
     @api.model
     def create(self, vals):
         # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id_ll'):
-            existing_records = self.search([('parent_id_ll', '=', vals['parent_id_ll'])])
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
             if existing_records:
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
@@ -7137,7 +7042,64 @@ class DirectShearTestLine(models.Model):
     shear_stress = fields.Float(string="Shear stress (kg/sq.cm)" , digits=(8,3),compute="_compute_shear_stress" , store=True)
 
 
+    # @api.depends('serial_no', 'prove_ring_read','parent_id.shear_area','parent_id.shear_force_percent_change' , 'parent_id.non_corrected_area_shear')
+    # def _compute_all(self):
+    #     """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
+    #     for rec in self:
+    #         # 1) Horizontal dial (0,25,50,...)
+    #         if rec.serial_no <= 1:
+    #             horiz = 0.0
+    #         else:
+    #             horiz = 25.0 * (rec.serial_no - 1)
+    #         rec.horizontal_read = horiz
 
+    #         # 2) horizontal_dispalacement = horiz * B$23
+    #         horizontal_dispalacement = horiz * 0.01
+    #         rec.horizontal_dispalacement = horizontal_dispalacement
+
+    #         # 2) horizontal_dispalacement inv
+    #         horizontal_dispalacement_inv = horizontal_dispalacement / 10
+    #         rec.horizontal_dispalacement_inv = horizontal_dispalacement_inv
+
+    #         # 3) Corrected Area 
+    #         if rec.serial_no == 1:
+    #          area = rec.parent_id.shear_area
+    #          rec.corrected_area = area * (1 - (horizontal_dispalacement/6))
+        
+    #         # ROW 2+ : F2/(1+E3) → previous_corrected / (1 + current_inv)
+    #         elif rec.serial_no > 1:
+    #           prev_line = self.search([
+    #             ('parent_id', '=', rec.parent_id.id),
+    #             ('serial_no', '=', rec.serial_no - 1) ], limit=1)
+    #           if prev_line.corrected_area:
+    #             rec.corrected_area = prev_line.corrected_area * (1 - (horizontal_dispalacement_inv/6))
+
+    #          # 4) Non Corrected Area 
+    #         non_corrected = rec.parent_id.non_corrected_area_shear
+    #         rec.non_corrected_area = non_corrected
+
+    #         if rec.parent_id.area_type == 'corrected':
+    #           rec.selected_area = rec.corrected_area
+    #         else:
+    #           rec.selected_area = non_corrected 
+
+
+    #         # 5) HORIZONTAL SHEAR FORCE (kg) 
+    #         if rec.prove_ring_read:
+    #            rec.horizontal_shear = ((rec.prove_ring_read * 0.8555) + 9.6658) / 9.81
+    #         else:
+    #             rec.horizontal_shear = 0.0
+
+    #         # 6) HORIZONTAL SHEAR FORCE WITH TEMP CORRECTION (kg)
+    #         shear_force_parent_change = rec.parent_id.shear_force_percent_change or 0.0
+    #         if rec.horizontal_shear:
+    #            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * shear_force_parent_change)
+    #         else:
+    #            rec.horizontal_shear_temp = 0.0
+
+    #         # 7) SHEAR STRESS (kg/cm²) = temp_force / corrected_area
+    #         if rec.horizontal_shear_temp and rec.corrected_area:
+    #           rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area  # Final column ✓
 
     @api.depends('horizontal_read')
     def _compute_horizontal_displacement(self):
@@ -7382,31 +7344,6 @@ class LLLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
-    is_checked = fields.Boolean(
-        string="Calculated",
-        default=False
-    )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    
-    def action_submit(self):
-        self.ensure_one()
-        
-        # 1️⃣ Boolean True + End Date = current date
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),
-        })
-
-        # 2️⃣ Reset serial numbers of child lines (1,2,3...)
-        if self.ll_line_ids:
-            for index, line in enumerate(self.ll_line_ids.sorted(key=lambda r: r.id)):
-                line.serial_no = index + 1
-
-        # 3️⃣ Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
-
 
     ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
 
@@ -7544,7 +7481,20 @@ class LLLine(models.Model):
             else:
                 line.liquid_avg = 0.0
 
-   
+    def action_reset_sequence(self):
+        """
+        Button click kelyavar Serial No. 1 pasun parat set karel.
+        """
+        for rec in self:
+            # Lines la ID nusar sort karun loop firva
+            # sorted(key=lambda r: r.id) mule junya lines var aani navin khali rahtil
+            lines = rec.ll_line_ids.sorted(key=lambda r: r.id)
+            
+            for index, line in enumerate(lines):
+                # index 0 pasun start hoto, mhanun +1 kela (1, 2, 3...)
+                line.serial_no = index + 1
+
+    
 
     @api.model
     def create(self, vals):
@@ -7573,38 +7523,24 @@ class PLLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
-    is_checked = fields.Boolean(
-        string="Calculated",
-        default=False
-    )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    
-    def action_submit(self):
-        self.ensure_one()
-        
-        # 1️⃣ Boolean True + End Date = current date
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),
-        })
-
-        # 2️⃣ Reset serial numbers of child lines (1,2,3...)
-        if self.pl_line_ids:
-            for index, line in enumerate(self.pl_line_ids.sorted(key=lambda r: r.id)):
-                line.serial_no = index + 1
-
-        # 3️⃣ Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
-
-
 
     pl_line_ids = fields.One2many('lab.atterberg.pl.line', 'parent_id_ll',ondelete='cascade')
 
     plastic_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_plastic_avg")
 
-   
+    def action_reset_sequencepl(self):
+        """
+        Button click kelyavar Serial No. 1 pasun parat set karel.
+        """
+        for rec in self:
+            # Lines la ID nusar sort karun loop firva
+            # sorted(key=lambda r: r.id) mule junya lines var aani navin khali rahtil
+            lines = rec.pl_line_ids.sorted(key=lambda r: r.id)
+            
+            for index, line in enumerate(lines):
+                # index 0 pasun start hoto, mhanun +1 kela (1, 2, 3...)
+                line.serial_no = index + 1
+
 
     @api.depends('pl_line_ids.water_content')
     def _compute_plastic_avg(self):
@@ -7645,62 +7581,35 @@ class SLLine(models.Model):
 
     lab_id=  fields.Char(string="Lab ID" )
 
-    is_checked = fields.Boolean(
-        string="Calculated",
-        default=False
-    )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    
-    def action_submit(self):
-        self.ensure_one()
-        
-        # 🔹 Boolean True + End Date = current user date (timezone safe)
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),
-        })
-
-        # 🔹 Reset serial numbers of child lines
-        if self.sl_line_ids:
-            for index, line in enumerate(self.sl_line_ids.sorted(key=lambda r: r.id)):
-                line.serial_no = index + 1
-
-        # 🔹 Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
-
 
     sl_line_ids = fields.One2many('lab.atterberg.sl.line', 'parent_id_sl',ondelete='cascade')
 
-    shrinkage_avg = fields.Float( string='shrinkage Limit Avg %' , digits=(10,0) ,compute='_compute_shrinkage_avg',store=True,)
+    shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0))
+
+    def action_reset_sequencesl(self):
+        """
+        Button click kelyavar Serial No. 1 pasun parat set karel.
+        """
+        for rec in self:
+            # Lines la ID nusar sort karun loop firva
+            # sorted(key=lambda r: r.id) mule junya lines var aani navin khali rahtil
+            lines = rec.sl_line_ids.sorted(key=lambda r: r.id)
+            
+            for index, line in enumerate(lines):
+                # index 0 pasun start hoto, mhanun +1 kela (1, 2, 3...)
+                line.serial_no = index + 1
 
 
-    @api.depends('sl_line_ids.shrinkage_limit')
+    @api.depends('sl_line_ids.water_content')
     def _compute_shrinkage_avg(self):
         for line in self:
             if line.sl_line_ids:
-                vals = line.sl_line_ids.mapped("shrinkage_limit")
+                vals = line.sl_line_ids.mapped("water_content")
                 line.shrinkage_avg = sum(vals) / len(vals)
                 
 
             else:
                 line.shrinkage_avg = 0.0
-
-    # shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0))
-
-    
-
-    # @api.depends('sl_line_ids.water_content')
-    # def _compute_shrinkage_avg(self):
-    #     for line in self:
-    #         if line.sl_line_ids:
-    #             vals = line.sl_line_ids.mapped("water_content")
-    #             line.shrinkage_avg = sum(vals) / len(vals)
-                
-
-    #         else:
-    #             line.shrinkage_avg = 0.0
 
     
 
@@ -7729,26 +7638,6 @@ class permHeadLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-    is_checked = fields.Boolean(
-        string="Calculated",
-        default=False
-    )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    
-
-    def action_submit(self):
-        self.ensure_one()
-        
-        # Boolean True save
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
-        })
-        
-        # Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
@@ -7983,89 +7872,11 @@ class TriaxialShearLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-    is_checked = fields.Boolean(
-        string="Calculated",
-        default=False
-    )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    
-
-    def action_submit(self):
-        self.ensure_one()
-        
-        # Boolean True save
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
-        })
-        
-        # Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
-    bh_id = fields.Char(
-        string="BH ID",
-        compute="_compute_triaxial",
-        store=True
-    )
-
-    depth = fields.Char(
-        string="Depth (m)",
-        compute="_compute_triaxial",
-        store=True
-    )
-
-    # @api.depends('lab_id')
-    # def _compute_bh_id(self):
-    #     ReviewLine = self.env['sample.request.review.lines']
-
-    #     for line in self:
-    #         line.bh_id = False
-
-    #         if not line.lab_id:
-    #             continue
-
-    #         review_line = ReviewLine.search(
-    #             [('lab_id', '=', line.lab_id)],
-    #             order='id desc',
-    #             limit=1
-    #         )
-
-    #         if review_line:
-    #             line.bh_id = review_line.source
-    @api.depends('lab_id')
-    def _compute_triaxial(self):
-        ReviewLine = self.env['sample.request.review.lines']
-
-        for line in self:
-            line.bh_id = False
-            line.depth = False
-
-            if not line.lab_id:
-                continue
-
-            review_line = ReviewLine.search(
-                [('lab_id', '=', line.lab_id)],
-                order='id desc',
-                limit=1
-            )
-
-            if review_line:
-                line.bh_id = review_line.source        # BH ID / Location
-                line.depth = review_line.depth         # Depth (m)
-
-
-    
-
 
     dia_triaxial = fields.Float(string="Diameter (mm)", digits=(8, 1))
-
-    proving_triaxial = fields.Float(string="Proving Ring Capacity", digits=(8, 1))
-    least_count_triaxial = fields.Float(string="Least Count of dial guage", digits=(8, 1))
-    displacement_triaxial = fields.Float(string="Displacement Rate (mm/min)", digits=(8, 1))
     
 
     # Area automatically calculate hoil
@@ -8658,26 +8469,6 @@ class HeavyCompactionLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-    is_checked = fields.Boolean(
-        string="Calculated",
-        default=False
-    )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    
-
-    def action_submit(self):
-        self.ensure_one()
-        
-        # Boolean True save
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
-        })
-        
-        # Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
@@ -9137,26 +8928,6 @@ class USCNewLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-    is_checked = fields.Boolean(
-        string="Calculated",
-        default=False
-    )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    
-
-    def action_submit(self):
-        self.ensure_one()
-        
-        # Boolean True save
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
-        })
-        
-        # Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
@@ -9531,26 +9302,6 @@ class DrirectShearLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-    is_checked = fields.Boolean(
-        string="Calculated",
-        default=False
-    )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    
-
-    def action_submit(self):
-        self.ensure_one()
-        
-        # Boolean True save
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
-        })
-        
-        # Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
@@ -10887,26 +10638,6 @@ class SwellingPressureLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-    is_checked = fields.Boolean(
-        string="Calculated",
-        default=False
-    )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    
-
-    def action_submit(self):
-        self.ensure_one()
-        
-        # Boolean True save
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
-        })
-        
-        # Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
 
     lab_id=  fields.Char(string="Lab ID" )
 
@@ -11388,61 +11119,7 @@ class ConsolidationLine(models.Model):
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
-    is_checked = fields.Boolean(
-        string="Calculated",
-        default=False
-    )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    
-
-    def action_submit(self):
-        self.ensure_one()
-        
-        # Boolean True save
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
-        })
-        
-        # Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
-
     lab_id=  fields.Char(string="Lab ID" )
-    bh_id = fields.Char(
-        string="BH ID",
-        compute="_compute_consolidation",
-        store=True
-    )
-
-    depth = fields.Char(
-        string="Depth (m)",
-        compute="_compute_consolidation",
-        store=True
-    )
-
-    
-    @api.depends('lab_id')
-    def _compute_consolidation(self):
-        ReviewLine = self.env['sample.request.review.lines']
-
-        for line in self:
-            line.bh_id = False
-            line.depth = False
-
-            if not line.lab_id:
-                continue
-
-            review_line = ReviewLine.search(
-                [('lab_id', '=', line.lab_id)],
-                order='id desc',
-                limit=1
-            )
-
-            if review_line:
-                line.bh_id = review_line.source        # BH ID / Location
-                line.depth = review_line.depth         # Depth (m)
 
     consolidation_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     consolidation_diameter = fields.Float(string="Diameter, D", digits=(8,1))
@@ -11851,182 +11528,6 @@ class ConsolidationLine(models.Model):
 
 
     consolidation_output_ids = fields.One2many("consolidation.both.cycle.line", "parent_id_con_out", string="1st Cycle Loading	",default=lambda self: self.default_con_cycle_reading())
-    consolidation_graph = fields.Binary(
-        string="Consolidation Graph",
-        attachment=True
-    )
-
-
-   
-
-    # -------------------------------------------------
-    # GRAPH BUTTON (FINAL – AS PER YOUR LAST MESSAGE)
-    # -------------------------------------------------
-    # def action_generate_consolidation_graph(self):
-    #     self.ensure_one()
-
-    #     # 1️⃣ Loading ani Unloading Data Segregate kara
-    #     loading, unloading = [], []
-    #     last_p = 0
-    #     unload = False
-    #     for l in self.consolidation_output_ids.sorted('id'):
-    #         if not unload and l.applied_pressure >= last_p:
-    #             loading.append((l.applied_pressure, l.e_void))
-    #             last_p = l.applied_pressure
-    #         else:
-    #             unload = True
-    #             unloading.append((l.applied_pressure, l.e_void))
-
-    #     if not loading: return
-
-    #     # 2️⃣ Plotting suru kara
-    #     plt.figure(figsize=(9, 5))
-
-    #     # Loading Curve (BLACK)
-    #     p = np.array([x[0] for x in loading])
-    #     e = np.array([x[1] for x in loading])
-    #     plt.plot(p, e, '-ok', linewidth=1.5, markersize=5)
-
-    #     # Unloading Curve (BLACK)
-    #     if unloading:
-    #         pu = np.array([x[0] for x in unloading])
-    #         eu = np.array([x[1] for x in unloading])
-    #         plt.plot(pu, eu, '-ok', linewidth=1.5, markersize=5)
-
-    #         # 3️⃣ DON POINT JOIN KARA (Loading cha shevatchya aani Unloading cha pahila point)
-    #         # Hey don points ekmekanna joitle jatil
-    #         plt.plot([p[-1], pu[0]], [e[-1], eu[0]], '-k', linewidth=1.5)
-
-    #     # 4️⃣ Styling (Red lines remove kelya aahet)
-    #     plt.xscale('log')
-    #     plt.xlim(0.01, 10.00)
-    #     plt.ylim(0.65, 0.95)
-        
-    #     plt.xlabel("Pressure (kg/cm2)", fontweight='bold')
-    #     plt.ylabel("Void Ratio", fontweight='bold')
-    #     plt.grid(True, which="both", color='gray', linestyle='-', linewidth=0.3)
-        
-    #     # Tick Formatting
-    #     plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.2f'))
-    #     plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))
-
-    #     # 5️⃣ Save Image
-    #     buf = BytesIO()
-    #     plt.tight_layout()
-    #     plt.savefig(buf, format='png', dpi=160)
-    #     self.consolidation_graph = base64.b64encode(buf.getvalue())
-    #     buf.close()
-    #     plt.close()
-
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from io import BytesIO
-    import base64
-
-    import logging
-
-    _logger = logging.getLogger(__name__)
-
-    def action_generate_consolidation_graph(self):
-        self.ensure_one()
-
-        # 1️⃣ Loading ani Unloading Data Segregate करा
-        loading, unloading = [], []
-        last_p = 0
-        unload = False
-        
-        # consolidation_output_ids मधून डेटा घेणे
-        for l in self.consolidation_output_ids.sorted('id'):
-            if not unload and l.applied_pressure >= last_p:
-                loading.append((l.applied_pressure, l.e_void))
-                last_p = l.applied_pressure
-            else:
-                unload = True
-                unloading.append((l.applied_pressure, l.e_void))
-
-        if not loading:
-            return
-
-        # डेटा प्लॉट्ससाठी तयार करणे
-        p = np.array([x[0] for x in loading])
-        e = np.array([x[1] for x in loading])
-        log_p = np.log10(p)
-
-        plt.figure(figsize=(9, 5))
-
-        # Loading Curve (BLACK)
-        plt.plot(p, e, '-ok', linewidth=1.5, markersize=5)
-
-        # Unloading Curve (BLACK)
-        if unloading:
-            pu = np.array([x[0] for x in unloading])
-            eu = np.array([x[1] for x in unloading])
-            plt.plot(pu, eu, '-ok', linewidth=1.5, markersize=5)
-            # Loading चा शेवटचा आणि Unloading चा पहिला पॉइंट जोडणे
-            plt.plot([p[-1], pu[0]], [e[-1], eu[0]], '-k', linewidth=1.5)
-
-        # --- 2️⃣ CASAGRANDE CONSTRUCTION (RED LINES) ---
-        try:
-            # A) Max Curvature Point (Point A) शोधणे
-            dy = np.gradient(e, log_p)
-            ddy = np.gradient(dy, log_p)
-            idx = np.argmax(np.abs(ddy))
-            p_max, e_max = p[idx], e[idx]
-
-            # रेषांची लांबी ठरवण्यासाठी (X-axis च्या शेवटपर्यंत)
-            x_end = 10.0 
-
-            # B) Horizontal Line (आडवी लाल रेषा)
-            plt.hlines(y=e_max, xmin=p_max, xmax=x_end, colors='r', linewidth=1.2)
-
-            # C) Tangent Line (स्पर्शिका - पूर्ण लांबीची)
-            slope = dy[idx]
-            x_range = np.logspace(np.log10(p_max), np.log10(x_end), 100)
-            y_tangent = e_max + slope * (np.log10(x_range) - np.log10(p_max))
-            plt.plot(x_range, y_tangent, 'r-', linewidth=1.2)
-
-            # D) Bisector Line (कोन दुभाजक - पूर्ण लांबीची)
-            angle_tangent = np.arctan(slope)
-            bisector_slope = np.tan(angle_tangent / 2)
-            y_bisector = e_max + bisector_slope * (np.log10(x_range) - np.log10(p_max))
-            plt.plot(x_range, y_bisector, 'r-', linewidth=1.2)
-
-            # E) Virgin Compression Line (VCL) Extrapolation
-            # शेवटच्या दोन पॉइंट्सचा स्लोप घेऊन डावीकडे वाढवणे
-            vcl_slope = (e[-1] - e[-2]) / (np.log10(p[-1]) - np.log10(p[-2]))
-            # बायसेक्टरला छेदण्यासाठी मागे ओढणे
-            x_vcl = np.logspace(np.log10(p_max * 0.4), np.log10(p[-1]), 100)
-            y_vcl = e[-1] + vcl_slope * (np.log10(x_vcl) - np.log10(p[-1]))
-            plt.plot(x_vcl, y_vcl, 'r-', linewidth=1.2)
-
-            # F) Vertical Line for Pc (Pre-consolidation Pressure)
-            # ही व्हॅल्यू तुमच्या कॅल्क्युलेशन फील्ड मधून घ्या (उदा. self.pc_value)
-            pc_val = 0.90 # Temporary value
-            plt.vlines(x=pc_val, ymin=0.65, ymax=e_max, colors='r', linewidth=1.5)
-
-        except Exception as ex:
-            _logger.error("Error generating tangent lines: %s", ex)
-
-        # 3️⃣ Styling
-        plt.xscale('log')
-        plt.xlim(0.01, 10.00)
-        plt.ylim(0.65, 0.95)
-        
-        plt.xlabel("Pressure (kg/cm2)", fontweight='bold')
-        plt.ylabel("Void Ratio", fontweight='bold')
-        plt.grid(True, which="both", color='gray', linestyle='-', linewidth=0.3)
-        
-        # Tick Formatting
-        plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.2f'))
-        plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))
-
-        # 4️⃣ Save Image
-        buf = BytesIO()
-        plt.tight_layout()
-        plt.savefig(buf, format='png', dpi=160)
-        self.consolidation_graph = base64.b64encode(buf.getvalue())
-        buf.close()
-        plt.close()
 
     @api.model
     def default_con_cycle_reading(self):
@@ -12431,46 +11932,6 @@ class CbrLine(models.Model):
     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id",ondelete='cascade')
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-    is_checked = fields.Boolean(
-        string="Calculated",
-        default=False
-    )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    # def action_submit_line(self):
-    #     self.ensure_one()
-
-    #     # 1️⃣ Boolean True
-    #     self.write({
-    #         'is_checked': True,
-    #         'end_date': date.today(),  # current date auto fill
-    #     })
-
-    #     # 2️⃣ Parent form वर return / open
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'name': 'Soil Test',
-    #         'res_model': 'mechanical.soil1',
-    #         'view_mode': 'form',
-    #         'res_id': self.parent_id.id if self.parent_id else False,
-    #         'target': 'current',
-    #     }
-
-    def action_submit(self):
-        self.ensure_one()
-        
-        # Boolean True save
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
-        })
-        
-        # Close inline editor → Save-like back
-        return {'type': 'ir.actions.act_window_close'}
-
-
 
     initial_height = fields.Float(string="Initial height of specimen, h (mm)")
     initial_dial_guage = fields.Float(string="Initial dial gauge reading, ds (mm)")
@@ -12884,12 +12345,7 @@ class CbrLine(models.Model):
             record.serial_no = index + 1
 
 
-class SoilNote(models.Model):
-    _name = "soil1.notes"
 
-    parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
-    sr_no = fields.Char("Sr. No.")
-    notes = fields.Char("Notes")
 
 
 
