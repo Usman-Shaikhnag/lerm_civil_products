@@ -199,6 +199,9 @@ class Soil(models.Model):
             self.size_id = self.eln_ref.size_id.id
 
 
+            
+
+
     
 
     # Sieve Analysis
@@ -631,6 +634,13 @@ class Soil(models.Model):
 
 
 
+    
+    
+
+
+
+
+
 
 
 
@@ -685,6 +695,7 @@ class Soil(models.Model):
 
 
 
+
    #  Calculation-NMC, 
 
 
@@ -695,7 +706,7 @@ class Soil(models.Model):
 
 
 
-    
+   
     @api.onchange('eln_ref')
     def compute_date_of_casting(self):
         for record in self:
@@ -4630,14 +4641,6 @@ class SoilGSALINE(models.Model):
 
 
 
-
-
-
-
-
-    
-
-
   
 
 
@@ -4661,11 +4664,7 @@ class SoilSieveAnalysisLineGSA(models.Model):
     humidity = fields.Float("Humidity %" )
 
 
-   
 
-    
-
-    
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size")
     wt_retained = fields.Float(string="Soil Retained wt",digits=(12,3))

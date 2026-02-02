@@ -223,6 +223,8 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
+
+
     # Crushing Value 
 
     temp_crushing_value = fields.Char(string="Temp.°C")
@@ -2830,6 +2832,7 @@ class CoarseAggregateMechanical(models.Model):
                 parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
+
 
 
     def get_all_fields(self):

@@ -674,6 +674,7 @@ class GgbsMechanical(models.Model):
             ]) else 0.0
 
 
+
             # rec.submit_mode = True
 
 
