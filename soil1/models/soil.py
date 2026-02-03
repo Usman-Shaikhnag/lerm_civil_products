@@ -248,8 +248,7 @@ class Soil(models.Model):
                 if 0 <= size_mm < 0.002:
                     total += line.passing_percent or 0.0
 
-            record.silt_clay = total  # Use a separate field for clay fraction
-
+            record.silt_clay = total  
 
     @api.depends('sieve_analysis_child_lines.passing_percent', 'sieve_analysis_child_lines.sieve_size')
     def _compute_silt(self):
@@ -1103,45 +1102,6 @@ class Soil(models.Model):
 
     
 
-
-
-
-    # plastic_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_plastic_avg")
-
-
-    # @api.depends('pl_line_ids.water_content')
-    # def _compute_plastic_avg(self):
-    #     for line in self:
-    #         if line.pl_line_ids:
-    #             vals = line.pl_line_ids.mapped("water_content")
-    #             line.plastic_avg = sum(vals) / len(vals)
-                
-
-    #         else:
-    #             line.plastic_avg = 0.0
-
-
-
-     
-    # shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0),compute="_compute_shrinkage_avg")
-
-
-    # @api.depends('sl_line_ids.water_content')
-    # def _compute_shrinkage_avg(self):
-    #     for line in self:
-    #         if line.sl_line_ids:
-    #             vals = line.sl_line_ids.mapped("water_content")
-    #             line.shrinkage_avg = sum(vals) / len(vals)
-                
-
-    #         else:
-    #             line.shrinkage_avg = 0.0
-
-           
-
-
-
-
     # === CASAGRANDE GRAPH FIELD ===
     casagrande_graph = fields.Binary("Casagrande Graph", compute="_compute_casagrande_graph", store=True)
     
@@ -1806,22 +1766,9 @@ class Soil(models.Model):
             if record.cbr_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
-
+         
    
     
-
-
-
-
 
        # FSI
     fsi_name = fields.Char("Name",default="Free Swell Index")
@@ -1948,8 +1895,7 @@ class Soil(models.Model):
             record.permeability_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-228aacf04965')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-228aacf04965')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
+            
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
@@ -2245,22 +2191,7 @@ class Soil(models.Model):
 
     gsa_child_lines = fields.One2many('mechanical.gsa.line','parent_id')
 
-    # --- Button Action Logic ---
-    # def action_fetch_review_details(self):
-    #     # Loop through all child lines
-    #     for line in self.gsa_child_lines:
-    #         if line.lab_no:
-    #             # Search in Sample Request Review Lines
-    #             source_line = self.env['sample.request.review.lines'].search([
-    #                 ('lab_id', '=', line.lab_no)
-    #             ], limit=1)
-
-    #             if source_line:
-    #                 # Update line values
-    #                 line.bh_id = source_line.source
-    #                 line.sample_depth = source_line.depth
-    #                 line.sample_details = source_line.sample_details
-    #                 line.wt_of_samp = source_line.weight
+  
 
     def action_fetch_review_details(self):
         # Loop through all child lines (GSA Lines)
@@ -2269,7 +2200,7 @@ class Soil(models.Model):
                 # ---------------------------------------------------------
                 # 1. Fetch from Sample Request Review (Existing Logic)
                 # ---------------------------------------------------------
-                # Ithe 'lab_id' barobar aahe karan 'sample.request.review.lines' madhe 'lab_id' field aahe.
+                
                 source_line = self.env['sample.request.review.lines'].search([
                     ('lab_id', '=', line.lab_no)
                 ], limit=1)
@@ -2431,22 +2362,15 @@ class Soil(models.Model):
             if record.gsa_child_lines:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
 
     
+
+
 
     gsa_graph_image = fields.Binary(
         string="GSA Graph Image",
         attachment=True,
-        help="Grain Size Analysis चा तयार केलेला आलेख."
+        help="Grain Size Analysis 
     )
     gsa_graph_filename = fields.Char(
         string="Graph Filename",
@@ -2492,7 +2416,7 @@ class Soil(models.Model):
             ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
 
             # --- MARKER LIST ---
-            # He symbols sequence ne vaparle jatil
+           
             marker_cycle = itertools.cycle(['^', '*', 'D', 'x', 'o', 's', 'v', '+'])
          
             # 6. Plot Data
@@ -2506,7 +2430,7 @@ class Soil(models.Model):
                     current_marker = next(marker_cycle)
 
                     # --- CHANGE HERE: Save Symbol to Odoo Field ---
-                    # Jo marker graph sathi niwdla ahe, to 'symbol' field madhe save kara
+                   
                     sample.symbol = current_marker
                     # ----------------------------------------------
 
@@ -2551,15 +2475,7 @@ class Soil(models.Model):
             record.gsa_graph_image = base64.b64encode(buffer.read())
             buffer.close()
 
-        # return {
-        #     'type': 'ir.actions.act_window',
-        #     'name': 'Soil Form',
-        #     'res_model': 'mechanical.soil1',
-        #     'res_id': record.id,
-        #     'view_mode': 'form',
-        #     'target': 'current',
-        # }
-
+    
     
 
          # DETERMINATION OF CONSOLIDATION PROPERTIES		
@@ -2595,16 +2511,7 @@ class Soil(models.Model):
             if record.consolidation_lines:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
-
+           
     
 
 
@@ -2644,18 +2551,7 @@ class Soil(models.Model):
             if record.swelling_pressure_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
-
-
-
+           
 
 
 
@@ -2696,16 +2592,7 @@ class Soil(models.Model):
             if record.permeability_falling_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
-
+          
     
 
 
@@ -2748,22 +2635,9 @@ class Soil(models.Model):
             if record.triaxial_test_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
+          
 
     
-
-
-
-
-
 
 
     #  DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION	
@@ -8017,24 +7891,7 @@ class TriaxialShearLine(models.Model):
         store=True
     )
 
-    # @api.depends('lab_id')
-    # def _compute_bh_id(self):
-    #     ReviewLine = self.env['sample.request.review.lines']
-
-    #     for line in self:
-    #         line.bh_id = False
-
-    #         if not line.lab_id:
-    #             continue
-
-    #         review_line = ReviewLine.search(
-    #             [('lab_id', '=', line.lab_id)],
-    #             order='id desc',
-    #             limit=1
-    #         )
-
-    #         if review_line:
-    #             line.bh_id = review_line.source
+   
     @api.depends('lab_id')
     def _compute_triaxial(self):
         ReviewLine = self.env['sample.request.review.lines']
@@ -8090,22 +7947,19 @@ class TriaxialShearLine(models.Model):
     start_date_traxial = fields.Date(string="Starting Date")
 
     # --- CALCULATION LOGIC ---
-    # --- CALCULATION LOGIC ---
+  
     @api.depends('dia_triaxial', 'height_triaxial')
     def _compute_triaxial_details1(self):
         for record in self:
             # 1. Area Calculation (Result: 11.34 cm² for 38mm dia)
             if record.dia_triaxial:
-                # Formula: (PI / 4) * d^2
-                # Result mm² madhe ahe, tyala cm² madhe karayla 100 ne divide kara
+               
                 area_mm2 = (math.pi / 4) * (record.dia_triaxial * record.dia_triaxial)
                 record.area1_triaxial = area_mm2  # Convert to cm²
             else:
                 record.area1_triaxial = 0.0
             
-            # 2. Volume Calculation
-            # Area (cm²) * Height (mm) -> Unit mismatch hoto
-            # Height la cm madhe convert karava lagel (divide by 10)
+            
             if record.area1_triaxial and record.height_triaxial:
                 height_cm = record.height_triaxial 
                 volume_cm3 = record.area1_triaxial * height_cm
@@ -8183,25 +8037,24 @@ class TriaxialShearLine(models.Model):
             vals['m'] = ((mass_after - mass_dry) / mass_dry) * 100
         
         # 2. Bulk Density Calculation
-        # Tumcha formula: mass_before / (volume / 1000)
-        # Volume mm³ to cm³ conversion (divide by 1000)
+       
         if volume > 0:
             vol_cc = volume / 1000.0  # Convert mm³ to cm³
             vals['bd'] = mass_before / vol_cc
             
         # 3. Dry Density Calculation
-        # Formula: Bulk Density / (1 + moisture/100)
+       
         w_decimal = vals['m'] / 100.0
         if (1 + w_decimal) > 0:
             vals['dd'] = vals['bd'] / (1 + w_decimal)
             
         # 4. Void Ratio Calculation
-        # Formula: (G / Dry Density) - 1
+       
         if vals['dd'] > 0:
             vals['e'] = (G / vals['dd']) - 1
             
         # 5. Saturation Calculation
-        # Formula: (w * G) / e * 100
+    
         if vals['e'] > 0:
             vals['sr'] = (w_decimal * G) / vals['e'] * 100
             
@@ -8277,9 +8130,7 @@ class TriaxialShearLine(models.Model):
             
             # NOTE: Void Ratio aani Saturation cha avg calculate kelela nahi.
 
-    # proving_ring_constant = fields.Float(string="Proving Ring Constant (K)", default=1.0, digits=(10, 3))
-    
-    # Line connection
+  
     triaxial_test_line_ids = fields.One2many('triaxial.test.line', 'parent_id_triaxial', string="Test Lines")
 
     temp_triaxial = fields.Float("Room Temp" )
@@ -8307,15 +8158,11 @@ class TriaxialShearLine(models.Model):
     @api.depends('temp_triaxial', 'std_temp_triaxial_test', 'humidity_triaxial_test')
     def _compute_temp_corrections(self):
         for rec in self:
-            # 1. Rise/Fall Calculation
-            # Formula: Room Temp - Std Temp
-            # (temp_triaxial - std_temp_triaxial_test)
+          
             diff = rec.temp_triaxial - rec.std_temp_triaxial_test
             rec.rise_fall_triaxial_test = diff
             
-            # 2. Rise Force Calculation
-            # Formula: Correction Factor * Rise/Fall
-            # (humidity_triaxial_test * rise_fall_triaxial_test)
+          
             rec.rise_force_triaxial_test = rec.humidity_triaxial_test * diff
 
     cell_pressure1 = fields.Float(string="Cell Pressure (kg/cm²)",digits=(10, 2),default= 0.5)
@@ -8457,7 +8304,7 @@ class TriaxialShearLine(models.Model):
 
         rec.q_stress1 = round((effect_norm_stress1 - cell_pressure1) / 2, 2)
         
-        # Excel: X = σ3 + q
+      
         rec.x_axis1 = round(cell_pressure1 + rec.q_stress1, 3)
 
 
@@ -8472,7 +8319,7 @@ class TriaxialShearLine(models.Model):
 
         rec.q_stress2 = round((effect_norm_stress2 - cell_pressure2) / 2, 2)
         
-        # Excel: X = σ3 + q
+     
         rec.x_axis2 = round(cell_pressure2 + rec.q_stress2, 3)
 
     x_axis3 = fields.Float(string="X-Axis (σ₃ + q)",digits=(10, 3), compute="_compute_p_q_x_y3",store=True)
@@ -8485,7 +8332,7 @@ class TriaxialShearLine(models.Model):
 
         rec.q_stress3 = round((effect_norm_stress3 - cell_pressure3) / 2, 2)
         
-        # Excel: X = σ3 + q
+       
         rec.x_axis3 = round(cell_pressure3 + rec.q_stress3, 3)
 
 
@@ -8692,24 +8539,7 @@ class HeavyCompactionLine(models.Model):
         store=True
     )
 
-    # @api.depends('lab_id')
-    # def _compute_bh_id(self):
-    #     ReviewLine = self.env['sample.request.review.lines']
-
-    #     for line in self:
-    #         line.bh_id = False
-
-    #         if not line.lab_id:
-    #             continue
-
-    #         review_line = ReviewLine.search(
-    #             [('lab_id', '=', line.lab_id)],
-    #             order='id desc',
-    #             limit=1
-    #         )
-
-    #         if review_line:
-    #             line.bh_id = review_line.source
+    
     @api.depends('lab_id')
     def _compute_proctor(self):
         ReviewLine = self.env['sample.request.review.lines']
@@ -8798,23 +8628,6 @@ class HeavyCompactionLine(models.Model):
         rec.mdd = round(max_point[1], 2)
         rec.omc = round(max_point[0], 2)
 
-        
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
 
 
     def action_calculate_avg_moisture(self):
@@ -8849,136 +8662,7 @@ class HeavyCompactionLine(models.Model):
 
 
 
-#     def generate_compaction_curve(self):
-#      self.ensure_one()
 
-#      lines = self.soil_light_heavy_lines.filtered(
-#         lambda l: l.moisture_content and l.dry_density
-#     )
-#      if len(lines) < 3:
-#         return False
-
-#     # Sort & remove duplicates
-#      points = sorted(
-#         {(float(l.moisture_content), float(l.dry_density)) for l in lines},
-#         key=lambda p: p[0]
-#      )
-#      if len(points) < 3:
-#         return False
-
-#      x_vals = np.array([p[0] for p in points])
-#      y_vals = np.array([p[1] for p in points])
-
-#      # Maximum Dry Density & OMC
-#      max_idx = np.argmax(y_vals)
-#      max_density = y_vals[max_idx]
-#      omc = x_vals[max_idx]
-
-#     #  from scipy.interpolate import CubicSpline
-#     #  cs = CubicSpline(x_vals, y_vals, bc_type='natural')
-#     #  x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
-#     #  y_smooth = cs(x_smooth)
-
-#     # ---- Quadratic Polynomial Fit (EXACT Excel behavior) ----
-#      coeffs = np.polyfit(x_vals, y_vals, 2)
-#      poly = np.poly1d(coeffs)
-
-#      x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
-#      y_smooth = poly(x_smooth)
-
-# # ---- TRUE Maximum from Polynomial ----
-#      a, b, c = coeffs
-#      omc = -b / (2 * a)
-#      max_density = poly(omc)
-
-
-#      import matplotlib
-#      matplotlib.use('Agg')
-#      import matplotlib.pyplot as plt
-#      from io import BytesIO
-#      import base64
-
-#      fig, ax = plt.subplots(figsize=(10, 5), dpi=110)
-
-#     # ---- Smooth Curve ----
-#      ax.plot(
-#         x_smooth, y_smooth,
-#         color='#0b2c5d', linewidth=2
-#      )
-
-#     # ---- Square Data Points ----
-#      ax.scatter(
-#         x_vals, y_vals,
-#         marker='s', s=60,
-#         facecolor='#4f81bd',
-#         edgecolor='#1f4e79',
-#         zorder=5
-#     )
-
-#     # ---- Yellow Max Density Line ----
-#      ax.axhline(
-#         y=max_density,
-#         color='#f1c232',
-#         linewidth=2
-#     )
-
-#     # ---- Green OMC Line ----
-#      ax.axvline(
-#         x=omc,
-#         color='#00a651',
-#         linewidth=2
-#     )
-
-#     # ---- Red Peak Marker ----
-#      ax.scatter(
-#         [omc], [max_density],
-#         marker='^',
-#         s=130,
-#         color='red',
-#         zorder=6
-#     )
-
-#     # ---- Axis Limits & Ticks (EXACT LIKE IMAGE) ----
-#      ax.set_xlim(5, 40)
-#      ax.set_ylim(0.8, 1.7)
-
-#      ax.set_xticks([5, 10, 15, 20, 25, 30, 35, 40])
-#      ax.set_yticks([0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7])
-
-#     # ---- Labels ----
-#      ax.set_xlabel('Moisture Content (%)', fontsize=11, fontweight='bold')
-#      ax.set_ylabel('Dry Density (gm/cc)', fontsize=11, fontweight='bold')
-
-#     # ---- Title ----
-#      ax.set_title(
-#         'Moisture Density Test Results',
-#         fontsize=13,
-#         fontweight='bold',
-#         pad=15
-#     )
-
-#     # ---- No Grid (as per image) ----
-#      ax.grid(False)
-
-#     # ---- Thick Black Border ----
-#      for spine in ax.spines.values():
-#         spine.set_linewidth(2)
-#         spine.set_color('black')
-
-#     # ---- Export ----
-#      buf = BytesIO()
-#      fig.tight_layout()
-#      fig.savefig(
-#         buf,
-#         format='png',
-#         dpi=110,
-#         bbox_inches='tight',
-#         facecolor='white'
-#     )
-#      plt.close(fig)
-#      buf.seek(0)
-
-#      return base64.b64encode(buf.read())
 
     def generate_compaction_curve(self):
      self.ensure_one()
@@ -9038,8 +8722,7 @@ class HeavyCompactionLine(models.Model):
         linewidth=2
     )
 
-    # ❌ REMOVE BLUE POINTS (DO NOT PLOT THEM)
-    # ax.scatter(x_vals, y_vals, ...)
+
 
     # --------------------------------------------------
     # 5. REFERENCE LINES & PEAK
@@ -9140,8 +8823,8 @@ class USCNewLine(models.Model):
         string="Calculated",
         default=False
     )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
+    start_date = fields.Date(string="Start Date") 
+    end_date = fields.Date(string="End Date")     
 
     
 
@@ -9151,7 +8834,7 @@ class USCNewLine(models.Model):
         # Boolean True save
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
+            'end_date': fields.Date.context_today(self), 
         })
         
         # Close inline editor → Save-like back
@@ -10645,114 +10328,7 @@ class DrirectShearLine(models.Model):
 
 
 
-    # def action_generate_shear_graph_4(self):
-    #  for rec in self:
-
-    #     rec.shear_graph_image_4 = False
-
-    #     # ===== DATA =====
-    #     x_vals = [
-    #         rec.normal_stress,
-    #         rec.normal_stress_2,
-    #         rec.normal_stress_3,
-    #     ]
-    #     y_vals = [
-    #         rec.shear_test_final1,
-    #         rec.shear_test_final2,
-    #         rec.shear_test_final3,
-    #     ]
-
-    #     pairs = [(x, y) for x, y in zip(x_vals, y_vals) if x and y]
-    #     if len(pairs) < 2:
-    #         continue
-
-    #     pairs.sort(key=lambda p: p[0])
-    #     x, y = zip(*pairs)
-
-    #     # ===== LINEAR REGRESSION =====
-    #     n = len(x)
-    #     sum_x = sum(x)
-    #     sum_y = sum(y)
-    #     sum_xy = sum(xi * yi for xi, yi in zip(x, y))
-    #     sum_x2 = sum(xi * xi for xi in x)
-
-    #     slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x ** 2)
-    #     intercept = (sum_y - slope * sum_x) / n
-
-    #     y_fit = [slope * xi + intercept for xi in x]
-
-    #     # ===== R² =====
-    #     y_mean = sum_y / n
-    #     ss_tot = sum((yi - y_mean) ** 2 for yi in y)
-    #     ss_res = sum((yi - yfi) ** 2 for yi, yfi in zip(y, y_fit))
-    #     r_squared = 1 - (ss_res / ss_tot)
-
-    #     # ===== TRENDLINE RANGE =====
-    #     x_min = min(x)
-    #     x_max = max(x)
-    #     x_line = [x_min, x_max]
-    #     y_line = [slope * xi + intercept for xi in x_line]
-
-    #     # ===== PLOT =====
-    #     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
-
-    #     # Excel blue data line + markers
-    #     ax.plot(
-    #         x, y,
-    #         color='#4472C4',
-    #         marker='o',
-    #         markersize=6,
-    #         linewidth=2.5
-    #     )
-
-    #     # Black trendline
-    #     ax.plot(
-    #         x_line, y_line,
-    #         color='black',
-    #         linewidth=1.6
-    #     )
-
-    #     # Labels
-    #     ax.set_xlabel("Normal stress, kg/sq.cm", fontsize=11)
-    #     ax.set_ylabel("Shear Stress, kg/sq.cm", fontsize=11)
-    #     ax.set_title("Shear Stress Vs Normal Stress", fontsize=13)
-    #     # ===== EXCEL-LIKE X AXIS =====
-    #     ax.set_xlim(0, 1.6)                      # Axis starts at 0
-    #     ax.set_xticks(np.arange(0, 1.61, 0.2))
-
-    #     # Axis limits (Excel-like)
-    #     # ax.set_xlim(x_min, x_max)
-    #     ax.set_ylim(0, max(y) * 1.15)
-
-    #     # Vertical gridlines only
-    #     ax.xaxis.grid(True, color='#BFBFBF', linewidth=0.8)
-    #     ax.yaxis.grid(False)
-
-    #     # Excel-like border
-    #     for spine in ax.spines.values():
-    #         spine.set_color('#7F7F7F')
-    #         spine.set_linewidth(1)
-
-    #     ax.tick_params(labelsize=10)
-
-    #     # Equation text (positioned like Excel)
-    #     eq_text = f"y = {slope:.4f}x + {intercept:.4f}\nR² = {r_squared:.4f}"
-    #     ax.text(
-    #         x_min + (x_max - x_min) * 0.35,
-    #         max(y) * 0.78,
-    #         eq_text,
-    #         fontsize=10
-    #     )
-
-    #     # ===== SAVE IMAGE =====
-    #     buffer = BytesIO()
-    #     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
-    #     buffer.seek(0)
-
-    #     rec.shear_graph_image_4 = base64.b64encode(buffer.read())
-
-    #     buffer.close()
-    #     plt.close(fig)
+   
 
     def action_generate_shear_graph_4(self):
      for rec in self:
@@ -10841,14 +10417,7 @@ class DrirectShearLine(models.Model):
 
         ax.tick_params(labelsize=10)
 
-        # Equation text
-        # eq_text = f"y = {slope:.4f}x + {intercept:.4f}\nR² = {r_squared:.4f}"
-        # ax.text(
-        #     0.35 * x_max,
-        #     max(y) * 0.78,
-        #     eq_text,
-        #     fontsize=10
-        # )
+      
 
         # ===== SAVE IMAGE =====
         buffer = BytesIO()
@@ -10936,8 +10505,7 @@ class SwellingPressureLine(models.Model):
                 line.depth = review_line.depth         # Depth (m)
 
 
-    # room_temp_proctor = fields.Float(string="Room Temp.°C" )
-    # humidity_proctor = fields.Float(string="Humidity %" )
+    
 
     swelling_specific_gravity = fields.Float(string="Specific Gravity, G" , digits=(8,3))
     swelling_diameter = fields.Float(string="Diameter, D", digits=(8,1))
@@ -11593,9 +11161,7 @@ class ConsolidationLine(models.Model):
     consolidation_graph_1_2 = fields.Binary(string="Graph 0.1-0.2")
     consolidation_graph_2_5 = fields.Binary(string="Graph 0.2-0.5")
     consolidation_graph_5_10 = fields.Binary(string="Graph 0.5-1.0")
-    # consolidation_graph_10_20 = fields.Binary(string="Graph 1.0-2.0")
-    # consolidation_graph_20_40 = fields.Binary(string="Graph 2.0-4.0")
-    # consolidation_graph_40_80 = fields.Binary(string="Graph 4.0-8.0")
+   
 
 
 
@@ -11858,64 +11424,8 @@ class ConsolidationLine(models.Model):
 
    
 
-    # -------------------------------------------------
-    # GRAPH BUTTON (FINAL – AS PER YOUR LAST MESSAGE)
-    # -------------------------------------------------
-    # def action_generate_consolidation_graph(self):
-    #     self.ensure_one()
 
-    #     # 1️⃣ Loading ani Unloading Data Segregate kara
-    #     loading, unloading = [], []
-    #     last_p = 0
-    #     unload = False
-    #     for l in self.consolidation_output_ids.sorted('id'):
-    #         if not unload and l.applied_pressure >= last_p:
-    #             loading.append((l.applied_pressure, l.e_void))
-    #             last_p = l.applied_pressure
-    #         else:
-    #             unload = True
-    #             unloading.append((l.applied_pressure, l.e_void))
 
-    #     if not loading: return
-
-    #     # 2️⃣ Plotting suru kara
-    #     plt.figure(figsize=(9, 5))
-
-    #     # Loading Curve (BLACK)
-    #     p = np.array([x[0] for x in loading])
-    #     e = np.array([x[1] for x in loading])
-    #     plt.plot(p, e, '-ok', linewidth=1.5, markersize=5)
-
-    #     # Unloading Curve (BLACK)
-    #     if unloading:
-    #         pu = np.array([x[0] for x in unloading])
-    #         eu = np.array([x[1] for x in unloading])
-    #         plt.plot(pu, eu, '-ok', linewidth=1.5, markersize=5)
-
-    #         # 3️⃣ DON POINT JOIN KARA (Loading cha shevatchya aani Unloading cha pahila point)
-    #         # Hey don points ekmekanna joitle jatil
-    #         plt.plot([p[-1], pu[0]], [e[-1], eu[0]], '-k', linewidth=1.5)
-
-    #     # 4️⃣ Styling (Red lines remove kelya aahet)
-    #     plt.xscale('log')
-    #     plt.xlim(0.01, 10.00)
-    #     plt.ylim(0.65, 0.95)
-        
-    #     plt.xlabel("Pressure (kg/cm2)", fontweight='bold')
-    #     plt.ylabel("Void Ratio", fontweight='bold')
-    #     plt.grid(True, which="both", color='gray', linestyle='-', linewidth=0.3)
-        
-    #     # Tick Formatting
-    #     plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.2f'))
-    #     plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))
-
-    #     # 5️⃣ Save Image
-    #     buf = BytesIO()
-    #     plt.tight_layout()
-    #     plt.savefig(buf, format='png', dpi=160)
-    #     self.consolidation_graph = base64.b64encode(buf.getvalue())
-    #     buf.close()
-    #     plt.close()
 
     import numpy as np
     import matplotlib.pyplot as plt
@@ -11929,12 +11439,12 @@ class ConsolidationLine(models.Model):
     def action_generate_consolidation_graph(self):
         self.ensure_one()
 
-        # 1️⃣ Loading ani Unloading Data Segregate करा
+        # 1️⃣ Loading ani Unloading Data Segregate
         loading, unloading = [], []
         last_p = 0
         unload = False
         
-        # consolidation_output_ids मधून डेटा घेणे
+        # consolidation_output_ids 
         for l in self.consolidation_output_ids.sorted('id'):
             if not unload and l.applied_pressure >= last_p:
                 loading.append((l.applied_pressure, l.e_void))
@@ -11946,7 +11456,7 @@ class ConsolidationLine(models.Model):
         if not loading:
             return
 
-        # डेटा प्लॉट्ससाठी तयार करणे
+       
         p = np.array([x[0] for x in loading])
         e = np.array([x[1] for x in loading])
         log_p = np.log10(p)
@@ -11961,45 +11471,44 @@ class ConsolidationLine(models.Model):
             pu = np.array([x[0] for x in unloading])
             eu = np.array([x[1] for x in unloading])
             plt.plot(pu, eu, '-ok', linewidth=1.5, markersize=5)
-            # Loading चा शेवटचा आणि Unloading चा पहिला पॉइंट जोडणे
             plt.plot([p[-1], pu[0]], [e[-1], eu[0]], '-k', linewidth=1.5)
 
         # --- 2️⃣ CASAGRANDE CONSTRUCTION (RED LINES) ---
         try:
-            # A) Max Curvature Point (Point A) शोधणे
+            # A) Max Curvature Point (Point A) 
             dy = np.gradient(e, log_p)
             ddy = np.gradient(dy, log_p)
             idx = np.argmax(np.abs(ddy))
             p_max, e_max = p[idx], e[idx]
 
-            # रेषांची लांबी ठरवण्यासाठी (X-axis च्या शेवटपर्यंत)
+        
             x_end = 10.0 
 
-            # B) Horizontal Line (आडवी लाल रेषा)
+            # B) Horizontal Line 
             plt.hlines(y=e_max, xmin=p_max, xmax=x_end, colors='r', linewidth=1.2)
 
-            # C) Tangent Line (स्पर्शिका - पूर्ण लांबीची)
+            # C) Tangent Line 
             slope = dy[idx]
             x_range = np.logspace(np.log10(p_max), np.log10(x_end), 100)
             y_tangent = e_max + slope * (np.log10(x_range) - np.log10(p_max))
             plt.plot(x_range, y_tangent, 'r-', linewidth=1.2)
 
-            # D) Bisector Line (कोन दुभाजक - पूर्ण लांबीची)
+            # D) Bisector Line 
             angle_tangent = np.arctan(slope)
             bisector_slope = np.tan(angle_tangent / 2)
             y_bisector = e_max + bisector_slope * (np.log10(x_range) - np.log10(p_max))
             plt.plot(x_range, y_bisector, 'r-', linewidth=1.2)
 
             # E) Virgin Compression Line (VCL) Extrapolation
-            # शेवटच्या दोन पॉइंट्सचा स्लोप घेऊन डावीकडे वाढवणे
+           
             vcl_slope = (e[-1] - e[-2]) / (np.log10(p[-1]) - np.log10(p[-2]))
-            # बायसेक्टरला छेदण्यासाठी मागे ओढणे
+        
             x_vcl = np.logspace(np.log10(p_max * 0.4), np.log10(p[-1]), 100)
             y_vcl = e[-1] + vcl_slope * (np.log10(x_vcl) - np.log10(p[-1]))
             plt.plot(x_vcl, y_vcl, 'r-', linewidth=1.2)
 
             # F) Vertical Line for Pc (Pre-consolidation Pressure)
-            # ही व्हॅल्यू तुमच्या कॅल्क्युलेशन फील्ड मधून घ्या (उदा. self.pc_value)
+          
             pc_val = 0.90 # Temporary value
             plt.vlines(x=pc_val, ymin=0.65, ymax=e_max, colors='r', linewidth=1.5)
 
@@ -12068,7 +11577,7 @@ class ConsolidationLine(models.Model):
             lines = rec.consolidation_output_ids
 
             # --------- Ce from loading segment (choose same points as Excel) ---------
-            # example: use loading rows at 0.50 and 4.00 kg/cm²
+            
             l1 = lines.filtered(
                 lambda l: l.cylces == '1st Cycle Loading' and l.applied_pressure == 0.50
             )[:1]
@@ -12083,7 +11592,7 @@ class ConsolidationLine(models.Model):
                     rec.ce = (e1 - e2) / log10(p2 / p1)
 
             # --------- Cr from unloading segment (same as Excel) ---------
-            # example: use unloading rows at 0.50 and 0.10 kg/cm²
+           
             u1 = lines.filtered(
                 lambda l: l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.50
             )[:1]
@@ -12140,11 +11649,6 @@ class ConsolidationLine(models.Model):
 
 
 
-
-
-
-
-
     effective_pressure = fields.Float(
     string="Effective Pressure",
     compute="_compute_effective_pressure",
@@ -12185,10 +11689,6 @@ class ConsolidationLine(models.Model):
                 break
 
 
-
-
-
-    
 
 
     t22_e_value = fields.Float(
@@ -12386,27 +11886,6 @@ class ConsolidationLine(models.Model):
 
 
 
-
-
-
-
-
-
-   
-
-
-
-    
-
-    
-
-    
-
-
-
-
-
-
     @api.model
     def create(self, vals):
         # Set the serial_no based on the existing records for the same parent
@@ -12438,24 +11917,8 @@ class CbrLine(models.Model):
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
 
-    # def action_submit_line(self):
-    #     self.ensure_one()
 
-    #     # 1️⃣ Boolean True
-    #     self.write({
-    #         'is_checked': True,
-    #         'end_date': date.today(),  # current date auto fill
-    #     })
 
-    #     # 2️⃣ Parent form वर return / open
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'name': 'Soil Test',
-    #         'res_model': 'mechanical.soil1',
-    #         'view_mode': 'form',
-    #         'res_id': self.parent_id.id if self.parent_id else False,
-    #         'target': 'current',
-    #     }
 
     def action_submit(self):
         self.ensure_one()
@@ -12552,7 +12015,7 @@ class CbrLine(models.Model):
                 load_at_5_0 = target_y[1]
 
                 # --- MAIN CALCULATION FORMULA ---
-                # Formula: (Load * 100) / Standard Load
+            
                 val_2_5 = (load_at_2_5 * 100) / 13.781
                 val_5_0 = (load_at_5_0 * 100) / 20.55
 
@@ -12584,8 +12047,7 @@ class CbrLine(models.Model):
             plt.figure(figsize=(10, 6))
             ax = plt.gca()
 
-            # 3. Main Curve Plot kara (Black line with dots)
-            # 'ko-' mhanje Black color, Circle marker, Solid line
+         
             plt.plot(x_values, y_values, 'ko-', linewidth=1.5, markersize=6, label='CBR Curve')
 
             # 4. 2.5mm ani 5.0mm sathi Logic (Lines ani Labels)
@@ -12606,8 +12068,7 @@ class CbrLine(models.Model):
                         # Intersection var Blue Dot (Point)
                         plt.plot(tx, ty, 'bo', markersize=5)  # 'bo' mhanje Blue Circle
 
-                        # Label (Text Value)
-                        # Point chya javal value lihun yeil (Ex: 4.65 kN)
+                     
                         label_text = f"{ty:.2f}"
                         plt.text(tx - 0.5, ty + 0.2, label_text, color='blue', fontsize=10, fontweight='bold')
 
@@ -12622,9 +12083,7 @@ class CbrLine(models.Model):
             # X-Axis var sagale numbers (0, 1, 2...14) disnyasathi
             plt.xticks(np.arange(0, 15, 1))
             
-            # Grid (Optional - jar havi asel tar uncomment kara)
-            # plt.grid(True, linestyle='--', alpha=0.5)
-
+           
             # 6. Graph Save kara
             buf = io.BytesIO()
             plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
@@ -12711,7 +12170,7 @@ class CbrLine(models.Model):
             else:
                 rec.before_mc = 0
 
-            # (4) Avg MC % = MC %
+
             rec.before_avg_mc = rec.before_mc
 
 
@@ -12732,9 +12191,7 @@ class CbrLine(models.Model):
     top_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil1", store=True,digits=(12,3))
     top_mc = fields.Float(compute="_compute_mc", store=True, digits=(12, 6))
 
-    # -----------------------------
-    # CENTRE
-    # -----------------------------
+    
     centre_can_no = fields.Integer()
     centre_can_wet_soil = fields.Float(digits=(12,3))
     centre_can_dry_soil = fields.Float(digits=(12,3))
@@ -12748,9 +12205,7 @@ class CbrLine(models.Model):
     centre_wt_dry_soil = fields.Float(compute="_compute_wt_dry_soil1", store=True,digits=(12,3))
     centre_mc = fields.Float(compute="_compute_mc", store=True, digits=(12, 6))
 
-    # -----------------------------
-    # BOTTOM
-    # -----------------------------
+   
     bottom_can_no = fields.Integer()
     bottom_can_wet_soil = fields.Float(digits=(12,3))
     bottom_can_dry_soil = fields.Float(digits=(12,3))
@@ -12877,7 +12332,7 @@ class CbrLine(models.Model):
         return super(CbrLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
+       
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
