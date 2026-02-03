@@ -11927,106 +11927,259 @@ class ConsolidationLine(models.Model):
 
     _logger = logging.getLogger(__name__)
 
+    # def action_generate_consolidation_graph(self):
+    #     self.ensure_one()
+
+    #     # 1️⃣ Loading ani Unloading Data Segregate करा
+    #     loading, unloading = [], []
+    #     last_p = 0
+    #     unload = False
+        
+    #     # consolidation_output_ids मधून डेटा घेणे
+    #     for l in self.consolidation_output_ids.sorted('id'):
+    #         if not unload and l.applied_pressure >= last_p:
+    #             loading.append((l.applied_pressure, l.e_void))
+    #             last_p = l.applied_pressure
+    #         else:
+    #             unload = True
+    #             unloading.append((l.applied_pressure, l.e_void))
+
+    #     if not loading:
+    #         return
+
+    #     # डेटा प्लॉट्ससाठी तयार करणे
+    #     p = np.array([x[0] for x in loading])
+    #     e = np.array([x[1] for x in loading])
+    #     log_p = np.log10(p)
+
+    #     plt.figure(figsize=(9, 5))
+
+    #     # Loading Curve (BLACK)
+    #     plt.plot(p, e, '-ok', linewidth=1.5, markersize=5)
+
+    #     # Unloading Curve (BLACK)
+    #     if unloading:
+    #         pu = np.array([x[0] for x in unloading])
+    #         eu = np.array([x[1] for x in unloading])
+    #         plt.plot(pu, eu, '-ok', linewidth=1.5, markersize=5)
+    #         # Loading चा शेवटचा आणि Unloading चा पहिला पॉइंट जोडणे
+    #         plt.plot([p[-1], pu[0]], [e[-1], eu[0]], '-k', linewidth=1.5)
+
+    #     # --- 2️⃣ CASAGRANDE CONSTRUCTION (RED LINES) ---
+    #     try:
+    #         # A) Max Curvature Point (Point A) शोधणे
+    #         dy = np.gradient(e, log_p)
+    #         ddy = np.gradient(dy, log_p)
+    #         idx = np.argmax(np.abs(ddy))
+    #         p_max, e_max = p[idx], e[idx]
+
+    #         # रेषांची लांबी ठरवण्यासाठी (X-axis च्या शेवटपर्यंत)
+    #         x_end = 10.0 
+
+    #         # B) Horizontal Line (आडवी लाल रेषा)
+    #         plt.hlines(y=e_max, xmin=p_max, xmax=x_end, colors='r', linewidth=1.2)
+
+    #         # C) Tangent Line (स्पर्शिका - पूर्ण लांबीची)
+    #         slope = dy[idx]
+    #         x_range = np.logspace(np.log10(p_max), np.log10(x_end), 100)
+    #         y_tangent = e_max + slope * (np.log10(x_range) - np.log10(p_max))
+    #         plt.plot(x_range, y_tangent, 'r-', linewidth=1.2)
+
+    #         # D) Bisector Line (कोन दुभाजक - पूर्ण लांबीची)
+    #         angle_tangent = np.arctan(slope)
+    #         bisector_slope = np.tan(angle_tangent / 2)
+    #         y_bisector = e_max + bisector_slope * (np.log10(x_range) - np.log10(p_max))
+    #         plt.plot(x_range, y_bisector, 'r-', linewidth=1.2)
+
+    #         # E) Virgin Compression Line (VCL) Extrapolation
+    #         # शेवटच्या दोन पॉइंट्सचा स्लोप घेऊन डावीकडे वाढवणे
+    #         vcl_slope = (e[-1] - e[-2]) / (np.log10(p[-1]) - np.log10(p[-2]))
+    #         # बायसेक्टरला छेदण्यासाठी मागे ओढणे
+    #         x_vcl = np.logspace(np.log10(p_max * 0.4), np.log10(p[-1]), 100)
+    #         y_vcl = e[-1] + vcl_slope * (np.log10(x_vcl) - np.log10(p[-1]))
+    #         plt.plot(x_vcl, y_vcl, 'r-', linewidth=1.2)
+
+    #         # F) Vertical Line for Pc (Pre-consolidation Pressure)
+    #         # ही व्हॅल्यू तुमच्या कॅल्क्युलेशन फील्ड मधून घ्या (उदा. self.pc_value)
+    #         pc_val = 0.90 # Temporary value
+    #         plt.vlines(x=pc_val, ymin=0.65, ymax=e_max, colors='r', linewidth=1.5)
+
+    #     except Exception as ex:
+    #         _logger.error("Error generating tangent lines: %s", ex)
+
+    #     # 3️⃣ Styling
+    #     plt.xscale('log')
+    #     plt.xlim(0.01, 10.00)
+    #     plt.ylim(0.65, 0.95)
+        
+    #     plt.xlabel("Pressure (kg/cm2)", fontweight='bold')
+    #     plt.ylabel("Void Ratio", fontweight='bold')
+    #     plt.grid(True, which="both", color='gray', linestyle='-', linewidth=0.3)
+        
+    #     # Tick Formatting
+    #     plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.2f'))
+    #     plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))
+
+    #     # 4️⃣ Save Image
+    #     buf = BytesIO()
+    #     plt.tight_layout()
+    #     plt.savefig(buf, format='png', dpi=160)
+    #     self.consolidation_graph = base64.b64encode(buf.getvalue())
+    #     buf.close()
+    #     plt.close()
+
+
     def action_generate_consolidation_graph(self):
-        self.ensure_one()
+     import numpy as np
+     import matplotlib.pyplot as plt
+     from io import BytesIO
+     import base64
+     from scipy.signal import savgol_filter
+     import logging
 
-        # 1️⃣ Loading ani Unloading Data Segregate करा
-        loading, unloading = [], []
-        last_p = 0
-        unload = False
-        
-        # consolidation_output_ids मधून डेटा घेणे
-        for l in self.consolidation_output_ids.sorted('id'):
-            if not unload and l.applied_pressure >= last_p:
-                loading.append((l.applied_pressure, l.e_void))
-                last_p = l.applied_pressure
-            else:
-                unload = True
-                unloading.append((l.applied_pressure, l.e_void))
+     _logger = logging.getLogger(__name__)
+     self.ensure_one()
+ 
+    # --------------------------------------------------
+    # 1️⃣ SEPARATE LOADING / UNLOADING
+    # --------------------------------------------------
+     loading, unloading = [], []
+     last_p = 0
+     unloading_started = False
 
-        if not loading:
-            return
+     for l in self.consolidation_output_ids.sorted('id'):
+        if not unloading_started and l.applied_pressure >= last_p:
+            loading.append((l.applied_pressure, l.e_void))
+            last_p = l.applied_pressure
+        else:
+            unloading_started = True
+            unloading.append((l.applied_pressure, l.e_void))
 
-        # डेटा प्लॉट्ससाठी तयार करणे
-        p = np.array([x[0] for x in loading])
-        e = np.array([x[1] for x in loading])
-        log_p = np.log10(p)
+     if len(loading) < 4:
+        return
 
-        plt.figure(figsize=(9, 5))
+     p = np.array([x[0] for x in loading])
+     e = np.array([x[1] for x in loading])
+     log_p = np.log10(p)
 
-        # Loading Curve (BLACK)
-        plt.plot(p, e, '-ok', linewidth=1.5, markersize=5)
+    # --------------------------------------------------
+    # 2️⃣ SMOOTH CURVE (Excel-like)
+    # --------------------------------------------------
+     e_smooth = savgol_filter(e, 3, 1)
 
-        # Unloading Curve (BLACK)
-        if unloading:
-            pu = np.array([x[0] for x in unloading])
-            eu = np.array([x[1] for x in unloading])
-            plt.plot(pu, eu, '-ok', linewidth=1.5, markersize=5)
-            # Loading चा शेवटचा आणि Unloading चा पहिला पॉइंट जोडणे
-            plt.plot([p[-1], pu[0]], [e[-1], eu[0]], '-k', linewidth=1.5)
+    # --------------------------------------------------
+    # 3️⃣ CURVATURE (LIMITED SEARCH → KEY FIX)
+    #     Ignore high-stress end (Excel behavior)
+    # --------------------------------------------------
+     dy = np.gradient(e_smooth, log_p)
+     ddy = np.gradient(dy, log_p)
 
-        # --- 2️⃣ CASAGRANDE CONSTRUCTION (RED LINES) ---
-        try:
-            # A) Max Curvature Point (Point A) शोधणे
-            dy = np.gradient(e, log_p)
-            ddy = np.gradient(dy, log_p)
-            idx = np.argmax(np.abs(ddy))
-            p_max, e_max = p[idx], e[idx]
+    # Restrict curvature search to knee zone (0.5–2.0 kg/cm²)
+     mask = (p >= 0.5) & (p <= 2.0)
 
-            # रेषांची लांबी ठरवण्यासाठी (X-axis च्या शेवटपर्यंत)
-            x_end = 10.0 
+     if not np.any(mask):
+        return
 
-            # B) Horizontal Line (आडवी लाल रेषा)
-            plt.hlines(y=e_max, xmin=p_max, xmax=x_end, colors='r', linewidth=1.2)
+     idx = np.argmax(np.abs(ddy[mask]))
+     idx = np.where(mask)[0][idx]
 
-            # C) Tangent Line (स्पर्शिका - पूर्ण लांबीची)
-            slope = dy[idx]
-            x_range = np.logspace(np.log10(p_max), np.log10(x_end), 100)
-            y_tangent = e_max + slope * (np.log10(x_range) - np.log10(p_max))
-            plt.plot(x_range, y_tangent, 'r-', linewidth=1.2)
+     p_A = p[idx]
+     e_A = e[idx]
+     slope_tangent = dy[idx]
 
-            # D) Bisector Line (कोन दुभाजक - पूर्ण लांबीची)
-            angle_tangent = np.arctan(slope)
-            bisector_slope = np.tan(angle_tangent / 2)
-            y_bisector = e_max + bisector_slope * (np.log10(x_range) - np.log10(p_max))
-            plt.plot(x_range, y_bisector, 'r-', linewidth=1.2)
+    # --------------------------------------------------
+    # 4️⃣ VIRGIN COMPRESSION LINE (LAST 3–4 POINTS)
+    # --------------------------------------------------
+     n_vcl = min(4, len(p))
+     coef_vcl = np.polyfit(np.log10(p[-n_vcl:]), e[-n_vcl:], 1)
+     vcl_slope = coef_vcl[0]
+     vcl_intercept = coef_vcl[1]
 
-            # E) Virgin Compression Line (VCL) Extrapolation
-            # शेवटच्या दोन पॉइंट्सचा स्लोप घेऊन डावीकडे वाढवणे
-            vcl_slope = (e[-1] - e[-2]) / (np.log10(p[-1]) - np.log10(p[-2]))
-            # बायसेक्टरला छेदण्यासाठी मागे ओढणे
-            x_vcl = np.logspace(np.log10(p_max * 0.4), np.log10(p[-1]), 100)
-            y_vcl = e[-1] + vcl_slope * (np.log10(x_vcl) - np.log10(p[-1]))
-            plt.plot(x_vcl, y_vcl, 'r-', linewidth=1.2)
+    # --------------------------------------------------
+    # 5️⃣ BISector
+    # --------------------------------------------------
+     angle_tan = np.arctan(slope_tangent)
+     bisector_slope = np.tan(angle_tan / 2)
 
-            # F) Vertical Line for Pc (Pre-consolidation Pressure)
-            # ही व्हॅल्यू तुमच्या कॅल्क्युलेशन फील्ड मधून घ्या (उदा. self.pc_value)
-            pc_val = 0.90 # Temporary value
-            plt.vlines(x=pc_val, ymin=0.65, ymax=e_max, colors='r', linewidth=1.5)
+    # --------------------------------------------------
+    # 6️⃣ INTERSECTION → Pc
+    # --------------------------------------------------
+     log_pc = (
+        e_A
+        - bisector_slope * np.log10(p_A)
+        - vcl_intercept
+    ) / (vcl_slope - bisector_slope)
 
-        except Exception as ex:
-            _logger.error("Error generating tangent lines: %s", ex)
+     pc_val = 10 ** log_pc
 
-        # 3️⃣ Styling
-        plt.xscale('log')
-        plt.xlim(0.01, 10.00)
-        plt.ylim(0.65, 0.95)
-        
-        plt.xlabel("Pressure (kg/cm2)", fontweight='bold')
-        plt.ylabel("Void Ratio", fontweight='bold')
-        plt.grid(True, which="both", color='gray', linestyle='-', linewidth=0.3)
-        
-        # Tick Formatting
-        plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.2f'))
-        plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))
+    # --------------------------------------------------
+    # 7️⃣ PLOT
+    # --------------------------------------------------
+     plt.figure(figsize=(9, 5))
 
-        # 4️⃣ Save Image
-        buf = BytesIO()
-        plt.tight_layout()
-        plt.savefig(buf, format='png', dpi=160)
-        self.consolidation_graph = base64.b64encode(buf.getvalue())
-        buf.close()
-        plt.close()
+    # Loading
+     plt.plot(p, e, '-ok', linewidth=1.6, markersize=5)
+
+    # Unloading
+     if unloading:
+        pu = np.array([x[0] for x in unloading])
+        eu = np.array([x[1] for x in unloading])
+        plt.plot(pu, eu, '-ok', linewidth=1.6, markersize=5)
+        plt.plot([p[-1], pu[0]], [e[-1], eu[0]], '-k', linewidth=1.6)
+
+    # Construction lines
+     x_ext = np.logspace(np.log10(p_A), np.log10(10), 200)
+
+    # Horizontal
+     plt.hlines(e_A, p_A, 10, colors='r', linewidth=1.4)
+
+    # Tangent
+     y_tan = e_A + slope_tangent * (np.log10(x_ext) - np.log10(p_A))
+     plt.plot(x_ext, y_tan, 'r-', linewidth=1.4)
+
+    # Bisector
+     y_bis = e_A + bisector_slope * (np.log10(x_ext) - np.log10(p_A))
+     plt.plot(x_ext, y_bis, 'r-', linewidth=1.4)
+
+    # VCL
+     x_vcl = np.logspace(np.log10(p_A * 0.4), np.log10(10), 200)
+     y_vcl = vcl_slope * np.log10(x_vcl) + vcl_intercept
+     plt.plot(x_vcl, y_vcl, 'r-', linewidth=1.4)
+
+    # Pc vertical
+     plt.vlines(pc_val, ymin=0.65, ymax=e_A, colors='r', linewidth=1.6)
+
+    # --------------------------------------------------
+    # 8️⃣ STYLING (MATCH EXCEL)
+    # --------------------------------------------------
+     plt.xscale('log')
+     plt.xlim(0.01, 10)
+     plt.ylim(0.65, 0.95)
+
+     plt.xlabel("Pressure (kg/cm²)", fontweight='bold')
+     plt.ylabel("Void Ratio", fontweight='bold')
+
+     plt.grid(True, which='both', color='#808080', linewidth=0.35)
+     plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.2f'))
+     plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))
+
+    # --------------------------------------------------
+    # 9️⃣ SAVE IMAGE
+    # --------------------------------------------------
+     buf = BytesIO()
+     plt.tight_layout()
+     plt.savefig(buf, format='png', dpi=100)
+     self.consolidation_graph = base64.b64encode(buf.getvalue())
+     buf.close()
+     plt.close()
+
+    # Save Pc if field exists
+     if hasattr(self, 'pc_value'):
+        self.pc_value = pc_val
+
+
+
+
 
     @api.model
     def default_con_cycle_reading(self):
@@ -12053,7 +12206,7 @@ class ConsolidationLine(models.Model):
     
 
     ce = fields.Float(string="Ce", digits=(8, 3), compute="_compute_ce_cr", store=True)
-    cr = fields.Float(string="Cr", digits=(8, 3), compute="_compute_ce_cr", store=True)
+    cr = fields.Float(string="Recompression Index, Cr", digits=(8, 3), compute="_compute_ce_cr", store=True)
 
 
     @api.depends(

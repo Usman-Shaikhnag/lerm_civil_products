@@ -2999,121 +2999,141 @@
 						<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:20px;">
 					<!-- ================= Property of Sample ================= -->
 					<tr>
-						<th colspan="3" style="border:1px solid black; text-align:center;">
+						<th colspan="3" style="border:1px solid black;font-weight:bold; ">
 							Property of Sample
 						</th>
-						<th colspan="5" style="border:1px solid black; text-align:center;">
+						<th colspan="5" style="border:1px solid black; text-align:center;font-weight:bold;">
 							Before the Test
 						</th>
 					</tr>
 
 					<tr>
-						<td style="border:1px solid black;">Water Content, wc</td>
-						<td style="border:1px solid black; text-align:center;">(%)</td>
+						<td style="border:1px solid black;font-weight:bold;">Water Content, wc</td>
+						<td style="border:1px solid black; text-align:center;font-weight:bold;">(%)</td>
 						<td colspan="6" style="border:1px solid black; text-align:center;">
-							<!-- <t t-esc="data.water_content"/> -->
+							<t t-esc="consolidation.con_water_content" t-options='{"widget": "float", "precision": 2}'/>
 						</td>
 					</tr>
 
 					<tr>
-						<td style="border:1px solid black;">Bulk Density of Soil, γb</td>
-						<td style="border:1px solid black; text-align:center;">(gm/cc)</td>
+						<td style="border:1px solid black;font-weight:bold;">Bulk Density of Soil, γb</td>
+						<td style="border:1px solid black; text-align:center;font-weight:bold;">(gm/cc)</td>
 						<td colspan="6" style="border:1px solid black; text-align:center;">
-							<!-- <t t-esc="data.bulk_density"/> -->
+							<t t-esc="consolidation.con_bulk_density_soil" t-options='{"widget": "float", "precision": 2}'/>
 						</td>
 					</tr>
 
 					<tr>
-						<td style="border:1px solid black;">Dry Density of Soil, γd</td>
-						<td style="border:1px solid black; text-align:center;">(gm/cc)</td>
+						<td style="border:1px solid black;font-weight:bold;">Dry Density of Soil, γd</td>
+						<td style="border:1px solid black; text-align:center;font-weight:bold;">(gm/cc)</td>
 						<td colspan="6" style="border:1px solid black; text-align:center;">
-							<!-- <t t-esc="data.dry_density"/> -->
+							<t t-esc="consolidation.con_dry_density_soil" t-options='{"widget": "float", "precision": 2}'/>
 						</td>
 					</tr>
 
 					<tr>
-						<td style="border:1px solid black;">Void Ratio, e</td>
-						<td style="border:1px solid black; text-align:center;"></td>
+						<td style="border:1px solid black;font-weight:bold;">Void Ratio, e</td>
+						<td style="border:1px solid black;font-weight:bold; text-align:center;"></td>
 						<td colspan="6" style="border:1px solid black; text-align:center;">
-							<!-- <t t-esc="data.void_ratio"/> -->
+							<t t-esc="consolidation.con_swell_void_ratio" t-options='{"widget": "float", "precision": 2}'/>
 						</td>
 					</tr>
 
 					<tr>
-						<td style="border:1px solid black;">Degree of Saturation, Sr</td>
-						<td style="border:1px solid black; text-align:center;">(%)</td>
+						<td style="border:1px solid black;font-weight:bold;">Degree of Saturation, Sr</td>
+						<td style="border:1px solid black; font-weight:bold;text-align:center;">(%)</td>
 						<td colspan="6" style="border:1px solid black; text-align:center;">
-							<!-- <t t-esc="data.degree_saturation"/> -->
+							<t t-esc="consolidation.con_degree_sat" t-options='{"widget": "float", "precision": 2}'/>
 						</td>
 					</tr>
 					</table>
-					<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:20px;">
+					
 
-					<!-- ================= Cycle Header ================= -->
-					<tr>
-						<th rowspan="2" style="border:1px solid black; text-align:center;">
-							Cycle
-						</th>
-						<th colspan="7" style="border:1px solid black; text-align:center;">
-							1st Cycle Loading
-						</th>
-					</tr>
+					
+				<!--  CONSOLIDATION SECTION  -->
 
-					<tr>
-						<th style="border:1px solid black;">0.05</th>
-						<th style="border:1px solid black;">0.10</th>
-						<th style="border:1px solid black;">0.20</th>
-						<th style="border:1px solid black;">0.50</th>
-						<th style="border:1px solid black;">1.00</th>
-						<th style="border:1px solid black;">2.00</th>
-						<th style="border:1px solid black;">8.00</th>
-					</tr>
+                     <t t-foreach="data.consolidation_lines.filtered(lambda c: c.is_checked)" t-as="con">
 
-					<!-- ================= Data Rows ================= -->
-					<tr>
-						<td style="border:1px solid black;">Applied Pressure, kg/cm²</td>
-						<td style="border:1px solid black; text-align:center;">0.05</td>
-						<td style="border:1px solid black; text-align:center;">0.10</td>
-						<td style="border:1px solid black; text-align:center;">0.20</td>
-						<td style="border:1px solid black; text-align:center;">0.50</td>
-						<td style="border:1px solid black; text-align:center;">1.00</td>
-						<td style="border:1px solid black; text-align:center;">2.00</td>
-						<td style="border:1px solid black; text-align:center;">8.00</td>
-					</tr>
+                   <!-- ================= FETCH 1st CYCLE LOADING ROWS ================= -->
+                    <t t-set="loading_lines" t-value="con.consolidation_output_ids.filtered(lambda l: l.cylces == '1st Cycle Loading')"/>
 
-					<tr>
-						<td style="border:1px solid black;">e = (H/Hs) − 1</td>
-						<td style="border:1px solid black; text-align:center;">0.912</td>
-						<td style="border:1px solid black; text-align:center;">0.907</td>
-						<td style="border:1px solid black; text-align:center;">0.899</td>
-						<td style="border:1px solid black; text-align:center;">0.872</td>
-						<td style="border:1px solid black; text-align:center;">0.839</td>
-						<td style="border:1px solid black; text-align:center;">0.794</td>
-						<td style="border:1px solid black; text-align:center;">0.678</td>
-					</tr>
+                    <!-- ================= SAFE SORT ================= -->
+                    <t t-if="loading_lines">
+                     <t t-set="loading_lines" t-value="sorted(loading_lines, key=lambda l: l.applied_pressure)"/>
 
-					<tr>
-						<td style="border:1px solid black;">a, cm²/kg</td>
-						<td style="border:1px solid black;"></td>
-						<td style="border:1px solid black; text-align:center;">0.107</td>
-						<td style="border:1px solid black; text-align:center;">0.076</td>
-						<td style="border:1px solid black; text-align:center;">0.089</td>
-						<td style="border:1px solid black; text-align:center;">0.066</td>
-						<td style="border:1px solid black; text-align:center;">0.046</td>
-						<td style="border:1px solid black; text-align:center;">0.014</td>
-					</tr>
+                    <!-- ================= TABLE ================= -->
+                   <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:20px;">
 
-					<tr>
-						<td style="border:1px solid black;">mv, cm²/kg</td>
-						<td style="border:1px solid black;"></td>
-						<td style="border:1px solid black; text-align:center;">0.056</td>
-						<td style="border:1px solid black; text-align:center;">0.040</td>
-						<td style="border:1px solid black; text-align:center;">0.047</td>
-						<td style="border:1px solid black; text-align:center;">0.034</td>
-						<td style="border:1px solid black; text-align:center;">0.024</td>
-						<td style="border:1px solid black; text-align:center;">0.008</td>
-					</tr>
-				</table>
+                          <!-- HEADER -->
+                     <tr>
+                         <th style="border:1px solid black; text-align:center;">
+                              Cycle
+                         </th>
+                         <th t-att-colspan="len(loading_lines)" style="border:1px solid black; text-align:center; ">
+                               1st Cycle Loading
+                         </th>
+                    </tr>
+
+                     <!-- APPLIED PRESSURE -->
+                    <tr>
+                      <td style="border:1px solid black; font-weight:bold;">
+                        Applied Pressure, kg/cm²
+                    </td>
+                      <t t-foreach="loading_lines" t-as="l">
+                       <td style="border:1px solid black; text-align:center;">
+                          <t t-esc="'%.2f' % (l.applied_pressure or 0.0)"/>
+                       </td>
+                     </t>
+                   </tr>
+
+                   <!-- VOID RATIO -->
+                     <tr>
+                      <td style="border:1px solid black; font-weight:bold;">
+                         e = (H/Hs) − 1
+                     </td>
+                      <t t-foreach="loading_lines" t-as="l">
+                        <td style="border:1px solid black; text-align:center;">
+                        <t t-esc="'%.3f' % (l.e_void or 0.0)"/>
+                        </td>
+                      </t>
+                    </tr>
+
+                    <!-- a_v -->
+                 <tr>
+                    <td style="border:1px solid black; font-weight:bold;">
+                    aᵥ, cm²/kg
+                    </td>
+                    <t t-foreach="loading_lines" t-as="l">
+                      <td style="border:1px solid black; text-align:center;">
+                          <t t-if="l.av">
+                              <t t-esc="'%.3f' % l.av"/>
+                          </t>
+                     </td>
+                    </t>
+                 </tr>
+
+            <!-- m_v -->
+                <tr>
+                    <td style="border:1px solid black; font-weight:bold;">
+                    mᵥ, cm²/kg
+                    </td>
+                    <t t-foreach="loading_lines" t-as="l">
+                        <td style="border:1px solid black; text-align:center;">
+                            <t t-if="l.mv">
+                                <t t-esc="'%.3f' % l.mv"/>
+                            </t>
+                        </td>
+                    </t>
+                </tr>
+
+              </table>
+
+            </t>
+        </t>
+
+
+				
+
 
 
            
@@ -3129,12 +3149,34 @@
 
             <!-- 🔹 RESULT -->
             <div style="margin-top:20px; text-align:center; font-weight:bold;">
-				Compression Index, Cc= : = <span t-esc="consolidation.ce"/> 
+				Preconsolidation Pressure : = <span t-esc="consolidation.pc_y" t-options='{"widget": "float", "precision": 2}'/> 
 			</div>
 
 			<div style="margin-top:5px; text-align:center; font-weight:bold;">
-				Recompression Index, Cr=  : = <span t-esc="consolidation.cr"/>
+				Compression Index (Cc) : = <span t-esc="consolidation.cc_final" t-options='{"widget": "float", "precision": 3}'/>
 			</div>
+
+			<div style="margin-top:5px; text-align:center; font-weight:bold;">
+				Recompression Index, Cr  : = <span t-esc="consolidation.cr" t-options='{"widget": "float", "precision": 3}'/>
+			</div>
+
+			<div style="margin-top:5px; text-align:center; font-weight:bold;">
+				PC : = <span t-esc="consolidation.PC_final" t-options='{"widget": "float", "precision": 2}'/>
+			</div>
+
+			<div style="margin-top:5px; text-align:center; font-weight:bold;">
+				Depth : = <span t-esc="consolidation.pc_depth"/>
+			</div>
+
+			<div style="margin-top:5px; text-align:center; font-weight:bold;">
+				Overburden : = <span t-esc="consolidation.pc_overburden" t-options='{"widget": "float", "precision": 2}'/> kg/m2
+			</div>
+
+			<div style="margin-top:5px; text-align:center; font-weight:bold;">
+				OCR : = <span t-esc="consolidation.ocr" t-options='{"widget": "float", "precision": 2}'/> Normally Consolidated
+			</div>
+
+
 
 			</div>
 			</t>
