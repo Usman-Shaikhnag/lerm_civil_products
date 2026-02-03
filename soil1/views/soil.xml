@@ -301,7 +301,7 @@
                                     </tbody>
                                 </table>
                                 
-                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="1">
                                     <tbody>
                                         <tr>
                                             <td><label for="bh_id">BH ID</label></td>
@@ -1026,7 +1026,11 @@
                 <field name="gsa_child_lines" class="custom_table_borders" nolabel="1">
                     <tree  string="GSA Lines" decoration-info="lab_no">
                         <field name="symbol" widget="html" />
+<<<<<<< HEAD
+                        <field name="bh_id" />
+=======
                         <!-- <field name="bh_id" invisible="1"/> -->
+>>>>>>> 0b70eb859a2228291f4787be49f31a8a2d4ede36
                         <field name="lab_no" string="Lab ID" width="200"/>
                    
                         <!-- <field name="sample_depth" invisible="1"/> -->
@@ -1115,8 +1119,13 @@
                                     </table>
                                 </div>
 
+<<<<<<< HEAD
+                                <div class="d-flex gap-2">
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="1">
+=======
                                 <!-- <div class="d-flex gap-2">
                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+>>>>>>> 0b70eb859a2228291f4787be49f31a8a2d4ede36
                                         <tbody>
                                             <tr>
                                                 <td><label for="bh_id"/></td>
@@ -1124,7 +1133,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="1">
                                         <tbody>
                                             <tr>
                                                 <td><label for="sample_depth"/></td>
@@ -1135,7 +1144,11 @@
                                 </div> -->
 
                                 <div class="d-flex gap-2">
+<<<<<<< HEAD
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="1">
+=======
                                     <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+>>>>>>> 0b70eb859a2228291f4787be49f31a8a2d4ede36
                                         <tbody>
                                             <tr>
                                                 <td><label for="sample_details"/></td>
@@ -1959,7 +1972,7 @@
                             </tbody>
                         </table>
                         
-                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" invisible="1">
                             <tbody>
                                 <tr>
                                     <td><label for="bh_id"></label></td>
@@ -1969,7 +1982,7 @@
                                 
                             </tbody>
                         </table>
-                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" invisible="1" >
                             <tbody>
                                 <tr>
                                     <td><label for="depth"></label></td>
@@ -2168,6 +2181,7 @@
                                 <field name='Hav' />
                                 <field name='cv' />
                                 <field name='cc' />
+                                <!-- <field name="delta_cc"/> -->
                               
                             </tree>
                         </field>
@@ -2268,6 +2282,75 @@
                      </page>
 
                  </notebook>
+
+                 <!-- <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                
+                                <tr>
+                                    <td><label for="preconsolidation_pressure">Delta Cc</label></td>
+                                    <td ><field name="preconsolidation_pressure" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="effective_pressure">Delta Cc</label></td>
+                                    <td ><field name="effective_pressure" /></td>
+                                </tr>
+                                 
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="t22_e_value">Delta Cc</label></td>
+                                    <td ><field name="t22_e_value" /></td>
+                                </tr>
+                                 <tr>
+                                    <td><label for="t22_e_value">Delta Cc</label></td>
+                                    <td ><field name="t22_e_value" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div> -->
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                
+                                <tr>
+                                    <td><label for="pc_y"></label></td>
+                                    <td ><field name="pc_y" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="cc_final"></label></td>
+                                    <td ><field name="cc_final" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="cr">Cr (recompression/swell index)</label></td>
+                                    <td><field name="cr"  /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="PC_final"></label></td>
+                                    <td ><field name="PC_final" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="pc_depth"></label></td>
+                                    <td ><field name="pc_depth" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="pc_overburden"></label></td>
+                                    <td ><field name="pc_overburden" /><span> kg/m2</span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="ocr"></label></td>
+                                    <td ><field name="ocr" /><span> Normally Consolidated	</span></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+
 
                  <div>
                   <button name="action_generate_consolidation_graph"
@@ -2602,9 +2685,9 @@
                         </field>
                     </div>
 
-                    <div >
-                    <h2> Graph	
-                    </h2>
+                    <div>
+                    <h2> Graph </h2>
+                   
                         <field name="swelling_table_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
@@ -3033,7 +3116,7 @@
                             </tbody>
                         </table> -->
                         <div class="d-flex gap-2" >
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
                             <tbody>
                                 <tr>
                                     <td><label for="bh_id"></label></td>
@@ -3043,7 +3126,7 @@
                             </tbody>
                         </table>
                         
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="1">
                             <tbody>
                                 <tr>
                                     <td><label for="depth"></label></td>
@@ -3615,7 +3698,7 @@
                                             </tbody>
                                         </table>
                                         
-                                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" invisible="1">
                                             <tbody>
                                                 <tr>
                                                     <td><label for="bh_id"></label></td>
@@ -3624,7 +3707,7 @@
                                                 
                                             </tbody>
                                         </table>
-                                          <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" >
+                                          <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" invisible="1">
                                             <tbody>
                                                 <tr>
                                                     <td><label for="depth"></label></td>
@@ -4166,7 +4249,7 @@
                                     </tbody>
                                 </table>
                                 
-                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                                     <tbody>
                                         <tr>
                                             <td><label for="bh_id"></label></td>
@@ -4175,8 +4258,19 @@
                                         
                                     </tbody>
                                 </table>
-                            </div>  
+                            </div>   -->
 
+
+    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="1">
+               <tbody>
+                   <tr>
+                       <td><label for="bh_id"></label></td>
+                       <td><field name="bh_id" class="blue-input" /></td>
+                    </tr>
+                 </tbody>
+         </table>
+
+</div>
                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                             <tbody>
                                 <tr>
