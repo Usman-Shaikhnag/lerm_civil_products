@@ -109,8 +109,8 @@
                                 <field name='casting_date' invisible="casting != True" readonly="state != '1-allotment_pending'"/>
                                 <field name="days_casting" invisible="casting != True" readonly="state != '1-allotment_pending'" />
                                 <field name="date_casting" invisible="casting != True" readonly="state != '1-allotment_pending'"/>
-                                <field name="testedby_signature_required" invisible="state not in ('4-in_report')"/>
-                                <field name="checkby_signature_required" invisible="state not in ('4-in_report')"/>
+                                <field name="testedby_signature_required" invisible="state not in ('4-pending_approval')"  string="Pending Approved by Signature"/>
+                                <field name="checkby_signature_required" invisible="state not in ('4-in_report')" />
                                 <field name="approveby_signature_required" invisible="state not in ('4-in_report')"/>
                                 <field name="received_by_id" readonly="state != '1-allotment_pending'"/>
                                 <field name="page_break" />

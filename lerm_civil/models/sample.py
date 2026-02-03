@@ -86,7 +86,7 @@ class LermSampleForm(models.Model):
     filled_by = fields.Many2one('res.users',string="Filled By")
     check_by = fields.Many2one('res.users',string="Check By")
     approved_by = fields.Many2one('res.users',string="Approved By")
-    checkby_signature_required = fields.Boolean("Checked by Signature")
+    checkby_signature_required = fields.Boolean("Pending Approved by Signature")
     approveby_signature_required = fields.Boolean("Approved by Signature")
     testedby_signature_required = fields.Boolean("Tested by Signature")
     page_break = fields.Integer("Page break",default=6)
