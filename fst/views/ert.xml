@@ -259,6 +259,19 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="action_routine_pile" model="ir.actions.act_window">
+            <field name="name">Routine Vertical Pile Load Test</field>
+            <field name="res_model">routine.pile.load.test</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_routine_lateral_pile_load_test" model="ir.actions.act_window">
+            <field name="name">Routine Lateral Load Tests</field>
+            <field name="res_model">routine.lateral.pile.load.test.parent</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
 
 
         <menuitem id="fst_root"
@@ -282,78 +295,107 @@
                     <templates>
                         <t t-name="kanban-box">
                             <div style="width:100%; max-width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(350px,1fr)); gap:15px;">
-                                <!-- ERTs Card -->
+                                <!-- ERTs -->
                                 <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
                                     <h3 class="title">ERTs</h3>
                                     <a type="action"
                                     name="%(action_lerm_ert_parent)d"
                                     class="btn btn-lg"
-                                    style="background:#6f42c1; color:#fff;">
+                                    style="background:#4b0082; color:#fff;">
                                         Create ERT
                                     </a>
                                 </div>
 
+                                <!-- Soil -->
                                 <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
                                     <h3 class="title">Soil</h3>
                                     <a type="action"
                                     name="%(action_soil_borehole)d"
                                     class="btn btn-lg"
-                                    style="background:#198754; color:#fff;">
+                                    style="background:#2e7d32; color:#fff;">
                                         Borehole
                                     </a>
                                 </div>
 
+                                <!-- Vertical -->
                                 <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
                                     <h3 class="title">Vertical Pile Load Test</h3>
                                     <a type="action"
                                     name="%(action_pile_load_test_parent)d"
                                     class="btn btn-lg"
-                                    style="background:#fd7e14; color:#fff;">
+                                    style="background:#ff7f0e; color:#fff;">
                                         Records
                                     </a>
                                 </div>
 
+                                <!-- Lateral -->
                                 <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
                                     <h3 class="title">Lateral Pile Load Test</h3>
                                     <a type="action"
                                     name="%(action_lateral_pile_load_test_parent)d"
                                     class="btn btn-lg"
-                                    style="background:#0dcaf0; color:#000;">
+                                    style="background:#00bcd4; color:#000;">
                                         Records
                                     </a>
                                 </div>
 
+                                <!-- Initial Pull-Out -->
                                 <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
                                     <h3 class="title">Initial Pull-Out Pile Load Test</h3>
                                     <a type="action"
                                     name="%(action_pullout_pile_load_test_parent)d"
                                     class="btn btn-lg"
-                                    style="background:#dc3545; color:#fff;">
+                                    style="background:#d32f2f; color:#fff;">
                                         Records
                                     </a>
                                 </div>
 
+                                <!-- Routine Pull-Out -->
                                 <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
                                     <h3 class="title">Routine Pull-Out Pile Load Test</h3>
                                     <a type="action"
                                     name="%(action_routine_pullout_pile_load_test_parent)d"
                                     class="btn btn-lg"
-                                    style="background:#20c997; color:#fff;">
+                                    style="background:#00897b; color:#fff;">
                                         Records
                                     </a>
                                 </div>
 
+                                <!-- Routine Vertical -->
+                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                                    <h3 class="title">Routine Vertical Pile Load Test</h3>
+                                    <a type="action"
+                                    name="%(action_routine_pile)d"
+                                    class="btn btn-lg"
+                                    style="background:#6a1b9a; color:#fff;">
+                                        Records
+                                    </a>
+                                </div>
+
+                                <!-- Routine Lateral -->
+                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                                    <h3 class="title">Routine Lateral Pile Load Test</h3>
+                                    <a type="action"
+                                    name="%(action_routine_lateral_pile_load_test)d"
+                                    class="btn btn-lg"
+                                    style="background:#1565c0; color:#fff;">
+                                        Records
+                                    </a>
+                                </div>
+
+                                <!-- Temperature -->
                                 <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
                                     <h3 class="title">Temperature Monitoring</h3>
                                     <a type="action"
                                     name="%(action_temp_monitoring)d"
                                     class="btn btn-lg"
-                                    style="background:#0d6efd; color:#fff;">
+                                    style="background:#ffb300; color:#000;">
                                         Records
                                     </a>
                                 </div>
 
                             </div>
+
                         </t>
                     </templates>
                 </kanban>
