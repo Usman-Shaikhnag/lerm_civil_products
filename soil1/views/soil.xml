@@ -25,7 +25,7 @@
                         <field name="eln_ref" readonly="1"/>
                         <field name="size_id"/>
                          <field name="lab_id" invisible="1" />
-                        <field name="date_of_casting" readonly="1"/>
+                        <!-- <field name="date_of_casting" readonly="1"/> -->
                         <field name="parameter_id" invisible="1"/>
                     </group>
 
@@ -1026,17 +1026,26 @@
                 <field name="gsa_child_lines" class="custom_table_borders" nolabel="1">
                     <tree  string="GSA Lines" decoration-info="lab_no">
                         <field name="symbol" widget="html" />
+
+
+
+
+
+
+
                         <!-- <field name="bh_id" invisible="1"/> -->
+
+
                         <field name="lab_no" string="Lab ID" width="200"/>
-                   
+
                         <!-- <field name="sample_depth" invisible="1"/> -->
                         <!-- <field name="sample_details" invisible="1"/> -->
                           <field name="water_content"/>
-                        <field name="wt_of_samp"/>
-                         <field name="temp"/>
+                          <field name="wt_of_samp"/>
+                          <field name="temp"/>
                           <field name="humidity"/>
-                           <field name="specific_gravity"/>
-                            <field name="gravel"/>
+                          <field name="specific_gravity"/>
+                          <field name="gravel"/>
                             <field name="sand"/>
                             <field name="silt"/>
                             <field name="silt_clay"/>
@@ -1117,8 +1126,21 @@
                                     </table>
                                 </div>
 
+
+
+
+
+
+
+
+
+
                                 <!-- <div class="d-flex gap-2">
                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+
+
+
+
                                         <tbody>
                                             <tr>
                                                 <td><label for="bh_id"/></td>
@@ -1137,7 +1159,11 @@
                                 </div> -->
 
                                 <div class="d-flex gap-2">
+
+
                                     <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+
+                                    
                                         <tbody>
                                             <tr>
                                                 <td><label for="sample_details"/></td>
@@ -2316,7 +2342,7 @@
                                     <td ><field name="cc_final" /></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="cr">Cr (recompression/swell index)</label></td>
+                                    <td><label for="cr">Recompression Index, Cr</label></td>
                                     <td><field name="cr"  /></td>
                                 </tr>
                                 <tr>
@@ -2482,7 +2508,7 @@
                             </tbody>
                         </table>
                         
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="1">
                             <tbody>
                                 <tr>
                                     <td><label for="depth"></label></td>
@@ -2809,13 +2835,13 @@
                         
                     </div>
 
-                                <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not permeability_falling_visible">
+                    <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not permeability_falling_visible">
                             <tbody>
                                 <tr>
                                     <td><label for="selected_lab_id3"></label></td>
                                     <td ><field name="selected_lab_id3" class="blue-input"/></td>
                                 </tr>
-                              
+
                                 
                             </tbody>
                         </table> -->
