@@ -4356,6 +4356,27 @@ class SoilGSALINE(models.Model):
         ondelete='cascade'
     )
 
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
+
 
    
     
@@ -4986,6 +5007,8 @@ class SoilGSALINE1(models.Model):
         string="Parent Soil",
         ondelete='cascade'
     )
+
+    
 
 
    
