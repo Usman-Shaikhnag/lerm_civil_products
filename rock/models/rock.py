@@ -215,7 +215,6 @@ class MechanicalRock(models.Model):
 
     slake_durability_name = fields.Char("Name",default="DETERMINATION OF SLAKE DURABILITY OF ROCK")
 
-    
 
    
     slake_durability_generated = fields.Boolean(string="Rock Lab Lines ",default=False)
@@ -251,6 +250,7 @@ class MechanicalRock(models.Model):
 
     triaxial_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     triaxial_ids = fields.One2many('triaxial.line', 'parent_id',ondelete='cascade')
+
 
     def action_generate_triaxial_lines(self):
         for record in self:

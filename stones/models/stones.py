@@ -626,6 +626,7 @@ class Stones(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
+
             if result.parameter.internal_id == '5478ttr5-41c5-4cb5-843a-e09590c7c5789hh':
                 result.result_char = round(self.compressive_perpendiculer_avg,2)
                 result.calculated = True
