@@ -242,6 +242,622 @@
                         </field>
                     </div>
 
+                     <div invisible = "cerchar_abrasivity_visible == False">
+                        <h1 class="text-center">
+                            <field name="cerchar_abrasivity_name" readonly="1" />
+                            <field name="cerchar_abrasivity_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+                    <div invisible = "cerchar_abrasivity_visible == False">
+                        <field name= 'cerchar_abrasivity_generated' invisible="1" />
+                        <button name="action_generate_cerchar_abrasivity_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="cerchar_abrasivity_generated == True"/>
+
+                        </div>
+
+                        <field name="cerchar_abrasivity_ids" class="custom_table_borders" nolabel="1" invisible = "cerchar_abrasivity_visible == False" >
+                            <tree string="CBR" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                                <field name="is_checked"/>
+                            </tree>
+
+                            <form string="" >
+                            <sheet>
+                            <style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
+
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
+
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
+
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
+
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
+
+                                 .soil-table table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                font-size: 13px;
+                                }
+                                .soil-table th, .soil-table td {
+                                    border: 1px solid #444;
+                                    padding: 4px 6px;
+                                    text-align: center;
+                                }
+                                .header {
+                                    background: #f2f2f2;
+                                    font-weight: bold;
+                                }
+                                .red {
+                                    color: red !important;
+                                }
+                            </style>
+
+                      <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="lab_id">Lab ID</label></td>
+                                            <td><field name="lab_id" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="1">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="bh_id">BH ID</label></td>
+                                            <td><field name="bh_id" class="blue-input"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="start_date"></label></td>
+                                            <td><field name="start_date" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="end_date"></label></td>
+                                            <td><field name="end_date"  readonly="1"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                        <field name="cerchar_abrasivity_lines">
+                            <tree editable="bottom" class="custom_table_borders">
+                             <!-- <field name="blue_input" invisible="1"/> -->
+                                <field name='sr_no'/>
+                                <field name='d_mm'  class="blue-input" decoration-info="d_mm != 0"/>
+                                <field name='room_temp' class="blue-input" decoration-info="room_temp != 0"/>
+                                <field name='pin1_intial' width="120" class="blue-input" decoration-info="pin1_intial != 0"/>
+                                <field name='pon1_final' width="120" class="blue-input" decoration-info="pon1_final != 0"/>
+                                <field name='pin_result' width="120" />
+
+                                <field name='pin2initial'  width="120" class="blue-input" decoration-info="pin2initial != 0"/>
+                                <field name='pin2final' width="120" class="blue-input" decoration-info="pin2final != 0"/>
+                                <field name='pin2result' />
+
+                                <field name='pin3initial' class="blue-input" decoration-info="pin3initial != 0"/>
+                                <field name='pin3final' class="blue-input" decoration-info="pin3final != 0"/>
+                                <field name='pin3result' />
+
+                                <field name='pin4initial'  class="blue-input" decoration-info="pin4initial != 0"/>
+                                <field name='pin4final' class="blue-input" decoration-info="pin4final != 0"/>
+                                <field name='pin4result' />
+
+                                <field name='pin5initial' class="blue-input" decoration-info="pin5initial != 0"/>
+                                <field name='pin5final' class="blue-input" decoration-info="pin5final != 0"/>
+                                <field name='pin5result'  />
+                               
+                            </tree>
+                        </field>
+                   
+
+                    <div class="d-flex gap-3">
+                        
+
+                         <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="avg_pin_result"></label></td>
+                                <td><field name='avg_pin_result' col="1" /></td>
+                            </tr>
+                            
+                            
+                            </tbody>
+                        </table>
+
+
+                        <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="avg_pin2_result"></label></td>
+                                <td><field name='avg_pin2_result' col="1" /></td>
+                            </tr>
+                           
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="avg_pin3_result"></label></td>
+                                <td><field name='avg_pin3_result' col="1" /></td>
+                            </tr>
+                           
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="avg_pin4_result"></label></td>
+                                <td><field name='avg_pin4_result' col="1" /></td>
+                            </tr>
+                           
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="avg_pin5_result"></label></td>
+                                <td><field name='avg_pin5_result' col="1" /></td>
+                            </tr>
+                           
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div  >
+                        
+
+                         <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="overall_avg_pin_result"></label></td>
+                                <td><field name='overall_avg_pin_result' col="1" /></td>
+                            </tr>
+                            
+                            
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                      </sheet>
+                       <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save" class="btn btn-success"/>
+
+
+                              
+
+
+                        </footer>
+                      
+                        </form>
+
+                        </field>
+
+
+                        <div invisible = "slake_durability_visible == False" style="margin-bottom: 10px;">
+                            <field name= 'slake_durability_generated' invisible="1" />
+                            <button name="action_generate_slake_durability"
+                            
+                                type="object"
+                                string="Show Lab ID"
+                                class="oe_highlight"
+                                invisible="slake_durability_generated == True"/>
+
+                            </div>
+
+                    <div invisible = "slake_durability_visible == False">
+                        <h1 class="text-center">
+                            <field name="slake_durability_name" readonly="1" />
+                            <field name="slake_durability_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+                    <div invisible = "slake_durability_visible == False">
+                        <field name="slake_durability_child_lines">
+                            <tree editable="bottom" class="custom_table_borders">
+                             <!-- <field name="blue_input" invisible="1"/> -->
+                                <field name='sr_no'/>
+                                <field name='lab_id'  class="blue-input" decoration-info="lab_id != 0"/>
+                                <field name='date' class="blue-input" decoration-info="date != 0"/>
+                                <field name='bh_no' width="120" class="blue-input" decoration-info="bh_no != 0"/>
+                                <field name='room_temp' width="120" class="blue-input" decoration-info="room_temp != 0"/>
+                                <field name='relative_humidity' width="120" class="blue-input" decoration-info="relative_humidity != 0"/>
+                                <field name='water_temperature'  width="120" class="blue-input" decoration-info="water_temperature != 0"/>
+                                <field name='wt_drum_a' width="120" class="blue-input" decoration-info="wt_drum_a != 0"/>
+                                <field name='wt_drum_b' class="blue-input" decoration-info="wt_drum_b != 0"/>
+                                <field name='wt_drum_c' class="blue-input" decoration-info="wt_drum_c != 0"/>
+                                <field name='wt_drum_d' class="blue-input" decoration-info="wt_drum_d != 0"/>
+                                <field name='slake_second' class="blue-input" />
+                                <field name='slake_first'  class="blue-input" />
+                                <field name='classification' class="blue-input" decoration-info="classification != 0"/>
+                               
+                            </tree>
+                        </field>
+                    </div>
+
+
+                    <div invisible = "triaxial_visible == False">
+                        <h1 class="text-center">
+                            <field name="triaxial_name" readonly="1" />
+                            <field name="triaxial_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                     <div invisible = "triaxial_visible == False">
+                        <field name= 'triaxial_generated' invisible="1" />
+                        <button name="action_generate_triaxial_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="triaxial_generated == True"/>
+
+                        </div>
+
+                        <field name="triaxial_ids" class="custom_table_borders" nolabel="1" invisible = "triaxial_visible == False" >
+                            <tree string="Triaxial" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                                <field name="is_checked"/>
+                            </tree>
+
+                            <form string="" >
+                            <sheet>
+                            <style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
+
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
+
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
+
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
+
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
+
+                                 .soil-table table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                font-size: 13px;
+                                }
+                                .soil-table th, .soil-table td {
+                                    border: 1px solid #444;
+                                    padding: 4px 6px;
+                                    text-align: center;
+                                }
+                                .header {
+                                    background: #f2f2f2;
+                                    font-weight: bold;
+                                }
+                                .red {
+                                    color: red !important;
+                                }
+                            </style>
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="lab_id">Lab ID</label></td>
+                                            <td><field name="lab_id" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="bh_id">BH ID</label></td>
+                                            <td><field name="bh_id" class="blue-input"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="start_date"></label></td>
+                                            <td><field name="start_date" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="end_date"></label></td>
+                                            <td><field name="end_date"  readonly="1"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                    <div class="d-flex gap-2"  >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="room_temp_triaxial"></label></td>
+                                            <td><field name="room_temp_triaxial" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="relative_humidity_triaxial"></label></td>
+                                            <td><field name="relative_humidity_triaxial"  /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2"  >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="lithologic_dic"></label></td>
+                                            <td><field name="lithologic_dic" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="machine_used"></label></td>
+                                            <td><field name="machine_used"  /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="dia_spe"></label></td>
+                                            <td><field name="dia_spe" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="initial_wt"></label></td>
+                                            <td><field name="initial_wt"  /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+
+                            <div class="d-flex gap-2"  >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="area_spe"></label></td>
+                                            <td><field name="area_spe" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="dry_et"></label></td>
+                                            <td><field name="dry_et" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="moisture_content"></label></td>
+                                            <td><field name="moisture_content" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="dry_et"></label></td>
+                                            <td><field name="dry_et"  readonly="1"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table> -->
+                            </div>  
+
+
+                    <div >
+                        <field name="triaxial_child_lines">
+                            <tree editable="bottom" class="custom_table_borders">
+                             <!-- <field name="blue_input" invisible="1"/> -->
+                                <field name='sr_no'/>
+                                <field name='con_pressure'  class="blue-input" decoration-info="con_pressure != 0"/>
+                                <field name='failure_load' class="blue-input" decoration-info="failure_load != 0"/>
+                                <field name='duration_test' width="120" class="blue-input" decoration-info="duration_test != 0"/>
+                                <field name='height' width="120" class="blue-input" decoration-info="height != 0"/>
+                                <field name='area' width="120" class="blue-input" decoration-info="area != 0"/>
+                                <field name='axial'  width="120" class="blue-input" decoration-info="axial != 0"/>
+                                <field name='stress' width="120" class="blue-input" decoration-info="stress != 0"/>
+                                
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div  >
+                    <button name="action_generate_triaxial_graph" 
+                        string="Generate Graph" 
+                        type="object" 
+                        class="oe_highlight"/>
+                </div>
+
+                    <div  class="text-center" >
+                      <field name="triaxial_graph" widget="image" readonly="1"/>
+                    </div>
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="tangent_staright"></label></td>
+                                            <td><field name="tangent_staright" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="phi"></label></td>
+                                            <td><field name="phi" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2"  >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="intercept_staright"></label></td>
+                                            <td><field name="intercept_staright" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="cohesion"></label></td>
+                                            <td><field name="cohesion"  readonly="1"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+                            </sheet>
+                       <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save" class="btn btn-success"/>
+
+
+                              
+
+
+                        </footer>
+                      
+                        </form>
+
+                        </field>
+
+
+
                        <notebook>
 
                         <page string="Notes">

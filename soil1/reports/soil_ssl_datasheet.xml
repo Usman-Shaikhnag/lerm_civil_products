@@ -2935,6 +2935,7 @@
 					</div>
 
 					</t>
+<<<<<<< HEAD
 
 
 					<!-- DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST -->
@@ -3958,6 +3959,8 @@
 
 					
 
+=======
+>>>>>>> 168519370da717462cb99f51ef840b97e5c41fa2
 
 
 					<!-- DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST -->
@@ -5294,6 +5297,353 @@
                             </tr>
                         </table>
                         </div>
+
+
+						<!-- Liquid Limits -->
+
+
+					<t t-foreach="data.ll_child_lines.filtered(lambda l: l.is_checked)" t-as="line">
+
+
+					<div t-if="data.ll_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Liquid Limits
+					</div>
+
+					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
+					   <t t-esc="'LAB ID : %s' % (line.lab_id or '')"/>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Start Date
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.start_date"/>
+                             </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               End Date
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.end_date"/>
+                            </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Test No. </th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">No. of Blows</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Container No.</th>
+									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M3 (gm)</th>
+									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">M2 (gm)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M1 (gm)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M3-M2 (gm)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M2-M1 (gm)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Water Content %</th>
+								</tr>
+								
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="line.ll_line_ids" t-as="r" style="text-align: center;">
+									
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['serial_no']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['blows']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['container_no']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m3']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m1']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m3_m2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m2_m1']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['water_content']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+
+								</tr>
+							</tbody>
+						</table>
+
+						<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             LIQUID LIMIT
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.liquid_avg"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+						<div t-if="line.ll_graph" style="margin-top: 20px;text-align:center;">
+								<img t-att-src="'data:image/png;base64,' + line.ll_graph.decode('utf-8')" style="max-width: 100%;"/>
+				</div>
+
+
+					</div>
+					</t>
+
+
+
+					<!-- Grain Size Analysis (GSA) -->
+
+
+					<div t-if="data.gsa_visible"  style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 10px;">
+						Grain Size Analysis (GSA)
+					</div>
+
+					
+					
+					
+					<table width="100%" style="font-size: 8px; border-collapse: collapse;" border="1">
+							<thead>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Symbol </th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Lab ID</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Water Content (%)</th>
+									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Weight of total sample (gm)</th>
+									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">Temp °c</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Humidity %</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Specific Gravity</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">% Gravel</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">% Sand</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">% Silt</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">% Clay</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Classification</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-foreach="data.gsa_child_lines" t-as="line">
+									<tr>
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.symbol"/></td>
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.lab_no"/></td>
+										
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.water_content"/></td>
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.wt_of_samp"/></td>
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.temp"/></td>
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.humidity"/></td>
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.specific_gravity"/></td>
+
+
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.gravel"/></td>
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.sand"/></td>
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.silt"/></td>
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.silt_clay"/></td>
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.soil_classification"/></td>
+										
+								</tr>
+								</t>
+							</tbody>
+						</table>
+
+		       	       <t t-foreach="data.gsa_child_lines" t-as="line">
+
+                        <h6 style="margin-top:12px;text-align: center;font-weight: bold;">
+                              Lab ID: <t t-esc="line.lab_no"/>
+                        </h6>
+
+                      <table width="100%" style="font-size: 8px; border-collapse: collapse;" border="1">
+                      <thead>
+                       <tr>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Sieve Size</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Wt Retained</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">% Retained</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Cumulative % Retained</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">% Passing</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                         <t t-foreach="line.sieve_analysis_child_lines_gsa" t-as="s">
+                           <tr>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="s.sieve_size"/></td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="s.wt_retained"/></td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="s.percent_retained"/></td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="s.cumulative_retained"/></td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="s.passing_percent"/></td>
+                          </tr>
+                         </t>
+                     </tbody>
+                  </table>
+
+                <br/>
+
+				<table width="100%" style="font-size: 8px; border-collapse: collapse;" border="1">
+                      <thead>
+                       <tr>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Time</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Hydrometer Reading</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Men Corrected</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Eff Depth</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Velocity</th>
+						  <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Temp Combined</th>
+						  <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Root Velocity</th>
+						  <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Soil Diameter</th>
+						  <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">% Finer</th>
+						  <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">% Corrected</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                         <t t-foreach="line.hydrometer_analysis_lines_gsa" t-as="h">
+                           <tr>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+						 	   <t t-esc="h.time"/>
+							</td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+							   <t t-esc="h.hydrometer_reading"/>
+							</td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+							   <t t-esc="h.men_corrected"/>
+							</td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+							   
+						  	   <t t-esc="h.eff_depth" t-options='{"widget": "float", "precision": 1}'/>
+							</td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+							   <t t-esc="h.velocity"/>
+							</td>
+							<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+							   <t t-esc="h.temp_combined"/>
+							</td>
+							<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+							   <t t-esc="h.root_velocity"/>
+							</td>
+							<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+							   <t t-esc="h.diameter_soil"/>
+							</td>
+							<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+							   <t t-esc="h.n_finner"/>
+							</td>
+							<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+							   <t t-esc="h.n_corrected"/>
+							</td>
+                          </tr>
+                         </t>
+                     </tbody>
+                  </table>
+
+    <!-- <table width="100%" style="font-size: 8px; border-collapse: collapse;" border="1">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Hydrometer Reading</th>
+                <th>Men Corrected</th>
+                <th>Eff Depth</th>
+                <th>Velocity</th>
+                <th>Temp Combined</th>
+                <th>Root Velocity</th>
+                <th>Soil Diameter</th>
+                <th>% Finer</th>
+                <th>% Corrected</th>
+            </tr>
+        </thead>
+        <tbody>
+            <t t-foreach="line.hydrometer_analysis_lines_gsa" t-as="h">
+                <tr>
+                    <td><t t-esc="h.time"/></td>
+                    <td><t t-esc="h.hydrometer_reading"/></td>
+                    <td><t t-esc="h.men_corrected"/></td>
+                    <td><t t-esc="h.eff_depth"/></td>
+                    <td><t t-esc="h.velocity"/></td>
+                    <td><t t-esc="h.temp_combined"/></td>
+                    <td><t t-esc="h.root_velocity"/></td>
+                    <td><t t-esc="h.diameter_soil"/></td>
+                    <td><t t-esc="h.n_finner"/></td>
+                    <td><t t-esc="h.n_corrected"/></td>
+                </tr>
+            </t>
+        </tbody>
+    </table> -->
+
+    <!-- <div style="page-break-after: always;"></div> -->
+
+                           </t>
+						   <div t-if="data.gsa_graph_image" style="margin-top: 20px;text-align:center;">
+								<img t-att-src="'data:image/png;base64,' + data.gsa_graph_image.decode('utf-8')" style="max-width: 100%;"/>
+				         </div>
+
+						 <table width="100%" style="font-size: 8px; border-collapse: collapse;" border="1">
+                      <thead>
+                       <tr>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">BH ID</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Sample Depth (m)</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">D10</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">D30</th>
+                          <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">D60</th>
+						  <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Cu</th>
+						  <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Cc</th>
+						  <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Meniscus correction, Cm</th>
+						  <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Dispersing agent correction, x</th>
+						  <th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Temperature Correction, Mt</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                         <t t-foreach="data.gsa_particle_child_lines" t-as="s">
+                           <tr>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+						 	   <t t-esc="s.bh_id"/>
+							</td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+							   <t t-esc="s.sample_depth"/>
+							</td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;width:100px;" colspan="2">
+							   <t t-esc="s.d_10" t-options='{"widget": "float", "precision": 3}'/>
+							</td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;width:100px;" colspan="2">
+							   
+						  	   <t t-esc="s.d_30" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+                            <td style="border: 1px solid black; padding: 6px;text-align: center;width:100px;" colspan="2">
+							   <t t-esc="s.d_60" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td style="border: 1px solid black; padding: 6px;text-align: center;width:100px;" colspan="2">
+							   <t t-esc="s.c_u" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td style="border: 1px solid black; padding: 6px;text-align: center;width:100px;" colspan="2">
+							   <t t-esc="s.c_c" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td style="border: 1px solid black; padding: 6px;text-align: center;width:100px;" colspan="2">
+							   <t t-esc="s.meniscus_corre" t-options='{"widget": "float", "precision": 1}'/>
+							</td>
+							<td style="border: 1px solid black; padding: 6px;text-align: center;width:100px;" colspan="2">
+							   <t t-esc="s.dispersion" t-options='{"widget": "float", "precision": 3}'/>
+							</td>
+							<td style="border: 1px solid black; padding: 6px;text-align: center;width:100px;" colspan="2">
+							   <t t-esc="s.temp_corre" t-options='{"widget": "float", "precision": 4}'/>
+							</td>
+                          </tr>
+                         </t>
+                     </tbody>
+                  </table>
+ 
+                         </div>
 
 
 
