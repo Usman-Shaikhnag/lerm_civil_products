@@ -465,7 +465,6 @@
 
 					</div>
 
-<<<<<<< HEAD
 
 
 
@@ -615,17 +614,6 @@
 					<div t-if="data.cerchar_abrasivity_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
 					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
 						Determination of CERCHAR Abrasivity Index of Rock
-=======
-					<!-- Triaxial Shear Test (Rock) -->
-
-
-					<t t-foreach="data.triaxial_ids.filtered(lambda l: l.is_checked)" t-as="line">
-
-
-					<div t-if="data.triaxial_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
-					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
-						Triaxial Shear Test (Rock)
->>>>>>> 6e1fded0bcd33fba6245d627a2a9519a1806b592
 					</div>
 
 					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
@@ -654,7 +642,6 @@
                     </table>
 					</div>
 
-<<<<<<< HEAD
 					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
 							<thead>
 								<tr style="background-color:#f9f9f9; text-align: center;">
@@ -678,7 +665,201 @@
 									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 5 final</th>
 									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 5 result</th>
 							</tr>
-=======
+								
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="line.cerchar_abrasivity_lines" t-as="r" style="text-align: center;">
+									
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['sr_no']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['d_mm']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['room_temp']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin1_intial']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pon1_final']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin_result']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin2initial']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin2final']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin2result']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin3initial']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin3final']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin3result']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin4initial']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin4final']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin4result']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin5initial']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin5final']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['pin5result']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+						<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                            avg pin result
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.avg_pin_result"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                            avg pin 2 result
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.avg_pin2_result"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                            avg pin 3 result
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.avg_pin3_result"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                            avg pin 4 result
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.avg_pin4_result"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                            avg pin 5 result
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.avg_pin5_result"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                            Mean Pin wear (mm)
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.overall_avg_pin_result"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+
+
+					</div>
+				</t>
+
+
+
+
+<!-- Triaxial Shear Test (Rock) -->
+
+
+					<t t-foreach="data.triaxial_ids.filtered(lambda l: l.is_checked)" t-as="line">
+
+
+					<div t-if="data.triaxial_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Triaxial Shear Test (Rock)
+					</div>
+
+					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
+					   <t t-esc="'LAB ID : %s' % (line.lab_id or '')"/>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Start Date
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.start_date"/>
+                             </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               End Date
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.end_date"/>
+                            </td>
+                        </tr>
+                    </table>
+					</div>
+
 					<div style="padding: 10px 0px;">
 				   
                        <table style="width:60%;font-size:14px; border:none;">
@@ -775,74 +956,16 @@
 									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Axial Strength MPa</th>
 									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Stress rate MPa/sec</th>
 								</tr>
->>>>>>> 6e1fded0bcd33fba6245d627a2a9519a1806b592
 								
 							</thead>
 							<tbody>
 								<t t-set="k" t-value="0"/>
-<<<<<<< HEAD
-								<tr t-foreach="line.cerchar_abrasivity_lines" t-as="r" style="text-align: center;">
-=======
 								<tr t-foreach="line.triaxial_child_lines" t-as="r" style="text-align: center;">
->>>>>>> 6e1fded0bcd33fba6245d627a2a9519a1806b592
 									
 									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
 										<span t-esc="r['sr_no']"/>
 									</td>
 									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-<<<<<<< HEAD
-										<span t-esc="r['d_mm']" />
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['room_temp']" />
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin1_intial']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pon1_final']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin_result']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin2initial']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin2final']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin2result']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin3initial']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin3final']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin3result']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin4initial']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin4final']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin4result']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin5initial']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin5final']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin5result']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									
-=======
 										<span t-esc="r['con_pressure']" t-options='{"widget": "float", "precision": 2}' />
 									</td>
 									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
@@ -864,100 +987,19 @@
 										<span t-esc="r['stress']" t-options='{"widget": "float", "precision": 1}'/>
 									</td>
 
->>>>>>> 6e1fded0bcd33fba6245d627a2a9519a1806b592
 								</tr>
 							</tbody>
 						</table>
 
-<<<<<<< HEAD
-=======
 						<div t-if="line.triaxial_graph" style="margin-top: 20px;text-align:center;">
 								<img t-att-src="'data:image/png;base64,' + line.triaxial_graph.decode('utf-8')" style="max-width: 100%;"/>
 				</div>
 
->>>>>>> 6e1fded0bcd33fba6245d627a2a9519a1806b592
 						<div style="padding: 10px 0px;">
 				   
                        <table style="width:60%;font-size:14px; border:none;">
                         <tr>
                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
-<<<<<<< HEAD
-                            avg pin result
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.avg_pin_result"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                            avg pin 2 result
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.avg_pin2_result"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                            avg pin 3 result
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.avg_pin3_result"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                            avg pin 4 result
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.avg_pin4_result"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                            avg pin 5 result
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.avg_pin5_result"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                            Mean Pin wear (mm)
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.overall_avg_pin_result"/>
-=======
                              Tangent of straight line (m) :
                             </td>
                             <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
@@ -986,31 +1028,26 @@
                             </td>
                             <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
                               <span t-field="line.cohesion"/>
->>>>>>> 6e1fded0bcd33fba6245d627a2a9519a1806b592
                              </td>
                         </tr>
                     </table>
 					</div>
 
-<<<<<<< HEAD
-
-
-					</div>
-				</t>
-
-
-
-
-
-
-
-=======
 						
 
 
 					</div>
 					</t>
->>>>>>> 6e1fded0bcd33fba6245d627a2a9519a1806b592
+
+
+
+
+
+
+
+
+
+
 
 
 
