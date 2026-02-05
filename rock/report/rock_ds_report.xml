@@ -464,6 +464,226 @@
 
 					</div>
 
+					<!-- Triaxial Shear Test (Rock) -->
+
+
+					<t t-foreach="data.triaxial_ids.filtered(lambda l: l.is_checked)" t-as="line">
+
+
+					<div t-if="data.triaxial_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Triaxial Shear Test (Rock)
+					</div>
+
+					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
+					   <t t-esc="'LAB ID : %s' % (line.lab_id or '')"/>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Start Date
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.start_date"/>
+                             </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               End Date
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.end_date"/>
+                            </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Room Temperature
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.room_temp_triaxial"/>
+                             </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               Relative humidity
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.relative_humidity_triaxial"/>
+                            </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Lithologic description of rock
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.lithologic_dic"/>
+                             </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               Type of machine used
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.machine_used"/>
+                            </td>
+                        </tr>
+						<tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               Diameter of Specimen, mm
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.dia_spe"/>
+                            </td>
+                        </tr>
+						<tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               Initial Weight of Sample (gm)
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.initial_wt"/>
+                            </td>
+                        </tr>
+						<tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               Area of Specimen, cm2
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.area_spe"/>
+                            </td>
+                        </tr>
+						<tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               Dry Weight of Sample (gm)
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.dry_et"/>
+                            </td>
+                        </tr>
+						<tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               Moisture content (%)
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.moisture_content"/>
+                            </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Number of Specimen Tested. </th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Confining Pressure S3 # MPa</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Failure Load kN</th>
+									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Duration of test  sec</th>
+									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">Height of Sample mm</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Area mm2</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Axial Strength MPa</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Stress rate MPa/sec</th>
+								</tr>
+								
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="line.triaxial_child_lines" t-as="r" style="text-align: center;">
+									
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['sr_no']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['con_pressure']" t-options='{"widget": "float", "precision": 2}' />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['failure_load']" t-options='{"widget": "float", "precision": 2}' />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['duration_test']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['height']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['area']" t-options='{"widget": "float", "precision": 1}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['axial']" t-options='{"widget": "float", "precision": 1}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['stress']" t-options='{"widget": "float", "precision": 1}'/>
+									</td>
+
+								</tr>
+							</tbody>
+						</table>
+
+						<div t-if="line.triaxial_graph" style="margin-top: 20px;text-align:center;">
+								<img t-att-src="'data:image/png;base64,' + line.triaxial_graph.decode('utf-8')" style="max-width: 100%;"/>
+				</div>
+
+						<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Tangent of straight line (m) :
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.tangent_staright"/>
+                             </td>
+                        </tr>
+						<tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Intercept of straight line (b) :
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.intercept_staright"/>
+                             </td>
+                        </tr>
+						<tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Angle of internal friction, f
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.phi"/>
+                             </td>
+                        </tr>
+						<tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Apparent Cohesion, c
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.cohesion"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+						
+
+
+					</div>
+					</t>
+
+
+
+
+
                     
                     
                    <div class="signatureContainer girdgird">
