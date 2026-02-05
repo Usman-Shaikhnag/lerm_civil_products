@@ -1,0 +1,111 @@
+<templates>
+  <t t-name="document_filestore.DriveContainer" owl="1">
+    <div class="o_drive_grid_container p-6">
+
+      <t t-if="props.items.length === 0">
+        <div class="d-flex flex-column align-items-center justify-content-center h-100">
+          <i class="fa fa-folder-o text-muted mb-4 opacity-50" style="font-size: 4rem;" />
+          <p class="text-lg font-weight-medium text-muted">This folder is empty</p>
+        </div>
+      </t>
+
+      <t t-else="">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+
+          <t t-foreach="props.items" t-as="item" t-key="item.id">
+            <t t-set="isFolder" t-value="item.isFolder" />
+            <t t-set="isBeingRenamed" t-value="state.renamingId === item.id" />
+
+            <div class="col">
+
+              <t t-if="isFolder">
+                <!-- FOLDER CARD -->
+                <div class="o_drive_item_card position-relative cursor-pointer"
+                     t-on-click="() => !isBeingRenamed &amp;&amp; props.onFolderClick(item.id)">
+
+                  <div class="position-absolute" style="top:8px; right:8px;" t-on-click.stop="">
+                    <FolderMenu
+                      folderId="item.id"
+                      folderName="item.name"
+                      ownerId="item.ownerId"
+                      currentUserId="item.currentUserId"
+                      onDelete="props.onDeleteFolder"
+                      onUserRights="props.onUserRights"
+                      onRenameFolder="() => this.handleStartRename(item.id, item.name)"
+                      access="item.access"
+                    />
+
+                  </div>
+
+                  <i class="fa fa-folder item-icon mb-3" />
+
+                  <t t-if="isBeingRenamed">
+                    <input type="text"
+                           class="form-control rename-input"
+                           t-model="state.renameInput"
+                           t-on-keydown="handleRenameKeydown"
+                           t-on-blur="handleRenameInputBlur"
+                           t-on-click.stop="" />
+                  </t>
+                  <t t-else="">
+                    <p class="item-name pe-4"><t t-esc="item.name" /></p>
+                    <p class="item-details"><t t-esc="item.itemCount || 0" /> items</p>
+                  </t>
+
+                </div>
+
+              </t>
+              <t t-elif="!isFolder">
+                <div class="o_drive_item_card position-relative">
+
+                  <div class="position-absolute" style="top:8px; right:8px;" t-on-click.stop="">
+                    <FileMenu
+                      fileId="item.id"
+                      fileName="item.name"
+                      ownerId="item.ownerId"
+                      currentUserId="item.currentUserId"
+                      downloadUrl="item.downloadUrl"
+                      onRenameFile="() => this.handleStartRename(item.id, item.name)"
+                      onDeleteFile="props.onDeleteFile"
+                      onUserRights="props.onUserRights"
+                      access="item.access"
+                    />
+                  </div>
+
+                  <t t-if="isBeingRenamed">
+                    <input type="text"
+                          class="form-control rename-input"
+                          t-model="state.renameInput"
+                          t-on-keydown="handleRenameKeydown"
+                          t-on-blur="handleRenameInputBlur"
+                          t-on-click.stop="" />
+                  </t>
+                  <t t-else="">
+                    <div class="d-flex align-items-center gap-2 mb-2" t-on-click="() => props.onFileClick(item)">
+                      <i class="fa fa-file-o item-icon"/>
+                      <span class="item-name" t-esc="item.name"/>
+                    </div>
+                  </t>
+
+                </div>
+              </t>
+
+
+              <t t-else="">
+                <!-- FILE CARD -->
+                <div class="o_drive_item_card cursor-pointer"
+                     t-on-click="() => props.onFileClick(item)">
+                  <i t-att-class="'fa ' + (item.type === 'image' ? 'fa-file-image-o' : 'fa-file-o') + ' item-icon mb-3'" />
+                  <p class="item-name pe-4"><t t-esc="item.name" /></p>
+                </div>
+              </t>
+
+            </div>
+          </t>
+
+        </div>
+      </t>
+
+    </div>
+  </t>
+</templates>

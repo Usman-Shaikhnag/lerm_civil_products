@@ -1,0 +1,51 @@
+<templates>
+  <t t-name="document_filestore.DriveHeader" owl="1">
+    <div class="o_drive_header bg-card px-6 py-4">
+      <div class="d-flex align-items-center justify-content-between gap-4">
+        
+        <!-- Title -->
+        <div class="flex-1">
+          <h1 class="text-2xl fw-semibold text-foreground" t-esc="props.folderName"/>
+          <p class="text-sm text-muted-foreground mt-1">Manage your files and folders</p>
+        </div>
+
+        <!-- Right Controls -->
+        <div class="d-flex align-items-center gap-2">
+
+          <!-- Search -->
+          <div class="position-relative d-none d-md-flex">
+            <i class="fa fa-search position-absolute" style="left:12px; top:50%; transform:translateY(-50%);"/>
+            <input
+              t-ref="searchInput"
+              type="text"
+              placeholder="Search files..."
+              class="search-input ps-5 pe-3 py-2 bg-background border rounded-lg text-sm"
+              t-on-input="handleSearchInput"
+            />
+          </div>
+
+          <!-- New Folder -->
+          <button
+            t-if="props.onCreateFolder"
+            t-on-click="handleCreateFolder"
+            class="btn btn-outline-secondary gap-2"
+          >
+            <i class="fa fa-folder-plus"/> <span class="d-none d-sm-inline">New Folder</span>
+          </button>
+
+          <!-- Upload -->
+          <button t-on-click="handleUploadClick" class="btn btn-primary gap-2">
+            <i class="fa fa-upload"/> <span class="d-none d-sm-inline">Upload</span>
+          </button>
+
+          <!-- Help -->
+          <button class="btn btn-ghost" title="Help">
+            <i class="fa fa-question-circle"/>
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </t>
+</templates>
