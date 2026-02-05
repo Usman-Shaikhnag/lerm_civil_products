@@ -2929,1038 +2929,14 @@
 								<img t-att-src="'data:image/png;base64,' + line.graph_image_ucs.decode('utf-8')" style="max-width: 100%;"/>
 				</div>
 
-					
 
 
 					</div>
 
 					</t>
-<<<<<<< HEAD
 
 
-					<!-- DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST -->
 
-					<t t-foreach="data.direct_shear_line.filtered(lambda l: l.is_checked)" t-as="line">
-
-
-					<div t-if="data.direct_shear_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
-					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
-						DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST
-					</div>
-
-					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
-					   <t t-esc="'LAB ID : %s' % (line.lab_id or '')"/>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                             Start Date
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.start_date"/>
-                             </td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                               End Date
-                            </td>
-                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
-                              <span t-field="line.end_date"/>
-                            </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Drainage Condition
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.drainage_condition"/>
-							</td>
-						</tr>
-					</table>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Shear Box Inside Dimension:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_box_dimension"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Area (A):cm2
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_area"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Height, H
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_height"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Soil Volume: cm3
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_volumn"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Initial mass of soil and cutter:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.initial_mass_soil_cutter"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Empty Weight of cutter:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.wt_empty_cutter"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Final wt of soil + cutter at shear zone
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.final_wt_soil_cutter"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Mass of dry soil at shear zone (g)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.mass_dry_soil"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								initial Mass of soil:(g)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.initial_mass_soil"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Initial mositure content:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.initial_moisture_content"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Final Mass of soil:(g)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.final_mass_soil"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Moisture content at shear zone (%)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.moisture_content_shear"/>
-							</td>
-						</tr>
-					</table>
-
-					
-					</div>
-
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Density of soil (g/cc)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.density_soil_shear"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Dry density of soil (g/cc)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.dry_density_soil_shear"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Settelement after normal stress:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.normal_stress_settle"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Dry density of soil after normal stress:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.dry_density_stress_settle"/>
-							</td>
-						</tr>
-					</table>
-
-
-					</div>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Room Temperature
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_room_temp"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Temperature correction fro each deg C rise/fall (+/-)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_temp_correction"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Std Temp During calibr'n
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_std_temp"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Rise/Fall in Temperature (°C)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_temp_diff"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								% Rise/Fall in Force Value
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_force_percent_change"/>
-							</td>
-						</tr>
-					</table>
-
-
-					</div>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Displacement rate: mm/min
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.displacement_rate"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Normal stress: kg/cm2
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.normal_stress"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Area Type
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.area_type"/>
-							</td>
-						</tr>
-
-						<tr>
-                                    <td style=" font-weight: bold;" colspan="6" t-if="line.area_type == 'corrected'">Corrected Area</td>
-                                    <td style=" text-align: center;"  colspan="6"  t-if="line.area_type == 'corrected'">
-                                     <span t-esc="line.corrected_area_shear"/>
-
-                                       </td>
-									 
-                                       
-
-									<td style=" font-weight: bold;" colspan="6" t-if="line.area_type == 'non_corrected'">Non Corrected Area</td>
-                                    <td style=" text-align: center;" colspan="6" t-if="line.area_type == 'non_corrected'">
-                                    <span t-esc="line.non_corrected_area_shear"/>
-                                    </td>
-                                     
-
-                        </tr>
-
-					</table>
-
-					</div>
-
-					<div style="text-align: left; font-size: 16px; font-weight: bold;padding-top:20px ">
-						
-					</div>
-				
-				<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-							<thead>
-								<tr style="background-color:#f9f9f9; text-align: center;">
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Sr. No</th>
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal Dial Reading</th>
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal  Displacement (mm)</th>
-									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Corrected Area (cm2)</th>
-									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">Non Corrected Area (cm2)</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Proving ring reading</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal Shear force (kg)</th>
-							     	<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal Shear force with temp Correction (kg)</th>
-							    	<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Shear stress (kg/sq.cm)</th>
-								</tr>
-								
-							</thead>
-							<tbody>
-								<t t-set="k" t-value="0"/>
-								<tr t-foreach="line.direct_shear_ids" t-as="r" style="text-align: center;">
-									
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="k + 1" />
-										<t t-set="k" t-value="k+1"/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_read']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_dispalacement']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['corrected_area']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['non_corrected_area']" t-options='{"widget": "float", "precision": 0}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['prove_ring_read']" t-options='{"widget": "float", "precision": 0}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_shear']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_shear_temp']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['shear_stress']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-
-								</tr>
-							</tbody>
-						</table>
-
-						<div t-if="line.shear_graph_image" style="margin-top: 20px;text-align:center;">
-								<img t-att-src="'data:image/png;base64,' + line.shear_graph_image.decode('utf-8')" style="max-width: 100%;"/>
-				</div>
-
-
-				<div style="text-align: left; font-size: 16px; font-weight: bold; padding-top:20px">
-						Input 2
-					</div>
-
-					<div style="padding-top: 5px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Shear Box Inside Dimension:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_box_dimension_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Area (A):cm2
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_area_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Height, H
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_height_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Soil Volume: cm3
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_volumn_2"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Initial mass of soil and cutter:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.initial_mass_soil_cutter_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Empty Weight of cutter:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.wt_empty_cutter_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Final wt of soil + cutter at shear zone
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.final_wt_soil_cutter_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Mass of dry soil at shear zone (g)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.mass_dry_soil_2"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								initial Mass of soil:(g)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.initial_mass_soil_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Initial mositure content:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.initial_moisture_content_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Final Mass of soil:(g)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.final_mass_soil_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Moisture content at shear zone (%)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.moisture_content_shear_2"/>
-							</td>
-						</tr>
-					</table>
-
-					
-					</div>
-
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Density of soil (g/cc)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.density_soil_shear_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Dry density of soil (g/cc)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.dry_density_soil_shear_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Settelement after normal stress:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.normal_stress_settle_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Dry density of soil after normal stress:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.dry_density_stress_settle_2"/>
-							</td>
-						</tr>
-					</table>
-
-
-					</div>
-
-					
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Displacement rate: mm/min
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.displacement_rate"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Normal stress: kg/cm2
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.normal_stress_2"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					
-
-					<div style="text-align: left; font-size: 16px; font-weight: bold;padding-top:20px ">
-						
-					</div>
-				
-				<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-							<thead>
-								<tr style="background-color:#f9f9f9; text-align: center;">
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Sr. No</th>
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal Dial Reading</th>
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal  Displacement (mm)</th>
-									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Corrected Area (cm2)</th>
-									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">Non Corrected Area (cm2)</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Proving ring reading</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal Shear force (kg)</th>
-							     	<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal Shear force with temp Correction (kg)</th>
-							    	<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Shear stress (kg/sq.cm)</th>
-								</tr>
-								
-							</thead>
-							<tbody>
-								<t t-set="k" t-value="0"/>
-								<tr t-foreach="line.direct_shear_ids_2" t-as="r" style="text-align: center;">
-									
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="k + 1" />
-										<t t-set="k" t-value="k+1"/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_read']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_dispalacement']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['corrected_area']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['non_corrected_area']" t-options='{"widget": "float", "precision": 0}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['prove_ring_read']" t-options='{"widget": "float", "precision": 0}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_shear']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_shear_temp']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['shear_stress']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-
-								</tr>
-							</tbody>
-						</table>
-
-						<div t-if="line.shear_graph_image_2" style="margin-top: 20px;text-align:center;">
-								<img t-att-src="'data:image/png;base64,' + line.shear_graph_image_2.decode('utf-8')" style="max-width: 100%;"/>
-				</div>
-
-				<div style="text-align: left; font-size: 16px; font-weight: bold; padding-top:20px">
-						Input 3
-					</div>
-
-					<div style="padding-top: 5px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Shear Box Inside Dimension:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_box_dimension_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Area (A):cm2
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_area_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Height, H
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_height_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Soil Volume: cm3
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.shear_volumn_3"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Initial mass of soil and cutter:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.initial_mass_soil_cutter_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Empty Weight of cutter:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.wt_empty_cutter_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Final wt of soil + cutter at shear zone
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.final_wt_soil_cutter_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Mass of dry soil at shear zone (g)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.mass_dry_soil_3"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								initial Mass of soil:(g)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.initial_mass_soil_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Initial mositure content:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.initial_moisture_content_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Final Mass of soil:(g)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.final_mass_soil_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Moisture content at shear zone (%)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.moisture_content_shear_3"/>
-							</td>
-						</tr>
-					</table>
-
-					
-					</div>
-
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Density of soil (g/cc)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.density_soil_shear_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Dry density of soil (g/cc)
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.dry_density_soil_shear_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Settelement after normal stress:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.normal_stress_settle_3"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold; ">
-								Dry density of soil after normal stress:
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.dry_density_stress_settle_3"/>
-							</td>
-						</tr>
-					</table>
-
-
-					</div>
-
-					
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 60%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Displacement rate: mm/min
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.displacement_rate"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;">
-								Normal stress: kg/cm2
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;width:30%">
-								<span t-field="line.normal_stress_3"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					
-
-					<div style="text-align: left; font-size: 16px; font-weight: bold;padding-top:20px ">
-						
-					</div>
-				
-				<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-							<thead>
-								<tr style="background-color:#f9f9f9; text-align: center;">
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Sr. No</th>
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal Dial Reading</th>
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal  Displacement (mm)</th>
-									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Corrected Area (cm2)</th>
-									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">Non Corrected Area (cm2)</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Proving ring reading</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal Shear force (kg)</th>
-							     	<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Horizantal Shear force with temp Correction (kg)</th>
-							    	<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Shear stress (kg/sq.cm)</th>
-								</tr>
-								
-							</thead>
-							<tbody>
-								<t t-set="k" t-value="0"/>
-								<tr t-foreach="line.direct_shear_ids_3" t-as="r" style="text-align: center;">
-									
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="k + 1" />
-										<t t-set="k" t-value="k+1"/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_read']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_dispalacement']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['corrected_area']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['non_corrected_area']" t-options='{"widget": "float", "precision": 0}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['prove_ring_read']" t-options='{"widget": "float", "precision": 0}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_shear']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['horizontal_shear_temp']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['shear_stress']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-
-								</tr>
-							</tbody>
-						</table>
-
-						<div t-if="line.shear_graph_image_3" style="margin-top: 20px;text-align:center;">
-								<img t-att-src="'data:image/png;base64,' + line.shear_graph_image_3.decode('utf-8')" style="max-width: 100%;"/>
-				</div>
-
-				<div >
-                           <h6 style="color:red;">Shear Stress Vs Normal Stress</h6>
-                        </div>
-
-				<div style="padding-top: 8px ;">
-
-					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-								Sr No
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-								Shear stress kg/cm2
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-								Normal stress kg/cm2
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								1
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.shear_test_final1"/>
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.normal_stress"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								2
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.shear_test_final2"/>
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.normal_stress_2"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								3
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.shear_test_final3"/>
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.normal_stress_3"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								MASS OF SOIL
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.mass_of_soil_finals1"/>
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.mass_of_soil_finals"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								DRY WT SOIL
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.dry_wt_soil_final1"/>
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.dry_wt_soil_final"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								NMC
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.initial_mc_final1"/>
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.initial_mc_final"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								DRY DENSITY
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.dry_density_final1"/>
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.dry_density_final"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								BULK DENSITY
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.bulk_density_final1"/>
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.bulk_density_final"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					<div style="padding-top: 16px ;">
-
-					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								phi
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.phi"/>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								cohesion
-							</td>
-							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.cohesion"/>
-							</td>
-						</tr>
-					</table>
-
-					</div>
-
-					<div t-if="line.shear_graph_image_4" style="margin-top: 20px;text-align:center;">
-								<img t-att-src="'data:image/png;base64,' + line.shear_graph_image_4.decode('utf-8')" style="max-width: 100%;"/>
-				</div>
-
-					</div>
-					</t>
-
-
-
-
-					
-
-=======
->>>>>>> 168519370da717462cb99f51ef840b97e5c41fa2
 
 
 					<!-- DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST -->
@@ -5408,6 +4384,266 @@
 
 					</div>
 					</t>
+
+
+
+
+
+
+
+
+
+
+
+
+               	<!-- plastic Limits -->
+
+
+					<t t-foreach="data.pl_child_lines.filtered(lambda l: l.is_checked)" t-as="line">
+
+
+					<div t-if="data.pl_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						plastic Limits
+					</div>
+
+					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
+					   <t t-esc="'LAB ID : %s' % (line.lab_id or '')"/>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Start Date
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.start_date"/>
+                             </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               End Date
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.end_date"/>
+                            </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Test No. </th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Container No.</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">M3 (gm) </th>
+									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M2 (gm)</th>
+									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">M1 (gm)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M3-M2</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M2-M1 (gm)</th>
+								
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Water Content %</th>
+								</tr>
+								
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="line.pl_line_ids" t-as="r" style="text-align: center;">
+									
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['serial_no']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['container_no']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m3']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m1']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m3_m2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m2_m1']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['water_content']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+
+								</tr>
+							</tbody>
+						</table>
+
+						<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                            plastic limit
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.plastic_avg"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+						
+
+					</div>
+					</t>
+
+
+
+
+
+
+
+
+ 	<!-- plastic Limits -->
+
+
+					<t t-foreach="data.sl_child_lines.filtered(lambda l: l.is_checked)" t-as="line">
+
+
+					<div t-if="data.sl_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Shrinkage Limits
+					</div>
+
+					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
+					   <t t-esc="'LAB ID : %s' % (line.lab_id or '')"/>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Start Date
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.start_date"/>
+                             </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               End Date
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.end_date"/>
+                            </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Test No. </th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Container No.</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">M1 (gm) </th>
+									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">V1 (cm3)</th>
+									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">M3 (gm)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M2 (gm)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M3-M2</th>
+								
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M2-M1</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">V2 (cm3)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">V1-V2</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Water Content %</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Shrinkage Ratio</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">SL %</th>
+								</tr>
+								
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="line.sl_line_ids" t-as="r" style="text-align: center;">
+									
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['serial_no']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['container_no']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m1']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['v1']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m3']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m3_m2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m2_m1']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['v2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['v1_v2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['water_content']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['shrinkage_ratio']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['shrinkage_limit']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									
+
+								</tr>
+							</tbody>
+						</table>
+
+						<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                           Shrinkage limit
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.shrinkage_avg"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+						
+
+					</div>
+					</t>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
