@@ -2929,12 +2929,14 @@
 								<img t-att-src="'data:image/png;base64,' + line.graph_image_ucs.decode('utf-8')" style="max-width: 100%;"/>
 				</div>
 
-					
 
 
 					</div>
 
 					</t>
+
+
+
 
 
 					<!-- DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST -->
@@ -4382,6 +4384,266 @@
 
 					</div>
 					</t>
+
+
+
+
+
+
+
+
+
+
+
+
+               	<!-- plastic Limits -->
+
+
+					<t t-foreach="data.pl_child_lines.filtered(lambda l: l.is_checked)" t-as="line">
+
+
+					<div t-if="data.pl_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						plastic Limits
+					</div>
+
+					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
+					   <t t-esc="'LAB ID : %s' % (line.lab_id or '')"/>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Start Date
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.start_date"/>
+                             </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               End Date
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.end_date"/>
+                            </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Test No. </th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Container No.</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">M3 (gm) </th>
+									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M2 (gm)</th>
+									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">M1 (gm)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M3-M2</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M2-M1 (gm)</th>
+								
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Water Content %</th>
+								</tr>
+								
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="line.pl_line_ids" t-as="r" style="text-align: center;">
+									
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['serial_no']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['container_no']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m3']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m1']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m3_m2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m2_m1']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['water_content']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+
+								</tr>
+							</tbody>
+						</table>
+
+						<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                            plastic limit
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.plastic_avg"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+						
+
+					</div>
+					</t>
+
+
+
+
+
+
+
+
+ 	<!-- plastic Limits -->
+
+
+					<t t-foreach="data.sl_child_lines.filtered(lambda l: l.is_checked)" t-as="line">
+
+
+					<div t-if="data.sl_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
+					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+						Shrinkage Limits
+					</div>
+
+					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
+					   <t t-esc="'LAB ID : %s' % (line.lab_id or '')"/>
+					</div>
+
+					<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                             Start Date
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.start_date"/>
+                             </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                               End Date
+                            </td>
+                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
+                              <span t-field="line.end_date"/>
+                            </td>
+                        </tr>
+                    </table>
+					</div>
+
+					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color:#f9f9f9; text-align: center;">
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Test No. </th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Container No.</th>
+									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">M1 (gm) </th>
+									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">V1 (cm3)</th>
+									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">M3 (gm)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M2 (gm)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M3-M2</th>
+								
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">M2-M1</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">V2 (cm3)</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">V1-V2</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Water Content %</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Shrinkage Ratio</th>
+									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">SL %</th>
+								</tr>
+								
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="line.sl_line_ids" t-as="r" style="text-align: center;">
+									
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['serial_no']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['container_no']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m1']" />
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['v1']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m3']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m3_m2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['m2_m1']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['v2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['v1_v2']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['water_content']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['shrinkage_ratio']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['shrinkage_limit']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+									
+
+								</tr>
+							</tbody>
+						</table>
+
+						<div style="padding: 10px 0px;">
+				   
+                       <table style="width:60%;font-size:14px; border:none;">
+                        <tr>
+                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
+                           Shrinkage limit
+                            </td>
+                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
+                              <span t-field="line.shrinkage_avg"/>
+                             </td>
+                        </tr>
+                    </table>
+					</div>
+
+						
+
+					</div>
+					</t>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
