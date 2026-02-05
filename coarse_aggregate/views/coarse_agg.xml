@@ -208,16 +208,107 @@
                     <div invisible="not elongation_visible or not flakiness_visible" class="custom_table_borders">
                         <field name="elongation_table" nolabel="1">
                             <tree editable="bottom">
+                               <field name="serial_no"  />
                                 <field name="sieve_size"  />
-                                <field name="wt_retained" />
-                                <field name="elongated_retained" />
-                                <field name="flakiness_retained" />
+                                <field name="retained_size" />
+                                <field name="wt_fraction"  />
+                                <field name="wt_thickness" />
+                                <field name="wt_fraction1" />
+                                <field name="wt_thickness1" />
                             </tree>
                         </field>
+
+                       
+
                     </div>
+
+
+                    <div class="d-flex gap-4" invisible="not elongation_visible or not flakiness_visible">
+                        <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="total_wt_fraction"></label></td>
+                                    <td><field name="total_wt_fraction" class="blue-input"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
                         
-                    <div class="d-flex gap-3" invisible="elongation_visible == False or flakiness_visible == False">
-                        <!-- Table 1: Retained Weights -->
+                        <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="total_wt_thickness"></label></td>
+                                    <td><field name="total_wt_thickness"/></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="total_wt_fraction1"></label></td>
+                                    <td><field name="total_wt_fraction1"/></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="total_wt_thickness1"></label></td>
+                                    <td><field name="total_wt_thickness1"/></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                     <div class="d-flex gap-2" invisible="not elongation_visible or not flakiness_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="flakiness_index"></label></td>
+                                    <td><field name="flakiness_index"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="elongated_index"></label></td>
+                                    <td><field name="elongated_index"/></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not elongation_visible or not flakiness_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="combined_index"></label></td>
+                                    <td><field name="combined_index"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        
+                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="elongated_index"></label></td>
+                                    <td><field name="elongated_index"/></td>
+                                </tr>
+
+                            </tbody>
+                        </table> -->
+                    </div>
+
+                        
+                    <!-- <div class="d-flex gap-3" invisible="elongation_visible == False or flakiness_visible == False">
                         <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
                             <tbody>
                                 <tr>
@@ -248,7 +339,6 @@
                         </table>
 
 
-                        <!-- Table 2: Aggregate Indexes -->
                         <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
                             <tbody>
                                 <tr>
@@ -293,7 +383,7 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> -->
 
 
 

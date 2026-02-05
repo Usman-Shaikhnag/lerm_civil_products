@@ -1037,107 +1037,204 @@ class CoarseAggregateMechanical(models.Model):
 
     elongation_table = fields.One2many('mechanical.elongation.flakiness.line','parent_id',string="Elongation Flakiness Index",default=lambda self: self.default_flakiness_sizes())
 
-    total_wt_retained_fl_el = fields.Float('Total',compute="_compute_total_el_fl")
-    total_elongated_retained = fields.Float('Total Elongation',compute="_compute_total_elongation")
-    total_flakiness_retained = fields.Float('Total Flakiness',compute="_compute_total_flakiness")
+    total_wt_fraction = fields.Float(
+    string="Total Weight of Aggregate  taken in each  Fraction (gms)",
+    compute="_compute_total_wt_fraction",
+    store=True
+    )
 
-    aggregate_elongation = fields.Float('Aggregate Elongation Value in %',compute="_compute_aggregate_elongation")
-    aggregate_flakiness = fields.Float('Aggregate Flakiness Value in %' ,compute="_compute_aggregate_flakiness")
-    aggregate_combine = fields.Float('Aggregate Elongation & Flakiness Value in %',compute="_compute_aggregate_combine")
+    total_wt_thickness = fields.Float(
+    string="Total Weight of Aggregate in each fraction passing the thickness Gauge(gm)",
+    compute="_compute_total_wt_thickness",
+    store=True
+    )
 
+    total_wt_fraction1 = fields.Float(
+    string="Weight of Non-flaky Aggrgate taken in each fraction(gm)",
+    compute="_compute_total_wt_fraction1",
+    store=True
+    )
 
-    aggregate_combine_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_aggregate_combine_conformity", store=True)
+    total_wt_thickness1 = fields.Float(
+    string="Weight of the Aggregate in each  fraction not passing the length  Gauge (gms)",
+    compute="_compute_total_wt_thickness1",
+    store=True
+    )
 
-    @api.depends('aggregate_combine','eln_ref','grade')
-    def _compute_aggregate_combine_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.aggregate_combine_conformity = 'na'
-                continue
-            record.aggregate_combine_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.aggregate_combine - record.aggregate_combine*mu_value
-                    upper = record.aggregate_combine + record.aggregate_combine*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.aggregate_combine_conformity = 'pass'
-                        break
-                    else:
-                        record.aggregate_combine_conformity = 'fail'
+    @api.depends('elongation_table.wt_fraction')
+    def _compute_total_wt_fraction(self):
+        for rec in self:
+            rec.total_wt_fraction = sum(
+                rec.elongation_table.mapped('wt_fraction')
+            )
 
-    aggregate_combine_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_aggregate_combine_nabl", store=True)
+    @api.depends('elongation_table.wt_thickness')
+    def _compute_total_wt_thickness(self):
+        for rec in self:
+            rec.total_wt_thickness = sum(
+                rec.elongation_table.mapped('wt_thickness')
+            )
 
-    @api.depends('aggregate_combine','eln_ref','grade')
-    def _compute_aggregate_combine_nabl(self):
-        
-        for record in self:
-            record.aggregate_combine_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.aggregate_combine - record.aggregate_combine*mu_value
-                    upper = record.aggregate_combine + record.aggregate_combine*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.aggregate_combine_nabl = 'pass'
-                        break
-                    else:
-                        record.aggregate_combine_nabl = 'fail'
+    @api.depends('elongation_table.wt_fraction1')
+    def _compute_total_wt_fraction1(self):
+        for rec in self:
+            rec.total_wt_fraction1 = sum(
+                rec.elongation_table.mapped('wt_fraction1')
+            )
+
+    @api.depends('elongation_table.wt_thickness1')
+    def _compute_total_wt_thickness1(self):
+        for rec in self:
+            rec.total_wt_thickness1 = sum(
+                rec.elongation_table.mapped('wt_thickness1')
+            )
+
+    flakiness_index = fields.Float(
+    string="Flakiness Index (%)",
+    compute="_compute_flakiness_index",
+    store=True
+    )
 
 
-    @api.depends('elongation_table.wt_retained')
-    def _compute_total_el_fl(self):
-        for record in self:
-            record.total_wt_retained_fl_el = sum(record.elongation_table.mapped('wt_retained'))
-
-    @api.depends('elongation_table.elongated_retained')
-    def _compute_total_elongation(self):
-        for record in self:
-            record.total_elongated_retained = sum(record.elongation_table.mapped('elongated_retained'))
-
-    @api.depends('elongation_table.flakiness_retained')
-    def _compute_total_flakiness(self):
-        for record in self:
-            record.total_flakiness_retained = sum(record.elongation_table.mapped('flakiness_retained'))
-
-    @api.depends('total_wt_retained_fl_el','total_elongated_retained')
-    def _compute_aggregate_elongation(self):
-        for record in self:
-            if record.total_elongated_retained != 0:
-                record.aggregate_elongation = record.total_elongated_retained/record.total_wt_retained_fl_el * 100
+    @api.depends('total_wt_fraction', 'total_wt_thickness')
+    def _compute_flakiness_index(self):
+        for rec in self:
+            if rec.total_wt_fraction:
+                rec.flakiness_index = (rec.total_wt_thickness / rec.total_wt_fraction) * 100
             else:
-                record.aggregate_elongation = 0
+                rec.flakiness_index = 0.0
 
-    @api.depends('total_wt_retained_fl_el','total_flakiness_retained')
-    def _compute_aggregate_flakiness(self):
-        for record in self:
-            if record.total_flakiness_retained != 0:
-                record.aggregate_flakiness = record.total_flakiness_retained/record.total_wt_retained_fl_el*100
-            else:
-                record.aggregate_flakiness = 0
+
+    elongated_index = fields.Float(
+    string="Elongation index (%)",
+    compute="_compute_elongated_index",
+    store=True
+    )
     
 
-    @api.depends('total_wt_retained_fl_el','total_flakiness_retained')
-    def _compute_aggregate_combine(self):
-        for record in self:
-            record.aggregate_combine = round(record.aggregate_elongation+record.aggregate_flakiness,2)
+    @api.depends('total_wt_fraction1', 'total_wt_thickness1')
+    def _compute_elongated_index(self):
+        for rec in self:
+            if rec.total_wt_fraction1:
+                rec.elongated_index = (rec.total_wt_thickness1 / rec.total_wt_fraction1) * 100
+            else:
+                rec.elongated_index = 0.0
+
+    combined_index = fields.Float(
+    string="Combined",
+    compute="_compute_combined_index",
+    store=True
+    )
+
+    @api.depends('flakiness_index', 'elongated_index')
+    def _compute_combined_index(self):
+        for rec in self:
+            rec.combined_index = (rec.flakiness_index or 0.0) + (rec.elongated_index or 0.0)
+
+
+
+
+    # total_wt_retained_fl_el = fields.Float('Total',compute="_compute_total_el_fl")
+    # total_elongated_retained = fields.Float('Total Elongation',compute="_compute_total_elongation")
+    # total_flakiness_retained = fields.Float('Total Flakiness',compute="_compute_total_flakiness")
+
+    # aggregate_elongation = fields.Float('Aggregate Elongation Value in %',compute="_compute_aggregate_elongation")
+    # aggregate_flakiness = fields.Float('Aggregate Flakiness Value in %' ,compute="_compute_aggregate_flakiness")
+    # aggregate_combine = fields.Float('Aggregate Elongation & Flakiness Value in %',compute="_compute_aggregate_combine")
+
+
+    # aggregate_combine_conformity = fields.Selection([
+    #         ('pass', 'Pass'),
+    #         ('fail', 'Fail'),
+    #         ('na', 'NA'),
+    #         ], string="Conformity", compute="_compute_aggregate_combine_conformity", store=True)
+
+    # @api.depends('aggregate_combine','eln_ref','grade')
+    # def _compute_aggregate_combine_conformity(self):
+        
+    #     for record in self:
+    #         if not record.eln_ref or not record.eln_ref.conformity:
+    #             record.aggregate_combine_conformity = 'na'
+    #             continue
+    #         record.aggregate_combine_conformity = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 req_min = material.req_min
+    #                 req_max = material.req_max
+    #                 mu_value = line.mu_value
+                    
+    #                 lower = record.aggregate_combine - record.aggregate_combine*mu_value
+    #                 upper = record.aggregate_combine + record.aggregate_combine*mu_value
+    #                 if lower >= req_min and upper <= req_max:
+    #                     record.aggregate_combine_conformity = 'pass'
+    #                     break
+    #                 else:
+    #                     record.aggregate_combine_conformity = 'fail'
+
+    # aggregate_combine_nabl = fields.Selection([
+    #     ('pass', 'NABL'),
+    #     ('fail', 'Non-NABL')], string="NABL", compute="_compute_aggregate_combine_nabl", store=True)
+
+    # @api.depends('aggregate_combine','eln_ref','grade')
+    # def _compute_aggregate_combine_nabl(self):
+        
+    #     for record in self:
+    #         record.aggregate_combine_nabl = 'fail'
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
+    #         for material in materials:
+    #             if material.grade.id == record.grade.id:
+    #                 lab_min = line.lab_min_value
+    #                 lab_max = line.lab_max_value
+    #                 mu_value = line.mu_value
+                    
+    #                 lower = record.aggregate_combine - record.aggregate_combine*mu_value
+    #                 upper = record.aggregate_combine + record.aggregate_combine*mu_value
+    #                 if lower >= lab_min and upper <= lab_max:
+    #                     record.aggregate_combine_nabl = 'pass'
+    #                     break
+    #                 else:
+    #                     record.aggregate_combine_nabl = 'fail'
+
+
+    # @api.depends('elongation_table.wt_retained')
+    # def _compute_total_el_fl(self):
+    #     for record in self:
+    #         record.total_wt_retained_fl_el = sum(record.elongation_table.mapped('wt_retained'))
+
+    # @api.depends('elongation_table.elongated_retained')
+    # def _compute_total_elongation(self):
+    #     for record in self:
+    #         record.total_elongated_retained = sum(record.elongation_table.mapped('elongated_retained'))
+
+    # @api.depends('elongation_table.flakiness_retained')
+    # def _compute_total_flakiness(self):
+    #     for record in self:
+    #         record.total_flakiness_retained = sum(record.elongation_table.mapped('flakiness_retained'))
+
+    # @api.depends('total_wt_retained_fl_el','total_elongated_retained')
+    # def _compute_aggregate_elongation(self):
+    #     for record in self:
+    #         if record.total_elongated_retained != 0:
+    #             record.aggregate_elongation = record.total_elongated_retained/record.total_wt_retained_fl_el * 100
+    #         else:
+    #             record.aggregate_elongation = 0
+
+    # @api.depends('total_wt_retained_fl_el','total_flakiness_retained')
+    # def _compute_aggregate_flakiness(self):
+    #     for record in self:
+    #         if record.total_flakiness_retained != 0:
+    #             record.aggregate_flakiness = record.total_flakiness_retained/record.total_wt_retained_fl_el*100
+    #         else:
+    #             record.aggregate_flakiness = 0
+    
+
+    # @api.depends('total_wt_retained_fl_el','total_flakiness_retained')
+    # def _compute_aggregate_combine(self):
+    #     for record in self:
+    #         record.aggregate_combine = round(record.aggregate_elongation+record.aggregate_flakiness,2)
             
 
 
@@ -1146,23 +1243,17 @@ class CoarseAggregateMechanical(models.Model):
     @api.model
     def default_flakiness_sizes(self):
         default_lines = [
-            (0, 0, {'sieve_size': '63 mm'}),
-            (0, 0, {'sieve_size': '50 mm'}),
-            (0, 0, {'sieve_size': '40 mm'}),
-            (0, 0, {'sieve_size': '31.5 mm'}),
-            (0, 0, {'sieve_size': '25 mm'}),
-            (0, 0, {'sieve_size': '20 mm'}),
-            (0, 0, {'sieve_size': '16 mm'}),
-            (0, 0, {'sieve_size': '12.5 mm'}),
-            (0, 0, {'sieve_size': '10 mm'}),
-            (0, 0, {'sieve_size': '6.3 mm'}),
-            (0, 0, {'sieve_size': '4.75 mm'}),
-            (0, 0, {'sieve_size': '2.36 mm'}),
-            (0, 0, {'sieve_size': '1.18 mm'}),
-            (0, 0, {'sieve_size': 'Pan'}),
-            
+            (0, 0, {'sieve_size': '50',   'retained_size': '40'}),
+            (0, 0, {'sieve_size': '40',   'retained_size': '31.5'}),
+            (0, 0, {'sieve_size': '31.5', 'retained_size': '25'}),
+            (0, 0, {'sieve_size': '25',   'retained_size': '20'}),
+            (0, 0, {'sieve_size': '20',   'retained_size': '16'}),
+            (0, 0, {'sieve_size': '16',   'retained_size': '12.5'}),
+            (0, 0, {'sieve_size': '12.5', 'retained_size': '10'}),
+            (0, 0, {'sieve_size': '10',   'retained_size': '6.3'}),
         ]
-        return default_lines   
+        return default_lines
+
 
 
 
@@ -2289,11 +2380,33 @@ class SieveAnalysisLine(models.Model):
 class ElongationFlacnessLine(models.Model):
     _name = "mechanical.elongation.flakiness.line"
     parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
 
-    sieve_size = fields.Char(string="IS Sieve Size")
-    wt_retained = fields.Float(string="Wt. Retained in gms")
-    elongated_retained = fields.Float(string="Elongated Retained in gms")
-    flakiness_retained = fields.Float(string="Flakiness Retained in gms")
+    sieve_size = fields.Char(string="Passing through  IS sieve  (mm)")
+    retained_size = fields.Char(string="Retained  on IS sieve  (mm)")
+    wt_fraction = fields.Float(string="Weight of Aggregate  taken in each  Fraction (gms)")
+    wt_thickness = fields.Float(string="Weight of Aggregate in each fraction passing the thickness Gauge(gm)")
+    wt_fraction1 = fields.Float(string="Weight of Non-flaky Aggrgate taken in each fraction(gm)")
+    wt_thickness1 = fields.Float(string="Weight of the Aggregate in each  fraction not passing the length  Gauge (gms)")
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(ElongationFlacnessLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 class SoundnessNa2Line(models.Model):
