@@ -996,7 +996,7 @@
 
 
 
-                 <!-- gsa -->
+                 <!-- Grain Size Analysis (GSA) -->
                  <div invisible="gsa_visible == False">
                         <h1 class="text-center">
                             <field name="gsa_name" readonly="1" nolabel="1"/>
@@ -1050,6 +1050,7 @@
                             <field name="silt"/>
                             <field name="silt_clay"/>
                             <field name="soil_classification"/>
+                            <field name="is_checked"/>
                     </tree>
 
                  
@@ -1333,7 +1334,19 @@
                                     <i class="fa fa-calculator"/> Add N Corrected Value
                                 </button>
                             </div>
+                            <footer>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn btn-primary"
+                            />
+
+                    <button string="Back" special="save" class="btn btn-success"/>
+
+                </footer>
                         </form>
+
+                        
                         
                         </field>
 

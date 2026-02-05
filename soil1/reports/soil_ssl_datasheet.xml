@@ -4388,6 +4388,9 @@
 					<!-- Grain Size Analysis (GSA) -->
 
 
+					
+
+
 					<div t-if="data.gsa_visible"  style="margin-top: 30px; font-family: Arial, sans-serif;">
 					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 10px;">
 						Grain Size Analysis (GSA)
@@ -4438,7 +4441,9 @@
 							</tbody>
 						</table>
 
-		       	       <t t-foreach="data.gsa_child_lines" t-as="line">
+		       	       <!-- <t t-foreach="data.gsa_child_lines" t-as="line"> -->
+
+					   <t t-foreach="data.gsa_child_lines.filtered(lambda l: l.is_checked)" t-as="line">
 
                         <h6 style="margin-top:12px;text-align: center;font-weight: bold;">
                               Lab ID: <t t-esc="line.lab_no"/>
@@ -4559,6 +4564,7 @@
     <!-- <div style="page-break-after: always;"></div> -->
 
                            </t>
+						   
 						   <div t-if="data.gsa_graph_image" style="margin-top: 20px;text-align:center;">
 								<img t-att-src="'data:image/png;base64,' + data.gsa_graph_image.decode('utf-8')" style="max-width: 100%;"/>
 				         </div>
