@@ -1143,60 +1143,60 @@ class CoarseAggregateMechanical(models.Model):
     # aggregate_combine = fields.Float('Aggregate Elongation & Flakiness Value in %',compute="_compute_aggregate_combine")
 
 
-    # aggregate_combine_conformity = fields.Selection([
-    #         ('pass', 'Pass'),
-    #         ('fail', 'Fail'),
-    #         ('na', 'NA'),
-    #         ], string="Conformity", compute="_compute_aggregate_combine_conformity", store=True)
+    combined_index_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_combined_index_conformity", store=True)
 
-    # @api.depends('aggregate_combine','eln_ref','grade')
-    # def _compute_aggregate_combine_conformity(self):
+    @api.depends('combined_index','eln_ref','grade')
+    def _compute_combined_index_conformity(self):
         
-    #     for record in self:
-    #         if not record.eln_ref or not record.eln_ref.conformity:
-    #             record.aggregate_combine_conformity = 'na'
-    #             continue
-    #         record.aggregate_combine_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 req_min = material.req_min
-    #                 req_max = material.req_max
-    #                 mu_value = line.mu_value
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.combined_index_conformity = 'na'
+                continue
+            record.combined_index_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
                     
-    #                 lower = record.aggregate_combine - record.aggregate_combine*mu_value
-    #                 upper = record.aggregate_combine + record.aggregate_combine*mu_value
-    #                 if lower >= req_min and upper <= req_max:
-    #                     record.aggregate_combine_conformity = 'pass'
-    #                     break
-    #                 else:
-    #                     record.aggregate_combine_conformity = 'fail'
+                    lower = record.combined_index - record.combined_index*mu_value
+                    upper = record.combined_index + record.combined_index*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.combined_index_conformity = 'pass'
+                        break
+                    else:
+                        record.combined_index_conformity = 'fail'
 
-    # aggregate_combine_nabl = fields.Selection([
-    #     ('pass', 'NABL'),
-    #     ('fail', 'Non-NABL')], string="NABL", compute="_compute_aggregate_combine_nabl", store=True)
+    combined_index_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_combined_index_nabl", store=True)
 
-    # @api.depends('aggregate_combine','eln_ref','grade')
-    # def _compute_aggregate_combine_nabl(self):
+    @api.depends('combined_index','eln_ref','grade')
+    def _compute_combined_index_nabl(self):
         
-    #     for record in self:
-    #         record.aggregate_combine_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 lab_min = line.lab_min_value
-    #                 lab_max = line.lab_max_value
-    #                 mu_value = line.mu_value
+        for record in self:
+            record.combined_index_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
                     
-    #                 lower = record.aggregate_combine - record.aggregate_combine*mu_value
-    #                 upper = record.aggregate_combine + record.aggregate_combine*mu_value
-    #                 if lower >= lab_min and upper <= lab_max:
-    #                     record.aggregate_combine_nabl = 'pass'
-    #                     break
-    #                 else:
-    #                     record.aggregate_combine_nabl = 'fail'
+                    lower = record.combined_index - record.combined_index*mu_value
+                    upper = record.combined_index + record.combined_index*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.combined_index_nabl = 'pass'
+                        break
+                    else:
+                        record.combined_index_nabl = 'fail'
 
 
     # @api.depends('elongation_table.wt_retained')
