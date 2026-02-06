@@ -3051,6 +3051,7 @@ class Soil(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
             if result.parameter.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
                 result.result_char = round(self.plastic_limit,2)
                 result.calculated = True
@@ -3059,6 +3060,7 @@ class Soil(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
             if result.parameter.internal_id == '1045789654-2ff0-4b81-aca1-0e07dab7cd87':
                 result.result_char = round(self.plasticity_index,2)
                 result.calculated = True
@@ -3317,6 +3319,117 @@ class Soil(models.Model):
                 # else:
                 #     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '32145888hhhllly1-ca64-44dd-b0ae-2578886oopp':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '321456ki8hhhllly1-ca64-44dd-b0ae-3214654lk':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'tyer4fgrtlmjy-475b-9arty156878901247':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'jkt56888hhhllly1-ca64-44dd-b0ae-23120147g':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'po567888hhhllly1-ca64-44dd-b0ae-23120114r':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'poty7888hhhllly1-ca64-44dd-b0ae-23141478h':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '214578255hhhllly1-ca64-44dd-b0ae-231421457':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'yt25ec57-11f8-4249-9fa8-78888921457r':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'uitefc57-11f8-4249-9fa8-788889923147':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'yt2okplt-11f8-4249-9fa8-78888993214t':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'yoptr557-11f8-4249-9fa8-78888993214g':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'yt28uj5t-11f8-4249-9fa8-78888993214t':
+                # result.result_char = round(self.area_triaxial,2)
+                result.calculated = True
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+            
+
+
             
             
 
@@ -7013,6 +7126,9 @@ class SoilLightHeavyCompactionLine(models.Model):
             line.dry_density = 0.0
 
 
+
+    
+
     
 
     # @api.model
@@ -9154,6 +9270,11 @@ class HeavyCompactionLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+    
+    
 
 class USCNewLine(models.Model):
     _name = "ucs.line"
@@ -13058,6 +13179,9 @@ class CbrLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+    
 
 
 class SoilNote(models.Model):
