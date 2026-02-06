@@ -952,8 +952,8 @@ class AercharAbrasivityLine(models.Model):
             )
 
             if review_line:
-                line.bh_id = review_line.source        # BH ID / Location
-                line.depth = review_line.depth         # Depth (m)
+                line.bh_id = review_line.source       
+                line.depth = review_line.depth        
 
 
     cerchar_abrasivity_lines = fields.One2many('mechanical.cerchar.line','parent_id_cerchar',string="Parameter")
