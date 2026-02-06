@@ -21,6 +21,7 @@ class MechanicalRock(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+    sample_id = fields.Many2one('lerm.srf.sample',string="Sample")
 
 
     notes_id = fields.One2many('rock.notes','parent_id',string="Notes")
@@ -215,7 +216,6 @@ class MechanicalRock(models.Model):
 
     slake_durability_name = fields.Char("Name",default="DETERMINATION OF SLAKE DURABILITY OF ROCK")
 
-    
 
    
     slake_durability_generated = fields.Boolean(string="Rock Lab Lines ",default=False)
@@ -251,6 +251,7 @@ class MechanicalRock(models.Model):
 
     triaxial_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     triaxial_ids = fields.One2many('triaxial.line', 'parent_id',ondelete='cascade')
+
 
     def action_generate_triaxial_lines(self):
         for record in self:
@@ -445,6 +446,9 @@ class MechanicalRock(models.Model):
             if result.parameter.internal_id == '3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte':
                 result.calculated = True
 
+            if result.parameter.internal_id == '214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe':
+                result.calculated = True
+
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",
@@ -507,14 +511,48 @@ class MechanicalRockLine(models.Model):
     _name = "mechanical.rock.line"
     parent_id = fields.Many2one('mechanical.rock',string="Parent Id")
 
+    bh_no = fields.Char(
+        string="BH No./Location",
+        compute="_compute_consolidation",
+        store=True
+    )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_consolidation",
+        store=True
+    )
+
+    
+    @api.depends('lab_id')
+    def _compute_consolidation(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_no = False
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_no = review_line.source        # BH ID / Location
+                line.depth = review_line.depth         # Depth (m)
+
     # blue_input = fields.Boolean(default=True,invisible=True)
    
     sr_no = fields.Integer(string="Specimen NO.", readonly=True, copy=False, default=1)
     date_received = fields.Date(string="Date of Received")
     date_testing = fields.Date(string="Date of Testing")
     lab_id = fields.Char(string="Lab ID") 
-    bh_no = fields.Char(string="BH No./Location",digits=(16, 3))
-    depth = fields.Char(string="Depth")
+    # bh_no = fields.Char(string="BH No./Location",digits=(16, 3))
+    # depth = fields.Char(string="Depth")
     piece_no = fields.Char(string="Piece No")
     lithological = fields.Char(string="Lithological Description of rock")
     room_temp = fields.Float(string="Room Temperature")
@@ -957,6 +995,16 @@ class AercharAbrasivityLine(models.Model):
 
 
     cerchar_abrasivity_lines = fields.One2many('mechanical.cerchar.line','parent_id_cerchar',string="Parameter")
+
+    classification = fields.Selection(
+    [
+        ('low', 'LOW'),
+        ('medium', 'MEDIUM'),
+        ('high', 'HIGH'),
+        ('very_high', 'VERY HIGH'),
+    ],
+    string="Classification"
+    )
 
     avg_pin_result = fields.Float(
         string="Average Pin 1 Result",
