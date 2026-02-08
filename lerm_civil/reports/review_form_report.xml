@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="custom_geotech_report">
+
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+
+         <table style="width:100%; border-collapse:collapse; font-size:13px;" border="1">
+
+                        <tr>
+                            <td style="width:25%;"><b>Order Request No.</b></td>
+                            <td style="width:45%;">
+                                <!-- <span t-field="o.name"/> -->
+                            </td>
+
+                            <td style="width:10%;"><b>Date:</b></td>
+                            <td style="width:20%;">
+                                <!-- <span t-field="o.create_date"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Customer Name &amp; Address:</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.partner_id"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>For (End Customer, if any):</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.end_customer"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Report to be issued in the name of:</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.report_issue_name"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Contact details of receiver (Phone, Email and address):</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.contact_details"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Project Name:</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.project_name"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Sample Received on:</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.sample_received_date"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Lot Details:</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.lot_details"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Number of disturbed Samples:</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.disturbed_samples"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Number of undisturbed soil samples:</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.undisturbed_samples"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Number of rock samples:</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.rock_samples"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Number of natural stone samples:</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.stone_samples"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Expected completion date:</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.expected_completion_date"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Reference (W.O / Mail):</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.reference_no"/> -->
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <br/>
+
+
+                    <!-- REVIEW TABLE -->
+                    <table border="1" style="width:100%; border-collapse:collapse;">
+                    <t t-set="i" t-value="0"/>
+                        <thead>
+                            <tr>
+                                <th>Sr. No</th>
+                                <th>Chainage /Location/ID</th>
+                                <th>Depth (m)</th>
+                                <th>Sample Details</th>
+                                <th>Tests to be performed</th>
+                                <th>Test method to be adopted</th>
+                              
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <t t-foreach="o.review_line_ids" t-as="line"  >
+                                <tr>
+                                    <td><span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td><span t-field="line.source"/></td>
+                                    <td><span t-field="line.depth"/></td>
+                                    <td><span t-field="line.sample_details"/></td>
+                                    <td></td>
+                                    <td></td>
+                                  
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+
+            </t>
+        </t>
+
+</template>
+
+
+
+
+<record id="action_custom_geotech_report" model="ir.actions.report">
+    <field name="name">Geotech Report</field>
+    <field name="model">sample.request.review</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">lerm_civil.custom_geotech_report</field>
+    <field name="report_file">lerm_civil.custom_geotech_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+</odoo>
+
+

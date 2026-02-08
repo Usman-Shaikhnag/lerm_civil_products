@@ -40,7 +40,8 @@
     'reports/mechanical_general_template.xml',
     'security/ir.model.access.csv',
     'reports/genstru_eln_report.xml',
-    'reports/genstru_eln_datasheet.xml'
+    'reports/genstru_eln_datasheet.xml',
+    'reports/review_form_report.xml'
    
 
 
