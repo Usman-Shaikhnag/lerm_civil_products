@@ -126,54 +126,54 @@
 					 <table style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 10px;">
                     <thead>
                         <tr style="border-bottom: 1px solid black;">
-                            <th style="padding: 5px; border: 1px solid black;">Sr. No.</th>
-                            <th style="padding: 5px; border: 1px solid black;">Item</th>
+                            <th style="padding: 5px; border: 1px solid black; text-align: center;">Sr. No.</th>
+                            <th style="padding: 5px; border: 1px solid black;text-align: center;">Item</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="padding: 5px; border: 1px solid black;">1</td>
-                            <td style="padding: 5px; border: 1px solid black;">Introduction</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">1</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Introduction</td>
                         </tr>
                         <tr>
-                            <td style="padding: 5px; border: 1px solid black;">2</td>
-                            <td style="padding: 5px; border: 1px solid black;">Objective</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">2</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Objective</td>
                             <!-- <td style="padding: 5px; border: 1px solid black;"><span class="page"/> / <span class="topage"/></td> -->
                         </tr>
                         <tr>
-                            <td style="padding: 5px; border: 1px solid black;">3</td>
-                            <td style="padding: 5px; border: 1px solid black;">Apparatus</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">3</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Apparatus</td>
                             <!-- <td style="padding: 5px; border: 1px solid black;">9-12</td> -->
                         </tr>
                         <tr>
-                            <td style="padding: 5px; border: 1px solid black;">4</td>
-                            <td style="padding: 5px; border: 1px solid black;">Setup &amp; Test Procedure</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">4</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Setup &amp; Test Procedure</td>
                             <!-- <td style="padding: 5px; border: 1px solid black;">13-13</td> -->
                         </tr>
 						  <tr>
-                            <td style="padding: 5px; border: 1px solid black;">5</td>
-                            <td style="padding: 5px; border: 1px solid black;">Load vs Settlement data &amp; Safe bearing capacity</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">5</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Load vs Settlement data &amp; Safe bearing capacity</td>
                             <!-- <td style="padding: 5px; border: 1px solid black;">13-13</td> -->
                         </tr>
 						 <tr>
-									<td style="padding: 5px; border: 1px solid black;">6</td>
-									<td style="padding: 5px; border: 1px solid black;">ANNEXURES</td>
+									<td style="padding: 5px; border: 1px solid black;text-align: center;">6</td>
+									<td style="padding: 5px; border: 1px solid black;text-align: center;">ANNEXURES</td>
 							
 							</tr>
 
 						    <tr>
-							<td style="padding: 5px; border: 1px solid black;"></td>
-									<td style="padding: 5px; border: 1px solid black;">I. Calculation</td>
+							<td style="padding: 5px; border: 1px solid black;text-align: center;"></td>
+									<td style="padding: 5px; border: 1px solid black;text-align: center;">I. Calculation</td>
 								</tr>
 
 							 <tr>
-							<td style="padding: 5px; border: 1px solid black;"></td>
-									<td style="padding: 5px; border: 1px solid black;">II. Load intensity vs Settlement Graph</td>
+							<td style="padding: 5px; border: 1px solid black;text-align: center;"></td>
+									<td style="padding: 5px; border: 1px solid black;text-align: center;">II. Load intensity vs Settlement Graph</td>
 							</tr>
 
 						  <tr>
-                            <td style="padding: 5px; border: 1px solid black;">7</td>
-                            <td style="padding: 5px; border: 1px solid black;">Photographs</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">7</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Photographs</td>
                             <!-- <td style="padding: 5px; border: 1px solid black;">13-13</td> -->
                         </tr>
                     </tbody>
@@ -298,12 +298,12 @@
                 <thead style="background-color: #d3d3d3;">
                  
                     <tr >
-						<td rowspan="2">Sr No 
+						<td rowspan="2" style="text-align: center;">Sr No 
 						</td>
-						<td colspan="1">Load Applied (t/m2) 
+						<td colspan="1" style="text-align: center;">Load Applied (t/m2) 
 						</td>
 						
-					<td  colspan="1">Average cumulative Plate Settlement mm</td>
+					<td  colspan="1" style="text-align: center;">Average cumulative Plate Settlement mm</td>
 					
                        
                     </tr>
@@ -313,16 +313,16 @@
 
 						<t t-set="i" t-value="0"/>
 						<tr t-foreach="data.child_lines_loadand_cumilitive" t-as="r">
-							<td >
+							<td style="text-align: center;">
 								<div>
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 								</div>
 							</td>
-							<td >
+							<td style="text-align: center;">
 								<span t-esc="r['pressure_plate2']" t-options='{"widget": "float", "precision": 2}' />
-							</td>
-							<td colspan="1">
+							</td >
+							<td colspan="1" style="text-align: center;">
 								<span t-esc="r['cumulative_sett2']" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 							
@@ -349,28 +349,28 @@
 					
 						<table style="margin-top:20px">
 							<tr cols="12">
-								<td colspan="6">Safe Bearing Capacity  t/m²
+								<td colspan="6" style="text-align: center;">Safe Bearing Capacity  t/m²
 									<![CDATA[&nbsp;]]>
 								</td>
-								<td colspan="6">
+								<td colspan="6" style="text-align: center;">
 									<![CDATA[&nbsp;]]>
 									<span t-field="data.bearing_capacity" />
 								</td>
 							</tr>
-                            <tr cols="12">
-								<td colspan="6">Factor of Safety
+                            <tr cols="12" >
+								<td colspan="6" style="text-align: center;">Factor of Safety
 									<![CDATA[&nbsp;]]>
 								</td>
-								<td colspan="6">
+								<td colspan="6" style="text-align: center;">
 									<![CDATA[&nbsp;]]>
 									<span t-field="data.factore_safty" />
 								</td>
 							</tr>
-                            <tr cols="12">
-								<td colspan="6">Ultimate Bearing Capacity  t/m²
+                            <tr cols="12" >
+								<td colspan="6" style="text-align: center;">Ultimate Bearing Capacity  t/m²
 									<![CDATA[&nbsp;]]>
 								</td>
-								<td colspan="6">
+								<td colspan="6" style="text-align: center;">
 									<![CDATA[&nbsp;]]>
 									<span t-field="data.ultimate_bearing" />
 								</td>
@@ -378,34 +378,34 @@
 
 
 							 <tr cols="12">
-								<td colspan="6">Maximum load Intensity on plate , t/m²
+								<td colspan="6" style="text-align: center;">Maximum load Intensity on plate , t/m²
 
 									<![CDATA[&nbsp;]]>
 								</td>
-								<td colspan="6">
+								<td colspan="6" style="text-align: center;">
 									<![CDATA[&nbsp;]]>
 									<span t-field="data.maximum_load" />
 								</td>
 							</tr>
 							 <tr cols="12">
-								<td colspan="6">Allowable Bearing Capacity of soil , t/m²
+								<td colspan="6" style="text-align: center;">Allowable Bearing Capacity of soil , t/m²
 
 
 									<![CDATA[&nbsp;]]>
 								</td>
-								<td colspan="6">
+								<td colspan="6" style="text-align: center;">
 									<![CDATA[&nbsp;]]>
 									<span t-field="data.allowable" />
 								</td>
 							</tr>
 
 							 <tr cols="12">
-								<td colspan="6">Total Settlement of plate ,mm
+								<td colspan="6" style="text-align: center;">Total Settlement of plate ,mm
 
 
 									<![CDATA[&nbsp;]]>
 								</td>
-								<td colspan="6">
+								<td colspan="6" style="text-align: center;">
 									<![CDATA[&nbsp;]]>
 									<span t-field="data.total_settlement" />
 								</td>
@@ -476,26 +476,12 @@
 			      </div>
 
 
-				  <div class="page" style="page-break-before: always;margin-top:20px;font-size:18px">
+				  <!-- <div class="page" style="page-break-before: always;margin-top:20px;font-size:18px">
 					<div style="font-size:18px" >
 			       I.  CALCULATION FOR ALLOWABLE BEARING CAPACITY BASED ON RESULT OF PLATE LOAD TEST
 
 				</div>
-                 <!-- <div>
-				   <br>Footing Settlement:    sf = sp {Bf(Bp + 0.3)/BP (Bf + 0.3)}2</br>
-				   <br>Where,</br>
-				   <br>Bf = Size of footing in m, </br>
-				   <br>Bp= Size of plate in m,</br>
-				    <br>Sp= Settlement of test plate in mm,</br>
-					 <br>Sf= Settlement of footing in mm.</br>
-					 <br>Size of footing as 7m, Bf = 7m</br>
-					  <br>Bp = 0.30m</br>
-					   <br>Sp = 3.76 mm</br>
-					   <br>Settlement below PCC,   =   sf = sp {Bf(Bp + 0.3)/BP (Bf + 0.3)}2</br>
-
-					     <br style="text-align:center"> 3.76 {7(3 + 0.3)/0.3 (7 + 0.3)}2</br>
-						 <br style="text-align:center">  = 13.85 mm &lt; 25 mm (IS 1888-1982 clause 4.7)</br>
-				 </div> -->
+                
 				 <table >
 					
 							<div>
@@ -518,7 +504,7 @@
 					<span t-field="data.observation"/>
 				</div>
 
-				</div>
+				</div> -->
 
 
 
@@ -551,12 +537,12 @@
                 <thead style="background-color: #d3d3d3;">
                  
                     <tr >
-						<td rowspan="2">Sr No 
+						<td rowspan="2" style="text-align: center;">Sr No 
 						</td>
-						<td colspan="1">Applied  load in T/m2
+						<td colspan="1" style="text-align: center;">Applied  load in T/m2
 						</td>
 						
-					<td  colspan="1">Settlement in mm</td>
+					<td  colspan="1" style="text-align: center;">Settlement in mm</td>
 					
                        
                     </tr>
@@ -566,16 +552,16 @@
 
 						<t t-set="i" t-value="0"/>
 						<tr t-foreach="data.child_lines_loadand_cumilitive1" t-as="r">
-							<td >
+							<td  style="text-align: center;">
 								<div>
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 								</div>
 							</td>
-							<td >
+							<td style="text-align: center;">
 								<span t-esc="r['pressure_plate3']"  t-options='{"widget": "float", "precision": 2}'/>
 							</td>
-							<td colspan="1">
+							<td colspan="1" style="text-align: center;">
 								<span t-esc="r['settlement3']" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 							
