@@ -35,6 +35,8 @@
 
             <form string="Initial Vertical Pile Load Test Report">
                 <header>
+                    <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
+                    <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
                     <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
                 </header>
                 <sheet>
@@ -47,6 +49,14 @@
                         <h2 style="margin-top:15px;">
                             INITIAL VERTICAL PILE LOAD TEST
                         </h2>
+                        <h2 style="margin-top:10px;">
+                            OF PILE NO -
+                            <field name="pile_no" nolabel="1"/>
+                        </h2>
+                    </div>
+
+                    <div style="margin-top:30px;">
+                        <field name="cover_image" widget="image"/>
                     </div>
 
                     <group col="2" style="margin-bottom:30px;">
@@ -102,6 +112,14 @@
                             placeholder="Enter objective here..."/>
                     </div>
 
+                    <!-- ================= TESTING EQUIPMENT ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">TESTING EQUIPMENTS</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="test_equipment" widget="text" nolabel="1"/>
+                    </div>
 
                     <!-- ================= TEST PROCEDURE ================= -->
                     <div style="margin-top:30px;">
@@ -132,7 +150,15 @@
                         </tree>
                     </field>
 
+                    <!-- ================= INTERPRETATION ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">INTERPRETATION</h3>
+                    </div>
 
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="interpretation" widget="text" nolabel="1"/>
+                    </div>
+                    
                     <!-- ================= TABLE 2A ================= -->
                     <div style="margin-top:35px;">
                         <h3 style="border-bottom:2px solid #000;">

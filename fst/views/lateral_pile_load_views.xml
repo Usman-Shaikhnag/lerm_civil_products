@@ -35,10 +35,9 @@
 
             <form string="Initial Lateral Pile Load Test Report">
                 <header>
-                    <button name="print_report"
-                            string="Print Report"
-                            type="object"
-                            class="btn-primary"/>
+                    <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
+                    <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
                 </header>
 
                 <sheet>
@@ -49,6 +48,10 @@
                             <field name="name" style="width:100%; display:block; text-align:center; font-size:26px; letter-spacing:1px;"/>
                         </h1>
                         <h2>INITIAL LATERAL PILE LOAD TEST</h2>
+                        <h2 style="margin-top:10px;">
+                            OF PILE NO -
+                            <field name="pile_no" nolabel="1"/>
+                        </h2>
                     </div>
 
                     <group col="2" style="margin-bottom:30px;">

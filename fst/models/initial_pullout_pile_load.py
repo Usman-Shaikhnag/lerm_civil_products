@@ -28,7 +28,7 @@ class PulloutPileLoadTestParent(models.Model):
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
-
+    pile_no = fields.Char("Pile No")
     site_location = fields.Char("Site Location")
     test_standard = fields.Char("Test Standard")
 
@@ -86,6 +86,34 @@ class PulloutPileLoadTestParent(models.Model):
         compute="_compute_displacement_values",
         store=True
     )
+
+    def action_generate_report_no(self):
+        for rec in self:
+            if not rec.report_no:
+                rec.report_no = self.env['ir.sequence'].next_by_code(
+                    'lerm.srf.sample.kes'
+                )
+
+    def action_generate_ulr_no(self):
+        for rec in self:
+            if rec.ulr:
+                return
+
+            lab = self.env['lerm.lab.master'].search([], limit=1)
+
+            if not lab:
+                return
+
+            year = fields.Date.today().strftime('%y')
+
+            cert = lab.lab_certificate_no or ''
+            loc = lab.lab_location_line[:1].location_code or ''
+
+            seq = self.env['ir.sequence'].next_by_code(
+                lab.ulr_sequence.code
+            )
+
+            rec.ulr = f"{cert}{year}{loc}{seq}"
 
     # ================= COMPUTE LOGIC =================
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')

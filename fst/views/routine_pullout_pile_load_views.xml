@@ -37,10 +37,9 @@
             <form string="Routine Pull-Out Pile Load Test Report">
                 <!-- ================= HEADER ================= -->
                 <header>
-                    <button name="print_report"
-                            string="Print Report"
-                            type="object"
-                            class="btn-primary"/>
+                    <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
+                    <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
                 </header>
 
                 <sheet>
@@ -51,6 +50,10 @@
                             <field name="name" style="width:100%; display:block; text-align:center; font-size:26px; letter-spacing:1px;"/>
                         </h1>
                         <h2>ROUTINE PULL OUT PILE LOAD TEST</h2>
+                        <h2 style="margin-top:10px;">
+                            OF PILE NO -
+                            <field name="pile_no" nolabel="1"/>
+                        </h2>
                     </div>
 
                     <group col="2" style="margin-bottom:30px;">
@@ -104,6 +107,15 @@
                             <field name="value"/>
                         </tree>
                     </field>
+
+                    <!-- ================= INTERPRETATION ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">INTERPRETATION</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="interpretation" widget="text" nolabel="1"/>
+                    </div>
 
                     <!-- ================= TABLE 2A ================= -->
                     <h3 style="border-bottom:2px solid #000; margin-top:35px;">
@@ -167,14 +179,6 @@
                         <field name="net_displacement" readonly="1"/> mm<br/>
                         Rebound =
                         <field name="rebound" readonly="1"/> mm
-                    </div>
-
-                    <!-- ================= INTERPRETATION ================= -->
-                    <h3 style="border-bottom:2px solid #000; margin-top:35px;">
-                        INTERPRETATION
-                    </h3>
-                    <div style="border:1px solid #ccc; padding:12px;">
-                        <field name="interpretation" widget="text" nolabel="1"/>
                     </div>
 
                     <!-- ================= CONCLUSION ================= -->
