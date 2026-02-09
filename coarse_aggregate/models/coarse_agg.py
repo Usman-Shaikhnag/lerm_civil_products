@@ -2785,6 +2785,16 @@ class CoarseAggregateMechanical(models.Model):
                         result.nabl_status = 'non-nabl'
                     continue
 
+                # Soundness Test
+                if result.parameter.internal_id == '8b80bc59-f49e-483e-8ccd-2fb4b076620e':
+                    result.result_char = round(self.total_avg_manesium,2)
+                    result.calculated = True
+                    # if self.total_avg_sulphae_nabl == 'pass':
+                    #     result.nabl_status = 'nabl'
+                    # else:
+                    #     result.nabl_status = 'non-nabl'
+                    # continue
+
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",
