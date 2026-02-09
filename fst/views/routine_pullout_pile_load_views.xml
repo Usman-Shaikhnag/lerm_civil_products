@@ -54,7 +54,11 @@
                     </div>
 
                     <group col="2" style="margin-bottom:30px;">
+                        <field name="work_name"/>
+                        <field name="contractor"/>
+                        <field name="client"/>
                         <field name="report_no"/>
+                        <field name="ulr"/>
                         <field name="rec_date"/>
                         <field name="test_standard"/>
                         <field name="site_location" colspan="2"/>
@@ -106,10 +110,14 @@
                         TABLE 2A : DIAL GAUGE READING CORRESPONDING TO LOADING
                     </h3>
 
-                    <field name="loading_reading_ids" nolabel="1">
-                        <tree editable="bottom">
-                            <field name="date"/>
-                            <field name="time_hours"/>
+                    <field name="last_reading_datetime" invisible="1"/>
+                    <field name="loading_reading_ids"
+                            nolabel="1"
+                            context="{'default_parent_id': id}">
+                        <tree editable="bottom" limit="50" default_order="id">
+                            <field name="reading_datetime" 
+                                    widget="datetime"
+                                    options="{'format': 'dd/MM/yy HH:mm'}"/>
                             <field name="load_tonne"/>
                             <field name="dial_a"/>
                             <field name="dial_b"/>
@@ -122,10 +130,13 @@
                         TABLE 2B : DIAL GAUGE READING CORRESPONDING TO UNLOADING
                     </h3>
 
-                    <field name="unloading_reading_ids" nolabel="1">
-                        <tree editable="bottom">
-                            <field name="date"/>
-                            <field name="time_hours"/>
+                    <field name="unloading_reading_ids"
+                            nolabel="1"
+                            context="{'default_parent_id': id}">
+                        <tree editable="bottom" limit="50" default_order="id">
+                            <field name="reading_datetime" 
+                                    widget="datetime"
+                                    options="{'format': 'dd/MM/yy HH:mm'}"/>
                             <field name="load_tonne"/>
                             <field name="dial_a"/>
                             <field name="dial_b"/>

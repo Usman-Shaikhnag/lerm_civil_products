@@ -1,4 +1,6 @@
 from odoo import api, fields, models
+from datetime import timedelta
+from odoo.exceptions import UserError, ValidationError
 import base64
 import io
 import math
@@ -16,7 +18,13 @@ class RoutinePulloutPileLoadTestParent(models.Model):
     # ================= BASIC INFO =================
     name = fields.Char("Project Name", required=True)
     rec_date = fields.Date("Report Date")
-    report_no = fields.Char("Report No")
+    work_name = fields.Char("Name of Work")
+    contractor = fields.Char("Contractor")
+    client = fields.Char("Client")
+
+    ulr = fields.Char("ULR No", copy=False, readonly=True)
+    report_no = fields.Char("Report No", copy=False, readonly=True)
+
     site_location = fields.Char("Site Location")
     test_standard = fields.Char("Test Standard")
 
@@ -69,52 +77,87 @@ class RoutinePulloutPileLoadTestParent(models.Model):
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
     def _compute_displacement(self):
         for rec in self:
-            loading_vals = rec.loading_reading_ids.mapped('mean_mm')
-            gross = max(loading_vals) if loading_vals else 0.0
+            loading_map = {}
 
-            unloading_zero = rec.unloading_reading_ids.filtered(
-                lambda r: r.load_tonne == 0
+            for r in rec.loading_reading_ids:
+                loading_map[r.load_tonne] = r.mean_mm
+
+            if loading_map:
+                gross = max(loading_map.values())
+                first_load = min(loading_map.keys())
+            else:
+                gross = 0.0
+                first_load = 0.0
+
+            rebound_lines = rec.unloading_reading_ids.filtered(
+                lambda r: r.load_tonne == first_load
             )
-            rebound = unloading_zero[-1].mean_mm if unloading_zero else 0.0
+
+            rebound = rebound_lines[-1].mean_mm if rebound_lines else 0.0
             net = gross - rebound
 
             rec.gross_displacement = round(gross, 2)
             rec.rebound = round(rebound, 2)
             rec.net_displacement = round(net, 2)
 
+
     # ================= GRAPH =================
     def action_generate_graph(self):
-        """Generate Load-Displacement graph exactly like Initial Pull-Out PDF"""
+        """Generate Load-Settlement graph exactly like PDF"""
         self.ensure_one()
 
-        def unique_by_load(readings):
-            seen = set()
+        def loading_points(readings):
             result = []
-            for r in readings:
-                if r.load_tonne not in seen:
-                    seen.add(r.load_tonne)
-                    result.append(r)
+
+            current_load = None
+            current_mean = None
+
+            for r in readings.sorted('reading_datetime'):
+
+                if r.load_tonne > 0:
+                    # NEW STEP ONLY HERE
+                    if current_load is not None:
+                        result.append((current_load, current_mean))
+
+                    current_load = r.load_tonne
+                    current_mean = r.mean_mm
+
+                else:
+                    # zero OR continuation
+                    if current_load is not None:
+                        current_mean = r.mean_mm
+
+            if current_load is not None:
+                result.append((current_load, current_mean))
+
             return result
 
-        loading_all = self.loading_reading_ids.sorted('id')
-        unloading_all = self.unloading_reading_ids.sorted('id')
 
-        loading = unique_by_load(loading_all)
-        unloading = unique_by_load(unloading_all)
+        def unloading_points(readings):
+            return [
+                (r.load_tonne, r.mean_mm)
+                for r in readings.sorted('reading_datetime')
+            ]
+        # loading_all = self.loading_reading_ids.sorted('reading_datetime')
+        # unloading_all = self.unloading_reading_ids.sorted('reading_datetime')
 
+        loading = loading_points(self.loading_reading_ids)
+        unloading = unloading_points(self.unloading_reading_ids)
+
+        # import wdb;wdb.set_trace()
         if not loading and not unloading:
             self.graph_image = False
             return
 
-        plt.figure(figsize=(7.5, 5.5))
+        fig, ax = plt.subplots(figsize=(7.5, 5.5))
 
         # ================= LOADING =================
         if loading:
-            load_vals = [0] + [r.load_tonne for r in loading]
-            disp_vals = [0] + [r.mean_mm for r in loading]
+            load_vals = [0] + [l for l, m in loading]
+            settle_vals = [0] + [m for l, m in loading]
 
-            plt.plot(
-                disp_vals,
+            ax.plot(
+                settle_vals,
                 load_vals,
                 marker='o',
                 markersize=6,
@@ -125,13 +168,14 @@ class RoutinePulloutPileLoadTestParent(models.Model):
                 clip_on=False
             )
 
+
         # ================= UNLOADING =================
         if unloading:
-            load_vals = [r.load_tonne for r in unloading]
-            disp_vals = [r.mean_mm for r in unloading]
+            load_vals = [l for l,m in unloading]
+            settle_vals = [m for l,m in unloading]
 
-            plt.plot(
-                disp_vals,
+            ax.plot(
+                settle_vals,
                 load_vals,
                 marker='o',
                 markersize=6,
@@ -143,63 +187,74 @@ class RoutinePulloutPileLoadTestParent(models.Model):
                 clip_on=False
             )
 
-        # ================= AXES & STYLE (PDF MATCH) =================
-        plt.xlabel("DISPLACEMENT (MM)", fontsize=10, fontweight='bold')
-        plt.ylabel("LOAD (TONNE)", fontsize=10, fontweight='bold')
-        plt.title(
-            "LOAD - DISPLACEMENT GRAPH (ROUTINE PULL OUT)",
-            fontsize=12,
-            fontweight='bold',
-            pad=12
-        )
 
-        # -------- X AXIS (THIS IS THE IMPORTANT PART) --------
-        # PDF shows:
-        # - starts exactly at 0
-        # - major ticks = 1 mm
-        # - minor ticks = 0.2 mm
-        # - slight padding so points don’t touch axis
-        all_disp = [r.mean_mm for r in (loading + unloading)]
-        max_disp = max(all_disp) if all_disp else 1.0
+        # ================= AXES & STYLE =================
+        ax.set_xlabel("SETTLEMENT (MM)", fontsize=10, fontweight='bold')
+        ax.set_ylabel("LOAD (TONNE)", fontsize=10, fontweight='bold')
+        ax.set_title("LOAD - SETTLEMENT GRAPH", fontsize=12, fontweight='bold', pad=12)
 
-        # Add small padding like PDF (0.1 mm)
-        x_max = round(max_disp + 0.1, 1)
+        def load_major_step(max_load):
+            if max_load < 20:
+                return 2
+            elif max_load <= 25:
+                return 5
+            elif max_load <= 80:
+                return 10
+            elif max_load <= 150:
+                return 20
+            elif max_load <= 400:
+                return 50
+            elif max_load <= 1000:
+                return 100
+            else:
+                return 200
 
-        plt.xlim(0, 1.4)
-        plt.gca().xaxis.set_major_locator(plt.MultipleLocator(0.2))
-        plt.gca().xaxis.set_minor_locator(plt.MultipleLocator(0.02))
+        all_loads = [l for l, m in (loading + unloading)]
+        y_max = max(all_loads) if all_loads else 20
 
-        # -------- Y AXIS --------
-        all_loads = [r.load_tonne for r in (loading + unloading)]
-        y_max = int(math.ceil(max(all_loads) / 5.0) * 5) if all_loads else 10
+        major = load_major_step(y_max)
+        if major < 5:
+            minor = major / 2
+        else:
+            minor = major / 5
 
-        plt.ylim(0, 16)
-        plt.gca().yaxis.set_major_locator(plt.MultipleLocator(2))
-        plt.gca().yaxis.set_minor_locator(plt.MultipleLocator(0.2))
+        ax.set_ylim(0, math.ceil(y_max / major) * major)
+        ax.yaxis.set_major_locator(plt.MultipleLocator(major))
+        ax.yaxis.set_minor_locator(plt.MultipleLocator(minor))
 
-        # -------- GRID --------
-        plt.grid(
-            which='major',
-            linestyle='-',
-            linewidth=0.8,
-            color=GRAPH_MAJOR_GRID_COLOR
-        )
-        plt.grid(
-            which='minor',
-            linestyle='-',
-            linewidth=0.4,
-            color=GRAPH_MINOR_GRID_COLOR
-        )
+        def settlement_major_step(x_max):
+            if x_max <= 2:
+                return 0.2
+            elif x_max <= 5:
+                return 0.5
+            elif x_max <= 15:
+                return 1
+            elif x_max <= 30:
+                return 2
+            else:
+                return 5
 
-        plt.legend(loc='lower right', frameon=False)
+        all_means = [m for l, m in (loading + unloading)]
+        x_max = max(all_means) if all_means else 1
+
+        major = settlement_major_step(x_max)
+        minor = major / 5
+
+        ax.set_xlim(0, math.ceil(x_max / major) * major)
+        ax.xaxis.set_major_locator(plt.MultipleLocator(major))
+        ax.xaxis.set_minor_locator(plt.MultipleLocator(minor))
+
+
+        ax.grid(which='major', linestyle='-', linewidth=0.8, color='#d28b5c')
+        ax.grid(which='minor', linestyle='-', linewidth=0.4, color='#f0c7a0')
+        ax.legend(loc='lower right', frameon=False)
 
         buffer = io.BytesIO()
-        plt.tight_layout()
-        plt.savefig(buffer, format='png', dpi=150)
-        plt.close()
+        fig.tight_layout()
+        fig.savefig(buffer, format='png', dpi=150)
+        plt.close(fig)
 
         self.graph_image = base64.b64encode(buffer.getvalue())
-
 
 
     def action_recompute_all(self):
@@ -265,6 +320,22 @@ class RoutinePulloutPileLoadTestParent(models.Model):
             
             rec.unlink()
 
+    last_reading_datetime = fields.Datetime(
+        compute="_compute_last_reading_datetime",
+        store=False,
+        copy=False
+    )
+
+    
+    @api.depends('loading_reading_ids.reading_datetime')
+    def _compute_last_reading_datetime(self):
+        for rec in self:
+            if rec.loading_reading_ids:
+                # Get the most recent reading_datetime from all loading readings
+                latest = max(rec.loading_reading_ids.mapped('reading_datetime'), default=False)
+                rec.last_reading_datetime = latest
+            else:
+                rec.last_reading_datetime = False
 
 # =================CHILD MODELS =================
 class RoutinePulloutPileLoadReadingLoading(models.Model):
@@ -276,8 +347,24 @@ class RoutinePulloutPileLoadReadingLoading(models.Model):
         "routine.pullout.pile.load.test.parent",
         ondelete="cascade", required=True
     )
-    date = fields.Date("Date")
-    time_hours = fields.Char("Time (Hours)")
+
+    reading_datetime = fields.Datetime(
+        "Date & Time",
+        required=True,
+    )
+
+    reading_date_str = fields.Char(
+        "Date",
+        compute="_compute_split_dt",
+        store=True
+    )
+
+    reading_time_str = fields.Char(
+        "Time",
+        compute="_compute_split_dt",
+        store=True
+    )
+
     load_tonne = fields.Float("Load (Tonne)")
     dial_a = fields.Float("Dial A (mm)")
     dial_b = fields.Float("Dial B (mm)")
@@ -285,6 +372,84 @@ class RoutinePulloutPileLoadReadingLoading(models.Model):
         "Mean Displacement (mm)",
         compute="_compute_mean", store=True, readonly=True
     )
+
+    @api.model
+    def default_get(self, fields_list):
+        """Minimal default - just set current time as fallback"""
+        res = super().default_get(fields_list)
+        
+        # Don't set reading_datetime here - let onchange handle it
+        # This is just a safety fallback
+        if 'reading_datetime' in fields_list and 'reading_datetime' not in res:
+            res['reading_datetime'] = fields.Datetime.now()
+        
+        return res
+
+    @api.onchange('parent_id')
+    def _onchange_set_datetime(self):
+        """Auto-fill datetime when adding new line in tree"""
+        # Always run for new records
+        if self.parent_id:
+            latest_datetime = None
+            
+            # First, check unsaved lines in the current form (these have priority)
+            unsaved_lines = [
+                r for r in self.parent_id.loading_reading_ids 
+                if r.reading_datetime and r != self  # Exclude current line
+            ]
+            
+            if unsaved_lines:
+                # Get the one with the latest datetime from unsaved lines
+                latest = max(unsaved_lines, key=lambda x: x.reading_datetime)
+                latest_datetime = latest.reading_datetime
+            else:
+                # No unsaved lines, check saved lines from database
+                saved_lines = self.search(
+                    [('parent_id', '=', self.parent_id.id)],
+                    order='id desc',
+                    limit=1
+                )
+                if saved_lines and saved_lines.reading_datetime:
+                    latest_datetime = saved_lines.reading_datetime
+            
+            # Set the datetime
+            if latest_datetime:
+                self.reading_datetime = latest_datetime + timedelta(minutes=15)
+            else:
+                self.reading_datetime = fields.Datetime.now()
+
+    @api.model 
+    def create(self, vals):
+        """Ensure datetime is set on create (when form is saved)"""
+        if 'reading_datetime' not in vals or not vals.get('reading_datetime'):
+            parent_id = vals.get('parent_id') or self.env.context.get('default_parent_id')
+            
+            if parent_id:
+                last_line = self.search(
+                    [('parent_id', '=', parent_id)],
+                    order='id desc',
+                    limit=1
+                )
+                
+                if last_line and last_line.reading_datetime:
+                    vals['reading_datetime'] = last_line.reading_datetime + timedelta(minutes=15)
+                else:
+                    vals['reading_datetime'] = fields.Datetime.now()
+            else:
+                vals['reading_datetime'] = fields.Datetime.now()
+        
+        return super().create(vals)
+
+    @api.depends('reading_datetime')
+    def _compute_split_dt(self):
+        for rec in self:
+            if rec.reading_datetime:
+                dt = fields.Datetime.context_timestamp(rec, rec.reading_datetime)
+                rec.reading_date_str = dt.strftime("%d/%m/%y")
+                rec.reading_time_str = dt.strftime("%H:%M")
+            else:
+                rec.reading_date_str = False
+                rec.reading_time_str = False
 
     @api.depends('dial_a', 'dial_b')
     def _compute_mean(self):
@@ -302,8 +467,23 @@ class RoutinePulloutPileLoadReadingUnloading(models.Model):
         "routine.pullout.pile.load.test.parent",
         ondelete="cascade", required=True
     )
-    date = fields.Date("Date")
-    time_hours = fields.Char("Time (Hours)")
+
+    reading_datetime = fields.Datetime(
+        "Date & Time",
+        required=True,
+    )
+
+    reading_date_str = fields.Char(
+        "Date",
+        compute="_compute_split_dt",
+        store=True
+    )
+
+    reading_time_str = fields.Char(
+        "Time",
+        compute="_compute_split_dt",
+        store=True
+    )
     load_tonne = fields.Float("Load (Tonne)")
     dial_a = fields.Float("Dial A (mm)")
     dial_b = fields.Float("Dial B (mm)")
@@ -312,11 +492,88 @@ class RoutinePulloutPileLoadReadingUnloading(models.Model):
         compute="_compute_mean", store=True, readonly=True
     )
 
+    @api.onchange('parent_id')
+    def _onchange_set_datetime(self):
+        if self.parent_id:
+            latest_datetime = None
+
+            unsaved_lines = [
+                r for r in self.parent_id.unloading_reading_ids
+                if r.reading_datetime and r != self
+            ]
+
+            if unsaved_lines:
+                latest = max(unsaved_lines, key=lambda x: x.reading_datetime)
+                latest_datetime = latest.reading_datetime
+            else:
+                saved_lines = self.search(
+                    [('parent_id', '=', self.parent_id.id)],
+                    order='id desc',
+                    limit=1
+                )
+                if saved_lines and saved_lines.reading_datetime:
+                    latest_datetime = saved_lines.reading_datetime
+
+            if latest_datetime:
+                self.reading_datetime = latest_datetime + timedelta(minutes=15)
+            else:
+                self.reading_datetime = fields.Datetime.now()
+
+
+    @api.model
+    def create(self, vals):
+        if 'reading_datetime' not in vals or not vals.get('reading_datetime'):
+            parent_id = vals.get('parent_id') or self.env.context.get('default_parent_id')
+
+            if parent_id:
+                last_line = self.search(
+                    [('parent_id', '=', parent_id)],
+                    order='id desc',
+                    limit=1
+                )
+
+                if last_line and last_line.reading_datetime:
+                    vals['reading_datetime'] = last_line.reading_datetime + timedelta(minutes=15)
+                else:
+                    vals['reading_datetime'] = fields.Datetime.now()
+            else:
+                vals['reading_datetime'] = fields.Datetime.now()
+
+        return super().create(vals)
+
+
+    @api.depends('reading_datetime')
+    def _compute_split_dt(self):
+        for rec in self:
+            if rec.reading_datetime:
+                dt = fields.Datetime.context_timestamp(rec, rec.reading_datetime)
+                rec.reading_date_str = dt.strftime("%d/%m/%y")
+                rec.reading_time_str = dt.strftime("%H:%M")
+            else:
+                rec.reading_date_str = False
+                rec.reading_time_str = False
+
     @api.depends('dial_a', 'dial_b')
     def _compute_mean(self):
         for rec in self:
             vals = [v for v in [rec.dial_a, rec.dial_b] if v is not False]
             rec.mean_mm = round(sum(vals) / len(vals), 2) if vals else 0.0
+
+
+class RoutinePulloutPileLoadReportContent(models.Model):
+    _name = "routine.pullout.pile.load.report.content"
+    _description = "Report Contents"
+    _order = "sequence, id"
+
+    parent_id = fields.Many2one(
+        "routine.pullout.pile.load.test.parent",
+        ondelete="cascade",
+        required=True,
+        index=True
+    )
+    sequence = fields.Float("Sl. No")
+    description = fields.Char("Description", required=True)
+    page_no = fields.Char("Page No")
 
 
 class RoutinePulloutPileLoadBasicData(models.Model):

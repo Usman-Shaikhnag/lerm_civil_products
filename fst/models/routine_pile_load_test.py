@@ -11,11 +11,18 @@ GRAPH_MAJOR_GRID_COLOR = '#d28b5c'
 GRAPH_MINOR_GRID_COLOR = '#f0c7a0'
 
 
-class PileLoadTestParent(models.Model):
-    _name = "pile.load.test.parent"
-    _description = "Initial Vertical Pile Load Test Report"
+# =========================================================
+# ROUTINE PARENT (CLONE OF INITIAL)
+# =========================================================
+class RoutinePileLoadTest(models.Model):
+    _name = "routine.pile.load.test"
+    _description = "Routine Vertical Pile Load Test Report"
     _order = "rec_date desc, id desc"
 
+
+    # ================= SAME FIELDS =================
+    name = fields.Char("Project Name", required=True)
+    rec_date = fields.Date("Report Date")
     work_name = fields.Char("Name of Work")
     contractor = fields.Char("Contractor")
     client = fields.Char("Client")
@@ -23,8 +30,6 @@ class PileLoadTestParent(models.Model):
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
 
-    name = fields.Char("Project Name", required=True)
-    rec_date = fields.Date("Report Date")
     site_location = fields.Char("Site Location")
     test_standard = fields.Char("Test Standard")
 
@@ -39,37 +44,38 @@ class PileLoadTestParent(models.Model):
     signatory_name = fields.Char("Authorized Signatory")
     signatory_designation = fields.Char("Designation")
 
-    # DIRECT One2many - no related fields!
+
+    # ================= SAME RELATIONS =================
     loading_reading_ids = fields.One2many(
-        "pile.load.reading.loading",
+        "routine.pile.reading.loading",
         "parent_id",
         string="Loading Readings",
         copy=False
     )
 
     unloading_reading_ids = fields.One2many(
-        "pile.load.reading.unloading",
+        "routine.pile.reading.unloading",
         "parent_id",
         string="Unloading Readings",
         copy=False
     )
 
     content_ids = fields.One2many(
-        "pile.load.report.content",
+        "routine.pile.report.content",
         "parent_id",
         string="Contents",
         copy=False
     )
 
     basic_data_ids = fields.One2many(
-        "pile.load.basic.data",
+        "routine.pile.basic.data",
         "parent_id",
         string="Basic Data",
         copy=False
     )
 
     site_image_ids = fields.One2many(
-        "pile.load.test.image",
+        "routine.pile.test.image",
         "parent_id",
         string="Site Photographs",
         copy=False
@@ -77,22 +83,11 @@ class PileLoadTestParent(models.Model):
 
     graph_image = fields.Binary("Load Settlement Graph")
 
-    # Settlement Summary
-    gross_settlement = fields.Float(
-        compute="_compute_settlement_values",
-        store=True
-    )
 
-    net_settlement = fields.Float(
-        compute="_compute_settlement_values",
-        store=True
-    )
-
-    rebound = fields.Float(
-        compute="_compute_settlement_values",
-        store=True
-    )
-
+    # ================= SAME COMPUTES =================
+    gross_settlement = fields.Float(compute="_compute_settlement_values", store=True)
+    net_settlement = fields.Float(compute="_compute_settlement_values", store=True)
+    rebound = fields.Float(compute="_compute_settlement_values", store=True)
 
     max_settlement = fields.Float(
         "Maximum Settlement",
@@ -103,6 +98,10 @@ class PileLoadTestParent(models.Model):
 
     analysis_text = fields.Text("Analysis of Test Results")
 
+
+    # =========================================================
+    # 🔥 EXACT SAME FUNCTIONS (copied 1:1)
+    # =========================================================
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
     def _compute_max_settlement(self):
         for rec in self:
@@ -111,6 +110,7 @@ class PileLoadTestParent(models.Model):
                 rec.unloading_reading_ids.mapped('mean_mm')
             )
             rec.max_settlement = max(values) if values else 0.0
+
 
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
     def _compute_settlement_values(self):
@@ -141,6 +141,8 @@ class PileLoadTestParent(models.Model):
             rec.net_settlement = round(net, 2)
 
 
+
+    # ================= SAME GRAPH =================
     def action_generate_graph(self):
         """Generate Load-Settlement graph exactly like PDF"""
         self.ensure_one()
@@ -170,7 +172,6 @@ class PileLoadTestParent(models.Model):
                 result.append((current_load, current_mean))
 
             return result
-
 
         def unloading_points(readings):
             return [
@@ -228,7 +229,7 @@ class PileLoadTestParent(models.Model):
 
 
         # ================= AXES & STYLE =================
-        ax.set_xlabel("SETTLEMENT (MM)", fontsize=10, fontweight='bold')
+        ax.set_xlabel("DISPLACEMENT (MM)", fontsize=10, fontweight='bold')
         ax.set_ylabel("LOAD (TONNE)", fontsize=10, fontweight='bold')
         ax.set_title("LOAD - SETTLEMENT GRAPH", fontsize=12, fontweight='bold', pad=12)
 
@@ -264,8 +265,6 @@ class PileLoadTestParent(models.Model):
         def settlement_major_step(x_max):
             if x_max <= 2:
                 return 0.2
-            elif x_max <= 5:
-                return 0.5
             elif x_max <= 15:
                 return 1
             elif x_max <= 30:
@@ -294,39 +293,26 @@ class PileLoadTestParent(models.Model):
 
         self.graph_image = base64.b64encode(buffer.getvalue())
 
-
+    # ================= SAME RECOMPUTE =================
     def action_recompute_all(self):
-        """
-        Force recomputation of readings and settlement values.
-        Use this when data is inserted via SQL.
-        Safe to call from Server Action.
-        """
         for rec in self:
-            # 1️⃣ Recompute mean_mm on loading readings
             for line in rec.loading_reading_ids:
                 line._compute_mean()
-
-            # 2️⃣ Recompute mean_mm on unloading readings
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
 
-            # 3️⃣ Force recompute of parent computed fields
             rec._compute_settlement_values()
             rec._compute_max_settlement()
 
-
-
     def print_report(self):
         self.ensure_one()
-        report = self.env.ref('fst.vertical_pile_load_report_py3o')
-        filename = f"{self.name or 'Vertical Pile Report'}"
+        report = self.env.ref('fst.routine_pile_load_test_report_py3o')
+        filename = f"{self.name or 'Routine Pile Load Test Report'}"
         return report.report_action(self, config={'report_name': filename})
-    
-    def action_duplicate_parent(self):
-        """Duplicate Pile Load Test with all linked records cleanly"""
-        for record in self:
 
-            # 1️⃣ Create clean new parent (prevent auto O2M copy)
+    # ================= SAME DUPLICATE =================
+    def action_duplicate_parent(self):
+        for record in self:
             new_parent = record.with_context(skip_auto_copy=True).copy({
                 'name': f"{record.name} Copy",
                 'loading_reading_ids': False,
@@ -334,47 +320,23 @@ class PileLoadTestParent(models.Model):
                 'content_ids': False,
                 'basic_data_ids': False,
                 'site_image_ids': False,
-                'graph_image': False,  # graph must be regenerated
+                'graph_image': False,
             })
 
-            # 2️⃣ Duplicate Loading Readings
             for line in record.loading_reading_ids:
-                line.copy({
-                    'parent_id': new_parent.id,
-                })
-
-            # 3️⃣ Duplicate Unloading Readings
+                line.copy({'parent_id': new_parent.id})
             for line in record.unloading_reading_ids:
-                line.copy({
-                    'parent_id': new_parent.id,
-                })
-
-            # 4️⃣ Duplicate Report Contents
+                line.copy({'parent_id': new_parent.id})
             for line in record.content_ids:
-                line.copy({
-                    'parent_id': new_parent.id,
-                })
-
-            # 5️⃣ Duplicate Basic Data
+                line.copy({'parent_id': new_parent.id})
             for line in record.basic_data_ids:
-                line.copy({
-                    'parent_id': new_parent.id,
-                })
-
-            # 6️⃣ Duplicate Site Images
+                line.copy({'parent_id': new_parent.id})
             for line in record.site_image_ids:
-                line.copy({
-                    'parent_id': new_parent.id,
-                })
+                line.copy({'parent_id': new_parent.id})
 
-            # 7️⃣ Recompute computed fields safely
             new_parent.action_recompute_all()
 
         return True
-
-    def action_delete_line(self):
-        for rec in self:
-            rec.unlink()
 
     last_reading_datetime = fields.Datetime(
         compute="_compute_last_reading_datetime",
@@ -393,18 +355,20 @@ class PileLoadTestParent(models.Model):
             else:
                 rec.last_reading_datetime = False
 
-# NEW: Separate Loading Model
-class PileLoadReadingLoading(models.Model):
-    _name = "pile.load.reading.loading"
+
+    def action_delete_line(self):
+        self.unlink()
+
+
+# =========================================================
+# CHILD MODELS (CLONES)
+# =========================================================
+class RoutinePileReadingLoading(models.Model):
+    _name = "routine.pile.reading.loading"
     _description = "Pile Load Reading - Loading"
     _order = "id"
 
-    parent_id = fields.Many2one(
-        "pile.load.test.parent",
-        ondelete="cascade",
-        required=True,
-        index=True
-    )
+    parent_id = fields.Many2one("routine.pile.load.test", ondelete="cascade", required=True)
 
     reading_datetime = fields.Datetime(
         "Date & Time",
@@ -422,20 +386,14 @@ class PileLoadReadingLoading(models.Model):
         compute="_compute_split_dt",
         store=True
     )
+    load_tonne = fields.Float()
 
-    load_tonne = fields.Float("Load (Tonne)")
-    dial_a = fields.Float("Dial A (mm)")
-    dial_b = fields.Float("Dial B (mm)")
-    dial_c = fields.Float("Dial C (mm)")
-    dial_d = fields.Float("Dial D (mm)")
+    dial_a = fields.Float()
+    dial_b = fields.Float()
+    dial_c = fields.Float()
+    dial_d = fields.Float()
 
-    mean_mm = fields.Float(
-        string="Mean (mm)",
-        compute="_compute_mean",
-        store=True,
-        readonly=True
-    )
-
+    mean_mm = fields.Float(compute="_compute_mean", store=True)
     @api.model
     def default_get(self, fields_list):
         """Minimal default - just set current time as fallback"""
@@ -503,13 +461,6 @@ class PileLoadReadingLoading(models.Model):
         
         return super().create(vals)
 
-    @api.depends('dial_a', 'dial_b', 'dial_c', 'dial_d')
-    def _compute_mean(self):
-        for rec in self:
-            values = [rec.dial_a, rec.dial_b, rec.dial_c, rec.dial_d]
-            valid = [v for v in values if v is not False]
-            rec.mean_mm = round(sum(valid) / len(valid), 2) if valid else 0.0
-
     @api.depends('reading_datetime')
     def _compute_split_dt(self):
         for rec in self:
@@ -519,16 +470,23 @@ class PileLoadReadingLoading(models.Model):
                 rec.reading_time_str = dt.strftime("%H:%M")
             else:
                 rec.reading_date_str = False
-                rec.reading_time_str = False
+                rec.reading_time_str = False 
 
-# NEW: Separate Unloading Model
-class PileLoadReadingUnloading(models.Model):
-    _name = "pile.load.reading.unloading"
+    @api.depends('dial_a', 'dial_b', 'dial_c', 'dial_d')
+    def _compute_mean(self):
+        for rec in self:
+            values = [rec.dial_a, rec.dial_b, rec.dial_c, rec.dial_d]
+            valid = [v for v in values if v is not False]
+            rec.mean_mm = round(sum(valid) / len(valid), 2) if valid else 0.0
+
+
+class RoutinePileReadingUnloading(models.Model):
+    _name = "routine.pile.reading.unloading"
     _description = "Pile Load Reading - Unloading"
     _order = "id"
 
     parent_id = fields.Many2one(
-        "pile.load.test.parent",
+        "routine.pile.load.test",
         ondelete="cascade",
         required=True,
         index=True
@@ -550,20 +508,19 @@ class PileLoadReadingUnloading(models.Model):
         compute="_compute_split_dt",
         store=True
     )
-
     load_tonne = fields.Float("Load (Tonne)")
+
     dial_a = fields.Float("Dial A (mm)")
     dial_b = fields.Float("Dial B (mm)")
     dial_c = fields.Float("Dial C (mm)")
     dial_d = fields.Float("Dial D (mm)")
 
     mean_mm = fields.Float(
-        string="Mean (mm)",
         compute="_compute_mean",
         store=True,
         readonly=True
     )
-
+    
     @api.onchange('parent_id')
     def _onchange_set_datetime(self):
         if self.parent_id:
@@ -633,50 +590,27 @@ class PileLoadReadingUnloading(models.Model):
             rec.mean_mm = round(sum(valid) / len(valid), 2) if valid else 0.0
 
 
-# Keep these models as-is
-class PileLoadReportContent(models.Model):
-    _name = "pile.load.report.content"
-    _description = "Report Contents"
-    _order = "sequence, id"
-
-    parent_id = fields.Many2one(
-        "pile.load.test.parent",
-        ondelete="cascade",
-        required=True,
-        index=True
-    )
-    sequence = fields.Float("Sl. No")
-    description = fields.Char("Description", required=True)
-    page_no = fields.Char("Page No")
 
 
-class PileLoadBasicData(models.Model):
-    _name = "pile.load.basic.data"
-    _description = "Pile Load Test Basic Data"
-    _order = "sr_no, id"
-
-    parent_id = fields.Many2one(
-        "pile.load.test.parent",
-        ondelete="cascade",
-        required=True,
-        index=True
-    )
-    sr_no = fields.Integer('Sl No')
-    parameter = fields.Char("Parameter", required=True)
-    value = fields.Char("Value")
+class RoutinePileReportContent(models.Model):
+    _name = "routine.pile.report.content"
+    parent_id = fields.Many2one("routine.pile.load.test", ondelete="cascade")
+    sequence = fields.Float()
+    description = fields.Char(required=True)
+    page_no = fields.Char()
 
 
-class PileLoadTestImage(models.Model):
-    _name = "pile.load.test.image"
-    _description = "Pile Load Test Site Photograph"
-    _order = "sequence, id"
+class RoutinePileBasicData(models.Model):
+    _name = "routine.pile.basic.data"
+    parent_id = fields.Many2one("routine.pile.load.test", ondelete="cascade")
+    sr_no = fields.Integer()
+    parameter = fields.Char(required=True)
+    value = fields.Char()
 
-    parent_id = fields.Many2one(
-        "pile.load.test.parent",
-        ondelete="cascade",
-        required=True,
-        index=True
-    )
-    sequence = fields.Integer("Sr No", default=1)
-    image = fields.Binary("Site Photograph", required=True)
-    caption = fields.Char("Caption / Description")
+
+class RoutinePileImage(models.Model):
+    _name = "routine.pile.test.image"
+    parent_id = fields.Many2one("routine.pile.load.test", ondelete="cascade")
+    sequence = fields.Integer(default=1)
+    image = fields.Binary(required=True)
+    caption = fields.Char()
