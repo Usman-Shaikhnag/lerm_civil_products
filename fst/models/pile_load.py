@@ -19,15 +19,16 @@ class PileLoadTestParent(models.Model):
     work_name = fields.Char("Name of Work")
     contractor = fields.Char("Contractor")
     client = fields.Char("Client")
+    cover_image = fields.Binary("Cover Image")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
-
+    pile_no = fields.Char("Pile No")
     name = fields.Char("Project Name", required=True)
     rec_date = fields.Date("Report Date")
     site_location = fields.Char("Site Location")
     test_standard = fields.Char("Test Standard")
-
+    test_equipment = fields.Text("Testing Equipment")
     introduction = fields.Text("Introduction")
     objective = fields.Text("Objective")
     test_procedure = fields.Text("Test Procedure")
@@ -103,6 +104,34 @@ class PileLoadTestParent(models.Model):
 
     analysis_text = fields.Text("Analysis of Test Results")
 
+    def action_generate_report_no(self):
+        for rec in self:
+            if not rec.report_no:
+                rec.report_no = self.env['ir.sequence'].next_by_code(
+                    'lerm.srf.sample.kes'
+                )
+
+    def action_generate_ulr_no(self):
+        for rec in self:
+            if rec.ulr:
+                return
+
+            lab = self.env['lerm.lab.master'].search([], limit=1)
+
+            if not lab:
+                return
+
+            year = fields.Date.today().strftime('%y')
+
+            cert = lab.lab_certificate_no or ''
+            loc = lab.lab_location_line[:1].location_code or ''
+
+            seq = self.env['ir.sequence'].next_by_code(
+                lab.ulr_sequence.code
+            )
+
+            rec.ulr = f"{cert}{year}{loc}{seq}"
+
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
     def _compute_max_settlement(self):
         for rec in self:
@@ -118,7 +147,6 @@ class PileLoadTestParent(models.Model):
 
             loading_map = {}
 
-            # ❌ removed .sorted('id')
             for r in rec.loading_reading_ids:
                 loading_map[r.load_tonne] = r.mean_mm
 

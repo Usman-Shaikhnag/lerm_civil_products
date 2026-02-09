@@ -48,10 +48,9 @@
             <form string="Routine Vertical Pile Load Test Report">
 
                 <header>
-                    <button name="print_report"
-                            string="Print Report"
-                            type="object"
-                            class="btn-primary"/>
+                    <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
+                    <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
                 </header>
 
                 <sheet>
@@ -65,8 +64,11 @@
                         <h2 style="margin-top:15px;">
                             ROUTINE VERTICAL PILE LOAD TEST
                         </h2>
+                        <h2 style="margin-top:10px;">
+                            OF PILE NO -
+                            <field name="pile_no" nolabel="1"/>
+                        </h2>
                     </div>
-
 
                     <!-- ================= HEADER DETAILS ================= -->
                     <group col="2" style="margin-bottom:30px;">
@@ -79,7 +81,6 @@
                         <field name="test_standard"/>
                         <field name="site_location" colspan="2"/>
                     </group>
-
 
                     <!-- ================= CONTENTS ================= -->
                     <div style="margin-top:30px;">
@@ -94,7 +95,6 @@
                         </tree>
                     </field>
 
-
                     <!-- ================= INTRODUCTION ================= -->
                     <div style="margin-top:30px;">
                         <h3 style="border-bottom:2px solid #000;">INTRODUCTION</h3>
@@ -103,7 +103,6 @@
                     <div style="border:1px solid #bdbdbd; padding:12px; background-color:#fafafa;">
                         <field name="introduction" widget="text" nolabel="1"/>
                     </div>
-
 
                     <!-- ================= OBJECTIVE ================= -->
                     <div style="margin-top:30px;">
@@ -114,6 +113,14 @@
                         <field name="objective" widget="text" nolabel="1"/>
                     </div>
 
+                    <!-- ================= TESTING EQUIPMENT ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">TESTING EQUIPMENTS</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="test_equipment" widget="text" nolabel="1"/>
+                    </div>
 
                     <!-- ================= PROCEDURE ================= -->
                     <div style="margin-top:30px;">
@@ -123,7 +130,6 @@
                     <div style="border:1px solid #bdbdbd; padding:12px; background-color:#fafafa;">
                         <field name="test_procedure" widget="text" nolabel="1"/>
                     </div>
-
 
                     <!-- ================= TABLE 1 ================= -->
                     <div style="margin-top:35px;">
@@ -138,6 +144,14 @@
                         </tree>
                     </field>
 
+                    <!-- ================= INTERPRETATION ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">INTERPRETATION</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="interpretation" widget="text" nolabel="1"/>
+                    </div>
 
                     <!-- ================= TABLE 2A ================= -->
                     <div style="margin-top:35px;">
@@ -163,7 +177,6 @@
                         </tree>
                     </field>
 
-
                     <!-- ================= TABLE 2B ================= -->
                     <div style="margin-top:35px;">
                         <h3 style="border-bottom:2px solid #000;">
@@ -187,7 +200,6 @@
                         </tree>
                     </field>
 
-
                     <!-- ================= GRAPH ================= -->
                     <button name="action_generate_graph"
                             type="object"
@@ -199,7 +211,6 @@
                     </div>
 
                     <field name="graph_image" widget="image"/>
-
 
                     <!-- ================= ANALYSIS ================= -->
                     <div style="margin-top:35px;">

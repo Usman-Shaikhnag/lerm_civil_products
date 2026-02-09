@@ -40,7 +40,11 @@
         <field name="arch" type="xml">
 
             <form string="Routine Lateral Pile Load Test Report">
-
+                <header>
+                    <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
+                    <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
+                </header>
                 <sheet>
 
                     <!-- ================= COVER ================= -->
@@ -48,13 +52,13 @@
                         <h1 style="font-size:26px; letter-spacing:1px;">
                             <field name="name" style="width:100%; display:block; text-align:center; font-size:26px; letter-spacing:1px;"/>
                         </h1>
-                        <h1 style="font-size:26px; letter-spacing:1px;">
+                        <h2 style="font-size:26px; letter-spacing:1px;">
                             ROUTINE LATERAL PILE LOAD TEST
-                        </h1>
-                        <!-- <h2 style="margin-top:10px;">
+                        </h2>
+                        <h2 style="margin-top:10px;">
                             OF PILE NO -
                             <field name="pile_no" nolabel="1"/>
-                        </h2> -->
+                        </h2>
                     </div>
 
 
@@ -94,6 +98,14 @@
                         <field name="objective" nolabel="1" widget="text"/>
                     </div>
 
+                    <!-- ================= TESTING EQUIPMENT ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">TESTING EQUIPMENTS</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="test_equipment" widget="text" nolabel="1"/>
+                    </div>
 
                     <!-- ================================================= -->
                     <!-- TEST PROCEDURE -->
@@ -124,7 +136,14 @@
                         </tree>
                     </field>
 
+                    <!-- ================= INTERPRETATION ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">INTERPRETATION</h3>
+                    </div>
 
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="interpretation" widget="text" nolabel="1"/>
+                    </div>
 
                     <!-- ================================================= -->
                     <!-- TABLE 2A : LOADING -->
@@ -205,21 +224,6 @@
                         Rebound =
                         <field name="rebound" readonly="1"/> mm
                     </div>
-
-
-
-                    <!-- ================================================= -->
-                    <!-- INTERPRETATION -->
-                    <!-- ================================================= -->
-                    <div style="margin-top:30px;">
-                        <h3 style="border-bottom:2px solid #000;">INTERPRETATION</h3>
-                    </div>
-
-                    <div style="border:1px solid #ccc; padding:10px;">
-                        <field name="interpretation" nolabel="1" widget="text"/>
-                    </div>
-
-
 
                     <!-- ================================================= -->
                     <!-- ANALYSIS -->
