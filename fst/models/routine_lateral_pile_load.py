@@ -152,27 +152,28 @@ class RoutineLateralPileLoadTestParent(models.Model):
         def loading_points(readings):
             result = []
 
-            current_load = None
-            current_mean = None
+            prev_load = None
+            last_mean = None
 
             for r in readings.sorted('reading_datetime'):
 
-                if r.load_tonne > 0:
-                    # NEW STEP ONLY HERE
-                    if current_load is not None:
-                        result.append((current_load, current_mean))
+                if prev_load is None:
+                    prev_load = r.load_tonne
+                    last_mean = r.mean_mm
+                    continue
 
-                    current_load = r.load_tonne
-                    current_mean = r.mean_mm
-
+                # same step if:
+                #   same load OR zero (continuation)
+                if r.load_tonne == prev_load or r.load_tonne == 0:
+                    last_mean = r.mean_mm
                 else:
-                    # zero OR continuation
-                    if current_load is not None:
-                        current_mean = r.mean_mm
+                    result.append((prev_load, last_mean))
+                    prev_load = r.load_tonne
+                    last_mean = r.mean_mm
 
-            if current_load is not None:
-                result.append((current_load, current_mean))
-
+            if prev_load is not None:
+                result.append((prev_load, last_mean))
+            # import wdb;wdb.set_trace()
             return result
 
         def unloading_points(readings):
@@ -340,11 +341,11 @@ class RoutineLateralPileLoadTestParent(models.Model):
             # 1️⃣ Recompute mean_mm on loading readings
             for line in rec.loading_reading_ids:
                 line._compute_mean()
-
+                line._compute_split_dt()
             # 2️⃣ Recompute mean_mm on unloading readings
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
-
+                line._compute_split_dt()
             # 3️⃣ Force recompute of parent computed fields
             rec._compute_disp()
 
