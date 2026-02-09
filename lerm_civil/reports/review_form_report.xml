@@ -22,7 +22,12 @@
                         <tr>
                             <td><b>Customer Name &amp; Address:</b></td>
                             <td colspan="3">
-                                <!-- <span t-field="o.partner_id"/> -->
+                                <span t-field="o.sample_id.srf_id.customer.name"/>
+                                
+										<span t-field="o.sample_id.srf_id.customer.street"/>
+										<span t-field="o.sample_id.srf_id.customer.street2"/>
+										<span t-field="o.sample_id.srf_id.customer.city"/>
+                                        
                             </td>
                         </tr>
 
