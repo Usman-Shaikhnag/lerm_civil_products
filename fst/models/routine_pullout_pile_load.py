@@ -291,8 +291,10 @@ class RoutinePulloutPileLoadTestParent(models.Model):
         for rec in self:
             for line in rec.loading_reading_ids:
                 line._compute_mean()
+                line._compute_split_dt()
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
+                line._compute_split_dt()
             rec._compute_displacement()
 
     def print_report(self):

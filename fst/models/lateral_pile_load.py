@@ -336,10 +336,12 @@ class LateralPileLoadTestParent(models.Model):
             # 1️⃣ Recompute mean displacement on LOADING readings
             for line in rec.loading_reading_ids:
                 line._compute_mean()
+                line._compute_split_dt()
 
             # 2️⃣ Recompute mean displacement on UNLOADING readings
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
+                line._compute_split_dt()
 
             # 3️⃣ Force recompute of parent computed fields
             rec._compute_displacement_values()
