@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="view_pullout_pile_load_test_parent_tree" model="ir.ui.view">
-        <field name="name">pullout.pile.load.test.parent.tree</field>
-        <field name="model">pullout.pile.load.test.parent</field>
+
+    <!-- ===================================================== -->
+    <!-- TREE VIEW -->
+    <!-- ===================================================== -->
+    <record id="view_routine_lateral_pile_load_tree" model="ir.ui.view">
+        <field name="name">routine.lateral.pile.load.tree</field>
+        <field name="model">routine.lateral.pile.load.test.parent</field>
         <field name="arch" type="xml">
-            <tree string="Pullout Pile Load Test Reports">
+            <tree string="Routine Lateral Pile Load Tests">
 
                 <field name="name"/>
-                <button
-                    name="action_duplicate_parent"
-                    type="object"
-                    string="Duplicate"
-                    icon="fa-copy"
-                    class="btn-secondary"
-                />
-
+                <button name="action_duplicate_parent"
+                        type="object"
+                        icon="fa-copy"
+                        string="Duplicate"
+                        class="btn-secondary"/>
+                
                 <button 
                     name="action_delete_line" 
                     string="Delete" 
@@ -26,61 +28,74 @@
             </tree>
         </field>
     </record>
-    <!-- =====================================================
-         PULL-OUT PILE LOAD TEST : FORM VIEW
-    ====================================================== -->
-    <record id="view_pullout_pile_load_test_parent_form" model="ir.ui.view">
-        <field name="name">pullout.pile.load.test.parent.form</field>
-        <field name="model">pullout.pile.load.test.parent</field>
+
+
+
+    <!-- ===================================================== -->
+    <!-- FORM VIEW -->
+    <!-- ===================================================== -->
+    <record id="view_routine_lateral_pile_load_form" model="ir.ui.view">
+        <field name="name">routine.lateral.pile.load.form</field>
+        <field name="model">routine.lateral.pile.load.test.parent</field>
         <field name="arch" type="xml">
 
-            <form string="Initial Pull-Out Pile Load Test Report">
+            <form string="Routine Lateral Pile Load Test Report">
                 <header>
                     <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
                     <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
                     <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
                 </header>
-
                 <sheet>
 
                     <!-- ================= COVER ================= -->
                     <div style="text-align:center; margin-top:30px; margin-bottom:40px;">
-                        <h1 style="font-size:26px;">
+                        <h1 style="font-size:26px; letter-spacing:1px;">
                             <field name="name" style="width:100%; display:block; text-align:center; font-size:26px; letter-spacing:1px;"/>
                         </h1>
-                        <h2>INITIAL PULL OUT PILE LOAD TEST</h2>
+                        <h2 style="font-size:26px; letter-spacing:1px;">
+                            ROUTINE LATERAL PILE LOAD TEST
+                        </h2>
                         <h2 style="margin-top:10px;">
                             OF PILE NO -
                             <field name="pile_no" nolabel="1"/>
                         </h2>
                     </div>
 
+
+                    <!-- ================= BASIC INFO ================= -->
                     <group col="2" style="margin-bottom:30px;">
                         <field name="work_name"/>
                         <field name="contractor"/>
                         <field name="client"/>
                         <field name="report_no"/>
+                        <field name="ulr"/>
                         <field name="rec_date"/>
                         <field name="test_standard"/>
                         <field name="site_location" colspan="2"/>
                     </group>
 
-                    <!-- ================= INTRODUCTION ================= -->
-                    <div style="margin-top:30px;">
+
+                    <!-- ================================================= -->
+                    <!-- INTRODUCTION -->
+                    <!-- ================================================= -->
+                    <div style="margin-top:25px;">
                         <h3 style="border-bottom:2px solid #000;">INTRODUCTION</h3>
                     </div>
 
-                    <div style="border:1px solid #ccc; padding:12px;">
-                        <field name="introduction" widget="text" nolabel="1"/>
+                    <div style="border:1px solid #ccc; padding:10px;">
+                        <field name="introduction" nolabel="1" widget="text"/>
                     </div>
 
-                    <!-- ================= OBJECTIVE ================= -->
-                    <div style="margin-top:30px;">
+
+                    <!-- ================================================= -->
+                    <!-- OBJECTIVE -->
+                    <!-- ================================================= -->
+                    <div style="margin-top:25px;">
                         <h3 style="border-bottom:2px solid #000;">OBJECTIVE</h3>
                     </div>
 
-                    <div style="border:1px solid #ccc; padding:12px;">
-                        <field name="objective" widget="text" nolabel="1"/>
+                    <div style="border:1px solid #ccc; padding:10px;">
+                        <field name="objective" nolabel="1" widget="text"/>
                     </div>
 
                     <!-- ================= TESTING EQUIPMENT ================= -->
@@ -92,16 +107,21 @@
                         <field name="test_equipment" widget="text" nolabel="1"/>
                     </div>
 
-                    <!-- ================= TEST PROCEDURE ================= -->
-                    <div style="margin-top:30px;">
+                    <!-- ================================================= -->
+                    <!-- TEST PROCEDURE -->
+                    <!-- ================================================= -->
+                    <div style="margin-top:25px;">
                         <h3 style="border-bottom:2px solid #000;">TEST PROCEDURE</h3>
                     </div>
 
-                    <div style="border:1px solid #ccc; padding:12px;">
-                        <field name="test_procedure" widget="text" nolabel="1"/>
+                    <div style="border:1px solid #ccc; padding:10px;">
+                        <field name="test_procedure" nolabel="1" widget="text"/>
                     </div>
 
-                    <!-- ================= TABLE 1 : BASIC DATA ================= -->
+
+                    <!-- ================================================= -->
+                    <!-- TABLE 1 : BASIC DATA -->
+                    <!-- ================================================= -->
                     <div style="margin-top:35px;">
                         <h3 style="border-bottom:2px solid #000;">
                             TABLE 1 : BASIC DATA
@@ -116,7 +136,18 @@
                         </tree>
                     </field>
 
-                    <!-- ================= TABLE 2A : LOADING ================= -->
+                    <!-- ================= INTERPRETATION ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">INTERPRETATION</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="interpretation" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================================================= -->
+                    <!-- TABLE 2A : LOADING -->
+                    <!-- ================================================= -->
                     <div style="margin-top:35px;">
                         <h3 style="border-bottom:2px solid #000;">
                             TABLE 2A : DIAL GAUGE READING CORRESPONDING TO LOADING
@@ -138,7 +169,11 @@
                         </tree>
                     </field>
 
-                    <!-- ================= TABLE 2B : UNLOADING ================= -->
+
+
+                    <!-- ================================================= -->
+                    <!-- TABLE 2B : UNLOADING -->
+                    <!-- ================================================= -->
                     <div style="margin-top:35px;">
                         <h3 style="border-bottom:2px solid #000;">
                             TABLE 2B : DIAL GAUGE READING CORRESPONDING TO UNLOADING
@@ -159,59 +194,63 @@
                         </tree>
                     </field>
 
-                    <button name="action_generate_graph"
-                            type="object"
-                            string="Generate Graph"
-                            class="btn-primary"/>
-                            
-                    <!-- ================= GRAPH ================= -->
+
+
+                    <!-- ================================================= -->
+                    <!-- GRAPH -->
+                    <!-- ================================================= -->
+                    <button name="action_generate_graph" type="object" string="Generate Graph" class="btn-primary"/>
                     <div style="margin-top:35px;">
                         <h3 style="border-bottom:2px solid #000;">
-                            LOAD - DISPLACEMENT GRAPH
+                            LOAD SETTLEMENT GRAPH
                         </h3>
                     </div>
 
-                    <field name="graph_image" widget="image"/>
 
-                    <!-- ================= DISPLACEMENT SUMMARY ================= -->
+                    <field name="graph_image" widget="image" class="mt-2"/>
+
+
+
+                    <!-- ================================================= -->
+                    <!-- DISPLACEMENT SUMMARY -->
+                    <!-- ================================================= -->
                     <div style="margin-top:20px; font-weight:bold;">
-                        Gross Displacement =
+                        Gross Settlement =
                         <field name="gross_displacement" readonly="1"/> mm<br/>
-                        Net Displacement =
+
+                        Net Settlement =
                         <field name="net_displacement" readonly="1"/> mm<br/>
+
                         Rebound =
                         <field name="rebound" readonly="1"/> mm
                     </div>
 
-                    <!-- ================= INTERPRETATION ================= -->
-                    <div style="margin-top:35px;">
-                        <h3 style="border-bottom:2px solid #000;">INTERPRETATION</h3>
-                    </div>
-
-                    <div style="border:1px solid #ccc; padding:12px;">
-                        <field name="interpretation" widget="text" nolabel="1"/>
-                    </div>
-
-                    <!-- ================= CONCLUSION ================= -->
-                    <div style="margin-top:35px;">
-                        <h3 style="border-bottom:2px solid #000;">CONCLUSION</h3>
-                    </div>
-
-                    <div style="border:1px solid #ccc; padding:12px;">
-                        <field name="conclusion" widget="text" nolabel="1"/>
-                    </div>
-
-                    <!-- ================= SITE PHOTOGRAPHS ================= -->
-                    <div style="margin-top:40px;">
+                    <!-- ================================================= -->
+                    <!-- ANALYSIS -->
+                    <!-- ================================================= -->
+                    <div style="margin-top:30px;">
                         <h3 style="border-bottom:2px solid #000;">
-                            SITE PHOTOGRAPHS
+                            ANALYSIS OF TEST RESULTS
                         </h3>
+                    </div>
+
+                    <div style="border:1px solid #000; padding:10px;">
+                        <field name="analysis_text" nolabel="1" widget="text"/>
+                    </div>
+
+
+
+                    <!-- ================================================= -->
+                    <!-- SITE PHOTOS -->
+                    <!-- ================================================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">SITE PHOTOGRAPHS</h3>
                     </div>
 
                     <field name="site_image_ids" nolabel="1">
                         <tree editable="bottom">
                             <field name="sequence"/>
-                            <field name="image" widget="image" options="{'size': [80, 80]}"/>
+                            <field name="image" widget="image" options="{'size':[80,80]}"/>
                             <field name="caption"/>
                         </tree>
                     </field>
@@ -221,5 +260,6 @@
 
         </field>
     </record>
+
 
 </odoo>

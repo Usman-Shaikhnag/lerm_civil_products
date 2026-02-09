@@ -35,10 +35,9 @@
 
             <form string="Initial Lateral Pile Load Test Report">
                 <header>
-                    <button name="print_report"
-                            string="Print Report"
-                            type="object"
-                            class="btn-primary"/>
+                    <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
+                    <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
                 </header>
 
                 <sheet>
@@ -46,12 +45,19 @@
                     <!-- ================= COVER ================= -->
                     <div style="text-align:center; margin-top:30px; margin-bottom:40px;">
                         <h1 style="font-size:26px;">
-                            <field name="name"/>
+                            <field name="name" style="width:100%; display:block; text-align:center; font-size:26px; letter-spacing:1px;"/>
                         </h1>
                         <h2>INITIAL LATERAL PILE LOAD TEST</h2>
+                        <h2 style="margin-top:10px;">
+                            OF PILE NO -
+                            <field name="pile_no" nolabel="1"/>
+                        </h2>
                     </div>
 
                     <group col="2" style="margin-bottom:30px;">
+                        <field name="work_name"/>
+                        <field name="contractor"/>
+                        <field name="client"/>
                         <field name="report_no"/>
                         <field name="ulr"/>
                         <field name="rec_date"/>
@@ -131,10 +137,14 @@
                         </h3>
                     </div>
 
-                    <field name="loading_reading_ids" nolabel="1">
-                        <tree editable="bottom">
-                            <field name="date"/>
-                            <field name="time_hours"/>
+                    <field name="last_reading_datetime" invisible="1"/>
+                    <field name="loading_reading_ids"
+                            nolabel="1"
+                            context="{'default_parent_id': id}">
+                        <tree editable="bottom" limit="50" default_order="id">
+                            <field name="reading_datetime" 
+                                    widget="datetime"
+                                    options="{'format': 'dd/MM/yy HH:mm'}"/>
                             <field name="load_tonne"/>
                             <field name="dial_a"/>
                             <field name="dial_b"/>
@@ -149,10 +159,13 @@
                         </h3>
                     </div>
 
-                    <field name="unloading_reading_ids" nolabel="1">
-                        <tree editable="bottom">
-                            <field name="date"/>
-                            <field name="time_hours"/>
+                    <field name="unloading_reading_ids"
+                            nolabel="1"
+                            context="{'default_parent_id': id}">
+                        <tree editable="bottom" limit="50" default_order="id">
+                            <field name="reading_datetime" 
+                                    widget="datetime"
+                                    options="{'format': 'dd/MM/yy HH:mm'}"/>
                             <field name="load_tonne"/>
                             <field name="dial_a"/>
                             <field name="dial_b"/>
@@ -211,8 +224,8 @@
 
                     <field name="site_image_ids" nolabel="1">
                         <tree editable="bottom">
-                            <field name="sequence" width="60"/>
-                            <field name="image" widget="image" class="oe_avatar"/>
+                            <field name="sequence"/>
+                            <field name="image" widget="image" options="{'size': [80, 80]}"/>
                             <field name="caption"/>
                         </tree>
                     </field>
