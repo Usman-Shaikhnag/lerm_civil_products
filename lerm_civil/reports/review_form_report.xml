@@ -4,7 +4,73 @@
 
     <t t-call="web.html_container">
         <t t-foreach="docs" t-as="o">
+        
 
+       <div style="width:100%;">
+
+        <table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
+            <tr>
+
+                <!-- LEFT LOGO -->
+                <td style="width:20%; vertical-align:middle; text-align:center;">
+                    <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'" 
+                         style="height: 45px; width: auto; display: block; margin: 0 auto;"/>
+                </td>
+
+
+                <!-- RIGHT GRID -->
+                <td style="width:70%; border:1px solid #000; padding:0;">
+                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+
+                        <!-- COMPANY -->
+                        <tr>
+                            <td colspan="6" style="border:1px solid #000; padding:4px;">
+                                <b>GENSTRU CONSULTANTS PVT. LTD</b>
+                            </td>
+                        </tr>
+
+                        <!-- DOC NAME -->
+                        <tr>
+                            <td style="border:1px solid #000; padding:3px;"><b>Doc. Name</b></td>
+                            <td colspan="6" style="border:1px solid #000; padding:3px;">
+                                Order Request Form
+                            </td>
+
+                           
+                        </tr>
+
+                        <!-- DOC NO -->
+                        <tr>
+                            <td style="border:1px solid #000; padding:3px;"><b>Doc. No.</b></td>
+                            <td colspan="3" style="border:1px solid #000; padding:3px;">
+                                GCPL/QF/7-1-8A
+                            </td>
+
+                             <td style="border:1px solid #000; padding:3px;"><b>Issue No:</b></td>
+                            <td style="border:1px solid #000; padding:3px;">3</td>
+
+                           
+                        </tr>
+
+                        <!-- REV -->
+                        <tr>
+                            <td style="border:1px solid #000; padding:3px;"><b>Rev. No.</b></td>
+                            <td style="border:1px solid #000; padding:3px;">0</td>
+
+                            <td style="border:1px solid #000; padding:3px;"><b>Rev. Dt:</b></td>
+                            <td style="border:1px solid #000; padding:3px;"></td>
+
+                             <td style="border:1px solid #000; padding:3px;"><b>Issue Dt:</b></td>
+                            <td style="border:1px solid #000; padding:3px;">01/01/2021</td>
+                        </tr>
+
+                    </table>
+                </td>
+
+            </tr>
+        </table>
+
+    </div>
          <table style="width:100%; border-collapse:collapse; font-size:13px;" border="1">
 
                         <tr>
@@ -15,14 +81,21 @@
 
                             <td style="width:10%;"><b>Date:</b></td>
                             <td style="width:20%;">
-                                <!-- <span t-field="o.create_date"/> -->
+                                <span t-field="o.receipt_date"/>
                             </td>
                         </tr>
 
                         <tr>
                             <td><b>Customer Name &amp; Address:</b></td>
                             <td colspan="3">
-                                <!-- <span t-field="o.partner_id"/> -->
+                                <span t-field="o.sample_id.srf_id.customer.name"/>
+                                
+										<span t-field="o.sample_id.srf_id.customer.street"/>
+										<span t-field="o.sample_id.srf_id.customer.street2"/>
+										<span t-field="o.sample_id.srf_id.customer.city"/>
+                                        <span t-if="o.sample_id.srf_id.customer.zip"> - <span t-field="o.sample_id.srf_id.customer.zip"/></span>,
+										<span t-field="o.sample_id.srf_id.customer.state_id"/> ,
+										<span t-field="o.sample_id.srf_id.customer.country_id"/>
                             </td>
                         </tr>
 
@@ -43,7 +116,8 @@
                         <tr>
                             <td><b>Contact details of receiver (Phone, Email and address):</b></td>
                             <td colspan="3">
-                                <!-- <span t-field="o.contact_details"/> -->
+                                <span t-field="o.sample_id.srf_id.contact_person.phone"/>,<span t-field="o.sample_id.srf_id.contact_person.email"/> And <span t-field="o.sample_id.srf_id.customer.street"/>
+										<span t-field="o.sample_id.srf_id.customer.street2"/>
                             </td>
                         </tr>
 
@@ -64,21 +138,21 @@
                         <tr>
                             <td><b>Lot Details:</b></td>
                             <td colspan="3">
-                                <!-- <span t-field="o.lot_details"/> -->
+                                <span t-field="o.lot_detail"/>
                             </td>
                         </tr>
 
                         <tr>
                             <td><b>Number of disturbed Samples:</b></td>
                             <td colspan="3">
-                                <!-- <span t-field="o.disturbed_samples"/> -->
+                                <span t-field="o.disturbes_samples"/>
                             </td>
                         </tr>
 
                         <tr>
                             <td><b>Number of undisturbed soil samples:</b></td>
                             <td colspan="3">
-                                <!-- <span t-field="o.undisturbed_samples"/> -->
+                                <span t-field="o.undisturbes_samples"/>
                             </td>
                         </tr>
 
@@ -147,7 +221,6 @@
                         </tbody>
                     </table>
 
-
             </t>
         </t>
 
@@ -157,7 +230,7 @@
 
 
 <record id="action_custom_geotech_report" model="ir.actions.report">
-    <field name="name">Geotech Report</field>
+    <field name="name">Request Review Report</field>
     <field name="model">sample.request.review</field>
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">lerm_civil.custom_geotech_report</field>

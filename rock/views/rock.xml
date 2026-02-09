@@ -1,2681 +1,944 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <template id="rock_datasheet">
-        <t t-call="web.html_container">
-            <t t-call="lerm_civil.genstru_data_sheet_header">
-                <div style="text-align:center;font-size:18px;font-weight: bold">
-                    ROCK DATASHEET
-                </div>
-
-                <div class="container_eln" style="margin-top:5px">
-                    <table style="margin-top:20px">
-                        <tr cols="12">
-                            
-                            <td colspan="6">Job No :
-                                <![CDATA[&nbsp;]]>		
-                                <span t-field="eln.kes_no"></span>
-                            </td>
-                            <td colspan="6">Test Start Date: 
-                                <![CDATA[&nbsp;]]>
-                                <span t-field="eln.start_date"></span>
-                            </td>
-                        </tr>
-
-
-
-                        <tr>
-                            <td colspan="6">Material: <span t-field="eln.material"></span>
-                            </td>
-                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
-                            </td>
-                        </tr>
-                        <!-- <tr>
-                            <td colspan="6">Age at Test: <span t-field="data.age_of_days"></span>
-                            </td>
-                            <td colspan="6">Sample Conditioning: <span t-field="data.sample_condition"></span>
-                            </td>
-                        </tr> -->
-                    </table>
-					
-					<table>
-						<tr style="height:50px" cols="12">
-                            <td colspan="4">Performed By :
-                                <![CDATA[&nbsp;]]>
-                                <span t-field="eln.technician.name"/>
-                            </td>
-                            <td colspan="4">Witness Name :
-                                <![CDATA[&nbsp;]]>
-                                <span t-field="eln.witness_name"/>
-                            </td>
-                            <td colspan="4">Witness Signature :
-                                <![CDATA[&nbsp;]]>
-                                <span style='padding:20px'></span>
-                            </td>
-                        </tr>
-					</table>
-                  
-
-					<div>
-
-
-					  <table>
-                            <tr cols="12" style="background-color:#f9f9f9;">
-                                <td colspan="3" style="text-align: center;"><b>Sr No</b></td>
-								<td colspan="3" style="text-align: center;"><b>Date of Received</b></td>
-								<td colspan="3" style="text-align: center;"><b>Date of Testing</b></td>
-								<td colspan="3" style="text-align: center;"><b>Lab ID</b></td>
-                                <td colspan="3" style="text-align: center;"><b>BH No./Location</b></td>
-                                
-                                <td colspan="3" style="text-align: center;"><b>Depth</b></td>
-                                <td colspan="3" style="text-align: center;"><b>Piece No</b></td>
-                                <td colspan="3" style="text-align: center;"><b>Lithological Description of rock</b></td>
-                                <td colspan="3" style="text-align: center;"><b>Room temperature</b></td>
-								 <td colspan="3" style="text-align: center;"><b>Relative Humidity</b></td>
-                                <td colspan="3" style="text-align: center;"><b>Water temperature</b></td>
-                                <td colspan="3" style="text-align: center;"><b>Diameter of Rock Sample</b></td>
-								<td colspan="3" style="text-align: center;"><b>Average Diameter (D)</b></td>
-								<td colspan="3" style="text-align: center;"><b>Height of Rock Sample</b></td>
-								<td colspan="3" style="text-align: center;"><b>Average Height</b></td>
-								<td colspan="3" style="text-align: center;"><b>H/D</b></td>
-								
-                            </tr>
-
-							<!-- Units row -->
-						<tr style="background-color:#f9f9f9;">
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"><b>-</b></td>
-							<td colspan="3" style="text-align: center;"><b>m</b></td>
-							<td colspan="3" style="text-align: center;"><b>-</b></td>
-							<td colspan="3" style="text-align: center;"><b>-</b></td>
-							<td colspan="3" style="text-align: center;"><b>°deg</b></td>
-							<td colspan="3" style="text-align: center;"><b>%</b></td>
-							<td colspan="3" style="text-align: center;"><b>°deg</b></td>
-							<td colspan="1" style="text-align: center;"><b>mm</b></td>
-							<td colspan="1" style="text-align: center;"><b>mm</b></td>
-							<td colspan="1" style="text-align: center;"><b>mm</b></td>
-							<td colspan="3" style="text-align: center;"><b>mm</b></td>
-							<td colspan="1" style="text-align: center;"><b>mm</b></td>
-							<td colspan="1" style="text-align: center;"><b>mm</b></td>
-							<td colspan="1" style="text-align: center;"><b>mm</b></td>
-							<td colspan="3" style="text-align: center;"><b>mm</b></td>
-							<td colspan="3" style="text-align: center;"><b>--</b></td>
-							
-						</tr>
-
-						
-                            <t t-set="f" t-value="0"/>
-                            <tr t-foreach="data.rock_child_lines" t-as="r">
-                                <td colspan="3" style="text-align: center;">
-                                    <div>
-                                        <span t-esc="f + 1" />
-                                        <t t-set="f" t-value="f + 1"/>
-                                    </div>
-                                </td>
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['date_received']"/>
-                                </td>
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['date_testing']"/>
-                                </td>
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['lab_id']"/>
-                                </td>
-								
-                                <td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['bh_no']"/>
-                                </td>
-                               
-                             
-                                 <td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['depth']" />
-                                </td>
-                                <td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['piece_no']" />
-                                </td>
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['lithological']" />
-                                </td>
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['room_temp']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['relative_humidity']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-									<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['water_temperature']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['dia_rock1']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['dia_rock2']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['dia_rock3']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['avg_dia']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['height_rock1']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['height_rock2']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['height_rock3']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['avg_height']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['hd']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								
-                                
-                            </tr>
-                        </table>
-
-					</div>
-
-
-
-					<div>
-
-
-					  <table>
-                            <tr cols="12" style="background-color:#f9f9f9;">
-                                <td colspan="3" style="text-align: center;"><b>Sr No</b></td>
-								<td colspan="3" style="text-align: center;"><b>Date of Received</b></td>
-								<td colspan="3" style="text-align: center;"><b>Date of Testing</b></td>
-								<td colspan="3" style="text-align: center;"><b>Lab ID</b></td>
-                                <td colspan="3" style="text-align: center;"><b>BH No./Location</b></td>
-
-
-								<td colspan="3" style="text-align: center;"><b>Volume of Sample (Wsat-Wsub)</b></td>
-								<td colspan="3" style="text-align: center;"><b>Volume of Sample</b></td>
-								<td colspan="3" style="text-align: center;"><b>Initial Wt of sample</b></td>
-								<td colspan="3" style="text-align: center;"><b>Dry Wt of sample</b></td>
-								<td colspan="3" style="text-align: center;"><b>Saturated Wt of sample</b></td>
-								<td colspan="3" style="text-align: center;"><b>Volume of Voids</b></td>
-								<td colspan="3" style="text-align: center;"><b>Wt of sample in Water</b></td>
-								<td colspan="3" style="text-align: center;"><b>Sp. Gravity</b></td>
-                                
-                                
-								<td colspan="3" style="text-align: center;"><b>Bulk Density</b></td>
-								<td colspan="3" style="text-align: center;"><b>Sat Density</b></td>
-								<td colspan="3" style="text-align: center;"><b>Dry Density</b></td>
-								<td colspan="3" style="text-align: center;"><b>Water Absorption</b></td>
-								<td colspan="3" style="text-align: center;"><b>Porosity</b></td>
-								<td colspan="3" style="text-align: center;"><b>Load (UCS)</b></td>
-								<td colspan="3" style="text-align: center;"><b>Load</b></td>
-
-
-							
-								<!-- <td colspan="3" style="text-align: center;"><b>Compressive Strength  </b></td>
-								<td colspan="3" style="text-align: center;"><b>Compressive Strength </b></td>
-
-								<td colspan="3" style="text-align: center;"><b>Point load</b></td>
-								<td colspan="3" style="text-align: center;"><b>Point load strength index Is/Il (50)</b></td>
-								<td colspan="3" style="text-align: center;"><b>Duration of test</b></td>
-								<td colspan="3" style="text-align: center;"><b>Stress rate</b></td>
-								<td colspan="3" style="text-align: center;"><b>Mode of failure</b></td>
-								
-								 -->
-								
-                            </tr>
-
-							<!-- Units row -->
-						<tr style="background-color:#f9f9f9;">
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"><b>-</b></td>
-							
-							<td colspan="3" style="text-align: center;"><b>cm3</b></td>
-							<td colspan="3" style="text-align: center;"><b>cm3</b></td>
-							<td colspan="3" style="text-align: center;"><b>(gm)</b></td>
-							<td colspan="3" style="text-align: center;"><b>(gm)</b></td>
-							<td colspan="3" style="text-align: center;"><b>(gm)</b></td>
-							<td colspan="3" style="text-align: center;"><b>cm3</b></td>
-							<td colspan="3" style="text-align: center;"><b>(gm)</b></td>
-							<td colspan="3" style="text-align: center;"><b>--</b></td>
-							<td colspan="3" style="text-align: center;"><b>gm/cm3</b></td>
-							<td colspan="3" style="text-align: center;"><b>gm/cm3</b></td>
-							<td colspan="3" style="text-align: center;"><b>gm/cm3</b></td>
-							<td colspan="3" style="text-align: center;"><b>(%)</b></td>
-							<td colspan="3" style="text-align: center;"><b>(%)</b></td>
-							<td colspan="3" style="text-align: center;"><b>(kN)</b></td>
-							<td colspan="3" style="text-align: center;"><b>T</b></td>
-						</tr>
-
-						
-                            <t t-set="f" t-value="0"/>
-                            <tr t-foreach="data.rock_child_lines" t-as="r">
-                                <td colspan="3" style="text-align: center;">
-                                    <div>
-                                        <span t-esc="f + 1" />
-                                        <t t-set="f" t-value="f + 1"/>
-                                    </div>
-                                </td>
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['date_received']"/>
-                                </td>
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['date_testing']"/>
-                                </td>
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['lab_id']"/>
-                                </td>
-								
-                                <td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['bh_no']"/>
-                                </td>
-                               
-                             
-                                 
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['volume_of_sample']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-							
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['volume_of_sample1']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['initial_wt']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['dry_wet']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['saturated_wet']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['volume_of_void']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['wt_of_sample']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['sp_gravity']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['bulk_density']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['sat_density']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['dry_density']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['porosity']" />
-                                </td>  
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['load_ucs']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['load']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-
-                                
-                            </tr>
-                        </table>
-
-					</div>
-
-
-
-
-					<div>
-
-
-					  <table>
-                            <tr cols="12" style="background-color:#f9f9f9;">
-                                <td colspan="3" style="text-align: center;"><b>Sr No</b></td>
-								<td colspan="3" style="text-align: center;"><b>Date of Received</b></td>
-								<td colspan="3" style="text-align: center;"><b>Date of Testing</b></td>
-								<td colspan="3" style="text-align: center;"><b>Lab ID</b></td>
-                                <td colspan="3" style="text-align: center;"><b>BH No./Location</b></td>
-
-							
-								<td colspan="3" style="text-align: center;"><b>Compressive Strength qc   </b></td>
-								<td colspan="3" style="text-align: center;"><b>Compressive Strength qc at H/D=2</b></td>
-
-								<td colspan="3" style="text-align: center;"><b>Point Load</b></td>
-								<td colspan="3" style="text-align: center;"><b>Point load strength index-Core</b></td>
-								<td colspan="3" style="text-align: center;"><b>Point load strength index-Lump</b></td>
-								<td colspan="3" style="text-align: center;"><b>Compressive strength , qc from pt load</b></td>
-								<td colspan="3" style="text-align: center;"><b>Compressive strength , qc (H/D 1)</b></td>
-								<td colspan="3" style="text-align: center;"><b>Duration of the test (Sec)</b></td>
-								<td colspan="3" style="text-align: center;"><b>Mode of failure</b></td>
-								<td colspan="3" style="text-align: center;"><b>Compressive Strength qc </b></td>
-								<td colspan="3" style="text-align: center;"><b>Compressive Strength qc at H/D=2</b></td>
-								<td colspan="3" style="text-align: center;"><b>Stress Rate</b></td>
-								<td colspan="3" style="text-align: center;"><b>Moisture Content %</b></td>
-								
-								
-								
-                            </tr>
-
-							<!-- Units row -->
-						<tr style="background-color:#f9f9f9;">
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"></td>
-							<td colspan="3" style="text-align: center;"><b>-</b></td>
-							
-							<td colspan="3" style="text-align: center;"><b>kg/cm2</b></td>
-							<td colspan="3" style="text-align: center;"><b>kg/cm2</b></td>
-							<td colspan="3" style="text-align: center;"><b>kN</b></td>
-							<td colspan="3" style="text-align: center;"><b>MPa</b></td>
-							<td colspan="3" style="text-align: center;"><b>MPa</b></td>
-							<td colspan="3" style="text-align: center;"><b>MPa</b></td>
-							<td colspan="3" style="text-align: center;"><b>MPa</b></td>
-							<td colspan="3" style="text-align: center;"><b>--</b></td>
-							<td colspan="3" style="text-align: center;"><b>--</b></td>
-							<td colspan="3" style="text-align: center;"><b>Mpa</b></td>
-							<td colspan="3" style="text-align: center;"><b>Mpa</b></td>
-							<td colspan="3" style="text-align: center;"><b>--</b></td>
-							<td colspan="3" style="text-align: center;"><b>--</b></td>
-							
-						</tr>
-
-						
-                            <t t-set="f" t-value="0"/>
-                            <tr t-foreach="data.rock_child_lines" t-as="r">
-                                <td colspan="3" style="text-align: center;">
-                                    <div>
-                                        <span t-esc="f + 1" />
-                                        <t t-set="f" t-value="f + 1"/>
-                                    </div>
-                                </td>
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['date_received']"/>
-                                </td>
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['date_testing']"/>
-                                </td>
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['lab_id']"/>
-                                </td>
-								
-                                <td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['bh_no']"/>
-                                </td>
-                               
-                             
-                                 
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['comp_strength1']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-							
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['comp_strength2']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['point_load']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['point_load_strength']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['point_load_index']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['comp_strength4']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['comp_strength5']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['duration_of_test']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['mode_of_failure']" />
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['comp_rock']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['comp_rock1']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['stress_rate']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td colspan="3" style="text-align: center;">
-                                    <span t-esc="r['moisture_content']" />
-                                </td>  
-								  
-
-                                
-                            </tr>
-                        </table>
-
-					</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-					 <!-- DETERMINATION OF SLAKE DURABILITY OF ROCK -->
-
-          
-			<div t-if="data.slake_durability_visible"  style="margin-top: 30px; font-family: Arial, sans-serif;">
-                        <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
-                           DETERMINATION OF SLAKE DURABILITY OF ROCK
-                            
-                            <span>
-                                    <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table" t-as="parameter">
-                                        <t t-if="parameter.grade.id == eln.grade_id.id">
-                                            <span t-field="parameter.specification"/>
-                                        </t>
-                                    </t>
-                            </span>
-                        </div>
-                        <table>
-                            <tr cols="12">
-                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                sr.no
-                                </td>
-                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                Lab ID
-                                </td>
-                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                DATE
-                                </td>
-                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                 Location
-                                </td>
-                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                Room Temperature. (°C)
-                                </td>
-                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                 Relative humidity 
-                                </td>
-                                <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                 Water temperature, (°C)
-                                </td>
-                                 <td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                 Weight of drum plus sample after drying before initiation of test, (gm), A
-                                </td>
-								<td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                 Weight of drum plus retained portion of the sample (first cycle), (gm), B
-                                </td>
-								<td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                 Weight of drum plus retained portion of the sample (second cycle), (gm), C
-                                </td>
-								<td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                 Weight of drum after cleaning, (gm), D
-                                </td>
-								<td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                  Slake durability Index percent (second cycle) 
-                                </td>
-								<td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                 Slake durability Index percent (First cycle)
-                                </td>
-								<td colspan="2" style="border: 1px solid black; padding: 6px; font-weight: bold;background-color: #E6E6E6;text-align: center;">
-                                 classification
-                                </td>
-
-
-                            </tr>
-
-                             <t t-set="k" t-value="0"/>
-                            <tr t-foreach="data.slake_durability_child_lines" t-as="r"> 
-                            
-                                 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['sr_no']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                                <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['lab_id']" />
-                                </td>
-                                <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['date']" />
-                                </td>
-                                <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['bh_no']" />
-                                </td>
-                                <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['room_temp']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                                <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['relative_humidity']"  t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                                 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['wt_drum_a']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                                 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['wt_drum_b']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-								 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['wt_drum_c']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-								 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['wt_drum_d']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-								 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['slake_second']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-								 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['slake_first']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-								 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['wt_drum_b']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-								 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['classification']" />
-                                </td>
-                            </tr>
-                        </table>
-                        </div>
-						
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  
-                         <!-- Determination of CERCHAR Abrasivity Index of Rock  -->
-
-
-					<t t-foreach="data.cerchar_abrasivity_ids.filtered(lambda l: l.is_checked)" t-as="line">
-
-
-					<div t-if="data.cerchar_abrasivity_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
-					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
-						Determination of CERCHAR Abrasivity Index of Rock
-					</div>
-
-					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
-					   <t t-esc="'LAB ID : %s' % (line.lab_id or '')"/>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                             Start Date
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.start_date"/>
-                             </td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                               End Date
-                            </td>
-                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
-                              <span t-field="line.end_date"/>
-                            </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-							<thead>
-								<tr style="background-color:#f9f9f9; text-align: center;">
-								    <th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Sr .no</th>
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">d (mm)</th>
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Room Temperature (°C)</th>
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Initial Reading (mm) </th>
-									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Final Reading (mm)</th>
-									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">pin result</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 2 initial</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 2 final</th>
-								
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 2 result</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 3 initial</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 3 final</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 3 result</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 4 initial</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 4 final</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 4 result</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 5 initial</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 5 final</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">pin 5 result</th>
-							</tr>
-								
-							</thead>
-							<tbody>
-								<t t-set="k" t-value="0"/>
-								<tr t-foreach="line.cerchar_abrasivity_lines" t-as="r" style="text-align: center;">
-									
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['sr_no']"/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['d_mm']" />
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['room_temp']" />
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin1_intial']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pon1_final']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin_result']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin2initial']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin2final']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin2result']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin3initial']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin3final']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin3result']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin4initial']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin4final']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin4result']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin5initial']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin5final']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['pin5result']" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									
-								</tr>
-							</tbody>
-						</table>
-
-						<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                            avg pin result
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.avg_pin_result"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                            avg pin 2 result
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.avg_pin2_result"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                            avg pin 3 result
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.avg_pin3_result"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                            avg pin 4 result
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.avg_pin4_result"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                            avg pin 5 result
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.avg_pin5_result"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                            Mean Pin wear (mm)
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.overall_avg_pin_result"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-
-
-					</div>
-				</t>
-
-
-
-
-<!-- Triaxial Shear Test (Rock) -->
-
-
-					<t t-foreach="data.triaxial_ids.filtered(lambda l: l.is_checked)" t-as="line">
-
-
-					<div t-if="data.triaxial_visible" style="margin-top: 30px; font-family: Arial, sans-serif;">
-					<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
-						Triaxial Shear Test (Rock)
-					</div>
-
-					<div style="width:100%;text-align:center;font-weight:bold;font-size: 14px;">
-					   <t t-esc="'LAB ID : %s' % (line.lab_id or '')"/>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                             Start Date
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.start_date"/>
-                             </td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                               End Date
-                            </td>
-                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
-                              <span t-field="line.end_date"/>
-                            </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                             Room Temperature
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.room_temp_triaxial"/>
-                             </td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                               Relative humidity
-                            </td>
-                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
-                              <span t-field="line.relative_humidity_triaxial"/>
-                            </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                             Lithologic description of rock
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.lithologic_dic"/>
-                             </td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                               Type of machine used
-                            </td>
-                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
-                              <span t-field="line.machine_used"/>
-                            </td>
-                        </tr>
-						<tr>
-                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                               Diameter of Specimen, mm
-                            </td>
-                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
-                              <span t-field="line.dia_spe"/>
-                            </td>
-                        </tr>
-						<tr>
-                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                               Initial Weight of Sample (gm)
-                            </td>
-                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
-                              <span t-field="line.initial_wt"/>
-                            </td>
-                        </tr>
-						<tr>
-                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                               Area of Specimen, cm2
-                            </td>
-                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
-                              <span t-field="line.area_spe"/>
-                            </td>
-                        </tr>
-						<tr>
-                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                               Dry Weight of Sample (gm)
-                            </td>
-                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
-                              <span t-field="line.dry_et"/>
-                            </td>
-                        </tr>
-						<tr>
-                            <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                               Moisture content (%)
-                            </td>
-                            <td style="border:1px solid black; padding:6px; text-align:center;width:30%">
-                              <span t-field="line.moisture_content"/>
-                            </td>
-                        </tr>
-                    </table>
-					</div>
-
-					<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-							<thead>
-								<tr style="background-color:#f9f9f9; text-align: center;">
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Number of Specimen Tested. </th>
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Confining Pressure S3 # MPa</th>
-									<th style="border: 1px solid black; font-weight: bold;padding: 8px;background-color: #E6E6E6;text-align: center;" colspan="2">Failure Load kN</th>
-									<th style="font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Duration of test  sec</th>
-									<th style="font-weight: bold; padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;"  colspan="2">Height of Sample mm</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Area mm2</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Axial Strength MPa</th>
-									<th style=" font-weight: bold;padding: 8px;border-bottom: none;background-color: #E6E6E6;text-align: center;" colspan="2">Stress rate MPa/sec</th>
-								</tr>
-								
-							</thead>
-							<tbody>
-								<t t-set="k" t-value="0"/>
-								<tr t-foreach="line.triaxial_child_lines" t-as="r" style="text-align: center;">
-									
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['sr_no']"/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['con_pressure']" t-options='{"widget": "float", "precision": 2}' />
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['failure_load']" t-options='{"widget": "float", "precision": 2}' />
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['duration_test']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['height']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['area']" t-options='{"widget": "float", "precision": 1}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['axial']" t-options='{"widget": "float", "precision": 1}'/>
-									</td>
-									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['stress']" t-options='{"widget": "float", "precision": 1}'/>
-									</td>
-
-								</tr>
-							</tbody>
-						</table>
-
-						<div t-if="line.triaxial_graph" style="margin-top: 20px;text-align:center;">
-								<img t-att-src="'data:image/png;base64,' + line.triaxial_graph.decode('utf-8')" style="max-width: 100%;"/>
-				</div>
-
-						<div style="padding: 10px 0px;">
-				   
-                       <table style="width:60%;font-size:14px; border:none;">
-                        <tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                             Tangent of straight line (m) :
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.tangent_staright"/>
-                             </td>
-                        </tr>
-						<tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                             Intercept of straight line (b) :
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.intercept_staright"/>
-                             </td>
-                        </tr>
-						<tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                             Angle of internal friction, f
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.phi"/>
-                             </td>
-                        </tr>
-						<tr>
-                           <td style="border:1px solid black; padding:6px; font-weight:bold;">
-                             Apparent Cohesion, c
-                            </td>
-                            <td style="border:1px solid black;  padding:6px; text-align:center; width:30%">
-                              <span t-field="line.cohesion"/>
-                             </td>
-                        </tr>
-                    </table>
-					</div>
-
-
-					</div>
-					</t>
-
-
-              
-                   <div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								<div style="height: 40px;">
-						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
-							<t t-if="eln.tested_by_signature_datasheet">
-
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div>
-                            <div>
-                                <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
-                                </b>
-                            </div>
-                        </div>
+    <data>
+
+        <record id="mechanical_rock" model="ir.ui.view">
+        <field name="name">mechanical.rock.form</field>
+        <field name="model">mechanical.rock</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                        <h1>
+                            <field name="name_rock"  readonly="1" nolabel="1"/>
+                        </h1>
                         
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
+                        <group style="white-space: nowrap; width:70%;">
+                     
+                        <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+                       
+                        </group>
+                        <group>
+                       <field name="grade"/>
+                    </group>
+
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+                    <group/>
+
+
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+                      
+                     <!-- <group > -->
+                     <div>
+
+                     <h1 class="text-center">
+                            <field name="name"  readonly="1" nolabel="1"/>
+                    </h1>
+                    </div>
+                    <group/>
+
+                      <div invisible = "usc_visible == False" style="margin-bottom: 10px;">
+                            <field name= 'rock_lines_generated' invisible="1" />
+                            <button name="action_generate_rock_lines"
+                            
+                                type="object"
+                                string="Rock Lab Lines"
+                                class="oe_highlight"
+                                invisible="rock_lines_generated == True"/>
+
                             </div>
-							<div style="height: 40px;">
-								<t t-if="eln.sample_id.checked_by_signature_datasheet">
-									<div t-if="eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-									
-								</t>
-							</div>
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-								<!-- <div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div> -->
-							</div>
-						</div>
-                    
-                </div>
-
-            </t>
-        </t>
-    </template>
-
-    
-<template id="rock_report">
-        <t t-call="web.html_container">
-       		 <t t-call="lerm_civil.genstru_layout_header_footer_lerm_eln">
-			
-
-				<div class="container_eln" style="padding-top:0px;">
-					<div class="" t-foreach="eln" t-as="o">
-						
-					
-						  <table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
-							<tr>
-								<!-- <td ><strong>Mechanical Testing</strong>: </td>
-								<td style="padding-left: 10px;"><span t-field="o.material.name"/></td> -->
-								<!-- <td colspan="3"><strong>Report No</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.kes_no"/></td>
-								<td colspan="3" ><strong>URL NO</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.ulr_no"/></td> -->
-							</tr>
-
-							<tr>
-								<td colspan="3"><strong>Project Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
-
-								<!-- <td><strong>Date of Report</strong>: </td>
-									
-								<td >
-								<span t-field="o.start_date" style="margin-right:10px;"/> 		
-								</td> -->
-							</tr>
-						
-							
-						
-							<tr>
-							<td colspan="3" style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
-							<td colspan="3" style="padding-left: 10px;width:25%;">
-										<span t-field="o.srf_id.customer.name"/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
-								</td>
-								<!-- <td><strong>Date Sample Received</strong>: </td> -->
-								<!-- <td >
-								<span t-field="o.sample_id.sample_received_date"/>
-								</td > -->
-								
-
-								<td colspan="3"><strong>Date Sample Received</strong>:</td>
-								<td colspan="3">
-									<span t-field="o.sample_id.sample_received_date"/>
-								</td>
-							</tr>
-							<tr>
-								
-								<td colspan="3" ><strong>Mechanical Testing</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.group_id"/></td>
-
-								<td colspan="3"><strong>Date of Report</strong>: </td>
-									
-								<td colspan="3">
-								<span t-field="o.start_date" style="margin-right:10px;"/> 		
-								</td>
-							
-							</tr>
-
-							<tr>
-								
-								
-								
-								<td colspan="3"><strong>Location</strong>: </td>
-								<td colspan="3">
-								Permanent facility
-							        <!-- <span t-field="o.start_date" style="margin-right:10px;"/> -->
-								</td>
-								
-								
-
-								<td colspan="3"><strong>Starting Date</strong>: </td>
-								<td colspan="3">
-							        <span t-field="o.start_date" style="margin-right:10px;"/>
-								</td>
-							
-							</tr>
-							
-							<tr>
-
-								<td colspan="3"><strong>Type of Sample &amp; Condition</strong>: </td>
-								<td colspan="3"><span t-field="o.material.name"/></td>
-
-							<td colspan="3"><strong>Completion Date</strong>: </td>
-								<td colspan="3">
-								<span t-field="o.end_date" />
-								</td>
-						</tr>
 
 
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="1">
+                            <tbody>
+                                <tr>
+                                    <td><label for="rock_lines_generated"></label></td>
+                                    <td><field name="rock_lines_generated"   /></td>
+                                </tr>
 
-						
-
-							
-						</table>
-
-						</div>
-                        <t t-set="triaxialc_vals" t-value="[g.cohesion for g in (data.triaxial_ids or []) if g.cohesion]"/>
-			             <t t-set="triaxialc_index" t-value="0"/>
-
-						<t t-set="triaxialp_vals" t-value="[g.phi for g in (data.triaxial_ids or []) if g.phi]"/>
-						<t t-set="triaxialp_index" t-value="0"/>
-
-
-						<t t-set="slackfirst_vals" t-value="[g.slake_first for g in (data.slake_durability_child_lines or []) if g.slake_first]"/>
-			             <t t-set="slackfirst_index" t-value="0"/>
-
-
-						<t t-set="slackclass_vals"
-							t-value="[g.classification for g in (data.slake_durability_child_lines or []) if g.classification]"/>
-
-							<t t-set="slackclass_index"
-							t-value="slackclass_index if slackclass_index is not None else 0"/>
-
-
-						<t t-set="abrasivity_vals" t-value="[g.overall_avg_pin_result for g in (data.cerchar_abrasivity_ids or []) if g.overall_avg_pin_result]"/>
-			             <t t-set="abrasivity_index" t-value="0"/>
-
-
-						<t t-set="abrasivityclass_vals"
-							t-value="[g.classification for g in (data.cerchar_abrasivity_ids or []) if g.classification]"/>
-
-							<t t-set="abrasivityclass_index"
-							t-value="abrasivityclass_index if abrasivityclass_index is not None else 0"/>
-
-
-						<t t-set="row_count"
-					t-value="
-							
-									len(triaxialc_vals or []),
-									len(triaxialp_vals or []),
-									len(slackfirst_vals or []),
-									len(slackclass_vals or []),
-
-									len(abrasivity_vals or []),
-									len(abrasivityclass_vals or [])
-									"/>
-                        <table>
-                            <tr cols="12" style="background-color:#f9f9f9;">
-                                <td rowspan="2" style="text-align: center;"><b>Sr No</b></td>
-								
-                                <td rowspan="2" style="text-align: center;" width="200"><b>Location</b></td>
-								
+                                <tr>
+                                    <td><label for="calc_mode"></label></td>
+                                    <td><field name="calc_mode"   /></td>
+                                </tr>
                                 
-                                <td rowspan="2" style="text-align: center;" width="200" ><b>Depth</b></td>
-                                <td rowspan="2" style="text-align: center;" width="200"><b>Piece No</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Lithological Description of rock</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Room temperature</b></td>
-								 <td rowspan="2" style="text-align: center;"><b>Relative Humidity</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Water temperature</b></td>
-								<t t-if="data.avg_dia_visible">
-                                <td rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9214587uytf')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-								<t t-if="data.avg_height_visible">
-								<td rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe921147852gh')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-								<t t-if="data.hd_visible">
-								<td rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','201478ght-0bc7-41a6-a2bb-0fe9211478521gt')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-								<t t-if="data.bulk_density_visible">
-								<td rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210478bbb-0bc7-41a6-a2bb-0fe9211478521r4')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-								<t t-if="data.sat_density_visible">
-								<td rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','20123rtyng-0bc7-41a6-a2bb-0fe921147814524')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-								<t t-if="data.dry_density_visible">
-								<td rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','4578uuuytt-0bc7-41a6-a2bb-0fe9211478tyu556')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-								<t t-if="data.water_absorption_visible">
-								<td rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2147852trr-0bc7-41a6-a2bb-0fe92114rterrgghy')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-								<t t-if="data.porosity_visible">
-								<td rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','55544ttyyyr-0bc7-41a6-a2bb-0fe92114rterertty')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-								<t t-if="data.moisture_content_visible">
-								<td rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','7778rrrtttgg-0bc7-41a6-a2bb-0fe92114rr445ttj')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
 
-							   <!-- <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_compress"  colspan="3" style="text-align: center;"><b>Compressive Strength  </b></td> -->
-								<t t-if="data.compressive_strength_visible">
-								<td   rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','88rrty222vv33-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-						
-							
-							<!-- <t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_compress1" colspan="3" style="text-align: center;"><b>Compressive Strength </b></td> -->
-								<t t-if="data.compressive_strength_visible1">
-								<td rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','5578gghty214-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-						
-							<!-- <t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_point_load" colspan="3" style="text-align: center;"><b>Point load</b></td> -->
-								<t t-if="data.point_load_visible">
-								<td  rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','785587rttgg11-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
 
-							 <!-- <t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_point_load_strength"  colspan="3" style="text-align: center;"><b>Point load strength index Is/Il (50)</b></td> -->
-								<t t-if="data.point_load_visible1">
-								<td   rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','87522869rtyhn-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
+                            </tbody>
+                        </table>
+
+
+
+             
+
+
+                      
+   
+   
+                 <div class="d-flex gap-2" invisible="not usc_visible ">
+                  <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_rock">Temp.°C</label></td>
+                                    <td><field name="temp_rock" class="blue-input" invisible="not usc_visible"  required = "calc_mode == False or rock_lines_generated == True "/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_rock">Humidity %</label></td>
+                                    <td><field name="humidity_rock" class="blue-input" invisible="not usc_visible" required = "calc_mode == False or rock_lines_generated == True "/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>  
+
+
+
+
+
+                         <div invisible = "usc_visible == False">
+                        <h1 class="text-center">
+                            <!-- <field name="uu_triaxial_cohesion_name" readonly="1" nolabel="1"/> -->
+                            <field name="usc_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+
+                    <div class="d-flex gap-3" invisible = "usc_visible == False">
+                        
+
+                         <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><span>Point Load  Constant</span></td>
+                                <td><field name='point_load_constant' col="1" class="blue-input"/></td>
+                            </tr>
+                            
+                            
+                            </tbody>
+                        </table>
+
+
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><span>Compressive Strength  Constant</span></td>
+                                <td><field name='compressive_strength_constant' col="1" class="blue-input"/></td>
+                            </tr>
+                           
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><span>Compressive Strength HD  Constant</span></td>
+                                <td><field name='compressive_strength_constant_hd' col="1" class="blue-input"/></td>
+                            </tr>
+                           
+                            </tbody>
+                        </table>
+                    </div>
+
+
+        
+
+                    <div invisible = "usc_visible == False">
+                        <field name="rock_child_lines">
+                            <tree editable="bottom" class="custom_table_borders">
+                             <!-- <field name="blue_input" invisible="1"/> -->
+                                <field name='sr_no'/>
+                                <field name='date_received'  class="blue-input" decoration-info="date_received != 0"/>
+                                <field name='date_testing' class="blue-input" decoration-info="date_testing != 0"/>
+                                <field name='lab_id' width="120" class="blue-input" decoration-info="lab_id != 0"/>
+                                <!-- <field name='bh_no' width="120" class="blue-input" decoration-info="bh_no != 0"/> -->
+                                <!-- <field name='depth' width="120" class="blue-input" decoration-info="depth != 0"/> -->
+                                <field name='piece_no'  width="120" class="blue-input" decoration-info="piece_no != 0"/>
+                                <field name='lithological' width="120" class="blue-input" decoration-info="lithological != 0"/>
+                                <field name='room_temp' class="blue-input" decoration-info="room_temp != 0"/>
+                                <field name='relative_humidity' class="blue-input" decoration-info="relative_humidity != 0"/>
+                                <field name='water_temperature' class="blue-input" decoration-info="water_temperature != 0"/>
+                                <field name='dia_rock1' class="blue-input" decoration-info="dia_rock1 != 0"/>
+                                <field name='dia_rock2'  class="blue-input" decoration-info="dia_rock2 != 0"/>
+                                <field name='dia_rock3' class="blue-input" decoration-info="dia_rock3 != 0"/>
+                                <field name='avg_dia' />
+                                <field name='height_rock1' class="blue-input" decoration-info="height_rock1 != 0"/>
+                                <field name='height_rock2' class="blue-input" decoration-info="height_rock2 != 0"/>
+                                <field name='height_rock3'  class="blue-input" decoration-info="height_rock3 != 0"/>
+                                <field name='avg_height' />
+                                <field name='hd'/>
+                                <field name='volume_of_sample'/>
+                                <field name='volume_of_sample1' class="blue-input" decoration-info="volume_of_sample1 != 0"/>
+                                <field name='initial_wt' class="blue-input" decoration-info="initial_wt != 0"/>
+                                <field name='dry_wet'   class="blue-input" decoration-info="dry_wet != 0"/>
+                                  <field name='saturated_wet'  class="blue-input" decoration-info="saturated_wet != 0"/>
+                                
+                                <field name='volume_of_void'/>
+                                <field name='wt_of_sample' class="blue-input" decoration-info="wt_of_sample != 0"/>
+                                <field name='sp_gravity'/>
+                                <field name='bulk_density'  />
+                                <field name='sat_density'/>
+                                <field name='dry_density'/>
+                                <field name='water_absorption'/>
+                                <field name='porosity'/>
+                                <field name='load_ucs'   class="blue-input" decoration-info="load_ucs != 0"/>
+                                <field name='load'/>
+                                <field name='comp_strength1'/>
+                                <field name='comp_strength2'/>
+                                <field name='point_load' class="blue-input" decoration-info="point_load != 0"/>
+                                <field name='point_load_strength'/>
+                                 <field name='point_load_index'/>
+                                <field name='comp_strength4'/>
+                                <field name='comp_strength5'/>
+                                <field name='duration_of_test' class="blue-input" decoration-info="duration_of_test != 0"/>
+                                <field name='mode_of_failure' width="120" class="blue-input" decoration-info="mode_of_failure != 0"/>
+                                <field name='comp_rock'/>
+                                <field name='comp_rock1'/>
+                                <field name='stress_rate'/>
+                                <field name='moisture_content'/>
+                               
+
+                              
+                                
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                     <div invisible = "cerchar_abrasivity_visible == False">
+                        <h1 class="text-center">
+                            <field name="cerchar_abrasivity_name" readonly="1" />
+                            <field name="cerchar_abrasivity_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+                    <div invisible = "cerchar_abrasivity_visible == False">
+                        <field name= 'cerchar_abrasivity_generated' invisible="1" />
+                        <button name="action_generate_cerchar_abrasivity_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="cerchar_abrasivity_generated == True"/>
+
+                        </div>
+
+                        <field name="cerchar_abrasivity_ids" class="custom_table_borders" nolabel="1" invisible = "cerchar_abrasivity_visible == False" >
+                            <tree string="CBR" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                                <field name="is_checked"/>
+                            </tree>
+
+                            <form string="" >
+                            <sheet>
+                            <style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
+
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
+
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
+
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
+
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
+
+                                 .soil-table table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                font-size: 13px;
+                                }
+                                .soil-table th, .soil-table td {
+                                    border: 1px solid #444;
+                                    padding: 4px 6px;
+                                    text-align: center;
+                                }
+                                .header {
+                                    background: #f2f2f2;
+                                    font-weight: bold;
+                                }
+                                .red {
+                                    color: red !important;
+                                }
+                            </style>
+
+                      <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="lab_id">Lab ID</label></td>
+                                            <td><field name="lab_id" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="1">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="bh_id">BH ID</label></td>
+                                            <td><field name="bh_id" class="blue-input"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table> -->
+                            </div>  
+
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="start_date"></label></td>
+                                            <td><field name="start_date" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="end_date"></label></td>
+                                            <td><field name="end_date"  readonly="1"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                        <field name="cerchar_abrasivity_lines">
+                            <tree editable="bottom" class="custom_table_borders">
+                             <!-- <field name="blue_input" invisible="1"/> -->
+                                <field name='sr_no'/>
+                                <field name='d_mm'  class="blue-input" decoration-info="d_mm != 0"/>
+                                <field name='room_temp' class="blue-input" decoration-info="room_temp != 0"/>
+                                <field name='pin1_intial' width="120" class="blue-input" decoration-info="pin1_intial != 0"/>
+                                <field name='pon1_final' width="120" class="blue-input" decoration-info="pon1_final != 0"/>
+                                <field name='pin_result' width="120" />
+
+                                <field name='pin2initial'  width="120" class="blue-input" decoration-info="pin2initial != 0"/>
+                                <field name='pin2final' width="120" class="blue-input" decoration-info="pin2final != 0"/>
+                                <field name='pin2result' />
+
+                                <field name='pin3initial' class="blue-input" decoration-info="pin3initial != 0"/>
+                                <field name='pin3final' class="blue-input" decoration-info="pin3final != 0"/>
+                                <field name='pin3result' />
+
+                                <field name='pin4initial'  class="blue-input" decoration-info="pin4initial != 0"/>
+                                <field name='pin4final' class="blue-input" decoration-info="pin4final != 0"/>
+                                <field name='pin4result' />
+
+                                <field name='pin5initial' class="blue-input" decoration-info="pin5initial != 0"/>
+                                <field name='pin5final' class="blue-input" decoration-info="pin5final != 0"/>
+                                <field name='pin5result'  />
+                               
+                            </tree>
+                        </field>
+                   
+
+                    <div class="d-flex gap-3">
+                        
+
+                         <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="avg_pin_result"></label></td>
+                                <td><field name='avg_pin_result' col="1" /></td>
+                            </tr>
+                            
+                            
+                            </tbody>
+                        </table>
+
+
+                        <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="avg_pin2_result"></label></td>
+                                <td><field name='avg_pin2_result' col="1" /></td>
+                            </tr>
+                           
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="avg_pin3_result"></label></td>
+                                <td><field name='avg_pin3_result' col="1" /></td>
+                            </tr>
+                           
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="avg_pin4_result"></label></td>
+                                <td><field name='avg_pin4_result' col="1" /></td>
+                            </tr>
+                           
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="avg_pin5_result"></label></td>
+                                <td><field name='avg_pin5_result' col="1" /></td>
+                            </tr>
+                           
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div  >
+                        
+
+                         <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="overall_avg_pin_result"></label></td>
+                                <td><field name='overall_avg_pin_result' col="1" /></td>
+                            </tr>
+                            
+                            
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div  >
+                        
+
+                         <table class="table table-sm o_form_table table-bordered w-20 custom_table_borders">
+                            <tbody>
+                            <tr>
+                                <td><label for="classification"></label></td>
+                                <field name='classification' class="blue-input" decoration-info="classification != 0"/>
+                            </tr>
+                            
+                            
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                      </sheet>
+                       <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save" class="btn btn-success"/>
+
+
                               
 
-							  
-								<t t-if="data.duration_of_test_visible">
-								<td  rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9995522tyynn1-0bc7-41a6-a2bb-0fe92114rr4457')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
 
-								<!-- <t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_stress_rate" colspan="3" style="text-align: center;"><b>Stress rate</b></td> -->
-								<t t-if="data.stress_rate_visible">
-								<td  rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3332gghytt1144-0bc7-41a6-a2bb-0fe92114rr478t')]).parameter_name"/>
-								</span>
-								
-								</td>
-								</t>
+                        </footer>
+                      
+                        </form>
 
-								
-								<!-- <t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_mode_of_failure" colspan="3" style="text-align: center;"><b>Mode of failure</b></td> -->
-								<t t-if="data.mode_of_failure_visible">
-								<td  rowspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22277gght1100t-0bc7-41a6-a2bb-0fe92114rr478y')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-
-								<!-- <t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>Sp. Gravity</b></td> -->
-								<t t-if="data.sp_gravity_visible">
-								<td  rowspan="2"  style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','8866ggtrhh2277j-0bc7-41a6-a2bb-0fe92114rr4yre')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-
-								<t t-if="data.triaxial_visible">
-								<td  colspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-
-									<t t-if="data.slake_durability_visible">
-								<td  colspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-
-									<t t-if="data.cerchar_abrasivity_visible">
-								<td  colspan="2" style="text-align: center;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_name"/>
-								</span>
-								</td>
-								</t>
-								<!-- <td colspan="3" style="text-align: center;"><b>Load (UCS)</b></td> -->
-								
-                            </tr>
-							<tr style="background-color:#f9f9f9;">
-                            <th>Angle of internal friction ( f )</th><th>Cohesion (c )</th>
-							 <th>Id</th><th>Classification (Cl 6.2)</th>
-
-							 <th>CAI</th><th>Classification (Cl. 11.1.10)</th>
-							</tr>
-
-							<!-- Units row -->
-						<tr style="background-color:#f9f9f9;">
-							<td colspan="1" style="text-align: center;"></td>
-							<td colspan="1" style="text-align: center;"><b>-</b></td>
-							<td colspan="1" style="text-align: center;"><b>m</b></td>
-							<td colspan="1" style="text-align: center;"><b>-</b></td>
-							<td colspan="1" style="text-align: center;"><b>-</b></td>
-							<td colspan="1" style="text-align: center;"><b>°deg</b></td>
-							<td colspan="1" style="text-align: center;"><b>%</b></td>
-							<td colspan="1" style="text-align: center;"><b>°deg</b></td>
-							<t t-if="data.avg_dia_visible">
-							<td colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9214587uytf')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<t t-if="data.avg_height_visible">
-							<td colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe921147852gh')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<t t-if="data.hd_visible">
-							<td colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','201478ght-0bc7-41a6-a2bb-0fe9211478521gt')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<t t-if="data.bulk_density_visible">
-							<td colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210478bbb-0bc7-41a6-a2bb-0fe9211478521r4')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<t t-if="data.sat_density_visible">
-							<td colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','20123rtyng-0bc7-41a6-a2bb-0fe921147814524')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<t t-if="data.dry_density_visible">
-							<td colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','4578uuuytt-0bc7-41a6-a2bb-0fe9211478tyu556')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<t t-if="data.water_absorption_visible">
-							<td colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2147852trr-0bc7-41a6-a2bb-0fe92114rterrgghy')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<t t-if="data.porosity_visible">
-							<td colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','55544ttyyyr-0bc7-41a6-a2bb-0fe92114rterertty')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<t t-if="data.moisture_content_visible">
-							<td colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','7778rrrtttgg-0bc7-41a6-a2bb-0fe92114rr445ttj')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-
-						 <!-- <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_compress" colspan="3" style="text-align: center;"><b>MPa</b></td> -->
-							<t t-if="data.compressive_strength_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','88rrty222vv33-0bc7-41a6-a2bb-0fe92114rr445t')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							
-							<!-- <t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_compress1" colspan="3" style="text-align: center;"><b>MPa</b></td> -->
-							<t t-if="data.compressive_strength_visible1">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','5578gghty214-0bc7-41a6-a2bb-0fe92114rr445t')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-
-						<!-- <t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_point_load" colspan="3" style="text-align: center;"><b>kN</b></td> -->
-							<t t-if="data.point_load_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','785587rttgg11-0bc7-41a6-a2bb-0fe92114rr445t')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-
-						<!-- <t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_point_load_strength" colspan="3" style="text-align: center;"><b>MPa</b></td> -->
-							<t t-if="data.point_load_visible1">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','87522869rtyhn-0bc7-41a6-a2bb-0fe92114rr445t')]).unit.name"/>
-								</span>
-							</td>
-							</t>
+                        </field>
 
 
-                           <!-- <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_duration_of_test" colspan="3" style="text-align: center;"><b>Sec</b></td> -->
-							<t t-if="data.duration_of_test_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9995522tyynn1-0bc7-41a6-a2bb-0fe92114rr4457')]).unit.name"/>
-								</span>
-							</td>
-							</t>
+                        <div invisible = "slake_durability_visible == False" style="margin-bottom: 10px;">
+                            <field name= 'slake_durability_generated' invisible="1" />
+                            <button name="action_generate_slake_durability"
+                            
+                                type="object"
+                                string="Show Lab ID"
+                                class="oe_highlight"
+                                invisible="slake_durability_generated == True"/>
 
-							<!-- <t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/> -->
-							<t t-if="data.stress_rate_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3332gghytt1144-0bc7-41a6-a2bb-0fe92114rr478t')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<!-- <td t-if="show_stress_rate" colspan="3" style="text-align: center;"><b>MPa/s</b></td> -->
+                            </div>
+
+                    <div invisible = "slake_durability_visible == False">
+                        <h1 class="text-center">
+                            <field name="slake_durability_name" readonly="1" />
+                            <field name="slake_durability_visible" invisible="1"/>
+                        </h1>
+                    </div>
 
 
-							<!-- <t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_mode_of_failure" colspan="3" style="text-align: center;"><b>-</b></td> -->
-							<t t-if="data.mode_of_failure_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22277gght1100t-0bc7-41a6-a2bb-0fe92114rr478y')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-
-                          <!-- <t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>-</b></td> -->
-							<t t-if="data.sp_gravity_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','8866ggtrhh2277j-0bc7-41a6-a2bb-0fe92114rr4yre')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<t t-if="data.triaxial_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<t t-if="data.triaxial_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-
-							<t t-if="data.slake_durability_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-							<t t-if="data.slake_durability_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-
-							<t t-if="data.cerchar_abrasivity_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-
-							<t t-if="data.cerchar_abrasivity_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
-								</span>
-							</td>
-							</t>
-						</tr>
-
-						<tr style="background-color:#f9f9f9;">
-								
-								<td colspan="11" style="text-align: center; "><b>Test Method/Reference</b></td>
-								<!-- <t t-if="data.avg_dia_visible">
-								<td colspan="1" style="text-align: center; ">
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9214587uytf')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-								</td>
-								</t> -->
-								<!-- <td colspan="3" style="text-align: center; "></td> -->
-								<!-- <t t-set="show_compress" t-value="any(line.comp_rock for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_compress" colspan="3" style="text-align: center; "><b>IS 9143</b></td> -->
-								<!-- <td  colspan="3" style="text-align: center; "><b>IS 9143</b></td> -->
-
-								 <!-- <t t-set="show_compress1" t-value="any(line.comp_rock1 for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_compress1" colspan="3" style="text-align: center; "><b>IS 9143</b></td> -->
-								<!-- <t t-if="data.avg_height_visible">
-								<td  colspan="1" style="text-align: center; ">
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe921147852gh')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-								
-								</td>
-								</t> -->
-
-                                 <!-- <t t-set="show_point_load" t-value="any(line.point_load for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_point_load" colspan="3" style="text-align: center; "><b>IS 8764</b></td> -->
-								<!-- <t t-if="data.hd_visible">
-								<td  colspan="1" style="text-align: center; ">
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','201478ght-0bc7-41a6-a2bb-0fe9211478521gt')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-								</td>
-								</t> -->
-
-								<!-- <t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_point_load" colspan="3" style="text-align: center; "><b>IS 8764</b></td> -->
-								<t t-if="data.bulk_density_visible">
-								<td  colspan="1" style="text-align: center; ">
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210478bbb-0bc7-41a6-a2bb-0fe9211478521r4')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-								</td>
-								</t>
-
-                              <!-- <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_duration_of_test" colspan="3" style="text-align: center; "></td> -->
-								<t t-if="data.sat_density_visible">
-								<td  colspan="1" style="text-align: center; ">
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','20123rtyng-0bc7-41a6-a2bb-0fe921147814524')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-								</td>
-								</t>
-
-								<!-- <t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_stress_rate" colspan="3" style="text-align: center; "></td> -->
-								<t t-if="data.dry_density_visible">
-								<td  colspan="1" style="text-align: center; ">
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','4578uuuytt-0bc7-41a6-a2bb-0fe9211478tyu556')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-								</td>
-								</t>
-
-								<!-- <t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_mode_of_failure" colspan="3" style="text-align: center; "></td> -->
-							<t t-if="data.water_absorption_visible">
-								<td  colspan="1" style="text-align: center; ">
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2147852trr-0bc7-41a6-a2bb-0fe92114rterrgghy')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-								</td>
-							</t>
-
-							<!-- <t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>-</b></td>  -->
-							<t t-if="data.porosity_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','55544ttyyyr-0bc7-41a6-a2bb-0fe92114rterertty')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-							<t t-if="data.moisture_content_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','7778rrrtttgg-0bc7-41a6-a2bb-0fe92114rr445ttj')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-							<t t-if="data.compressive_strength_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','88rrty222vv33-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-							<t t-if="data.compressive_strength_visible1">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5578gghty214-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-							<t t-if="data.point_load_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','785587rttgg11-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-							<t t-if="data.point_load_visible1">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','87522869rtyhn-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-							<t t-if="data.duration_of_test_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9995522tyynn1-0bc7-41a6-a2bb-0fe92114rr4457')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-							<t t-if="data.stress_rate_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3332gghytt1144-0bc7-41a6-a2bb-0fe92114rr478t')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-							<t t-if="data.mode_of_failure_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','22277gght1100t-0bc7-41a6-a2bb-0fe92114rr478y')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-							<t t-if="data.sp_gravity_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','8866ggtrhh2277j-0bc7-41a6-a2bb-0fe92114rr4yre')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-
-							<t t-if="data.triaxial_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-
-							<t t-if="data.triaxial_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-
-							<t t-if="data.triaxial_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-							<t t-if="data.triaxial_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-
-							<t t-if="data.cerchar_abrasivity_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-
-							<t t-if="data.cerchar_abrasivity_visible">
-							<td  colspan="1" style="text-align: center;">
-							<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td> 
-							</t>
-
-							</tr>
-                            <t t-set="f" t-value="0"/>
-                            <tr t-foreach="data.rock_child_lines" t-as="r">
-                                <td colspan="1" style="text-align: center;">
-                                    <div>
-                                        <span t-esc="f + 1" />
-                                        <t t-set="f" t-value="f + 1"/>
-                                    </div>
-                                </td>
-                                <td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['bh_no']" width="200"/>
-                                </td>
+                    <div invisible = "slake_durability_visible == False">
+                        <field name="slake_durability_child_lines">
+                            <tree editable="bottom" class="custom_table_borders">
+                             <!-- <field name="blue_input" invisible="1"/> -->
+                                <field name='sr_no'/>
+                                <field name='lab_id'  class="blue-input" decoration-info="lab_id != 0"/>
+                                <field name='date' class="blue-input" decoration-info="date != 0"/>
+                                <!-- <field name='bh_no' width="120" class="blue-input" decoration-info="bh_no != 0"/> -->
+                                <field name='room_temp' width="120" class="blue-input" decoration-info="room_temp != 0"/>
+                                <field name='relative_humidity' width="120" class="blue-input" decoration-info="relative_humidity != 0"/>
+                                <field name='water_temperature'  width="120" class="blue-input" decoration-info="water_temperature != 0"/>
+                                <field name='wt_drum_a' width="120" class="blue-input" decoration-info="wt_drum_a != 0"/>
+                                <field name='wt_drum_b' class="blue-input" decoration-info="wt_drum_b != 0"/>
+                                <field name='wt_drum_c' class="blue-input" decoration-info="wt_drum_c != 0"/>
+                                <field name='wt_drum_d' class="blue-input" decoration-info="wt_drum_d != 0"/>
+                                <field name='slake_second' class="blue-input" />
+                                <field name='slake_first'  class="blue-input" />
+                                <field name='classification' class="blue-input" decoration-info="classification != 0"/>
                                
-                             
-                                 <td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['depth']" width="200" />
-                                </td>
-                                <td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['piece_no']" />
-                                </td>
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['lithological']" />
-                                </td>
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['room_temp']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['relative_humidity']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-									<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['water_temperature']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<t t-if="data.avg_dia_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['avg_dia']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								</t>
-								<t t-if="data.avg_height_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['avg_height']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								</t>  
-								<t t-if="data.hd_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['hd']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td> 
-								</t>    
-								<t t-if="data.bulk_density_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['bulk_density']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								</t>
-							   <t t-if="data.sat_density_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['sat_density']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								</t>  
-								<t t-if="data.dry_density_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['dry_density']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								</t>
-								<t t-if="data.water_absorption_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								</t>
-								<t t-if="data.porosity_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['porosity']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td> 
-								</t>    
-								<t t-if="data.moisture_content_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['moisture_content']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-								</t> 
-								
-								
-								<!-- <td t-if="show_compress" colspan="1" style="text-align: center;"> -->
-								<t t-if="data.compressive_strength_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['comp_rock']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								</t>
-								
-							
-							
-								<!-- <td t-if="show_compress1" colspan="1" style="text-align: center;"> -->
-								<t t-if="data.compressive_strength_visible1">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['comp_rock1']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								</t>
-								
-								<!-- <td t-if="show_point_load" colspan="1" style="text-align: center;"> -->
-								<t t-if="data.point_load_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['point_load']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								</t>
+                            </tree>
+                        </field>
+                    </div>
 
-								<!-- <td t-if="show_point_load_strength" colspan="1" style="text-align: center;"> -->
-								<t t-if="data.point_load_visible1">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['point_load_strength']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								</t>
-
-								<!-- <td t-if="show_duration_of_test" colspan="1" style="text-align: center;"> -->
-								<t t-if="data.duration_of_test_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['duration_of_test']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								</t>
+                    <!-- Triaxial Shear Test (Rock) -->
 
 
-								<!-- <td t-if="show_stress_rate" colspan="1" style="text-align: center;"> -->
-								<t t-if="data.stress_rate_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['stress_rate']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								</t>
+                    <div invisible = "triaxial_visible == False">
+                        <h1 class="text-center">
+                            <field name="triaxial_name" readonly="1" />
+                            <field name="triaxial_visible" invisible="1"/>
+                        </h1>
+                    </div>
 
-								<!-- <td t-if="show_mode_of_failure" colspan="1" style="text-align: center;"> -->
-								<t t-if="data.mode_of_failure_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['mode_of_failure']" />
-                                </td>  
-								</t>
+                     <div invisible = "triaxial_visible == False">
+                        <field name= 'triaxial_generated' invisible="1" />
+                        <button name="action_generate_triaxial_lines"
+                        
+                            type="object"
+                            string="Show Lab ID"
+                            class="oe_highlight"
+                            invisible="triaxial_generated == True"/>
 
+                        </div>
 
-								<!-- <td t-if="show_sp_gravity"  colspan="1" style="text-align: center;"> -->
-								<t t-if="data.sp_gravity_visible">
-								<td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['sp_gravity']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								</t>
-								<!-- <td colspan="1" style="text-align: center;">
-                                    <span t-esc="r['load_ucs']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>      -->
+                        <field name="triaxial_ids" class="custom_table_borders" nolabel="1" invisible = "triaxial_visible == False" >
+                            <tree string="Triaxial" decoration-info="lab_id">
+                                <field name="serial_no"/>
+                                <field name="lab_id"/>
+                                <field name="is_checked"/>
+                            </tree>
 
-								<td colspan="1" style="min-width: 20px; width: 20px;">
-								<t t-set="di" t-value="triaxialp_index if triaxialp_index is not None else 0"/>
+                            <form string="" >
+                            <sheet>
+                            <style>
+                                /* Modal chi title hide karnya sathi */
+                                .modal-header .modal-title {
+                                    display: none !important;
+                                }
 
-								<t t-if="triaxialp_vals and di &lt; len(triaxialp_vals)">
-									<t t-esc="'%.3f' % triaxialp_vals[di]"/>
-									<t t-set="triaxialp_index" t-value="di + 1"/>
-								</t>
-								<t t-else="">--</t>
-							</td>
+                                /* 1. Modal Dialog chi width ani margin full kara */
+                                .modal-dialog {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                    padding: 0 !important;
+                                }
 
-								<td colspan="1" style="min-width: 20px; width: 20px;">
-								<t t-set="di" t-value="triaxialc_index if triaxialc_index is not None else 0"/>
+                                /* 2. Modal Content chi height full kara (Full Screen View) */
+                                .modal-content {
+                                    height: 100vh !important; /* Full Viewport Height */
+                                    border-radius: 0 !important;
+                                }
 
-								<t t-if="triaxialc_vals and di &lt; len(triaxialc_vals)">
-									<t t-esc="'%.3f' % triaxialc_vals[di]"/>
-									<t t-set="triaxialc_index" t-value="di + 1"/>
-								</t>
-								<t t-else="">--</t>
-							</td>
+                                /* 3. Odoo chi Sheet full width karnya sathi */
+                                .o_form_sheet {
+                                    max-width: 100% !important;
+                                    width: 100% !important;
+                                    min-height: 100vh !important;
+                                }
 
-							<td colspan="1" style="min-width: 20px; width: 20px;">
-								<t t-set="di" t-value="slackfirst_index if slackfirst_index is not None else 0"/>
+                                /* 4. Table chi width 100% kara */
+                                .custom_table_borders {
+                                    width: 100% !important;
+                                }
 
-								<t t-if="slackfirst_vals and di &lt; len(slackfirst_vals)">
-									<t t-esc="'%.3f' % slackfirst_vals[di]"/>
-									<t t-set="slackfirst_index" t-value="di + 1"/>
-								</t>
-								<t t-else="">--</t>
-							</td>
-
-								<td colspan="1" style="min-width: 20px; width: 20px;">
-								 <t t-if="slackclass_vals and slackclass_index &lt; len(slackclass_vals)">
-									<t t-set="val" t-value="slackclass_vals[slackclass_index]"/>
-
-									<!-- 🔹 Selection label print -->
-									<t t-esc="dict(data.slake_durability_child_lines._fields['classification'].selection).get(val)"/>
-
-									<t t-set="slackclass_index" t-value="slackclass_index + 1"/>
-								</t>
-
-								<t t-else="">--</t>
-							</td>
-
-
-							<td colspan="1" style="min-width: 20px; width: 20px;">
-								<t t-set="di" t-value="abrasivity_index if abrasivity_index is not None else 0"/>
-
-								<t t-if="abrasivity_vals and di &lt; len(abrasivity_vals)">
-									<t t-esc="'%.3f' % abrasivity_vals[di]"/>
-									<t t-set="abrasivity_index" t-value="di + 1"/>
-								</t>
-								<t t-else="">--</t>
-							</td>
-
-								<td colspan="1" style="min-width: 20px; width: 20px;">
-								 <t t-if="abrasivityclass_vals and abrasivityclass_index &lt; len(abrasivityclass_vals)">
-									<t t-set="val" t-value="abrasivityclass_vals[abrasivityclass_index]"/>
-
-									<!-- 🔹 Selection label print -->
-									<t t-esc="dict(data.cerchar_abrasivity_ids._fields['classification'].selection).get(val)"/>
-
-									<t t-set="abrasivityclass_index" t-value="abrasivityclass_index + 1"/>
-								</t>
-
-								<t t-else="">--</t>
-							</td>
-							
-
-
+                                 .soil-table table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                font-size: 13px;
+                                }
+                                .soil-table th, .soil-table td {
+                                    border: 1px solid #444;
+                                    padding: 4px 6px;
+                                    text-align: center;
+                                }
+                                .header {
+                                    background: #f2f2f2;
+                                    font-weight: bold;
+                                }
+                                .red {
+                                    color: red !important;
+                                }
+                            </style>
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="lab_id">Lab ID</label></td>
+                                            <td><field name="lab_id" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
                                 
-                            </tr>
-                        </table>
-
-
-						
-						
-							
-							<div style="margin-top:50px" class="noteContainer">
-						<table >
-							<tr>
-							
-								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
-									<b>Remarks:</b><br/><br/>
-									    
-									   1. Refer to Annexure- I to know environmental and test conditions<br/>
-										2.  *Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/>
-										3.  Mode of failure for UCS test: A] Axial B] Shear C] Multiple Fracturing D] Along foliation  E] Y shaped <br/>
-										4.  Orientation of sample for Point load strength index test:  A1] Axial B1] Diametric<br/>
-
-
-									<b>Notes:-</b><br/><br/>
-								    	<!-- a.	The information marked with an #  received from customer<br/>
-										b.	The results listed refer only to tested parameters and sample as received from customer<br/>
-										c.	The balance samples if any will be discarded  after 15 days from the date of issue of test certificate unless otherwise specified.<br/>
-										d.	This document shall not be reproduced in part or full without the approval of Genstru.<br/>
-										e.	^ represents unsoaked test<br/>
-										f.	$ represents crumbled in water<br/> -->
-											<t t-if="data.notes_id">
-										<t t-foreach="data.notes_id" t-as="n">
-											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/>
-										</t>
-									</t>
-
-								</td>
-							</tr>
-							</table  >
-						</div>
-
-						<div class="signatureContainer girdgird">
-                        <table style="width:100%; border:1px solid black; border-collapse:collapse; font-family:Arial; font-size:12px; text-align:center;">
-						    <tr style="height:100px;">
-							
-							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
-							<div style="height: 40px;">
-									<t t-if="eln.sample_id.checkby_signature_required">
-										<div t-if="eln.sample_id.check_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
-								 <b>
-										<span t-esc="eln.technician.name"/>
-									</b><br/>
-									<b>
-										(<span t-esc="eln.sample_id.check_by.job_title"/>)
-									</b><br/>
-								<span style="font-size:12px;">Prepared By</span>
-							</td>
-
-							<td style="width:33.33%; border-right:1px solid black; vertical-align:bottom; padding-bottom:5px;text-align:center;">
-								<b style="font-size:13px;">Stamp</b>
-							</td>
-
-							<td style="width:33.33%; vertical-align:bottom; padding-bottom:5px;text-align:center;">
-							<div style="height: 40px;">
-											<t t-if="eln.sample_id.approveby_signature_required">
-												<div t-if="eln.sample_id.approved_by.employee_id.signature">
-													<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-												</div>
-												
-											</t>
-										</div>
-								<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b><br/>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b><br/>
-								<span style="font-size:12px;">Reviewed &amp; Issued By</span>
-							</td>
-						</tr>
-
-					</table>
-						
-				
-					</div>
-						
-					</div>
-
-					<!-- <t t-foreach="data.triaxial_test_ids" t-as="triaxial"> -->
-			<t t-foreach="data.triaxial_ids.filtered(lambda c: c.is_checked)" t-as="triaxial">
-                 <div style="margin-top:100px; page-break-before: always;">
-						<!-- 🔹 HEADER -->
-						<table style="width:100%; border-collapse:collapse; font-size:13px;">
-                        <tr>
-								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
-								Triaxial Shear Test (Rock)
-								</td>
-
-								
-							</tr>
-							<!-- <tr>
-								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
-									LAB ID :
-									<span t-esc="triaxial.lab_id"/>
-								</td>
-
-								
-							</tr> -->
-
-							<tr>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
-									<b>Test Method/Reference Code :</b>
-									<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-												<span t-field="parameter.specification"/>
-										</t>
-									</t>
-								</span>
-								</td>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
-									<b>Annexure- II to ULR</b>
-									<span style="background-color:yellow; padding:2px 6px;">
-										<!-- <t t-esc="data.ulr_no"/> -->
-									</span>
-								</td>
-							</tr>
-
-							
-
-							<tr>
-								<td colspan="6" style="border:1px solid black; padding:4px;">
-									<b>Project Name :</b>
-									<span t-field="o.srf_id.name_work"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="3"><strong>Doc. Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;">Laboratory test results- Triaxial Shear Test (Rock)</td>
-
-							
-							</tr>
-
-							   <tr>
-								<td colspan="3"><strong>Doc. No.</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;">
-								<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')]).report_format_no"/>
-								</span>
-							</td>
-
-							
-							</tr>
-                         
-
-							<tr>
-								<td colspan="6" style="border:1px solid black; padding:4px;">
-									<b>Name &amp; Address of Customer :</b>
-									<!-- <t t-esc="data.customer_name"/> -->
-									<!-- <td colspan="3" style="padding-left: 10px;width:25%;"> -->
-										<span t-field="o.srf_id.customer.name"/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
-								<!-- </td> -->
-								</td>
-							</tr>
-							<tr>
-							<!-- <td colspan="6" style="border:1px solid black; padding:6px; font-weight:bold;">
-									Report No : <span t-esc="o.material.test_format_no"/>
-								</td>
-								
-							</tr> -->
-
-							
-
-							<tr>
-
-							<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Report No 
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-									<span t-esc="o.material.test_format_no"/>
-								</td>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Date Sample Received
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-									<span t-field="o.sample_id.sample_received_date"/>
-								</td>
-							</tr>
-
-
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Sample ID
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-									<span t-esc="triaxial.lab_id"/>
-								</td>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Starting Date
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-										<span t-field="triaxial.start_date" />
-								</td>
-							</tr>
-
-							<tr>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Location /BH ID
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-								 <t t-esc="triaxial.bh_id"/>
-								</td>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Completion Date
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-										<span t-field="triaxial.end_date" />
-								</td>
-							</tr>
-
-							<tr>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Depth (m)
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-								 <t t-esc="triaxial.depth"/>
-								</td>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Type of machine used
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-										<span t-field="triaxial.machine_used" />
-								</td>
-							</tr>
-
-							<tr>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Lithologic description of rock
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-								 <t t-esc="triaxial.lithologic_dic"/>
-								</td>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Relative humidity (%)
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-								 	 <t t-esc="triaxial.relative_humidity_triaxial"/>
-								</td>
-							</tr>
-
-							<tr>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Room Temperature (deg)
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-								 <t t-esc="triaxial.room_temp_triaxial"/>
-								</td>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Initial Weight of Sample (gm)
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-								 	 <t t-esc="triaxial.initial_wt"/>
-								</td>
-							</tr>
-
-							<tr>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Diameter of Specimen, mm
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-								      <t t-esc="triaxial.dia_spe"/>
-								</td>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Dry Weight of Sample (gm)
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-									<t t-esc="triaxial.dry_et"/>
-								</td>
-							</tr>
-
-							<tr>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Area of Specimen, cm2
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-
-								 <t t-esc="triaxial.area_spe"/>
-									
-								</td>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Moisture content (%) 
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-								<t t-esc="triaxial.moisture_content"/>
-									
-								</td>
-							</tr>
-
-						
-
-							
-
-							<!-- Row 6 -->
-							
-
-
-						
-
-
-						</table>
-
-							</div>
-
-            <!-- 🔹 OBSERVATION TABLE -->
-                <div style="margin-top:20px;">
-					<table style="width:100%; border-collapse:collapse; font-size:13px; text-align:center;">
-
-						<!-- ================= HEADER ================= -->
-						<thead>
-							<tr style="background:#cfd6dd;">
-
-								<th rowspan="2" style="border:1px solid black; padding:6px;">
-									Number of specimen tested
-								</th>
-
-								<th colspan="1" style="border:1px solid black; padding:6px;">
-									Confining Pressure S₃ #
-								</th>
-
-								<th colspan="1" style="border:1px solid black; padding:6px;">
-									Failure Load
-								</th>
-
-								<th colspan="1" style="border:1px solid black; padding:6px;">
-									Duration of test
-								</th>
-
-								<th colspan="1" style="border:1px solid black; padding:6px;">
-									Height of Sample
-								</th>
-
-								<th colspan="1" style="border:1px solid black; padding:6px;">
-									Area
-								</th>
-
-								<th colspan="1" style="border:1px solid black; padding:6px;">
-									Axial Strength
-								</th>
-
-								<th colspan="1" style="border:1px solid black; padding:6px;">
-									Stress rate
-								</th>
-
-								<!-- <th rowspan="2" style="border:1px solid black; padding:6px;">
-									Remark
-								</th> -->
-
-							</tr>
-
-							<!-- ===== UNITS ROW ===== -->
-							<tr style="background:#cfd6dd;">
-								<th style="border:1px solid black; padding:4px;">MPa</th>
-								<th style="border:1px solid black; padding:4px;">kN</th>
-								<th style="border:1px solid black; padding:4px;">sec</th>
-								<th style="border:1px solid black; padding:4px;">mm</th>
-								<th style="border:1px solid black; padding:4px;">mm²</th>
-								<th style="border:1px solid black; padding:4px;">MPa</th>
-								<th style="border:1px solid black; padding:4px;">MPa/sec</th>
-							</tr>
-						</thead>
-
-						<!-- ================= BODY ================= -->
-						<tbody>
-
-							<t t-set="i" t-value="1"/>
-							<t t-foreach="triaxial.triaxial_child_lines" t-as="line">
-
-								<tr>
-
-									<td style="border:1px solid black; padding:6px;">
-										<t t-esc="i"/>
-									</td>
-
-									<td style="border:1px solid black; background:#eef1c6;">
-										<t t-esc="line.con_pressure"/>
-									</td>
-
-									<td style="border:1px solid black; background:#eef1c6;">
-										<t t-esc="line.failure_load"/>
-									</td>
-
-									<td style="border:1px solid black; background:#eef1c6;">
-										<t t-esc="line.duration_test"/>
-									</td>
-
-									<td style="border:1px solid black; background:#eef1c6;">
-										<t t-esc="line.height"/>
-									</td>
-
-									<td style="border:1px solid black;">
-										<t t-esc="line.area"/>
-									</td>
-
-									<td style="border:1px solid black;">
-										<t t-esc="line.axial"/>
-									</td>
-
-									<td style="border:1px solid black;">
-										<t t-esc="line.stress"/>
-									</td>
-
-									<!-- <td style="border:1px solid black;">
-										<t t-esc="line.remark or '-'"/>
-									</td> -->
-
-								</tr>
-
-								<t t-set="i" t-value="i+1"/>
-
-							</t>
-
-						</tbody>
-
-					</table>
-
-				</div>
-
-
-            <!-- 🔹 GRAPH -->
-            <t t-if="triaxial.triaxial_graph">
-					<div style="text-align:center; margin-top:10px; width: 100%;">
-						<img t-att-src="'data:image/png;base64,%s' % triaxial.triaxial_graph.decode('utf-8')"
-							style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
-					</div>
-					
-				</t>
-
-            <!-- 🔹 RESULT -->
-            <!-- <div style="margin-top:20px; text-align:center; font-weight:bold;">
-				Cohesion, Cu (kg/cm2) : = <span t-esc="triaxial.cohesion"/> 
-			</div>
-
-			<div style="margin-top:5px; text-align:center; font-weight:bold;">
-				Angle of internal friction  °  : = <span t-esc="triaxial.phi"/>
-			</div>
-
-			</div> -->
-
-			<table style="width:100%; border-collapse:collapse; font-size:13px; text-align:center; margin-top:10px;">
-
-					<tbody>
-
-						<!-- ===== ROW 1 ===== -->
-						<tr>
-
-							<td style="border:1px solid black; padding:6px; text-align:right;">
-								Tangent of straight line (m) :
-							</td>
-
-							<td style="border:1px solid black; padding:6px; font-weight:bold;">
-								<t t-esc="triaxial.tangent_staright or '0'"/>
-							</td>
-
-							<td style="border:1px solid black;">--</td>
-
-							<td style="border:1px solid black; padding:6px; text-align:right;">
-								Angle of internal friction, φ :
-							</td>
-
-							<td style="border:1px solid black; padding:6px; font-weight:bold;">
-								<t t-esc="triaxial.phi or '0'"/>
-							</td>
-
-							<td style="border:1px solid black;">Degree</td>
-
-						</tr>
-
-						<!-- ===== ROW 2 ===== -->
-						<tr>
-
-							<td style="border:1px solid black; padding:6px; text-align:right;">
-								Intercept of straight line (b) :
-							</td>
-
-							<td style="border:1px solid black; padding:6px; font-weight:bold;">
-								<t t-esc="triaxial.intercept_staright or '0'"/>
-							</td>
-
-							<td style="border:1px solid black;">MPa</td>
-
-							<td style="border:1px solid black; padding:6px; text-align:right;">
-								Apparent Cohesion, C :
-							</td>
-
-							<td style="border:1px solid black; padding:6px; font-weight:bold;">
-								<t t-esc="triaxial.cohesion or '0'"/>
-							</td>
-
-							<td style="border:1px solid black;">MPa</td>
-
-						</tr>
-
-					</tbody>
-
-				</table>
-
-				</t>
-
-
-
-
-					</t>
-
-
-
-					
-
-        </t>
-    </template>
-
-
+                                <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="bh_id">BH ID</label></td>
+                                            <td><field name="bh_id" class="blue-input"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table> -->
+                            </div>  
+
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="start_date"></label></td>
+                                            <td><field name="start_date" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="end_date"></label></td>
+                                            <td><field name="end_date"  readonly="1"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                    <div class="d-flex gap-2"  >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="room_temp_triaxial"></label></td>
+                                            <td><field name="room_temp_triaxial" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="relative_humidity_triaxial"></label></td>
+                                            <td><field name="relative_humidity_triaxial"  /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2"  >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="lithologic_dic"></label></td>
+                                            <td><field name="lithologic_dic" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="machine_used"></label></td>
+                                            <td><field name="machine_used"  /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="dia_spe"></label></td>
+                                            <td><field name="dia_spe" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="initial_wt"></label></td>
+                                            <td><field name="initial_wt"  /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+
+                            <div class="d-flex gap-2"  >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="area_spe"></label></td>
+                                            <td><field name="area_spe" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="dry_et"></label></td>
+                                            <td><field name="dry_et" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="moisture_content"></label></td>
+                                            <td><field name="moisture_content" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="dry_et"></label></td>
+                                            <td><field name="dry_et"  readonly="1"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table> -->
+                            </div>  
+
+
+                    <div >
+                        <field name="triaxial_child_lines">
+                            <tree editable="bottom" class="custom_table_borders">
+                             <!-- <field name="blue_input" invisible="1"/> -->
+                                <field name='sr_no'/>
+                                <field name='con_pressure'  class="blue-input" decoration-info="con_pressure != 0"/>
+                                <field name='failure_load' class="blue-input" decoration-info="failure_load != 0"/>
+                                <field name='duration_test' width="120" class="blue-input" decoration-info="duration_test != 0"/>
+                                <field name='height' width="120" class="blue-input" decoration-info="height != 0"/>
+                                <field name='area' width="120" class="blue-input" decoration-info="area != 0"/>
+                                <field name='axial'  width="120" class="blue-input" decoration-info="axial != 0"/>
+                                <field name='stress' width="120" class="blue-input" decoration-info="stress != 0"/>
+                                
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div  >
+                    <button name="action_generate_triaxial_graph" 
+                        string="Generate Graph" 
+                        type="object" 
+                        class="oe_highlight"/>
+                </div>
+
+                    <div  class="text-center" >
+                      <field name="triaxial_graph" widget="image" readonly="1"/>
+                    </div>
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="tangent_staright"></label></td>
+                                            <td><field name="tangent_staright" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="phi"></label></td>
+                                            <td><field name="phi" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+
+                            <div class="d-flex gap-2"  >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="intercept_staright"></label></td>
+                                            <td><field name="intercept_staright" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="cohesion"></label></td>
+                                            <td><field name="cohesion"  readonly="1"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>  
+                            </sheet>
+                       <footer>
+                            <button name="action_submit"
+                                    string="Submit"
+                                    type="object"
+                                    class="btn btn-primary"
+                                    />
+
+                            <button string="Back" special="save" class="btn btn-success"/>
+
+
+                              
+
+
+                        </footer>
+                      
+                        </form>
+
+                        </field>
+
+
+
+                       <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
+
+
+                   
+                      <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+                     
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+
+     <record id="view_rock_prefill_data_form" model="ir.ui.view">
+            <field name="name">rock.prefill.data.form</field>
+            <field name="model">rock.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_rock_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">rock.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_rock_prefill_data_form"/>
+            <field name="target">new</field>
+        </record>
+   
+
+
+    </data>
 </odoo>
