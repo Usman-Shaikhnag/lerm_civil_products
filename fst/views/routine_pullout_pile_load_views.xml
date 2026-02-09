@@ -37,10 +37,9 @@
             <form string="Routine Pull-Out Pile Load Test Report">
                 <!-- ================= HEADER ================= -->
                 <header>
-                    <button name="print_report"
-                            string="Print Report"
-                            type="object"
-                            class="btn-primary"/>
+                    <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
+                    <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
                 </header>
 
                 <sheet>
@@ -51,10 +50,18 @@
                             <field name="name" style="width:100%; display:block; text-align:center; font-size:26px; letter-spacing:1px;"/>
                         </h1>
                         <h2>ROUTINE PULL OUT PILE LOAD TEST</h2>
+                        <h2 style="margin-top:10px;">
+                            OF PILE NO -
+                            <field name="pile_no" nolabel="1"/>
+                        </h2>
                     </div>
 
                     <group col="2" style="margin-bottom:30px;">
+                        <field name="work_name"/>
+                        <field name="contractor"/>
+                        <field name="client"/>
                         <field name="report_no"/>
+                        <field name="ulr"/>
                         <field name="rec_date"/>
                         <field name="test_standard"/>
                         <field name="site_location" colspan="2"/>
@@ -101,15 +108,28 @@
                         </tree>
                     </field>
 
+                    <!-- ================= INTERPRETATION ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">INTERPRETATION</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="interpretation" widget="text" nolabel="1"/>
+                    </div>
+
                     <!-- ================= TABLE 2A ================= -->
                     <h3 style="border-bottom:2px solid #000; margin-top:35px;">
                         TABLE 2A : DIAL GAUGE READING CORRESPONDING TO LOADING
                     </h3>
 
-                    <field name="loading_reading_ids" nolabel="1">
-                        <tree editable="bottom">
-                            <field name="date"/>
-                            <field name="time_hours"/>
+                    <field name="last_reading_datetime" invisible="1"/>
+                    <field name="loading_reading_ids"
+                            nolabel="1"
+                            context="{'default_parent_id': id}">
+                        <tree editable="bottom" limit="50" default_order="id">
+                            <field name="reading_datetime" 
+                                    widget="datetime"
+                                    options="{'format': 'dd/MM/yy HH:mm'}"/>
                             <field name="load_tonne"/>
                             <field name="dial_a"/>
                             <field name="dial_b"/>
@@ -122,10 +142,13 @@
                         TABLE 2B : DIAL GAUGE READING CORRESPONDING TO UNLOADING
                     </h3>
 
-                    <field name="unloading_reading_ids" nolabel="1">
-                        <tree editable="bottom">
-                            <field name="date"/>
-                            <field name="time_hours"/>
+                    <field name="unloading_reading_ids"
+                            nolabel="1"
+                            context="{'default_parent_id': id}">
+                        <tree editable="bottom" limit="50" default_order="id">
+                            <field name="reading_datetime" 
+                                    widget="datetime"
+                                    options="{'format': 'dd/MM/yy HH:mm'}"/>
                             <field name="load_tonne"/>
                             <field name="dial_a"/>
                             <field name="dial_b"/>
@@ -156,14 +179,6 @@
                         <field name="net_displacement" readonly="1"/> mm<br/>
                         Rebound =
                         <field name="rebound" readonly="1"/> mm
-                    </div>
-
-                    <!-- ================= INTERPRETATION ================= -->
-                    <h3 style="border-bottom:2px solid #000; margin-top:35px;">
-                        INTERPRETATION
-                    </h3>
-                    <div style="border:1px solid #ccc; padding:12px;">
-                        <field name="interpretation" widget="text" nolabel="1"/>
                     </div>
 
                     <!-- ================= CONCLUSION ================= -->
