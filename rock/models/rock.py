@@ -115,7 +115,10 @@ class MechanicalRock(models.Model):
 
     
 
-    point_load_constant = fields.Float(string="Point Load  Constant")
+    point_load_constant = fields.Float(string="Point Load Constant Core")
+
+    point_load_constant_2 = fields.Float(string="Point Load Constant Lump")
+
     compressive_strength_constant = fields.Float(string="Compressive Strength  Constant")
     compressive_strength_constant_hd = fields.Float(string="Compressive Strength HD  Constant",digits=(12,4))
 
@@ -718,25 +721,58 @@ class MechanicalRockLine(models.Model):
     #             rec.point_load_strength = (1000 * rec.point_load) / (math.sqrt(rec.parent_id.point_load_constant) * (rec.avg_dia ** 1.5))
     #         else:
     #             rec.point_load_strength = 0.0
+    # @api.depends('point_load', 'avg_dia', 'parent_id.point_load_constant')
+    # def _compute_point_load_strength(self):
+    #     for rec in self:
+    #         if (
+    #             rec.point_load
+    #             and rec.avg_dia
+    #             and rec.avg_dia > 0
+    #             and rec.parent_id.point_load_constant
+    #             and rec.parent_id.point_load_constant > 0
+    #         ):
+    #             rec.point_load_strength = (
+    #                 (1000 * rec.point_load)
+    #                 / (
+    #                     math.sqrt(rec.parent_id.point_load_constant)
+    #                     * (rec.avg_dia ** 1.5)
+    #                 )
+    #             )
+    #         else:
+    #             rec.point_load_strength = 0.0
+
+    # @api.depends('point_load', 'avg_dia', 'parent_id.point_load_constant')
+    # def _compute_point_load_strength(self):
+    #  for rec in self:
+    #     point_load = rec.point_load or 0
+    #     avg_dia = rec.avg_dia or 0
+    #     constant = rec.parent_id.point_load_constant or 0
+
+    #     if point_load > 0 and avg_dia > 0 and constant > 0:
+    #         rec.point_load_strength = (
+    #             1000 * point_load
+    #         ) / (
+    #             math.sqrt(50) * (avg_dia ** constant)
+    #         )
+    #     else:
+    #         rec.point_load_strength = 0.0
+
     @api.depends('point_load', 'avg_dia', 'parent_id.point_load_constant')
     def _compute_point_load_strength(self):
-        for rec in self:
-            if (
-                rec.point_load
-                and rec.avg_dia
-                and rec.avg_dia > 0
-                and rec.parent_id.point_load_constant
-                and rec.parent_id.point_load_constant > 0
-            ):
-                rec.point_load_strength = (
-                    (1000 * rec.point_load)
-                    / (
-                        math.sqrt(rec.parent_id.point_load_constant)
-                        * (rec.avg_dia ** 1.5)
-                    )
-                )
-            else:
-                rec.point_load_strength = 0.0
+     for rec in self:
+        point_load = rec.point_load or 0
+        avg_dia = rec.avg_dia or 0
+        constant = rec.parent_id.point_load_constant or 0
+
+        if point_load > 0 and avg_dia > 0 and constant > 0:
+            rec.point_load_strength = (
+                1000 * point_load
+            ) / (
+                math.sqrt(50) * (avg_dia ** constant)
+            )
+        else:
+            rec.point_load_strength = 0.0
+
 
 
     # @api.depends('point_load', 'avg_dia', 'avg_height','parent_id.point_load_constant')
@@ -747,26 +783,30 @@ class MechanicalRockLine(models.Model):
     #         else:
     #             rec.point_load_index = 0.0
 
-    @api.depends('point_load', 'avg_dia', 'avg_height', 'parent_id.point_load_constant')
+    @api.depends(
+    'point_load',
+    'avg_dia',
+    'avg_height',
+    'parent_id.point_load_constant_2'
+)
     def _compute_point_load_index(self):
-        for rec in self:
-            if (
-                rec.point_load 
-                and rec.avg_dia 
-                and rec.avg_height 
-                and rec.avg_dia * rec.avg_height > 0 
-                and rec.parent_id.point_load_constant 
-                and rec.parent_id.point_load_constant > 0
-            ):
-                rec.point_load_index = (
-                    (1000 * rec.point_load)
-                    / (
-                        math.sqrt(rec.parent_id.point_load_constant)
-                        * ((rec.avg_dia * rec.avg_height) ** 0.75)
-                    )
-                )
-            else:
-                rec.point_load_index = 0.0
+     for rec in self:
+        point_load = rec.point_load or 0
+        avg_dia = rec.avg_dia or 0
+        avg_height = rec.avg_height or 0
+        constant = rec.parent_id.point_load_constant_2 or 0
+
+        if avg_dia > 0 and avg_height > 0 and constant > 0 and point_load > 0:
+            area = avg_dia * avg_height
+
+            rec.point_load_index = (
+                1000 * point_load
+            ) / (
+                math.sqrt(50) * (area ** constant)
+            )
+        else:
+            rec.point_load_index = 0.0 
+
 
     @api.depends('point_load_strength','parent_id.compressive_strength_constant')
     def _compute_comp_strength4(self):

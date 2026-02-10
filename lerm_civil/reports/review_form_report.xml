@@ -13,8 +13,9 @@
 
                 <!-- LEFT LOGO -->
                 <td style="width:23%; vertical-align:middle; text-align:center;">
-                    <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'" 
-                         style="height: 45px; width: auto; display: block; margin: 0 auto;"/>
+
+                    <img t-if="logo_base64"  t-att-src="'data:image/png;base64,%s' % logo_base64" style="height:50px; display:block; margin:0 auto;"/>
+                        
                 </td>
 
 
@@ -226,8 +227,11 @@
                                         </td>
                                         </t>
 
-                                    <td></td>
-
+                                    <t t-if="i == 0">
+                                       <td t-att-rowspan="total" style="vertical-align:middle; text-align:center;">
+                                          <span t-esc="', '.join([m for m in o.parameters.mapped('test_method.display_name') if m])"/>
+                                        </td>
+                                    </t>
 
 
                                   
