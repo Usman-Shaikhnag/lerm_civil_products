@@ -111,6 +111,9 @@ class SrfForm(models.Model):
     _rec_name = 'srf_id'
 
 
+    material_id = fields.Many2one('product.template')
+
+
     srf_id = fields.Char(string="SRF ID",tracking=True)
     kes_number = fields.Char(string="UID",tracking=True)
     # job_no = fields.Char(string="Job NO.")

@@ -921,6 +921,40 @@ class SampleRequestReview(models.Model):
     test_performed = fields.Boolean("Whether all tests are performed")
     test_performed_remark = fields.Text("Test Performed Remarks")
 
+    issue_no = fields.Integer("Issue No")
+    rev_no = fields.Integer("Revision No.")
+
+    issue_date = fields.Date("Issue Date")
+    rev_date = fields.Date("Revision Date")
+
+    doc_name = fields.Char("Doc Name")
+    doc_no = fields.Char("Doc No")
+
+    sample_id = fields.Many2one(
+        'lerm.srf.sample',
+        string='Sample',
+        required=True,
+        ondelete='cascade'
+    )
+
+    parameters = fields.Many2many(
+        'lerm.parameter.master',
+        string="Parameter",
+        compute="_compute_parameters",
+        store=True,
+        readonly=False
+    )
+
+    @api.depends('sample_id', 'sample_id.parameters')
+    def _compute_parameters(self):
+        for rec in self:
+            if rec.sample_id and rec.sample_id.parameters:
+                rec.parameters = rec.sample_id.parameters
+            else:
+                rec.parameters = [(5, 0, 0)]   # clear
+
+    
+
     _sql_constraints = [
         ('unique_sample_review', 'unique(sample_id)',
          'Only one review is allowed per sample.')
@@ -965,3 +999,5 @@ class SampleRequestReviewLine(models.Model):
     quantity = fields.Boolean("Quantity")
     approved = fields.Boolean("Approved")
     remarks = fields.Text("Remarks")
+
+    
