@@ -197,12 +197,12 @@
                     <t t-set="i" t-value="0"/>
                         <thead>
                             <tr>
-                                <th>Sr. No</th>
-                                <th>Chainage /Location/ID</th>
-                                <th>Depth (m)</th>
-                                <th>Sample Details</th>
-                                <th>Tests to be performed</th>
-                                <th>Test method to be adopted</th>
+                                <th style="text-align:center;">Sr. No</th>
+                                <th style="text-align:center;">Chainage /Location/ID</th>
+                                <th style="text-align:center;">Depth (m)</th>
+                                <th style="text-align:center;">Sample Details</th>
+                                <th style="text-align:center;">Tests to be performed</th>
+                                <th style="text-align:center;">Test method to be adopted</th>
                               
                             </tr>
                         </thead>
@@ -215,12 +215,12 @@
                                     <!-- <td><span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
                                     </td> -->
-                                    <td>
+                                    <td style="text-align:center;">
                                         <span t-esc="i + 1"/>
                                     </td>
-                                    <td><span t-field="line.source"/></td>
-                                    <td><span t-field="line.depth"/></td>
-                                    <td><span t-field="line.sample_details"/></td>
+                                    <td style="text-align:center;"><span t-field="line.source"/></td>
+                                    <td style="text-align:center;"><span t-field="line.depth"/></td>
+                                    <td style="text-align:center;"><span t-field="line.sample_details"/></td>
                                      <t t-if="i == 0">
                                         <td t-att-rowspan="total" style="vertical-align: middle; text-align: center;">
                                             <span t-esc="', '.join(o.parameters.mapped('display_name'))"/>
@@ -228,7 +228,7 @@
                                         </t>
 
                                     <t t-if="i == 0">
-                                       <td t-att-rowspan="total" style="vertical-align:middle; text-align:center;">
+                                       <td  t-att-rowspan="total" style="vertical-align:middle; text-align:center;">
                                           <span t-esc="', '.join([m for m in o.parameters.mapped('test_method.display_name') if m])"/>
                                         </td>
                                     </t>
