@@ -82,6 +82,20 @@ class RoutineLateralPileLoadTestParent(models.Model):
     gross_displacement = fields.Float(compute="_compute_disp", store=True)
     rebound = fields.Float(compute="_compute_disp", store=True)
     net_displacement = fields.Float(compute="_compute_disp", store=True)
+    
+    rec_date_str = fields.Char(
+        "Report Date (Text)",
+        compute="_compute_rec_date_str",
+        store=True
+    )
+
+    @api.depends('rec_date')
+    def _compute_rec_date_str(self):
+        for rec in self:
+            if rec.rec_date:
+                rec.rec_date_str = rec.rec_date.strftime("%d-%m-%Y")
+            else:
+                rec.rec_date_str = False
 
     def action_generate_report_no(self):
         for rec in self:
