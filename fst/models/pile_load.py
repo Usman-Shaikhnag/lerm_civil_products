@@ -39,6 +39,20 @@ class PileLoadTestParent(models.Model):
 
     signatory_name = fields.Char("Authorized Signatory")
     signatory_designation = fields.Char("Designation")
+    
+    rec_date_str = fields.Char(
+        "Report Date (Text)",
+        compute="_compute_rec_date_str",
+        store=True
+    )
+
+    @api.depends('rec_date')
+    def _compute_rec_date_str(self):
+        for rec in self:
+            if rec.rec_date:
+                rec.rec_date_str = rec.rec_date.strftime("%d-%m-%Y")
+            else:
+                rec.rec_date_str = False
 
     # DIRECT One2many - no related fields!
     loading_reading_ids = fields.One2many(
