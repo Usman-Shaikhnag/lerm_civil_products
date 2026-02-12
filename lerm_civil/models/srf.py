@@ -91,6 +91,13 @@ class Group(models.Model):
     group = fields.Char(string="Group", required=True)
     def __str__(self):
         return self.group
+
+    issue_no = fields.Integer("Issue No")
+    rev_no = fields.Integer("Revision No.")
+
+    issue_date = fields.Date("Issue Date")
+    rev_date = fields.Date("Revision Date")
+    doc_no = fields.Char("Doc No")
     
 class TestMethod(models.Model):
     _name = "lerm_civil.test_method"

@@ -921,14 +921,16 @@ class SampleRequestReview(models.Model):
     test_performed = fields.Boolean("Whether all tests are performed")
     test_performed_remark = fields.Text("Test Performed Remarks")
 
-    issue_no = fields.Integer("Issue No")
-    rev_no = fields.Integer("Revision No.")
+    
 
-    issue_date = fields.Date("Issue Date")
-    rev_date = fields.Date("Revision Date")
+   
 
-    doc_name = fields.Char("Doc Name")
-    doc_no = fields.Char("Doc No")
+    doc_name = fields.Char("Doc Name",default="Order Request Form")
+    employee_id = fields.Many2one(
+        'hr.employee',
+        string="Prepared By"
+    )
+    
 
     sample_id = fields.Many2one(
         'lerm.srf.sample',
@@ -952,6 +954,94 @@ class SampleRequestReview(models.Model):
                 rec.parameters = rec.sample_id.parameters
             else:
                 rec.parameters = [(5, 0, 0)]   # clear
+
+    group_id = fields.Many2one(
+        'lerm_civil.group',
+        string="Group",
+        compute="_compute_group_id",
+        store=True
+    )
+
+    @api.depends('sample_id')
+    def _compute_group_id(self):
+        for rec in self:
+            rec.group_id = rec.sample_id.group_id.id if rec.sample_id.group_id else False
+
+    issue_no = fields.Integer(
+        string="Issue No",
+        compute="_compute_issue_no",
+        store=True
+    )
+
+    @api.depends('group_id')
+    def _compute_issue_no(self):
+        for rec in self:
+            rec.issue_no = rec.group_id.issue_no if rec.group_id else 0
+
+    rev_no = fields.Integer(
+        string="Revision No.",
+        compute="_compute_rev_no",
+        store=True
+    )
+
+    @api.depends('group_id')
+    def _compute_rev_no(self):
+        for rec in self:
+            rec.rev_no = rec.group_id.rev_no if rec.group_id else 0
+
+    issue_date1 = fields.Date(
+        string="Issue Date",
+        compute="_compute_issue_date",
+        store=True
+    )
+
+   
+
+    rev_date1 = fields.Date(
+        string="Revision Date",
+        compute="_compute_rev_date",
+        store=True
+    )
+
+   
+
+    @api.depends('group_id')
+    def _compute_issue_date(self):
+        for rec in self:
+            rec.issue_date1 = rec.group_id.issue_date if rec.group_id else False
+
+
+    @api.depends('group_id')
+    def _compute_rev_date(self):
+        for rec in self:
+            rec.rev_date1 = rec.group_id.rev_date if rec.group_id else False
+
+
+    doc_no = fields.Char(
+        string="Doc No",
+        compute="_compute_doc_no",
+        store=True
+    )
+
+    @api.depends('group_id')
+    def _compute_doc_no(self):
+        for rec in self:
+            rec.doc_no = rec.group_id.doc_no if rec.group_id else 0
+
+    material_id = fields.Many2one(
+        'product.template',
+        string="Material",
+        compute="_compute_material_id",
+        store=True
+    )
+
+    @api.depends('sample_id')
+    def _compute_material_id(self):
+        for rec in self:
+            rec.material_id = rec.sample_id.material_id.id if rec.sample_id.material_id else False
+
+
+    
 
     
 

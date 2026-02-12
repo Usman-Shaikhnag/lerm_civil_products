@@ -354,9 +354,12 @@
                         <field name="equipment_availability"/>
                         <field name="resource_availability"/>
                         <field name="test_performed"/>
-                        <field name="issue_no"/>
-                        <field name="rev_no"/>
+                        
+                        <field name="material_id" invisible="1"/>
                         <field name="doc_name"/>
+                        <field name="issue_no" invisible="1"/>
+                        <field name="issue_date1" invisible="1"/>
+                        <field name="doc_no" invisible="1"/>
 
                     </group>
                     <group>
@@ -365,12 +368,13 @@
                         <field name="equipment_availability_remark"/>
                         <field name="resource_availability_remark"/>
                         <field name="test_performed_remark"/>
-                        <field name="issue_date"/>
-                        <field name="rev_date"/>
-                        <field name="doc_no"/>
+                        
 
                         <field name="sample_id" invisible="1"/>
                         <field name="parameters" widget="many2many_tags" invisible="1"/>
+                        <field name="group_id"  invisible="1"/>
+                        <field name="rev_no" invisible="1" />
+                        <field name="rev_date1" invisible="1" />
 
                     </group>
                 </group>
