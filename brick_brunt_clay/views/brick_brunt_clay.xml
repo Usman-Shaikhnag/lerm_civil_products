@@ -32,6 +32,24 @@
                         </field>
                     </div>
 
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
                  
                     <table class="table o_form_table custom_table_borders">
                         <thead>
@@ -45,9 +63,9 @@
                         <tbody>
                             <tr>
                                 <td>Size of the Brick :- (mm)</td>
-                                <td style="text-align: center;"><field name="length_in_mm" nolabel="1"/></td>
-                                <td style="text-align: center;"><field name="width_in_mm" nolabel="1"/></td>
-                                <td style="text-align: center;"><field name="height_in_mm" nolabel="1"/></td>
+                                <td style="text-align: center;"><field name="length_in_mm" nolabel="1" col="1" class="blue-input"/></td>
+                                <td style="text-align: center;"><field name="width_in_mm" nolabel="1" col="1" class="blue-input"/></td>
+                                <td style="text-align: center;"><field name="height_in_mm" nolabel="1" col="1" class="blue-input"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -66,12 +84,12 @@
                     <field name="compressive_strength_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no" />
-                                <field name="identification_mark" />
-                                <field name='length'/>
-                                <field name='width' />
-                                <field name='height' />
+                                <field name="identification_mark" class="blue-input" decoration-info="identification_mark != 0"/>
+                                <field name='length' class="blue-input" decoration-info="length != 0"/>
+                                <field name='width'  class="blue-input" decoration-info="width != 0"/>
+                                <field name='height'  class="blue-input" decoration-info="height != 0"/>
                                 <field name='area' />
-                                <field name='load' />
+                                <field name='load'  class="blue-input" decoration-info="load != 0" />
                                 <field name='comp_strength_1' />
                                 
                             </tree>
@@ -119,9 +137,9 @@
                             <field name="water_absorption_lines" nolabel="1" >
                                     <tree editable="bottom"  class="custom_table_borders">
                                         <field name="serial_no" />
-                                        <field name="identification_mark" />
-                                        <field name='initial_wt'/>
-                                        <field name='final_wt' />
+                                        <field name="identification_mark"  class="blue-input" decoration-info="identification_mark != 0"/>
+                                        <field name='initial_wt' class="blue-input" decoration-info="initial_wt != 0"/>
+                                        <field name='final_wt' class="blue-input" decoration-info="final_wt != 0" />
                                         <field name='water_absorption' />
                                     
                                     </tree>

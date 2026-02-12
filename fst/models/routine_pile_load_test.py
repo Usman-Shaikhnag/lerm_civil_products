@@ -97,6 +97,20 @@ class RoutinePileLoadTest(models.Model):
     )
 
     analysis_text = fields.Text("Analysis of Test Results")
+    
+    rec_date_str = fields.Char(
+        "Report Date (Text)",
+        compute="_compute_rec_date_str",
+        store=True
+    )
+
+    @api.depends('rec_date')
+    def _compute_rec_date_str(self):
+        for rec in self:
+            if rec.rec_date:
+                rec.rec_date_str = rec.rec_date.strftime("%d-%m-%Y")
+            else:
+                rec.rec_date_str = False
 
     def action_generate_report_no(self):
         for rec in self:
@@ -373,16 +387,12 @@ class RoutinePileLoadTest(models.Model):
         copy=False
     )
 
-    
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
-            if rec.loading_reading_ids:
-                # Get the most recent reading_datetime from all loading readings
-                latest = max(rec.loading_reading_ids.mapped('reading_datetime'), default=False)
-                rec.last_reading_datetime = latest
-            else:
-                rec.last_reading_datetime = False
+            dates = rec.loading_reading_ids.mapped('reading_datetime')
+            dates = [d for d in dates if d]
+            rec.last_reading_datetime = max(dates) if dates else False
 
 
     def action_delete_line(self):

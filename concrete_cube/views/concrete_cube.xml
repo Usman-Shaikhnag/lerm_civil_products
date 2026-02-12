@@ -26,6 +26,23 @@
                                 </tree>
                             </field>
                         </div>
+                        <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
 
                         <group style="white-space: nowrap; width:80%;">
                             <h1>
@@ -105,12 +122,12 @@
                     <field name="child_lines" nolabel="1" class="custom_table_borders">
                         <tree editable="bottom">
                             <field name='sr_no' string="Sr. NO"/>
-                            <field name='id_mark' />
-                            <field name='wt_sample'  widget="char"/>
+                            <field name='id_mark'  class="blue-input" decoration-info="id_mark != 0"/>
+                            <field name='wt_sample'  widget="char" class="blue-input" decoration-info="wt_sample != 0"/>
                             <field name='dt_of_casting' widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/>
                             <field name='days'/>
                             <field name='dt_of_testing1'  widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/>
-                            <field name="load"  widget="char"/>
+                            <field name="load"  widget="char" class="blue-input" decoration-info="load != 0"/>
                             <field name='compressive_strength'/>
                             <field name='avg_compressive_strength'/>
                         </tree>
