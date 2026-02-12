@@ -33,6 +33,24 @@
                         </field>
                     </div>
 
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
                     
 
                      <!-- Sieve Analysis -->
@@ -48,7 +66,7 @@
                             <tr>
                                 <td class="w-25"><label for="wt_of_sample"/></td>
                                 <td  class="w-25">
-                                    <field name="wt_of_sample"/>
+                                    <field name="wt_of_sample" class="blue-input"/>
                                 </td>
                               
                             </tr>
@@ -59,8 +77,8 @@
                         <tree editable="bottom" class="custom_table_borders">
                             <field name="serial_no"/>
                             <field name="sieve_size"/>
-                            <field name="particle_size"/>
-                            <field name="wt_retained"/>
+                            <field name="particle_size" class="blue-input" decoration-info="particle_size != 0"/>
+                            <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
                             <field name="percent_retained"/>
                             <field name="cumulative_retained"/>
                             <field name="passing_percent"/>
@@ -556,8 +574,8 @@
                     </div> -->
 
 
-                   <!--  FSI -->
-                    <!-- <div invisible="fsi_visible == False">
+                    <!-- FSI -->
+                    <div invisible="fsi_visible == False">
                         <h1 class="text-center">
                             <field name="fsi_name" readonly="1" nolabel="1"/>
                             <field name="fsi_visible" invisible="1"/>
@@ -568,16 +586,16 @@
                         <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not fsi_visible">
                             <tbody>
                                 <tr>
-                                    <td><label for="wt_sample"></label></td>
-                                    <td><field name="wt_sample"/></td>
+                                    <td><label for="wt_sample" ></label></td>
+                                    <td><field name="wt_sample" class="blue-input" /></td>
                                 </tr>
                                 <tr>
                                     <td><label for="valume_water"></label></td>
-                                    <td><field name="valume_water"/></td>
+                                    <td><field name="valume_water" class="blue-input" /></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="valime_kerosen"></label></td>
-                                    <td><field name="valime_kerosen"/></td>
+                                    <td><label for="valime_kerosen" ></label></td>
+                                    <td><field name="valime_kerosen" class="blue-input" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -604,7 +622,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div> -->
+                    </div>
 
                     <!-- DETERMINATION OF 'K'-->
                     <!-- <div invisible = "determination_visible == False">
@@ -845,19 +863,19 @@
                         <tbody>
                             <tr>
                                 <td><label for="m1">Mass of Density Bottle (M1)</label></td>
-                                <td><field name="m1"/>g</td>
+                                <td><field name="m1" class="blue-input"/>g</td>
                             </tr>
                             <tr>
                                 <td><label for="m2">Mass of Bottle &amp; Dry Soil (M2)</label></td>
-                                <td><field name="m2"/>g</td>
+                                <td><field name="m2" class="blue-input" />g</td>
                             </tr>
                             <tr>
                                 <td><label for="m3">Mass of Bottle, Soil &amp; Liquid (M3)</label></td>
-                                <td><field name="m3"/>g</td>
+                                <td><field name="m3" class="blue-input"/>g</td>
                             </tr>
                              <tr>
                                 <td><label for="m4">Mass of Bottle Full of Liquid (M4) </label></td>
-                                <td><field name="m4"/>g</td>
+                                <td><field name="m4" class="blue-input" />g</td>
                             </tr>
                             
                         </tbody>
@@ -902,7 +920,7 @@
                         <tbody>
                             <tr>
                                 <td><label for="proving_ring_constant">Proving Ring Constant (k)</label></td>
-                                <td><field name="proving_ring_constant"/></td>
+                                <td><field name="proving_ring_constant" class="blue-input" /></td>
                             </tr>
                           
                             
@@ -913,10 +931,13 @@
                         <field name="direct_shear_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='ao'  />
-                                <field name='delta'/>
-                                <field name='proving_ring_reading'/>
-                                <field name='normal_stress'/>
+                                <field name='ao'  class="blue-input" decoration-info="ao != 0" />
+                                
+                                <field name='delta' class="blue-input" decoration-info="delta != 0"/>
+
+                                <field name='proving_ring_reading' class="blue-input" decoration-info="proving_ring_reading != 0"/>
+
+                                <field name='normal_stress' class="blue-input" decoration-info="normal_stress != 0"/>
                                 <field name='horizontal_load'/>
                                 <field name='corrected_area'/>
                                 <field name='shear_stress'/>

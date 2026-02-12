@@ -2512,9 +2512,37 @@ class Soil(models.Model):
     #             'res_id': self.eln_ref.id,
                 
     #         }
+    # def open_eln_page(self):
+    # # import wdb; wdb.set_trace()
+    #     for result in self.eln_ref.parameters_result:
+
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            # Elongation
+            if result.parameter.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
+                result.calculated = True
+
+            if result.parameter.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
+                result.calculated = True
+
+            if result.parameter.internal_id == '5e3a90c9-ca0b-406f-93a9-11ba7318e71b':
+                result.calculated = True
+
+            if result.parameter.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                result.calculated = True
+
+            if result.parameter.internal_id == 'ght4125-ca64-44dd-b0ae-228aacf04998':
+                result.calculated = True
+
+
             if result.parameter.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
                 result.result_char = round(self.liquid_limit,2)
                 if self.liquid_limit_nabl == 'pass':
