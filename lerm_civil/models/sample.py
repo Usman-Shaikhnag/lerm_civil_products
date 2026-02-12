@@ -158,6 +158,9 @@ class LermSampleForm(models.Model):
     ])
     other_cancellation_reason = fields.Text("Cancellation Reason")
 
+    tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature Datasheet")
+    checked_by_signature_datasheet = fields.Boolean(string="Checked By Signature Datasheet")
+
     quantity = fields.Integer(string="Quantity")
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")
