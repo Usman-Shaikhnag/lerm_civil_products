@@ -430,12 +430,10 @@ class PileLoadTestParent(models.Model):
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
-            if rec.loading_reading_ids:
-                # Get the most recent reading_datetime from all loading readings
-                latest = max(rec.loading_reading_ids.mapped('reading_datetime'), default=False)
-                rec.last_reading_datetime = latest
-            else:
-                rec.last_reading_datetime = False
+            dates = rec.loading_reading_ids.mapped('reading_datetime')
+            dates = [d for d in dates if d]
+            rec.last_reading_datetime = max(dates) if dates else False
+
 
 # NEW: Separate Loading Model
 class PileLoadReadingLoading(models.Model):
