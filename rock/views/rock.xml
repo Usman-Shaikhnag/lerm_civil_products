@@ -29,6 +29,23 @@
                       </field>
                     </div>
                     <group/>
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
 
                      <!-- <group > -->
                      <div>
@@ -45,12 +62,12 @@
 
                             <tree editable="bottom">
                                 <!-- <field name='sr_no'/> -->
-                                <field name='location'/>
-                                <field name='sample_no'/>
-                                <field name='depth'/>
-                                <field name='ssd_weight'/>
-                                <field name='wt_sample_water'/>
-                                <field name='oven_dry_wt'/>
+                                <field name='location' class="blue-input" decoration-info="location != 0"/>
+                                <field name='sample_no' class="blue-input" decoration-info="sample_no != 0"/>
+                                <field name='depth' class="blue-input" decoration-info="depth != 0"/>
+                                <field name='ssd_weight' class="blue-input" decoration-info="ssd_weight != 0"/>
+                                <field name='wt_sample_water' class="blue-input" decoration-info="wt_sample_water != 0"/>
+                                <field name='oven_dry_wt' class="blue-input" decoration-info="oven_dry_wt != 0"/>
                                 <field name='porosity'/>
                                 <field name='water_absorption'/>
                                 <field name='dry_density'/>
@@ -133,14 +150,14 @@
                     <div class="custom_table_borders" invisible="not usc_visible">
                         <field name="child_lines1" nolabel="1" colspan="2">
                             <tree editable="bottom">
-                                <field name='location'/>
+                                <field name='location' class="blue-input" decoration-info="location != 0"/>
                                 <field name='sr_no'/>
-                                <field name='depth'/>
-                                <field name='diameter'/>
-                                <field name='length'/>
+                                <field name='depth' class="blue-input" decoration-info="depth != 0"/>
+                                <field name='diameter' class="blue-input" decoration-info="diameter != 0"/>
+                                <field name='length' class="blue-input" decoration-info="length != 0"/>
                                 <field name='ld_ratio'/>
                                 <field name='area'/>
-                                <field name='load'/>
+                                <field name='load' class="blue-input" decoration-info="load != 0"/>
                                 <field name='usc'/>
                             </tree>
                          </field> 
@@ -184,7 +201,7 @@
                         <field name="child_lines_cerchar_abrsivity" nolabel="1" >
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='value'/>
+                                <field name='value' class="blue-input" decoration-info="value != 0"/>
                               
                             </tree>
                          </field> 
@@ -230,10 +247,10 @@
                         <field name="modulus_of_elasticity_line_ids" nolabel="1" >
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='diameter'/>
-                                <field name='length'/>
-                                <field name='load'/>
-                                <field name='delta_l'/>
+                                <field name='diameter' class="blue-input" decoration-info="diameter != 0"/>
+                                <field name='length' class="blue-input" decoration-info="length != 0"/>
+                                <field name='load' class="blue-input" decoration-info="load != 0"/>
+                                <field name='delta_l' class="blue-input" decoration-info="delta_l != 0"/>
                                 <field name='area'/>
                                 <field name='stress'/>
                                 <field name='strain'/>
@@ -284,8 +301,8 @@
                         <field name="ponit_load_ids" nolabel="1" >
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='diameter_mm'/>
-                                <field name='failure_load_n'/>
+                                <field name='diameter_mm' class="blue-input" decoration-info="diameter_mm != 0"/>
+                                <field name='failure_load_n' class="blue-input" decoration-info="failure_load_n != 0"/>
                                 <field name='equivalent_de'/>
                                 <field name='area_mm2'/>
                                 <field name='is_uncorrected'/>
@@ -342,10 +359,10 @@
                         <field name="poison_ratio_line_ids" nolabel="1" >
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='L0_mm'/>
-                                <field name='delta_L_mm'/>
-                                <field name='d0_mm'/>
-                                <field name='delta_d_mm'/>
+                                <field name='L0_mm' class="blue-input" decoration-info="L0_mm != 0"/>
+                                <field name='delta_L_mm' class="blue-input" decoration-info="delta_L_mm != 0"/>
+                                <field name='d0_mm' class="blue-input" decoration-info="d0_mm != 0"/>
+                                <field name='delta_d_mm' class="blue-input" decoration-info="delta_d_mm != 0"/>
                                 <field name='axial_strain'/>
                                 <field name='lateral_strain'/>
                                 <field name='poisson_nu'/>
@@ -398,9 +415,9 @@
                         <field name="slake_index_line_ids" nolabel="1" >
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='w1'/>
-                                <field name='w2'/>
-                                <field name='sdi'/>
+                                <field name='w1' class="blue-input" decoration-info="w1 != 0"/>
+                                <field name='w2' class="blue-input" decoration-info="w2 != 0"/>
+                                <field name='sdi' class="blue-input" decoration-info="sdi != 0"/>
                                 
                               
                             </tree>
@@ -452,10 +469,10 @@
                         <field name="tensile_strength_line_ids" nolabel="1" >
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='load_kn'/>
-                                <field name='diameter_mm'/>
-                                <field name='length_mm'/>
-                                <field name='tensile_strength'/>
+                                <field name='load_kn' class="blue-input" decoration-info="load_kn != 0"/>
+                                <field name='diameter_mm' class="blue-input" decoration-info="diameter_mm != 0"/>
+                                <field name='length_mm' class="blue-input" decoration-info="length_mm != 0"/>
+                                <field name='tensile_strength' class="blue-input" decoration-info="tensile_strength != 0"/>
                                 
                               
                             </tree>
@@ -502,8 +519,8 @@
                         <field name="uu_triaxial_angle_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='confining_pressure'  />
-                                <field name='deviator_stress'/>
+                                <field name='confining_pressure'  class="blue-input" decoration-info="confining_pressure != 0"/>
+                                <field name='deviator_stress' class="blue-input" decoration-info="deviator_stress != 0"/>
                                 <field name='sigma1'/>
                                 <field name='sigma'/>
                                 <field name='tau'/>
@@ -556,8 +573,8 @@
                         <field name="uu_triaxial_cohesion_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='confining_pressure'  />
-                                <field name='deviator_stress'/>
+                                <field name='confining_pressure'  class="blue-input" decoration-info="confining_pressure != 0"/>
+                                <field name='deviator_stress' class="blue-input" decoration-info="deviator_stress != 0"/>
                                 <field name='sigma1'/>
                                 <field name='sigma'/>
                                 <field name='tau'/>
