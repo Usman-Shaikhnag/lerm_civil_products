@@ -1249,8 +1249,9 @@ class FineAggregate(models.Model):
     #             'type': 'ir.actions.act_window',
     #             'target': 'current',
     #             'res_id': self.eln_ref.id,
-                
+    
     #         }
+    
 
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
