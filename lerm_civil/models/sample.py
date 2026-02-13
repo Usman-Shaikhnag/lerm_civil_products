@@ -921,6 +921,16 @@ class SampleRequestReview(models.Model):
     test_performed = fields.Boolean("Whether all tests are performed")
     test_performed_remark = fields.Text("Test Performed Remarks")
 
+    completion_date = fields.Date("Expected completion Date")
+    w_o = fields.Char("Reference (W.O / Mail)")
+
+    no_samples = fields.Integer("Number of  samples")
+
+    @api.onchange('lot_detail')
+    def _onchange_lot_detail(self):
+        for rec in self:
+            rec.no_samples = len(rec.review_line_ids.filtered(lambda l: l.lab_id))
+
     
 
    
