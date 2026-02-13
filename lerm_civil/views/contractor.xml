@@ -7,11 +7,20 @@
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
                 <xpath expr="//notebook" position="before">
-                    <group style="width:50%">
-                        <field name='signature' widget="image" class="oe_avatar"/>
-                    </group>
-                    <group style="width:50%">
-                        <field name='stamp' widget="image" class="oe_avatar"/>
+                    <group>
+                        
+                        <group style="width:50%">
+                            <!--<field name="pan_no"/>-->
+                            <field name="consultant"/>
+                            <field name="msme_reg_no"/>
+                            <field name="signature" widget="image" class="oe_avatar"/>
+                        </group>
+                        <group style="width:50%">
+                            <field name="quality_manager"/>
+                            <field name="quality_manager_no"/>
+                            <field name="stamp" widget="image" class="oe_avatar"/>
+                            
+                        </group>
                     </group>
                 </xpath>
                 <xpath expr="//page[@name='internal_notes']" position="after">

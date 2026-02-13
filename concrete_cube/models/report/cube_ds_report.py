@@ -55,6 +55,7 @@ class ConcreteCubeCompresiveReport(models.AbstractModel):
         # eln = self.env['lerm.eln'].sudo().browse(docids)
         inreport_value = data.get('inreport', None)
         nabl = data.get('nabl')
+        # print("CUBENABL",nabl)
         if data.get('report_wizard') == True:
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['sample'])])
         elif 'active_id' in data['context']:

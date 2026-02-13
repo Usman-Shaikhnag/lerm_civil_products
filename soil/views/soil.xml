@@ -11,6 +11,7 @@
                     <h1>
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
+                    <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
                     <group>
                        <field name="grade"/>
                     </group>
@@ -34,7 +35,7 @@
 
                     
 
-                    <!-- Sieve Analysis -->
+                     <!-- Sieve Analysis -->
                     <div invisible = "sieve_visible == False">
                         <h1 class="text-center">
                             <field name="sieve_name" readonly="1" nolabel="1"/>
@@ -75,27 +76,66 @@
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
                         <tbody>
                             <tr>
-                                <td><label for="total_sieve_analysis">Total Weight</label></td>
-                                <td><field name="total_sieve_analysis"/></td>
+                                <td><label for="boulder">% Boulders</label></td>
+                                <td><field name="boulder"/></td>
                             </tr>
                             <tr>
-                                <td><label for="gravel">Gravel</label></td>
+                                <td><label for="gravel">% Gravels</label></td>
                                 <td><field name="gravel"/></td>
                             </tr>
                             <tr>
-                                <td><label for="sand">Sand</label></td>
+                                <td><label for="sand">%Sand</label></td>
                                 <td><field name="sand"/></td>
                             </tr>
                             <tr>
-                                <td><label for="silt_clay">Silt + Clay</label></td>
+                                <td><label for="silt">%Slit</label></td>
+                                <td><field name="silt"/></td>
+                            </tr>
+
+                             <tr>
+                                <td><label for="silt_clay">%Clay</label></td>
                                 <td><field name="silt_clay"/></td>
                             </tr>
-                            <tr>
-                                <td><label for="total">Total</label></td>
-                                <td><field name="total"/></td>
-                            </tr>
+                            
                         </tbody>
                     </table>
+
+                    <div class="d-flex gap-2">
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="d60">D60 (mm)</label></td>
+                                <td><field name="d60"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="d30">D30 (mm)</label></td>
+                                <td><field name="d30"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="d10">D10 (mm)</label></td>
+                                <td><field name="d10"/></td>
+                            </tr>
+                            
+                            
+                        </tbody>
+                    </table>
+                        
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="cu">Cu = D60/D10</label></td>
+                                <td><field name="cu"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="cc">Cc = D30^2/D10* D60</label></td>
+                                <td><field name="cc"/></td>
+                            </tr>
+                            
+                            
+                            
+                        </tbody>
+                    </table>
+                    </div>
 
                     
                     <div invisible = "sieve_visible == False" class="custom_table_borders text-center">
@@ -103,7 +143,7 @@
                     </div>
 
 
-                     <!-- Liquid Limit-->
+                       <!-- Liquid Limit-->
                     <div invisible = "liquid_limit_visible == False">
                         <h1 class="text-center">
                             <field name="liquid_limit_name" readonly="1" nolabel="1"/>
@@ -117,7 +157,7 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no' />
                                 <field name='container_no1' />
-                                <field name='blwo_no1' />
+                                <field name='blwo_no1' widget="char" style="width:10px; max-width:10px; min-width:10px;"/>
                                 <field name="wt_of_con_wet" />
                                 <field name='wt_of_con_dry' />
                                 <field name='loss_of_moisture' />
@@ -228,6 +268,7 @@
                         </table>
                     </div>
 
+
                      <!-- Heavy Compaction MDD -->
                     <div invisible = "heavy_visible == False">
                         <h1 class="text-center">
@@ -333,7 +374,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not heavy_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not omc_visible">
                         <tbody>
                             <tr>
                                 <td><label for="omc1">Optimum Moisture Content </label></td>
@@ -1344,6 +1385,34 @@
                 </sheet>
             </form>
         </field>
+        </record>
+
+
+        <record id="view_soil_prefill_data_form" model="ir.ui.view">
+            <field name="name">soil.prefill.data.form</field>
+            <field name="model">soil.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_soil_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">soil.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_soil_prefill_data_form"/>
+            <field name="target">new</field>
         </record>
 
     </data>

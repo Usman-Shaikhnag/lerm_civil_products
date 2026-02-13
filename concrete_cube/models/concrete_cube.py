@@ -44,6 +44,21 @@ class MechanicalConcreteCube(models.Model):
 
     average_strength = fields.Float(string="Average Compressive Strength in N/mm2",compute="_compute_average_strength",digits=(12,2))
 
+    def prefill_data(self):
+        wizard_action = self.env.ref('concrete_cube.action_cube_prefill_data_wizard')
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'concrete.cube.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+    
     @api.depends('child_lines.compressive_strength')
     def _compute_average_strength(self):
         for rec in self:

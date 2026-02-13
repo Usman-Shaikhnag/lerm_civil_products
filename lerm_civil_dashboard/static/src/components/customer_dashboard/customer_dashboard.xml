@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="lerm_civil_dashboard.CustomerDashboard" owl="1">
+        <div class="scrollable-dashboard p-4">
+            <!-- Dashboard Header -->
+            <h1 class="text-primary mb-4">Customer Overview Dashboard</h1>
+            
+            <!-- Filter Section (Moved from Main Dashboard) -->
+            <div class="row mb-4 align-items-end">
+                
+                <!-- Date Filter Group -->
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="card shadow-sm p-3">
+                        <h6 class="text-muted mb-2">Filter by Date Range</h6>
+                        <div class="d-flex mb-2">
+                            <input type="date" t-att-value="filter_state.start_date" t-on-change="_onDateInputChange"
+                                    data-field="start_date" class="form-control me-2"/>
+                            <input type="date" t-att-value="filter_state.end_date" t-on-change="_onDateInputChange"
+                                    data-field="end_date" class="form-control me-2"/>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-sm" t-att-class="{'btn-primary': filter_state.activeDays === 30, 'btn-outline-secondary': filter_state.activeDays !== 30}" t-on-click="_onDateFilter" data-days="30">30 Days</button>
+                            <button class="btn btn-sm" t-att-class="{'btn-primary': filter_state.activeDays === 90, 'btn-outline-secondary': filter_state.activeDays !== 90}" t-on-click="_onDateFilter" data-days="90">90 Days</button>
+                            <button class="btn btn-sm" t-att-class="{'btn-primary': filter_state.activeDays === 180, 'btn-outline-secondary': filter_state.activeDays !== 180}" t-on-click="_onDateFilter" data-days="180">180 Days</button>
+                            <button class="btn btn-sm" t-att-class="{'btn-primary': filter_state.activeDays === 365, 'btn-outline-secondary': filter_state.activeDays !== 365}" t-on-click="_onDateFilter" data-days="365">365 Days</button>
+                            <button class="btn btn-sm btn-info ms-2" t-on-click="_onCustomDate">Apply Custom</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discipline Filter Group -->
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="card shadow-sm p-3 h-100">
+                        <h6 class="text-muted mb-2">Filter by Discipline</h6>
+                        <div class="btn-group w-100" role="group">
+                            <button type="button" class="btn btn-sm" t-att-class="{'btn-primary': filter_state.activeDiscipline === 'ALL', 'btn-outline-secondary': filter_state.activeDiscipline !== 'ALL'}" t-on-click="_onDisciplineFilter" data-discipline="ALL">ALL</button>
+                            <button type="button" class="btn btn-sm" t-att-class="{'btn-primary': filter_state.activeDiscipline === 'MECHANICAL', 'btn-outline-secondary': filter_state.activeDiscipline !== 'MECHANICAL'}" t-on-click="_onDisciplineFilter" data-discipline="MECHANICAL">MECHANICAL</button>
+                            <button type="button" class="btn btn-sm" t-att-class="{'btn-primary': filter_state.activeDiscipline === 'NDT', 'btn-outline-secondary': filter_state.activeDiscipline !== 'NDT'}" t-on-click="_onDisciplineFilter" data-discipline="NDT">NON-DESTRUCTIVE TESTING</button>
+                            <button type="button" class="btn btn-sm" t-att-class="{'btn-primary': filter_state.activeDiscipline === 'CHEMICAL', 'btn-outline-secondary': filter_state.activeDiscipline !== 'CHEMICAL'}" t-on-click="_onDisciplineFilter" data-discipline="CHEMICAL">CHEMICAL</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="col-lg-4 col-md-12 mb-3">
+                    <div class="card shadow-sm p-3">
+                        <h6 class="text-muted mb-2">Search Customer</h6>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa fa-search"/></span>
+                            <input type="text" class="form-control" placeholder="Search by Customer Name..."
+                                    t-att-value="filter_state.searchQuery" 
+                                    t-on-change="_onSearchCustomer"
+                                    t-on-keyup="_onSearchCustomer"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr/>
+
+            <div t-if="!filter_state.isLoading and filter_state.totalCustomers > 0" class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 p-3 bg-light rounded shadow-sm">
+                <div class="d-flex align-items-center mb-3 mb-md-0">
+                    <span class="me-3 text-muted">Customers per page:</span>
+                    <select class="form-select form-select-sm w-auto" t-on-change="_onPageSizeChange">
+                        <option value="10" t-att-selected="filter_state.pageSize == 10">10</option>
+                        <option value="15" t-att-selected="filter_state.pageSize == 15">15</option>
+                        <option value="25" t-att-selected="filter_state.pageSize == 25">25</option>
+                        <option value="50" t-att-selected="filter_state.pageSize == 50">50</option>
+                    </select>
+                </div>
+                
+                <div class="d-flex align-items-center">
+                    <span class="me-3 fw-bold text-dark text-nowrap">
+                        Page <t t-esc="filter_state.currentPage"/> of <t t-esc="totalPages"/> 
+                        (<t t-esc="filter_state.totalCustomers"/> total customers)
+                    </span>
+                    
+                    <button class="btn btn-sm btn-outline-secondary me-2" 
+                            t-att-disabled="filter_state.currentPage === 1" 
+                            t-on-click="() => this._onPageChange(-1)">
+                        <i class="fa fa-chevron-left"/> Previous
+                    </button>
+                    
+                    <button class="btn btn-sm btn-outline-secondary" 
+                            t-att-disabled="filter_state.currentPage === totalPages or totalPages === 0" 
+                            t-on-click="() => this._onPageChange(1)">
+                        Next <i class="fa fa-chevron-right"/>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Customer Data Cards -->
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="mb-4">Customer Performance Overview (<t t-esc="dashboard_state.customer_data.length"/> Found)</h3>
+
+                    <t t-if="filter_state.isLoading">
+                        <div class="text-center p-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3 text-muted">Loading customer data...</p>
+                        </div>
+                    </t>
+                    
+                    <t t-else="">
+                        <t t-if="dashboard_state.customer_data.length === 0">
+                            <div class="alert alert-info text-center" role="alert">
+                                <i class="fa fa-info-circle me-2"/> No customer data found for the current filters.
+                            </div>
+                        </t>
+
+                        <t t-else="">
+                            <div class="row">
+                                <t t-foreach="dashboard_state.customer_data" t-as="customer" t-key="customer.customer_id">
+                                    <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                                        <!-- Updated card styling to match Technician Dashboard (larger shadow, border-start, full height) -->
+                                        <div class="card shadow hover-lift h-100" 
+                                            style="border-radius: 1rem; cursor: pointer; transition: transform 0.2s;" 
+                                            >
+                                            
+                                            <div class="card-body d-flex flex-column p-3">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <!-- Customer Name - Now using h5 for prominence -->
+                                                    <h5 class="card-title text-primary fw-bold text-truncate me-2" 
+                                                        title="Customer Name:" t-on-click="() => this._onCustomerCardClick(customer.customer_id, customer.customer_name)">
+                                                        <i class="fa fa-building me-2"/> <t t-esc="customer.customer_name"/>
+                                                    </h5>
+                                                    
+                                                    <!-- Total Samples Badge -->
+                                                    <div class="text-end flex-shrink-0">
+                                                        <span class="text-muted small d-block">Total Samples</span>
+                                                        <h4 class="fw-bolder text-dark mb-0"><t t-esc="customer.total_samples"/></h4>
+                                                    </div>
+                                                </div>
+
+                                                <hr class="mt-2 mb-3"/>
+                                                
+                                                <!-- Status Breakdown: Converted to Collapsible List Group -->
+                                                <div class="overflow-y-auto" style="max-height: 230px;">
+                                                    <ul class="list-group list-group-flush">
+                                                        <!-- ASSIGNMENT PENDING Status Block (Info) -->
+                                                        <li class="list-group-item p-0">
+                                                            <t t-set="status_id" t-value="'pending-assign-' + customer.customer_id"/>
+                                                            <t t-set="is_collapsible" t-value="customer.assignment_pending > 0"/>
+                                                            <t t-if="is_collapsible">
+                                                                <!-- FIX: Added   here -->
+                                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 px-0 collapsed" type="button" 
+                                                                    
+                                                                    t-att-data-bs-target="'#' + status_id" data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false" style="box-shadow: none;">
+                                                                    <span><i class="fa fa-clipboard text-info me-2"/> Assignment Pending</span>
+                                                                    <span class="badge text-bg-info d-flex align-items-center">
+                                                                        <t t-esc="customer.assignment_pending"/>
+                                                                        <i class="fa fa-chevron-down ms-2" style="font-size: 0.75rem; transition: transform 0.2s;"/>
+                                                                    </span>
+                                                                </button>
+                                                                <div class="collapse" t-att-id="status_id">
+                                                                    <ul class="list-group list-group-flush ms-3 border-start">
+                                                                        <!-- Guard added for product_breakdown data -->
+                                                                        <t t-if="customer.product_breakdown">
+                                                                            <t t-foreach="customer.product_breakdown" t-as="product_data" t-key="product_data.product_id">
+                                                                                <t t-if="product_data.assignment_pending > 0">
+                                                                                    <li class="list-group-item d-flex justify-content-between align-items-center small py-1 px-2">
+                                                                                        <span class="fw-medium text-dark"><t t-esc="product_data.product_name"/></span>
+                                                                                        <span class="badge text-bg-secondary"><t t-esc="product_data.assignment_pending"/></span>
+                                                                                    </li>
+                                                                                </t>
+                                                                            </t>
+                                                                        </t>
+                                                                    </ul>
+                                                                </div>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 px-0 text-muted" type="button" disabled="disabled" style="box-shadow: none; cursor: default;">
+                                                                    <span><i class="fa fa-clipboard text-info me-2"/> Assignment Pending</span>
+                                                                    <span class="badge text-bg-light border text-muted d-flex align-items-center"><t t-esc="customer.assignment_pending || 0"/></span>
+                                                                </button>
+                                                            </t>
+                                                        </li>
+
+
+                                                        <!-- ALLOTED Status Block (Primary) -->
+                                                        <li class="list-group-item p-0">
+                                                            <t t-set="status_id" t-value="'alloted-' + customer.customer_id"/>
+                                                            <t t-set="is_collapsible" t-value="customer.alloted > 0"/>
+                                                            <t t-if="is_collapsible">
+                                                                <!-- FIX: Added   here -->
+                                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 px-0 collapsed" type="button" 
+                                                                    t-att-data-bs-target="'#' + status_id" data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false" style="box-shadow: none;">
+                                                                    <span><i class="fa fa-play-circle text-primary me-2"/> Alloted</span>
+                                                                    <span class="badge text-bg-primary d-flex align-items-center">
+                                                                        <t t-esc="customer.alloted"/>
+                                                                        <i class="fa fa-chevron-down ms-2" style="font-size: 0.75rem; transition: transform 0.2s;"/>
+                                                                    </span>
+                                                                </button>
+                                                                <div class="collapse" t-att-id="status_id">
+                                                                    <ul class="list-group list-group-flush ms-3 border-start">
+                                                                        <!-- Guard added for product_breakdown data -->
+                                                                        <t t-if="customer.product_breakdown">
+                                                                            <t t-foreach="customer.product_breakdown" t-as="product_data" t-key="product_data.product_id">
+                                                                                <t t-if="product_data.alloted > 0">
+                                                                                    <li class="list-group-item d-flex justify-content-between align-items-center small py-1 px-2">
+                                                                                        <span class="fw-medium text-dark"><t t-esc="product_data.product_name"/></span>
+                                                                                        <span class="badge text-bg-secondary"><t t-esc="product_data.alloted"/></span>
+                                                                                    </li>
+                                                                                </t>
+                                                                            </t>
+                                                                        </t>
+                                                                    </ul>
+                                                                </div>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 px-0 text-muted" type="button" disabled="disabled" style="box-shadow: none; cursor: default;">
+                                                                    <span><i class="fa fa-play-circle text-primary me-2"/> Alloted</span>
+                                                                    <span class="badge text-bg-light border text-muted d-flex align-items-center"><t t-esc="customer.alloted || 0"/></span>
+                                                                </button>
+                                                            </t>
+                                                        </li>
+
+
+                                                        <!-- PENDING VERIFICATION Status Block (Warning) -->
+                                                        <li class="list-group-item p-0">
+                                                            <t t-set="status_id" t-value="'pending-verification-' + customer.customer_id"/>
+                                                            <t t-set="is_collapsible" t-value="customer.pending_verification > 0"/>
+                                                            <t t-if="is_collapsible">
+                                                                <!-- FIX: Added   here -->
+                                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 px-0 collapsed" type="button" 
+                                                                    
+                                                                    t-att-data-bs-target="'#' + status_id" data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false" style="box-shadow: none;">
+                                                                    <span><i class="fa fa-hourglass-half text-warning me-2"/> Pending Verification</span>
+                                                                    <span class="badge text-bg-warning d-flex align-items-center">
+                                                                        <t t-esc="customer.pending_verification"/>
+                                                                        <i class="fa fa-chevron-down ms-2" style="font-size: 0.75rem; transition: transform 0.2s;"/>
+                                                                    </span>
+                                                                </button>
+                                                                <div class="collapse" t-att-id="status_id">
+                                                                    <ul class="list-group list-group-flush ms-3 border-start">
+                                                                        <!-- Guard added for product_breakdown data -->
+                                                                        <t t-if="customer.product_breakdown">
+                                                                            <t t-foreach="customer.product_breakdown" t-as="product_data" t-key="product_data.product_id">
+                                                                                <t t-if="product_data.pending_verification > 0">
+                                                                                    <li class="list-group-item d-flex justify-content-between align-items-center small py-1 px-2">
+                                                                                        <span class="fw-medium text-dark"><t t-esc="product_data.product_name"/></span>
+                                                                                        <span class="badge text-bg-secondary"><t t-esc="product_data.pending_verification"/></span>
+                                                                                    </li>
+                                                                                </t>
+                                                                            </t>
+                                                                        </t>
+                                                                    </ul>
+                                                                </div>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 px-0 text-muted" type="button" disabled="disabled" style="box-shadow: none; cursor: default;">
+                                                                    <span><i class="fa fa-hourglass-half text-warning me-2"/> Pending Verification</span>
+                                                                    <span class="badge text-bg-light border text-muted d-flex align-items-center"><t t-esc="customer.pending_verification || 0"/></span>
+                                                                </button>
+                                                            </t>
+                                                        </li>
+
+
+                                                        <!-- PENDING APPROVAL Status Block (Danger) -->
+                                                        <li class="list-group-item p-0">
+                                                            <t t-set="status_id" t-value="'pending-approval-' + customer.customer_id"/>
+                                                            <t t-set="is_collapsible" t-value="customer.pending_approval > 0"/>
+                                                            <t t-if="is_collapsible">
+                                                                <!-- FIX: Added   here -->
+                                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 px-0 collapsed" type="button" 
+                                                                    
+                                                                    t-att-data-bs-target="'#' + status_id" data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false" style="box-shadow: none;">
+                                                                    <span><i class="fa fa-clock-o text-danger me-2"/> Pending Approval</span>
+                                                                    <span class="badge text-bg-danger d-flex align-items-center">
+                                                                        <t t-esc="customer.pending_approval"/>
+                                                                        <i class="fa fa-chevron-down ms-2" style="font-size: 0.75rem; transition: transform 0.2s;"/>
+                                                                    </span>
+                                                                </button>
+                                                                <div class="collapse" t-att-id="status_id">
+                                                                    <ul class="list-group list-group-flush ms-3 border-start">
+                                                                        <!-- Guard added for product_breakdown data -->
+                                                                        <t t-if="customer.product_breakdown">
+                                                                            <t t-foreach="customer.product_breakdown" t-as="product_data" t-key="product_data.product_id">
+                                                                                <t t-if="product_data.pending_approval > 0">
+                                                                                    <li class="list-group-item d-flex justify-content-between align-items-center small py-1 px-2">
+                                                                                        <span class="fw-medium text-dark"><t t-esc="product_data.product_name"/></span>
+                                                                                        <span class="badge text-bg-secondary"><t t-esc="product_data.pending_approval"/></span>
+                                                                                    </li>
+                                                                                </t>
+                                                                            </t>
+                                                                        </t>
+                                                                    </ul>
+                                                                </div>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 px-0 text-muted" type="button" disabled="disabled" style="box-shadow: none; cursor: default;">
+                                                                    <span><i class="fa fa-clock-o text-danger me-2"/> Pending Approval</span>
+                                                                    <span class="badge text-bg-light border text-muted d-flex align-items-center"><t t-esc="customer.pending_approval || 0"/></span>
+                                                                </button>
+                                                            </t>
+                                                        </li>
+
+
+                                                        <!-- IN REPORT Status Block (Success) -->
+                                                        <li class="list-group-item p-0">
+                                                            <t t-set="status_id" t-value="'in-report-' + customer.customer_id"/>
+                                                            <t t-set="is_collapsible" t-value="customer.in_report > 0"/>
+                                                            <t t-if="is_collapsible">
+                                                                <!-- FIX: Added   here -->
+                                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 px-0 collapsed" type="button" 
+                                                                    t-att-data-bs-target="'#' + status_id" data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false" style="box-shadow: none;">
+                                                                    <span><i class="fa fa-file-text-o text-success me-2"/> In Report</span>
+                                                                    <span class="badge text-bg-success d-flex align-items-center">
+                                                                        <t t-esc="customer.in_report"/>
+                                                                        <i class="fa fa-chevron-down ms-2" style="font-size: 0.75rem; transition: transform 0.2s;"/>
+                                                                    </span>
+                                                                </button>
+                                                                <div class="collapse" t-att-id="status_id">
+                                                                    <ul class="list-group list-group-flush ms-3 border-start">
+                                                                        <!-- Guard added for product_breakdown data -->
+                                                                        <t t-if="customer.product_breakdown">
+                                                                            <t t-foreach="customer.product_breakdown" t-as="product_data" t-key="product_data.product_id">
+                                                                                <t t-if="product_data.in_report > 0">
+                                                                                    <li class="list-group-item d-flex justify-content-between align-items-center small py-1 px-2">
+                                                                                        <span class="fw-medium text-dark"><t t-esc="product_data.product_name"/></span>
+                                                                                        <span class="badge text-bg-secondary"><t t-esc="product_data.in_report"/></span>
+                                                                                    </li>
+                                                                                </t>
+                                                                            </t>
+                                                                        </t>
+                                                                    </ul>
+                                                                </div>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 px-0 text-muted" type="button" disabled="disabled" style="box-shadow: none; cursor: default;">
+                                                                    <span><i class="fa fa-file-text-o text-success me-2"/> In Report</span>
+                                                                    <span class="badge text-bg-light border text-muted d-flex align-items-center"><t t-esc="customer.in_report || 0"/></span>
+                                                                </button>
+                                                            </t>
+                                                        </li>
+
+
+                                                        <!-- CANCELLED Status Block (Non-collapsible) -->
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center small text-muted py-2 px-0">
+                                                            <span><i class="fa fa-times-circle me-2"/> Cancelled</span>
+                                                            <span class="fw-bold text-muted"><t t-esc="customer.cancelled || 0"/></span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+            </div>
+            
+        </div>
+    </t>
+</templates>

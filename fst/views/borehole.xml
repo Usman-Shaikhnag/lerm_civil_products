@@ -11,14 +11,63 @@
                     <h1>
                         <field name="name" nolabel="1"/>
                     </h1>
+                    <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="location"></label></td>
+                                <td style="width: 50%;">
+                                    <field name="location" style="width: 100%;"/>
+                                </td>
+
+                                <td><label for="client"></label></td>
+                                <td style="width: 50%;">
+                                    <field name="client" style="width: 100%;"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="type_of_boring"></label></td>
+                                    <td>
+                                        <field name="type_of_boring"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dia_of_boring"></label></td>
+                                    <td>
+                                        <field name="dia_of_boring"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="date_started"></label></td>
+                                    <td>
+                                        <field name="date_started"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label for="date_completed"></label></td>
+                                    <td>
+                                        <field name="date_completed"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <div>
                         <field name="nvalue_ids" class="custom_table_borders" nolabel="1">
                             <tree editable="bottom">
                                 <field name="top_depth"/>
                                 <field name="bottom_depth"/>
                                 <field name="sample_type"/>
-                                <field name="symbol"/>
                                 <field name="classification"/>
+                                <field name="symbol"/>
                                 <field name="n15"/>
                                 <field name="n30"/>
                                 <field name="n45"/>
@@ -34,10 +83,21 @@
                         <field name="graph_image" widget="image" />
                     </div>
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="hammer_energy"></label></td>
+                                <td>
+                                    <field name="hammer_energy"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <div>
                         <field name="spt_n_value_ids" class="custom_table_borders">
                             <tree editable="bottom">
                                 <field name="depth"/>
+                                <field name="type_of_soil"/>
                                 <field name="bulk_den"/>
                                 <field name="overburden_pressure"/>
                                 <field name="pore_water_pressure"/>
@@ -45,8 +105,10 @@
                                 <field name="effective_overburden_pressure"/>
                                 <field name="effective_overburden_pressure_kg"/>
                                 <field name="overburden_correction_factor"/>
+                                <field name="hammer_energy"/>
                                 <field name="observed_n_value"/>
                                 <field name="corrected_n_value"/>
+                                <field name="spt_n_dilatancy"/>
                             </tree>
                         </field>
                         <button name="generate_corrected_spt_graph" type="object" string="Generate Graph" class="btn-primary"/>
@@ -59,7 +121,7 @@
                         <field name="cohesion"/>
                         <field name="angle_of_internal_friction"/>
                     </div> -->
-                    
+                    <field name="tan_phi"/>
                     <div>
                         <field name="direct_shear_ids" class="custom_table_borders">
                             <tree editable="bottom">
@@ -72,6 +134,7 @@
                                 <field name="displacement"/>
                                 <field name="corrected_area"/>
                                 <field name="shear_stress"/>
+                                
                             </tree>
                         </field>
                     </div>
@@ -79,10 +142,22 @@
                     <div>
                         <field name="direct_shear_graph" widget="image" nolabel="1"/>
                     </div>
-                                            
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="weight"></label></td>
+                                <td>
+                                    <field name="weight"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>                
                     <field name="grain_size_ids">
                         <tree>
                             <field name="sample_name"/>
+                            <field name="top_depth"/>
+                            <field name="bottom_depth"/>
+                            <field name="classification"/>
                             <field name="line_ids"/>
                             <field name="boulder"/>
                             <field name="gravel"/>
@@ -99,8 +174,9 @@
                             <sheet>
                                 <group>
                                     <field name="sample_name"/>
-                                    <!-- <button name="action_recompute_particle_distribution" type="object"
-                                            string="Recalculate Distribution" class="oe_highlight"/> -->
+                                    <field name="weight"/>
+                                    <button name="action_recompute_particle_distribution" type="object"
+                                            string="Recalculate Distribution" class="oe_highlight"/>
                                 </group>
                                 <separator string="Sieve Analysis Data"/>
                                 <field name="line_ids">

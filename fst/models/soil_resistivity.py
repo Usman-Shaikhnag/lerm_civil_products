@@ -27,18 +27,30 @@ class ERTSoilResistivity(models.Model):
 
     @api.model
     def create(self, vals):
-        if vals.get("name", "New") == "New":
-            vals["name"] = self.env["ir.sequence"].next_by_code("ert.soil.resistivity.seq") or "New"
-            
         record = super().create(vals)
-        if record.ert_parent_id:
+        if not self.env.context.get('skip_auto_copy') and record.ert_parent_id:
+            # Only auto-link when NOT duplicating
             self.env['ert.lines'].sudo().create({
                 'parent_id': record.ert_parent_id.id,
                 'soil_resistivity_id': record.id
             })
         return record
-        
     
+    def copy(self, default=None):
+        # if self.env.context.get('skip_auto_copy'):
+        #     # Just copy main record, no deep children
+        #     return super().copy(default)
+
+        default = dict(default or {})
+        new_res = super().copy(default)
+
+        # Deep copy resistivity lines
+        for rec in self.line_ids:
+            rec.copy({'parent_id': new_res.id})
+
+        return new_res
+
+     
     
     def save_ert(self):
         # ert_parent = self.env['lerm.ert.parent'].sudo().search([('id','=',self.ert_parent_id.id)])

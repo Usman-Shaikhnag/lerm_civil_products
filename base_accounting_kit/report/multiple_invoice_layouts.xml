@@ -249,7 +249,7 @@
                                 </li>
                             </strong>
                             <li t-if="forced_vat or company.vat">
-                                <t t-esc="company.country_id.vat_label or 'Tax ID'"/>
+                                <t t-esc="company.country_id.vat_label or 'GST No'"/>
                                 :
                                 <span t-if="forced_vat" t-esc="forced_vat"/>
                                 <span t-else="" t-field="company.vat"/>

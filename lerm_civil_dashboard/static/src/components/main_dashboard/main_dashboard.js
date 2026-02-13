@@ -16,6 +16,16 @@ class MainDashboard extends Component {
       state_counts: [],
       total_states: 0,
       state_data: [],
+
+      technician_data: [],
+    });
+    this.filter_state = useState({
+      // <-- NEW REACTIVE STATE OBJECT
+      start_date: this._getDateXDaysAgo(30),
+      end_date: this._today(),
+      activeDiscipline: "ALL", // <-- CORRECTLY PLACED HERE
+      isLoading: true, // <-- Also placed here
+      activeDays: 30,
     });
 
     this.startDateRef = useRef("start_date");
@@ -23,6 +33,7 @@ class MainDashboard extends Component {
     this.chartRef = useRef("chartCanvas");
     this.stateChartRef = useRef("stateChartCanvas");
     this.action = useService("action");
+    this.rpc = useService("rpc"); // Ensure you have this if using jsonrpc/rpc
 
     this.chartInstance = null;
     this.stateChartInstance = null;
@@ -30,11 +41,12 @@ class MainDashboard extends Component {
     this.timeChartType = "line";
     this.stateChartType = "bar";
 
-    this.start_date = this._getDateXDaysAgo(30);
-    this.end_date = this._today();
-
     onWillStart(async () => {
-      await this.fetchData(this.start_date, this.end_date);
+      await this.fetchData(
+        this.filter_state.start_date,
+        this.filter_state.end_date,
+        this.filter_state.activeDiscipline // <-- PASSING THE NEW PARAMETER
+      );
     });
 
     onMounted(() => {
@@ -43,10 +55,11 @@ class MainDashboard extends Component {
     });
   }
 
-  async fetchData(start_date, end_date) {
+  async fetchData(start_date, end_date, discipline) {
     const data_result = await jsonrpc("/dashboard/getdata", {
       start_date,
       end_date,
+      discipline,
     });
 
     if (!data_result.error) {
@@ -72,6 +85,170 @@ class MainDashboard extends Component {
         (item) => item.count
       );
     }
+
+    const tech_data_result = await jsonrpc("/lerm/overview/data", {
+      start_date,
+      end_date,
+      discipline,
+    });
+    this.dashboard_state.technician_data = tech_data_result;
+  }
+
+  _onDateInputChange(ev) {
+    const field = ev.target.dataset.field; // 'start_date' or 'end_date'
+    this.filter_state[field] = ev.target.value;
+    // console.log(`Updated ${field} to: ${ev.target.value}`); // Optional debug
+  }
+  // --- END NEW HANDLER ---
+
+  async _onDateFilter(ev) {
+    const days = parseInt(ev.target.dataset.days);
+
+    // Update reactive filter state properties
+    this.filter_state.start_date = this._getDateXDaysAgo(days);
+    this.filter_state.end_date = this._today();
+    this.filter_state.activeDays = days; // <-- UPDATED: Track the active day count
+
+    // Fetch data using the updated values
+    await this.fetchData(
+      this.filter_state.start_date,
+      this.filter_state.end_date,
+      this.filter_state.activeDiscipline // Pass the current discipline filter
+    );
+    this.renderTimeChart();
+    this.renderStateChart();
+  }
+
+  async _onCustomDate() {
+    // Since the state is updated on every change (via _onDateInputChange),
+    // we can now read the current values directly from the state.
+    const start = this.filter_state.start_date;
+    const end = this.filter_state.end_date;
+
+    if (start && end) {
+      // Update reactive filter state properties
+      this.filter_state.activeDays = false; // Reset activeDays for custom date
+
+      // Fetch data using the updated values (using state values which are already correct)
+      await this.fetchData(
+        start,
+        end,
+        this.filter_state.activeDiscipline // Pass the current discipline filter
+      );
+
+      // Charts are only rendered if data was successfully fetched (start and end were set)
+      this.renderTimeChart();
+      this.renderStateChart();
+    } else {
+      console.warn(
+        "Custom date filter requires both start and end dates to be set."
+      );
+    }
+  }
+
+  _today() {
+    return new Date().toISOString().split("T")[0];
+  }
+
+  _getDateXDaysAgo(days) {
+    const d = new Date();
+    d.setDate(d.getDate() - days);
+    return d.toISOString().split("T")[0];
+  }
+
+  switchTimeChart(type) {
+    this.timeChartType = type;
+    this.renderTimeChart();
+  }
+
+  switchStateChart(type) {
+    this.stateChartType = type;
+    this.renderStateChart();
+  }
+  async onKpiClick(stateName) {
+    const stateLabelMap = {
+      "1-allotment_pending": "Allotment Pending",
+      "2-alloted": "Alloted",
+      "3-pending_verification": "Pending Verification",
+      "5-pending_approval": "Pending Approval",
+      "4-in_report": "In Report",
+    };
+    const domain = [
+      ["sample_received_date", ">=", this.filter_state.start_date],
+      ["sample_received_date", "<=", this.filter_state.end_date],
+      ["state", "=", stateName],
+    ];
+
+    this.action.doAction({
+      type: "ir.actions.act_window",
+      name: stateLabelMap[stateName] || "Sample Records",
+      res_model: "lerm.srf.sample",
+      domain: domain,
+      views: [
+        [false, "list"],
+        [false, "form"],
+      ],
+    });
+  }
+
+  async _onDisciplineFilter(ev) {
+    // <-- ADDED ASYNC HERE
+    const discipline = ev.currentTarget.dataset.discipline;
+
+    // Update reactive filter state property
+    this.filter_state.activeDiscipline = discipline;
+
+    // Fetch data using the updated values
+    await this.fetchData(
+      // <-- ADDED AWAIT HERE
+      this.filter_state.start_date,
+      this.filter_state.end_date,
+      this.filter_state.activeDiscipline
+    );
+    this.renderTimeChart();
+    this.renderStateChart();
+  }
+
+  // --- New Event Handler (Technician Card Click) ---
+
+  async _onTechnicianCardClick(technicianId) {
+    // Construct the action to open the 'Sample' model filtered by the technician
+    const domain = [
+      ["technicians", "in", [technicianId]], // Changed field from technician_id to technicians (assuming it's a many2many field based on backend logic)
+      // Use the current dates from the filter_state
+      ["sample_received_date", ">=", this.filter_state.start_date],
+      ["sample_received_date", "<=", this.filter_state.end_date],
+
+      // Conditionally add the discipline filter if it's not 'ALL'
+      ...(this.filter_state.activeDiscipline !== "ALL"
+        ? [
+            [
+              "discipline_id.discipline",
+              "=",
+              this.filter_state.activeDiscipline,
+            ],
+          ]
+        : []),
+    ];
+
+    // The action config to open the standard Odoo tree/form view
+    const action = {
+      type: "ir.actions.act_window",
+      // FIX: Replaced this.env._t(...) with a plain string to avoid env error
+      name: "Samples for Technician",
+      res_model: "lerm.srf.sample", // <--- USE YOUR CORRECT SAMPLE MODEL NAME
+      views: [
+        [false, "list"],
+        [false, "form"],
+      ],
+      domain: domain,
+      context: {
+        // Group by state as requested
+        group_by: ["state"],
+      },
+    };
+
+    return this.action.doAction(action);
   }
 
   renderTimeChart() {
@@ -141,72 +318,6 @@ class MainDashboard extends Component {
         maintainAspectRatio: false, // 👈 allow custom height
         plugins: { legend: { display: true } },
       },
-    });
-  }
-
-  async _onDateFilter(ev) {
-    const days = parseInt(ev.target.dataset.days);
-    this.start_date = this._getDateXDaysAgo(days);
-    this.end_date = this._today();
-    await this.fetchData(this.start_date, this.end_date);
-    this.renderTimeChart();
-    this.renderStateChart();
-  }
-
-  async _onCustomDate() {
-    const start = this.startDateRef.el.value;
-    const end = this.endDateRef.el.value;
-    if (start && end) {
-      this.start_date = start;
-      this.end_date = end;
-      await this.fetchData(start, end);
-    }
-    this.renderTimeChart();
-    this.renderStateChart();
-  }
-
-  _today() {
-    return new Date().toISOString().split("T")[0];
-  }
-
-  _getDateXDaysAgo(days) {
-    const d = new Date();
-    d.setDate(d.getDate() - days);
-    return d.toISOString().split("T")[0];
-  }
-
-  switchTimeChart(type) {
-    this.timeChartType = type;
-    this.renderTimeChart();
-  }
-
-  switchStateChart(type) {
-    this.stateChartType = type;
-    this.renderStateChart();
-  }
-  async onKpiClick(stateName) {
-    const stateLabelMap = {
-      "1-allotment_pending": "Allotment Pending",
-      "2-alloted": "Alloted",
-      "3-pending_verification": "Pending Verification",
-      "4-in_report": "In Report",
-      "5-pending_approval": "Pending Approval",
-    };
-    const domain = [
-      ["sample_received_date", ">=", this.start_date],
-      ["sample_received_date", "<=", this.end_date],
-      ["state", "=", stateName],
-    ];
-
-    this.action.doAction({
-      type: "ir.actions.act_window",
-      name: stateLabelMap[stateName] || "Sample Records",
-      res_model: "lerm.srf.sample",
-      domain: domain,
-      views: [
-        [false, "list"],
-        [false, "form"],
-      ],
     });
   }
 }

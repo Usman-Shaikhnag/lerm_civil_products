@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template id="plate_load_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                 PLATE LOAD DATASHEET
+                </div>
+				
+            <div class="container_eln" style="margin-top:5px">
+				
+
+					
+					
+
+					<div style="margin-top:20px">
+						
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Design Load (T/m²)
+
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.design_load" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Factor of safety(FOS)
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.factore" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Ultimate Load  (T/m²)
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.ultimate" />
+								</td>
+							</tr>
+
+
+							 <tr cols="12">
+								<td colspan="6">Length of Plate (m)
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.lenght_plate" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">Width of Plate (m)
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.width_plate" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">Area of Plate (m²)
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.area_plate" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">RAM Area (cm²)
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.ram_area" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">Load Intensity (T)
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.load_intergity" />
+								</td>
+							</tr>
+
+                             <tr cols="12">
+								<td colspan="6">Pressure (kg/m²)
+
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.pressure" />
+								</td>
+							</tr>
+                            
+                            
+						</table>
+					</div>
+
+                    <div style="margin-top:20px">
+						
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Pressure (kg/m²)
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.pressure_1" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">No. of cycle
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.no_cycle" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Pressure
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.pressure_2" />
+								</td>
+							</tr>
+
+
+							 <tr cols="12">
+								<td colspan="6">Pressure (Roundoff)
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.pressure_3" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">Total Applied Pressure  (kg/m²)
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.total_pressure" />
+								</td>
+							</tr>
+							 
+                            
+						</table>
+					</div>
+
+
+
+
+             <div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	Loading
+
+				</div>
+				<table style="margin-top:20px">
+                <thead style="background-color: #d3d3d3;">
+                 
+                    <tr >
+						<td rowspan="2">Sr No 
+						</td>
+						<td colspan="1">Applied Pressure 
+						</td>
+						
+					<td  colspan="1">Load on  Plate</td>
+					<td  colspan="1">Pressure under Plate </td>
+					<td  colspan="1">Time</td>
+					<td  colspan="4">Dial Gauge Readings</td>
+					<td  colspan="1">Average Settlement</td>
+					<td  colspan="1">Cumulative Settlement</td>
+				
+                    </tr>
+                    <tr >
+                        <td >kg/cm2</td>
+                        <td >t</td>
+						<td >(T/m²)</td>
+
+						 <td >min</td>
+
+						<td >D1</td>
+                        <td >D2</td>
+						<td >D3</td>
+						<td >D4</td>
+
+						<td >mm</td>
+                        <td >mm</td>
+                        
+                       
+                       
+                    </tr>
+                   
+                </thead>
+                <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_plate_load" t-as="r">
+							<td >
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['applied_pressure']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['load_plate']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['pressure_plate']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['time']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['d1']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['d2']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['d3']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['d4']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['avg_sett']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['cumulative_sett1']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+                 
+                </tbody>
+            </table>
+
+			
+			</div>
+
+
+
+			 <div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	UnLoading
+
+				</div>
+				<table style="margin-top:20px">
+                <thead style="background-color: #d3d3d3;">
+                 
+                    <tr >
+						<td rowspan="2">Sr No 
+						</td>
+						<td colspan="1">Applied Pressure 
+						</td>
+						
+					<td  colspan="1">Load on  Plate</td>
+					<td  colspan="1">Pressure under Plate </td>
+					<td  colspan="1">Time</td>
+					<td  colspan="4">Dial Gauge Readings</td>
+					<td  colspan="1">Average Settlement</td>
+					<td  colspan="1">Cumulative Settlement</td>
+				
+                    </tr>
+                    <tr >
+                        <td >kg/cm2</td>
+                        <td >t</td>
+						<td >(T/m²)</td>
+
+						 <td >min</td>
+
+						<td >D1</td>
+                        <td >D2</td>
+						<td >D3</td>
+						<td >D4</td>
+
+						<td >mm</td>
+                        <td >mm</td>
+                        
+                       
+                       
+                    </tr>
+                   
+                </thead>
+                <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_plate_unload" t-as="r">
+							<td >
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['applied_pressure1']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['load_plate1']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['pressure_plate1']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['time1']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['d11']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['d22']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['d33']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['d44']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							<td colspan="1">
+								<span t-esc="r['avg_sett1']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['cumulative_sett11']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+							
+						</tr>
+                 
+                </tbody>
+            </table>
+
+			
+			</div>
+
+
+
+			 <div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	Settlement data and Safe bearing capacity
+
+				</div>
+				<table style="margin-top:20px">
+                <thead style="background-color: #d3d3d3;">
+                 
+                    <tr >
+						<td rowspan="2">Sr No 
+						</td>
+						<td colspan="1">Load Applied (t/m2) 
+						</td>
+						
+					<td  colspan="1">Average cumulative Plate Settlement mm</td>
+					
+                       
+                    </tr>
+                   
+                </thead>
+                <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_loadand_cumilitive" t-as="r">
+							<td >
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['pressure_plate2']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['cumulative_sett2']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+							
+						</tr>
+                 
+                </tbody>
+            </table>
+
+			</div>
+
+
+
+			 <div style="margin-top:20px">
+
+			 	 <div style="text-align:center;font-size:18px">
+			        		Summary of test
+
+			         	</div>
+					
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Safe Bearing Capacity  t/m²
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.bearing_capacity" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Factor of Safety
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.factore_safty" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Ultimate Bearing Capacity  t/m²
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.ultimate_bearing" />
+								</td>
+							</tr>
+
+
+							 <tr cols="12">
+								<td colspan="6">Maximum load Intensity on plate , t/m²
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.maximum_load" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6">Allowable Bearing Capacity of soil , t/m²
+
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.allowable" />
+								</td>
+							</tr>
+
+							 <tr cols="12">
+								<td colspan="6">Total Settlement of plate ,mm
+
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.total_settlement" />
+								</td>
+							</tr>
+							 
+                            
+						</table>
+					</div>
+
+
+					 <div style="margin-top:20px">
+
+					 <div style="text-align:center;font-size:18px">
+			        	Allowable Bearing Capacity
+
+			         	</div>
+					
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Bf=Size of footing in metre
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.size_footing" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Bp=Size of plate in metre
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.size_plate" />
+								</td>
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Sp=Settlement  of test plate in mm
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.settlement_test" />
+								</td>
+							</tr>
+
+
+							 <tr cols="12">
+								<td colspan="6">Settlement Below PCC, Sf
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.settlement_below" />
+								</td>
+							</tr>
+							 
+                            
+						</table>
+					</div>
+
+				<div style="margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			        	LOAD SETTLEMENT CURVE
+
+				</div>
+				<table style="margin-top:20px">
+                <thead style="background-color: #d3d3d3;">
+                 
+                    <tr >
+						<td rowspan="2">Sr No 
+						</td>
+						<td colspan="1">Load Applied (t/m2) 
+						</td>
+						
+					<td  colspan="1">Average cumulative Plate Settlement mm</td>
+					
+                       
+                    </tr>
+                   
+                </thead>
+                <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_loadand_cumilitive1" t-as="r">
+							<td >
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td >
+								<span t-esc="r['pressure_plate3']" />
+							</td>
+							<td colspan="1">
+								<span t-esc="r['settlement3']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+							
+						</tr>
+                 
+                </tbody>
+            </table>
+
+			<div t-if="data.chart_pressure_line" style="margin-top: 20px;">
+                        <img t-att-src="'data:image/png;base64,' + data.chart_pressure_line.decode('utf-8')" style="max-width: 100%;"/>
+             </div>
+
+			</div>
+
+		</div>
+
+				<div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+			</t>
+		</t>
+	</template>
+</odoo>

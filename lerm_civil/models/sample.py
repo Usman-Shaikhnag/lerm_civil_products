@@ -133,6 +133,7 @@ class LermSampleForm(models.Model):
 
     state = fields.Selection([
         ('1-allotment_pending', 'Assignment Pending'),
+        ('7-partially-alloted', 'Partially Alloted'),
         ('2-alloted', 'Alloted'),
         ('3-pending_verification','Pending Verification'),
         ('5-pending_approval','Pending Approval'),
@@ -456,7 +457,11 @@ class LermSampleForm(models.Model):
             'view_mode': 'form',
             'res_model': 'sample.reallocation.wizard',
             'view_id': action.id,
-            'target': 'new'
+            'target': 'new',
+            'context': dict(
+                    self.env.context,
+                    active_ids=self.ids,   # 🔑 THIS IS THE KEY
+                ),
             }
 
     def send_mail_action(self):
@@ -574,7 +579,6 @@ class LermSampleForm(models.Model):
         # return self.env.ref('lerm_civil.sample_report_action').report_action(self)
 
     def open_sample_allotment_wizard(self):
-        
         action = self.env.ref('lerm_civil.srf_sample_allotment_wizard')
         return {
             'name': "Allot Sample",
@@ -583,8 +587,9 @@ class LermSampleForm(models.Model):
             'view_mode': 'form',
             'res_model': 'sample.allotment.wizard',
             'view_id': action.id,
-            'target': 'new'
-            }
+            'target': 'new',
+            'context': dict(self.env.context, active_ids=self.ids, default_sample_id=self.id if len(self) == 1 else False),
+        }
 
 
     # @api.model
