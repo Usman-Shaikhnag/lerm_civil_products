@@ -65,8 +65,8 @@
                     <!-- ================= BASIC INFO ================= -->
                     <group col="2" style="margin-bottom:30px;">
                         <field name="work_name"/>
-                        <field name="contractor"/>
                         <field name="client"/>
+                        <field name="contractor"/>
                         <field name="report_no"/>
                         <field name="ulr"/>
                         <field name="rec_date"/>
@@ -74,6 +74,20 @@
                         <field name="site_location" colspan="2"/>
                     </group>
 
+                    <!-- ================= CONTENTS ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            CONTENTS
+                        </h3>
+                    </div>
+
+                    <field name="content_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence"/>
+                            <field name="description"/>
+                            <field name="page_no"/>
+                        </tree>
+                    </field>
 
                     <!-- ================================================= -->
                     <!-- INTRODUCTION -->
@@ -216,10 +230,10 @@
                     <!-- ================================================= -->
                     <div style="margin-top:20px; font-weight:bold;">
                         Gross Settlement =
-                        <field name="gross_displacement" readonly="1"/> mm<br/>
+                        <field name="gross_settlement" readonly="1"/> mm<br/>
 
                         Net Settlement =
-                        <field name="net_displacement" readonly="1"/> mm<br/>
+                        <field name="net_settlement" readonly="1"/> mm<br/>
 
                         Rebound =
                         <field name="rebound" readonly="1"/> mm
