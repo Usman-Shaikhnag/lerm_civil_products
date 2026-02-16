@@ -33,6 +33,24 @@
                         </field>
                     </div>
 
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
                     
 
                      <!-- Sieve Analysis -->
@@ -48,7 +66,7 @@
                             <tr>
                                 <td class="w-25"><label for="wt_of_sample"/></td>
                                 <td  class="w-25">
-                                    <field name="wt_of_sample"/>
+                                    <field name="wt_of_sample" class="blue-input"/>
                                 </td>
                               
                             </tr>
@@ -59,8 +77,8 @@
                         <tree editable="bottom" class="custom_table_borders">
                             <field name="serial_no"/>
                             <field name="sieve_size"/>
-                            <field name="particle_size"/>
-                            <field name="wt_retained"/>
+                            <field name="particle_size" class="blue-input" decoration-info="particle_size != 0"/>
+                            <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
                             <field name="percent_retained"/>
                             <field name="cumulative_retained"/>
                             <field name="passing_percent"/>
@@ -144,7 +162,7 @@
 
 
                        <!-- Liquid Limit-->
-                    <div invisible = "liquid_limit_visible == False">
+                    <!-- <div invisible = "liquid_limit_visible == False">
                         <h1 class="text-center">
                             <field name="liquid_limit_name" readonly="1" nolabel="1"/>
                             <field name="liquid_limit_visible" invisible="1"/>
@@ -193,11 +211,11 @@
 
                     <div invisible = "liquid_limit_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image_liquid" widget="image" readonly="1"/>
-                    </div>
+                    </div> -->
 
 
                     <!-- Plastic Limit -->
-                    <div invisible = "plastic_limit_visible == False">
+                    <!-- <div invisible = "plastic_limit_visible == False">
                         <h1 class="text-center">
                             <field name="plastic_limit_name" readonly="1" nolabel="1"/>
                             <field name="plastic_limit_visible" invisible="1"/>
@@ -266,11 +284,11 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div> -->
 
 
                      <!-- Heavy Compaction MDD -->
-                    <div invisible = "heavy_visible == False">
+                    <!-- <div invisible = "heavy_visible == False">
                         <h1 class="text-center">
                             <field name="heavy_name" readonly="1" nolabel="1"/>
                             <field name="heavy_visible" invisible="1"/>
@@ -333,10 +351,10 @@
                                             readonly="1" /></td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> -->
 
                       <!-- Light Compaction OMC -->
-                    <div invisible = "omc_visible == False">
+                    <!-- <div invisible = "omc_visible == False">
                         <h1 class="text-center">
                             <field name="omc_name" readonly="1" nolabel="1"/>
                             <field name="omc_visible" invisible="1"/>
@@ -406,10 +424,10 @@
                                             readonly="1" /></td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> -->
 
                     <!-- TRIAXIAL SHEAR TEST (By LVDT Reading ) -->
-                    <div invisible = "triaxial_visible == False">
+                    <!-- <div invisible = "triaxial_visible == False">
                         <h1 class="text-center">
                             <field name="triaxial_name" readonly="1" nolabel="1"/>
                             <field name="triaxial_visible" invisible="1"/>
@@ -470,10 +488,10 @@
                                             readonly="1" /></td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table> -->
 
                     <!-- CALCULATIONS OF COHESION AND ANGLE OF INTERNAL FRICTION-->
-                    <div invisible = "internal_fraction_visible == False">
+                    <!-- <div invisible = "internal_fraction_visible == False">
                         <h1 class="text-center">
                             <field name="internal_fraction_name" readonly="1" nolabel="1"/>
                             <field name="internal_fraction_visible" invisible="1"/>
@@ -493,10 +511,10 @@
                                 <field name="shear_stress"/>
                             </tree>
                         </field>
-                    </div>
+                    </div> -->
 
                     <!-- CBR -->
-                    <div invisible="soil_visible == False">
+                    <!-- <div invisible="soil_visible == False">
                         <h1 class="text-center">
                             <field name="soil_name" readonly="1" nolabel="1"/>
                             <field name="soil_visible" invisible="1"/>
@@ -553,10 +571,10 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div> -->
 
 
-                   <!--  FSI -->
+                    <!-- FSI -->
                     <div invisible="fsi_visible == False">
                         <h1 class="text-center">
                             <field name="fsi_name" readonly="1" nolabel="1"/>
@@ -568,16 +586,16 @@
                         <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not fsi_visible">
                             <tbody>
                                 <tr>
-                                    <td><label for="wt_sample"></label></td>
-                                    <td><field name="wt_sample"/></td>
+                                    <td><label for="wt_sample" ></label></td>
+                                    <td><field name="wt_sample" class="blue-input" /></td>
                                 </tr>
                                 <tr>
                                     <td><label for="valume_water"></label></td>
-                                    <td><field name="valume_water"/></td>
+                                    <td><field name="valume_water" class="blue-input" /></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="valime_kerosen"></label></td>
-                                    <td><field name="valime_kerosen"/></td>
+                                    <td><label for="valime_kerosen" ></label></td>
+                                    <td><field name="valime_kerosen" class="blue-input" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -607,7 +625,7 @@
                     </div>
 
                     <!-- DETERMINATION OF 'K'-->
-                    <div invisible = "determination_visible == False">
+                    <!-- <div invisible = "determination_visible == False">
                         <h1 class="text-center">
                             <field name="determination_name" readonly="1" nolabel="1"/>
                             <field name="determination_visible" invisible="1"/>
@@ -714,10 +732,10 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
 
                      <!-- Plastic Limit -->
-                    <div invisible = "shrinkage_limit_visible == False">
+                    <!-- <div invisible = "shrinkage_limit_visible == False">
                         <h1 class="text-center">
                             <field name="volume_dry_name" readonly="1" nolabel="1"/>
                             <field name="shrinkage_limit_visible" invisible="1"/>
@@ -737,13 +755,13 @@
                                 <field name='volume_dry'/>
                             </tree>
                         </field>
-                    </div>
+                    </div> -->
 
                   
 
 
                      <!-- Plastic Limit -->
-                    <div invisible = "shrinkage_limit_visible == False">
+                    <!-- <div invisible = "shrinkage_limit_visible == False">
                         <h1 class="text-center">
                             <field name="volume_wet_name" readonly="1" nolabel="1"/>
                             <field name="shrinkage_limit_visible" invisible="1"/>
@@ -826,7 +844,11 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
+
+
+
+                        <!--  -->
 
 
                           <div invisible = "specific_gravity_visible == False">
@@ -841,19 +863,19 @@
                         <tbody>
                             <tr>
                                 <td><label for="m1">Mass of Density Bottle (M1)</label></td>
-                                <td><field name="m1"/>g</td>
+                                <td><field name="m1" class="blue-input"/>g</td>
                             </tr>
                             <tr>
                                 <td><label for="m2">Mass of Bottle &amp; Dry Soil (M2)</label></td>
-                                <td><field name="m2"/>g</td>
+                                <td><field name="m2" class="blue-input" />g</td>
                             </tr>
                             <tr>
                                 <td><label for="m3">Mass of Bottle, Soil &amp; Liquid (M3)</label></td>
-                                <td><field name="m3"/>g</td>
+                                <td><field name="m3" class="blue-input"/>g</td>
                             </tr>
                              <tr>
                                 <td><label for="m4">Mass of Bottle Full of Liquid (M4) </label></td>
-                                <td><field name="m4"/>g</td>
+                                <td><field name="m4" class="blue-input" />g</td>
                             </tr>
                             
                         </tbody>
@@ -898,7 +920,7 @@
                         <tbody>
                             <tr>
                                 <td><label for="proving_ring_constant">Proving Ring Constant (k)</label></td>
-                                <td><field name="proving_ring_constant"/></td>
+                                <td><field name="proving_ring_constant" class="blue-input" /></td>
                             </tr>
                           
                             
@@ -909,10 +931,13 @@
                         <field name="direct_shear_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='ao'  />
-                                <field name='delta'/>
-                                <field name='proving_ring_reading'/>
-                                <field name='normal_stress'/>
+                                <field name='ao'  class="blue-input" decoration-info="ao != 0" />
+                                
+                                <field name='delta' class="blue-input" decoration-info="delta != 0"/>
+
+                                <field name='proving_ring_reading' class="blue-input" decoration-info="proving_ring_reading != 0"/>
+
+                                <field name='normal_stress' class="blue-input" decoration-info="normal_stress != 0"/>
                                 <field name='horizontal_load'/>
                                 <field name='corrected_area'/>
                                 <field name='shear_stress'/>
@@ -991,7 +1016,8 @@
                         </table>
 
 
-                 <div invisible = "swelling_pressure_visible == False">
+                 <!--  -->
+                 <!-- <div invisible = "swelling_pressure_visible == False">
                         <h1 class="text-center">
                             <field name="swelling_pressure_name" readonly="1" nolabel="1"/>
                             <field name="swelling_pressure_visible" invisible="1"/>
@@ -1035,11 +1061,11 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
 
 
                   <!-- Unconsolidated Undrained Triaxial Test (Angle of Friction) -->
-                <div invisible = "uu_triaxial_angle_visible == False">
+                <!-- <div invisible = "uu_triaxial_angle_visible == False">
                         <h1 class="text-center">
                             <field name="uu_triaxial_angle_name" readonly="1" nolabel="1"/>
                             <field name="uu_triaxial_angle_visible" invisible="1"/>
@@ -1067,14 +1093,14 @@
                                 <tr>
                                 <td><label for="phi_deg_uu_triaxial_angle">Angle of Friction φ (°) </label></td>
                                 <td><field name="phi_deg_uu_triaxial_angle"/><span> </span></td>
-                            </tr>
+                            </tr> -->
 
                              <!-- <tr>
                                 <td><label for="cohesion_uu_triaxial_angle">Cohesion c (kPa)</label></td>
                                 <td><field name="cohesion_uu_triaxial_angle"/><span> </span></td>
                             </tr> -->
                            
-                                <tr>
+                                <!-- <tr>
                                 <td><label for="phi_deg_uu_triaxial_angle_conformity"></label></td>
                                 <td><field name="phi_deg_uu_triaxial_angle_conformity"
                                             decoration-success="phi_deg_uu_triaxial_angle_conformity == 'pass'" 
@@ -1089,10 +1115,10 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
 
                  <!-- Unconsolidated Undrained Triaxial Test (Cohesion) -->
-                <div invisible = "uu_triaxial_cohesion_visible == False">
+                <!-- <div invisible = "uu_triaxial_cohesion_visible == False">
                         <h1 class="text-center">
                             <field name="uu_triaxial_cohesion_name" readonly="1" nolabel="1"/>
                             <field name="uu_triaxial_cohesion_visible" invisible="1"/>
@@ -1116,13 +1142,17 @@
                     </div>
 
                       <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not uu_triaxial_cohesion_visible">
-                            <tbody>
+                            <tbody> -->
+
+
+
+
                                 <!-- <tr>
                                 <td><label for="phi_deg_uu_triaxial_cohesion">Angle of Friction φ (°) </label></td>
                                 <td><field name="phi_deg_uu_triaxial_cohesion"/><span> </span></td>
                             </tr> -->
 
-                             <tr>
+                             <!-- <tr>
                                 <td><label for="cohesion_uu_triaxial_cohesion">Cohesion c (kPa)</label></td>
                                 <td><field name="cohesion_uu_triaxial_cohesion"/><span> </span></td>
                             </tr>
@@ -1142,14 +1172,14 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
 
 
 
 
 
                  <!-- Unconfined Compressive Strength (UCS) Test -->
-                          <div invisible = "ucs_visible == False">
+                          <!-- <div invisible = "ucs_visible == False">
                         <h1 class="text-center">
                             <field name="ucs_name" readonly="1" nolabel="1"/>
                             <field name="ucs_visible" invisible="1"/>
@@ -1223,10 +1253,10 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
 
                          <!-- Consolidation Test (Cc) -->
-                          <div invisible = "consolidation_visible == False">
+                          <!-- <div invisible = "consolidation_visible == False">
                         <h1 class="text-center">
                             <field name="consolidation_name" readonly="1" nolabel="1"/>
                             <field name="consolidation_visible" invisible="1"/>
@@ -1297,11 +1327,11 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
 
 
                            <!-- Consolidation Test (Cc) -->
-                          <div invisible = "consolidation_pc_visible == False">
+                          <!-- <div invisible = "consolidation_pc_visible == False">
                         <h1 class="text-center">
                             <field name="consolidation_pc_name" readonly="1" nolabel="1"/>
                             <field name="consolidation_pc_visible" invisible="1"/>
@@ -1373,7 +1403,7 @@
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table> -->
 
 
 
