@@ -21,8 +21,12 @@ class RoutineLateralPileLoadTestParent(models.Model):
 
     # ================= BASIC INFO =================
     work_name = fields.Char("Name of Work")
-    contractor = fields.Char("Contractor")
-    client = fields.Char("Client")
+    client = fields.Many2one("res.partner", string="Client")
+    contractor = fields.Many2one(
+        "lerm.contractor.line",
+        string="Contractor",
+        domain="[('partner_id', '=', client)]"
+    )
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
@@ -79,9 +83,9 @@ class RoutineLateralPileLoadTestParent(models.Model):
 
     graph_image = fields.Binary("Load Settlement Graph")
     # ================= SUMMARY =================
-    gross_displacement = fields.Float(compute="_compute_disp", store=True)
+    gross_settlement = fields.Float(compute="_compute_disp", store=True)
     rebound = fields.Float(compute="_compute_disp", store=True)
-    net_displacement = fields.Float(compute="_compute_disp", store=True)
+    net_settlement = fields.Float(compute="_compute_disp", store=True)
     
     rec_date_str = fields.Char(
         "Report Date (Text)",
@@ -151,9 +155,9 @@ class RoutineLateralPileLoadTestParent(models.Model):
             rebound = rebound_lines[-1].mean_mm if rebound_lines else 0.0
             net = gross - rebound
 
-            rec.gross_displacement = round(gross, 2)
+            rec.gross_settlement = round(gross, 2)
             rec.rebound = round(rebound, 2)
-            rec.net_displacement = round(net, 2)
+            rec.net_settlement = round(net, 2)
 
 
     # =========================================================
