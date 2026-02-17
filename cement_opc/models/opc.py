@@ -9,6 +9,7 @@ class CementNormalConsistency(models.Model):
     _name = "cement.opc"
     _inherit = "lerm.eln"
     _rec_name = "name"
+    
 
     name = fields.Char("Name",default="Cement")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")

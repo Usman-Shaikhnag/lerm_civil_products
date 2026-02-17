@@ -17,13 +17,37 @@
                     <field name="grade"/>
                     </group>
 
-              
+      
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
                         <field name="eln_ref" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
+
+
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
+
                     
                     <div class="custom_table_borders">
                       <field name="sample_parameters">
@@ -55,11 +79,11 @@
                       <tbody>
                             <tr>
                               <td><label for="temp_percent_normal">Temperature °c</label></td>
-                              <td><field name="temp_percent_normal"/></td>
+                              <td><field name="temp_percent_normal" class="blue-input"/></td>
                             </tr>
                             <tr>
                             <td><label for="humidity_percent_normal">Humidity %</label></td>
-                            <td><field name="humidity_percent_normal"/></td>
+                            <td><field name="humidity_percent_normal" class="blue-input"/></td>
                             </tr>
                             </tbody>
                       </table>
@@ -71,11 +95,11 @@
                          <tbody>
                             <tr>
                               <td><label for="start_date_normal">Start Date</label></td>
-                              <td><field name="start_date_normal"/></td>
+                              <td><field name="start_date_normal" class="blue-input"/></td>
                             </tr>
                             <tr>
                             <td><label for="end_date_normal">End Date</label></td>
-                            <td><field name="end_date_normal"/></td>
+                            <td><field name="end_date_normal" class="blue-input"/></td>
                             </tr>
                          </tbody>
                       </table>
@@ -107,11 +131,11 @@
                            </tr>
                            <tr>
                              <td><label for="gravity_of_flyash1">Specific Gravity of Flyash</label></td>
-                             <td><field  name="gravity_of_flyash1"    colspan="1"  nolabel="1"/></td>
+                             <td><field  name="gravity_of_flyash1"    colspan="1"  nolabel="1" class="blue-input"/></td>
                            </tr>
                            <tr>
                              <td><label for="gravity_of_cement1">Specific Gravity of Cement</label></td>
-                             <td><field  name="gravity_of_cement1"  colspan="1"  nolabel="1"/></td>
+                             <td><field  name="gravity_of_cement1"  colspan="1"  nolabel="1" class="blue-input"/></td>
                            </tr>
                            <tr>
                              <td><label for="fly_ash_n1">N</label></td>
@@ -123,7 +147,7 @@
                            </tr>
                            <tr>
                              <td><label for="wt_of_cement_1">Wt. of  Cement (g)</label></td>
-                             <td><field  name="wt_of_cement_1"  colspan="1"  nolabel="1"/></td>
+                             <td><field  name="wt_of_cement_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
                            </tr>
                            <tr>
                              <td><label for="total_wt_of_sample_fly_1">Total Weight of Sample(g)</label></td>
@@ -132,12 +156,12 @@
 
                            <tr>
                              <td><label for="wt_of_water_required_fly_1">Wt.of water required (g)</label></td>
-                             <td><field  name="wt_of_water_required_fly_1"  colspan="1"  nolabel="1"/></td>
+                             <td><field  name="wt_of_water_required_fly_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
                            </tr>
 
                            <tr>
                              <td><label for="penetration_planger_fly_1">Penetraion of vicat's Plunger (mm)</label></td>
-                             <td><field  name="penetration_planger_fly_1"  colspan="1"  nolabel="1"/></td>
+                             <td><field  name="penetration_planger_fly_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
                            </tr>
 
                            <tr>
@@ -188,11 +212,11 @@
                          <tbody>
                             <tr>
                               <td><label for="temp_percent_normal">Temperature °c</label></td>
-                              <td><field name="temp_percent_normal"/></td>
+                              <td><field name="temp_percent_normal" class="blue-input"/></td>
                             </tr>
                             <tr>
                             <td><label for="humidity_percent_normal">Humidity %</label></td>
-                            <td><field name="humidity_percent_normal"/></td>
+                            <td><field name="humidity_percent_normal" class="blue-input"/></td>
                             </tr>
                             <!-- <tr>
                             <td><span>Total Weight of Sample(g)</span></td>
@@ -212,11 +236,11 @@
                          <tbody>
                             <tr>
                               <td><label for="start_date_normal">Start Date</label></td>
-                              <td><field name="start_date_normal"/></td>
+                              <td><field name="start_date_normal" class="blue-input"/></td>
                             </tr>
                             <tr>
                             <td><label for="end_date_normal">End Date</label></td>
-                            <td><field name="end_date_normal"/></td>
+                            <td><field name="end_date_normal" class="blue-input"/></td>
                             </tr>
                          </tbody>
                       </table>
@@ -229,10 +253,11 @@
                          <tbody>
                           <tr>
                             <td><label for="wt_of_fly_settingg_time">Total Weight of Sample(g)</label></td>
-                            <td><field name="wt_of_fly_settingg_time" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}'/></td>
+                            <td><field name="wt_of_fly_settingg_time" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}' class="blue-input"/></td>
                             </tr>
                          </tbody>
                       </table>
+                      
                       </div>
 
                       <div style="width:50%">
@@ -262,11 +287,11 @@
                                 <tbody>
                                     <tr>
                                         <td><label for="time_water_added">The Time When water is added to cement (t1)</label></td>
-                                        <td><field name="time_water_added" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}' /></td>
+                                        <td><field name="time_water_added" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}' class="blue-input"/></td>
                                     </tr>
                                     <tr>
                                         <td><label for="time_needle_fails">The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)</label></td>
-                                        <td><field name="time_needle_fails" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}' /></td>
+                                        <td><field name="time_needle_fails" modifiers='{"invisible": [["initial_setting_time_visible", "=", false]]}' class="blue-input"/></td>
                                     </tr>
                                     <tr>
                                         <td><label for="initial_setting_time_hours">Initial Setting Time (t2-t1) (Hours)</label></td>
@@ -296,7 +321,7 @@
                                 <tbody>
                                     <tr>
                                         <td><label for="time_needle_make_impression">The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)</label></td>
-                                        <td><field name="time_needle_make_impression" modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}'/></td>
+                                        <td><field name="time_needle_make_impression" modifiers='{"invisible": [["final_setting_time_visible", "=", false]]}' class="blue-input"/></td>
                                     </tr>
                                     <tr>
                                         <td><label for="final_setting_time_hours">Final Setting Time (t2-t1) (Hours)</label></td>
@@ -367,8 +392,8 @@
                       <field name="particles_retained_table" nolabel="1" colspan="2">
                         <tree editable="bottom">
                           <field name="sr_no"/>
-                          <field name="sample_wt"/>
-                          <field name="retained_wt"/>
+                          <field name="sample_wt" class="blue-input" decoration-info="sample_wt != 0"/>
+                          <field name="retained_wt" class="blue-input" decoration-info="retained_wt != 0"/>
                           <field name="wt_retained"/>
                         </tree>
                       </field>
@@ -432,7 +457,7 @@
                           </tr>
                           <tr>
                             <td><label for="wt_of_cement_soundness">Wt. of Cement (g)</label></td>
-                            <td><field name="wt_of_cement_soundness"/></td>
+                            <td><field name="wt_of_cement_soundness" class="blue-input"/></td>
                           </tr>
                           </tbody>
                         </table>
@@ -460,8 +485,8 @@
                         <field name="soundness_table" nolabel="1" colspan="2">
                          <tree editable="bottom" >
                            <field name="sr_no" style="text-align:left;"/>
-                          <field name="initial_distance" style="text-align:left;"/>
-                          <field name="final_distance" style="text-align:left;"/>
+                          <field name="initial_distance" style="text-align:left;" class="blue-input" decoration-info="initial_distance != 0"/>
+                          <field name="final_distance" style="text-align:left;" class="blue-input" decoration-info="final_distance != 0"/>
                           <field name="expansion" style="text-align:left;"/>
                         </tree>
                       </field>
@@ -528,18 +553,18 @@
                          </tr>
                          <tr>
                            <td><label for="wt_of_flyash_specific2">Weight of Flyash (g)</label></td>
-                           <td><field  name="wt_of_flyash_specific2"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="wt_of_flyash_specific2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="wt_of_flyash_specific2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="wt_of_flyash_specific2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                            </tr>
                          <tr>
                            <td><label for="intial_volume_specific1">Initial Volume of kerosine (ml)</label></td>
-                           <td><field  name="intial_volume_specific1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="intial_volume_specific2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="intial_volume_specific1"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                           <td><field  name="intial_volume_specific2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>
                          <tr> 
                            <td><label for="final_volume_specific1">Final Volume of kerosine and Flyash (After immersion in constant water bath) (ml)</label></td>
-                           <td><field  name="final_volume_specific1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="final_volume_specific2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="final_volume_specific1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="final_volume_specific2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>
                          <tr>
                            <td><label for="displaced_volume1">Displaced volume (cm³)</label></td>
@@ -612,23 +637,23 @@
                           </tr>
                           <tr>
                             <td><label for="wt_of_cement_comp">Weight of Cement (g)</label></td>
-                            <td><field  name="wt_of_cement_comp"  colspan="1"/></td>
+                            <td><field  name="wt_of_cement_comp"  colspan="1" class="blue-input"/></td>
                           </tr>
                           <tr>
                             <td><label for="wt_of_standerd_comp1">Weight of Standard Sand (g)Grade-I</label></td>
-                            <td><field  name="wt_of_standerd_comp1"  colspan="1"/></td>
+                            <td><field  name="wt_of_standerd_comp1"  colspan="1" class="blue-input"/></td>
                           </tr>
                           <tr>
                             <td><label for="wt_of_standerd_comp2">Weight of Standard Sand (g)Grade-II</label></td>
-                            <td><field  name="wt_of_standerd_comp2"  colspan="1"/></td>
+                            <td><field  name="wt_of_standerd_comp2"  colspan="1" class="blue-input"/></td>
                           </tr>
                           <tr>
                             <td><label for="wt_of_standerd_comp3">Weight of Standard Sand (g)Grade-III</label></td>
-                            <td><field  name="wt_of_standerd_comp3"  colspan="1"/></td>
+                            <td><field  name="wt_of_standerd_comp3"  colspan="1" class="blue-input"/></td>
                           </tr>
                           <tr>
                             <td><label for="quantity_water">Quantity of Water (g)</label></td>
-                            <td><field  name="quantity_water"  colspan="1"/></td>
+                            <td><field  name="quantity_water"  colspan="1" class="blue-input"/></td>
                           </tr>
                         </tbody>
                       </table>
@@ -639,12 +664,12 @@
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                       <tbody>
                         <tr>
-                          <td><field  name="measured_value1"  colspan="1"  nolabel="1"/></td>
-                          <td><field  name="measured_value2"  colspan="1"  nolabel="1" /></td>
+                          <td><field  name="measured_value1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                          <td><field  name="measured_value2"  colspan="1"  nolabel="1"  class="blue-input"/></td>
                         </tr>
                         <tr>
-                          <td><field  name="measured_value3"  colspan="2"  nolabel="1"/></td>
-                          <td><field  name="measured_value4"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_value3"  colspan="2"  nolabel="1" class="blue-input"/></td>
+                          <td><field  name="measured_value4"  colspan="2"  nolabel="1" class="blue-input"/></td>
                         </tr>
                         </tbody>
                       </table>
@@ -670,7 +695,7 @@
                     <!-- 28 Days Casting  -->
                     <div modifiers="{'invisible': [['compressive_visible', '=', False]]}">
                         <h1>
-                            <field name="casting_28_name" readonly="1" nolabel="1"/>
+                            <field name="casting_28_name" readonly="1" nolabel="1" class="blue-input"/>
                         </h1>
                     </div>
                     <group/>
@@ -698,11 +723,11 @@
                     <div class="custom_table_borders" style="margin-top:20px;">
                     <field name="casting_28_days_tables" nolabel="1" colspan="2">
                         <tree editable="bottom">
-                          <field name="length"/>
-                          <field name="width"/>
-                          <field name="crosssectional_area"/>
-                          <field name="wt_of_cement_cube"/>
-                          <field name="crushing_load" />
+                          <field name="length" class="blue-input" decoration-info="length != 0"/>
+                          <field name="width" class="blue-input" decoration-info="width != 0"/>
+                          <field name="crosssectional_area" class="blue-input" decoration-info="crosssectional_area != 0"/>
+                          <field name="wt_of_cement_cube" class="blue-input" decoration-info="wt_of_cement_cube != 0"/>
+                          <field name="crushing_load" class="blue-input" decoration-info="crushing_load != 0"/>
                           <field name="compressive_strength" />
                         </tree>
                       </field>
@@ -728,27 +753,27 @@
                         <tbody>
                           <tr>
                             <td><label for="wt_of_cement_fly" class="text-bold">Weight of Cement (g)</label></td>
-                            <td><field  name="wt_of_cement_fly"  colspan="1"/></td>
+                            <td><field  name="wt_of_cement_fly"  colspan="1" class="blue-input"/></td>
                           </tr>
                           <tr>
                             <td><label for="wt_of_standared_grade1" class="text-bold">Weight of Standard Sand (g)Grade-I</label></td>
-                            <td><field  name="wt_of_standared_grade1"  colspan="1"/></td>
+                            <td><field  name="wt_of_standared_grade1"  colspan="1" class="blue-input"/></td>
                           </tr>
                           <tr>
                             <td><label for="wt_of_standared_grade2" class="text-bold">Weight of Standard Sand (g)Grade-II</label></td>
-                            <td> <field  name="wt_of_standared_grade2"  colspan="1"/></td>
+                            <td> <field  name="wt_of_standared_grade2"  colspan="1" class="blue-input"/></td>
                           </tr>
                           <tr>
                             <td><label for="wt_of_standared_grade3" class="text-bold">Weight of Standard Sand (g)Grade-III</label></td>
-                            <td><field  name="wt_of_standared_grade3"  colspan="1"/></td>
+                            <td><field  name="wt_of_standared_grade3"  colspan="1" class="blue-input"/></td>
                           </tr>
                           <tr>
-                            <td><label for="total_wieght" class="text-bold">otal Weight (g)</label></td>
+                            <td><label for="total_wieght" class="text-bold">Total Weight (g)</label></td>
                             <td><field  name="total_wieght"  colspan="1"/></td>
                           </tr>
                           <tr>
                             <td><label for="quantity_water_flyash" class="text-bold">Quantity of Water (g)</label></td>
-                            <td><field  name="quantity_water_flyash"  colspan="1"/></td>
+                            <td><field  name="quantity_water_flyash"  colspan="1" class="blue-input"/></td>
                           </tr>
                         </tbody>
                       </table>
@@ -759,12 +784,12 @@
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                       <tbody>
                         <tr>
-                          <td><field  name="measured_values1"  colspan="2"  nolabel="1"/></td>
-                          <td><field  name="measured_values2"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_values1"  colspan="2"  nolabel="1" class="blue-input"/></td>
+                          <td><field  name="measured_values2"  colspan="2"  nolabel="1" class="blue-input"/></td>
                         </tr>
                         <tr>
-                          <td><field  name="measured_values3"  colspan="2"  nolabel="1"/></td>
-                          <td><field  name="measured_values4"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_values3"  colspan="2"  nolabel="1" class="blue-input"/></td>
+                          <td><field  name="measured_values4"  colspan="2"  nolabel="1" class="blue-input"/></td>
                         </tr>
                         </tbody>
                       </table>
@@ -789,7 +814,7 @@
                     <!-- 28 Days Casting  -->
                     <div modifiers="{'invisible': [['compressive_visible', '=', False]]}">
                         <h1>
-                            <field name="casting_28_names" readonly="1" nolabel="1"/>
+                            <field name="casting_28_names" readonly="1" nolabel="1" class="blue-input"/>
                         </h1>
                     </div>
                     <group/>
@@ -819,11 +844,11 @@
                     <div class="custom_table_borders">
                     <field name="casting_28_dayss_tables" nolabel="1" colspan="2">
                         <tree editable="bottom">
-                          <field name="lengths"/>
-                          <field name="widths"/>
-                          <field name="crosssectional_areas"/>
-                          <field name="wt_of_cement_cubes"/>
-                          <field name="crushing_loads" />
+                          <field name="lengths" class="blue-input" decoration-info="lengths != 0"/>
+                          <field name="widths" class="blue-input" decoration-info="widths != 0"/>
+                          <field name="crosssectional_areas" class="blue-input" decoration-info="crosssectional_areas != 0"/>
+                          <field name="wt_of_cement_cubes" class="blue-input" decoration-info="wt_of_cement_cubes != 0"/>
+                          <field name="crushing_loads" class="blue-input" decoration-info="crushing_loads != 0"/>
                           <field name="compressive_strengths" />
                         </tree>
                       </field>
@@ -906,19 +931,19 @@
                           </tr>
                           <tr>
                             <td><label for="wt_of_standard_grade_lime1" class="text-bold">Weight of Standard Sand (g) Grade-I</label></td>
-                            <td><field  name="wt_of_standard_grade_lime1"  colspan="1"/></td>
+                            <td><field  name="wt_of_standard_grade_lime1"  colspan="1" class="blue-input"/></td>
                           </tr>
                           <tr>
                             <td><label for="wt_of_standard_grade_lime2" class="text-bold">Weight of Standard Sand (g) Grade-II</label></td>
-                            <td><field  name="wt_of_standard_grade_lime2"  colspan="1"/></td>
+                            <td><field  name="wt_of_standard_grade_lime2"  colspan="1" class="blue-input"/></td>
                           </tr>
                           <tr>
                             <td><label for="wt_of_standard_grade_lime3" class="text-bold">Weight of Standard Sand (g) Grade-III</label></td>
-                            <td><field  name="wt_of_standard_grade_lime3"  colspan="1"/></td>
+                            <td><field  name="wt_of_standard_grade_lime3"  colspan="1" class="blue-input"/></td>
                           </tr>
                           <tr>
                             <td><label for="quantity_water_lime" class="text-bold">Quantity of Water (g)</label></td>
-                            <td><field  name="quantity_water_lime"  colspan="1"/></td>
+                            <td><field  name="quantity_water_lime"  colspan="1" class="blue-input"/></td>
                           </tr>
                         </tbody>
                       </table>
@@ -930,12 +955,12 @@
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                       <tbody>
                         <tr>
-                          <td><field  name="measured_valuess1"  colspan="2"  nolabel="1"/></td>
-                          <td><field  name="measured_valuess2"  colspan="2"  nolabel="1" /></td>
+                          <td><field  name="measured_valuess1"  colspan="2"  nolabel="1" class="blue-input"/></td>
+                          <td><field  name="measured_valuess2"  colspan="2"  nolabel="1" class="blue-input"/></td>
                         </tr>
                         <tr>
-                          <td><field  name="measured_valuess3"  colspan="2"  nolabel="1"/></td>
-                          <td><field  name="measured_valuess4"  colspan="2"  nolabel="1"/></td>
+                          <td><field  name="measured_valuess3"  colspan="2"  nolabel="1" class="blue-input"/></td>
+                          <td><field  name="measured_valuess4"  colspan="2"  nolabel="1" class="blue-input"/></td>
                         </tr>
                         </tbody>
                       </table>
@@ -961,7 +986,7 @@
                     <!-- 28 Days Casting  -->
                     <div modifiers="{'invisible': [['lime_reactivity_visible', '=', False]]}">
                         <h1>
-                            <field name="casting_28_namess" readonly="1" nolabel="1"/>
+                            <field name="casting_28_namess" readonly="1" nolabel="1" class="blue-input"/>
                         </h1>
                     </div>
                     <group/>
@@ -991,11 +1016,11 @@
                     <div class="custom_table_borders">
                     <field name="casting_28_dayss_tabless" nolabel="1" colspan="2">
                         <tree editable="bottom">
-                          <field name="lengthss"/>
-                          <field name="widthss"/>
-                          <field name="crosssectional_areass"/>
-                          <field name="wt_of_cement_cubess"/>
-                          <field name="crushing_loadss" />
+                          <field name="lengthss" class="blue-input" decoration-info="lengthss != 0"/>
+                          <field name="widthss" class="blue-input" decoration-info="widthss != 0"/>
+                          <field name="crosssectional_areass" class="blue-input" decoration-info="crosssectional_areass != 0"/>
+                          <field name="wt_of_cement_cubess" class="blue-input" decoration-info="wt_of_cement_cubess != 0"/>
+                          <field name="crushing_loadss" class="blue-input" decoration-info="crushing_loadss != 0"/>
                           <field name="compressive_strengthss" />
                         </tree>
                       </field>
@@ -1060,13 +1085,13 @@
                          </tr>
                          <tr>
                            <td><label for="weight_of_mercury_before_trial1" class="text-bold">Weight of mercury before placing the sample in the permeability cell (m₁),g.</label></td>
-                           <td><field  name="weight_of_mercury_before_trial1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="weight_of_mercury_before_trial2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="weight_of_mercury_before_trial1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="weight_of_mercury_before_trial2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                            </tr>
                          <tr>
                            <td><label for="weight_of_mercury_after_trail1" class="text-bold">Weight of mercury after placing the sample in the permeability cell (m₂),g.</label></td>
-                           <td><field  name="weight_of_mercury_after_trail1"  colspan="1"  nolabel="1"/></td>
-                           <td><field  name="weight_of_mercury_after_trail2"  colspan="1"  nolabel="1"/></td>
+                           <td><field  name="weight_of_mercury_after_trail1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           <td><field  name="weight_of_mercury_after_trail2"  colspan="1"  nolabel="1" class="blue-input"/></td>
                          </tr>                                                 
                        </tbody>
                      </table>
@@ -1078,7 +1103,7 @@
                       <tbody>
                         <tr>
                           <td><label for="density_of_mercury" class="text-bold">Density of mercury , g/cm3</label></td>
-                          <td><field  name="density_of_mercury"  colspan="1" /></td>
+                          <td><field  name="density_of_mercury"  colspan="1" class="blue-input"/></td>
                         </tr>
                       </tbody>
                     </table>
@@ -1146,9 +1171,9 @@
                     </tr>
                      <tr>
                        <td><label for="time_finenesss_trial1" class="text-bold">Time(t),sec.</label></td>
-                       <td><field  name="time_finenesss_trial1"  colspan="1"  nolabel="1"/></td>
-                       <td><field  name="time_finenesss_trial1"  colspan="1"  nolabel="1"/></td>
-                       <td><field  name="time_finenesss_trial3"  colspan="1"  nolabel="1"/></td>
+                       <td><field  name="time_finenesss_trial1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                       <td><field  name="time_finenesss_trial1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                       <td><field  name="time_finenesss_trial3"  colspan="1"  nolabel="1" class="blue-input"/></td>
                      </tr>
                      </tbody>
                     </table>
@@ -1197,9 +1222,9 @@
                     </tr>
                      <tr>
                        <td><label for="time_sample_trial1" class="text-bold">Time(t),sec.</label></td>
-                       <td><field  name="time_sample_trial1"  colspan="1"  nolabel="1"/></td>
-                       <td><field  name="time_sample_trial2"  colspan="3"  nolabel="1"/></td>
-                       <td><field  name="time_sample_trial3"  colspan="3"  nolabel="1"/></td>
+                       <td><field  name="time_sample_trial1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                       <td><field  name="time_sample_trial2"  colspan="3"  nolabel="1" class="blue-input"/></td>
+                       <td><field  name="time_sample_trial3"  colspan="3"  nolabel="1" class="blue-input"/></td>
                      </tr>
                      </tbody>
                     </table>
@@ -1226,11 +1251,11 @@
                       <tbody>
                         <tr>
                           <td><label for="ss" class="text-bold">Sₛ is the Specific surface of Standard Sample (m²/kg)</label></td>
-                          <td><field name="ss"/></td>
+                          <td><field name="ss" class="blue-input"/></td>
                         </tr>
                         <tr>
                           <td><label for="ps" class="text-bold">ρₛ is the Density of Standard sample</label></td>
-                          <td><field name="ps"/></td>
+                          <td><field name="ps" class="blue-input"/></td>
                         </tr>
                         <tr>
                           <td><label for="p" class="text-bold">ρ is the Density of Test sample</label></td>

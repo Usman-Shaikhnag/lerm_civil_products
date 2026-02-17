@@ -126,10 +126,10 @@
                     <field name="specific_gravity_child_lines" nolabel="1"  style="width:100%" >
                         <tree editable="bottom"  class="custom_table_borders">
                             <field name="serial_no"/>
-                            <field name="wt_of_staurated_a"/>
-                            <field name="wt_of_pycnometer_b" />
-                            <field name="wt_of_pycnometer_c"/>
-                            <field name="wt_of_oven_d"/>
+                            <field name="wt_of_staurated_a" class="blue-input" decoration-info="wt_of_staurated_a != 0"/>
+                            <field name="wt_of_pycnometer_b" class="blue-input" decoration-info="wt_of_pycnometer_b != 0"/>
+                            <field name="wt_of_pycnometer_c" class="blue-input" decoration-info="wt_of_pycnometer_c != 0"/>
+                            <field name="wt_of_oven_d" class="blue-input" decoration-info="wt_of_oven_d != 0"/>
                         </tree>
                     </field>
                 
@@ -142,7 +142,7 @@
                         <tbody>
                             <tr>
                                 <td><label for="avg_staurated_a">Wt of Saturated surface dry Aggregate in Air: (A)</label></td>
-                                <td><field name="avg_staurated_a" /></td>
+                                <td><field name="avg_staurated_a"  /></td>
                             </tr>
                             <tr>
                                 <td><label for="avg_pycnometer_b">Wt of Pycnometer containing sample and Water: (B)</label></td>
