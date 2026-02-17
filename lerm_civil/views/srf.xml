@@ -30,7 +30,7 @@
                         type="object"
 
                         class="btn-primary"
-                        invisible="is_generated == True"/>
+                        invisible="1"/>
 
 
                     <button name="confirm_srf" class="oe_highlight" type="object" string="Confirm"
@@ -123,7 +123,7 @@
                             <field name="sample_description"/>
                             <field name="sample_qty" column_invisible="1"/>
                             <field name="quantity"/>
-                            <field name="lab_id" invisible="show_lab_id == False"/>
+                            <field name="lab_id" column_invisible="1"/>
                             <!-- <field name="lab_ids_raw"  /> -->
 
 
@@ -350,6 +350,7 @@
         <field name="arch" type="xml">
             <form create="false">
                 <!-- <field name='sample_id'/> -->
+                 <field name="split_done" invisible="1" />
                 <group>
                     <group>
                         <field name="receipt_date"/>
@@ -372,7 +373,8 @@
                         <field name="equipment_availability_remark"/>
                         <field name="resource_availability_remark"/>
                         <field name="test_performed_remark"/>
-                         <field name="lab_id" invisible="1"/>
+                         <!-- <field name="lab_id" /> -->
+                         <field name="quantity" />
                         
 
                         <field name="sample_id" invisible="1"/>
@@ -388,9 +390,10 @@
 
                 <div>
                  <button name="action_split_lab_ids"
-                    string="Show Lab ID"
+                    string="Assign Lab ID"
                     type="object"
-                    class="btn-primary"/>
+                    class="btn-primary"
+                    invisible="split_done == True"/>
 
                 </div>
                 

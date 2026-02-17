@@ -910,6 +910,46 @@ class SampleRequestReview(models.Model):
         store=True,
         readonly=True
     )
+    quantity = fields.Integer(
+        string="Quantity",
+        compute="_compute_quantity",
+        store=True
+    )
+
+   
+    # @api.depends('sample_id', 'sample_id.quantity')
+    # def _compute_quantity(self):
+    #     for rec in self:
+    #         old_qty = rec.quantity or 0
+    #         new_qty = rec.sample_id.quantity if rec.sample_id else 0
+
+    #         rec.quantity = new_qty
+
+    #         # 🔁 Quantity change zali tar button parat visible
+    #         if old_qty != new_qty:
+    #             rec.split_done = False
+
+    @api.depends('sample_id', 'sample_id.quantity')
+    def _compute_quantity(self):
+        for rec in self:
+            new_qty = rec.sample_id.quantity if rec.sample_id else 0
+            rec.quantity = new_qty
+
+            # ---------- AUTO GENERATE LINES ----------
+            if rec.id:  # record saved asel tarach
+                existing = len(rec.review_line_ids)
+
+                # Case 1 — Increase → new lines add
+                if new_qty > existing:
+                    vals = []
+                    for _ in range(new_qty - existing):
+                        vals.append((0, 0, {}))
+                    rec.write({'review_line_ids': vals})
+
+                # Case 2 — Decrease → extra lines remove
+                elif new_qty < existing:
+                    rec.review_line_ids[new_qty:].unlink()
+
 
     review_line_ids = fields.One2many(
         'sample.request.review.lines',
@@ -1057,81 +1097,70 @@ class SampleRequestReview(models.Model):
         for rec in self:
             rec.material_id = rec.sample_id.material_id.id if rec.sample_id.material_id else False
 
-    # def action_split_lab_ids(self):
-    #     for rec in self:
-    #         if not rec.lab_id:
-    #             continue
+    
+    split_done = fields.Boolean("Lab Split Done", default=False)
 
-    #         # delete old lines
-    #         rec.review_line_ids.unlink()
 
-    #         lab_text = rec.lab_id.strip()
-    #         ids = []
-
-    #         # CASE 1 → Range present
-    #         if ' - ' in lab_text:
-    #             start, end = lab_text.split(' - ')
-
-    #             import re
-    #             start_num = int(re.search(r'\d+$', start).group())
-    #             end_num = int(re.search(r'\d+$', end).group())
-
-    #             prefix = start[:start.rfind('-')+1]
-
-    #             for i in range(start_num, end_num + 1):
-    #                 ids.append(f"{prefix}{i}")
-    #         else:
-    #             ids.append(lab_text)
-
-    #         # create lines
-    #         lines = []
-    #         for lab in ids:
-    #             lines.append((0, 0, {
-    #                 'lab_id': lab
-    #             }))
-
-    #         rec.write({
-    #             'review_line_ids': lines
-    #         })
-
-    #     # 🔥 WIZARD REOPEN → CLOSE HONAR NAHI
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'res_model': 'sample.request.review',
-    #         'view_mode': 'form',
-    #         'res_id': self.id,
-    #         'target': 'new',   # wizard popup mode
-    #     }
+   
 
     def action_split_lab_ids(self):
         for rec in self:
-            if not rec.lab_id or not rec.sample_id:
+            if rec.split_done:
                 continue
 
-            lab_text = rec.lab_id.strip()
-            ids = []
+            if not rec.sample_id or rec.quantity <= 0:
+                continue
 
-            if ' - ' in lab_text:
-                start, end = lab_text.split(' - ')
+            seq_code = rec.sample_id._get_lab_sequence_code(rec.sample_id.material_id)
+            if not seq_code:
+                continue
 
-                import re
-                start_num = int(re.search(r'\d+$', start).group())
-                end_num = int(re.search(r'\d+$', end).group())
+            total_ids_needed = int(rec.quantity)
+            generated_ids = []
 
-                prefix = start[:start.rfind('-') + 1]
+            for _ in range(total_ids_needed):
+                new_lab = self.env['ir.sequence'].next_by_code(seq_code)
+                if new_lab:
+                    generated_ids.append(new_lab)
 
-                for i in range(start_num, end_num + 1):
-                    ids.append(f"{prefix}{i}")
+            if not generated_ids:
+                continue
+
+            # -------------------------------
+            # Update Sample (Range + Raw)
+            # -------------------------------
+            rec.sample_id.lab_ids_raw = ','.join(generated_ids)
+
+            if len(generated_ids) == 1:
+                rec.sample_id.lab_id = generated_ids[0]
             else:
-                ids.append(lab_text)
+                rec.sample_id.lab_id = f"{generated_ids[0]} - {generated_ids[-1]}"
 
-            # Update review lines
-            rec.review_line_ids.unlink()
-            lines_vals = [(0, 0, {'lab_id': lab}) for lab in ids]
-            rec.write({'review_line_ids': lines_vals})
-
-            # 🔥 SHOW lab_id in Sample after button click
             rec.sample_id.show_lab_id = True
+
+            # -------------------------------
+            # DATA SAFE LINE UPDATE
+            # -------------------------------
+            existing_lines = rec.review_line_ids
+
+            # Case 1 — Update existing lines (NO DELETE)
+            for i, line in enumerate(existing_lines):
+                if i < len(generated_ids):
+                    line.lab_id = generated_ids[i]
+
+            # Case 2 — Add new lines (if qty increased)
+            if len(generated_ids) > len(existing_lines):
+                new_vals = []
+                for lab in generated_ids[len(existing_lines):]:
+                    new_vals.append((0, 0, {'lab_id': lab}))
+                rec.write({'review_line_ids': new_vals})
+
+            # Case 3 — Extra lines (optional delete)
+            elif len(generated_ids) < len(existing_lines):
+                existing_lines[len(generated_ids):].unlink()
+
+            # One time button
+            rec.split_done = True
 
         return {
             'type': 'ir.actions.act_window',
@@ -1141,6 +1170,9 @@ class SampleRequestReview(models.Model):
             'target': 'new',
             'flags': {'reload': True},
         }
+
+
+
 
 
 
