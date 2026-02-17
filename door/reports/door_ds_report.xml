@@ -104,12 +104,71 @@
                                 <td style="font-weight: bold;">Average Length in mm:</td>
                                 <td style="text-align: center;"><span t-field="data.door_length_avg" t-options='{"widget": "float", "precision": 1}'/></td>
                             </tr>
-                        </table>	
+                        </table>
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>	
                     </div>
 
                     <!-- Width -->
 
-                    <div t-if="data.door_width_visible" style="margin-top:30px;">
+                    <div t-if="data.door_width_visible" style="margin-top:30px;page-break-before: always;">
                         
                        <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','426149cc-ee30-45bb-a7df-db54327c2de1')]).parameter_name"/>
@@ -204,11 +263,70 @@
                                 <td style="text-align: center;"><span t-field="data.door_width_avg" t-options='{"widget": "float", "precision": 1}'/></td>
                             </tr>
                         </table>	
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
                     </div>
 
                      <!-- Thickness -->
 
-                    <div t-if="data.door_thickess_visible" style="margin-top:30px;">
+                    <div t-if="data.door_thickess_visible" style="margin-top:30px;page-break-before: always;">
                         
                        <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','80bacb3a-e725-4651-b476-3b1cc3fdd405')]).parameter_name"/>
@@ -328,14 +446,73 @@
                                 <td style="font-weight: bold;">Average Thickness in mm:</td>
                                 <td style="text-align: center;"><span t-field="data.door_thickess_avg" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
-                        </table>	
+                        </table>
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>	
                     </div>
 
 
 
                        <!-- Squareness -->
 
-                    <div t-if="data.door_squareness_visible" style="margin-top:30px;">
+                    <div t-if="data.door_squareness_visible" style="margin-top:30px;page-break-before: always;">
                         
                        <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','7f15645f-2d9f-4797-9a0f-978913968fd7')]).parameter_name"/>
@@ -428,14 +605,73 @@
                                 <td style="text-align: center;"><span t-field="data.door_squareness_avg" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
                         </table>	
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
                     </div>
 
 
 
 
-                      <!-- Squareness -->
+                      <!-- General Flatness Test -->
 
-                    <div t-if="data.door_general_flatness_visible" style="margin-top:30px;">
+                    <div t-if="data.door_general_flatness_visible" style="margin-top:30px;page-break-before: always;">
                         
                        <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','c3845764-c593-4ad2-a2a1-a8653c060b16')]).parameter_name"/>
@@ -563,13 +799,72 @@
                                 <td style="text-align: center;"><span t-field="data.door_twisting_avg" t-options='{"widget": "float", "precision": 1}'/></td>
                             </tr>
                         </table>	
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
                     </div>
 
 
 
                        <!-- Local Planeness Test -->
 
-                    <div t-if="data.door_local_planeness_visible" style="margin-top:30px;">
+                    <div t-if="data.door_local_planeness_visible" style="margin-top:30px;page-break-before: always;">
                         
                        <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','0020e36c-0431-4859-8713-5e40c743e23b')]).parameter_name"/>
@@ -740,12 +1035,71 @@
                                 <td style="text-align: center;"><span t-field="data.door_local_planeness_avg" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
                         </table>	
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
                     </div>
 
 
                         <!-- Impact Indentation Test -->
 
-                    <div t-if="data.door_impact_visible" style="margin-top:30px;">
+                    <div t-if="data.door_impact_visible" style="margin-top:30px;page-break-before: always;">
                         
                        <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','bf8130ff-d00f-44c6-8216-da112646962c')]).parameter_name"/>
@@ -915,13 +1269,72 @@
                                 <td style="font-weight: bold;">Impact Indentation, mm :</td>
                                 <td style="text-align: center;"><span t-field="data.door_impact_avg" t-options='{"widget": "float", "precision": 2}'/></td>
                             </tr>
-                        </table>	
+                        </table>
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>	
                     </div>
 
 
                       <!-- Edge Loading Test -->
 
-                    <div t-if="data.edge_loading_visible" style="margin-top:30px;">
+                    <div t-if="data.edge_loading_visible" style="margin-top:30px;page-break-before: always;">
                         
                        <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','e3b8df2f-c7f4-4079-9c72-42fdab241896')]).parameter_name"/>
@@ -983,6 +1396,65 @@
                                 
                             </tbody>
                         </table>
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
                        
                     </div>
 
@@ -1050,6 +1522,65 @@
                                 
                             </tbody>
                         </table>
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
                        
                     </div>
 
@@ -1117,7 +1648,64 @@
                                 
                             </tbody>
                         </table>
-                       
+                       <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
                     </div>
 
                       <!-- Slamming test -->
@@ -1171,6 +1759,65 @@
                                 
                             </tbody>
                         </table>
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
                        
                     </div>
 
@@ -1225,12 +1872,71 @@
                                 
                             </tbody>
                         </table>
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
                        
                     </div>
 
                         <!--Varying Humidity test-->
 
-                    <div t-if="data.door_varying_humidity_visible" style="margin-top:30px;">
+                    <div t-if="data.door_varying_humidity_visible" style="margin-top:30px;page-break-before: always;">
                         
                        <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','7bc503c2-a6d6-4ecb-a6d4-285a80e013c4')]).parameter_name"/>
@@ -1364,13 +2070,72 @@
                                 <td style="text-align: center;"><span t-field="data.door_varying_humidity"/></td>
                             </tr>
                         
-                        </table>	
+                        </table>
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>	
                     </div>
 
 
                       <!--End Immersion test -->
 
-                    <div t-if="data.end_immpresion_visible" style="margin-top:30px;">
+                    <div t-if="data.end_immpresion_visible" style="margin-top:30px;page-break-before: always;">
                         
                        <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','def7da26-83e4-4dac-9350-5a7985bdcbd7')]).parameter_name"/>
@@ -1419,7 +2184,64 @@
                                 
                             </tbody>
                         </table>
-                       
+                       <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
                     </div>
 
                          <!--Knife test -->
@@ -1473,7 +2295,64 @@
                                 
                             </tbody>
                         </table>
-                       
+                       <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
                     </div>
 
 
@@ -1528,6 +2407,8 @@
                                 
                             </tbody>
                         </table>
+
+                        
                        
                     </div>
 

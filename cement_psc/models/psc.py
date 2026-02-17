@@ -1111,38 +1111,59 @@ class CementPSC(models.Model):
              
 
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
+
             if result.parameter.internal_id == '12457800-372f-4775-9bcb-e9dd70e6e6df':
                 result.result_char = round(self.avg_cement,2)
+                result.calculated = True
                 if self.avg_cement_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '23145870-372f-4775-9bcb-e9dd70e3587g':
                 result.result_char = round(self.avg_density,2)
+                result.calculated = True
                 if self.avg_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '3012478fffrr-372f-4775-9bcb-e9dd70214578r':
                 result.result_char = round(self.avg_fineness_blaine,2)
+                result.calculated = True
                 if self.avg_fineness_blaine_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '21457896f-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_soundness_cement,2)
+                result.calculated = True
                 if self.avg_soundness_cement_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '01247gggty-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.consitency_of_cement,2)
+                result.calculated = True
                 if self.consitency_of_cement_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1152,47 +1173,66 @@ class CementPSC(models.Model):
           
             if result.parameter.internal_id == '358789gtyg-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_3_days,2)
+                result.calculated = True
                 if self.avg_3_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '555888ggghhjy-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_7_days,2)
+                result.calculated = True
                 if self.avg_7_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '5777fffrrtt11-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_28_days,2)
+                result.calculated = True
                 if self.avg_28_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
 
+
             if result.parameter.internal_id == 'psc5478-30fe-4043-b518-015f5c60d916':
                 result.result_char = self.initial_setting_time_minutes_unrounded
+                result.calculated = True
                 if self.initial_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '987psc47-5e9c-4335-9ea2-2d87624c3061':
                 result.result_char = self.final_setting_time_minutes_unrounded
+                result.calculated = True
                 if self.final_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '0157yutr1034-372f-4775-9bcb-e9dd723547htui':
-                result.result_char = self.avg_specific_gravity
+                result.result_char = round(self.avg_specific_gravity,2)
+                result.calculated = True
                 if self.avg_specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '214578gt-372f-4775-9bcb-e9dd723547htui':
+                # result.result_char = self.avg_specific_gravity
+                result.calculated = True
             
 
         return {
